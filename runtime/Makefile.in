@@ -399,7 +399,8 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 
 # assemblies which are excluded from testing in mcs-compileall below
-VERIFY_TESTS_FILTER = $(am__append_14) $(am__append_15)
+VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll \
+	$(am__append_14) $(am__append_15)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want

@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -280,7 +290,14 @@ mono_class_from_name (MonoImage *image, const char* name_space, const char *name
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> The <code>MonoImage</code> where the type is looked up in</td></tr><tr><td><i>name_space</i></td><td> the type namespace</td></tr><tr><td><i>name</i></td><td> the type short name.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Obtains a <code>MonoClass</code> with a given namespace and a given name which 	 is located in the given <code>MonoImage</code>. 	<p /> 	 To reference nested classes, use the &quot;/&quot; character as a separator. 	 For example use <code>&quot;Foo/Bar&quot;</code> to reference the class <code>Bar</code> that is nested 	 inside <code>Foo</code>, like this: &quot;class Foo { class Bar {} }&quot;.</div>
+             <div>
+<p />
+ Obtains a <code>MonoClass</code> with a given namespace and a given name which
+ is located in the given <code>MonoImage</code>.
+<p />
+ To reference nested classes, use the &quot;/&quot; character as a separator.
+ For example use <code>&quot;Foo/Bar&quot;</code> to reference the class <code>Bar</code> that is nested
+ inside <code>Foo</code>, like this: &quot;class Foo { class Bar {} }&quot;.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -301,7 +318,11 @@ mono_class_from_name_case (MonoImage *image, const char* name_space, const char 
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> The MonoImage where the type is looked up in</td></tr><tr><td><i>name_space</i></td><td> the type namespace</td></tr><tr><td><i>name</i></td><td> the type short name.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Obtains a <code>MonoClass</code> with a given namespace and a given name which 	 is located in the given <code>MonoImage</code>.   The namespace and name 	 lookups are case insensitive.</div>
+             <div>
+<p />
+ Obtains a <code>MonoClass</code> with a given namespace and a given name which
+ is located in the given <code>MonoImage</code>.   The namespace and name
+ lookups are case insensitive.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -326,7 +347,10 @@ mono_class_from_typeref (MonoImage *image, guint32 type_token)
 
 	 not be loaded.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates the <code>MonoClass*</code> structure representing the type defined by 	 the typeref token valid inside <i>image</i>.</div>
+             <div>
+<p />
+ Creates the <code>MonoClass*</code> structure representing the type defined by
+ the typeref token valid inside <i>image</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -352,7 +376,11 @@ mono_class_from_typeref_checked (MonoImage *image, guint32 type_token, MonoError
 	 not be loaded with the <i>error</i> value filled with the information about the
 	 error.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates the <code>MonoClass*</code> structure representing the type defined by 	 the typeref token valid inside <i>image</i>. 	<p /></div>
+             <div>
+<p />
+ Creates the <code>MonoClass*</code> structure representing the type defined by
+ the typeref token valid inside <i>image</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -398,7 +426,8 @@ mono_class_array_element_size (MonoClass *klass)
              <div>	 The number of bytes an element of type <i>klass</i> uses when stored into an array.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -422,7 +451,8 @@ mono_class_data_size (MonoClass *klass)
              <div>	 The size of the static class data
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -446,7 +476,10 @@ mono_class_enum_basetype (MonoClass *klass)
              <div>	 The underlying type representation for an enumeration.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this function to get the underlying type for an enumeration value. 	<p /></div>
+             <div>
+<p />
+ Use this function to get the underlying type for an enumeration value.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -467,7 +500,9 @@ mono_class_get_byref_type (MonoClass *klass)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> the <code>MonoClass</code> to act on</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	<p /></div>
+             <div>
+<p />
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -491,7 +526,10 @@ mono_class_get_element_class (MonoClass *klass)
              <div>	 The element class of an array.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this function to get the element class of an array. 	<p /></div>
+             <div>
+<p />
+ Use this function to get the element class of an array.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -535,7 +573,8 @@ mono_class_get_field (MonoClass *klass, guint32 field_token)
 	 the field, or a <code>NULL</code> value if the field does not belong to this
 	 class.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -559,7 +598,11 @@ mono_class_get_field_token (MonoClassField *field)
              <div>	 The token representing the field in the image it was loaded from.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Get the token of a field. Note that the tokesn is only valid for the image 	 the field was loaded from. Don't use this function for fields in dynamic types. 	<p /></div>
+             <div>
+<p />
+ Get the token of a field. Note that the tokesn is only valid for the image
+ the field was loaded from. Don't use this function for fields in dynamic types.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -627,7 +670,10 @@ mono_class_get_image (MonoClass *klass)
              <div>	 The image where this class is defined.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this method to get the <code>MonoImage*</code> where this class came from. 	<p /></div>
+             <div>
+<p />
+ Use this method to get the <code>MonoImage*</code> where this class came from.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -651,7 +697,14 @@ mono_class_get_interfaces (MonoClass* klass, gpointer *iter)
              <div>	 a <code>MonoClass*</code> on each invocation, or <code>NULL</code> when no more are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the interfaces implemented by this class. 	<p /> 	 You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the interfaces implemented by this class.
+<p />
+ You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -675,7 +728,8 @@ mono_class_get_name (MonoClass *klass)
              <div>	 The name of the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -699,7 +753,8 @@ mono_class_get_namespace (MonoClass *klass)
              <div>	 The namespace of the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -723,7 +778,12 @@ mono_class_get_nesting_type (MonoClass *klass)
              <div>	 The container type where this type is nested or <code>NULL</code> if this type is not a nested type.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this function to obtain the class that the provided <code>MonoClass*</code> is nested on. 	<p /> 	 If the return is <code>NULL</code>, this indicates that this class is not nested. 	<p /></div>
+             <div>
+<p />
+ Use this function to obtain the class that the provided <code>MonoClass*</code> is nested on.
+<p />
+ If the return is <code>NULL</code>, this indicates that this class is not nested.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -747,7 +807,8 @@ mono_class_get_parent (MonoClass *klass)
              <div>	 The parent class for this class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -771,7 +832,8 @@ mono_class_get_property_token (MonoProperty *prop)
              <div>	 The ECMA token for the specified property.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -795,7 +857,8 @@ mono_class_get_rank (MonoClass *klass)
              <div>	 The rank for the array (the number of dimensions).
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -819,7 +882,10 @@ mono_class_get_type (MonoClass *klass)
              <div>	 The <code>MonoType</code> from the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method returns the internal <code>MonoType</code> representation for the class. 	<p /></div>
+             <div>
+<p />
+ This method returns the internal <code>MonoType</code> representation for the class.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -843,7 +909,10 @@ mono_class_get_type_token (MonoClass *klass)
              <div>	 The type token for the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method returns type token for the class. 	<p /></div>
+             <div>
+<p />
+ This method returns type token for the class.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -867,7 +936,8 @@ mono_class_implements_interface (MonoClass* klass, MonoClass* iface)
              <div>	 <code>TRUE</code> if <i>klass</i> implements <i>interface</i>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -891,7 +961,10 @@ mono_class_inflate_generic_method (MonoMethod *method, MonoGenericContext *conte
              <div>	 The new instantiated method
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Instantiate the generic method <i>method</i> using the generics context <i>context</i>. 	<p /></div>
+             <div>
+<p />
+ Instantiate the generic method <i>method</i> using the generics context <i>context</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -916,7 +989,11 @@ mono_class_inflate_generic_type (MonoType *type, MonoGenericContext *context)
 
 	 on the heap and is owned by the caller. Returns <code>NULL</code> on error.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 If <i>type</i> is a generic type and <i>context</i> is not <code>NULL</code>, instantiate it using the  	 generics context <i>context</i>. 	<p /></div>
+             <div>
+<p />
+ If <i>type</i> is a generic type and <i>context</i> is not <code>NULL</code>, instantiate it using the 
+ generics context <i>context</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -941,7 +1018,18 @@ mono_class_init (MonoClass *klass)
 
 	 the type (incorrect assemblies, missing assemblies, methods, etc).</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Compute the <code>instance_size</code>, <code>class_size</code> and other infos that cannot be  	 computed at <code>mono_class_get</code> time. Also compute vtable_size if possible.  	 Initializes the following fields in <i>klass</i>: 	 - all the fields initialized by <code>mono_class_init_sizes</code> 	 - has_cctor 	 - ghcimpl 	 - inited 	<p /> 	 LOCKING: Acquires the loader lock. 	<p /></div>
+             <div>
+<p />
+ Compute the <code>instance_size</code>, <code>class_size</code> and other infos that cannot be 
+ computed at <code>mono_class_get</code> time. Also compute vtable_size if possible. 
+ Initializes the following fields in <i>klass</i>:
+ - all the fields initialized by <code>mono_class_init_sizes</code>
+ - has_cctor
+ - ghcimpl
+ - inited
+<p />
+ LOCKING: Acquires the loader lock.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -965,7 +1053,10 @@ mono_class_instance_size (MonoClass *klass)
              <div>	 The size of an object instance
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use to get the size of a class in bytes. 	<p /></div>
+             <div>
+<p />
+ Use to get the size of a class in bytes.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -990,7 +1081,8 @@ mono_class_is_assignable_from (MonoClass *klass, MonoClass *oklass)
 
 	 instance of class <i>klass</i></div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1014,7 +1106,8 @@ mono_class_is_delegate (MonoClass *klass)
              <div>	 <code>TRUE</code> if the <code>MonoClass</code> represents a <code>System.Delegate</code>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1038,7 +1131,10 @@ mono_class_is_enum (MonoClass *klass)
              <div>	 <code>TRUE</code> if the <code>MonoClass</code> represents an enumeration.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this function to determine if the provided <code>MonoClass*</code> represents an enumeration. 	<p /></div>
+             <div>
+<p />
+ Use this function to determine if the provided <code>MonoClass*</code> represents an enumeration.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1060,7 +1156,20 @@ mono_class_is_subclass_of (MonoClass *klass, MonoClass *klassc,
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> class to probe if it is a subclass of another one</td></tr><tr><td><i>klassc</i></td><td> the class we suspect is the base class</td></tr><tr><td><i>check_interfaces</i></td><td> whether we should perform interface checks</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method determines whether <i>klass</i> is a subclass of <i>klassc</i>. 	<p /> 	 If the <i>check_interfaces</i> flag is set, then if <i>klassc</i> is an interface 	 this method return <code>TRUE</code> if the <i>klass</i> implements the interface or 	 if <i>klass</i> is an interface, if one of its base classes is <i>klass</i>. 	<p /> 	 If <i>check_interfaces</i> is false, then if <i>klass</i> is not an interface, 	 it returns <code>TRUE</code> if the <i>klass</i> is a subclass of <i>klassc</i>. 	<p /> 	 if <i>klass</i> is an interface and <i>klassc</i> is <code>System.Object</code>, then this function 	 returns <code>TRUE</code>. 	<p /></div>
+             <div>
+<p />
+ This method determines whether <i>klass</i> is a subclass of <i>klassc</i>.
+<p />
+ If the <i>check_interfaces</i> flag is set, then if <i>klassc</i> is an interface
+ this method return <code>TRUE</code> if the <i>klass</i> implements the interface or
+ if <i>klass</i> is an interface, if one of its base classes is <i>klass</i>.
+<p />
+ If <i>check_interfaces</i> is false, then if <i>klass</i> is not an interface,
+ it returns <code>TRUE</code> if the <i>klass</i> is a subclass of <i>klassc</i>.
+<p />
+ if <i>klass</i> is an interface and <i>klassc</i> is <code>System.Object</code>, then this function
+ returns <code>TRUE</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1084,7 +1193,11 @@ mono_class_is_valuetype (MonoClass *klass)
              <div>	 <code>TRUE</code> if the <code>MonoClass</code> represents a <code>ValueType</code>, <code>FALSE</code> if it represents a reference type.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this method to determine if the provided <code>MonoClass*</code> represents a value type, 	 or a reference type. 	<p /></div>
+             <div>
+<p />
+ Use this method to determine if the provided <code>MonoClass*</code> represents a value type,
+ or a reference type.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1108,7 +1221,10 @@ mono_class_min_align (MonoClass *klass)
              <div>	 minimum alignment requirements
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use to get the computed minimum alignment requirements for the specified class. 	<p /></div>
+             <div>
+<p />
+ Use to get the computed minimum alignment requirements for the specified class.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1150,7 +1266,8 @@ mono_class_num_events (MonoClass *klass)
              <div>	 The number of events in the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1174,7 +1291,8 @@ mono_class_num_fields (MonoClass *klass)
              <div>	 The number of static and instance fields in the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1198,7 +1316,8 @@ mono_class_num_methods (MonoClass *klass)
              <div>	 The number of methods in the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1222,7 +1341,8 @@ mono_class_num_properties (MonoClass *klass)
              <div>	 The number of properties in the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1246,7 +1366,11 @@ mono_class_value_size (MonoClass *klass, guint32 *align)
              <div>	 the size of a value of kind <i>klass</i>
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This function is used for value types, and return the 	 space and the alignment to store that kind of value object. 	<p /></div>
+             <div>
+<p />
+ This function is used for value types, and return the
+ space and the alignment to store that kind of value object.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1267,7 +1391,10 @@ mono_class_vtable (MonoDomain *domain, MonoClass *klass)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> the application domain</td></tr><tr><td><i>class</i></td><td> the class to initialize</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 VTables are domain specific because we create domain specific code, and  	 they contain the domain specific static class data. 	 On failure, <code>NULL</code> is returned, and <code>class-&gt;exception_type</code> is set.</div>
+             <div>
+ VTables are domain specific because we create domain specific code, and 
+ they contain the domain specific static class data.
+ On failure, <code>NULL</code> is returned, and <code>class-&gt;exception_type</code> is set.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1295,7 +1422,14 @@ mono_class_get_fields (MonoClass* klass, gpointer *iter)
              <div>	 a <code>MonoClassField*</code> on each iteration, or <code>NULL</code> when no more fields are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the fields in a class. 	<p /> 	 You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the fields in a class.
+<p />
+ You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1319,7 +1453,10 @@ mono_class_get_field_from_name (MonoClass *klass, const char *name)
              <div>	 The <code>MonoClassField</code> pointer of the named field or <code>NULL</code>
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Search the class <i>klass</i> and its parents for a field with the name <i>name</i>. 	<p /></div>
+             <div>
+<p />
+ Search the class <i>klass</i> and its parents for a field with the name <i>name</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1343,7 +1480,14 @@ mono_class_get_methods (MonoClass* klass, gpointer *iter)
              <div>	 a <code>MonoMethod</code> on each iteration or <code>NULL</code> when no more methods are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the fields in a class. 	<p /> 	 You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the fields in a class.
+<p />
+ You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1364,7 +1508,10 @@ mono_class_get_method_from_name (MonoClass *klass, const char *name, int param_c
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> where to look for the method</td></tr><tr><td><i>name</i></td><td> name of the method</td></tr><tr><td><i>param_count</i></td><td> number of parameters. -1 for any number.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Obtains a <code>MonoMethod</code> with a given name and number of parameters. 	 It only works if there are no multiple signatures for any given method name.</div>
+             <div>
+<p />
+ Obtains a <code>MonoMethod</code> with a given name and number of parameters.
+ It only works if there are no multiple signatures for any given method name.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1385,7 +1532,10 @@ mono_class_get_method_from_name_flags (MonoClass *klass, const char *name, int p
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> where to look for the method</td></tr><tr><td><i>name_space</i></td><td> name of the method</td></tr><tr><td><i>param_count</i></td><td> number of parameters. -1 for any number.</td></tr><tr><td><i>flags</i></td><td> flags which must be set in the method</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Obtains a <code>MonoMethod</code> with a given name and number of parameters. 	 It only works if there are no multiple signatures for any given method name.</div>
+             <div>
+<p />
+ Obtains a <code>MonoMethod</code> with a given name and number of parameters.
+ It only works if there are no multiple signatures for any given method name.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1409,7 +1559,15 @@ mono_class_get_nested_types (MonoClass* klass, gpointer *iter)
              <div>	 a <code>Monoclass*</code> on each invocation, or <code>NULL</code> when no more are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the nested types of a class. 	 This works only if <i>klass</i> is non-generic, or a generic type definition. 	<p /> 	 You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the nested types of a class.
+ This works only if <i>klass</i> is non-generic, or a generic type definition.
+<p />
+ You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1433,7 +1591,14 @@ mono_class_get_properties (MonoClass* klass, gpointer *iter)
              <div>	 a <code>MonoProperty*</code> on each invocation, or <code>NULL</code> when no more are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the properties in a class. 	<p /> 	 You must pass a gpointer that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the properties in a class.
+<p />
+ You must pass a gpointer that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1458,7 +1623,9 @@ mono_class_get_property_from_name (MonoClass *klass, const char *name)
 
 	 does not exist on the <i>klass</i>.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this method to lookup a property in a class</div>
+             <div>
+<p />
+ Use this method to lookup a property in a class</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1482,7 +1649,14 @@ mono_class_get_events (MonoClass* klass, gpointer *iter)
              <div>	 a <code>MonoEvent*</code> on each invocation, or <code>NULL</code> when no more are available.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine is an iterator routine for retrieving the properties in a class. 	<p /> 	 You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to 	 iterate over all of the elements.  When no more values are 	 available, the return value is <code>NULL</code>. 	<p /></div>
+             <div>
+<p />
+ This routine is an iterator routine for retrieving the properties in a class.
+<p />
+ You must pass a <code>gpointer</code> that points to zero and is treated as an opaque handle to
+ iterate over all of the elements.  When no more values are
+ available, the return value is <code>NULL</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1511,7 +1685,8 @@ mono_field_get_data (MonoClassField *field)
 
 	 data if it has an RVA flag.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1535,7 +1710,8 @@ mono_field_get_offset (MonoClassField *field)
              <div>	 The field offset.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1585,7 +1761,10 @@ mono_method_can_access_field (MonoMethod *method, MonoClassField *field)
 
 	 the accessibility rules of the CLI.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Used to determine if a method is allowed to access the specified field. 	<p /></div>
+             <div>
+<p />
+ Used to determine if a method is allowed to access the specified field.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1610,7 +1789,10 @@ mono_method_can_access_method (MonoMethod *method, MonoMethod *called)
 
 	 the accessibility rules of the CLI.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Used to determine if the <i>method</i> is allowed to access the specified <i>called</i> method. 	<p /></div>
+             <div>
+<p />
+ Used to determine if the <i>method</i> is allowed to access the specified <i>called</i> method.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 

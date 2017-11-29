@@ -137,7 +137,11 @@ namespace System.Buffers.Binary
 #endif
             if (Unsafe.SizeOf<T>() > (uint)buffer.Length)
             {
+#if __MonoCS__
+                value = default(T);
+#else
                 value = default;
+#endif
                 return false;
             }
             value = Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());

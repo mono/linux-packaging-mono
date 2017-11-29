@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -240,7 +250,10 @@ mono_assembly_close (MonoAssembly *assembly)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>assembly</i></td><td> the assembly to release.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method releases a reference to the <i>assembly</i>.  The assembly is 	 only released when all the outstanding references to it are released.</div>
+             <div>
+<p />
+ This method releases a reference to the <i>assembly</i>.  The assembly is
+ only released when all the outstanding references to it are released.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -287,7 +300,11 @@ mono_assembly_load (MonoAssemblyName *aname, const char *basedir, MonoImageOpenS
 
 	 value pointed by <i>status</i> is updated with an error code.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not <code>NULL</code>, it 	 attempts to load the assembly from that directory before probing the standard locations. 	<p /></div>
+             <div>
+<p />
+ Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not <code>NULL</code>, it
+ attempts to load the assembly from that directory before probing the standard locations.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -312,7 +329,14 @@ mono_assembly_load_full (MonoAssemblyName *aname, const char *basedir, MonoImage
 
 	 value pointed by <i>status</i> is updated with an error code.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not <code>NULL</code>, it 	 attempts to load the assembly from that directory before probing the standard locations. 	<p /> 	 If the assembly is being opened in reflection-only mode (<i>refonly</i> set to <code>TRUE</code>) then no  	 assembly binding takes place. 	<p /></div>
+             <div>
+<p />
+ Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not <code>NULL</code>, it
+ attempts to load the assembly from that directory before probing the standard locations.
+<p />
+ If the assembly is being opened in reflection-only mode (<i>refonly</i> set to <code>TRUE</code>) then no 
+ assembly binding takes place.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -337,7 +361,10 @@ mono_assembly_loaded (MonoAssemblyName *aname)
 
 	 a <code>MonoAssembly</code> that matches the <code>MonoAssemblyName</code> specified.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is used to determine if the specified assembly has been loaded 	<p /></div>
+             <div>
+<p />
+ This is used to determine if the specified assembly has been loaded
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -368,7 +395,15 @@ mono_assembly_load_from (MonoImage *image, const char *fname,
 	 image did not contain an assembly reference table.
 	<p /></div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 If the provided <i>image</i> has an assembly reference, it will process the given 	 image as an assembly with the given name. 	<p /> 	 Most likely you want to use the `api:mono_assembly_load_full` method instead. 	<p /> 	 This is equivalent to calling `api:mono_assembly_load_from_full` with the 	 <i>refonly</i> parameter set to <code>FALSE</code>.</div>
+             <div>
+<p />
+ If the provided <i>image</i> has an assembly reference, it will process the given
+ image as an assembly with the given name.
+<p />
+ Most likely you want to use the `api:mono_assembly_load_full` method instead.
+<p />
+ This is equivalent to calling `api:mono_assembly_load_from_full` with the
+ <i>refonly</i> parameter set to <code>FALSE</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -398,7 +433,13 @@ mono_assembly_load_from_full (MonoImage *image, const char*fname,
 	 reason with <i>status</i> being set to <code>MONO_IMAGE_INVALID</code> if the
 	 image did not contain an assembly reference table.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 If the provided <i>image</i> has an assembly reference, it will process the given 	 image as an assembly with the given name. 	<p /> 	 Most likely you want to use the `api:mono_assembly_load_full` method instead. 	<p /></div>
+             <div>
+<p />
+ If the provided <i>image</i> has an assembly reference, it will process the given
+ image as an assembly with the given name.
+<p />
+ Most likely you want to use the `api:mono_assembly_load_full` method instead.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -422,7 +463,18 @@ mono_assembly_load_with_partial_name (const char *name, MonoImageOpenStatus *sta
              <div>	 <code>NULL</code> on failure, or a pointer to a <code>MonoAssembly</code> on success.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Loads a <code>MonoAssembly</code> from a name.  The name is parsed using `api:mono_assembly_name_parse`, 	 so it might contain a qualified type name, version, culture and token. 	<p /> 	 This will load the assembly from the file whose name is derived from the assembly name 	 by appending the <code>.dll</code> extension. 	<p /> 	 The assembly is loaded from either one of the extra Global Assembly Caches specified 	 by the extra GAC paths (specified by the <code>MONO_GAC_PREFIX</code> environment variable) or 	 if that fails from the GAC. 	<p /></div>
+             <div>
+<p />
+ Loads a <code>MonoAssembly</code> from a name.  The name is parsed using `api:mono_assembly_name_parse`,
+ so it might contain a qualified type name, version, culture and token.
+<p />
+ This will load the assembly from the file whose name is derived from the assembly name
+ by appending the <code>.dll</code> extension.
+<p />
+ The assembly is loaded from either one of the extra Global Assembly Caches specified
+ by the extra GAC paths (specified by the <code>MONO_GAC_PREFIX</code> environment variable) or
+ if that fails from the GAC.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -448,7 +500,21 @@ mono_assembly_open (const char *filename, MonoImageOpenStatus *status)
 	 assembly or <code>NULL</code> on error.  Details about the error are stored in the
 	 <i>status</i> variable.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This loads an assembly from the specified <i>filename</i>. The <i>filename</i> allows 	 a local URL (starting with a <code>file://</code> prefix).  If a file prefix is used, the 	 filename is interpreted as a URL, and the filename is URL-decoded.   Otherwise the file 	 is treated as a local path. 	<p /> 	 First, an attempt is made to load the assembly from the bundled executable (for those 	 deployments that have been done with the <code>mkbundle</code> tool or for scenarios where the 	 assembly has been registered as an embedded assembly).   If this is not the case, then 	 the assembly is loaded from disk using `api:mono_image_open_full`. 	<p /> 	 If the pointed assembly does not live in the Global Assembly Cache, a shadow copy of 	 the assembly is made. 	<p /></div>
+             <div>
+<p />
+ This loads an assembly from the specified <i>filename</i>. The <i>filename</i> allows
+ a local URL (starting with a <code>file://</code> prefix).  If a file prefix is used, the
+ filename is interpreted as a URL, and the filename is URL-decoded.   Otherwise the file
+ is treated as a local path.
+<p />
+ First, an attempt is made to load the assembly from the bundled executable (for those
+ deployments that have been done with the <code>mkbundle</code> tool or for scenarios where the
+ assembly has been registered as an embedded assembly).   If this is not the case, then
+ the assembly is loaded from disk using `api:mono_image_open_full`.
+<p />
+ If the pointed assembly does not live in the Global Assembly Cache, a shadow copy of
+ the assembly is made.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -473,7 +539,24 @@ mono_assembly_open_full (const char *filename, MonoImageOpenStatus *status, gboo
 
 	 to the assembly.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This loads an assembly from the specified <i>filename</i>. The <i>filename</i> allows 	 a local URL (starting with a <code>file://</code> prefix).  If a file prefix is used, the 	 filename is interpreted as a URL, and the filename is URL-decoded.   Otherwise the file 	 is treated as a local path. 	<p /> 	 First, an attempt is made to load the assembly from the bundled executable (for those 	 deployments that have been done with the <code>mkbundle</code> tool or for scenarios where the 	 assembly has been registered as an embedded assembly).   If this is not the case, then 	 the assembly is loaded from disk using `api:mono_image_open_full`. 	<p /> 	 If the pointed assembly does not live in the Global Assembly Cache, a shadow copy of 	 the assembly is made. 	<p /> 	 If <i>refonly</i> is set to true, then the assembly is loaded purely for inspection with 	 the <code>System.Reflection</code> API. 	<p /></div>
+             <div>
+<p />
+ This loads an assembly from the specified <i>filename</i>. The <i>filename</i> allows
+ a local URL (starting with a <code>file://</code> prefix).  If a file prefix is used, the
+ filename is interpreted as a URL, and the filename is URL-decoded.   Otherwise the file
+ is treated as a local path.
+<p />
+ First, an attempt is made to load the assembly from the bundled executable (for those
+ deployments that have been done with the <code>mkbundle</code> tool or for scenarios where the
+ assembly has been registered as an embedded assembly).   If this is not the case, then
+ the assembly is loaded from disk using `api:mono_image_open_full`.
+<p />
+ If the pointed assembly does not live in the Global Assembly Cache, a shadow copy of
+ the assembly is made.
+<p />
+ If <i>refonly</i> is set to true, then the assembly is loaded purely for inspection with
+ the <code>System.Reflection</code> API.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -494,7 +577,16 @@ mono_set_assemblies_path (const char* path)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>path</i></td><td> list of paths that contain directories where Mono will look for assemblies</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this method to override the standard assembly lookup system and 	 override any assemblies coming from the GAC.  This is the method 	 that supports the <code>MONO_PATH</code> variable. 	<p /> 	 Notice that <code>MONO_PATH</code> and this method are really a very bad idea as 	 it prevents the GAC from working and it prevents the standard 	 resolution mechanisms from working.  Nonetheless, for some debugging 	 situations and bootstrapping setups, this is useful to have. </div>
+             <div>
+<p />
+ Use this method to override the standard assembly lookup system and
+ override any assemblies coming from the GAC.  This is the method
+ that supports the <code>MONO_PATH</code> variable.
+<p />
+ Notice that <code>MONO_PATH</code> and this method are really a very bad idea as
+ it prevents the GAC from working and it prevents the standard
+ resolution mechanisms from working.  Nonetheless, for some debugging
+ situations and bootstrapping setups, this is useful to have. </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -514,7 +606,10 @@ mono_set_rootdir (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Registers the root directory for the Mono runtime, for Linux and Solaris 10, 	 this auto-detects the prefix where Mono was installed. </div>
+             <div>
+<p />
+ Registers the root directory for the Mono runtime, for Linux and Solaris 10,
+ this auto-detects the prefix where Mono was installed. </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -561,7 +656,14 @@ mono_assembly_foreach (GFunc func, gpointer user_data)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>func</i></td><td> function to invoke for each assembly loaded</td></tr><tr><td><i>user_data</i></td><td> data passed to the callback</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Invokes the provided <i>func</i> callback for each assembly loaded into 	 the runtime.   The first parameter passed to the callback  is the 	 <code>MonoAssembly*</code>, and the second parameter is the <i>user_data</i>. 	<p /> 	 This is done for all assemblies loaded in the runtime, not just 	 those loaded in the current application domain.</div>
+             <div>
+<p />
+ Invokes the provided <i>func</i> callback for each assembly loaded into
+ the runtime.   The first parameter passed to the callback  is the
+ <code>MonoAssembly*</code>, and the second parameter is the <i>user_data</i>.
+<p />
+ This is done for all assemblies loaded in the runtime, not just
+ those loaded in the current application domain.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -585,7 +687,8 @@ mono_assembly_get_image (MonoAssembly *assembly)
              <div>	 the <code>MonoImage</code> associated with this assembly.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -608,7 +711,8 @@ mono_assembly_get_main (void)
              <div>	 the assembly for the application, the first assembly that is loaded by the VM
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -632,7 +736,10 @@ mono_assembly_get_name (MonoAssembly *assembly)
              <div>	 the <code>MonoAssemblyName</code> associated with this assembly.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 The returned name's lifetime is the same as <i>assembly</i>'s. 	<p /></div>
+             <div>
+<p />
+ The returned name's lifetime is the same as <i>assembly</i>'s.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -655,7 +762,10 @@ mono_assembly_getrootdir (void)
              <div>	 a string with the directory, this string should not be freed.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Obtains the root directory used for looking up assemblies. 	<p /></div>
+             <div>
+<p />
+ Obtains the root directory used for looking up assemblies.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -676,7 +786,9 @@ mono_assembly_get_assemblyref (MonoImage *image, int index, MonoAssemblyName *an
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> pointer to the <code>MonoImage</code> to extract the information from.</td></tr><tr><td><i>index</i></td><td> index to the assembly reference in the image.</td></tr><tr><td><i>aname</i></td><td> pointer to a <code>MonoAssemblyName</code> that will hold the returned value.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Fills out the <i>aname</i> with the assembly name of the <i>index</i> assembly reference in <i>image</i>.</div>
+             <div>
+<p />
+ Fills out the <i>aname</i> with the assembly name of the <i>index</i> assembly reference in <i>image</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -701,7 +813,9 @@ mono_assembly_loaded_full (MonoAssemblyName *aname, gboolean refonly)
 
 	 a <code>MonoAssembly</code> that matches the <code>MonoAssemblyName</code> specified.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is used to determine if the specified assembly has been loaded</div>
+             <div>
+<p />
+ This is used to determine if the specified assembly has been loaded</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -740,7 +854,9 @@ mono_assembly_load_references (MonoImage *image, MonoImageOpenStatus *status)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td></td></tr><tr><td><i>status</i></td><td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method is now a no-op, it does nothing other than setting the <i>status</i> to <code>MONO_IMAGE_OK</code></div>
+             <div>
+<p />
+ This method is now a no-op, it does nothing other than setting the <i>status</i> to <code>MONO_IMAGE_OK</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -833,7 +949,14 @@ mono_assembly_setrootdir (const char *root_dir)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>root_dir</i></td><td> The pathname of the root directory where we will locate assemblies</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine sets the internal default root directory for looking up 	 assemblies. 	<p /> 	 This is used by Windows installations to compute dynamically the 	 place where the Mono assemblies are located. 	<p /></div>
+             <div>
+<p />
+ This routine sets the internal default root directory for looking up
+ assemblies.
+<p />
+ This is used by Windows installations to compute dynamically the
+ place where the Mono assemblies are located.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -904,7 +1027,11 @@ mono_assembly_name_new (const char *name)
              <div>	 a newly allocated structure or <code>NULL</code> if there was any failure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Allocate a new <code>MonoAssemblyName</code> and fill its values from the 	 passed <i>name</i>. 	<p /></div>
+             <div>
+<p />
+ Allocate a new <code>MonoAssemblyName</code> and fill its values from the
+ passed <i>name</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -997,7 +1124,10 @@ mono_assembly_name_free (MonoAssemblyName *aname)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>aname</i></td><td> assembly name to free</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Frees the provided assembly name object. 	 (it does not frees the object itself, only the name members).</div>
+             <div>
+<p />
+ Frees the provided assembly name object.
+ (it does not frees the object itself, only the name members).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1022,7 +1152,11 @@ mono_stringify_assembly_name (MonoAssemblyName *aname)
 
 	 the assembly name.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Convert <i>aname</i> into its string format. The returned string is dynamically 	 allocated and should be freed by the caller. 	<p /></div>
+             <div>
+<p />
+ Convert <i>aname</i> into its string format. The returned string is dynamically
+ allocated and should be freed by the caller.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1046,7 +1180,13 @@ mono_assembly_names_equal (MonoAssemblyName *l, MonoAssemblyName *r)
              <div>	 <code>TRUE</code> if both assembly names are equal.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Compares two <code>MonoAssemblyName</code> instances and returns whether they are equal. 	<p /> 	 This compares the names, the cultures, the release version and their 	 public tokens. 	<p /></div>
+             <div>
+<p />
+ Compares two <code>MonoAssemblyName</code> instances and returns whether they are equal.
+<p />
+ This compares the names, the cultures, the release version and their
+ public tokens.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 

@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -266,7 +276,9 @@ mono_reflection_get_custom_attrs_blob (MonoReflectionAssembly *assembly, MonoObj
              <div>	 a <code>Byte</code> array representing the blob of data.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Creates the blob of data that needs to be saved in the metadata and that represents 	 the custom attributed described by <i>ctor</i>, <i>ctorArgs</i> etc.</div>
+             <div>
+ Creates the blob of data that needs to be saved in the metadata and that represents
+ the custom attributed described by <i>ctor</i>, <i>ctorArgs</i> etc.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -381,7 +393,10 @@ mono_reflection_get_type (MonoImage* image, MonoTypeNameParse *info, gboolean ig
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> a metadata context</td></tr><tr><td><i>info</i></td><td> type description structure</td></tr><tr><td><i>ignorecase</i></td><td> flag for case-insensitive string compares</td></tr><tr><td><i>type_resolve</i></td><td> whenever type resolve was already tried</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Build a MonoType from the type description in <i>info</i>. 	<p /></div>
+             <div>
+<p />
+ Build a MonoType from the type description in <i>info</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -442,7 +457,12 @@ mono_reflection_type_from_name (char *name, MonoImage *image)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>name</i></td><td> type name.</td></tr><tr><td><i>image</i></td><td> a metadata context (can be <code>NULL</code>).</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Retrieves a <code>MonoType</code> from its <i>name</i>. If the name is not fully qualified, 	 it defaults to get the type from <i>image</i> or, if <i>image</i> is <code>NULL</code> or loading 	 from it fails, uses corlib. 	<p /></div>
+             <div>
+<p />
+ Retrieves a <code>MonoType</code> from its <i>name</i>. If the name is not fully qualified,
+ it defaults to get the type from <i>image</i> or, if <i>image</i> is <code>NULL</code> or loading
+ from it fails, uses corlib.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -469,7 +489,8 @@ mono_reflection_get_custom_attrs_info (MonoObject *obj_raw)
 	<p />
 	 FIXME this function leaks like a sieve for SRE objects.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -603,7 +624,8 @@ mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
              <div>	 <code>NULL</code> if no attributes are found or if a loading error occurs.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -645,7 +667,10 @@ mono_custom_attrs_from_param (MonoMethod *method, guint32 param)
              <div>	 the custom attribute object for the specified parameter, or <code>NULL</code> if there are none.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 The result must be released with mono_custom_attrs_free(). 	<p /></div>
+             <div>
+<p />
+ The result must be released with mono_custom_attrs_free().
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

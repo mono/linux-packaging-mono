@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -231,7 +241,8 @@ mono_check_corlib_version (void)
 
 	 allocated string with the error otherwise.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 Checks that the corlib that is loaded matches the version of this runtime.</div>
+             <div>
+ Checks that the corlib that is loaded matches the version of this runtime.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -252,7 +263,9 @@ mono_compile_method (MonoMethod *method)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> The method to compile.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 This JIT-compiles the method, and returns the pointer to the native code 	 produced.</div>
+             <div>
+ This JIT-compiles the method, and returns the pointer to the native code
+ produced.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -291,7 +304,29 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>assembly</i></td><td> if <code>NULL</code>, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly</td></tr><tr><td><i>dll</i></td><td> The name of the external library, as it would be found in the <code>DllImport</code> declaration.  If prefixed with <code>i:</code> the matching of the library name is done without case sensitivity</td></tr><tr><td><i>func</i></td><td> if not null, the mapping will only applied to the named function (the value of <code>EntryPoint</code>)</td></tr><tr><td><i>tdll</i></td><td> The name of the library to map the specified <i>dll</i> if it matches.</td></tr><tr><td><i>tfunc</i></td><td> The name of the function that replaces the invocation.  If <code>NULL</code>, it is replaced with a copy of <i>func</i>.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 LOCKING: Acquires the loader lock. 	<p /> 	 This function is used to programatically add <code>DllImport</code> remapping in either 	 a specific assembly, or as a global remapping.   This is done by remapping 	 references in a <code>DllImport</code> attribute from the <i>dll</i> library name into the <i>tdll</i> 	 name. If the <i>dll</i> name contains the prefix <code>i:</code>, the comparison of the  	 library name is done without case sensitivity. 	<p /> 	 If you pass <i>func</i>, this is the name of the <code>EntryPoint</code> in a <code>DllImport</code> if specified 	 or the name of the function as determined by <code>DllImport</code>. If you pass <i>func</i>, you 	 must also pass <i>tfunc</i> which is the name of the target function to invoke on a match. 	<p /> 	 Example: 	<p /> 	 <code>mono_dllmap_insert (<code>NULL</code>, &quot;i:libdemo.dll&quot;, <code>NULL</code>, relocated_demo_path, <code>NULL</code>);</code> 	<p /> 	 The above will remap <code>DllImport</code> statements for <code>libdemo.dll</code> and <code>LIBDEMO.DLL</code> to 	 the contents of <code>relocated_demo_path</code> for all assemblies in the Mono process. 	<p /> 	 NOTE: This can be called before the runtime is initialized, for example from 	 <code>mono_config_parse</code>.</div>
+             <div>
+<p />
+ LOCKING: Acquires the loader lock.
+<p />
+ This function is used to programatically add <code>DllImport</code> remapping in either
+ a specific assembly, or as a global remapping.   This is done by remapping
+ references in a <code>DllImport</code> attribute from the <i>dll</i> library name into the <i>tdll</i>
+ name. If the <i>dll</i> name contains the prefix <code>i:</code>, the comparison of the 
+ library name is done without case sensitivity.
+<p />
+ If you pass <i>func</i>, this is the name of the <code>EntryPoint</code> in a <code>DllImport</code> if specified
+ or the name of the function as determined by <code>DllImport</code>. If you pass <i>func</i>, you
+ must also pass <i>tfunc</i> which is the name of the target function to invoke on a match.
+<p />
+ Example:
+<p />
+ <code>mono_dllmap_insert (<code>NULL</code>, &quot;i:libdemo.dll&quot;, <code>NULL</code>, relocated_demo_path, <code>NULL</code>);</code>
+<p />
+ The above will remap <code>DllImport</code> statements for <code>libdemo.dll</code> and <code>LIBDEMO.DLL</code> to
+ the contents of <code>relocated_demo_path</code> for all assemblies in the Mono process.
+<p />
+ NOTE: This can be called before the runtime is initialized, for example from
+ <code>mono_config_parse</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -368,7 +403,8 @@ mono_get_corlib (void)
              <div>	 The <code>MonoImage</code> for mscorlib.dll
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Use this function to get the <code>MonoImage*</code> for the <code>mscorlib.dll</code> assembly</div>
+             <div>
+ Use this function to get the <code>MonoImage*</code> for the <code>mscorlib.dll</code> assembly</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -450,7 +486,13 @@ mono_get_root_domain (void)
              <div>	 the root appdomain, to obtain the current domain, use mono_domain_get ()
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 The root AppDomain is the initial domain created by the runtime when it is 	 initialized.  Programs execute on this AppDomain, but can create new ones 	 later.   Currently there is no unmanaged API to create new AppDomains, this 	 must be done from managed code. 	<p /></div>
+             <div>
+<p />
+ The root AppDomain is the initial domain created by the runtime when it is
+ initialized.  Programs execute on this AppDomain, but can create new ones
+ later.   Currently there is no unmanaged API to create new AppDomains, this
+ must be done from managed code.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -561,7 +603,8 @@ mono_runtime_class_init (MonoVTable *vtable)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>vtable</i></td><td> vtable that needs to be initialized</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 This routine calls the class constructor for <i>vtable</i>.</div>
+             <div>
+ This routine calls the class constructor for <i>vtable</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -582,7 +625,12 @@ mono_runtime_cleanup (MonoDomain *domain)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> unused.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Internal routine. 	<p /> 	 This must not be called while there are still running threads executing 	 managed code.</div>
+             <div>
+<p />
+ Internal routine.
+<p />
+ This must not be called while there are still running threads executing
+ managed code.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -624,7 +672,15 @@ mono_runtime_init (MonoDomain *domain, MonoThreadStartCB start_cb, MonoThreadAtt
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> domain returned by <code>mono_init</code></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Initialize the core AppDomain: this function will run also some 	 IL initialization code, so it needs the execution engine to be fully  	 operational. 	<p /> 	 <code>AppDomain.SetupInformation</code> is set up in <code>mono_runtime_exec_main</code>, where 	 we know the <code>entry_assembly</code>. 	<p /></div>
+             <div>
+<p />
+ Initialize the core AppDomain: this function will run also some
+ IL initialization code, so it needs the execution engine to be fully 
+ operational.
+<p />
+ <code>AppDomain.SetupInformation</code> is set up in <code>mono_runtime_exec_main</code>, where
+ we know the <code>entry_assembly</code>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -667,7 +723,9 @@ mono_runtime_object_init (MonoObject *this_obj)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>this_obj</i></td><td> the object to initialize</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 This function calls the zero-argument constructor (which must 	 exist) for the given object.</div>
+             <div>
+ This function calls the zero-argument constructor (which must
+ exist) for the given object.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -707,7 +765,10 @@ mono_runtime_run_main (MonoMethod *method, int argc, char* argv[],
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> the method to start the application with (usually <code>Main</code>)</td></tr><tr><td><i>argc</i></td><td> number of arguments from the command line</td></tr><tr><td><i>argv</i></td><td> array of strings from the command line</td></tr><tr><td><i>exc</i></td><td> excetption results</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Execute a standard <code>Main</code> method (<i>argc</i> / <i>argv</i> contains the 	 executable name). This method also sets the command line argument value 	 needed by <code>System.Environment</code>.</div>
+             <div>
+ Execute a standard <code>Main</code> method (<i>argc</i> / <i>argv</i> contains the
+ executable name). This method also sets the command line argument value
+ needed by <code>System.Environment</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

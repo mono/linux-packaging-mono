@@ -375,6 +375,7 @@ RUNTIME = MONO_PATH=$(CLASS) $(abs_top_builddir)/runtime/mono-wrapper --debug
 TOOLS_RUNTIME = MONO_PATH=$(TOOLS_CLASS) $(abs_top_builddir)/runtime/mono-wrapper --debug
 MCS = $(TOOLS_RUNTIME) $(CSC) -nologo -noconfig -lib:$(CLASS) -r:System.dll -r:System.Core.dll -r:System.Xml.dll -r:Microsoft.CSharp.dll
 ILASM = $(TOOLS_RUNTIME) $(TOOLS_CLASS)/ilasm.exe
+XUNIT = $(RUNTIME) $(abs_top_builddir)/external/xunit-binaries/xunit.console.exe
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/acceptance-tests/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
 SYS_REFS = \
@@ -5835,22 +5836,9 @@ check-profiler-stress:
 	cd profiler-stress && $(RUNTIME) runner.exe
 check-roslyn:
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
-	@if [ -z $$PREFIX ]; then echo "You need to set PREFIX to the prefix of the Mono installation that should be used for testing Roslyn." && exit 1; fi
-	sed -i -e 's/\\4.5-api"/\\4.5"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml; \
-	export MSBuildExtensionsPath=$$PREFIX/lib/mono/xbuild; \
-	MONO_DOTNET_PORTABLE_DIR=$$PREFIX/lib/mono/xbuild-frameworks/.NETPortable/; \
-	if [ ! -d "$$MONO_DOTNET_PORTABLE_DIR/v4.6" ]; then \
-		mkdir -p $$MONO_DOTNET_PORTABLE_DIR; \
-		curl -SL "http://download.mono-project.com/third-party/RoslynBuildDependencies.zip" > /tmp/RoslynBuildDependencies.zip; \
-		unzip -o /tmp/RoslynBuildDependencies.zip -d /tmp/RoslynBuildDependencies; \
-		cp -r /tmp/RoslynBuildDependencies/PortableReferenceAssemblies/* $$MONO_DOTNET_PORTABLE_DIR; \
-	fi; \
 	cd $(ROSLYN_PATH); \
-	sed -i -e 'N; s/bootstrapArg=".*\n.*"/bootstrapArg=""/g' cibuild.sh; \
-	sed -i -e 's#-xml Binaries/\$$BUILD_CONFIGURATION/xUnitResults/#-nunit $(abs_top_builddir)/acceptance-tests/TestResult-#g' cibuild.sh; \
-	./cibuild.sh --mono-path $$PREFIX/bin || EXIT_CODE=1; \
-	sed -i -e 's/\\4.5"/\\4.5-api"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml; \
-	exit $$EXIT_CODE
+	./mono-testing.sh "$(XUNIT)" || exit; \
+	echo "done"
 clean-local-coreclr:
 	-rm -f $(CORECLR_TESTSI_CS)
 	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
@@ -5883,7 +5871,7 @@ coreclr-runtest-coremanglib: coreclr-validate test-runner.exe $(CORECLR_COREMANG
 check-coreclr: coreclr-compile-tests coreclr-runtest-basic coreclr-runtest-coremanglib
 
 coreclr-gcstress: coreclr-validate GCStressTests.exe $(CORECLR_STRESSTESTSI_CS)
-	BVT_ROOT=$(realpath $(CORECLR_PATH)/tests/src/GC/Stress/Tests) $(RUNTIME) GCStressTests.exe $(CORECLR_PATH)/tests/src/GC/Stress/testmix_gc.config; if [ $$? -ne 100 ]; then exit 1; fi
+	BVT_ROOT=$(realpath $(CORECLR_PATH)/tests/src/GC/Stress/Tests) $(RUNTIME) GCStressTests.exe $(CORECLR_PATH)/tests/src/GC/Stress/$(if $(CI_PR),testmix_gc_pr.config,testmix_gc.config); if [ $$? -ne 100 ]; then exit 1; fi
 
 # Output a variable in $(2) to the file $(1), separated by newline characters
 # we need to do it in groups of 100 entries to make sure we don't exceed shell char limits

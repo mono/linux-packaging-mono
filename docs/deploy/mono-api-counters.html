@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -244,7 +254,10 @@ mono_counters_dump (int section_mask, FILE *outfile)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>section_mask</i></td><td> The sections to dump counters for</td></tr><tr><td><i>outfile</i></td><td> a FILE to dump the results to</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Displays the counts of all the enabled counters registered.  	 To filter by variance, you can OR one or more variance with the specific section you want. 	 Use <code>MONO_COUNTER_SECTION_MASK</code> to dump all categories of a specific variance.</div>
+             <div>
+ Displays the counts of all the enabled counters registered. 
+ To filter by variance, you can OR one or more variance with the specific section you want.
+ Use <code>MONO_COUNTER_SECTION_MASK</code> to dump all categories of a specific variance.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -265,6 +278,7 @@ mono_counters_enable (int section_mask)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>sectionmask</i></td><td> a mask listing the sections that will be displayed</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 This is used to track which counters will be displayed.</div>
+             <div>
+ This is used to track which counters will be displayed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->

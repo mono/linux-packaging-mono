@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -341,7 +351,10 @@ mono_metadata_decode_blob_size (const char *xptr, const char **rptr)
              <div>	 the size of the blob object
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This decodes a compressed size as described by 24.2.4 (<code>US</code> and <code>Blob</code> a blob or user string object) 	<p /></div>
+             <div>
+<p />
+ This decodes a compressed size as described by 24.2.4 (<code>US</code> and <code>Blob</code> a blob or user string object)
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -963,7 +976,10 @@ mono_metadata_decode_row_col (const MonoTableInfo *t, int idx, guint col)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>t</i></td><td> table to extract information from.</td></tr><tr><td><i>idx</i></td><td> index for row in table.</td></tr><tr><td><i>col</i></td><td> column in the row.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This function returns the value of column <i>col</i> from the <i>idx</i> 	 row in the table <i>t</i> .</div>
+             <div>
+<p />
+ This function returns the value of column <i>col</i> from the <i>idx</i>
+ row in the table <i>t</i> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -984,7 +1000,10 @@ mono_metadata_decode_row (const MonoTableInfo *t, int idx, guint32 *res, int res
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>t</i></td><td> table to extract information from.</td></tr><tr><td><i>idx</i></td><td> index in table.</td></tr><tr><td><i>res</i></td><td> array of <i>res_size</i> cols to store the results in</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This decompresses the metadata element <i>idx</i> in table <i>t</i> 	 into the <code>guint32</code> <i>res</i> array that has <i>res_size</i> elements</div>
+             <div>
+<p />
+ This decompresses the metadata element <i>idx</i> in table <i>t</i>
+ into the <code>guint32</code> <i>res</i> array that has <i>res_size</i> elements</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1005,7 +1024,14 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>meta</i></td><td> metadata context</td></tr><tr><td><i>tableindex</i></td><td> metadata table number</td></tr><tr><td><i>result_bitfield</i></td><td> pointer to <code>guint32</code> where to store additional info</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 <code>mono_metadata_compute_size</code> computes the length in bytes of a single 	 row in a metadata table. The size of each column is encoded in the 	 <i>result_bitfield</i> return value along with the number of columns in the table. 	 the resulting bitfield should be handed to the <code>mono_metadata_table_size</code> 	 and <code>mono_metadata_table_count</code> macros. 	 This is a Mono runtime internal only function.</div>
+             <div>
+<p />
+ <code>mono_metadata_compute_size</code> computes the length in bytes of a single
+ row in a metadata table. The size of each column is encoded in the
+ <i>result_bitfield</i> return value along with the number of columns in the table.
+ the resulting bitfield should be handed to the <code>mono_metadata_table_size</code>
+ and <code>mono_metadata_table_count</code> macros.
+ This is a Mono runtime internal only function.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1026,7 +1052,9 @@ mono_metadata_custom_attrs_from_index (MonoImage *meta, guint32 index)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>meta</i></td><td> metadata context</td></tr><tr><td><i>index</i></td><td> token representing the parent</td></tr><tr><td><i>returns</i></td><td> the 1-based index into the <code>CustomAttribute</code> table of the first </td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 attribute which belongs to the metadata object described by <i>index</i>. 	 Returns 0 if no such attribute is found.</div>
+             <div>
+ attribute which belongs to the metadata object described by <i>index</i>.
+ Returns 0 if no such attribute is found.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1050,7 +1078,11 @@ mono_metadata_decode_signed_value (const char *ptr, const char **rptr)
              <div>	 the decoded value
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine decompresses 32-bit signed values 	 (not specified in the spec) 	<p /></div>
+             <div>
+<p />
+ This routine decompresses 32-bit signed values
+ (not specified in the spec)
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1074,7 +1106,11 @@ mono_metadata_decode_value (const char *_ptr, const char **rptr)
              <div>	 the decoded value
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine decompresses 32-bit values as specified in the &quot;Blob and 	 Signature&quot; section (23.2) 	<p /></div>
+             <div>
+<p />
+ This routine decompresses 32-bit values as specified in the &quot;Blob and
+ Signature&quot; section (23.2)
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1165,7 +1201,12 @@ mono_metadata_decode_table_row (MonoImage *image, int table, int idx, guint32 *r
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Same as <code>mono_metadata_decode_row</code>, but takes an <i>image</i> + <i>table</i> ID pair, and takes 	 uncompressed metadata into account, so it should be used to access the 	 <code>Method</code>, <code>Field</code>, <code>Param</code> and <code>Event</code> tables when the access is made from metadata, i.e. 	 <i>idx</i> is retrieved from a metadata table, like <code>MONO_TYPEDEF_FIELD_LIST</code>.</div>
+             <div>
+<p />
+ Same as <code>mono_metadata_decode_row</code>, but takes an <i>image</i> + <i>table</i> ID pair, and takes
+ uncompressed metadata into account, so it should be used to access the
+ <code>Method</code>, <code>Field</code>, <code>Param</code> and <code>Event</code> tables when the access is made from metadata, i.e.
+ <i>idx</i> is retrieved from a metadata table, like <code>MONO_TYPEDEF_FIELD_LIST</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1184,7 +1225,11 @@ mono_metadata_decode_table_row (MonoImage *image, int table, int idx, guint32 *r
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Same as <code>mono_metadata_decode_row_col</code>, but takes an <i>image</i> + <i>table</i> ID pair, and takes 	 uncompressed metadata into account, so it should be used to access the 	 <code>Method</code>, <code>Field</code>, <code>Param</code> and <code>Event</code> tables.</div>
+             <div>
+<p />
+ Same as <code>mono_metadata_decode_row_col</code>, but takes an <i>image</i> + <i>table</i> ID pair, and takes
+ uncompressed metadata into account, so it should be used to access the
+ <code>Method</code>, <code>Field</code>, <code>Param</code> and <code>Event</code> tables.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1206,7 +1251,12 @@ mono_metadata_field_info (MonoImage *meta, guint32 index, guint32 *offset, guint
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>meta</i></td><td> the Image the field is defined in</td></tr><tr><td><i>index</i></td><td> the index in the field table representing the field</td></tr><tr><td><i>offset</i></td><td> a pointer to an integer where to store the offset that  may have been specified for the field in a FieldLayout table</td></tr><tr><td><i>rva</i></td><td> a pointer to the RVA of the field data in the image that may have been defined in a <code>FieldRVA</code> table</td></tr><tr><td><i>marshal_spec</i></td><td> a pointer to the marshal spec that may have been defined for the field in a <code>FieldMarshal</code> table.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Gather info for field <i>index</i> that may have been defined in the <code>FieldLayout</code>,  	 <code>FieldRVA</code> and <code>FieldMarshal</code> tables. 	 Either of <i>offset</i>, <i>rva</i> and <i>marshal_spec</i> can be <code>NULL</code> if you're not interested  	 in the data.</div>
+             <div>
+<p />
+ Gather info for field <i>index</i> that may have been defined in the <code>FieldLayout</code>, 
+ <code>FieldRVA</code> and <code>FieldMarshal</code> tables.
+ Either of <i>offset</i>, <i>rva</i> and <i>marshal_spec</i> can be <code>NULL</code> if you're not interested 
+ in the data.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1227,7 +1277,9 @@ mono_metadata_free_array (MonoArrayType *array)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>array</i></td><td> array description</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Frees the array description returned from <code>mono_metadata_parse_array</code>.</div>
+             <div>
+<p />
+ Frees the array description returned from <code>mono_metadata_parse_array</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1266,7 +1318,9 @@ mono_metadata_free_mh (MonoMethodHeader *mh)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>mh</i></td><td> a method header</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Free the memory allocated for the method header.</div>
+             <div>
+<p />
+ Free the memory allocated for the method header.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1287,7 +1341,9 @@ mono_metadata_free_type (MonoType *type)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> type to free</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Free the memory allocated for type <i>type</i> which is allocated on the heap.</div>
+             <div>
+<p />
+ Free the memory allocated for type <i>type</i> which is allocated on the heap.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1311,7 +1367,10 @@ mono_metadata_get_constant_index (MonoImage *meta, guint32 token, guint32 hint)
              <div>	 the index into the <code>Constants</code> table or 0 if not found.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 <i>token</i> must be a <code>FieldDef</code>, <code>ParamDef</code> or <code>PropertyDef</code> token. 	<p /></div>
+             <div>
+<p />
+ <i>token</i> must be a <code>FieldDef</code>, <code>ParamDef</code> or <code>PropertyDef</code> token.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1371,7 +1430,14 @@ mono_metadata_interfaces_from_typedef (MonoImage *meta, guint32 index, guint *co
              <div>	 the interface array on success, <code>NULL</code> on failure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 The array of interfaces that the <i>index</i> typedef token implements is returned in 	 <i>interfaces</i>. The number of elements in the array is returned in <i>count</i>. The returned 	 array is allocated with <code>g_malloc</code> and the caller must free it. 	<p /> 	 LOCKING: Acquires the loader lock . 	<p /></div>
+             <div>
+<p />
+ The array of interfaces that the <i>index</i> typedef token implements is returned in
+ <i>interfaces</i>. The number of elements in the array is returned in <i>count</i>. The returned
+ array is allocated with <code>g_malloc</code> and the caller must free it.
+<p />
+ LOCKING: Acquires the loader lock .
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1396,7 +1462,8 @@ mono_metadata_locate (MonoImage *meta, int table, int idx)
 
 	 whose code is <i>table</i>.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1421,7 +1488,8 @@ mono_metadata_locate_token (MonoImage *meta, guint32 token)
 
 	 token <i>token</i> .</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1589,7 +1657,12 @@ mono_metadata_token_from_dor (guint32 dor_index)
              <div>	 an expanded token
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 <i>dor_token</i> is a <code>TypeDefOrRef</code> coded index: it contains either 	 a <code>TypeDef</code>, <code>TypeRef</code> or <code>TypeSpec</code> in the lower bits, and the upper 	 bits contain an index into the table. 	<p /></div>
+             <div>
+<p />
+ <i>dor_token</i> is a <code>TypeDefOrRef</code> coded index: it contains either
+ a <code>TypeDef</code>, <code>TypeRef</code> or <code>TypeSpec</code> in the lower bits, and the upper
+ bits contain an index into the table.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1609,7 +1682,12 @@ mono_metadata_translate_token_index (MonoImage *image, int table, guint32 idx)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 Translates the given 1-based index into the <code>Method</code>, <code>Field</code>, <code>Event</code>, or <code>Param</code> tables 	 using the <code>*Ptr</code> tables in uncompressed metadata, if they are available. 	<p /> 	 FIXME: The caller is not forced to call this function, which is error-prone, since  	 forgetting to call it would only show up as a bug on uncompressed metadata.</div>
+             <div>
+ Translates the given 1-based index into the <code>Method</code>, <code>Field</code>, <code>Event</code>, or <code>Param</code> tables
+ using the <code>*Ptr</code> tables in uncompressed metadata, if they are available.
+<p />
+ FIXME: The caller is not forced to call this function, which is error-prone, since 
+ forgetting to call it would only show up as a bug on uncompressed metadata.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1634,7 +1712,8 @@ mono_metadata_typedef_from_field (MonoImage *meta, guint32 index)
 
 	 declared the field described by <i>index</i>, or 0 if not found.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1696,7 +1775,9 @@ mono_metadata_type_hash (MonoType *t1)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>t1</i></td><td> a type</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Computes a hash value for <i>t1</i> to be used in <code>GHashTable</code>. 	 The returned hash is guaranteed to be the same across executions.</div>
+             <div>
+ Computes a hash value for <i>t1</i> to be used in <code>GHashTable</code>.
+ The returned hash is guaranteed to be the same across executions.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1741,7 +1822,11 @@ mono_metadata_free_method_signature (MonoMethodSignature *sig)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> signature to destroy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Free the memory allocated in the signature <i>sig</i>. 	 This method needs to be robust and work also on partially-built 	 signatures, so it does extra checks.</div>
+             <div>
+<p />
+ Free the memory allocated in the signature <i>sig</i>.
+ This method needs to be robust and work also on partially-built
+ signatures, so it does extra checks.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1786,7 +1871,10 @@ mono_metadata_parse_custom_mod (MonoImage *m, MonoCustomMod *dest, const char *p
              <div>	 <code>TRUE</code> if a custom modifier was found, <code>FALSE</code> if not.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Checks if <i>ptr</i> points to a type custom modifier compressed representation. 	<p /></div>
+             <div>
+<p />
+ Checks if <i>ptr</i> points to a type custom modifier compressed representation.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1810,7 +1898,10 @@ mono_metadata_parse_field_type (MonoImage *m, short field_flags, const char *ptr
              <div>	 The <code>MonoType</code> that was extracted from <i>ptr</i> .
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Parses the field signature, and returns the type information for it.  	<p /></div>
+             <div>
+<p />
+ Parses the field signature, and returns the type information for it. 
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1852,7 +1943,13 @@ mono_metadata_parse_method_signature (MonoImage *m, int def, const char *ptr, co
              <div>	 a <code>MonoMethodSignature</code> describing the signature.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Decode a method signature stored at <i>ptr</i>. 	 This is a Mono runtime internal function. 	<p /> 	 LOCKING: Assumes the loader lock is held. 	<p /></div>
+             <div>
+<p />
+ Decode a method signature stored at <i>ptr</i>.
+ This is a Mono runtime internal function.
+<p />
+ LOCKING: Assumes the loader lock is held.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1876,7 +1973,11 @@ mono_metadata_parse_mh (MonoImage *m, const char *ptr)
              <div>	 a transient <code>MonoMethodHeader</code> allocated from the heap.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Decode the method header at <i>ptr</i>, including pointer to the IL code, 	 info about local variables and optional exception tables. 	<p /></div>
+             <div>
+<p />
+ Decode the method header at <i>ptr</i>, including pointer to the IL code,
+ info about local variables and optional exception tables.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1900,7 +2001,10 @@ mono_metadata_parse_param (MonoImage *m, const char *ptr, const char **rptr)
              <div>	 The <code>MonoType</code> that was extracted from <i>ptr</i> .
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Parses the param signature, and returns the type information for it.  	<p /></div>
+             <div>
+<p />
+ Parses the param signature, and returns the type information for it. 
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1924,7 +2028,10 @@ mono_metadata_parse_signature (MonoImage *image, guint32 token)
              <div>	 a <code>MonoMethodSignature</code> describing the signature.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Decode a method signature stored in the <code>StandAloneSig</code> table 	<p /></div>
+             <div>
+<p />
+ Decode a method signature stored in the <code>StandAloneSig</code> table
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1972,7 +2079,22 @@ mono_metadata_parse_type_internal (MonoImage *m, MonoGenericContainer *container
              <div>	 a <code>MonoType</code> structure representing the decoded type.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Decode a compressed type description found at <i>ptr</i> in <i>m</i> . 	 <i>mode</i> can be one of <code>MONO_PARSE_MOD_TYPE</code>, <code>MONO_PARSE_PARAM</code>, <code>MONO_PARSE_RET</code>, 	 <code>MONO_PARSE_FIELD</code>, <code>MONO_PARSE_LOCAL</code>, <code>MONO_PARSE_TYPE</code>. 	 This function can be used to decode type descriptions in method signatures, 	 field signatures, locals signatures etc. 	<p /> 	 To parse a generic type, <code>generic_container</code> points to the current class'es 	 (the <code>generic_container</code> field in the <code>MonoClass</code>) or the current generic method's 	 (stored in <code>image-&gt;property_hash</code>) generic container. 	 When we encounter a <code>MONO_TYPE_VAR</code> or <code>MONO_TYPE_MVAR</code>, it's looked up in 	 this <code>MonoGenericContainer</code>. 	<p /> 	 LOCKING: Acquires the loader lock. 	<p /></div>
+             <div>
+<p />
+ Decode a compressed type description found at <i>ptr</i> in <i>m</i> .
+ <i>mode</i> can be one of <code>MONO_PARSE_MOD_TYPE</code>, <code>MONO_PARSE_PARAM</code>, <code>MONO_PARSE_RET</code>,
+ <code>MONO_PARSE_FIELD</code>, <code>MONO_PARSE_LOCAL</code>, <code>MONO_PARSE_TYPE</code>.
+ This function can be used to decode type descriptions in method signatures,
+ field signatures, locals signatures etc.
+<p />
+ To parse a generic type, <code>generic_container</code> points to the current class'es
+ (the <code>generic_container</code> field in the <code>MonoClass</code>) or the current generic method's
+ (stored in <code>image-&gt;property_hash</code>) generic container.
+ When we encounter a <code>MONO_TYPE_VAR</code> or <code>MONO_TYPE_MVAR</code>, it's looked up in
+ this <code>MonoGenericContainer</code>.
+<p />
+ LOCKING: Acquires the loader lock.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -2039,7 +2161,8 @@ mono_ldstr (MonoDomain *domain, MonoImage *image, guint32 idx)
              <div>	 a loaded string from the <i>image</i> / <i>idx</i> combination.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Implementation for the <code>ldstr</code> opcode.</div>
+             <div>
+ Implementation for the <code>ldstr</code> opcode.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2063,7 +2186,10 @@ mono_exception_from_token (MonoImage *image, guint32 token)
              <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates an exception of the type given by <i>token</i>. 	<p /></div>
+             <div>
+<p />
+ Creates an exception of the type given by <i>token</i>.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 

@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -333,7 +343,17 @@ mono_method_desc_new (const char *name, gboolean include_namespace)
              <div>	 a parsed representation of the method description.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates a method description for <i>name</i>, which conforms to the following 	 specification: 	<p /> 	 <code>[namespace.]classname:methodname[(args...)]</code> 	<p /> 	 in all the loaded assemblies. 	<p /> 	 Both classname and methodname can contain <code>*</code> which matches anything. 	<p /></div>
+             <div>
+<p />
+ Creates a method description for <i>name</i>, which conforms to the following
+ specification:
+<p />
+ <code>[namespace.]classname:methodname[(args...)]</code>
+<p />
+ in all the loaded assemblies.
+<p />
+ Both classname and methodname can contain <code>*</code> which matches anything.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -354,7 +374,8 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>desc</i></td><td> method description to be released</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Releases the <code>MonoMethodDesc</code> object <i>desc</i>.</div>
+             <div>
+ Releases the <code>MonoMethodDesc</code> object <i>desc</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -414,7 +435,11 @@ mono_method_desc_match (MonoMethodDesc *desc, MonoMethod *method)
              <div>	 <code>TRUE</code> if the method matches the description, <code>FALSE</code> otherwise.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Determines whether the specified <i>method</i> matches the provided <i>desc</i> description. 	<p /> 	 namespace and class are supposed to match already if this function is used.</div>
+             <div>
+<p />
+ Determines whether the specified <i>method</i> matches the provided <i>desc</i> description.
+<p />
+ namespace and class are supposed to match already if this function is used.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -640,7 +665,10 @@ mono_method_get_signature (MonoMethod *method, MonoImage *image, guint32 token)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 <i>token</i> is the method_ref/def/spec token used in a call IL instruction. 	 \deprecated use the <code>_checked</code> variant 	 Notes: runtime code MUST not use this function</div>
+             <div>
+ <i>token</i> is the method_ref/def/spec token used in a call IL instruction.
+ \deprecated use the <code>_checked</code> variant
+ Notes: runtime code MUST not use this function</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -660,7 +688,8 @@ mono_method_get_index (MonoMethod *method)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 Find the method index in the metadata <code>MethodDef</code> table.</div>
+             <div>
+ Find the method index in the metadata <code>MethodDef</code> table.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -680,7 +709,10 @@ mono_method_get_signature_full (MonoMethod *method, MonoImage *image, guint32 to
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 <i>token</i> is the method ref/def/spec token used in a <code>call</code> IL instruction. 	 \deprecated use the <code>_checked</code> variant 	 Notes: runtime code MUST not use this function</div>
+             <div>
+ <i>token</i> is the method ref/def/spec token used in a <code>call</code> IL instruction.
+ \deprecated use the <code>_checked</code> variant
+ Notes: runtime code MUST not use this function</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -719,7 +751,60 @@ mono_method_get_unmanaged_thunk (MonoMethod *method)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to generate a thunk for.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Returns an <code>unmanaged-&gt;managed</code> thunk that can be used to call 	 a managed method directly from C. 	<p /> 	 The thunk's C signature closely matches the managed signature: 	<p /> 	 C#: <code>public bool Equals (object obj);</code> 	<p /> 	 C:  <code>typedef MonoBoolean (*Equals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 The 1st (<code>this</code>) parameter must not be used with static methods: 	<p /> 	 C#: <code>public static bool ReferenceEquals (object a, object b);</code> 	<p /> 	 C:  <code>typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 The last argument must be a non-null <code>MonoException*</code> pointer. 	 It has &quot;out&quot; semantics. After invoking the thunk, <code>*ex</code> will be <code>NULL</code> if no 	 exception has been thrown in managed code. Otherwise it will point 	 to the <code>MonoException*</code> caught by the thunk. In this case, the result of 	 the thunk is undefined: 	<p /> 	 <pre> 	 MonoMethod *method = ... // MonoMethod* of System.Object.Equals 	<p /> 	 MonoException *ex = <code>NULL</code>; 	<p /> 	 Equals func = mono_method_get_unmanaged_thunk (method); 	<p /> 	 MonoBoolean res = func (thisObj, objToCompare, &amp;ex); 	<p /> 	 if (ex) { 	<p /> 	    // handle exception 	<p /> 	 } 	 </pre> 	<p /> 	 The calling convention of the thunk matches the platform's default 	 convention. This means that under Windows, C declarations must 	 contain the <code>__stdcall</code> attribute: 	<p /> 	 C: <code>typedef MonoBoolean (__stdcall *Equals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 LIMITATIONS 	<p /> 	 Value type arguments and return values are treated as they were objects: 	<p /> 	 C#: <code>public static Rectangle Intersect (Rectangle a, Rectangle b);</code> 	 C:  <code>typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 Arguments must be properly boxed upon trunk's invocation, while return 	 values must be unboxed.</div>
+             <div>
+<p />
+ Returns an <code>unmanaged-&gt;managed</code> thunk that can be used to call
+ a managed method directly from C.
+<p />
+ The thunk's C signature closely matches the managed signature:
+<p />
+ C#: <code>public bool Equals (object obj);</code>
+<p />
+ C:  <code>typedef MonoBoolean (*Equals)(MonoObject*, MonoObject*, MonoException**);</code>
+<p />
+ The 1st (<code>this</code>) parameter must not be used with static methods:
+<p />
+ C#: <code>public static bool ReferenceEquals (object a, object b);</code>
+<p />
+ C:  <code>typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*, MonoException**);</code>
+<p />
+ The last argument must be a non-null <code>MonoException*</code> pointer.
+ It has &quot;out&quot; semantics. After invoking the thunk, <code>*ex</code> will be <code>NULL</code> if no
+ exception has been thrown in managed code. Otherwise it will point
+ to the <code>MonoException*</code> caught by the thunk. In this case, the result of
+ the thunk is undefined:
+<p />
+ <pre>
+ MonoMethod *method = ... // MonoMethod* of System.Object.Equals
+<p />
+ MonoException *ex = <code>NULL</code>;
+<p />
+ Equals func = mono_method_get_unmanaged_thunk (method);
+<p />
+ MonoBoolean res = func (thisObj, objToCompare, &amp;ex);
+<p />
+ if (ex) {
+<p />
+    // handle exception
+<p />
+ }
+ </pre>
+<p />
+ The calling convention of the thunk matches the platform's default
+ convention. This means that under Windows, C declarations must
+ contain the <code>__stdcall</code> attribute:
+<p />
+ C: <code>typedef MonoBoolean (__stdcall *Equals)(MonoObject*, MonoObject*, MonoException**);</code>
+<p />
+ LIMITATIONS
+<p />
+ Value type arguments and return values are treated as they were objects:
+<p />
+ C#: <code>public static Rectangle Intersect (Rectangle a, Rectangle b);</code>
+ C:  <code>typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);</code>
+<p />
+ Arguments must be properly boxed upon trunk's invocation, while return
+ values must be unboxed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -757,7 +842,8 @@ mono_method_verify (MonoMethod *method, int level)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 Verify types for opcodes.</div>
+             <div>
+ Verify types for opcodes.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -782,7 +868,32 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to invoke</td></tr><tr><td><i>obj</i></td><td> object instance</td></tr><tr><td><i>params</i></td><td> arguments to the method</td></tr><tr><td><i>exc</i></td><td> exception information.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>. 	 <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static 	 methods, a <code>MonoObject*</code> for object instances and a pointer to 	 the value type for value types. 	<p /> 	 The params array contains the arguments to the method with the 	 same convention: <code>MonoObject*</code> pointers for object instances and 	 pointers to the value type otherwise.  	<p /> 	 From unmanaged code you'll usually use the 	 <code>mono_runtime_invoke</code> variant. 	<p /> 	 Note that this function doesn't handle virtual methods for 	 you, it will exec the exact method you pass: we still need to 	 expose a function to lookup the derived class implementation 	 of a virtual method (there are examples of this in the code, 	 though). 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function. 	<p /> 	 If the method returns a value type, it is boxed in an object 	 reference.</div>
+             <div>
+ Invokes the method represented by <i>method</i> on the object <i>obj</i>.
+ <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static
+ methods, a <code>MonoObject*</code> for object instances and a pointer to
+ the value type for value types.
+<p />
+ The params array contains the arguments to the method with the
+ same convention: <code>MonoObject*</code> pointers for object instances and
+ pointers to the value type otherwise. 
+<p />
+ From unmanaged code you'll usually use the
+ <code>mono_runtime_invoke</code> variant.
+<p />
+ Note that this function doesn't handle virtual methods for
+ you, it will exec the exact method you pass: we still need to
+ expose a function to lookup the derived class implementation
+ of a virtual method (there are examples of this in the code,
+ though).
+<p />
+ You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to
+ catch exceptions, otherwise, <code>*exc</code> will be set to the exception
+ thrown, if any.  if an exception is thrown, you can't use the
+ <code>MonoObject*</code> result from the function.
+<p />
+ If the method returns a value type, it is boxed in an object
+ reference.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -826,7 +937,36 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to invoke</td></tr><tr><td><i>obj</i></td><td> object instance</td></tr><tr><td><i>params</i></td><td> arguments to the method</td></tr><tr><td><i>exc</i></td><td> exception information.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>. 	<p /> 	 <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static 	 methods, a <code>MonoObject*</code> for object instances and a pointer to 	 the value type for value types. 	<p /> 	 The <i>params</i> array contains the arguments to the method with the 	 same convention: <code>MonoObject*</code> pointers for object instances and 	 pointers to the value type otherwise. The <code>_invoke_array</code> 	 variant takes a C# <code>object[]</code> as the params argument (<code>MonoArray*)</code>: 	 in this case the value types are boxed inside the 	 respective reference representation. 	<p /> 	 From unmanaged code you'll usually use the 	 mono_runtime_invoke_checked() variant. 	<p /> 	 Note that this function doesn't handle virtual methods for 	 you, it will exec the exact method you pass: we still need to 	 expose a function to lookup the derived class implementation 	 of a virtual method (there are examples of this in the code, 	 though). 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function. 	<p /> 	 If the method returns a value type, it is boxed in an object 	 reference.</div>
+             <div>
+ Invokes the method represented by <i>method</i> on the object <i>obj</i>.
+<p />
+ <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static
+ methods, a <code>MonoObject*</code> for object instances and a pointer to
+ the value type for value types.
+<p />
+ The <i>params</i> array contains the arguments to the method with the
+ same convention: <code>MonoObject*</code> pointers for object instances and
+ pointers to the value type otherwise. The <code>_invoke_array</code>
+ variant takes a C# <code>object[]</code> as the params argument (<code>MonoArray*)</code>:
+ in this case the value types are boxed inside the
+ respective reference representation.
+<p />
+ From unmanaged code you'll usually use the
+ mono_runtime_invoke_checked() variant.
+<p />
+ Note that this function doesn't handle virtual methods for
+ you, it will exec the exact method you pass: we still need to
+ expose a function to lookup the derived class implementation
+ of a virtual method (there are examples of this in the code,
+ though).
+<p />
+ You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to
+ catch exceptions, otherwise, <code>*exc</code> will be set to the exception
+ thrown, if any.  if an exception is thrown, you can't use the
+ <code>MonoObject*</code> result from the function.
+<p />
+ If the method returns a value type, it is boxed in an object
+ reference.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -847,7 +987,14 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>delegate</i></td><td> pointer to a delegate object.</td></tr><tr><td><i>params</i></td><td> parameters for the delegate.</td></tr><tr><td><i>exc</i></td><td> Pointer to the exception result.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Invokes the delegate method <i>delegate</i> with the parameters provided. 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function.</div>
+             <div>
+<p />
+ Invokes the delegate method <i>delegate</i> with the parameters provided.
+<p />
+ You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to
+ catch exceptions, otherwise, <code>*exc</code> will be set to the exception
+ thrown, if any.  if an exception is thrown, you can't use the
+ <code>MonoObject*</code> result from the function.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1005,7 +1152,11 @@ mono_signature_get_params (MonoMethodSignature *sig, gpointer *iter)
 
 	 <code>NULL</code> when finished.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 Iterates over the parameters for the method signature <i>sig</i>. 	 A <code>void*</code> pointer must be initialized to <code>NULL</code> to start the iteration 	 and its address is passed to this function repeteadly until it returns 	 <code>NULL</code>.</div>
+             <div>
+ Iterates over the parameters for the method signature <i>sig</i>.
+ A <code>void*</code> pointer must be initialized to <code>NULL</code> to start the iteration
+ and its address is passed to this function repeteadly until it returns
+ <code>NULL</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1216,7 +1367,13 @@ mono_method_header_get_clauses (MonoMethodHeader *header, MonoMethod *method, gp
 
 	 clauses.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Get the info about the exception clauses in the method. Set <code>*iter</code> to <code>NULL</code> to 	 initiate the iteration, then call the method repeatedly until it returns <code>FALSE</code>. 	 At each iteration, the structure pointed to by clause if filled with the 	 exception clause information. 	<p /></div>
+             <div>
+<p />
+ Get the info about the exception clauses in the method. Set <code>*iter</code> to <code>NULL</code> to
+ initiate the iteration, then call the method repeatedly until it returns <code>FALSE</code>.
+ At each iteration, the structure pointed to by clause if filled with the
+ exception clause information.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1240,7 +1397,12 @@ mono_method_header_get_code (MonoMethodHeader *header, guint32* code_size, guint
              <div>	 pointer to the IL code represented by the method header.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Method header accessor to retreive info about the IL code properties: 	 a pointer to the IL code itself, the size of the code and the max number 	 of stack slots used by the code. 	<p /></div>
+             <div>
+<p />
+ Method header accessor to retreive info about the IL code properties:
+ a pointer to the IL code itself, the size of the code and the max number
+ of stack slots used by the code.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1264,6 +1426,11 @@ mono_method_header_get_locals (MonoMethodHeader *header, guint32* num_locals, gb
              <div>	 pointer to an array of types of the local variables
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Method header accessor to retreive info about the local variables: 	 an array of local types, the number of locals and whether the locals 	 are supposed to be initialized to 0 on method entry 	<p /></div>
+             <div>
+<p />
+ Method header accessor to retreive info about the local variables:
+ an array of local types, the number of locals and whether the locals
+ are supposed to be initialized to 0 on method entry
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
