@@ -88,9 +88,7 @@ target_triplet = @target@
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	$(am__EXEEXT_1) \
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	$(am__EXEEXT_2) \
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	monow$(EXEEXT)
-@DISABLE_EXECUTABLES_FALSE@noinst_PROGRAMS = genmdesc$(EXEEXT) \
-@DISABLE_EXECUTABLES_FALSE@	mono$(EXEEXT)
-@DISABLE_EXECUTABLES_TRUE@noinst_PROGRAMS = genmdesc$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@noinst_PROGRAMS = mono$(EXEEXT)
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
@@ -171,26 +169,27 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
 	type-checking.c lldb.h lldb.c memory-access.c mini-profiler.c \
-	mini-llvm.c mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
-	llvm-runtime.cpp interp/hacks.h interp/interp.h \
-	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.c \
-	interp/interp-stubs.c mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
-	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
-	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-wasm.c mini-wasm.h exceptions-wasm.c \
-	tramp-wasm.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-darwin.c mini-posix.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c
+	aot-runtime.h mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
+	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp interp/hacks.h \
+	interp/interp.h interp/interp-internals.h interp/interp.c \
+	interp/mintops.h interp/mintops.def interp/mintops.c \
+	interp/transform.c interp/interp-stubs.c mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
+	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
+	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
+	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
+	mini-wasm.h exceptions-wasm.c tramp-wasm.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -324,26 +323,27 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
 	type-checking.c lldb.h lldb.c memory-access.c mini-profiler.c \
-	mini-llvm.c mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
-	llvm-runtime.cpp interp/hacks.h interp/interp.h \
-	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.c \
-	interp/interp-stubs.c mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
-	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
-	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-wasm.c mini-wasm.h exceptions-wasm.c \
-	tramp-wasm.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-darwin.c mini-posix.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c
+	aot-runtime.h mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
+	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp interp/hacks.h \
+	interp/interp.h interp/interp-internals.h interp/interp.c \
+	interp/mintops.h interp/mintops.def interp/mintops.c \
+	interp/transform.c interp/interp-stubs.c mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
+	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
+	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
+	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
+	mini-wasm.h exceptions-wasm.c tramp-wasm.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c
 am__objects_20 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -484,15 +484,6 @@ libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @SUPPORT_BOEHM_TRUE@am__EXEEXT_1 = mono-boehm$(EXEEXT)
 @SUPPORT_SGEN_TRUE@am__EXEEXT_2 = mono-sgen$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_genmdesc_OBJECTS = genmdesc-genmdesc.$(OBJEXT) \
-	genmdesc-helpers.$(OBJEXT) \
-	../metadata/genmdesc-opcodes.$(OBJEXT)
-genmdesc_OBJECTS = $(am_genmdesc_OBJECTS)
-genmdesc_DEPENDENCIES = $(monodir)/mono/utils/libmonoutils.la \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
-genmdesc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(genmdesc_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_OBJECTS = mono-main-sgen.$(OBJEXT)
 mono_OBJECTS = $(am_mono_OBJECTS)
 mono_LDADD = $(LDADD)
@@ -601,15 +592,14 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libmini_static_la_SOURCES) $(libmini_la_SOURCES) \
 	$(libmono_llvm_la_SOURCES) $(libmonoboehm_2_0_la_SOURCES) \
-	$(libmonosgen_2_0_la_SOURCES) $(genmdesc_SOURCES) \
-	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
-	$(monow_SOURCES)
+	$(libmonosgen_2_0_la_SOURCES) $(mono_SOURCES) \
+	$(mono_boehm_SOURCES) $(mono_sgen_SOURCES) $(monow_SOURCES)
 DIST_SOURCES = $(am__libmini_static_la_SOURCES_DIST) \
 	$(am__libmini_la_SOURCES_DIST) \
 	$(am__libmono_llvm_la_SOURCES_DIST) \
 	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
-	$(genmdesc_SOURCES) $(mono_SOURCES) $(mono_boehm_SOURCES) \
-	$(mono_sgen_SOURCES) $(am__monow_SOURCES_DIST)
+	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
+	$(am__monow_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -931,9 +921,6 @@ AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 # The mingw math.h has "extern inline" functions that dont appear in libs, so
 # optimisation is required to actually inline them
 @HOST_WIN32_TRUE@PLATFORM_CFLAGS = -O
-
-# hack for automake to have the same source file in a library and a bin
-genmdesc_CFLAGS = $(AM_CFLAGS)
 monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
@@ -1020,20 +1007,6 @@ mono_sgen_LDFLAGS = $(static_flags) -export-dynamic $(monobinldflags) $(monobin_
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_LDFLAGS = $(mono_boehm_LDFLAGS) -mwindows
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_SOURCES = $(mono_sgen_SOURCES)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_SOURCES = $(mono_boehm_SOURCES)
-genmdesc_SOURCES = \
-	mini.h		\
-	seq-points.h	\
-	genmdesc.c	\
-	helpers.c	\
-	../metadata/opcodes.c
-
-
-# Don't link this against libmonoruntime to speed up rebuilds
-genmdesc_LDADD = \
-	$(monodir)/mono/utils/libmonoutils.la -lm	\
-	$(GLIB_LIBS)					\
-	$(LIBICONV)
-
 wasm_sources = \
 	mini-wasm.c		\
 	mini-wasm.h		\
@@ -1210,7 +1183,9 @@ common_sources = \
 	lldb.h			\
 	lldb.c	\
 	memory-access.c	\
-	mini-profiler.c
+	mini-profiler.c	\
+	aot-runtime.h	\
+	mini-runtime.h
 
 test_sources = \
 	basic-calls.cs 		\
@@ -1293,6 +1268,16 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @SPARC_TRUE@arch_define = __sparc__
 @WASM_TRUE@arch_define = __wasm__
 @X86_TRUE@arch_define = __i386__
+@AMD64_TRUE@target_define = TARGET_AMD64
+@ARM64_TRUE@target_define = TARGET_ARM64
+@ARM_TRUE@target_define = TARGET_ARM
+@MIPS_TRUE@target_define = TARGET_MIPS
+@POWERPC64_TRUE@target_define = TARGET_POWERPC
+@POWERPC_TRUE@target_define = TARGET_POWERPC
+@S390X_TRUE@target_define = TARGET_S390X
+@SPARC64_TRUE@target_define = TARGET_SPARC
+@SPARC_TRUE@target_define = TARGET_SPARC
+@X86_TRUE@target_define = TARGET_X86
 @AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = 
 
 # pick up arm_dpimacros.h
@@ -1327,14 +1312,7 @@ libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
 GENMDESC_OPTS = 
-@CROSS_COMPILING_FALSE@@WASM_FALSE@GENMDESC_PRG = ./genmdesc $(GENMDESC_OPTS)
-@CROSS_COMPILING_FALSE@@WASM_TRUE@GENMDESC_PRG = perl $(srcdir)/genmdesc.pl $(arch_define) $(srcdir) $(GENMDESC_OPTS)
-
-# we don't always use the perl impl because it's an additional
-# build dependency for the poor windows users
-# $(arch_define) is the preprocessor symbol that enables all the opcodes
-# for the specific platform in mini-ops.h
-@CROSS_COMPILING_TRUE@GENMDESC_PRG = perl $(srcdir)/genmdesc.pl $(arch_define) $(srcdir) $(GENMDESC_OPTS)
+GENMDESC_PRG = python $(srcdir)/genmdesc.py $(target_define) $(srcdir)
 LLVM_AOT_RUNTIME_OPTS = $(if $(LLVM),--llvm,)
 GSHAREDVT_RUNTIME_OPTS = $(if $(GSHAREDVT),-O=gsharedvt,)
 fullaot_regtests = $(regtests)
@@ -1364,7 +1342,7 @@ BUILT_SOURCES = version.h $(arch_built)
 CLEANFILES = $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
 	TestHelpers.cs \
-	genmdesc.pl				\
+	genmdesc.py				\
 	$(test_sources) 			\
 	$(wasm_sources) cpu-wasm.md 		\
 	$(x86_sources) cpu-x86.md 		\
@@ -1558,18 +1536,6 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-../metadata/$(am__dirstamp):
-	@$(MKDIR_P) ../metadata
-	@: > ../metadata/$(am__dirstamp)
-../metadata/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ../metadata/$(DEPDIR)
-	@: > ../metadata/$(DEPDIR)/$(am__dirstamp)
-../metadata/genmdesc-opcodes.$(OBJEXT): ../metadata/$(am__dirstamp) \
-	../metadata/$(DEPDIR)/$(am__dirstamp)
-
-genmdesc$(EXEEXT): $(genmdesc_OBJECTS) $(genmdesc_DEPENDENCIES) $(EXTRA_genmdesc_DEPENDENCIES) 
-	@rm -f genmdesc$(EXEEXT)
-	$(AM_V_CCLD)$(genmdesc_LINK) $(genmdesc_OBJECTS) $(genmdesc_LDADD) $(LIBS)
 
 @DISABLE_EXECUTABLES_TRUE@mono$(EXEEXT): $(mono_OBJECTS) $(mono_DEPENDENCIES) $(EXTRA_mono_DEPENDENCIES) 
 @DISABLE_EXECUTABLES_TRUE@	@rm -f mono$(EXEEXT)
@@ -1589,16 +1555,12 @@ monow$(EXEEXT): $(monow_OBJECTS) $(monow_DEPENDENCIES) $(EXTRA_monow_DEPENDENCIE
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f ../metadata/*.$(OBJEXT)
 	-rm -f interp/*.$(OBJEXT)
 	-rm -f interp/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../metadata/$(DEPDIR)/genmdesc-opcodes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genmdesc-genmdesc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genmdesc-helpers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-abcremoval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-alias-analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-compiler.Plo@am__quote@
@@ -3057,48 +3019,6 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
 
-genmdesc-genmdesc.o: genmdesc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT genmdesc-genmdesc.o -MD -MP -MF $(DEPDIR)/genmdesc-genmdesc.Tpo -c -o genmdesc-genmdesc.o `test -f 'genmdesc.c' || echo '$(srcdir)/'`genmdesc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/genmdesc-genmdesc.Tpo $(DEPDIR)/genmdesc-genmdesc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='genmdesc.c' object='genmdesc-genmdesc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o genmdesc-genmdesc.o `test -f 'genmdesc.c' || echo '$(srcdir)/'`genmdesc.c
-
-genmdesc-genmdesc.obj: genmdesc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT genmdesc-genmdesc.obj -MD -MP -MF $(DEPDIR)/genmdesc-genmdesc.Tpo -c -o genmdesc-genmdesc.obj `if test -f 'genmdesc.c'; then $(CYGPATH_W) 'genmdesc.c'; else $(CYGPATH_W) '$(srcdir)/genmdesc.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/genmdesc-genmdesc.Tpo $(DEPDIR)/genmdesc-genmdesc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='genmdesc.c' object='genmdesc-genmdesc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o genmdesc-genmdesc.obj `if test -f 'genmdesc.c'; then $(CYGPATH_W) 'genmdesc.c'; else $(CYGPATH_W) '$(srcdir)/genmdesc.c'; fi`
-
-genmdesc-helpers.o: helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT genmdesc-helpers.o -MD -MP -MF $(DEPDIR)/genmdesc-helpers.Tpo -c -o genmdesc-helpers.o `test -f 'helpers.c' || echo '$(srcdir)/'`helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/genmdesc-helpers.Tpo $(DEPDIR)/genmdesc-helpers.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='helpers.c' object='genmdesc-helpers.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o genmdesc-helpers.o `test -f 'helpers.c' || echo '$(srcdir)/'`helpers.c
-
-genmdesc-helpers.obj: helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT genmdesc-helpers.obj -MD -MP -MF $(DEPDIR)/genmdesc-helpers.Tpo -c -o genmdesc-helpers.obj `if test -f 'helpers.c'; then $(CYGPATH_W) 'helpers.c'; else $(CYGPATH_W) '$(srcdir)/helpers.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/genmdesc-helpers.Tpo $(DEPDIR)/genmdesc-helpers.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='helpers.c' object='genmdesc-helpers.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o genmdesc-helpers.obj `if test -f 'helpers.c'; then $(CYGPATH_W) 'helpers.c'; else $(CYGPATH_W) '$(srcdir)/helpers.c'; fi`
-
-../metadata/genmdesc-opcodes.o: ../metadata/opcodes.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT ../metadata/genmdesc-opcodes.o -MD -MP -MF ../metadata/$(DEPDIR)/genmdesc-opcodes.Tpo -c -o ../metadata/genmdesc-opcodes.o `test -f '../metadata/opcodes.c' || echo '$(srcdir)/'`../metadata/opcodes.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../metadata/$(DEPDIR)/genmdesc-opcodes.Tpo ../metadata/$(DEPDIR)/genmdesc-opcodes.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../metadata/opcodes.c' object='../metadata/genmdesc-opcodes.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o ../metadata/genmdesc-opcodes.o `test -f '../metadata/opcodes.c' || echo '$(srcdir)/'`../metadata/opcodes.c
-
-../metadata/genmdesc-opcodes.obj: ../metadata/opcodes.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT ../metadata/genmdesc-opcodes.obj -MD -MP -MF ../metadata/$(DEPDIR)/genmdesc-opcodes.Tpo -c -o ../metadata/genmdesc-opcodes.obj `if test -f '../metadata/opcodes.c'; then $(CYGPATH_W) '../metadata/opcodes.c'; else $(CYGPATH_W) '$(srcdir)/../metadata/opcodes.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../metadata/$(DEPDIR)/genmdesc-opcodes.Tpo ../metadata/$(DEPDIR)/genmdesc-opcodes.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../metadata/opcodes.c' object='../metadata/genmdesc-opcodes.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -c -o ../metadata/genmdesc-opcodes.obj `if test -f '../metadata/opcodes.c'; then $(CYGPATH_W) '../metadata/opcodes.c'; else $(CYGPATH_W) '$(srcdir)/../metadata/opcodes.c'; fi`
-
 mono-main-sgen.o: main-sgen.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_CFLAGS) $(CFLAGS) -MT mono-main-sgen.o -MD -MP -MF $(DEPDIR)/mono-main-sgen.Tpo -c -o mono-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono-main-sgen.Tpo $(DEPDIR)/mono-main-sgen.Po
@@ -3313,8 +3233,6 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f ../metadata/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ../metadata/$(am__dirstamp)
 	-rm -f interp/$(DEPDIR)/$(am__dirstamp)
 	-rm -f interp/$(am__dirstamp)
 
@@ -3330,7 +3248,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
 	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ../metadata/$(DEPDIR) ./$(DEPDIR) interp/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3377,7 +3295,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ../metadata/$(DEPDIR) ./$(DEPDIR) interp/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -3492,34 +3410,34 @@ generics-variant-types.dll: generics-variant-types.il
 MemoryIntrinsics.dll: MemoryIntrinsics.il
 	$(ILASM) -dll -output=$@ $<
 
-cpu-wasm.h: cpu-wasm.md genmdesc$(EXEEXT)
+cpu-wasm.h: cpu-wasm.md
 	$(GENMDESC_PRG) cpu-wasm.h wasm_desc $(srcdir)/cpu-wasm.md
 
-cpu-x86.h: cpu-x86.md genmdesc$(EXEEXT)
+cpu-x86.h: cpu-x86.md
 	$(GENMDESC_PRG) cpu-x86.h x86_desc $(srcdir)/cpu-x86.md
 
-cpu-amd64.h: cpu-amd64.md genmdesc$(EXEEXT)
+cpu-amd64.h: cpu-amd64.md
 	$(GENMDESC_PRG) cpu-amd64.h amd64_desc $(srcdir)/cpu-amd64.md
 
-cpu-ppc.h: cpu-ppc.md genmdesc$(EXEEXT)
+cpu-ppc.h: cpu-ppc.md
 	$(GENMDESC_PRG) cpu-ppc.h ppcg4 $(srcdir)/cpu-ppc.md
 
-cpu-ppc64.h: cpu-ppc64.md genmdesc$(EXEEXT)
+cpu-ppc64.h: cpu-ppc64.md
 	$(GENMDESC_PRG) cpu-ppc64.h ppc64_cpu_desc $(srcdir)/cpu-ppc64.md
 
-cpu-arm.h: cpu-arm.md genmdesc$(EXEEXT)
+cpu-arm.h: cpu-arm.md
 	$(GENMDESC_PRG) cpu-arm.h arm_cpu_desc $(srcdir)/cpu-arm.md
 
-cpu-arm64.h: cpu-arm64.md genmdesc$(EXEEXT)
+cpu-arm64.h: cpu-arm64.md
 	$(GENMDESC_PRG) cpu-arm64.h arm64_cpu_desc $(srcdir)/cpu-arm64.md
 
-cpu-sparc.h: cpu-sparc.md genmdesc$(EXEEXT)
+cpu-sparc.h: cpu-sparc.md
 	$(GENMDESC_PRG) cpu-sparc.h sparc_desc $(srcdir)/cpu-sparc.md
 
-cpu-s390x.h: cpu-s390x.md genmdesc$(EXEEXT)
+cpu-s390x.h: cpu-s390x.md
 	$(GENMDESC_PRG) cpu-s390x.h s390x_cpu_desc $(srcdir)/cpu-s390x.md
 
-cpu-mips.h: cpu-mips.md genmdesc$(EXEEXT)
+cpu-mips.h: cpu-mips.md
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
 
 testi: mono test.exe

@@ -20,6 +20,7 @@
 #include <mono/metadata/mono-gc.h>
 #include <mono/metadata/mono-perfcounters.h>
 #include <mono/metadata/tabledefs.h>
+#include <mono/mini/jit.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/hazard-pointer.h>
 #include <mono/utils/lock-free-alloc.h>
@@ -166,6 +167,12 @@ typedef struct {
 	int small_id;
 } MonoProfilerThread;
 
+// Default value in `profiler_tls` for new threads.
+#define MONO_PROFILER_THREAD_ZERO ((MonoProfilerThread *) NULL)
+
+// This is written to `profiler_tls` to indicate that a thread has stopped.
+#define MONO_PROFILER_THREAD_DEAD ((MonoProfilerThread *) -1)
+
 // Do not use these TLS macros directly unless you know what you're doing.
 
 #ifdef HOST_WIN32
@@ -234,19 +241,19 @@ process_id (void)
 #define ENTER_LOG(COUNTER, BUFFER, SIZE) \
 	do { \
 		MonoProfilerThread *thread__ = get_thread (); \
-		if (thread__->attached) \
-			buffer_lock (); \
 		g_assert (!thread__->busy && "Why are we trying to write a new event while already writing one?"); \
 		thread__->busy = TRUE; \
 		mono_atomic_inc_i32 ((COUNTER)); \
+		if (thread__->attached) \
+			buffer_lock (); \
 		LogBuffer *BUFFER = ensure_logbuf_unsafe (thread__, (SIZE))
 
 #define EXIT_LOG_EXPLICIT(SEND) \
-		thread__->busy = FALSE; \
 		if ((SEND)) \
 			send_log_unsafe (TRUE); \
 		if (thread__->attached) \
 			buffer_unlock (); \
+		thread__->busy = FALSE; \
 	} while (0)
 
 // Pass these to EXIT_LOG_EXPLICIT () for easier reading.
@@ -512,6 +519,8 @@ init_thread (gboolean add_to_lls)
 {
 	MonoProfilerThread *thread = PROF_TLS_GET ();
 
+	g_assert (thread != MONO_PROFILER_THREAD_DEAD && "Why are we trying to resurrect a stopped thread?");
+
 	/*
 	 * Sometimes we may try to initialize a thread twice. One example is the
 	 * main thread: We initialize it when setting up the profiler, but we will
@@ -523,14 +532,14 @@ init_thread (gboolean add_to_lls)
 	 * These cases are harmless anyhow. Just return if we've already done the
 	 * initialization work.
 	 */
-	if (thread)
+	if (thread != MONO_PROFILER_THREAD_ZERO)
 		return thread;
 
 	thread = g_malloc (sizeof (MonoProfilerThread));
 	thread->node.key = thread_id ();
 	thread->attached = add_to_lls;
 	thread->call_depth = 0;
-	thread->busy = 0;
+	thread->busy = FALSE;
 	thread->ended = FALSE;
 
 	init_buffer_state (thread);
@@ -559,7 +568,7 @@ deinit_thread (MonoProfilerThread *thread)
 	g_assert (!thread->attached && "Why are we manually freeing an attached thread?");
 
 	g_free (thread);
-	PROF_TLS_SET (NULL);
+	PROF_TLS_SET (MONO_PROFILER_THREAD_DEAD);
 }
 
 static MonoProfilerThread *
@@ -665,7 +674,7 @@ buffer_unlock (void)
 	gint32 state = mono_atomic_load_i32 (&log_profiler.buffer_lock_state);
 
 	// See the comment in buffer_lock ().
-	if (state == PROF_TLS_GET ()->small_id << 16)
+	if (state == get_thread ()->small_id << 16)
 		return;
 
 	g_assert (state && "Why are we decrementing a zero reader count?");
@@ -702,7 +711,7 @@ buffer_unlock_excl (void)
 	gint32 excl = state >> 16;
 
 	g_assert (excl && "Why is the exclusive lock not held?");
-	g_assert (excl == PROF_TLS_GET ()->small_id && "Why does another thread hold the exclusive lock?");
+	g_assert (excl == get_thread ()->small_id && "Why does another thread hold the exclusive lock?");
 	g_assert (!(state & 0xFFFF) && "Why are there readers when the exclusive lock is held?");
 
 	mono_atomic_store_i32 (&log_profiler.buffer_lock_state, 0);
@@ -1108,7 +1117,7 @@ dump_buffer_threadless (LogBuffer *buf)
 static void
 send_log_unsafe (gboolean if_needed)
 {
-	MonoProfilerThread *thread = PROF_TLS_GET ();
+	MonoProfilerThread *thread = get_thread ();
 
 	if (!if_needed || (if_needed && thread->buffer->next)) {
 		if (!thread->attached)
@@ -1124,7 +1133,7 @@ send_log_unsafe (gboolean if_needed)
 static void
 sync_point_flush (void)
 {
-	g_assert (mono_atomic_load_i32 (&log_profiler.buffer_lock_state) == PROF_TLS_GET ()->small_id << 16 && "Why don't we hold the exclusive lock?");
+	g_assert (mono_atomic_load_i32 (&log_profiler.buffer_lock_state) == get_thread ()->small_id << 16 && "Why don't we hold the exclusive lock?");
 
 	MONO_LLS_FOREACH_SAFE (&log_profiler.profiler_thread_list, MonoProfilerThread, thread) {
 		g_assert (thread->attached && "Why is a thread in the LLS not attached?");
@@ -1138,7 +1147,7 @@ sync_point_flush (void)
 static void
 sync_point_mark (MonoProfilerSyncPointType type)
 {
-	g_assert (mono_atomic_load_i32 (&log_profiler.buffer_lock_state) == PROF_TLS_GET ()->small_id << 16 && "Why don't we hold the exclusive lock?");
+	g_assert (mono_atomic_load_i32 (&log_profiler.buffer_lock_state) == get_thread ()->small_id << 16 && "Why don't we hold the exclusive lock?");
 
 	ENTER_LOG (&sync_points_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
@@ -1226,9 +1235,16 @@ gc_roots (MonoProfiler *prof, MonoObject *const *objects, const MonoProfilerGCRo
 	EXIT_LOG;
 }
 
+static void
+trigger_heapshot (void)
+{
+	// Rely on the finalization callback triggering a GC.
+	mono_atomic_store_i32 (&log_profiler.heapshot_requested, 1);
+	mono_gc_finalize_notify ();
+}
 
 static void
-trigger_on_demand_heapshot (void)
+process_heapshot (void)
 {
 	if (mono_atomic_load_i32 (&log_profiler.heapshot_requested))
 		mono_gc_collect (mono_gc_max_generation ());
@@ -1263,7 +1279,7 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 			log_profiler.do_heap_walk = generation == mono_gc_max_generation ();
 			break;
 		case MONO_PROFILER_HEAPSHOT_ON_DEMAND:
-			log_profiler.do_heap_walk = mono_atomic_load_i32 (&log_profiler.heapshot_requested);
+			// Handled below.
 			break;
 		case MONO_PROFILER_HEAPSHOT_X_GC:
 			log_profiler.do_heap_walk = !(log_profiler.gc_count % log_config.hs_freq_gc);
@@ -1276,11 +1292,10 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 		}
 
 		/*
-		 * heapshot_requested is set either because on-demand heapshot is
-		 * enabled and a heapshot was triggered, or because we're doing a
-		 * shutdown heapshot. In the latter case, we won't check it in the
-		 * switch above, so check it here and override any decision we made
-		 * above.
+		 * heapshot_requested is set either because a heapshot was triggered
+		 * manually (through the API or command server) or because we're doing
+		 * a shutdown heapshot. Either way, a manually triggered heapshot
+		 * overrides any decision we made in the switch above.
 		 */
 		if (mono_atomic_load_i32 (&log_profiler.heapshot_requested))
 			log_profiler.do_heap_walk = TRUE;
@@ -1550,7 +1565,8 @@ finalize_begin (MonoProfiler *prof)
 static void
 finalize_end (MonoProfiler *prof)
 {
-	trigger_on_demand_heapshot ();
+	process_heapshot ();
+
 	if (ENABLED (PROFLOG_GC_FINALIZATION_EVENTS)) {
 		ENTER_LOG (&finalize_ends_ctr, buf,
 			EVENT_SIZE /* event */
@@ -2008,7 +2024,7 @@ thread_end (MonoProfiler *prof, uintptr_t tid)
 	thread->ended = TRUE;
 	remove_thread (thread);
 
-	PROF_TLS_SET (NULL);
+	PROF_TLS_SET (MONO_PROFILER_THREAD_DEAD);
 }
 
 static void
@@ -2641,9 +2657,9 @@ counters_emit (void)
 		name = mono_counter_get_name (agent->counter);
 		emit_value (logbuffer, mono_counter_get_section (agent->counter));
 		emit_string (logbuffer, name, strlen (name) + 1);
-		emit_byte (logbuffer, mono_counter_get_type (agent->counter));
-		emit_byte (logbuffer, mono_counter_get_unit (agent->counter));
-		emit_byte (logbuffer, mono_counter_get_variance (agent->counter));
+		emit_value (logbuffer, mono_counter_get_type (agent->counter));
+		emit_value (logbuffer, mono_counter_get_unit (agent->counter));
+		emit_value (logbuffer, mono_counter_get_variance (agent->counter));
 		emit_value (logbuffer, agent->index);
 
 		agent->emitted = TRUE;
@@ -2730,7 +2746,7 @@ counters_sample (uint64_t timestamp)
 		}
 
 		emit_uvalue (logbuffer, agent->index);
-		emit_byte (logbuffer, type);
+		emit_value (logbuffer, type);
 		switch (type) {
 		case MONO_COUNTER_INT:
 #if SIZEOF_VOID_P == 4
@@ -3800,11 +3816,8 @@ helper_thread (void *arg)
 
 			buf [len] = 0;
 
-			if (log_config.hs_mode == MONO_PROFILER_HEAPSHOT_ON_DEMAND && !strcmp (buf, "heapshot\n")) {
-				// Rely on the finalization callback triggering a GC.
-				mono_atomic_store_i32 (&log_profiler.heapshot_requested, 1);
-				mono_gc_finalize_notify ();
-			}
+			if (!strcmp (buf, "heapshot\n"))
+				trigger_heapshot ();
 		}
 
 		if (FD_ISSET (log_profiler.server_socket, &rfds)) {
@@ -3965,7 +3978,7 @@ handle_writer_queue_entry (void)
 		g_ptr_array_free (entry->methods, TRUE);
 
 		if (wrote_methods) {
-			MonoProfilerThread *thread = PROF_TLS_GET ();
+			MonoProfilerThread *thread = get_thread ();
 
 			dump_buffer_threadless (thread->buffer);
 			init_buffer_state (thread);
@@ -4188,6 +4201,12 @@ ICALL_EXPORT void
 proflog_icall_SetHeapshotCollectionsFrequency (gint32 value)
 {
 	log_config.hs_freq_gc = value;
+}
+
+ICALL_EXPORT void
+proflog_icall_TriggerHeapshot (void)
+{
+	trigger_heapshot ();
 }
 
 ICALL_EXPORT gint32
@@ -4537,6 +4556,7 @@ runtime_initialized (MonoProfiler *profiler)
 	ADD_ICALL (SetHeapshotMillisecondsFrequency);
 	ADD_ICALL (GetHeapshotCollectionsFrequency);
 	ADD_ICALL (SetHeapshotCollectionsFrequency);
+	ADD_ICALL (TriggerHeapshot);
 	ADD_ICALL (GetCallDepth);
 	ADD_ICALL (SetCallDepth);
 	ADD_ICALL (GetSampleMode);
@@ -4612,19 +4632,11 @@ create_profiler (const char *args, const char *filename, GPtrArray *filters)
 		log_profiler.gzfile = gzdopen (fileno (log_profiler.file), "wb");
 #endif
 
-	/*
-	 * If you hit this assert while increasing MAX_FRAMES, you need to increase
-	 * SAMPLE_BLOCK_SIZE as well.
-	 */
-	g_assert (SAMPLE_SLOT_SIZE (MAX_FRAMES) * 2 < LOCK_FREE_ALLOC_SB_USABLE_SIZE (SAMPLE_BLOCK_SIZE));
-
 	// FIXME: We should free this stuff too.
 	mono_lock_free_allocator_init_size_class (&log_profiler.sample_size_class, SAMPLE_SLOT_SIZE (log_config.num_frames), SAMPLE_BLOCK_SIZE);
 	mono_lock_free_allocator_init_allocator (&log_profiler.sample_allocator, &log_profiler.sample_size_class, MONO_MEM_ACCOUNT_PROFILER);
 
 	mono_lock_free_queue_init (&log_profiler.sample_reuse_queue);
-
-	g_assert (sizeof (WriterQueueEntry) * 2 < LOCK_FREE_ALLOC_SB_USABLE_SIZE (WRITER_ENTRY_BLOCK_SIZE));
 
 	// FIXME: We should free this stuff too.
 	mono_lock_free_allocator_init_size_class (&log_profiler.writer_entry_size_class, sizeof (WriterQueueEntry), WRITER_ENTRY_BLOCK_SIZE);
@@ -4653,6 +4665,13 @@ mono_profiler_init_log (const char *desc);
 void
 mono_profiler_init_log (const char *desc)
 {
+	/*
+	 * If you hit this assert while increasing MAX_FRAMES, you need to increase
+	 * SAMPLE_BLOCK_SIZE as well.
+	 */
+	g_assert (SAMPLE_SLOT_SIZE (MAX_FRAMES) * 2 < LOCK_FREE_ALLOC_SB_USABLE_SIZE (SAMPLE_BLOCK_SIZE));
+	g_assert (sizeof (WriterQueueEntry) * 2 < LOCK_FREE_ALLOC_SB_USABLE_SIZE (WRITER_ENTRY_BLOCK_SIZE));
+
 	GPtrArray *filters = NULL;
 
 	proflog_parse_args (&log_config, desc [3] == ':' ? desc + 4 : "");
@@ -4666,6 +4685,18 @@ mono_profiler_init_log (const char *desc)
 		}
 	}
 
+	MonoProfilerHandle handle = log_profiler.handle = mono_profiler_create (&log_profiler);
+
+	if (log_config.enter_leave)
+		mono_profiler_set_call_instrumentation_filter_callback (handle, method_filter);
+
+	/*
+	 * If the runtime was invoked for the purpose of AOT compilation only, the
+	 * only thing we want to do is install the call instrumentation filter.
+	 */
+	if (mono_jit_aot_compiling ())
+		goto done;
+
 	init_time ();
 
 	PROF_TLS_INIT ();
@@ -4673,8 +4704,6 @@ mono_profiler_init_log (const char *desc)
 	create_profiler (desc, log_config.output_filename, filters);
 
 	mono_lls_init (&log_profiler.profiler_thread_list, NULL);
-
-	MonoProfilerHandle handle = log_profiler.handle = mono_profiler_create (&log_profiler);
 
 	/*
 	 * Required callbacks. These are either necessary for the profiler itself
@@ -4689,7 +4718,7 @@ mono_profiler_init_log (const char *desc)
 	mono_profiler_set_gc_event_callback (handle, gc_event);
 
 	mono_profiler_set_thread_started_callback (handle, thread_start);
-	mono_profiler_set_thread_stopped_callback (handle, thread_end);
+	mono_profiler_set_thread_exited_callback (handle, thread_end);
 	mono_profiler_set_thread_name_callback (handle, thread_name);
 
 	mono_profiler_set_domain_loaded_callback (handle, domain_loaded);
@@ -4750,7 +4779,6 @@ mono_profiler_init_log (const char *desc)
 		mono_profiler_set_jit_code_buffer_callback (handle, code_buffer_new);
 
 	if (log_config.enter_leave) {
-		mono_profiler_set_call_instrumentation_filter_callback (handle, method_filter);
 		mono_profiler_set_method_enter_callback (handle, method_enter);
 		mono_profiler_set_method_leave_callback (handle, method_leave);
 		mono_profiler_set_method_tail_call_callback (handle, tail_call);
@@ -4772,4 +4800,7 @@ mono_profiler_init_log (const char *desc)
 	 */
 	if (!mono_profiler_set_sample_mode (handle, log_config.sampling_mode, log_config.sample_freq))
 		mono_profiler_printf_err ("Another profiler controls sampling parameters; the log profiler will not be able to modify them.");
+
+done:
+	;
 }
