@@ -5581,6 +5581,11 @@ namespace System
     public partial struct Void
     {
     }
+    [System.AttributeUsageAttribute((System.AttributeTargets)(256))]
+    public sealed partial class WeakAttribute : System.Attribute
+    {
+        public WeakAttribute() { }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class WeakReference : System.Runtime.Serialization.ISerializable

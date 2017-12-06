@@ -106,12 +106,13 @@ target_triplet = @target@
 @POWERPC64_TRUE@	sgen-domain-unload-2.exe sgen-weakref-stress.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw.exe \
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe sgen-new-threads-collect.exe sgen-bridge.exe
 
-@ARM_TRUE@am__append_13 = filter-stack.exe
+@ARM_TRUE@am__append_13 = filter-stack.exe weak-fields.exe
+@ARM64_TRUE@am__append_14 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_14 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_15 = filter-stack.exe monitor.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_15 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_16 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe
@@ -146,7 +147,9 @@ target_triplet = @target@
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
-@FULL_AOT_TESTS_TRUE@am__append_16 = typeload-unaligned.exe \
+
+# https://bugzilla.xamarin.com/show_bug.cgi?id=60973
+@FULL_AOT_TESTS_TRUE@am__append_17 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -214,8 +217,9 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
-@FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_17 = \
+@FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
+@FULL_AOT_TESTS_TRUE@	weak-fields.exe
+@HYBRID_AOT_TESTS_TRUE@am__append_18 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
@@ -765,8 +769,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-46661.cs w32message.cs runtime-invoke.gen.cs \
 	imt_big_iface_test.cs bug-58782-plain-throw.cs \
 	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
-	bug-59281.cs init_array_with_lazy_type.cs $(am__append_5) \
-	$(am__append_6)
+	bug-59281.cs init_array_with_lazy_type.cs weak-fields.cs \
+	$(am__append_5) $(am__append_6)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
@@ -896,7 +900,7 @@ TESTS_GSHARED_SRC = \
 PLATFORM_DISABLED_TESTS = $(am__append_7) $(am__append_8) \
 	$(am__append_9) $(am__append_10) $(am__append_11) \
 	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15)
+	$(am__append_15) $(am__append_16)
 @ARM64_TRUE@INTERP_PLATFORM_DISABLED_TESTS = \
 @ARM64_TRUE@	assemblyresolve_event6.exe \
 @ARM64_TRUE@	finalizer-exception.exe
@@ -913,7 +917,7 @@ PLATFORM_DISABLED_TESTS = $(am__append_7) $(am__append_8) \
 
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
 @ENABLE_COOP_TRUE@COOP_DISABLED_TESTS = thunks.exe
-PROFILE_DISABLED_TESTS = $(am__append_16) $(am__append_17)
+PROFILE_DISABLED_TESTS = $(am__append_17) $(am__append_18)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1095,7 +1099,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
 	$(INTERNALSVISIBLETO_TEST_SRC) \
-	$(INTERNALSVISIBLETO_TEST_LIB_SRC)
+	$(INTERNALSVISIBLETO_TEST_LIB_SRC) weakattribute.cs
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -2370,6 +2374,13 @@ internalsvisibleto-correctcase-2-sign2048.dll internalsvisibleto-wrongcase-2-sig
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-2-sign2048.dll -target:library -d:CORRECT_CASE -d:SIGN2048 internalsvisibleto-library.cs	
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-2-sign2048.dll -target:library -d:WRONG_CASE -d:SIGN2048 internalsvisibleto-library.cs
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-compilertest-sign2048.exe -warn:0 -r:internalsvisibleto-correctcase-2-sign2048.dll -r:internalsvisibleto-wrongcase-2-sign2048.dll -d:SIGN2048 internalsvisibleto-compilertest.cs
+
+# Contains copies of types which don't exist in the desktop profile so tests can use them
+Mono.Runtime.Testing.dll: weakattribute.cs
+	$(MCS) -target:library -out:$@ $<
+
+weak-fields.exe: weak-fields.cs Mono.Runtime.Testing.dll
+	$(MCS) -r:Mono.Runtime.Testing.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -r:TestDriver.dll $(TEST_DRIVER_HARD_KILL_FEATURE) -out:$@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
