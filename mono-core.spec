@@ -27,8 +27,8 @@
 %define sgen yes
 
 Name:           mono-core
-%define __majorver 5.9.0
-%define __minorver 544
+%define __majorver 5.11.0
+%define __minorver 12
 Version:	%{__majorver}.%{__minorver}
 Release:	0.nightly.1
 Summary:        Cross-platform, Open Source, .NET development framework
