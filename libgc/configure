@@ -5006,6 +5006,12 @@ fi
 	$as_echo "#define _REENTRANT 1" >>confdefs.h
 
 	;;
+     *-*-haiku*)
+	$as_echo "#define GC_HAIKU_THREADS 1" >>confdefs.h
+
+	$as_echo "#define _REENTRANT 1" >>confdefs.h
+
+	;;
      *-*-hpux*)
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"Only HP/UX 11 threads are supported.\"" >&5
 $as_echo "$as_me: WARNING: \"Only HP/UX 11 threads are supported.\"" >&2;}
