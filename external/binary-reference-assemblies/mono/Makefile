@@ -1,6 +1,6 @@
 PROFILE := mono
 SOURCEDIR := ../src/$(PROFILE)/
-BCL_PROFILE := ../v4.7/
+BCL_PROFILE := ../v4.6/
 
 CSC ?= csc
 CSC_COMMON_ARGS := -nologo -noconfig -optimize -nostdlib -unsafe -deterministic -publicsign -debug- -target:library -nowarn:612 -nowarn:618

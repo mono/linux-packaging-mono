@@ -1276,6 +1276,7 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @S390X_TRUE@target_define = TARGET_S390X
 @SPARC64_TRUE@target_define = TARGET_SPARC
 @SPARC_TRUE@target_define = TARGET_SPARC
+@WASM_TRUE@target_define = TARGET_WASM
 @X86_TRUE@target_define = TARGET_X86
 @AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = 
 
