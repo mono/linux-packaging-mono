@@ -24,9 +24,6 @@
 #include "interp-internals.h"
 #include "interp.h"
 
-// TODO: export from marshal.c
-MonoDelegate* mono_ftnptr_to_delegate (MonoClass *klass, gpointer ftn);
-
 #define DEBUG 0
 
 typedef struct
@@ -2019,18 +2016,19 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		}
 		case CEE_RET: {
 			int vt_size = 0;
-			if (signature->ret->type != MONO_TYPE_VOID) {
+			MonoType *ult = mini_type_get_underlying_type (signature->ret);
+			if (ult->type != MONO_TYPE_VOID) {
 				--td->sp;
-				MonoClass *klass = mono_class_from_mono_type (signature->ret);
-				if (mint_type (&klass->byval_arg) == MINT_TYPE_VT) {
+				if (mint_type (ult) == MINT_TYPE_VT) {
+					MonoClass *klass = mono_class_from_mono_type (ult);
 					vt_size = mono_class_value_size (klass, NULL);
 					vt_size = (vt_size + 7) & ~7;
 				}
 			}
 			if (td->sp > td->stack)
-				g_warning ("%s.%s: CEE_RET: more values on stack: %d", td->method->klass->name, td->method->name, td->sp - td->stack);
+				g_warning ("%s: CEE_RET: more values on stack: %d", mono_method_full_name (td->method, TRUE), td->sp - td->stack);
 			if (td->vt_sp != vt_size)
-				g_error ("%s.%s: CEE_RET: value type stack: %d vs. %d", td->method->klass->name, td->method->name, td->vt_sp, vt_size);
+				g_error ("%s: CEE_RET: value type stack: %d vs. %d", mono_method_full_name (td->method, TRUE), td->vt_sp, vt_size);
 
 			if (sym_seq_points) {
 				InterpBasicBlock *cbb = td->offset_to_bb [td->ip - header->code];
@@ -2039,7 +2037,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			}
 
 			if (vt_size == 0)
-				SIMPLE_OP(td, signature->ret->type == MONO_TYPE_VOID ? MINT_RET_VOID : MINT_RET);
+				SIMPLE_OP(td, ult->type == MONO_TYPE_VOID ? MINT_RET_VOID : MINT_RET);
 			else {
 				ADD_CODE(td, MINT_RET_VT);
 				WRITE32(td, &vt_size);
@@ -3700,7 +3698,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			td->ip += 2;
 			generating_code = 0;
 			break;
-		case CEE_UNUSED41:
+		case MONO_CUSTOM_PREFIX:
 			++td->ip;
 		        switch (*td->ip) {
 				case CEE_MONO_CALLI_EXTRA_ARG:
@@ -3765,19 +3763,25 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 						}
 						break;
 					case 3:
+						if (MONO_TYPE_IS_VOID (info->sig->ret)) {
+							if (info->sig->params [2]->type == MONO_TYPE_I4)
+								ADD_CODE (td,MINT_ICALL_PPI_V);
+							else
+								ADD_CODE (td,MINT_ICALL_PPP_V);
+						} else {
+							g_assert (info->sig->params [1]->type == MONO_TYPE_I4 && info->sig->params [2]->type == MONO_TYPE_I4);
+							ADD_CODE (td, MINT_ICALL_PII_P);
+						}
+						break;
+					case 4:
 						g_assert (MONO_TYPE_IS_VOID (info->sig->ret));
-						if (info->sig->params [2]->type == MONO_TYPE_I4)
-							ADD_CODE (td,MINT_ICALL_PPI_V);
-						else
-							ADD_CODE (td,MINT_ICALL_PPP_V);
+						g_assert (info->sig->params [2]->type == MONO_TYPE_I4 && info->sig->params [3]->type == MONO_TYPE_I4);
+						ADD_CODE (td, MINT_ICALL_PPII_V);
 						break;
 					default:
 						g_assert_not_reached ();
 					}
 
-					if (func == mono_ftnptr_to_delegate) {
-						g_error ("TODO: CEE_MONO_ICALL mono_ftnptr_to_delegate?");
-					}
 					ADD_CODE(td, get_data_item_index (td, func));
 					td->sp -= info->sig->param_count;
 
