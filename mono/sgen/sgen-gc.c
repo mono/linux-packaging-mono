@@ -1833,6 +1833,12 @@ collect_nursery (const char *reason, gboolean is_overflow, SgenGrayQueue *unpin_
 			sgen_resize_nursery (FALSE);
 	}
 
+	/*
+	 * This is used by the profiler to report GC roots.
+	 * Invariants: Heap's finished, no more moves left, objects still pinned in nursery.
+	 */
+	sgen_client_collecting_minor_report_roots (&fin_ready_queue, &critical_fin_queue);
+
 	/* walk the pin_queue, build up the fragment list of free memory, unmark
 	 * pinned objects as we go, memzero() the empty fragments so they are ready for the
 	 * next allocations.
@@ -1859,10 +1865,6 @@ collect_nursery (const char *reason, gboolean is_overflow, SgenGrayQueue *unpin_
 	UnlockedAdd64 (&gc_stats.minor_gc_time, TV_ELAPSED (last_minor_collection_start_tv, last_minor_collection_end_tv));
 
 	sgen_debug_dump_heap ("minor", mono_atomic_load_i32 (&gc_stats.minor_gc_count) - 1, NULL);
-
-	// This is used by the profiler to report GC roots.
-	// Invariants: Heap's finished, no more moves left. Pin queue no longer in use, we can do whatever with it.
-	sgen_client_collecting_minor_report_roots (&fin_ready_queue, &critical_fin_queue);
 
 	/* prepare the pin queue for the next collection */
 	sgen_finish_pinning ();
@@ -2141,6 +2143,11 @@ major_start_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason,
 {
 	SgenObjectOperations *object_ops_nopar, *object_ops_par = NULL;
 
+	if (concurrent) {
+		g_assert (major_collector.is_concurrent);
+		concurrent_collection_in_progress = TRUE;
+	}
+
 	binary_protocol_collection_begin (mono_atomic_load_i32 (&gc_stats.major_gc_count), GENERATION_OLD);
 
 	current_collection_generation = GENERATION_OLD;
@@ -2151,9 +2158,6 @@ major_start_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason,
 		sgen_cement_reset ();
 
 	if (concurrent) {
-		g_assert (major_collector.is_concurrent);
-		concurrent_collection_in_progress = TRUE;
-
 		object_ops_nopar = &major_collector.major_ops_concurrent_start;
 		if (major_collector.is_parallel)
 			object_ops_par = &major_collector.major_ops_conc_par_start;
@@ -2243,6 +2247,12 @@ major_finish_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason
 	reset_heap_boundaries ();
 	sgen_update_heap_boundaries ((mword)sgen_get_nursery_start (), (mword)sgen_get_nursery_end ());
 
+	/*
+	 * We collect the roots before unpinning objects in the nursery since we need to have
+	 * object liveness information for ephemeron root reporting.
+	 */
+	sgen_client_collecting_major_report_roots (&fin_ready_queue, &critical_fin_queue);
+
 	/* walk the pin_queue, build up the fragment list of free memory, unmark
 	 * pinned objects as we go, memzero() the empty fragments so they are ready for the
 	 * next allocations.
@@ -2254,8 +2264,6 @@ major_finish_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason
 
 	if (do_concurrent_checks && concurrent_collection_in_progress)
 		sgen_debug_check_nursery_is_clean ();
-
-	sgen_client_collecting_major_report_roots (&fin_ready_queue, &critical_fin_queue);
 
 	/* prepare the pin queue for the next collection */
 	sgen_finish_pinning ();
@@ -2307,8 +2315,6 @@ major_finish_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason
 	sgen_workers_assert_gray_queue_is_empty (GENERATION_OLD);
 
 	SGEN_ASSERT (0, sgen_workers_all_done (), "Can't have workers working after major collection has finished");
-	if (concurrent_collection_in_progress)
-		concurrent_collection_in_progress = FALSE;
 
 	check_scan_starts ();
 
@@ -2324,6 +2330,9 @@ major_finish_collection (SgenGrayQueue *gc_thread_gray_queue, const char *reason
                         time_major_finish_gray_stack - finish_gray_start);
 
 	binary_protocol_collection_end (mono_atomic_load_i32 (&gc_stats.major_gc_count) - 1, GENERATION_OLD, counts.num_scanned_objects, counts.num_unique_scanned_objects);
+
+	if (concurrent_collection_in_progress)
+		concurrent_collection_in_progress = FALSE;
 }
 
 static gboolean
@@ -2504,7 +2513,7 @@ sgen_ensure_free_space (size_t size, int generation)
  * LOCKING: Assumes the GC lock is held.
  */
 static void
-sgen_perform_collection_inner (size_t requested_size, int generation_to_collect, const char *reason, gboolean wait_to_finish, gboolean stw)
+sgen_perform_collection_inner (size_t requested_size, int generation_to_collect, const char *reason, gboolean forced_serial, gboolean stw)
 {
 	TV_DECLARE (gc_total_start);
 	TV_DECLARE (gc_total_end);
@@ -2513,12 +2522,12 @@ sgen_perform_collection_inner (size_t requested_size, int generation_to_collect,
 	const char *overflow_reason = NULL;
 	gboolean finish_concurrent = concurrent_collection_in_progress && (major_should_finish_concurrent_collection () || generation_to_collect == GENERATION_OLD);
 
-	binary_protocol_collection_requested (generation_to_collect, requested_size, wait_to_finish ? 1 : 0);
+	binary_protocol_collection_requested (generation_to_collect, requested_size, forced_serial ? 1 : 0);
 
 	SGEN_ASSERT (0, generation_to_collect == GENERATION_NURSERY || generation_to_collect == GENERATION_OLD, "What generation is this?");
 
 	if (stw)
-		sgen_stop_world (generation_to_collect);
+		sgen_stop_world (generation_to_collect, forced_serial || !major_collector.is_concurrent);
 	else
 		SGEN_ASSERT (0, sgen_is_world_stopped (), "We can only collect if the world is stopped");
 		
@@ -2536,15 +2545,17 @@ sgen_perform_collection_inner (size_t requested_size, int generation_to_collect,
 			overflow_reason = "Minor overflow";
 		}
 	} else if (finish_concurrent) {
-		major_finish_concurrent_collection (wait_to_finish);
+		major_finish_concurrent_collection (forced_serial);
 		oldest_generation_collected = GENERATION_OLD;
+		if (forced_serial && generation_to_collect == GENERATION_OLD)
+			major_do_collection (reason, FALSE, TRUE);
 	} else {
 		SGEN_ASSERT (0, generation_to_collect == GENERATION_OLD, "We should have handled nursery collections above");
-		if (major_collector.is_concurrent && !wait_to_finish) {
+		if (major_collector.is_concurrent && !forced_serial) {
 			collect_nursery ("Concurrent start", FALSE, NULL);
 			major_start_concurrent_collection (reason);
 			oldest_generation_collected = GENERATION_NURSERY;
-		} else if (major_do_collection (reason, FALSE, wait_to_finish)) {
+		} else if (major_do_collection (reason, FALSE, forced_serial)) {
 			overflow_generation_to_collect = GENERATION_NURSERY;
 			overflow_reason = "Excessive pinning";
 		}
@@ -2561,7 +2572,7 @@ sgen_perform_collection_inner (size_t requested_size, int generation_to_collect,
 		if (overflow_generation_to_collect == GENERATION_NURSERY)
 			collect_nursery (overflow_reason, TRUE, NULL);
 		else
-			major_do_collection (overflow_reason, TRUE, wait_to_finish);
+			major_do_collection (overflow_reason, TRUE, forced_serial);
 
 		oldest_generation_collected = MAX (oldest_generation_collected, overflow_generation_to_collect);
 	}
@@ -2580,7 +2591,7 @@ sgen_perform_collection_inner (size_t requested_size, int generation_to_collect,
 	time_max = MAX (time_max, TV_ELAPSED (gc_total_start, gc_total_end));
 
 	if (stw)
-		sgen_restart_world (oldest_generation_collected);
+		sgen_restart_world (oldest_generation_collected, forced_serial || !major_collector.is_concurrent);
 }
 
 #ifdef HOST_WASM
@@ -2604,11 +2615,11 @@ gc_pump_callback (void)
 #endif
 
 void
-sgen_perform_collection (size_t requested_size, int generation_to_collect, const char *reason, gboolean wait_to_finish, gboolean stw)
+sgen_perform_collection (size_t requested_size, int generation_to_collect, const char *reason, gboolean forced_serial, gboolean stw)
 {
 #ifdef HOST_WASM
 	g_assert (stw); //can't handle non-stw mode (IE, domain unload)
-	//we ignore wait_to_finish
+	//we ignore forced_serial
 
 	//There's a window for racing where we're executing other bg jobs before the GC, they trigger a GC request and it overrides this one.
 	//I belive this case to be benign as it will, in the worst case, upgrade a minor to a major collection.
@@ -2621,7 +2632,7 @@ sgen_perform_collection (size_t requested_size, int generation_to_collect, const
 
 	degraded_mode = 1; //enable degraded mode so allocation can continue
 #else
-	sgen_perform_collection_inner (requested_size, generation_to_collect, reason, wait_to_finish, stw);
+	sgen_perform_collection_inner (requested_size, generation_to_collect, reason, forced_serial, stw);
 #endif
 }
 /*
@@ -3779,7 +3790,7 @@ static gboolean world_is_stopped = FALSE;
 
 /* LOCKING: assumes the GC lock is held */
 void
-sgen_stop_world (int generation)
+sgen_stop_world (int generation, gboolean serial_collection)
 {
 	long long major_total = -1, major_marked = -1, los_total = -1, los_marked = -1;
 
@@ -3787,7 +3798,7 @@ sgen_stop_world (int generation)
 
 	binary_protocol_world_stopping (generation, sgen_timestamp (), (gpointer) (gsize) mono_native_thread_id_get ());
 
-	sgen_client_stop_world (generation);
+	sgen_client_stop_world (generation, serial_collection);
 
 	world_is_stopped = TRUE;
 
@@ -3798,7 +3809,7 @@ sgen_stop_world (int generation)
 
 /* LOCKING: assumes the GC lock is held */
 void
-sgen_restart_world (int generation)
+sgen_restart_world (int generation, gboolean serial_collection)
 {
 	long long major_total = -1, major_marked = -1, los_total = -1, los_marked = -1;
 	gint64 stw_time;
@@ -3811,7 +3822,7 @@ sgen_restart_world (int generation)
 
 	world_is_stopped = FALSE;
 
-	sgen_client_restart_world (generation, &stw_time);
+	sgen_client_restart_world (generation, serial_collection, &stw_time);
 
 	binary_protocol_world_restarted (generation, sgen_timestamp ());
 
@@ -3830,10 +3841,10 @@ sgen_is_world_stopped (void)
 void
 sgen_check_whole_heap_stw (void)
 {
-	sgen_stop_world (0);
+	sgen_stop_world (0, FALSE);
 	sgen_clear_nursery_fragments ();
 	sgen_check_whole_heap (TRUE);
-	sgen_restart_world (0);
+	sgen_restart_world (0, FALSE);
 }
 
 gint64

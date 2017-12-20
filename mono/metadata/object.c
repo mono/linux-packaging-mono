@@ -878,9 +878,8 @@ compute_class_non_ref_bitmap (MonoClass *klass, gsize *bitmap, int size, int off
 	int max_size;
 
 	max_size = class->instance_size / sizeof (gpointer);
-	if (max_size >= size) {
+	if (max_size >= size)
 		bitmap = g_malloc0 (sizeof (gsize) * ((max_size) + 1));
-	}
 
 	for (p = class; p != NULL; p = p->parent) {
 		gpointer iter = NULL;
@@ -6316,19 +6315,18 @@ mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *error)
 	MonoString *o = NULL;
 	guint16 *ut;
 	glong items_written;
-	int l;
+	int len;
 
 	error_init (error);
 	
-	l = strlen (text);
+	len = strlen (text);
 	
-	ut = g_utf8_to_utf16 (text, l, NULL, &items_written, &eg_error);
+	ut = g_utf8_to_utf16 (text, len, NULL, &items_written, &eg_error);
 	
-	if (!eg_error) {
+	if (!eg_error)
 		o = mono_string_new_utf16_checked (domain, ut, items_written, error);
-	} else {
+	else
 		mono_error_set_execution_engine (error, "String conversion error: %s", eg_error->message);
-	}
 	
 	g_free (ut);
     
@@ -7037,7 +7035,7 @@ mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error)
 		g_error_free (gerror);
 		return NULL;
 	}
-	/* g_utf16_to_utf8  may not be able to complete the convertion (e.g. NULL values were found, #335488) */
+	/* g_utf16_to_utf8  may not be able to complete the conversion (e.g. NULL values were found, #335488) */
 	if (len2 > written) {
 		/* allocate the total length and copy the part of the string that has been converted */
 		char *as2 = (char *)g_malloc0 (len2);
@@ -7102,7 +7100,7 @@ mono_string_to_utf8_checked (MonoString *s, MonoError *error)
 		g_error_free (gerror);
 		return NULL;
 	}
-	/* g_utf16_to_utf8  may not be able to complete the convertion (e.g. NULL values were found, #335488) */
+	/* g_utf16_to_utf8  may not be able to complete the conversion (e.g. NULL values were found, #335488) */
 	if (s->length > written) {
 		/* allocate the total length and copy the part of the string that has been converted */
 		char *as2 = (char *)g_malloc0 (s->length);
@@ -7143,7 +7141,7 @@ mono_string_to_utf8_ignore (MonoString *s)
 
 	as = g_utf16_to_utf8 (mono_string_chars (s), s->length, NULL, &written, NULL);
 
-	/* g_utf16_to_utf8  may not be able to complete the convertion (e.g. NULL values were found, #335488) */
+	/* g_utf16_to_utf8  may not be able to complete the conversion (e.g. NULL values were found, #335488) */
 	if (s->length > written) {
 		/* allocate the total length and copy the part of the string that has been converted */
 		char *as2 = (char *)g_malloc0 (s->length);
