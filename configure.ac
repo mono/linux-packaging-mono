@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.11.0.64],
+AC_INIT(mono, [5.11.0.89],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -2673,8 +2673,10 @@ if test x$host_win32 = xno; then
 	dnl *********************************
 	dnl *** Checks for random         ***
 	dnl *********************************
-	AC_CHECK_HEADERS(sys/random.h)
-	AC_CHECK_FUNCS(getrandom getentropy)
+	if test x$host_darwin = xno; then
+		AC_CHECK_HEADERS(sys/random.h)
+		AC_CHECK_FUNCS(getrandom getentropy)
+	fi
 else
 	dnl *********************************
 	dnl *** Checks for Windows compilation ***
