@@ -14,6 +14,7 @@
     <MSBuildCSharpTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</MSBuildCSharpTargets>
     <NetStandard Condition=" $(Configuration.StartsWith('netstandard')) Or '$(NuGetRestoreTargets)' != '' ">true</NetStandard>
     <NetStandard Condition=" '$(NetStandard)' == '' ">false</NetStandard>
+    <IsTestProject Condition=" '$(IsTestProject)' == '' ">false</IsTestProject>
   </PropertyGroup>
   <PropertyGroup Condition=" $(Configuration.Contains('Debug')) ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,18 +37,19 @@
   </PropertyGroup>
   <PropertyGroup Condition=" $(Configuration.StartsWith('net_3_5')) ">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <DefineConstants>$(DefineConstants);</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET_3_5;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" $(Configuration.StartsWith('net_4_0')) ">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <DefineConstants>$(DefineConstants);NET_4_0;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(NetStandard) ">
-    <TargetFramework>netstandard1.3</TargetFramework>
+  <PropertyGroup Condition="$(NetStandard)">
+    <TargetFramework Condition="$(IsTestProject)">netcoreapp2.0</TargetFramework>
+    <TargetFramework Condition="!$(IsTestProject)">netstandard1.3</TargetFramework>
   </PropertyGroup>
-  <Import Project="NetStandard.props"  Condition=" $(NetStandard) " />
+  <Import Project="NetStandard.props" Condition="$(NetStandard)" />
   <!-- Shared References -->
-  <ItemGroup Condition=" ! $(NetStandard) ">
+  <ItemGroup Condition="!$(NetStandard)">
     <Reference Include="System.Core" />
     <Reference Include="System" />
   </ItemGroup>

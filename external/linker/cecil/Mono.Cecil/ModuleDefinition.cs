@@ -418,13 +418,11 @@ namespace Mono.Cecil {
 
 		public IAssemblyResolver AssemblyResolver {
 			get {
-#if !NET_CORE
 				if (assembly_resolver.value == null) {
 					lock (module_lock) {
 						assembly_resolver = Disposable.Owned (new DefaultAssemblyResolver () as IAssemblyResolver);
 					}
 				}
-#endif
 
 				return assembly_resolver.value;
 			}
@@ -754,28 +752,16 @@ namespace Mono.Cecil {
 
 		internal FieldDefinition Resolve (FieldReference field)
 		{
-#if NET_CORE
-			if (MetadataResolver == null)
-				throw new NotSupportedException ();
-#endif
 			return MetadataResolver.Resolve (field);
 		}
 
 		internal MethodDefinition Resolve (MethodReference method)
 		{
-#if NET_CORE
-			if (MetadataResolver == null)
-				throw new NotSupportedException ();
-#endif
 			return MetadataResolver.Resolve (method);
 		}
 
 		internal TypeDefinition Resolve (TypeReference type)
 		{
-#if NET_CORE
-			if (MetadataResolver == null)
-				throw new NotSupportedException ();
-#endif
 			return MetadataResolver.Resolve (type);
 		}
 
@@ -968,6 +954,19 @@ namespace Mono.Cecil {
 
 		internal object SyncRoot {
 			get { return module_lock; }
+		}
+
+		internal void Read<TItem> (TItem item, Action<TItem, MetadataReader> read)
+		{
+			lock (module_lock) {
+				var position = reader.position;
+				var context = reader.context;
+
+				read (item, reader);
+
+				reader.position = position;
+				reader.context = context;
+			}
 		}
 
 		internal TRet Read<TItem, TRet> (TItem item, Func<TItem, MetadataReader, TRet> read)
@@ -1321,6 +1320,9 @@ namespace Mono.Cecil {
 
 		public static TargetRuntime ParseRuntime (this string self)
 		{
+			if (string.IsNullOrEmpty (self))
+				return TargetRuntime.Net_4_0;
+
 			switch (self [1]) {
 			case '1':
 				return self [3] == '0'

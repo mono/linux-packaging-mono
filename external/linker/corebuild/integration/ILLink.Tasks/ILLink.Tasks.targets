@@ -15,6 +15,7 @@
     <LinkDuringPublish Condition=" '$(LinkDuringPublish)' == '' ">true</LinkDuringPublish>
     <LinkDuringPublish Condition=" '$(LinkDuringPublish)' != 'true' ">false</LinkDuringPublish>
     <ShowLinkerSizeComparison Condition=" '$(ShowLinkerSizeComparison)' == '' ">false</ShowLinkerSizeComparison>
+    <LinkerDumpDependencies Condition=" '$(LinkerDumpDependencies)' == '' ">false</LinkerDumpDependencies>
   </PropertyGroup>
   
   <ItemGroup>
@@ -100,6 +101,31 @@
     </ItemGroup>
   </Target>
   
+  <!-- The SDK has a target called ComputeRefAssembliesToPublish that
+       runs after ComputeFilesToPublish and rewrites
+       ResolvedFileToPublish to include any reference assemblies that
+       aren't in ResolvedAssembliesToPublish. Because
+       ComputeLinkedFilesToPublish changes ResolvedAssembliesToPublish
+       (replacing the original assemblies with linked assemblies),
+       this would change the behavior of
+       ComputeRefAssembliesToPublish, resulting in extra assemblies
+       being placed in the refs directory of the output. To prevent
+       this, we save ResolvedAssembliesToPublish before linking, and
+       restore it to its pre-link state before
+       ComputeRefAssembliesToPublish. -->
+  <Target Name="SaveResolvedAssembliesToPublish"
+          BeforeTargets="ComputeLinkedFilesToPublish">
+    <ItemGroup>
+      <PreLinkResolvedAssembliesToPublish Include="@(ResolvedAssembliesToPublish)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="RestoreResolvedAssembliesToPublish"
+          BeforeTargets="ComputeRefAssembliesToPublish">
+    <ItemGroup>
+      <ResolvedAssembliesToPublish Remove="@(ResolvedAssembliesToPublish)" />
+      <ResolvedAssembliesToPublish Include="@(PreLinkResolvedAssembliesToPublish)" />
+    </ItemGroup>
+  </Target>
 
   <!-- Print out a size comparison report for the linked
        assemblies. This is disabled by default, but can be turned on
@@ -161,6 +187,7 @@
             RootAssemblyNames="@(LinkerRootAssemblies)"
             RootDescriptorFiles="@(LinkerRootDescriptors)"
             OutputDirectory="$(IntermediateLinkDir)"
+            DumpDependencies="$(LinkerDumpDependencies)"
             ExtraArgs="$(ExtraLinkerArgs)" />
 
     <Touch Files="$(_LinkSemaphore)" AlwaysCreate="true">
