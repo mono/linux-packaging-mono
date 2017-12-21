@@ -101,7 +101,7 @@ namespace Mono.Linker.Steps
 			var action = rootVisibility == RootVisibility.Any ? AssemblyAction.Copy : AssemblyAction.Link;
 			SetAction (context, assembly, action);
 
-			context.Annotations.Push (assembly);
+			context.Tracer.Push (assembly);
 
 			foreach (TypeDefinition type in assembly.MainModule.Types)
 				MarkType (context, type, rootVisibility);
@@ -144,14 +144,11 @@ namespace Mono.Linker.Steps
 
 					context.Resolve (resolvedExportedType.Scope);
 					MarkType (context, resolvedExportedType, rootVisibility);
-					context.Annotations.Mark (exported);
-					if (context.KeepTypeForwarderOnlyAssemblies) {
-						context.Annotations.Mark (assembly.MainModule);
-					}
+					context.MarkingHelpers.MarkExportedType (exported, assembly.MainModule);
 				}
 			}
 
-			context.Annotations.Pop ();
+			context.Tracer.Pop ();
 		}
 
 		static void MarkType (LinkContext context, TypeDefinition type, RootVisibility rootVisibility)
@@ -175,9 +172,7 @@ namespace Mono.Linker.Steps
 				return;
 			}
 
-			context.Annotations.Mark (type);
-
-			context.Annotations.Push (type);
+			context.Annotations.MarkAndPush (type);
 
 			if (type.HasFields)
 				MarkFields (context, type.Fields, rootVisibility);
@@ -187,20 +182,20 @@ namespace Mono.Linker.Steps
 				foreach (var nested in type.NestedTypes)
 					MarkType (context, nested, rootVisibility);
 
-			context.Annotations.Pop ();
+			context.Tracer.Pop ();
 		}
 
 		void ProcessExecutable (AssemblyDefinition assembly)
 		{
 			SetAction (Context, assembly, AssemblyAction.Link);
 
-			Annotations.Push (assembly);
+			Tracer.Push (assembly);
 
 			Annotations.Mark (assembly.EntryPoint.DeclaringType);
 
 			MarkMethod (Context, assembly.EntryPoint, MethodAction.Parse, RootVisibility.Any);
 
-			Annotations.Pop ();
+			Tracer.Pop ();
 		}
 
 		static void MarkFields (LinkContext context, Collection<FieldDefinition> fields, RootVisibility rootVisibility)
