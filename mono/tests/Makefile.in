@@ -840,7 +840,14 @@ TESTS_IL_SRC = \
 	gsharing-valuetype-layout.il	\
 	invalid_generic_instantiation.il \
 	bug-45841-fpstack-exceptions.il \
-	instance_tailrec.il
+	instance_tailrec.il	\
+	dim-constrainedcall.il	\
+	dim-diamondshape.il	\
+	dim-genericmethods.il	\
+	dim-methodimpl.il	\
+	dim-sharedgenerics.il	\
+	dim-simple.il	\
+	dim-valuetypes.il
 
 TESTS_GSHARED_SRC = \
 	generics-sharing.2.cs	\
@@ -953,14 +960,19 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
 # abort-try-holes.exe is flaky due to unwinding failure to the finally block when aborting
 # appdomain-marshalbyref-assemblyload.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=49308
+# dim-*: https://github.com/mono/mono/pull/6252
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
 	bug-Xamarin-5278.exe \
+	appdomain-marshalbyref-assemblyload.exe	\
 	abort-try-holes.exe \
-	appdomain-marshalbyref-assemblyload.exe
+	dim-constrainedcall.exe	\
+	dim-diamondshape.exe	\
+	dim-methodimpl.exe	\
+	dim-simple.exe
 
 DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
@@ -978,13 +990,13 @@ DISABLED_TESTS = \
 #                exit code 0, but doesn't actually execute the test.
 # block_guard_restore_aligment_on_exit.exe: flaky (10% of the time it hangs and thus times out)
 # weak-fields.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=60973
+# dim-valuetypes.exe: https://github.com/mono/mono/issues/6287
 INTERP_DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
 	$(INTERP_PLATFORM_DISABLED_TESTS) \
 	$(COOP_DISABLED_TESTS) \
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
-	abort-cctor.exe \
 	appdomain-unload.exe \
 	array_load_exception.exe \
 	async-exc-compilation.exe \
@@ -996,7 +1008,6 @@ INTERP_DISABLED_TESTS = \
 	bug-48015.exe \
 	bug-58782-capture-and-throw.exe \
 	bug-58782-plain-throw.exe \
-	bug-81673.exe \
 	bug445361.exe \
 	calliGenericTest.exe \
 	cominterop.exe \
@@ -1007,9 +1018,7 @@ INTERP_DISABLED_TESTS = \
 	even-odd.exe \
 	exception18.exe \
 	field-access.exe \
-	finally_block_ending_in_dead_bb.exe \
 	handleref.exe \
-	invalid_generic_instantiation.exe \
 	ldftn-access.exe \
 	marshal.exe \
 	marshal8.exe \
@@ -1039,6 +1048,7 @@ INTERP_DISABLED_TESTS = \
 	weak-fields.exe \
 	vararg.exe \
 	vararg2.exe \
+	dim-valuetypes.exe	\
 	winx64structs.exe
 
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
