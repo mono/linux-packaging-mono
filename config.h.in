@@ -1146,6 +1146,15 @@
 /* Disable banned functions from being used by the runtime */
 #undef MONO_INSIDE_RUNTIME
 
+/* Make jemalloc assert for mono */
+#undef MONO_JEMALLOC_ASSERT
+
+/* Make jemalloc default for mono */
+#undef MONO_JEMALLOC_DEFAULT
+
+/* Enable jemalloc usage for mono */
+#undef MONO_JEMALLOC_ENABLED
+
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED
 
