@@ -154,9 +154,9 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
+	object-forward.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
+	w32process.c w32process.h w32process-internals.h profiler.c \
 	profiler-private.h rand.h rand.c remoting.h remoting.c \
 	runtime.c mono-security.c security.h security-core-clr.c \
 	security-core-clr.h security-manager.c security-manager.h \
@@ -336,9 +336,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
+	object-forward.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
+	w32process.c w32process.h w32process-internals.h profiler.c \
 	profiler-private.h rand.h rand.c remoting.h remoting.c \
 	runtime.c mono-security.c security.h security-core-clr.c \
 	security-core-clr.h security-manager.c security-manager.h \
@@ -495,9 +495,9 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
+	object-forward.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
+	w32process.c w32process.h w32process-internals.h profiler.c \
 	profiler-private.h rand.h rand.c remoting.h remoting.c \
 	runtime.c mono-security.c security.h security-core-clr.c \
 	security-core-clr.h security-manager.c security-manager.h \
@@ -681,9 +681,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
+	object-forward.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
+	w32process.c w32process.h w32process-internals.h profiler.c \
 	profiler-private.h rand.h rand.c remoting.h remoting.c \
 	runtime.c mono-security.c security.h security-core-clr.c \
 	security-core-clr.h security-manager.c security-manager.h \
@@ -1003,6 +1003,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
+JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
+JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
+JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
+JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -1031,6 +1035,9 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
+MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
+MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -1331,6 +1338,7 @@ common_sources = \
 	number-ms.c		\
 	number-ms.h		\
 	object.c	\
+	object-forward.h	\
 	object-internals.h	\
 	opcodes.c		\
 	property-bag.h	\

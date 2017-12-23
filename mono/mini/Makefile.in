@@ -93,11 +93,13 @@ target_triplet = @target@
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
 @FULL_AOT_TESTS_TRUE@am__append_4 = builtin-types.exe
+@MONO_JEMALLOC_ENABLED_TRUE@am__append_5 = $(JEMALLOC_LDFLAGS)
+@MONO_JEMALLOC_ENABLED_TRUE@am__append_6 = $(JEMALLOC_CFLAGS)
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
 # on mobile profiles
-@FULL_AOT_TESTS_TRUE@am__append_5 = \
+@FULL_AOT_TESTS_TRUE@am__append_7 = \
 @FULL_AOT_TESTS_TRUE@	Mono.Posix.dll \
 @FULL_AOT_TESTS_TRUE@	System.Configuration.dll
 
@@ -709,6 +711,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
+JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
+JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
+JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
+JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -737,6 +743,9 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
+MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
+MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -914,6 +923,7 @@ AM_CFLAGS = \
 	-I$(top_srcdir) 	\
 	$(GLIB_CFLAGS)		\
 	$(LLVM_CFLAGS)		\
+	$(JEMALLOC_CFLAGS)	\
 	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS) $(SHARED_CFLAGS)
 
 AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
@@ -924,12 +934,15 @@ monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info 1:0:0 \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_3)
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_3) \
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_5)
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_3)
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_3) \
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_5)
 @HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
-@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_3)
+@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_3) \
+@HOST_WIN32_TRUE@	$(am__append_5)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
 @SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini-static.la $(sgen_static_libs)
@@ -954,7 +967,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
 mono_boehm_SOURCES = \
 	main.c
 
-mono_CFLAGS = $(AM_CFLAGS)
+mono_CFLAGS = $(AM_CFLAGS) $(am__append_6)
 mono_boehm_CFLAGS = $(AM_CFLAGS)
 AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
 mono_sgen_SOURCES = \
@@ -1330,7 +1343,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
-FULLAOT_LIBS_DISABLED = $(am__append_5)
+FULLAOT_LIBS_DISABLED = $(am__append_7)
 FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
