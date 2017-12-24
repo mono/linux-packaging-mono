@@ -901,7 +901,7 @@ interp_walk_stack_with_ctx (MonoInternalStackWalk func, MonoContext *ctx, MonoUn
 	}
 }
 
-static MonoPIFunc mono_interp_enter_icall_trampoline = NULL;
+static MonoPIFunc mono_interp_to_native_trampoline = NULL;
 
 #ifndef MONO_ARCH_HAVE_INTERP_PINVOKE_TRAMP
 static InterpMethodArguments* build_args_from_sig (MonoMethodSignature *sig, InterpFrame *frame)
@@ -1128,13 +1128,11 @@ static gpointer
 interp_frame_arg_to_storage (MonoInterpFrameHandle frame, MonoMethodSignature *sig, int index)
 {
 	InterpFrame *iframe = (InterpFrame*)frame;
-	MonoType *type = sig->ret;
-	stackval *val = iframe->retval;
 
-	g_assert (index == -1);
-	g_assert (type->type == MONO_TYPE_VALUETYPE);
-
-	return stackval_to_data_addr (type, val);
+	if (index == -1)
+		return stackval_to_data_addr (sig->ret, iframe->retval);
+	else
+		return stackval_to_data_addr (sig->params [index], &iframe->stack_args [index]);
 }
 
 static void 
@@ -1145,12 +1143,12 @@ ves_pinvoke_method (InterpFrame *frame, MonoMethodSignature *sig, MonoFuncV addr
 	frame->ex = NULL;
 
 	g_assert (!frame->imethod);
-	if (!mono_interp_enter_icall_trampoline) {
+	if (!mono_interp_to_native_trampoline) {
 		if (mono_aot_only) {
-			mono_interp_enter_icall_trampoline = mono_aot_get_trampoline ("enter_icall_trampoline");
+			mono_interp_to_native_trampoline = mono_aot_get_trampoline ("interp_to_native_trampoline");
 		} else {
 			MonoTrampInfo *info;
-			mono_interp_enter_icall_trampoline = mono_arch_get_enter_icall_trampoline (&info);
+			mono_interp_to_native_trampoline = mono_arch_get_interp_to_native_trampoline (&info);
 			// TODO:
 			// mono_tramp_info_register (info, NULL);
 		}
@@ -1163,16 +1161,16 @@ ves_pinvoke_method (InterpFrame *frame, MonoMethodSignature *sig, MonoFuncV addr
 #endif
 
 #if DEBUG_INTERP
-	g_print ("ICALL: mono_interp_enter_icall_trampoline = %p, addr = %p\n", mono_interp_enter_icall_trampoline, addr);
+	g_print ("ICALL: mono_interp_to_native_trampoline = %p, addr = %p\n", mono_interp_to_native_trampoline, addr);
 #endif
 
 	context->current_frame = frame;
 
 	interp_push_lmf (&ext, frame);
 #ifdef MONO_ARCH_HAVE_INTERP_PINVOKE_TRAMP
-	mono_interp_enter_icall_trampoline (addr, &ccontext);
+	mono_interp_to_native_trampoline (addr, &ccontext);
 #else
-	mono_interp_enter_icall_trampoline (addr, margs);
+	mono_interp_to_native_trampoline (addr, margs);
 #endif
 	interp_pop_lmf (&ext);
 
