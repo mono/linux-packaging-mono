@@ -640,7 +640,7 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_remoting_invoke_for_target (MonoMethod *method, MonoRemotingTarget target_type)
+mono_marshal_get_remoting_invoke_for_target (MonoMethod *method, MonoRemotingTarget target_type, MonoError *error)
 
 </div>
             <p />
@@ -658,7 +658,7 @@ mono_marshal_get_remoting_invoke_for_target (MonoMethod *method, MonoRemotingTar
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_remoting_invoke (MonoMethod *method)
+mono_marshal_get_remoting_invoke (MonoMethod *method, MonoError *error)
 
 </div>
             <p />
@@ -676,7 +676,7 @@ mono_marshal_get_remoting_invoke (MonoMethod *method)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_remoting_invoke_with_check (MonoMethod *method)
+mono_marshal_get_remoting_invoke_with_check (MonoMethod *method, MonoError *error)
 
 </div>
             <p />
@@ -833,7 +833,7 @@ mono_marshal_get_unbox_wrapper (MonoMethod *method)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_xappdomain_invoke (MonoMethod *method)
+mono_marshal_get_xappdomain_invoke (MonoMethod *method, MonoError *error)
 
 </div>
             <p />

@@ -837,8 +837,8 @@ libmonoutilsinclude_HEADERS = \
 	mono-counters.h
 
 EXTRA_DIST = mono-embed.h mono-embed.c
+DIST_SUBDIRS = jemalloc
 @MONO_JEMALLOC_ENABLED_TRUE@SUBDIRS = jemalloc
-@MONO_JEMALLOC_ENABLED_TRUE@DIST_SUBDIRS = jemalloc
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
