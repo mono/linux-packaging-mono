@@ -690,6 +690,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_get_domain@Base 4.1.0.1738
  mono_object_get_size@Base 4.1.0.1738
  mono_object_get_virtual_method@Base 4.1.0.1738
+ mono_object_get_vtable@Base 5.11.0.133
  mono_object_hash@Base 4.1.0.1738
  mono_object_isinst@Base 4.1.0.1738
  mono_object_isinst_mbyref@Base 4.1.0.1738
@@ -733,6 +734,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_get_coverage_data@Base 5.5.0.357
  mono_profiler_get_sample_mode@Base 5.5.0.357
  mono_profiler_install@Base 4.1.0.1738
+ mono_profiler_install_allocation@Base 5.11.0.133
+ mono_profiler_install_enter_leave@Base 5.11.0.133
+ mono_profiler_install_exception@Base 5.11.0.133
  mono_profiler_install_gc@Base 5.5.0.527
  mono_profiler_install_jit_end@Base 5.5.0.527
  mono_profiler_install_thread@Base 5.5.0.527
@@ -758,6 +762,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_set_exception_clause_callback@Base 5.5.0.357
  mono_profiler_set_exception_throw_callback@Base 5.5.0.357
  mono_profiler_set_gc_allocation_callback@Base 5.5.0.357
+ mono_profiler_set_gc_event2_callback@Base 5.11.0.133
  mono_profiler_set_gc_event_callback@Base 5.5.0.357
  mono_profiler_set_gc_finalized_callback@Base 5.5.0.357
  mono_profiler_set_gc_finalized_object_callback@Base 5.5.0.357
@@ -767,6 +772,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_set_gc_handle_deleted_callback@Base 5.5.0.357
  mono_profiler_set_gc_moves_callback@Base 5.5.0.357
  mono_profiler_set_gc_resize_callback@Base 5.5.0.357
+ mono_profiler_set_gc_root_register_callback@Base 5.11.0.133
+ mono_profiler_set_gc_root_unregister_callback@Base 5.11.0.133
  mono_profiler_set_gc_roots_callback@Base 5.5.0.357
  mono_profiler_set_image_failed_callback@Base 5.5.0.357
  mono_profiler_set_image_loaded_callback@Base 5.5.0.357
@@ -795,9 +802,14 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_set_runtime_shutdown_end_callback@Base 5.5.0.357
  mono_profiler_set_sample_hit_callback@Base 5.5.0.357
  mono_profiler_set_sample_mode@Base 5.5.0.357
+ mono_profiler_set_thread_exited_callback@Base 5.11.0.133
  mono_profiler_set_thread_name_callback@Base 5.5.0.357
  mono_profiler_set_thread_started_callback@Base 5.5.0.357
  mono_profiler_set_thread_stopped_callback@Base 5.5.0.357
+ mono_profiler_set_thread_stopping_callback@Base 5.11.0.133
+ mono_profiler_set_vtable_failed_callback@Base 5.11.0.133
+ mono_profiler_set_vtable_loaded_callback@Base 5.11.0.133
+ mono_profiler_set_vtable_loading_callback@Base 5.11.0.133
  mono_property_get_flags@Base 4.1.0.1738
  mono_property_get_get_method@Base 4.1.0.1738
  mono_property_get_name@Base 4.1.0.1738
@@ -955,6 +967,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
  mono_threads_set_default_stacksize@Base 4.1.0.1738
+ mono_trace_init@Base 5.11.0.133
  mono_trace_set_level_string@Base 4.1.0.1738
  mono_trace_set_log_handler@Base 4.1.0.1738
  mono_trace_set_mask_string@Base 4.1.0.1738
@@ -1002,6 +1015,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_value_describe_fields@Base 4.1.0.1738
  mono_verify_corlib@Base 4.1.0.1738
  mono_vfree@Base 4.1.0.1738
+ mono_vtable_class@Base 5.11.0.133
+ mono_vtable_domain@Base 5.11.0.133
  mono_vtable_get_static_field_data@Base 4.1.0.1738
  mono_win32_compat_CopyMemory@Base 4.1.0.1738
  mono_win32_compat_FillMemory@Base 4.1.0.1738
