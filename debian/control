@@ -20,6 +20,7 @@ Build-Depends: debhelper (>= 7),
 	libxt-dev,
 	zlib1g-dev,
 	autoconf,
+	python,
 	automake
 Standards-Version: 3.9.6
 Homepage: http://www.mono-project.com/
