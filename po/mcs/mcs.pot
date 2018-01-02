@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mono 5.11.0.137\n"
+"Project-Id-Version: mono 5.11.0.139\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-12-29 08:53+0000\n"
+"POT-Creation-Date: 2018-01-02 18:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,7 +137,7 @@ msgstr ""
 msgid "An expression tree cannot contain an assignment operator"
 msgstr ""
 
-#: mcs/mcs/assign.cs:797
+#: mcs/mcs/assign.cs:809
 #, csharp-format
 msgid "Cannot assign to `{0}' because it is a `{1}'"
 msgstr ""
@@ -2350,98 +2350,103 @@ msgstr ""
 msgid "Array elements cannot be of static type `{0}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11868
+#: mcs/mcs/expression.cs:11869
 msgid "Cannot use a negative size with stackalloc"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11872
+#: mcs/mcs/expression.cs:11873
 msgid "Cannot use stackalloc in finally or catch"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12031
+#: mcs/mcs/expression.cs:11918
+#, csharp-format
+msgid "Cannot convert a stackalloc expression of type `{0}' to type `{1}'"
+msgstr ""
+
+#: mcs/mcs/expression.cs:12060
 #, csharp-format
 msgid ""
 "Member `{0}' cannot be initialized. An object initializer may only be used "
 "for fields, or properties"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12039
+#: mcs/mcs/expression.cs:12068
 #, csharp-format
 msgid ""
 "Static field or property `{0}' cannot be assigned in an object initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12110
+#: mcs/mcs/expression.cs:12139
 msgid ""
 "An expression tree cannot contain a collection initializer with extension "
 "method"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12148
+#: mcs/mcs/expression.cs:12177
 msgid "Expression tree cannot contain a dictionary initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12273
+#: mcs/mcs/expression.cs:12302
 #, csharp-format
 msgid ""
 "A field or property `{0}' cannot be initialized with a collection object "
 "initializer because type `{1}' does not implement `{2}' interface"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12284
+#: mcs/mcs/expression.cs:12313
 #, csharp-format
 msgid "Inconsistent `{0}' member declaration"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12292
+#: mcs/mcs/expression.cs:12321
 #, csharp-format
 msgid ""
 "An object initializer includes more than one member `{0}' initialization"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12310
+#: mcs/mcs/expression.cs:12339
 #, csharp-format
 msgid "Cannot initialize object of type `{0}' with a collection initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12455
+#: mcs/mcs/expression.cs:12484
 msgid ""
 "Object and collection initializers cannot be used to instantiate a delegate"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12674
+#: mcs/mcs/expression.cs:12703
 msgid "Anonymous types cannot be used in this expression"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12768
+#: mcs/mcs/expression.cs:12797
 #, csharp-format
 msgid "An anonymous type property `{0}' cannot be initialized with `{1}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13008
+#: mcs/mcs/expression.cs:13037
 msgid "An expression tree cannot not contain a throw expression"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13079
+#: mcs/mcs/expression.cs:13108
 msgid ""
 "An expression cannot be used in this context because it may not be returned "
 "by reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13104
+#: mcs/mcs/expression.cs:13133
 #, csharp-format
 msgid ""
 "The expression must be of type `{0}' because it is being assigned by "
 "reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13136
+#: mcs/mcs/expression.cs:13165
 msgid ""
 "An expression tree lambda cannot contain a call to a method, property, or "
 "indexer that returns by reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13181
+#: mcs/mcs/expression.cs:13210
 #, csharp-format
 msgid ""
 "`await' cannot be used in an expression containing a call to `{0}' because "
@@ -3896,38 +3901,38 @@ msgstr ""
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:840
+#: mcs/mcs/typemanager.cs:845
 #, csharp-format
 msgid "The predefined type `{0}.{1}' is not defined or imported"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:885
+#: mcs/mcs/typemanager.cs:890
 #, csharp-format
 msgid ""
 "The predefined type `{0}.{1}' is defined multiple times. Using definition "
 "from `{2}'"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:896
+#: mcs/mcs/typemanager.cs:901
 #, csharp-format
 msgid ""
 "The predefined type `{0}.{1}' is defined in an assembly that is not "
 "referenced."
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:906
+#: mcs/mcs/typemanager.cs:911
 #, csharp-format
 msgid "The predefined type `{0}.{1}' is not declared correctly"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:1029
+#: mcs/mcs/typemanager.cs:1034
 #, csharp-format
 msgid ""
 "The compiler required member `{0}.{1}{2}' could not be found or is "
 "inaccessible"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:1148
+#: mcs/mcs/typemanager.cs:1153
 #, csharp-format
 msgid ""
 "Cannot take the address of, get the size of, or declare a pointer to a "
