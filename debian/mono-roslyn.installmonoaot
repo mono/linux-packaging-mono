@@ -1,4 +1,5 @@
 /usr/lib/mono/4.5/csc.exe
+/usr/lib/mono/4.5/vbc.exe
 /usr/lib/mono/4.5/VBCSCompiler.exe
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll
