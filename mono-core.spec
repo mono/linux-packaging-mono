@@ -246,6 +246,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/crlupdate
 %{_bindir}/csc
 %{_bindir}/csi
+%{_bindir}/vbc
 %{_bindir}/csharp
 %{_bindir}/dmcs
 %{_bindir}/gacutil
@@ -295,6 +296,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/crlupdate.pdb
 %{_prefix}/lib/mono/4.5/csc.*
 %{_prefix}/lib/mono/4.5/csi.*
+%{_prefix}/lib/mono/4.5/vbc.*
 %{_prefix}/lib/mono/4.5/csharp.exe*
 %{_prefix}/lib/mono/4.5/csharp.pdb
 %{_prefix}/lib/mono/4.5/gacutil.exe*
