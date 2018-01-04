@@ -13,7 +13,7 @@ namespace System
     internal static partial class SpanHelpers
     {
         public static int IndexOf<T>(ref T searchSpace, int searchSpaceLength, ref T value, int valueLength)
-            where T : struct, IEquatable<T>
+            where T : IEquatable<T>
         {
             Debug.Assert(searchSpaceLength >= 0);
             Debug.Assert(valueLength >= 0);
@@ -49,7 +49,7 @@ namespace System
         }
 
         public static unsafe int IndexOf<T>(ref T searchSpace, T value, int length)
-            where T : struct, IEquatable<T>
+            where T : IEquatable<T>
         {
             Debug.Assert(length >= 0);
 
@@ -123,7 +123,7 @@ namespace System
         }
 
         public static bool SequenceEqual<T>(ref T first, ref T second, int length)
-            where T : struct, IEquatable<T>
+            where T : IEquatable<T>
         {
             Debug.Assert(length >= 0);
 

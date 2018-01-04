@@ -256,7 +256,7 @@ namespace System.Linq.Expressions.Interpreter
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-    internal struct InterpretedFrameInfo
+    internal readonly struct InterpretedFrameInfo
     {
         private readonly string _methodName;
 
@@ -305,6 +305,8 @@ namespace System.Linq.Expressions.Interpreter
 
         public LightDelegateCreator CompileTop(LambdaExpression node)
         {
+            node.ValidateArgumentCount();
+
             //Console.WriteLine(node.DebugView);
             for (int i = 0, n = node.ParameterCount; i < n; i++)
             {
@@ -1944,7 +1946,6 @@ namespace System.Linq.Expressions.Interpreter
             }
             else
             {
-
                 BranchLabel end = _instructions.MakeLabel();
                 BranchLabel gotoEnd = _instructions.MakeLabel();
                 int tryStart = _instructions.Count;
@@ -2213,9 +2214,9 @@ namespace System.Linq.Expressions.Interpreter
                         return ((IndexExpression)node).Object.Type.IsArray;
                     case ExpressionType.MemberAccess:
                         return ((MemberExpression)node).Member is FieldInfo;
-                    // ExpressionType.Unbox does have the behaviour write-back is used to simulate, but
-                    // it doesn't need explicit write-back to produce it, so include it in the default
-                    // false cases.
+                        // ExpressionType.Unbox does have the behaviour write-back is used to simulate, but
+                        // it doesn't need explicit write-back to produce it, so include it in the default
+                        // false cases.
                 }
             }
             return false;

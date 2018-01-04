@@ -50,7 +50,6 @@ namespace Microsoft.CSharp.RuntimeBinder
         protected RuntimeBinderException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 }

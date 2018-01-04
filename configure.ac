@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.11.0.147],
-        [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
+AC_INIT(mono, [5.11.0.154],
+        [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
 AC_CONFIG_MACRO_DIR([m4])

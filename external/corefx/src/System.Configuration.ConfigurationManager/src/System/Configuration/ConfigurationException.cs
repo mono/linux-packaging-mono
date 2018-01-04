@@ -17,6 +17,9 @@ namespace System.Configuration
     ///     number information where possible.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class ConfigurationException : SystemException
     {
         private string _filename;
@@ -26,7 +29,7 @@ namespace System.Configuration
         protected ConfigurationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            throw new PlatformNotSupportedException();
+            Init(info.GetString("filename"), info.GetInt32("line"));
         }
 
         [Obsolete("This class is obsolete, to create a new exception create a System.Configuration!System.Configuration.ConfigurationErrorsException")]
@@ -93,6 +96,8 @@ namespace System.Configuration
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
+            info.AddValue("filename", _filename);
+            info.AddValue("line", _line);
         }
 
         [Obsolete("This class is obsolete, use System.Configuration!System.Configuration.ConfigurationErrorsException.GetFilename instead")]

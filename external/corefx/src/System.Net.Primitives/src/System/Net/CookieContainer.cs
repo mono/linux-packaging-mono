@@ -56,7 +56,7 @@ using System.Text;
 
 namespace System.Net
 {
-    internal struct HeaderVariantInfo
+    internal readonly struct HeaderVariantInfo
     {
         private readonly string _name;
         private readonly CookieVariant _variant;
@@ -810,8 +810,6 @@ namespace System.Net
         {
             for (int i = 0; i < domainAttribute.Count; i++)
             {
-                bool found = false;
-                bool defaultAdded = false;
                 PathList pathList;
                 lock (m_domainTable.SyncRoot)
                 {
@@ -831,32 +829,10 @@ namespace System.Net
                         string path = (string)e.Key;
                         if (uri.AbsolutePath.StartsWith(CookieParser.CheckQuoted(path)))
                         {
-                            found = true;
-
                             CookieCollection cc = (CookieCollection)e.Value;
                             cc.TimeStamp(CookieCollection.Stamp.Set);
                             MergeUpdateCollections(ref cookies, cc, port, isSecure, matchOnlyPlainCookie);
-
-                            if (path == "/")
-                            {
-                                defaultAdded = true;
-                            }
                         }
-                        else if (found)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                if (!defaultAdded)
-                {
-                    CookieCollection cc = (CookieCollection)pathList["/"];
-
-                    if (cc != null)
-                    {
-                        cc.TimeStamp(CookieCollection.Stamp.Set);
-                        MergeUpdateCollections(ref cookies, cc, port, isSecure, matchOnlyPlainCookie);
                     }
                 }
 

@@ -11,7 +11,7 @@ namespace System.Buffers.Binary
     /// Reads bytes as primitives with specific endianness
     /// </summary>
     /// <remarks>
-    /// For native formats, SpanExtensions.Read&lt;T&gt; should be used.
+    /// For native formats, MemoryExtensions.Read{T}; should be used.
     /// Use these helpers when you need to read specific endinanness.
     /// </remarks>
     public static partial class BinaryPrimitives
@@ -21,6 +21,7 @@ namespace System.Buffers.Binary
         /// This allows the caller to read a struct of numeric primitives and reverse each field
         /// rather than having to skip sbyte fields.
         /// </summary> 
+        [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte ReverseEndianness(sbyte value)
         {
@@ -62,6 +63,7 @@ namespace System.Buffers.Binary
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
         /// </summary> 
+        [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ReverseEndianness(ushort value)
         {
@@ -71,6 +73,7 @@ namespace System.Buffers.Binary
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
         /// </summary> 
+        [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ReverseEndianness(uint value)
         {
@@ -82,6 +85,7 @@ namespace System.Buffers.Binary
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
         /// </summary> 
+        [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong ReverseEndianness(ulong value)
         {
@@ -106,12 +110,12 @@ namespace System.Buffers.Binary
 #else
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
-                throw new ArgumentException(SR.Format(SR.Argument_InvalidTypeWithPointersNotSupported, typeof(T)));
+                ThrowHelper.ThrowArgumentException_InvalidTypeWithPointersNotSupported(typeof(T));
             }
 #endif
             if (Unsafe.SizeOf<T>() > buffer.Length)
             {
-                throw new ArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
             return Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
         }
@@ -132,7 +136,7 @@ namespace System.Buffers.Binary
 #else
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
-                throw new ArgumentException(SR.Format(SR.Argument_InvalidTypeWithPointersNotSupported, typeof(T)));
+                ThrowHelper.ThrowArgumentException_InvalidTypeWithPointersNotSupported(typeof(T));
             }
 #endif
             if (Unsafe.SizeOf<T>() > (uint)buffer.Length)
