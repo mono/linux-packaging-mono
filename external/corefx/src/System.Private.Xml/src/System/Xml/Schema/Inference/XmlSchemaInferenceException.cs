@@ -2,22 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.IO;
+using System.Resources;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Diagnostics;
+using System.Globalization;
+
 namespace System.Xml.Schema
 {
-    using System;
-    using System.IO;
-    using System.Resources;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Diagnostics;
-    using System.Globalization;
-
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class XmlSchemaInferenceException : XmlSchemaException
     {
         protected XmlSchemaInferenceException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -52,6 +54,6 @@ namespace System.Xml.Schema
         {
         }
     }
-} // namespace System.Xml.Schema
+}
 
 

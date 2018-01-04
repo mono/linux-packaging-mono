@@ -69,7 +69,7 @@
       "alwaysRun": false,
       "displayName": "Install Signing Plugin",
       "timeoutInMinutes": 0,
-      "condition": "ne(variables['PB_SignType'], 'oss')",
+      "condition": "and(succeeded(), in(variables.PB_SignType, 'real', 'test'))",
       "refName": "Task4",
       "task": {
         "id": "30666190-6959-11e5-9f96-f56098202fef",
@@ -422,6 +422,12 @@
     "PB_SignType": {
       "value": "real",
       "allowOverride": true
+    },
+    "PB_PackageVersionPropsUrl": {
+      "value": ""
+    },
+    "PACKAGEVERSIONPROPSURL": {
+      "value": "$(PB_PackageVersionPropsUrl)"
     }
   },
   "demands": [

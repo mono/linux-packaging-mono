@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-01-03 09:08+0000\n"
+"POT-Creation-Date: 2018-01-04 08:50+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -37,7 +37,7 @@ msgstr ""
 "Não foi possível converter \"{0}\" para um tipo delegate \"{1}\"pois os "
 "parâmetros não conferem"
 
-#: mcs/mcs/anonymous.cs:1059 mcs/mcs/ecore.cs:5941
+#: mcs/mcs/anonymous.cs:1059 mcs/mcs/ecore.cs:5957
 #, csharp-format
 msgid "Delegate `{0}' does not take `{1}' arguments"
 msgstr "Delegate \"{0}\" não recebe \"{1}\" argumentos"
@@ -1600,7 +1600,7 @@ msgstr ""
 "Não foi possível converter implicitamente o tipo \"{0}\" para \"{1}\". Uma "
 "conversão explícita já existe (você não está esquecendo de um cast?)"
 
-#: mcs/mcs/ecore.cs:332 mcs/mcs/ecore.cs:4184
+#: mcs/mcs/ecore.cs:332 mcs/mcs/ecore.cs:4197
 #, csharp-format
 msgid "Cannot implicitly convert type `{0}' to `{1}'"
 msgstr "Não foi possível converter implicitamente o tipo \"{0}\" para \"{1}\""
@@ -1891,12 +1891,12 @@ msgstr ""
 "Tipo \"{0}\" não contém um membro \"{1}\" e o melhor método de extensão "
 "sobrecarregado \"{2}\" tem alguns argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:4035
+#: mcs/mcs/ecore.cs:4042
 msgid "An expression tree cannot contain an expression with method group"
 msgstr ""
 "Uma árvore de expressão não pode conter uma expressão com um grupo de método"
 
-#: mcs/mcs/ecore.cs:4041
+#: mcs/mcs/ecore.cs:4048
 msgid ""
 "Partial methods with only a defining declaration or removed conditional "
 "methods cannot be used in an expression tree"
@@ -1904,7 +1904,7 @@ msgstr ""
 "Métodos parciais com somente uma declaração de definição ou métodos com "
 "condicionais removidos não podem ser utilizados em uma árvore de expressão"
 
-#: mcs/mcs/ecore.cs:4100
+#: mcs/mcs/ecore.cs:4107
 #, csharp-format
 msgid ""
 "Cannot convert method group `{0}' to non-delegate type `{1}'. Consider using "
@@ -1913,20 +1913,20 @@ msgstr ""
 "Não foi possível converter o grupo de método \"{0}\" para o tipo não-"
 "delegate \"{1}\". Consider a utilização de parênteses quando chamar o método"
 
-#: mcs/mcs/ecore.cs:4245
+#: mcs/mcs/ecore.cs:4261
 #, fuzzy
 msgid ""
 "An argument to nameof operator cannot be method group with type arguments"
 msgstr "A propriedade \"{0}\" não pode ser utilizada com argumentos de tipo"
 
-#: mcs/mcs/ecore.cs:5004
+#: mcs/mcs/ecore.cs:5020
 #, csharp-format
 msgid ""
 "The type `{0}' does not contain a constructor that takes `{1}' arguments"
 msgstr ""
 "O tipo \"{0}\" não contém um construtor que aceite os argumentos \"{1}\""
 
-#: mcs/mcs/ecore.cs:5725
+#: mcs/mcs/ecore.cs:5741
 #, fuzzy, csharp-format
 msgid ""
 "Type `{0}' does not contain a member `{1}' and the best extension method "
@@ -1936,7 +1936,7 @@ msgstr ""
 "Tipo \"{0}\" não contém um membro \"{1}\" e o melhor método de extensão "
 "sobrecarregado \"{2}\" tem alguns argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:5764
+#: mcs/mcs/ecore.cs:5780
 #, csharp-format
 msgid ""
 "The call is ambiguous between the following methods or properties: `{0}' and "
@@ -1945,7 +1945,7 @@ msgstr ""
 "Essa chamada é ambígua entre os seguintes métodos ou propriedades: \"{0}\" e "
 "\"{1}\""
 
-#: mcs/mcs/ecore.cs:5825
+#: mcs/mcs/ecore.cs:5841
 #, fuzzy, csharp-format
 msgid ""
 "The best overloaded collection initalizer method `{0}' cannot have `ref' or "
@@ -1954,7 +1954,7 @@ msgstr ""
 "O melhor método sobrecarregado de coleção \"{0}\" não pode ter o modificador "
 "\"ref\" ou \"out\""
 
-#: mcs/mcs/ecore.cs:5829
+#: mcs/mcs/ecore.cs:5845
 #, csharp-format
 msgid ""
 "The best overloaded collection initalizer method `{0}' has some invalid "
@@ -1963,18 +1963,18 @@ msgstr ""
 "O melhor método sobrecarregado inicializador de coleção \"{0}\" tem alguns "
 "argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:5832
+#: mcs/mcs/ecore.cs:5848
 #, csharp-format
 msgid "Delegate `{0}' has some invalid arguments"
 msgstr "Delegate \"{0}\" tem alguns argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:5836
+#: mcs/mcs/ecore.cs:5852
 #, csharp-format
 msgid "The best overloaded method match for `{0}' has some invalid arguments"
 msgstr ""
 "O melhor método sobrecarregado para \"{0}\" tem alguns argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:5845
+#: mcs/mcs/ecore.cs:5861
 #, csharp-format
 msgid ""
 "Argument `#{0}' does not require `{1}' modifier. Consider removing `{1}' "
@@ -1983,18 +1983,18 @@ msgstr ""
 "Argumento \"#{0}\" não requer o modificador \"{1}\". Considere remover o "
 "modificador \"{1}\""
 
-#: mcs/mcs/ecore.cs:5848
+#: mcs/mcs/ecore.cs:5864
 #, csharp-format
 msgid "Argument `#{0}' is missing `{1}' modifier"
 msgstr "Argumento \"#{0}\" não encontrou o modificador \"{1}\""
 
-#: mcs/mcs/ecore.cs:5865
+#: mcs/mcs/ecore.cs:5881
 #, csharp-format
 msgid "Argument `#{0}' cannot convert `{1}' expression to type `{2}'"
 msgstr ""
 "Argumento \"#{0}\" não pôde converter a expressão \"{1}\" para o tipo \"{2}\""
 
-#: mcs/mcs/ecore.cs:5917
+#: mcs/mcs/ecore.cs:5933
 #, csharp-format
 msgid ""
 "The type arguments for method `{0}' cannot be inferred from the usage. Try "
@@ -2003,17 +2003,17 @@ msgstr ""
 "O argumentos de tipo para o método \"{0}\" não pôde ser inferido do uso. "
 "Tente especificar os tipos dos argumentos explicitamente"
 
-#: mcs/mcs/ecore.cs:5946
+#: mcs/mcs/ecore.cs:5962
 #, csharp-format
 msgid "No overload for method `{0}' takes `{1}' arguments"
 msgstr "Sem sobrecarga para o método \"{0}\" aceitar os argumentos \"{1}\""
 
-#: mcs/mcs/ecore.cs:6057
+#: mcs/mcs/ecore.cs:6073
 #, fuzzy, csharp-format
 msgid "The delegate `{0}' does not contain a parameter named `{1}'"
 msgstr "O tipo aninhado \"{0}\" não existe no tipo \"{1}\""
 
-#: mcs/mcs/ecore.cs:6062
+#: mcs/mcs/ecore.cs:6078
 #, fuzzy, csharp-format
 msgid ""
 "The best overloaded method match for `{0}' does not contain a parameter "
@@ -2021,14 +2021,14 @@ msgid ""
 msgstr ""
 "O melhor método sobrecarregado para \"{0}\" tem alguns argumentos inválidos"
 
-#: mcs/mcs/ecore.cs:6072
+#: mcs/mcs/ecore.cs:6088
 #, csharp-format
 msgid ""
 "Named argument `{0}' cannot be used for a parameter which has positional "
 "argument specified"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6456
+#: mcs/mcs/ecore.cs:6472
 msgid ""
 "You cannot use fixed size buffers contained in unfixed expressions. Try "
 "using the fixed statement"
@@ -2036,21 +2036,21 @@ msgstr ""
 "Você não pode usar buffers de tamanho fixo contidos em expressões não "
 "fixadas. Tente utilizar a declaração fixa"
 
-#: mcs/mcs/ecore.cs:6461
+#: mcs/mcs/ecore.cs:6477
 #, csharp-format
 msgid "`{0}': Fixed size buffers can only be accessed through locals or fields"
 msgstr ""
 "\"{0}\": Buffers de tamanho fixo podem apenas ser acessados atravéis de "
 "locais ou campos"
 
-#: mcs/mcs/ecore.cs:6546
+#: mcs/mcs/ecore.cs:6562
 #, csharp-format
 msgid ""
 "A static readonly field `{0}' cannot be passed ref or out (except in a "
 "static constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6549
+#: mcs/mcs/ecore.cs:6565
 #, fuzzy, csharp-format
 msgid ""
 "A readonly field `{0}' cannot be passed ref or out (except in a constructor)"
@@ -2058,21 +2058,21 @@ msgstr ""
 "Uma variável de intervalo \"{0}\" não deve ser passada como parâmetros \"ref"
 "\" ou \"out\""
 
-#: mcs/mcs/ecore.cs:6563
+#: mcs/mcs/ecore.cs:6579
 #, csharp-format
 msgid ""
 "Fields of static readonly field `{0}' cannot be passed ref or out (except in "
 "a static constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6566
+#: mcs/mcs/ecore.cs:6582
 #, csharp-format
 msgid ""
 "Members of readonly field `{0}' cannot be passed ref or out (except in a "
 "constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6573
+#: mcs/mcs/ecore.cs:6589
 #, fuzzy, csharp-format
 msgid ""
 "A static readonly field `{0}' cannot be assigned to (except in a static "
@@ -2081,7 +2081,7 @@ msgstr ""
 " Campo estático ou propriedade \"{0}\" não podem ser atribuídas a um "
 "inicializador de objeto"
 
-#: mcs/mcs/ecore.cs:6576
+#: mcs/mcs/ecore.cs:6592
 #, fuzzy, csharp-format
 msgid ""
 "A readonly field `{0}' cannot be assigned to (except in a constructor or a "
@@ -2090,38 +2090,38 @@ msgstr ""
 " Campo estático ou propriedade \"{0}\" não podem ser atribuídas a um "
 "inicializador de objeto"
 
-#: mcs/mcs/ecore.cs:6643
+#: mcs/mcs/ecore.cs:6659
 #, fuzzy, csharp-format
 msgid "Use of possibly unassigned field `{0}'"
 msgstr "Uso de campo possivelmente não atribuído \""
 
-#: mcs/mcs/ecore.cs:7059
+#: mcs/mcs/ecore.cs:7075
 #, fuzzy, csharp-format
 msgid "Property or event `{0}' is not supported by the C# language"
 msgstr ""
 "A propriedade \"{0}\" não tem suporte na linguagem C#. Tente chamar o método "
 "acessor \"{1}\" diretamente"
 
-#: mcs/mcs/ecore.cs:7179
+#: mcs/mcs/ecore.cs:7195
 #, fuzzy, csharp-format
 msgid "Use of possibly unassigned auto-implemented property `{0}'"
 msgstr "Uso de campo possivelmente não atribuído \""
 
-#: mcs/mcs/ecore.cs:7383
+#: mcs/mcs/ecore.cs:7399
 #, csharp-format
 msgid "A range variable `{0}' may not be passes as `ref' or `out' parameter"
 msgstr ""
 "Uma variável de intervalo \"{0}\" não deve ser passada como parâmetros \"ref"
 "\" ou \"out\""
 
-#: mcs/mcs/ecore.cs:7411
+#: mcs/mcs/ecore.cs:7427
 #, fuzzy, csharp-format
 msgid "Property or indexer `{0}' cannot be assigned to (it is read-only)"
 msgstr ""
 "Propriedade ou indexador \"{0}\" não pôde ser atribuida (ela é somente "
 "leitura)"
 
-#: mcs/mcs/ecore.cs:7419
+#: mcs/mcs/ecore.cs:7435
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because the set "
@@ -2130,7 +2130,7 @@ msgstr ""
 "A propriedade ou indexador \"{0}\" não pôde ser utilizada neste contexto por "
 "que o acessor do conjunto está inacessível"
 
-#: mcs/mcs/ecore.cs:7499
+#: mcs/mcs/ecore.cs:7515
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because it "
@@ -2139,7 +2139,7 @@ msgstr ""
 "A propriedade ou indexador \"{0}\" não pôde ser utilizada nesse contexto "
 "porque falta o acessor \"get\""
 
-#: mcs/mcs/ecore.cs:7506
+#: mcs/mcs/ecore.cs:7522
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because the get "
@@ -2148,7 +2148,7 @@ msgstr ""
 "A propriedade ou indexador \"{0}\" não pôde ser utilizada nesse contexto "
 "porque o acessor get está inacessível"
 
-#: mcs/mcs/ecore.cs:7688
+#: mcs/mcs/ecore.cs:7704
 #, csharp-format
 msgid ""
 "The event `{0}' can only appear on the left hand side of `+=' or `-=' "
@@ -2157,7 +2157,7 @@ msgstr ""
 "O evento \"{0}\" pode apenas aparecer no lado esquerdo do operador \"+=\" ou "
 "\"-=\""
 
-#: mcs/mcs/ecore.cs:7692
+#: mcs/mcs/ecore.cs:7708
 #, csharp-format
 msgid ""
 "The event `{0}' can only appear on the left hand side of += or -= when used "
@@ -2166,7 +2166,7 @@ msgstr ""
 "O evento \"{0}\" pode apenas aparecer no lado esquerdo do operador += ou -= "
 "quando utilizado fora do tipo \"{1}\""
 
-#: mcs/mcs/ecore.cs:7870
+#: mcs/mcs/ecore.cs:7886
 #, csharp-format
 msgid ""
 "An implicitly typed local variable declaration cannot be initialized with "
@@ -2175,7 +2175,7 @@ msgstr ""
 "Uma declaração de variável local tipada implicitamente não pode ser "
 "inicializada com \"{0}\""
 
-#: mcs/mcs/ecore.cs:7885
+#: mcs/mcs/ecore.cs:7901
 msgid ""
 "The contextual keyword `var' may only appear within a local variable "
 "declaration"

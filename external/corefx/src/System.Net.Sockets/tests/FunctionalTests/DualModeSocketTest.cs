@@ -588,7 +588,9 @@ namespace System.Net.Sockets.Tests
                 args.RemoteEndPoint = new IPEndPoint(connectTo, port);
                 args.UserToken = waitHandle;
 
-                socket.ConnectAsync(args);
+                bool pending = socket.ConnectAsync(args);
+                if (!pending)
+                    waitHandle.Set();
 
                 Assert.True(waitHandle.WaitOne(TestSettings.PassingTestTimeout), "Timed out while waiting for connection");
                 if (args.SocketError != SocketError.Success)
@@ -627,7 +629,9 @@ namespace System.Net.Sockets.Tests
                 args.RemoteEndPoint = new DnsEndPoint("localhost", port);
                 args.UserToken = waitHandle;
 
-                socket.ConnectAsync(args);
+                bool pending = socket.ConnectAsync(args);
+                if (!pending)
+                    waitHandle.Set();
 
                 Assert.True(waitHandle.WaitOne(TestSettings.PassingTestTimeout), "Timed out while waiting for connection");
                 if (args.SocketError != SocketError.Success)
@@ -651,7 +655,9 @@ namespace System.Net.Sockets.Tests
                 args.RemoteEndPoint = new DnsEndPoint("localhost", port);
                 args.UserToken = waitHandle;
 
-                Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, args);
+                bool pending = Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, args);
+                if (!pending)
+                    waitHandle.Set();
 
                 Assert.True(waitHandle.WaitOne(TestSettings.PassingTestTimeout), "Timed out while waiting for connection");
                 if (args.SocketError != SocketError.Success)
@@ -2707,7 +2713,7 @@ namespace System.Net.Sockets.Tests
             private IPAddress _connectTo;
             private Socket _serverSocket;
 
-            public SocketUdpClient(ITestOutputHelper output, Socket serverSocket, IPAddress connectTo, int port, bool redundant = true)
+            public SocketUdpClient(ITestOutputHelper output, Socket serverSocket, IPAddress connectTo, int port, bool redundant = true, bool sendNow = true)
             {
                 _output = output;
 
@@ -2715,14 +2721,18 @@ namespace System.Net.Sockets.Tests
                 _port = port;
                 _serverSocket = serverSocket;
 
-                Task.Run(() => ClientSend(null, redundant));
+                if (sendNow)
+                {
+                    Task.Run(() => ClientSend(redundant));
+                }
             }
 
-            private void ClientSend(object state, bool redundant)
+            public void ClientSend(bool redundant = true, int timeout = 3)
             {
                 try
                 {
                     Socket socket = new Socket(_connectTo.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                    socket.SendTimeout = timeout * 1000;
 
                     for (int i = 0; i < (redundant ? TestSettings.UDPRedundancy : 1); i++)
                     {
@@ -2733,8 +2743,9 @@ namespace System.Net.Sockets.Tests
                         socket.SendToAsync(e);
                     }
                 }
-                catch (SocketException)
+                catch (SocketException e)
                 {
+                    _output.WriteLine("Send to {0} {1} failed: {2}", _connectTo, _port, e.ToString());
                     _serverSocket.Dispose(); // Cancels the test
                 }
             }
@@ -2755,10 +2766,12 @@ namespace System.Net.Sockets.Tests
         {
             using (Socket serverSocket = new Socket(SocketType.Dgram, ProtocolType.Udp))
             {
-                serverSocket.ReceiveTimeout = 500;
+                serverSocket.ReceiveTimeout = 1000;
                 int port = serverSocket.BindToAnonymousPort(listenOn);
 
-                SocketUdpClient client = new SocketUdpClient(_log, serverSocket, connectTo, port);
+                SocketUdpClient client = new SocketUdpClient(_log, serverSocket, connectTo, port, sendNow: false);
+
+                client.ClientSend();
 
                 EndPoint receivedFrom = new IPEndPoint(connectTo, port);
                 int received = serverSocket.ReceiveFrom(new byte[1], ref receivedFrom);

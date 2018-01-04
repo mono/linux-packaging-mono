@@ -10,6 +10,9 @@ namespace System
     /// An exception class used when an invalid Uniform Resource Identifier is detected.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class UriFormatException : FormatException, ISerializable
     {
         public UriFormatException() : base()
@@ -26,12 +29,11 @@ namespace System
 
         protected UriFormatException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
         {
-            throw new PlatformNotSupportedException();
         }
 
         void ISerializable.GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
             base.GetObjectData(serializationInfo, streamingContext);
         }
-    }; // class UriFormatException
-} // namespace System
+    }
+}

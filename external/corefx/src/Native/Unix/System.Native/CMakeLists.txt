@@ -2,23 +2,24 @@ project(System.Native)
 
 set(NATIVE_SOURCES
     pal_console.cpp
-    pal_errno.cpp
+    pal_errno.c
     pal_interfaceaddresses.cpp
-    pal_io.cpp
-    pal_maphardwaretype.cpp
-    pal_memory.cpp
+    pal_io.c
+    pal_maphardwaretype.c
+    pal_memory.c
     pal_mount.cpp
-    pal_networking.cpp
-    pal_networkstatistics.cpp
+    pal_networking.c
+    pal_networkstatistics.c
     pal_process.cpp
     pal_random.cpp
     pal_runtimeinformation.cpp
     pal_runtimeextensions.cpp
     pal_string.cpp
-    pal_tcpstate.cpp
+    pal_tcpstate.c
     pal_time.cpp
     pal_uid.cpp
     pal_datetime.cpp
+    pal_sysctl.cpp
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -46,6 +47,10 @@ SET_TARGET_PROPERTIES(System.Native-Static PROPERTIES OUTPUT_NAME System.Native 
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CLR_CMAKE_PLATFORM_ANDROID)
     target_link_libraries(System.Native rt)
+endif ()
+
+if (CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
+    target_link_libraries(System.Native pthread)
 endif ()
 
 install_library_and_symbols (System.Native)

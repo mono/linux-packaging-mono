@@ -25,12 +25,9 @@ namespace Microsoft.CSharp.RuntimeBinder
         // Members from the managed binder.
         private readonly SYMTBL _symbolTable;
         private readonly SymFactory _symFactory;
-        private readonly NameManager _nameManager;
         private readonly TypeManager _typeManager;
         private readonly BSYMMGR _bsymmgr;
         private readonly CSemanticChecker _semanticChecker;
-
-        private NamespaceSymbol _rootNamespace;
 
         /////////////////////////////////////////////////////////////////////////////////
 
@@ -67,18 +64,15 @@ namespace Microsoft.CSharp.RuntimeBinder
         internal SymbolTable(
             SYMTBL symTable,
             SymFactory symFactory,
-            NameManager nameManager,
             TypeManager typeManager,
             BSYMMGR bsymmgr,
             CSemanticChecker semanticChecker)
         {
             _symbolTable = symTable;
             _symFactory = symFactory;
-            _nameManager = nameManager;
             _typeManager = typeManager;
             _bsymmgr = bsymmgr;
             _semanticChecker = semanticChecker;
-            _rootNamespace = _bsymmgr.GetRootNS();
 
             // Now populate object.
             LoadSymbolsFromType(typeof(object));
@@ -341,7 +335,7 @@ namespace Microsoft.CSharp.RuntimeBinder
 
         private Name GetName(string p)
         {
-            return _nameManager.Add(p ?? "");
+            return NameManager.Add(p ?? "");
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -354,11 +348,11 @@ namespace Microsoft.CSharp.RuntimeBinder
                 int idx = name.IndexOf('`');
                 if (idx >= 0)
                 {
-                    return _nameManager.Add(name, idx);
+                    return NameManager.Add(name, idx);
                 }
             }
 
-            return _nameManager.Add(name);
+            return NameManager.Add(name);
         }
 
         #endregion
@@ -656,7 +650,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                 type = type.GetElementType();
             }
 
-            NamespaceOrAggregateSymbol current = _rootNamespace;
+            NamespaceOrAggregateSymbol current = NamespaceSymbol.Root;
 
             // Go through the declaration chain and add namespaces and types for
             // each element in the chain.
@@ -667,9 +661,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                 if (o is Type)
                 {
                     Type t = o as Type;
-                    Name name = null;
-                    name = GetName(t);
-                    next = _symbolTable.LookupSym(name, current, symbmask_t.MASK_AggregateSymbol) as AggregateSymbol;
+                    next = _symbolTable.LookupSym(GetName(t), current, symbmask_t.MASK_AggregateSymbol) as AggregateSymbol;
 
                     // Make sure we match arity as well when we find an aggregate.
                     if (next != null)
@@ -1385,7 +1377,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                     }
 
                     prevProp = prop;
-                    prop = _semanticChecker.SymbolLoader.LookupNextSym(prop, prop.parent, symbmask_t.MASK_PropertySymbol) as PropertySymbol;
+                    prop = SymbolLoader.LookupNextSym(prop, prop.parent, symbmask_t.MASK_PropertySymbol) as PropertySymbol;
                 }
 
                 prop = prevProp;
@@ -1946,7 +1938,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                 symbmask_t.MASK_MethodSymbol) as MethodSymbol;
             for (;
                     meth != null && !meth.AssociatedMemberInfo.IsEquivalentTo(baseMemberInfo);
-                    meth = _semanticChecker.SymbolLoader.LookupNextSym(meth, aggregate, symbmask_t.MASK_MethodSymbol) as MethodSymbol)
+                    meth = SymbolLoader.LookupNextSym(meth, aggregate, symbmask_t.MASK_MethodSymbol) as MethodSymbol)
                 ;
 
             return meth;

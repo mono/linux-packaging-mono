@@ -8,6 +8,9 @@ namespace System.IO
 {
     //Thrown when trying to access a drive that is not available.
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class DriveNotFoundException : IOException
     {
         public DriveNotFoundException()
@@ -30,7 +33,6 @@ namespace System.IO
 
         protected DriveNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 }

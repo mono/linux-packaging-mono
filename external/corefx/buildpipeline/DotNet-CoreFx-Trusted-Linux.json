@@ -92,7 +92,7 @@
       },
       "inputs": {
         "SourceFolder": "$(PB_GitDirectory)",
-        "Contents": "init-tools.sh\nBuildToolsVersion.txt\nDotnetCLIVersion.txt\ninit-tools.msbuild",
+        "Contents": "init-tools.sh\nBuildToolsVersion.txt\nDotnetCLIVersion.txt\ninit-tools.msbuild\ndependencies.props",
         "TargetFolder": "$(DockerHost_Sandbox)",
         "CleanTargetFolder": "false",
         "OverWrite": "false",
@@ -204,6 +204,7 @@
       "continueOnError": false,
       "alwaysRun": false,
       "displayName": "Build tests",
+      "condition": "and(succeeded(), ne(variables.PB_SkipTests, 'true'), ne(variables.PB_SkipTestBuild, 'true'))",
       "timeoutInMinutes": 0,
       "refName": "Task10",
       "task": {
@@ -224,6 +225,7 @@
       "continueOnError": false,
       "alwaysRun": false,
       "displayName": "Create Helix Test Jobs",
+      "condition": "and(succeeded(), ne(variables.PB_SkipTests, 'true'), ne(variables.PB_EnableCloudTest, 'false'))",
       "timeoutInMinutes": 0,
       "refName": "Task11",
       "task": {
@@ -416,7 +418,7 @@
       "allowOverride": true
     },
     "PB_DockerCommonRunArgs": {
-      "value": "--rm --name $(PB_DockerContainerName) -v \"$(PB_GitDirectory):$(PB_DockerVolumeName)\" -w=\"$(PB_DockerVolumeName)\" $(PB_DockerImageName)"
+      "value": "--rm --name $(PB_DockerContainerName) -v \"$(PB_GitDirectory):$(PB_DockerVolumeName)\" -w=\"$(PB_DockerVolumeName)\" -e \"PACKAGEVERSIONPROPSURL=$(PB_PackageVersionPropsUrl)\" $(PB_DockerImageName)"
     },
     "PB_DockerContainerName": {
       "value": "corefx-$(Build.BuildId)"
@@ -471,6 +473,13 @@
     "VsoPassword": {
       "value": null,
       "isSecret": true
+    },
+    "PB_SkipTests": {
+      "value": "false",
+      "allowOverride": true
+    },
+    "PB_PackageVersionPropsUrl": {
+      "value": ""
     }
   },
   "demands": [

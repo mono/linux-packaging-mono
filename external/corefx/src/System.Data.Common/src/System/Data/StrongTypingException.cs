@@ -7,15 +7,17 @@ using System.Runtime.Serialization;
 namespace System.Data
 {
     /// <summary>
-    /// DEV: The exception that is throwing from strong typed DataSet when user access to DBNull value.
+    /// The exception that is throwing from strong typed DataSet when user access to DBNull value.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class StrongTypingException : DataException
     {
         protected StrongTypingException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public StrongTypingException() : base()

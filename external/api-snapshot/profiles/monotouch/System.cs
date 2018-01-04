@@ -8847,7 +8847,9 @@ namespace System.Net.WebSockets
         public System.Threading.Tasks.Task ConnectAsync(System.Uri uri, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override void Dispose() { }
         public override System.Threading.Tasks.Task<System.Net.WebSockets.WebSocketReceiveResult> ReceiveAsync(System.ArraySegment<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.ValueTask<System.Net.WebSockets.ValueWebSocketReceiveResult> ReceiveAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public sealed partial class ClientWebSocketOptions
     {
@@ -8879,6 +8881,15 @@ namespace System.Net.WebSockets
         public override System.Security.Principal.IPrincipal User { get { throw null; } }
         public override System.Net.WebSockets.WebSocket WebSocket { get { throw null; } }
     }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct ValueWebSocketReceiveResult
+    {
+        public ValueWebSocketReceiveResult(int count, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage) { throw null;}
+        public int Count { get { throw null; } }
+        public bool EndOfMessage { get { throw null; } }
+        public System.Net.WebSockets.WebSocketMessageType MessageType { get { throw null; } }
+    }
     public abstract partial class WebSocket : System.IDisposable
     {
         protected WebSocket() { }
@@ -8893,6 +8904,7 @@ namespace System.Net.WebSockets
         public static System.ArraySegment<byte> CreateClientBuffer(int receiveBufferSize, int sendBufferSize) { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static System.Net.WebSockets.WebSocket CreateClientWebSocket(System.IO.Stream innerStream, string subProtocol, int receiveBufferSize, int sendBufferSize, System.TimeSpan keepAliveInterval, bool useZeroMaskingKey, System.ArraySegment<byte> internalBuffer) { throw null; }
+        public static System.Net.WebSockets.WebSocket CreateFromStream(System.IO.Stream stream, bool isServer, string subProtocol, System.TimeSpan keepAliveInterval, System.Memory<byte> buffer=default(System.Memory<byte>)) { throw null; }
         public static System.ArraySegment<byte> CreateServerBuffer(int receiveBufferSize) { throw null; }
         public abstract void Dispose();
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
@@ -8900,9 +8912,11 @@ namespace System.Net.WebSockets
         public static bool IsApplicationTargeting45() { throw null; }
         protected static bool IsStateTerminal(System.Net.WebSockets.WebSocketState state) { throw null; }
         public abstract System.Threading.Tasks.Task<System.Net.WebSockets.WebSocketReceiveResult> ReceiveAsync(System.ArraySegment<byte> buffer, System.Threading.CancellationToken cancellationToken);
+        public virtual System.Threading.Tasks.ValueTask<System.Net.WebSockets.ValueWebSocketReceiveResult> ReceiveAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static void RegisterPrefixes() { }
         public abstract System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken);
+        public virtual System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
         protected static void ThrowOnInvalidState(System.Net.WebSockets.WebSocketState state, params System.Net.WebSockets.WebSocketState[] validStates) { }
     }
     public enum WebSocketCloseStatus

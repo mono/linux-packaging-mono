@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 namespace System.Net
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public partial class WebException : InvalidOperationException, ISerializable
     {
         private const WebExceptionStatus DefaultStatus = WebExceptionStatus.UnknownError;
@@ -51,9 +54,9 @@ namespace System.Net
             }
         }
 
-        protected WebException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+        protected WebException(SerializationInfo serializationInfo, StreamingContext streamingContext) 
+            : base(serializationInfo, streamingContext)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public WebExceptionStatus Status

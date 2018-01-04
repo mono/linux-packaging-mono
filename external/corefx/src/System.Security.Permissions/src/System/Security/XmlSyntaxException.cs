@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 namespace System.Security
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public sealed partial class XmlSyntaxException : SystemException
     {
         public XmlSyntaxException() { }
@@ -14,5 +17,6 @@ namespace System.Security
         public XmlSyntaxException(int lineNumber, string message) { }
         public XmlSyntaxException(string message) { }
         public XmlSyntaxException(string message, Exception inner) { }
+        private XmlSyntaxException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }
