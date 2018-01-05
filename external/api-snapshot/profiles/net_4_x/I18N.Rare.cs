@@ -253,6 +253,24 @@ namespace I18N.Rare
         protected unsafe override void ToBytes(char* chars, int charCount, byte* bytes, int byteCount) { }
     }
     [System.SerializableAttribute]
+    public partial class CP737 : I18N.Common.ByteEncoding
+    {
+        public CP737() : base (default(int), default(char[]), default(string), default(string), default(string), default(string), default(bool), default(bool), default(bool), default(bool), default(int)) { }
+        public override int GetByteCount(string s) { throw null; }
+        public unsafe override int GetByteCountImpl(char* chars, int count) { throw null; }
+        public unsafe override int GetBytesImpl(char* chars, int charCount, byte* bytes, int byteCount) { throw null; }
+        protected unsafe override void ToBytes(char* chars, int charCount, byte* bytes, int byteCount) { }
+    }
+    [System.SerializableAttribute]
+    public partial class CP775 : I18N.Common.ByteEncoding
+    {
+        public CP775() : base (default(int), default(char[]), default(string), default(string), default(string), default(string), default(bool), default(bool), default(bool), default(bool), default(int)) { }
+        public override int GetByteCount(string s) { throw null; }
+        public unsafe override int GetByteCountImpl(char* chars, int count) { throw null; }
+        public unsafe override int GetBytesImpl(char* chars, int charCount, byte* bytes, int byteCount) { throw null; }
+        protected unsafe override void ToBytes(char* chars, int charCount, byte* bytes, int byteCount) { }
+    }
+    [System.SerializableAttribute]
     public partial class CP852 : I18N.Common.ByteEncoding
     {
         public CP852() : base (default(int), default(char[]), default(string), default(string), default(string), default(string), default(bool), default(bool), default(bool), default(bool), default(int)) { }
@@ -476,6 +494,16 @@ namespace I18N.Rare
     public partial class ENCibm500 : I18N.Rare.CP500
     {
         public ENCibm500() { }
+    }
+    [System.SerializableAttribute]
+    public partial class ENCibm737 : I18N.Rare.CP737
+    {
+        public ENCibm737() { }
+    }
+    [System.SerializableAttribute]
+    public partial class ENCibm775 : I18N.Rare.CP775
+    {
+        public ENCibm775() { }
     }
     [System.SerializableAttribute]
     public partial class ENCibm852 : I18N.Rare.CP852

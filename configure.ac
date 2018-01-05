@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.11.0.154],
+AC_INIT(mono, [5.11.0.168],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -2672,7 +2672,7 @@ if test x$host_win32 = xno; then
 		[#include <sys/types.h>
 		 #include <sys/vfs.h>])
 	AC_CHECK_MEMBERS(
-		[struct stat.st_atim, struct stat.st_mtim, struct stat.st_ctim],,, 
+		[struct stat.st_atim, struct stat.st_mtim, struct stat.st_atimespec, struct stat.st_ctim],,, 
 		[#include <sys/types.h>
 		 #include <sys/stat.h>
 		 #include <unistd.h>])
