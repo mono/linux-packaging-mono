@@ -1143,6 +1143,7 @@ Mono development tools.
 %{_bindir}/genxs
 %{_bindir}/httpcfg
 %{_bindir}/ilasm
+%{_bindir}/illinkanalyzer
 %{_bindir}/installvst
 %{_bindir}/lc
 %{_bindir}/macpack
@@ -1180,6 +1181,7 @@ Mono development tools.
 %dir %{_datadir}/mono-2.0/mono/cil
 %{_datadir}/mono-2.0/mono/cil/cil-opcodes.xml
 %{_datadir}/mono-2.0/mono/profiler/mono-profiler-log.suppression
+%{_datadir}/mono-2.0/mono/profiler/mono-profiler-coverage.suppression
 %{_libdir}/libmono-profiler-*.*
 %{_libdir}/pkgconfig/cecil.pc
 %{_libdir}/pkgconfig/dotnet.pc
@@ -1197,12 +1199,14 @@ Mono development tools.
 %{_mandir}/man1/genxs.1%ext_man
 %{_mandir}/man1/httpcfg.1%ext_man
 %{_mandir}/man1/ilasm.1%ext_man
+%{_mandir}/man1/illinkanalyzer.1%ext_man
 %{_mandir}/man1/lc.1%ext_man
 %{_mandir}/man1/macpack.1%ext_man
 %{_mandir}/man1/makecert.1%ext_man
 %{_mandir}/man1/mkbundle.1%ext_man
 %{_mandir}/man1/mono-api-info.1%ext_man
 %{_mandir}/man1/mono-cil-strip.1%ext_man
+%{_mandir}/man1/mono-profilers.1%ext_man
 %{_mandir}/man1/mono-shlib-cop.1%ext_man
 %{_mandir}/man1/mono-symbolicate.1%ext_man
 %{_mandir}/man1/mono-xmltool.1%ext_man
@@ -1258,6 +1262,8 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/ictool.pdb
 %{_prefix}/lib/mono/4.5/ilasm.exe*
 %{_prefix}/lib/mono/4.5/ilasm.pdb
+%{_prefix}/lib/mono/4.5/illinkanalyzer.exe*
+%{_prefix}/lib/mono/4.5/illinkanalyzer.pdb
 %{_prefix}/lib/mono/4.5/installvst.exe*
 %{_prefix}/lib/mono/4.5/installvst.pdb
 %{_prefix}/lib/mono/4.5/lc.exe*
