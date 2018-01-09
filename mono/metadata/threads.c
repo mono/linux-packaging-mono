@@ -1407,10 +1407,10 @@ ves_icall_System_Threading_Thread_ConstructInternalThread (MonoThread *this_obj)
 	mono_atomic_cas_ptr ((volatile gpointer *)&this_obj->internal_thread, internal, NULL);
 }
 
-MonoThread *
-ves_icall_System_Threading_Thread_GetCurrentThread (void)
+MonoThreadObjectHandle
+ves_icall_System_Threading_Thread_GetCurrentThread (MonoError *error)
 {
-	return mono_thread_current ();
+	return MONO_HANDLE_NEW (MonoThreadObject, mono_thread_current ());
 }
 
 HANDLE
@@ -1701,10 +1701,12 @@ ves_icall_System_Threading_Thread_SetName_internal (MonoInternalThread *this_obj
  * @return: The priority of the given thread.
  */
 int
-ves_icall_System_Threading_Thread_GetPriority (MonoThread *this_obj)
+ves_icall_System_Threading_Thread_GetPriority (MonoThreadObjectHandle this_obj, MonoError *error)
 {
 	gint32 priority;
-	MonoInternalThread *internal = this_obj->internal_thread;
+
+	// InternalThreads are always pinned.
+	MonoInternalThread *internal = MONO_HANDLE_GETVAL(this_obj, internal_thread);
 
 	LOCK_THREAD (internal);
 	priority = internal->priority;
@@ -1721,9 +1723,10 @@ ves_icall_System_Threading_Thread_GetPriority (MonoThread *this_obj)
  * Sets the priority of the given thread.
  */
 void
-ves_icall_System_Threading_Thread_SetPriority (MonoThread *this_obj, int priority)
+ves_icall_System_Threading_Thread_SetPriority (MonoThreadObjectHandle this_obj, int priority, MonoError *error)
 {
-	MonoInternalThread *internal = this_obj->internal_thread;
+	// InternalThreads are always pinned.
+	MonoInternalThread *internal = MONO_HANDLE_GETVAL(this_obj, internal_thread);
 
 	LOCK_THREAD (internal);
 	internal->priority = priority;
@@ -3627,7 +3630,7 @@ dump_thread (MonoInternalThread *thread, ThreadDumpUserData *ud)
 {
 	GString* text = g_string_new (0);
 	char *name;
-	GError *error = NULL;
+	GError *gerror = NULL;
 	int i;
 
 	ud->thread = thread;
@@ -3644,8 +3647,8 @@ dump_thread (MonoInternalThread *thread, ThreadDumpUserData *ud)
 	 * Do all the non async-safe work outside of get_thread_dump.
 	 */
 	if (thread->name) {
-		name = g_utf16_to_utf8 (thread->name, thread->name_len, NULL, NULL, &error);
-		g_assert (!error);
+		name = g_utf16_to_utf8 (thread->name, thread->name_len, NULL, NULL, &gerror);
+		g_assert (!gerror);
 		g_string_append_printf (text, "\n\"%s\"", name);
 		g_free (name);
 	}
