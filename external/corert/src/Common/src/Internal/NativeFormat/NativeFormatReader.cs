@@ -390,7 +390,7 @@ namespace Internal.NativeFormat
             }
             set
             {
-                Debug.Assert(value >= 0 && value < _reader.Size);
+                Debug.Assert(value < _reader.Size);
                 _offset = value;
             }
         }
@@ -411,6 +411,13 @@ namespace Internal.NativeFormat
         {
             uint value;
             _offset = _reader.DecodeUnsigned(_offset, out value);
+            return value;
+        }
+
+        public ulong GetUnsignedLong()
+        {
+            ulong value;
+            _offset = _reader.DecodeUnsignedLong(_offset, out value);
             return value;
         }
 

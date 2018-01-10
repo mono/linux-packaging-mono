@@ -18,9 +18,14 @@ namespace System.Runtime.InteropServices
             s_lastWin32Error = Interop.Sys.GetErrNo();
         }
 
-        internal static void ClearLastWin32Error()
+        public static void ClearLastWin32Error()
         {
             Interop.Sys.ClearErrNo();
+        }
+
+        private static bool IsWin32Atom(IntPtr ptr)
+        {
+            return false;
         }
 
         public static unsafe String PtrToStringAnsi(IntPtr ptr)

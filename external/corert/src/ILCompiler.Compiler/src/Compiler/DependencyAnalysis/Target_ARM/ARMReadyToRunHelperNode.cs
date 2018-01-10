@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-
+using System.Diagnostics;
 using Internal.TypeSystem;
 
 using ILCompiler;
@@ -16,80 +16,209 @@ namespace ILCompiler.DependencyAnalysis
     /// </summary>
     partial class ReadyToRunHelperNode
     {
-        private ExternSymbolNode NYI_Assert;
         protected override void EmitCode(NodeFactory factory, ref ARMEmitter encoder, bool relocsOnly)
         {
-            NYI_Assert = new ExternSymbolNode("NYI_Assert");
-
             switch (Id)
             {
                 case ReadyToRunHelperId.NewHelper:
                     {
                         TypeDesc target = (TypeDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg0, factory.ConstructedTypeSymbol(target));
+                        encoder.EmitJMP(factory.ExternSymbol(JitHelper.GetNewObjectHelperForType(target)));
                     }
                     break;
 
                 case ReadyToRunHelperId.VirtualCall:
                     {
                         MethodDesc targetMethod = (MethodDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+
+                        Debug.Assert(!targetMethod.OwningType.IsInterface);
+
+                        int pointerSize = factory.Target.PointerSize;
+
+                        int slot = 0;
+                        if (!relocsOnly)
+                        {
+                            slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, targetMethod);
+                            Debug.Assert(slot != -1);
+                        }
+
+                        encoder.EmitLDR(encoder.TargetRegister.InterproceduralScratch, encoder.TargetRegister.Arg0, 0);
+                        encoder.EmitLDR(encoder.TargetRegister.InterproceduralScratch, encoder.TargetRegister.InterproceduralScratch,
+                                        EETypeNode.GetVTableOffset(pointerSize) + (slot * pointerSize));
+                        encoder.EmitJMP(encoder.TargetRegister.InterproceduralScratch);
                     }
                     break;
 
                 case ReadyToRunHelperId.IsInstanceOf:
                     {
                         TypeDesc target = (TypeDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg1, factory.NecessaryTypeSymbol(target));
+                        encoder.EmitJMP(factory.ExternSymbol(JitHelper.GetCastingHelperNameForType(target, false)));
                     }
                     break;
 
                 case ReadyToRunHelperId.CastClass:
                     {
                         TypeDesc target = (TypeDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg1, factory.NecessaryTypeSymbol(target));
+                        encoder.EmitJMP(factory.ExternSymbol(JitHelper.GetCastingHelperNameForType(target, true)));
                     }
                     break;
 
                 case ReadyToRunHelperId.NewArr1:
                     {
                         TypeDesc target = (TypeDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg1, encoder.TargetRegister.Arg0);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg0, factory.ConstructedTypeSymbol(target));
+                        encoder.EmitJMP(factory.ExternSymbol(JitHelper.GetNewArrayHelperForType(target)));
                     }
                     break;
 
                 case ReadyToRunHelperId.GetNonGCStaticBase:
                     {
                         MetadataType target = (MetadataType)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        bool hasLazyStaticConstructor = factory.TypeSystemContext.HasLazyStaticConstructor(target);
+                        encoder.EmitMOV(encoder.TargetRegister.Result, factory.TypeNonGCStaticsSymbol(target));
+
+                        if (!hasLazyStaticConstructor)
+                        {
+                            encoder.EmitRET();
+                        }
+                        else
+                        {
+                            // We need to trigger the cctor before returning the base. It is stored at the beginning of the non-GC statics region.
+                            encoder.EmitMOV(encoder.TargetRegister.Arg2, factory.TypeNonGCStaticsSymbol(target));
+                            encoder.EmitLDR(encoder.TargetRegister.Arg3, encoder.TargetRegister.Arg2,
+                                            ((short)(factory.Target.PointerSize - NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target))));
+                            encoder.EmitCMP(encoder.TargetRegister.Arg3, 1);
+                            encoder.EmitRETIfEqual();
+
+                            encoder.EmitMOV(encoder.TargetRegister.Arg1, encoder.TargetRegister.Result);
+                            encoder.EmitMOV(encoder.TargetRegister.Arg0/*Result*/, encoder.TargetRegister.Arg2);
+                            encoder.EmitSUB(encoder.TargetRegister.Arg0, NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target));
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnNonGCStaticBase));
+                        }
                     }
                     break;
 
                 case ReadyToRunHelperId.GetThreadStaticBase:
                     {
                         MetadataType target = (MetadataType)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg2, factory.TypeThreadStaticIndex(target));
+
+                        // First arg: address of the TypeManager slot that provides the helper with
+                        // information about module index and the type manager instance (which is used
+                        // for initialization on first access).
+                        encoder.EmitLDR(encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg2);
+
+                        // Second arg: index of the type in the ThreadStatic section of the modules
+                        encoder.EmitLDR(encoder.TargetRegister.Arg1, encoder.TargetRegister.Arg2, factory.Target.PointerSize);
+
+                        if (!factory.TypeSystemContext.HasLazyStaticConstructor(target))
+                        {
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.GetThreadStaticBaseForType));
+                        }
+                        else
+                        {
+                            encoder.EmitMOV(encoder.TargetRegister.Arg2, factory.TypeNonGCStaticsSymbol(target));
+                            encoder.EmitSUB(encoder.TargetRegister.Arg2, NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target));
+                            // TODO: performance optimization - inline the check verifying whether we need to trigger the cctor
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnThreadStaticBase));
+                        }
                     }
                     break;
 
                 case ReadyToRunHelperId.GetGCStaticBase:
                     {
                         MetadataType target = (MetadataType)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        encoder.EmitMOV(encoder.TargetRegister.Result, factory.TypeGCStaticsSymbol(target));
+                        encoder.EmitLDR(encoder.TargetRegister.Result, encoder.TargetRegister.Result);
+                        encoder.EmitLDR(encoder.TargetRegister.Result, encoder.TargetRegister.Result);
+                        if (!factory.TypeSystemContext.HasLazyStaticConstructor(target))
+                        {
+                            encoder.EmitRET();
+                        }
+                        else
+                        {
+                            // We need to trigger the cctor before returning the base. It is stored at the beginning of the non-GC statics region.
+                            encoder.EmitMOV(encoder.TargetRegister.Arg2, factory.TypeNonGCStaticsSymbol(target));
+                            encoder.EmitLDR(encoder.TargetRegister.Arg3, encoder.TargetRegister.Arg2,
+                                            ((short)(factory.Target.PointerSize - NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target))));
+                            encoder.EmitCMP(encoder.TargetRegister.Arg3, 1);
+                            encoder.EmitRETIfEqual();
+
+                            encoder.EmitMOV(encoder.TargetRegister.Arg1, encoder.TargetRegister.Result);
+                            encoder.EmitMOV(encoder.TargetRegister.Arg0/*Result*/, encoder.TargetRegister.Arg2);
+                            encoder.EmitSUB(encoder.TargetRegister.Arg0, NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target));
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnGCStaticBase));
+                        }
                     }
                     break;
 
                 case ReadyToRunHelperId.DelegateCtor:
                     {
                         DelegateCreationInfo target = (DelegateCreationInfo)Target;
-                        encoder.EmitJMP(NYI_Assert);
+
+                        if (target.TargetNeedsVTableLookup)
+                        {
+                            encoder.EmitLDR(encoder.TargetRegister.Arg2, encoder.TargetRegister.Arg1);
+
+                            int slot = 0;
+                            if (!relocsOnly)
+                                slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, target.TargetMethod);
+
+                            Debug.Assert(slot != -1);
+                            encoder.EmitLDR(encoder.TargetRegister.Arg2, encoder.TargetRegister.Arg2,
+                                            EETypeNode.GetVTableOffset(factory.Target.PointerSize) + (slot * factory.Target.PointerSize));
+                        }
+                        else
+                        {
+                            ISymbolNode targetMethodNode = target.GetTargetNode(factory);
+                            encoder.EmitMOV(encoder.TargetRegister.Arg2, target.GetTargetNode(factory));
+                        }
+
+                        if (target.Thunk != null)
+                        {
+                            Debug.Assert(target.Constructor.Method.Signature.Length == 3);
+                            encoder.EmitMOV(encoder.TargetRegister.Arg3, target.Thunk);
+                        }
+                        else
+                        {
+                            Debug.Assert(target.Constructor.Method.Signature.Length == 2);
+                        }
+
+                        encoder.EmitJMP(target.Constructor);
                     }
                     break;
 
                 case ReadyToRunHelperId.ResolveVirtualFunction:
                     {
+                        ARMDebug.EmitHelperNYIAssert(factory, ref encoder, ReadyToRunHelperId.ResolveVirtualFunction);
+                        /*
+                       ***
+                       NOT TESTED!!!
+                       ***
                         MethodDesc targetMethod = (MethodDesc)Target;
-                        encoder.EmitJMP(NYI_Assert);
+                        if (targetMethod.OwningType.IsInterface)
+                        {
+                            encoder.EmitMOV(encoder.TargetRegister.Arg1, factory.InterfaceDispatchCell(targetMethod));
+                            encoder.EmitJMP(factory.ExternSymbol("RhpResolveInterfaceMethod"));
+                        }
+                        else
+                        {
+                            if (relocsOnly)
+                                break;
+
+                            encoder.EmitLDR(encoder.TargetRegister.Result, encoder.TargetRegister.Arg0);
+
+                            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, targetMethod);
+                            Debug.Assert(slot != -1);
+                            encoder.EmitLDR(encoder.TargetRegister.Result, encoder.TargetRegister.Result,
+                                            ((short)(EETypeNode.GetVTableOffset(factory.Target.PointerSize) + (slot * factory.Target.PointerSize))));
+                            encoder.EmitRET();
+                        }
+                        */
                     }
                     break;
 

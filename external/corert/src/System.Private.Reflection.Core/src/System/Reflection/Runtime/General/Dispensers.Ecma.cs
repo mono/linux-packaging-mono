@@ -68,9 +68,9 @@ namespace System.Reflection.Runtime.Assemblies.EcmaFormat
 
             public override bool Equals(Object obj)
             {
-                if (!(obj is EcmaRuntimeAssemblyKey))
+                if (!(obj is EcmaRuntimeAssemblyKey other))
                     return false;
-                return Equals((EcmaRuntimeAssemblyKey)obj);
+                return Equals(other);
             }
 
 
@@ -152,7 +152,7 @@ namespace System.Reflection.Runtime.ParameterInfos.EcmaFormat
     //-----------------------------------------------------------------------------------------------------------
     // ParameterInfos for MethodBase objects with Parameter metadata.
     //-----------------------------------------------------------------------------------------------------------
-    internal sealed partial class EcmaFormatMethodParameterInfo : RuntimeMethodParameterInfo
+    internal sealed partial class EcmaFormatMethodParameterInfo
     {
         internal static EcmaFormatMethodParameterInfo GetEcmaFormatMethodParameterInfo(MethodBase member, MethodDefinitionHandle methodHandle, int position, ParameterHandle parameterHandle, QSignatureTypeHandle qualifiedParameterType, TypeContext typeContext)
         {

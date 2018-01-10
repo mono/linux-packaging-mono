@@ -26,8 +26,7 @@ namespace System.Resources
     using System.Text;
     using System.Threading;
     using System.Diagnostics;
-    using System.Diagnostics.Contracts;
-
+    
     internal class FileBasedResourceGroveler : IResourceGroveler
     {
         private ResourceManager.ResourceManagerMediator _mediator;
@@ -90,14 +89,14 @@ namespace System.Resources
             if (_mediator.ModuleDir != null)
             {
                 String path = Path.Combine(_mediator.ModuleDir, fileName);
-                if (File.Exists(path))
+                if (InternalFile.Exists(path))
                 {
                     return path;
                 }
             }
 
             // look in .
-            if (File.Exists(fileName))
+            if (InternalFile.Exists(fileName))
                 return fileName;
                 
             return null;  // give up.

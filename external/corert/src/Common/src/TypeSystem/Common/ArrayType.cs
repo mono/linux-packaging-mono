@@ -145,12 +145,9 @@ namespace Internal.TypeSystem
 
             flags |= TypeFlags.HasFinalizerComputed;
 
-            return flags;
-        }
+            flags |= TypeFlags.IsByRefLikeComputed;
 
-        public override string ToString()
-        {
-            return this.ElementType.ToString() + "[" + new String(',', Rank - 1) + "]";
+            return flags;
         }
     }
 
@@ -323,11 +320,6 @@ namespace Internal.TypeSystem
                 return ((ArrayType)instantiatedOwningType).GetArrayMethod(_kind);
             else
                 return this;
-        }
-
-        public override string ToString()
-        {
-            return _owningType.ToString() + "." + Name;
         }
     }
 }

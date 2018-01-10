@@ -8,7 +8,7 @@
 #include "gcenv.structs.h"
 #include "gcenv.base.h"
 
-#include <stdlib.h> 
+#include <stdlib.h>
 
 #ifndef CPPCODEGEN
 
@@ -39,8 +39,17 @@ __declspec(allocate(".modules$Z")) void * __modules_z[] = { nullptr };
 //
 #pragma comment(linker, "/merge:.modules=.rdata")
 
+// 
+// Unboxing stubs need to be merged, folded and sorted. They are delimited by two special sections (.unbox$A
+// and .unbox$Z). All unboxing stubs are in .unbox$M sections.
+//
+#pragma comment(linker, "/merge:.unbox=.text")
+
 extern "C" void __managedcode_a();
 extern "C" void __managedcode_z();
+
+extern "C" void __unbox_a();
+extern "C" void __unbox_z();
 
 #else // _MSC_VER
 
@@ -50,6 +59,8 @@ extern void * __modules_a[] __asm("section$start$__DATA$__modules");
 extern void * __modules_z[] __asm("section$end$__DATA$__modules");
 extern char __managedcode_a __asm("section$start$__TEXT$__managedcode");
 extern char __managedcode_z __asm("section$end$__TEXT$__managedcode");
+extern char __unbox_a __asm("section$start$__TEXT$__unbox");
+extern char __unbox_z __asm("section$end$__TEXT$__unbox");
 
 #else // __APPLE__
 
@@ -63,16 +74,22 @@ extern "C" char __stop___managedcode;
 static char& __managedcode_a = __start___managedcode;
 static char& __managedcode_z = __stop___managedcode;
 
+extern "C" char __start___unbox;
+extern "C" char __stop___unbox;
+static char& __unbox_a = __start___unbox;
+static char& __unbox_z = __stop___unbox;
+
 #endif // __APPLE__
 
 #endif // _MSC_VER
 
 #endif // !CPPCODEGEN
 
+// Do not warn that extern C methods throw exceptions. This is temporary
+// as long as we have unimplemented/throwing APIs in this file.
+#pragma warning(disable:4297)
 
 #ifdef CPPCODEGEN
-
-#pragma warning(disable:4297)
 
 extern "C" Object * RhNewObject(MethodTable * pMT);
 extern "C" Object * RhNewArray(MethodTable * pMT, int32_t elements);
@@ -133,6 +150,19 @@ void __reverse_pinvoke(ReversePInvokeFrame* pRevFrame)
 void __reverse_pinvoke_return(ReversePInvokeFrame* pRevFrame)
 {
     RhpReversePInvokeReturn2(pRevFrame);
+}
+
+extern "C" void RhpPInvoke2(PInvokeTransitionFrame* pFrame);
+extern "C" void RhpPInvokeReturn2(PInvokeTransitionFrame* pFrame);
+
+void __pinvoke(PInvokeTransitionFrame* pFrame)
+{
+    RhpPInvoke2(pFrame);
+}
+
+void __pinvoke_return(PInvokeTransitionFrame* pFrame)
+{
+    RhpPInvokeReturn2(pFrame);
 }
 
 namespace System_Private_CoreLib { namespace System { 
@@ -209,14 +239,17 @@ extern "C" void RhpUniversalTransition_DebugStepTailCall()
 {
     throw "RhpUniversalTransition_DebugStepTailCall";
 }
-extern "C" void CCWAddRef()
-{
-    throw "CCWAddRef";
-}
 
 void* RtRHeaderWrapper();
 
 #endif // CPPCODEGEN
+
+// This works around System.Private.Interop's references to Interop.Native.
+// This won't be needed once we stop dragging in S.P.Interop for basic p/invoke support.
+extern "C" void CCWAddRef()
+{
+    throw "CCWAddRef";
+}
 
 extern "C" void __fail_fast()
 {
@@ -226,35 +259,25 @@ extern "C" void __fail_fast()
     exit(-1);
 }
 
-extern "C" bool REDHAWK_PALAPI PalInit();
-
-#define DLL_PROCESS_ATTACH      1
-extern "C" BOOL WINAPI RtuDllMain(HANDLE hPalInstance, DWORD dwReason, void* pvReserved);
-
+extern "C" bool RhInitialize();
+extern "C" void RhpEnableConservativeStackReporting();
 extern "C" void RhpShutdown();
-
-extern "C" int32_t RhpEnableConservativeStackReporting();
+extern "C" void RhSetRuntimeInitializationCallback(int (*fPtr)());
 
 #ifndef CPPCODEGEN
 
-extern "C" bool RhpRegisterCoffModule(void * pModule,
-    void * pvStartRange, uint32_t cbRange,
+extern "C" bool RhRegisterOSModule(void * pModule,
+    void * pvManagedCodeStartRange, uint32_t cbManagedCodeRange,
+    void * pvUnboxingStubsStartRange, uint32_t cbUnboxingStubsRange,
     void ** pClasslibFunctions, uint32_t nClasslibFunctions);
 
-extern "C" bool RhpRegisterUnixModule(void * pModule,
-    void * pvStartRange, uint32_t cbRange,
-    void ** pClasslibFunctions, uint32_t nClasslibFunctions);
-
-#ifdef _WIN32
-extern "C" void* WINAPI GetModuleHandleW(const wchar_t *);
-#else
-extern "C" void* WINAPI PalGetModuleHandleFromPointer(void* pointer);
-#endif
+extern "C" void* PalGetModuleHandleFromPointer(void* pointer);
 
 extern "C" void GetRuntimeException();
 extern "C" void FailFast();
 extern "C" void AppendExceptionStackFrame();
 extern "C" void GetSystemArrayEEType();
+extern "C" void OnFirstChanceException();
 
 typedef void(*pfn)();
 
@@ -265,58 +288,75 @@ static const pfn c_classlibFunctions[] = {
     &AppendExceptionStackFrame,
     nullptr, // &CheckStaticClassConstruction,
     &GetSystemArrayEEType,
+    &OnFirstChanceException
 };
 
 #endif // !CPPCODEGEN
 
 extern "C" void InitializeModules(void* osModule, void ** modules, int count, void ** pClasslibFunctions, int nClasslibFunctions);
 
+#ifndef CORERT_DLL
+#define CORERT_ENTRYPOINT __managed__Main
 #if defined(_WIN32)
 extern "C" int __managed__Main(int argc, wchar_t* argv[]);
-int wmain(int argc, wchar_t* argv[])
 #else
 extern "C" int __managed__Main(int argc, char* argv[]);
-int main(int argc, char* argv[])
 #endif
-{
-    if (!PalInit())
-        return -1;
+#else
+#define CORERT_ENTRYPOINT __managed__Startup
+extern "C" void __managed__Startup();
+#endif // !CORERT_DLL
 
-    if (!RtuDllMain(NULL, DLL_PROCESS_ATTACH, NULL))
+static int InitializeRuntime()
+{
+    if (!RhInitialize())
         return -1;
 
 #if defined(CPPCODEGEN)
-    if (!RhpEnableConservativeStackReporting())
-        return -1;
+    RhpEnableConservativeStackReporting();
 #endif // CPPCODEGEN
 
 #ifndef CPPCODEGEN
-    void *osModule;
+    void * osModule = PalGetModuleHandleFromPointer((void*)&CORERT_ENTRYPOINT);
 
-#if defined(_WIN32)
-    osModule = GetModuleHandleW(NULL);
-    if (!RhpRegisterCoffModule(osModule,
-#else // _WIN32
-    osModule = PalGetModuleHandleFromPointer((void*)&main);
-    if (!RhpRegisterUnixModule(osModule,
-#endif // _WIN32
+    // TODO: pass struct with parameters instead of the large signature of RhRegisterOSModule
+    if (!RhRegisterOSModule(
+        osModule,
         (void*)&__managedcode_a, (uint32_t)((char *)&__managedcode_z - (char*)&__managedcode_a),
+        (void*)&__unbox_a, (uint32_t)((char *)&__unbox_z - (char*)&__unbox_a),
         (void **)&c_classlibFunctions, _countof(c_classlibFunctions)))
     {
         return -1;
     }
 #endif // !CPPCODEGEN
 
-#ifdef CPPCODEGEN
-    ReversePInvokeFrame frame;
-    __reverse_pinvoke(&frame);
-#endif
-
 #ifndef CPPCODEGEN
     InitializeModules(osModule, __modules_a, (int)((__modules_z - __modules_a)), (void **)&c_classlibFunctions, _countof(c_classlibFunctions));
+#elif defined _WASM_
+    // WASMTODO: Figure out what to do here. This is a NativeCallable method in the runtime
+    // and we also would have to figure out what to pass for pModuleHeaders
 #else // !CPPCODEGEN
     InitializeModules(nullptr, (void**)RtRHeaderWrapper(), 2, nullptr, 0);
 #endif // !CPPCODEGEN
+
+#ifdef CORERT_DLL
+    // Run startup method immediately for a native library
+    __managed__Startup();
+#endif // CORERT_DLL
+
+    return 0;
+}
+
+#ifndef CORERT_DLL
+#if defined(_WIN32)
+int __cdecl wmain(int argc, wchar_t* argv[])
+#else
+int main(int argc, char* argv[])
+#endif
+{
+    int initval = InitializeRuntime();
+    if (initval != 0)
+        return initval;
 
     int retval;
 #ifdef CPPCODEGEN
@@ -333,12 +373,18 @@ int main(int argc, char* argv[])
         retval = -1;
     }
 #endif
-
-#ifdef CPPCODEGEN
-    __reverse_pinvoke_return(&frame);
-#endif
-
     RhpShutdown();
 
     return retval;
 }
+#endif // !CORERT_DLL
+
+#ifdef CORERT_DLL
+static struct InitializeRuntimePointerHelper
+{
+    InitializeRuntimePointerHelper()
+    {
+        RhSetRuntimeInitializationCallback(&InitializeRuntime);
+    }
+} initializeRuntimePointerHelper;
+#endif // CORERT_DLL

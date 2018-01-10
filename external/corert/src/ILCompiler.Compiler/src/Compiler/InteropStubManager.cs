@@ -3,26 +3,23 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 
-using Internal.IL.Stubs;
 using Internal.TypeSystem;
-using Internal.TypeSystem.Interop;
+using ILCompiler.DependencyAnalysis;
 
-
-using Debug = System.Diagnostics.Debug;
+using DependencyList = ILCompiler.DependencyAnalysisFramework.DependencyNodeCore<ILCompiler.DependencyAnalysis.NodeFactory>.DependencyList;
 
 namespace ILCompiler
 {
     /// <summary>
     /// This class is responsible for managing stub methods for interop
     /// </summary>
-    public sealed class InteropStubManager
+    public abstract class InteropStubManager
     {
         private readonly CompilationModuleGroup _compilationModuleGroup;
         private readonly CompilerTypeSystemContext _typeSystemContext;
-        internal HashSet<TypeDesc> _delegateMarshalingTypes = new HashSet<TypeDesc>();
-        private HashSet<NativeStructType> _structMarshallingTypes = new HashSet<NativeStructType>();
+        protected ModuleDesc _interopModule;
+        private const string _interopModuleName = "System.Private.Interop";
 
         public InteropStateManager InteropStateManager
         {
@@ -34,99 +31,23 @@ namespace ILCompiler
             _compilationModuleGroup = compilationModuleGroup;
             _typeSystemContext = typeSystemContext;
             InteropStateManager = interopStateManager;
-        }
-    
-        internal MethodDesc GetOpenStaticDelegateMarshallingStub(TypeDesc delegateType)
-        {
-            var stub = InteropStateManager.GetOpenStaticDelegateMarshallingThunk(delegateType);
-            Debug.Assert(stub != null);
 
-            _delegateMarshalingTypes.Add(delegateType);
-            return stub;
+            // Note: interopModule might be null if we're building with a class library that doesn't support rich interop
+            _interopModule = typeSystemContext.GetModuleForSimpleName(_interopModuleName, false);
         }
 
-        internal MethodDesc GetClosedDelegateMarshallingStub(TypeDesc delegateType)
-        {
-            var stub = InteropStateManager.GetClosedDelegateMarshallingThunk(delegateType);
-            Debug.Assert(stub != null);
 
-            _delegateMarshalingTypes.Add(delegateType);
-            return stub;
-        }
-        internal MethodDesc GetForwardDelegateCreationStub(TypeDesc delegateType)
-        {
-            var stub = InteropStateManager.GetForwardDelegateCreationThunk(delegateType);
-            Debug.Assert(stub != null);
+        public abstract void AddDependeciesDueToPInvoke(ref DependencyList dependencies, NodeFactory factory, MethodDesc method);
+        
+        public abstract void AddInterestingInteropConstructedTypeDependencies(ref DependencyList dependencies, NodeFactory factory, TypeDesc type);
+        
 
-            _delegateMarshalingTypes.Add(delegateType);
-            return stub;
-        }
+        /// <summary>
+        /// For Marshal generic APIs(eg. Marshal.StructureToPtr<T>, GetFunctionPointerForDelegate) we add
+        /// the generic parameter as dependencies so that we can generate runtime data for them
+        /// </summary>
+        public abstract void AddMarshalAPIsGenericDependencies(ref DependencyList dependencies, NodeFactory factory, MethodDesc method);
 
-        internal TypeDesc GetStructMarshallingType(TypeDesc structType)
-        {
-            NativeStructType nativeType = InteropStateManager.GetStructMarshallingNativeType(structType);
-            Debug.Assert(nativeType != null);
-            _structMarshallingTypes.Add(nativeType);
-            return nativeType;
-        }
-
-        internal MethodDesc GetStructMarshallingManagedToNativeStub(TypeDesc structType)
-        {
-            MethodDesc stub = InteropStateManager.GetStructMarshallingManagedToNativeThunk(structType);
-            Debug.Assert(stub != null);
-            return stub;
-        }
-
-        internal MethodDesc GetStructMarshallingNativeToManagedStub(TypeDesc structType)
-        {
-            MethodDesc stub = InteropStateManager.GetStructMarshallingNativeToManagedThunk(structType);
-            Debug.Assert(stub != null);
-            return stub;
-        }
-
-        internal MethodDesc GetStructMarshallingCleanupStub(TypeDesc structType)
-        {
-            MethodDesc stub = InteropStateManager.GetStructMarshallingCleanupThunk(structType);
-            Debug.Assert(stub != null);
-            return stub;
-        }
-
-        internal TypeDesc GetInlineArrayType(InlineArrayCandidate candidate)
-        {
-            TypeDesc inlineArrayType = InteropStateManager.GetInlineArrayType(candidate);
-            Debug.Assert(inlineArrayType != null);
-            return inlineArrayType;
-        }
-
-        internal struct DelegateMarshallingThunks
-        {
-            public TypeDesc DelegateType;
-            public DelegateMarshallingMethodThunk OpenStaticDelegateMarshallingThunk;
-            public DelegateMarshallingMethodThunk ClosedDelegateMarshallingThunk;
-            public ForwardDelegateCreationThunk DelegateCreationThunk;
-        }
-
-        internal IEnumerable<DelegateMarshallingThunks> GetDelegateMarshallingThunks()
-        {
-            foreach (var delegateType in _delegateMarshalingTypes)
-            {
-                var openStub = InteropStateManager.GetOpenStaticDelegateMarshallingThunk(delegateType);
-                var closedStub = InteropStateManager.GetClosedDelegateMarshallingThunk(delegateType);
-                var delegateCreationStub = InteropStateManager.GetForwardDelegateCreationThunk(delegateType);
-                yield return 
-                    new DelegateMarshallingThunks()
-                    {
-                        DelegateType = delegateType,
-                        OpenStaticDelegateMarshallingThunk = openStub,
-                        ClosedDelegateMarshallingThunk = closedStub,
-                        DelegateCreationThunk = delegateCreationStub
-                    };
-            }
-        }
-
-        internal HashSet<NativeStructType> GetStructMarshallingTypes()
-        {
-            return _structMarshallingTypes;
-        }
+        public abstract void AddToReadyToRunHeader(ReadyToRunHeaderNode header, NodeFactory nodeFactory, ExternalReferencesTableNode commonFixupsTableNode);        
     }
 }

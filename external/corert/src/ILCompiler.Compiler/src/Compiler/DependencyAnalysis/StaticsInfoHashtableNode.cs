@@ -38,6 +38,7 @@ namespace ILCompiler.DependencyAnalysis
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
         
 
@@ -48,6 +49,9 @@ namespace ILCompiler.DependencyAnalysis
         /// </summary>
         public static void AddStaticsInfoDependencies(ref DependencyList dependencies, NodeFactory factory, TypeDesc type)
         {
+            if (!factory.MetadataManager.SupportsReflection)
+                return;
+
             if (type is MetadataType && type.HasInstantiation && !type.IsCanonicalSubtype(CanonicalFormKind.Any))
             {
                 MetadataType metadataType = (MetadataType)type;
@@ -67,7 +71,16 @@ namespace ILCompiler.DependencyAnalysis
                     dependencies.Add(factory.Indirection(factory.TypeNonGCStaticsSymbol(metadataType)), "Non-GC statics indirection for StaticsInfoHashtable");
                 }
 
-                // TODO: TLS dependencies
+                if (metadataType.ThreadStaticFieldSize.AsInt > 0)
+                {
+                    if (factory.Target.Abi == TargetAbi.ProjectN)
+                    {
+                        UtcNodeFactory utcFactory = (UtcNodeFactory)factory;
+                        dependencies.Add(utcFactory.TypeThreadStaticsIndexSymbol(metadataType), "Thread statics index indirection for StaticsInfoHashtable");
+                        dependencies.Add(utcFactory.TypeThreadStaticsOffsetSymbol(metadataType), "Thread statics offset indirection for StaticsInfoHashtable");
+                    }
+                    // TODO: TLS for CoreRT
+                }
             }
         }
 
@@ -104,8 +117,20 @@ namespace ILCompiler.DependencyAnalysis
                     ISymbolNode nonGCStaticIndirection = factory.Indirection(factory.TypeNonGCStaticsSymbol(metadataType));
                     bag.AppendUnsigned(BagElementKind.NonGcStaticData, _nativeStaticsReferences.GetIndex(nonGCStaticIndirection));
                 }
+                if (metadataType.ThreadStaticFieldSize.AsInt > 0)
+                {
+                    if (factory.Target.Abi == TargetAbi.ProjectN)
+                    {
+                        UtcNodeFactory utcFactory = (UtcNodeFactory)factory;
 
-                // TODO: TLS
+                        ISymbolNode threadStaticIndexIndirection = utcFactory.TypeThreadStaticsIndexSymbol(metadataType);
+                        bag.AppendUnsigned(BagElementKind.ThreadStaticIndex, _nativeStaticsReferences.GetIndex(threadStaticIndexIndirection));
+
+                        ISymbolNode threadStaticOffsetIndirection = utcFactory.TypeThreadStaticsOffsetSymbol(metadataType);
+                        bag.AppendUnsigned(BagElementKind.ThreadStaticOffset, _nativeStaticsReferences.GetIndex(threadStaticOffsetIndirection));
+                    }
+                    // TODO: TLS for CoreRT
+                }
 
                 if (bag.ElementsCount > 0)
                 {
@@ -122,5 +147,8 @@ namespace ILCompiler.DependencyAnalysis
 
             return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.StaticsInfoHashtableNode;
     }
 }

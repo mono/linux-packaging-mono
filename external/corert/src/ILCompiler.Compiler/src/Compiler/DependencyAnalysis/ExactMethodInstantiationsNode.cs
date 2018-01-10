@@ -36,6 +36,7 @@ namespace ILCompiler.DependencyAnalysis
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -110,6 +111,9 @@ namespace ILCompiler.DependencyAnalysis
             if (!IsMethodEligibleForTracking(method))
                 return;
 
+            if (!factory.MetadataManager.SupportsReflection)
+                return;
+
             dependencies = dependencies ?? new DependencyList();
 
             // Method entry point dependency
@@ -147,5 +151,8 @@ namespace ILCompiler.DependencyAnalysis
 
             return true;
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.ExactMethodInstantiationsNode;
     }
 }

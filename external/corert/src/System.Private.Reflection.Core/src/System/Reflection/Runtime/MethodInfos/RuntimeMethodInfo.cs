@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
 using System.Reflection.Runtime.General;
 using System.Reflection.Runtime.TypeInfos;
@@ -23,7 +22,7 @@ namespace System.Reflection.Runtime.MethodInfos
     // Abstract base class for RuntimeNamedMethodInfo, RuntimeConstructedGenericMethodInfo.
     //
     [DebuggerDisplay("{_debugName}")]
-    internal abstract partial class RuntimeMethodInfo : MethodInfo, ISerializable, ITraceableTypeMember
+    internal abstract partial class RuntimeMethodInfo : MethodInfo, ITraceableTypeMember
     {
         protected RuntimeMethodInfo()
         {
@@ -87,8 +86,7 @@ namespace System.Reflection.Runtime.MethodInfos
             if (delegateType == null)
                 throw new ArgumentNullException(nameof(delegateType));
 
-            RuntimeTypeInfo runtimeDelegateType = delegateType as RuntimeTypeInfo;
-            if (runtimeDelegateType == null)
+            if (!(delegateType is RuntimeTypeInfo runtimeDelegateType))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(delegateType));
 
             if (!runtimeDelegateType.IsDelegate)
@@ -150,12 +148,9 @@ namespace System.Reflection.Runtime.MethodInfos
             return RuntimeGenericArgumentsOrParameters.CloneTypeArray();
         }
 
-        public abstract override MethodInfo GetGenericMethodDefinition();
+        public abstract override int GenericParameterCount { get; }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
-        }
+        public abstract override MethodInfo GetGenericMethodDefinition();
 
         public sealed override MethodBody GetMethodBody()
         {
@@ -382,8 +377,16 @@ namespace System.Reflection.Runtime.MethodInfos
             MethodInfo invokeMethod = runtimeDelegateType.GetInvokeMethod();
 
             // Make sure the return type is assignment-compatible.
-            if (!IsAssignableFrom(executionEnvironment, invokeMethod.ReturnParameter.ParameterType, this.ReturnParameter.ParameterType))
+            Type expectedReturnType = ReturnParameter.ParameterType;
+            Type actualReturnType = invokeMethod.ReturnParameter.ParameterType;
+            if (!IsAssignableFrom(executionEnvironment, actualReturnType, expectedReturnType))
                 return null;
+            if (expectedReturnType.IsValueType && !actualReturnType.IsValueType)
+            {
+                // For value type returning methods, conversions between enums and primitives are allowed (and screened by the above call to IsAssignableFrom)
+                // but conversions to Object or interfaces implemented by the value type are not.
+                return null;
+            }
 
             IList<ParameterInfo> delegateParameters = invokeMethod.GetParametersNoCopy();
             IList<ParameterInfo> targetParameters = this.GetParametersNoCopy();

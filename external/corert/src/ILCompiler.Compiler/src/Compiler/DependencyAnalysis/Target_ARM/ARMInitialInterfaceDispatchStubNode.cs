@@ -8,6 +8,7 @@ using System;
 using ILCompiler.DependencyAnalysis.ARM;
 using ILCompiler.DependencyAnalysis.X64;
 using ILCompiler.DependencyAnalysis.X86;
+using ILCompiler.DependencyAnalysis.ARM64;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -45,5 +46,12 @@ namespace ILCompiler.DependencyAnalysis
         {
             throw new NotImplementedException();
         }
+
+        protected override void EmitCode(NodeFactory factory, ref ARM64Emitter instructionEncoder, bool relocsOnly)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal override int ClassCode => 588185132;
     }
 }

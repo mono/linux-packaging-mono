@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" InitialTargets="CheckForBuildTools" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="CheckForBuildTools" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Target Name="CheckForBuildTools">
     <Error Condition="!Exists('$(ToolsDir)') and '$(OverrideToolsDir)'=='true'"
@@ -18,32 +17,37 @@
     <CLSCompliant Condition="'$(CLSCompliant)'==''">false</CLSCompliant>
   </PropertyGroup>
 
-  <!-- Setting IsTestProject prior to Build.Common.targets -->
-  <PropertyGroup>
-    <IsTestProject Condition="'$(IsTestProject)'=='' And $(MSBuildProjectName.EndsWith('.tests', StringComparison.OrdinalIgnoreCase))">true</IsTestProject>
+  <!-- Set default references for netcoreapp2.0 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <!-- This tells VS that this is .NET Core app - uses .NET Core debugger, IntelliSense, etc. -->
+    <TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
 
-  <Import Project="$(ToolsDir)/Build.Common.targets" />
+  <!-- Set default references for netstandard1.3 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <NuGetTargetMoniker>.NETStandard,Version=v1.3</NuGetTargetMoniker>
+    <TargetFrameworkIdentifier>.NETStandard</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.3</TargetFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <PackageReference Include="NETStandard.Library">
+      <Version>1.6.1</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Set non-empty TargetFrameworkIdentifier to avoid defaulting to .NETPortable -->
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == ''">
+    <TargetFrameworkIdentifier>.NETStandard</TargetFrameworkIdentifier>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NugetRuntimeIdentifier Condition="'$(NugetRuntimeIdentifier)' == ''">$(RuntimeIdentifiers)</NugetRuntimeIdentifier>
+  </PropertyGroup>
+
+  <Import Project="$(ToolsDir)Build.Common.targets" Condition="Exists('$(ToolsDir)Build.Common.targets')" />
 
   <!-- Override corefx multi targeting support -->
   <Target Name="ConvertCommonMetadataToAdditionalProperties" BeforeTargets="AssignProjectConfiguration" />
 
-  <!-- OverrideLicenseUrl is temporary till we update the buildtools to v2 -->  
-  <Target Name="OverrideLicenseUrl" BeforeTargets="GenerateNuSpec">
-    <PropertyGroup>
-      <LicenseUrl>https://github.com/dotnet/corert/blob/master/LICENSE.TXT</LicenseUrl>
-    </PropertyGroup>
-  </Target>
-
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
-    <!-- We don't use any of MSBuild's resolution logic for resolving the framework, so just set these two properties to any folder that exists to skip
-         the GenerateReferenceAssemblyPaths task (not target) and to prevent it from outputting a warning (MSB3644). -->
-    <_TargetFrameworkDirectories>$(MSBuildThisFileDirectory)/Documentation</_TargetFrameworkDirectories>
-    <_FullFrameworkReferenceAssemblyPaths>$(MSBuildThisFileDirectory)/Documentation</_FullFrameworkReferenceAssemblyPaths>
-    <!-- We do not want to target a portable profile.
-         TODO: Make this the default in buildtools so this is not necessary. -->
-    <TargetFrameworkProfile></TargetFrameworkProfile>
-    <!-- We set this property to avoid MSBuild errors regarding not setting TargetFrameworkProfile (see above line) -->
-    <PortableNuGetMode>true</PortableNuGetMode>
-  </PropertyGroup>
 </Project>

@@ -23,11 +23,10 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Text;
 using System.Runtime;
-using System.Diagnostics.Contracts;
 
 using Internal.NativeFormat;
 
-#if !RHTESTCL && !CORECLR && !CORERT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
 using Internal.Runtime.Augments;
 using Internal.Runtime.TypeLoader;
 #endif
@@ -73,7 +72,7 @@ namespace System
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [CLSCompliant(false)]
-#if !RHTESTCL && !CORECLR && !CORERT && ENABLE_WINRT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
     public unsafe class __ComObject : CastableObject, ICastable
 #else
     public unsafe class __ComObject : ICastable
@@ -85,6 +84,7 @@ namespace System
         /// RCW Identity interface pointer + context
         /// This supports all the cross-apartment marshalling
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ContextBoundInterfacePointer m_baseIUnknown;
 
         /// <summary>
@@ -92,6 +92,7 @@ namespace System
         /// Note that this is not necessarily the identity IUnknown, which is why I name it "Base" IUnknown
         /// If this is default(IntPtr), this RCW is not initialized yet
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal IntPtr BaseIUnknown_UnsafeNoAddRef { get { return m_baseIUnknown.ComPointer_UnsafeNoAddRef; } }
 
         /// <summary>
@@ -101,17 +102,20 @@ namespace System
         /// Typically you don't need to release as garbage collector will automatically take care of it
         /// But you can call Marshal.ReleaseComObject if you want explicit release it as early as possible
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         int m_refCount;
 
         /// <summary>
         /// Flags of this __ComObject. See ComObjectFlags for the possible value
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ComObjectFlags m_flags;
 
         /// <summary>
         /// A reference to CCW
         /// This makes sure the lifetime of the CCW and this RCW is tied together in aggregation scenario
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ComCallableObject m_outer;
 
         /// <summary>
@@ -119,8 +123,10 @@ namespace System
         /// This is mostly used as a way to diagnose what the underlying COM object really is (if the vtbl
         /// is still there, of course) in case the COM object was destroyed due to an extra release
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IntPtr m_savedIUnknownVtbl;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal IntPtr SavedIUnknownVtbl { get { return m_savedIUnknownVtbl; } }
 
         /// <summary>
@@ -130,6 +136,7 @@ namespace System
         /// Update managed debugger whenever field name/field type is changed.
         /// See CordbObjectValue::GetInterfaceData in debug\dbi\values.cpp
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal SimpleComInterfaceCacheItem[] m_cachedInterfaces;
         internal const int FIXED_CACHE_SIZE = 8;
 
@@ -139,19 +146,23 @@ namespace System
         /// Update managed debugger whenever field name/field type is changed.
         /// See CordbObjectValue::GetInterfaceData in debug\dbi\values.cpp
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private AdditionalComInterfaceCacheContext[] m_additionalCachedInterfaces_dontAccessDirectly;
 
         // if m_additionalCachedInterfaces_dontAccessDirectly == CacheLocked, the cache is being updated and
         // cannot be read or written from another thread.  We do this instead of using a "real" lock, to save space.
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly AdditionalComInterfaceCacheContext[] CacheLocked = new AdditionalComInterfaceCacheContext[0];
 
         /// <summary>
         /// Finalizer helper object that does cleanup.
         /// See RCWFinalizer class for more details.
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private RCWFinalizer m_finalizer;
 
-#if !RHTESTCL && !CORECLR && !CORERT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly System.Collections.Generic.Dictionary<RuntimeTypeHandle, RuntimeTypeHandle> s_DynamicRCWAdapters = 
             new System.Collections.Generic.Dictionary<RuntimeTypeHandle, RuntimeTypeHandle>();
 #endif
@@ -165,18 +176,21 @@ namespace System
         /// Runtime class name of this WinRT __ComObject. This is helpful when you want to understand why
         /// you get back a __ComObject instead of a strongly-typed RCW
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal string m_runtimeClassName;
 
         /// <summary>
         /// sequential allocation ID of this COM object
         /// useful when you are debugging bugs where the program's behavior is deterministic
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal uint m_allocationId;
 
         /// <summary>
         /// Next allocation ID
         /// Typed as int to make sure InterlockedExchange.Add is happy
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal static int s_nextAllocationId;
 #endif
 
@@ -184,6 +198,7 @@ namespace System
         /// Return allocation ID in debug build
         /// INTERNAL only - not in public contract
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public uint AllocationId
         {
             get
@@ -203,6 +218,7 @@ namespace System
         /// Only used in aggregation scenarios
         /// We only set the outer CCW during creation of managed object that derives from native
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal ComCallableObject Outer
         {
             get
@@ -317,7 +333,7 @@ namespace System
 
         static __ComObject()
         {
-#if !RHTESTCL && !CORECLR && !CORERT && ENABLE_WINRT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
             // Projected types
             s_DynamicRCWAdapters[typeof(IEnumerable<>).TypeHandle]                                                  = typeof(IEnumerable_RCWAdapter<>).TypeHandle;
             s_DynamicRCWAdapters[typeof(IList<>).TypeHandle]                                                        = typeof(IList_RCWAdapter<>).TypeHandle;
@@ -414,7 +430,7 @@ namespace System
                     m_flags |= (ComObjectFlags.GCPressureWinRT_High | ComObjectFlags.GCPressure_Set);
                     break;
                 default:
-                    Debug.Assert(false, "Incorrect GCPressure value");
+                    Debug.Fail("Incorrect GCPressure value");
                     return;
             }
 
@@ -446,6 +462,7 @@ namespace System
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ComMarshalingType MarshalingType
         {
             get
@@ -467,6 +484,7 @@ namespace System
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool IsGCPressureSet
         {
             get
@@ -480,6 +498,7 @@ namespace System
         /// The different mapping ranges are defined in GCMemoryPressureConstants
         /// </summary>
 #if ENABLE_WINRT
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int GCMemoryPressure
         {
             get
@@ -639,6 +658,7 @@ namespace System
         /// Whether this __ComObject represents a Jupiter UI object that implements IJupiterObject for life
         /// time tracking purposes
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool IsJupiterObject
         {
             [GCCallback]
@@ -651,6 +671,7 @@ namespace System
         /// <summary>
         /// Whether this RCW is used as a baseclass of a managed class. For example, MyButton: Button
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool ExtendsComObject
         {
             get
@@ -677,6 +698,7 @@ namespace System
         /// in .NET Native (but not true in desktop CLR, where extends a COM object could mean either
         /// aggregation or containment, depending on whether the underlying COM objects supports it)
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool IsAggregated
         {
             get
@@ -986,6 +1008,7 @@ namespace System
         /// <summary>
         /// Whether the RCW is free-threaded
         /// <summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool IsFreeThreaded
         {
             get
@@ -997,6 +1020,7 @@ namespace System
         /// <summary>
         /// Whether the RCW is a duplicate RCW that is not saved in cache
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool IsDuplicate
         {
             get
@@ -1008,6 +1032,7 @@ namespace System
         /// <summary>
         /// Returns the context cookie where this RCW is created
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal ContextCookie ContextCookie
         {
             get
@@ -1016,6 +1041,7 @@ namespace System
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal ComObjectFlags Flags
         {
             get
@@ -1300,7 +1326,7 @@ namespace System
             }
 #endif
 
-#if !RHTESTCL && !CORECLR && !CORERT
+#if !RHTESTCL && PROJECTN
 
             //
             // Search the existing cached interfaces in the simple cache that we can cast to the input interface type
@@ -1545,7 +1571,7 @@ namespace System
         #endregion
 
         #region CastableObject implementation for weakly typed RCWs
-#if !RHTESTCL && !CORECLR && !CORERT && ENABLE_WINRT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
         object CastToICollectionHelper(RuntimeTypeHandle genericTypeDef, RuntimeTypeHandle[] genericArguments, bool testForIDictionary)
         {
             Debug.Assert(genericTypeDef.Equals(typeof(ICollection<>).TypeHandle) || genericTypeDef.Equals(typeof(IReadOnlyCollection<>).TypeHandle));
@@ -1845,7 +1871,7 @@ namespace System
             //
             bool hasValidDispatcher = true;
 
-#if !RHTESTCL && !CORECLR && !CORERT && ENABLE_WINRT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
             hasValidDispatcher = McgModuleManager.UseDynamicInterop && interfaceType.IsGenericType() ? 
                 !interfaceType.GetDispatchClassType().IsInvalid() : 
                 true;
@@ -2122,7 +2148,7 @@ namespace System
             // We may not have QI'd for this interface yet.  Do so now, in case the object directly supports
             // the requested interface.  If we find it, call ourselves again so our fast path will pick it up.
             //
-            if (QueryInterface_NoAddRef_Internal(requestedType, /* cacheOnly= */ false, /* throwOnQueryInterfaceFailure= */ false) != default(IntPtr))
+            if (QueryInterface_NoAddRef_Internal(requestedType, /* cacheOnly= */ false, /* throwOnQueryInterfaceFailure= */ false) != default(IntPtr) && requestedType.HasDynamicAdapterClass())
                 return GetDynamicAdapterInternal(requestedType, default(RuntimeTypeHandle));
 
             return null;
@@ -2207,7 +2233,7 @@ namespace System
         /// </summary>
         private unsafe object GetDynamicAdapterInternal(RuntimeTypeHandle requestedType, RuntimeTypeHandle targetType)
         {
-            Debug.Assert(requestedType.HasDynamicAdapterClass());
+            Debug.Assert(requestedType.HasDynamicAdapterClass() || requestedType.IsGenericType());
 
             Debug.Assert(targetType.IsNull() || targetType.HasDynamicAdapterClass());
 
@@ -2241,7 +2267,7 @@ namespace System
             if (dynamicAdapter != null)
                 return dynamicAdapter;
 
-#if !RHTESTCL && !CORECLR && !CORERT && ENABLE_WINRT
+#if !RHTESTCL && PROJECTN && ENABLE_WINRT
             // Try dynamic rcw, The Caller will generate/throw exception if return null
             Exception e;
             dynamicAdapter = CastToInterface(requestedType, /*produceCastErrorException*/ false, out e);
@@ -2423,7 +2449,7 @@ namespace System.Runtime.InteropServices
                 int hr = ExternalInterop.CoGetContextToken(out pCookie);
                 if (hr < 0)
                 {
-                    Debug.Assert(false, "CoGetContextToken failed");
+                    Debug.Fail("CoGetContextToken failed");
                     pCookie = default(IntPtr);
                 }
                 return new ContextCookie(pCookie);
@@ -3040,7 +3066,7 @@ namespace System.Runtime.InteropServices
                     (Interop.COM.__IContextCallback*)(void*)pContextCallback;
                 fixed (Guid* unsafe_iid = &Interop.COM.IID_IEnterActivityWithNoLock)
                 {
-                    int hr = CalliIntrinsics.StdCall<int>(
+                    int hr = CalliIntrinsics.StdCall__int(
                         pContextCallbackNativePtr->vtbl->pfnContextCallback,
                         pContextCallbackNativePtr,                              // Don't forget 'this pointer
                         AddrOfIntrinsics.AddrOf<AddrOfIntrinsics.AddrOfTarget1>(EnterContextCallbackProc),
@@ -3311,8 +3337,6 @@ namespace System.Runtime.InteropServices
         /// <returns>Return true if winning race. False otherwise</returns>
         internal bool Assign(IntPtr pComPtr, RuntimeTypeHandle handle)
         {
-            // disable warning for ref volatile
-#pragma warning disable 0420
             if (Interlocked.CompareExchange(ref ptr, pComPtr, default(IntPtr)) == default(IntPtr))
             {
                 Debug.Assert(!HasValue, "Entry should be empty");
@@ -3330,7 +3354,6 @@ namespace System.Runtime.InteropServices
             {
                 return false;
             }
-#pragma warning restore 0420
         }
 
         /// <summary>
@@ -3584,7 +3607,7 @@ namespace System.Runtime.InteropServices
 
                     try
                     {
-                        int hr = CalliIntrinsics.StdCall<int>(
+                        int hr = CalliIntrinsics.StdCall__int(
                             pIStringable->pVtable->pfnToString,
                             pIStringable,
                             &unsafe_hstring
@@ -3909,19 +3932,16 @@ namespace System.Runtime.InteropServices
     /// </summary>
     internal class FactoryCache
     {
-        private Lock m_factoryLock = new Lock();
         private System.Collections.Concurrent.ConcurrentDictionary<string, FactoryCacheItem> m_cachedFactories = new System.Collections.Concurrent.ConcurrentDictionary<string, FactoryCacheItem>();
 
         private static volatile FactoryCache s_factoryCache;
 
         internal static FactoryCache Get()
         {
-#pragma warning disable 0420
             if (s_factoryCache == null)
             {
                 Interlocked.CompareExchange(ref s_factoryCache, new FactoryCache(), null);
             }
-#pragma warning restore 0420
 
             return s_factoryCache;
         }
@@ -3965,12 +3985,10 @@ namespace System.Runtime.InteropServices
 
             FactoryCacheItem cacheItem;
 
-
             if (!skipCache)
             {
-
-                 if (m_cachedFactories.TryGetValue(className, out cacheItem))
-                 {
+                if (m_cachedFactories.TryGetValue(className, out cacheItem))
+                {
                     if (cacheItem.contextEntry == currentContext)
                     {
                         //
@@ -3978,8 +3996,7 @@ namespace System.Runtime.InteropServices
                         //
                         return cacheItem.factoryObject;
                     }
-                 }
-                
+                }
             }
 
             //
@@ -3996,12 +4013,11 @@ namespace System.Runtime.InteropServices
                 //
                 // Insert into or update cache
                 //
-                m_cachedFactories.AddOrUpdate(className, cacheItem,  (key, oldValue) => cacheItem);
+                m_cachedFactories[className] = cacheItem;
             }
 
             return cacheItem.factoryObject;
         }
-
     }
 #endif
 }

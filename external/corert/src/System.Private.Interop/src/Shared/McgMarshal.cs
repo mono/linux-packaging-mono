@@ -22,7 +22,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text;
 using System.Runtime;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Internal.NativeFormat;
 
@@ -49,6 +48,11 @@ namespace System.Runtime.InteropServices
             PInvokeMarshal.SaveLastWin32Error();
         }
 
+        public static void ClearLastWin32Error()
+        {
+            PInvokeMarshal.ClearLastWin32Error();
+        }
+
         public static bool GuidEquals(ref Guid left, ref Guid right)
         {
             return InteropExtensions.GuidEquals(ref left, ref right);
@@ -73,13 +77,24 @@ namespace System.Runtime.InteropServices
 #endif
         }
 
-        public static bool IsCOMObject(Type type)
+        /// <summary>
+        /// Return true if the type is __COM or derived from __COM. False otherwise
+        /// </summary>
+        public static bool IsComObject(Type type)
         {
 #if RHTESTCL
             return false;
 #else
-            return type.GetTypeInfo().IsSubclassOf(typeof(__ComObject));
+            return type == typeof(__ComObject) || type.GetTypeInfo().IsSubclassOf(typeof(__ComObject));
 #endif
+        }
+
+        /// <summary>
+        /// Return true if the object is a RCW. False otherwise
+        /// </summary>
+        internal static bool IsComObject(object obj)
+        {
+            return (obj is __ComObject);
         }
 
         public static T FastCast<T>(object value) where T : class
@@ -351,7 +366,7 @@ namespace System.Runtime.InteropServices
         }
 #endif
 
-#if ENABLE_WINRT
+#if ENABLE_MIN_WINRT
        
         [MethodImplAttribute(MethodImplOptions.NoInlining)]
         public static unsafe HSTRING StringToHString(string sourceString)
@@ -392,11 +407,11 @@ namespace System.Runtime.InteropServices
                 return hr;
             }
         }
-#endif //ENABLE_WINRT
+#endif //ENABLE_MIN_WINRT
 
 #endregion
 
-#region COM marshalling
+        #region COM marshalling
 
         /// <summary>
         /// Explicit AddRef for RCWs
@@ -687,10 +702,7 @@ namespace System.Runtime.InteropServices
 
             if (typeHnd.IsComClass())
             {
-                Debug.Assert(obj == null || obj is __ComObject);
-                ///
-                /// This code path should be executed only for WinRT classes
-                ///
+                // This code path should be executed only for WinRT classes
                 typeHnd = typeHnd.GetDefaultInterface();
                 Debug.Assert(!typeHnd.IsNull());
             }
@@ -867,7 +879,7 @@ namespace System.Runtime.InteropServices
 #endif
         }
 
-        public static unsafe IntPtr CreateInstanceFromApp(Guid clsid)
+        public static unsafe IntPtr CoCreateInstanceEx(Guid clsid, string server)
         {
 #if ENABLE_WINRT
             Interop.COM.MULTI_QI results;
@@ -879,7 +891,26 @@ namespace System.Runtime.InteropServices
                 results.pIID = new IntPtr(pIID);
                 results.pItf = IntPtr.Zero;
                 results.hr = 0;
-                int hr = ExternalInterop.CoCreateInstanceFromApp(pClsid, IntPtr.Zero, 0x15 /* (CLSCTX_SERVER) */, IntPtr.Zero, 1, pResults);
+                int hr;
+                            
+                // if server name is specified, do remote server activation
+                if (!String.IsNullOrEmpty(server))
+                {
+                    Interop.COM.COSERVERINFO serverInfo;
+                    fixed (char* pName = server)
+                    {
+                        serverInfo.Name = new IntPtr(pName);
+                        IntPtr pServerInfo = new IntPtr(&serverInfo);
+
+                        hr = ExternalInterop.CoCreateInstanceFromApp(pClsid, IntPtr.Zero, (int)Interop.COM.CLSCTX.CLSCTX_REMOTE_SERVER, pServerInfo, 1, pResults);
+                    }
+            
+                }
+                else
+                {
+                   hr = ExternalInterop.CoCreateInstanceFromApp(pClsid, IntPtr.Zero, (int)Interop.COM.CLSCTX.CLSCTX_SERVER, IntPtr.Zero, 1, pResults);
+                }
+
                 if (hr < 0)
                 {
                     throw McgMarshal.GetExceptionForHR(hr, /*isWinRTScenario = */ false);
@@ -888,16 +919,21 @@ namespace System.Runtime.InteropServices
                 {
                     throw McgMarshal.GetExceptionForHR(results.hr, /* isWinRTScenario = */ false);
                 }
-                return results.pItf;
+            return results.pItf;
             }
 #else
-            throw new PlatformNotSupportedException("CreateInstanceFromApp");
+            throw new PlatformNotSupportedException("CoCreateInstanceEx");
 #endif
+
         }
 
-#endregion
+        public static unsafe IntPtr CoCreateInstanceEx(Guid clsid)
+        {
+            return CoCreateInstanceEx(clsid, string.Empty);
+        }
+        #endregion
 
-#region Testing
+        #region Testing
 
         /// <summary>
         /// Internal-only method to allow testing of apartment teardown code
@@ -945,7 +981,7 @@ namespace System.Runtime.InteropServices
         ///          If so, it means that this exception was actually caused by a native exception in which case we do simply use the same
         ///              message and stacktrace.
         ///      b.  If not, this is actually a managed exception and in this case we RoOriginateLanguageException with the msg, hresult and the IErrorInfo
-        ///          aasociated with the managed exception. This helps us to retrieve the same exception in case it comes back to native.
+        ///          associated with the managed exception. This helps us to retrieve the same exception in case it comes back to native.
         /// 2. On win8 and for classic COM scenarios.
         ///     a. We create IErrorInfo for the given Exception object and SetErrorInfo with the given IErrorInfo.
         /// </summary>
@@ -1036,7 +1072,7 @@ namespace System.Runtime.InteropServices
 
             IntPtr pResult = default(IntPtr);
 
-            int hr = CalliIntrinsics.StdCall<int>(
+            int hr = CalliIntrinsics.StdCall__int(
                 pIActivationFactoryInternal->pVtable->pfnActivateInstance,
                 pIActivationFactoryInternal,
                 &pResult
@@ -1114,10 +1150,10 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
         {
-#if RHTESTCL || CORECLR || CORERT
-            throw new NotSupportedException();
-#else
+#if !RHTESTCL && PROJECTN
             return PInvokeMarshal.GetCurrentCalleeOpenStaticDelegateFunctionPointer();
+#else
+            throw new NotSupportedException();
 #endif
         }
 
@@ -1126,10 +1162,10 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static T GetCurrentCalleeDelegate<T>() where T : class // constraint can't be System.Delegate
         {
-#if RHTESTCL || CORECLR || CORERT
-            throw new NotSupportedException();
-#else
+#if !RHTESTCL && PROJECTN
             return PInvokeMarshal.GetCurrentCalleeDelegate<T>();
+#else
+            throw new NotSupportedException();
 #endif
         }
 #endregion

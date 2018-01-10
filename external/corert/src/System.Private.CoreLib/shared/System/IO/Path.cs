@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace System.IO
@@ -42,8 +41,6 @@ namespace System.IO
         {
             if (path != null)
             {
-                PathInternal.CheckInvalidPathChars(path);
-
                 string s = path;
                 for (int i = path.Length - 1; i >= 0; i--)
                 {
@@ -76,13 +73,12 @@ namespace System.IO
         // "\\server\share").
         public static string GetDirectoryName(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                if (path == null) return null;
-                throw new ArgumentException(SR.Arg_PathIllegal, nameof(path));
-            }
+            if (path == null)
+                return null;
 
-            PathInternal.CheckInvalidPathChars(path);
+            if (PathInternal.IsEffectivelyEmpty(path))
+                throw new ArgumentException(SR.Arg_PathEmpty, nameof(path));
+
             path = PathInternal.NormalizeDirectorySeparators(path);
             int root = PathInternal.GetRootLength(path);
 
@@ -100,13 +96,11 @@ namespace System.IO
         // period (".") character of the extension except when you have a terminal period when you get string.Empty, such as ".exe" or
         // ".cpp". The returned value is null if the given path is
         // null or if the given path does not include an extension.
-        [Pure]
         public static string GetExtension(string path)
         {
             if (path == null)
                 return null;
 
-            PathInternal.CheckInvalidPathChars(path);
             int length = path.Length;
             for (int i = length - 1; i >= 0; i--)
             {
@@ -127,7 +121,6 @@ namespace System.IO
         // Returns the name and extension parts of the given path. The resulting
         // string contains the characters of path that follow the last
         // separator in path. The resulting string is null if path is null.
-        [Pure]
         public static string GetFileName(string path)
         {
             if (path == null)
@@ -138,7 +131,6 @@ namespace System.IO
             return path.Substring(offset, count);
         }
 
-        [Pure]
         public static string GetFileNameWithoutExtension(string path)
         {
             if (path == null)
@@ -166,17 +158,38 @@ namespace System.IO
             return new string(pRandomFileName, 0, RandomFileNameLength);
         }
 
+        /// <summary>
+        /// Returns true if the path is fixed to a specific drive or UNC path. This method does no
+        /// validation of the path (URIs will be returned as relative as a result).
+        /// Returns false if the path specified is relative to the current drive or working directory.
+        /// </summary>
+        /// <remarks>
+        /// Handles paths that use the alternate directory separator.  It is a frequent mistake to
+        /// assume that rooted paths <see cref="Path.IsPathRooted(string)"/> are not relative.  This isn't the case.
+        /// "C:a" is drive relative- meaning that it will be resolved against the current directory
+        /// for C: (rooted, but relative). "C:\a" is rooted and not relative (the current directory
+        /// will not be used to modify the path).
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="path"/> is null.
+        /// </exception>
+        public static bool IsPathFullyQualified(string path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            return !PathInternal.IsPartiallyQualified(path);
+        }
+
         // Tests if a path includes a file extension. The result is
         // true if the characters that follow the last directory
         // separator ('\\' or '/') or volume separator (':') in the path include 
         // a period (".") other than a terminal period. The result is false otherwise.
-        [Pure]
         public static bool HasExtension(string path)
         {
             if (path != null)
             {
-                PathInternal.CheckInvalidPathChars(path);
-
                 for (int i = path.Length - 1; i >= 0; i--)
                 {
                     char ch = path[i];
@@ -194,10 +207,6 @@ namespace System.IO
         {
             if (path1 == null || path2 == null)
                 throw new ArgumentNullException((path1 == null) ? nameof(path1) : nameof(path2));
-            Contract.EndContractBlock();
-
-            PathInternal.CheckInvalidPathChars(path1);
-            PathInternal.CheckInvalidPathChars(path2);
 
             return CombineNoChecks(path1, path2);
         }
@@ -206,11 +215,6 @@ namespace System.IO
         {
             if (path1 == null || path2 == null || path3 == null)
                 throw new ArgumentNullException((path1 == null) ? nameof(path1) : (path2 == null) ? nameof(path2) : nameof(path3));
-            Contract.EndContractBlock();
-
-            PathInternal.CheckInvalidPathChars(path1);
-            PathInternal.CheckInvalidPathChars(path2);
-            PathInternal.CheckInvalidPathChars(path3);
 
             return CombineNoChecks(path1, path2, path3);
         }
@@ -219,12 +223,6 @@ namespace System.IO
         {
             if (path1 == null || path2 == null || path3 == null || path4 == null)
                 throw new ArgumentNullException((path1 == null) ? nameof(path1) : (path2 == null) ? nameof(path2) : (path3 == null) ? nameof(path3) : nameof(path4));
-            Contract.EndContractBlock();
-
-            PathInternal.CheckInvalidPathChars(path1);
-            PathInternal.CheckInvalidPathChars(path2);
-            PathInternal.CheckInvalidPathChars(path3);
-            PathInternal.CheckInvalidPathChars(path4);
 
             return CombineNoChecks(path1, path2, path3, path4);
         }
@@ -235,7 +233,6 @@ namespace System.IO
             {
                 throw new ArgumentNullException(nameof(paths));
             }
-            Contract.EndContractBlock();
 
             int finalSize = 0;
             int firstComponent = 0;
@@ -254,8 +251,6 @@ namespace System.IO
                 {
                     continue;
                 }
-
-                PathInternal.CheckInvalidPathChars(paths[i]);
 
                 if (IsPathRooted(paths[i]))
                 {
@@ -491,7 +486,7 @@ namespace System.IO
         private static string GetRelativePath(string relativeTo, string path, StringComparison comparisonType)
         {
             if (string.IsNullOrEmpty(relativeTo)) throw new ArgumentNullException(nameof(relativeTo));
-            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException(nameof(path));
+            if (PathInternal.IsEffectivelyEmpty(path)) throw new ArgumentNullException(nameof(path));
             Debug.Assert(comparisonType == StringComparison.Ordinal || comparisonType == StringComparison.OrdinalIgnoreCase);
 
             relativeTo = GetFullPath(relativeTo);

@@ -45,6 +45,15 @@ namespace ILCompiler
                 case ReadyToRunHelper.ThrowDivZero:
                     methodDesc = context.GetHelperEntryPoint("ThrowHelpers", "ThrowDivideByZeroException");
                     break;
+                case ReadyToRunHelper.ThrowArgumentOutOfRange:
+                    methodDesc = context.GetHelperEntryPoint("ThrowHelpers", "ThrowArgumentOutOfRangeException");
+                    break;
+                case ReadyToRunHelper.ThrowArgument:
+                    methodDesc = context.GetHelperEntryPoint("ThrowHelpers", "ThrowArgumentException");
+                    break;
+                case ReadyToRunHelper.ThrowPlatformNotSupported:
+                    methodDesc = context.GetHelperEntryPoint("ThrowHelpers", "ThrowPlatformNotSupportedException");
+                    break;
 
                 case ReadyToRunHelper.DebugBreak:
                     mangledName = "RhDebugBreak";
@@ -119,6 +128,12 @@ namespace ILCompiler
                 case ReadyToRunHelper.Dbl2ULng:
                     mangledName = "RhpDbl2ULng";
                     break;
+                case ReadyToRunHelper.Dbl2Int:
+                    mangledName = "RhpDbl2Int";
+                    break;
+                case ReadyToRunHelper.Dbl2UInt:
+                    mangledName = "RhpDbl2UInt";
+                    break;
 
                 case ReadyToRunHelper.Dbl2IntOvf:
                     methodDesc = context.GetHelperEntryPoint("MathHelpers", "Dbl2IntOvf");
@@ -138,6 +153,58 @@ namespace ILCompiler
                     break;
                 case ReadyToRunHelper.FltRem:
                     mangledName = "RhpFltRem";
+                    break;
+                case ReadyToRunHelper.DblRound:
+                    mangledName = "RhpDblRound";
+                    break;
+                case ReadyToRunHelper.FltRound:
+                    mangledName = "RhpFltRound";
+                    break;
+
+                case ReadyToRunHelper.LMul:
+                    mangledName = "RhpLMul";
+                    break;
+                case ReadyToRunHelper.LMulOfv:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "LMulOvf");
+                    break;
+                case ReadyToRunHelper.ULMulOvf:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "ULMulOvf");
+                    break;
+
+                case ReadyToRunHelper.Mod:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "IMod");
+                    break;
+                case ReadyToRunHelper.UMod:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "UMod");
+                    break;
+                case ReadyToRunHelper.ULMod:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "ULMod");
+                    break;
+                case ReadyToRunHelper.LMod:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "LMod");
+                    break;
+
+                case ReadyToRunHelper.Div:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "IDiv");
+                    break;
+                case ReadyToRunHelper.UDiv:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "UDiv");
+                    break;
+                case ReadyToRunHelper.ULDiv:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "ULDiv");
+                    break;
+                case ReadyToRunHelper.LDiv:
+                    methodDesc = context.GetHelperEntryPoint("MathHelpers", "LDiv");
+                    break;
+
+                case ReadyToRunHelper.LRsz:
+                    mangledName = "RhpLRsz";
+                    break;
+                case ReadyToRunHelper.LRsh:
+                    mangledName = "RhpLRsh";
+                    break;
+                case ReadyToRunHelper.LLsh:
+                    mangledName = "RhpLLsh";
                     break;
 
                 case ReadyToRunHelper.PInvokeBegin:

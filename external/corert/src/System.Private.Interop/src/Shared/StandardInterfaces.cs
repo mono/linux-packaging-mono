@@ -545,21 +545,22 @@ namespace System.Runtime.InteropServices
                     HSTRING unsafe_name,
                     IntPtr __IntPtr__unsafe_customProperty)
         {
-
             void** unsafe_customProperty = (void**)__IntPtr__unsafe_customProperty;
+            // Initialize [out] parameters
+            *unsafe_customProperty = default(void*);
 
             object target = ComCallableObject.FromThisPointer(pComThis).TargetObject;
             string propertyName = McgMarshal.HStringToString(unsafe_name);
             try
             {
                 global::Windows.UI.Xaml.Data.ICustomProperty property = ManagedGetCustomProperty(target, propertyName);
-                *unsafe_customProperty = (void*)McgComHelpers.ManagedObjectToComInterface(
-                    property,
-                    typeof(global::Windows.UI.Xaml.Data.ICustomProperty).TypeHandle);
+                    *unsafe_customProperty = (void*)McgComHelpers.ManagedObjectToComInterface(
+                        property,
+                        typeof(global::Windows.UI.Xaml.Data.ICustomProperty).TypeHandle);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return McgMarshal.GetHRForExceptionWinRT(ex);
+                // Don't fail if property can't be found
             }
             return Interop.COM.S_OK;
         }
@@ -608,9 +609,10 @@ namespace System.Runtime.InteropServices
                     TypeName unsafe_type,
                     IntPtr __IntPtr__unsafe_customProperty)
         {
-            //__com_Windows_UI_Xaml_Data__ICustomProperty** unsafe_customProperty = (__com_Windows_UI_Xaml_Data__ICustomProperty**)__IntPtr__unsafe_customProperty;
             void** unsafe_customProperty = (void**)__IntPtr__unsafe_customProperty;
-
+            
+            // Initialize [out] parameters
+            *unsafe_customProperty = default(void*);
             try
             {
                 object target = ComCallableObject.FromThisPointer(pComThis).TargetObject;
@@ -622,9 +624,9 @@ namespace System.Runtime.InteropServices
                     property,
                     typeof(global::Windows.UI.Xaml.Data.ICustomProperty).TypeHandle);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return McgMarshal.GetHRForExceptionWinRT(ex);
+                // Don't fail if property can't be found - just return S_OK and NULL property
             }
 
             return Interop.COM.S_OK;
@@ -712,7 +714,6 @@ namespace System.Runtime.InteropServices
             return null;
         }
 
-
         [NativeCallable]
         static int GetStringRepresentation__STUB(
                     System.IntPtr pComThis,
@@ -768,7 +769,7 @@ namespace System.Runtime.InteropServices
         {
 
             TypeName* unsafe_value = (TypeName*)__IntPtr__unsafe_value;
-
+            *unsafe_value = default(TypeName);
             int kind;
             try
             {
@@ -784,9 +785,9 @@ namespace System.Runtime.InteropServices
 
                 unsafe_value->Kind = (TypeKind)kind;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return McgMarshal.GetHRForExceptionWinRT(ex);
+                // Don't fail---Align with desktop behavior
             }
             return Interop.COM.S_OK;
         }
@@ -1578,7 +1579,7 @@ namespace System.Runtime.InteropServices
 
         static unsafe int GetIMarshal(void **ppIMarshal)
         {
-#if ENABLE_WINRT
+#if ENABLE_MIN_WINRT
             void *pUnk = null;
             int hr = ExternalInterop.CoCreateFreeThreadedMarshaler(null, (void **)&pUnk);
             if (hr < 0) return hr;
@@ -1611,7 +1612,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void **)&pIMarshal);
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnGetUnmarshalClass,
                     pIMarshal,
                     piid,
@@ -1644,7 +1645,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void**)&pIMarshal); ;
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnGetMarshalSizeMax,
                     pIMarshal,
                     piid,
@@ -1677,7 +1678,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void**)&pIMarshal);
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnMarshalInterface,
                     pIMarshal,
                     pStm,
@@ -1707,7 +1708,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void**)&pIMarshal);
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnUnmarshalInterface,
                     pIMarshal,
                     pStm,
@@ -1732,7 +1733,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void**)&pIMarshal);
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnReleaseMarshalData,
                     pIMarshal,
                     pStm);
@@ -1755,7 +1756,7 @@ namespace System.Runtime.InteropServices
                 int hr = GetIMarshal((void**)&pIMarshal);
                 if (hr < 0) return hr;
 
-                return CalliIntrinsics.StdCall<int>(
+                return CalliIntrinsics.StdCall__int(
                     (*pIMarshal)->pfnDisconnectObject,
                     pIMarshal,
                     dwReserved);
@@ -1800,7 +1801,7 @@ namespace System.Runtime.InteropServices
         /// <returns>The IStream*</returns>
         internal static unsafe IntPtr CreateMemStm(ulong lSize)
         {
-#if ENABLE_WINRT
+#if ENABLE_MIN_WINRT
             __com_IStream* pIStream = (__com_IStream*)PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)sizeof(__com_IStream)));
             pIStream->pVtable = (__vtable_IStream*)__vtable_IStream.GetVtable();
             pIStream->m_cbCurrent = 0;
@@ -2076,7 +2077,7 @@ namespace System.Runtime.InteropServices
 
         #region Rest of IStream overrides that are not implemented
         [NativeCallable]
-        internal static int Clone(System.IntPtr pComThis, out IntPtr ppstm)
+        internal static int Clone(System.IntPtr pComThis, IntPtr ppstm)
         {
             ppstm = default(IntPtr);
             return Interop.COM.E_NOTIMPL;

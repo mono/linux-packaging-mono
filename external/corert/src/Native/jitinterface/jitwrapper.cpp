@@ -16,11 +16,22 @@ typedef struct _GUID {
     unsigned char Data4[8];
 } GUID;
 
-static const GUID JITEEVersionIdentifier = { /* f00b3f49-ddd2-49be-ba43-6e49ffa66959 */
-    0xf00b3f49,
-    0xddd2,
-    0x49be,
-    { 0xba, 0x43, 0x6e, 0x49, 0xff, 0xa6, 0x69, 0x59 }
+class CORJIT_FLAGS
+{
+public:
+    CORJIT_FLAGS(const CORJIT_FLAGS& other)
+    {
+        corJitFlags = other.corJitFlags;
+    }
+private:
+    unsigned __int64 corJitFlags;
+};
+
+static const GUID JITEEVersionIdentifier = { /* a6860f80-01cb-4f87-82c2-a8e5a744f2fa */
+    0xa6860f80,
+    0x01cb,
+    0x4f87,
+    {0x82, 0xc2, 0xa8, 0xe5, 0xa7, 0x44, 0xf2, 0xfa}
 };
 
 class Jit
@@ -42,6 +53,11 @@ public:
     // return the version identifier that the EE expects), then the EE fails to load the JIT.
     // 
     virtual void getVersionIdentifier(GUID* versionIdentifier) = 0;
+
+    // When the EE loads the System.Numerics.Vectors assembly, it asks the JIT what length (in bytes) of
+    // SIMD vector it supports as an intrinsic type.  Zero means that the JIT does not support SIMD
+    // intrinsics, so the EE should use the default size (i.e. the size of the IL implementation).
+    virtual unsigned getMaxIntrinsicSIMDVectorLength(CORJIT_FLAGS cpuCompileFlags) = 0;
 };
 
 DLL_EXPORT int JitCompileMethod(
@@ -77,4 +93,11 @@ DLL_EXPORT int JitCompileMethod(
     }
 
     return 1;
+}
+
+DLL_EXPORT unsigned GetMaxIntrinsicSIMDVectorLength(
+    Jit * pJit,
+    CORJIT_FLAGS * flags)
+{
+    return pJit->getMaxIntrinsicSIMDVectorLength(*flags);
 }

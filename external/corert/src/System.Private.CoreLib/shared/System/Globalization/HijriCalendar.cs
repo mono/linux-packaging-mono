@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 
 namespace System.Globalization
 {
@@ -187,7 +186,7 @@ namespace System.Globalization
 
             set
             {
-                // NOTE: Check the value of Min/MaxAdavncedHijri with Arabic speakers to see if the assumption is good.
+                // NOTE: Check the value of Min/MaxAdvancedHijri with Arabic speakers to see if the assumption is good.
                 if (value < MinAdvancedHijri || value > MaxAdvancedHijri)
                 {
                     throw new ArgumentOutOfRangeException(
@@ -198,7 +197,6 @@ namespace System.Globalization
                                     MinAdvancedHijri,
                                     MaxAdvancedHijri));
                 }
-                Contract.EndContractBlock();
                 VerifyWritable();
 
                 _hijriAdvance = value;
@@ -303,7 +301,7 @@ namespace System.Globalization
             //
             HijriYear = (int)(((NumDays - 227013) * 30) / 10631) + 1;
 
-            long daysToHijriYear = DaysUpToHijriYear(HijriYear);            // The absoulte date for HijriYear
+            long daysToHijriYear = DaysUpToHijriYear(HijriYear);            // The absolute date for HijriYear
             long daysOfHijriYear = GetDaysInYear(HijriYear, CurrentEra);    // The number of days for (HijriYear+1) year.
 
             if (NumDays < daysToHijriYear)
@@ -395,7 +393,6 @@ namespace System.Globalization
                                 -120000,
                                 120000));
             }
-            Contract.EndContractBlock();
             // Get the date in Hijri calendar.
             int y = GetDatePart(time.Ticks, DatePartYear);
             int m = GetDatePart(time.Ticks, DatePartMonth);
@@ -467,7 +464,6 @@ namespace System.Globalization
         // Returns the number of days in the month given by the year and
         // month arguments.
         //
-        [Pure]
         public override int GetDaysInMonth(int year, int month, int era)
         {
             CheckYearMonthRange(year, month, era);
@@ -653,7 +649,6 @@ namespace System.Globalization
                 throw new ArgumentOutOfRangeException(nameof(year),
                     SR.ArgumentOutOfRange_NeedNonNegNum);
             }
-            Contract.EndContractBlock();
 
             if (year < 100)
             {

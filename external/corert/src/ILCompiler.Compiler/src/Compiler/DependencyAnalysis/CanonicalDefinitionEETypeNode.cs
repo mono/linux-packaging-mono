@@ -33,17 +33,16 @@ namespace ILCompiler.DependencyAnalysis
                 uint numInstanceFieldBytes = 1 + (uint)factory.Target.PointerSize;
 
                 uint valueTypeFieldPadding = (uint)(MinimumObjectSize - factory.Target.PointerSize) - numInstanceFieldBytes;
-                uint valueTypeFieldPaddingEncoded = EETypeBuilderHelpers.ComputeValueTypeFieldPaddingFieldValue(valueTypeFieldPadding, 1);
+                uint valueTypeFieldPaddingEncoded = EETypeBuilderHelpers.ComputeValueTypeFieldPaddingFieldValue(valueTypeFieldPadding, 1, _type.Context.Target.PointerSize);
                 Debug.Assert(valueTypeFieldPaddingEncoded != 0);
 
                 _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.ValueTypeFieldPadding, valueTypeFieldPaddingEncoded);
             }
         }
 
-        protected override void OutputBaseSize(ref ObjectDataBuilder objData)
-        {
-            // Canonical definition types will have their base size set to the minimum
-            objData.EmitInt(MinimumObjectSize);
-        }
+        // Canonical definition types will have their base size set to the minimum
+        protected override int BaseSize => MinimumObjectSize;
+
+        protected internal override int ClassCode => -1851030036;
     }
 }

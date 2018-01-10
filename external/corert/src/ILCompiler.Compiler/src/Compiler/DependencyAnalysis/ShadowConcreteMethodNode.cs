@@ -20,7 +20,7 @@ namespace ILCompiler.DependencyAnalysis
     /// method body, as if it was generated. The node acts as a symbol for the canonical
     /// method for convenience.
     /// </summary>
-    internal class ShadowConcreteMethodNode : DependencyNodeCore<NodeFactory>, IMethodNode
+    public class ShadowConcreteMethodNode : DependencyNodeCore<NodeFactory>, IMethodNode
     {
         /// <summary>
         /// Gets the canonical method body that defines the dependencies of this node.
@@ -98,5 +98,16 @@ namespace ILCompiler.DependencyAnalysis
 
         public sealed override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
         public sealed override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory factory) => null;
+
+        int ISortableSymbolNode.ClassCode => -1440570971;
+
+        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        {
+            var compare = comparer.Compare(Method, ((ShadowConcreteMethodNode)other).Method);
+            if (compare != 0)
+                return compare;
+
+            return comparer.Compare(CanonicalMethodNode, ((ShadowConcreteMethodNode)other).CanonicalMethodNode);
+        }
     }
 }

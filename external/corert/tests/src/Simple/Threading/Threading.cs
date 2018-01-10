@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 
 // TODO: Move these tests to CoreFX once they can be run on CoreRT
 
@@ -14,6 +16,9 @@ internal static class Runner
 
     public static int Main()
     {
+        Console.WriteLine("    WaitSubsystemTests.DoubleSetOnEventWithTimedOutWaiterShouldNotStayInWaitersList");
+        WaitSubsystemTests.DoubleSetOnEventWithTimedOutWaiterShouldNotStayInWaitersList();
+
         Console.WriteLine("    WaitSubsystemTests.ManualResetEventTest");
         WaitSubsystemTests.ManualResetEventTest();
 
@@ -32,6 +37,80 @@ internal static class Runner
         // This test takes a long time to run in release and especially in debug builds. Enable for manual testing.
         //Console.WriteLine("    WaitSubsystemTests.MutexMaximumReacquireCountTest");
         //WaitSubsystemTests.MutexMaximumReacquireCountTest();
+
+        Console.WriteLine("    ThreadPoolTests.RunProcessorCountItemsInParallel");
+        ThreadPoolTests.RunProcessorCountItemsInParallel();
+
+        Console.WriteLine("    ThreadPoolTests.RunMoreThanMaxJobsMakesOneJobWaitForStarvationDetection");
+        ThreadPoolTests.RunMoreThanMaxJobsMakesOneJobWaitForStarvationDetection();
+
+        Console.WriteLine("    ThreadPoolTests.ThreadPoolCanPickUpOneJobWhenThreadIsAvailable");
+        ThreadPoolTests.ThreadPoolCanPickUpOneJobWhenThreadIsAvailable();
+
+        Console.WriteLine("    ThreadPoolTests.ThreadPoolCanPickUpMultipleJobsWhenThreadsAreAvailable");
+        ThreadPoolTests.ThreadPoolCanPickUpMultipleJobsWhenThreadsAreAvailable();
+
+        // This test takes a long time to run (min 42 seconds sleeping). Enable for manual testing.
+        // Console.WriteLine("    ThreadPoolTests.RunJobsAfterThreadTimeout");
+        // ThreadPoolTests.RunJobsAfterThreadTimeout();
+
+        Console.WriteLine("    ThreadPoolTests.WorkQueueDepletionTest");
+        ThreadPoolTests.WorkQueueDepletionTest();
+
+        Console.WriteLine("    ThreadPoolTests.WorkerThreadStateReset");
+        ThreadPoolTests.WorkerThreadStateReset();
+
+        // This test is not applicable (and will not pass) on Windows since it uses the Windows OS-provided thread pool.
+        // Console.WriteLine("    ThreadPoolTests.SettingMinThreadsWillCreateThreadsUpToMinimum");
+        // ThreadPoolTests.SettingMinThreadsWillCreateThreadsUpToMinimum();
+
+        Console.WriteLine("    WaitThreadTests.SignalingRegisteredHandleCallsCalback");
+        WaitThreadTests.SignalingRegisteredHandleCallsCalback();
+
+        Console.WriteLine("    WaitThreadTests.TimingOutRegisteredHandleCallsCallback");
+        WaitThreadTests.TimingOutRegisteredHandleCallsCallback();
+
+        Console.WriteLine("    WaitThreadTests.UnregisteringBeforeSignalingDoesNotCallCallback");
+        WaitThreadTests.UnregisteringBeforeSignalingDoesNotCallCallback();
+
+        Console.WriteLine("    WaitThreadTests.RepeatingWaitFiresUntilUnregistered");
+        WaitThreadTests.RepeatingWaitFiresUntilUnregistered();
+
+        Console.WriteLine("    WaitThreadTests.UnregisterEventSignaledWhenUnregistered");
+        WaitThreadTests.UnregisterEventSignaledWhenUnregistered();
+
+        Console.WriteLine("    WaitThreadTests.CanRegisterMoreThan64Waits");
+        WaitThreadTests.CanRegisterMoreThan64Waits();
+
+        Console.WriteLine("    WaitThreadTests.StateIsPasssedThroughToCallback");
+        WaitThreadTests.StateIsPasssedThroughToCallback();
+
+
+        // This test takes a long time to run. Enable for manual testing.
+        // Console.WriteLine("    WaitThreadTests.WaitWithLongerTimeoutThanWaitThreadCanStillTimeout");
+        // WaitThreadTests.WaitWithLongerTimeoutThanWaitThreadCanStillTimeout();
+
+        Console.WriteLine("    WaitThreadTests.UnregisterCallbackIsNotCalledAfterCallbackFinishesIfAnotherCallbackOnSameWaitRunning");
+        WaitThreadTests.UnregisterCallbackIsNotCalledAfterCallbackFinishesIfAnotherCallbackOnSameWaitRunning();
+
+        Console.WriteLine("    WaitThreadTests.CallingUnregisterOnAutomaticallyUnregisteredHandleReturnsTrue");
+        WaitThreadTests.CallingUnregisterOnAutomaticallyUnregisteredHandleReturnsTrue();
+
+        Console.WriteLine("    WaitThreadTests.EventSetAfterUnregisterNotObservedOnWaitThread");
+        WaitThreadTests.EventSetAfterUnregisterNotObservedOnWaitThread();
+
+        Console.WriteLine("    WaitThreadTests.BlockingUnregister");
+        WaitThreadTests.BlockingUnregister();
+
+        Console.WriteLine("    WaitThreadTests.CanDisposeEventAfterUnblockingUnregister");
+        WaitThreadTests.CanDisposeEventAfterUnblockingUnregister();
+
+        Console.WriteLine("    WaitThreadTests.UnregisterEventSignaledWhenUnregisteredEvenIfAutoUnregistered");
+        WaitThreadTests.UnregisterEventSignaledWhenUnregisteredEvenIfAutoUnregistered();
+
+
+        Console.WriteLine("    WaitThreadTests.BlockingUnregisterBlocksEvenIfCallbackExecuting");
+        WaitThreadTests.BlockingUnregisterBlocksEvenIfCallbackExecuting();
 
         return Pass;
     }
@@ -390,6 +469,28 @@ internal static class WaitSubsystemTests
         }
     }
 
+    // There is a race condition between a timed out WaitOne and a Set call not clearing the waiters list
+    // in the wait subsystem (Unix only). More information can be found at
+    // https://github.com/dotnet/corert/issues/3616 and https://github.com/dotnet/corert/pull/3782.
+    [Fact]
+    public static void DoubleSetOnEventWithTimedOutWaiterShouldNotStayInWaitersList()
+    {
+        AutoResetEvent threadStartedEvent = new AutoResetEvent(false);
+        AutoResetEvent resetEvent = new AutoResetEvent(false);
+        Thread thread = new Thread(() => {
+            threadStartedEvent.Set();
+            Thread.Sleep(50);
+            resetEvent.Set();
+            resetEvent.Set();
+        });
+
+        thread.IsBackground = true;
+        thread.Start();
+        threadStartedEvent.WaitOne(ThreadTestHelpers.UnexpectedTimeoutMilliseconds);
+        resetEvent.WaitOne(50);
+        thread.Join(ThreadTestHelpers.UnexpectedTimeoutMilliseconds);
+    }
+
     [Fact]
     public static void MutexTest()
     {
@@ -733,11 +834,502 @@ internal static class WaitSubsystemTests
     }
 }
 
+internal static class ThreadPoolTests
+{
+    [Fact]
+    public static void RunProcessorCountItemsInParallel()
+    {
+        int count = 0;
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        for(int i = 0; i < Environment.ProcessorCount; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount)
+                {
+                    e0.Set();
+                }
+            });
+        }
+        e0.CheckedWait();
+        // Run the test again to make sure we can reuse the threads.
+        count = 0;
+        for(int i = 0; i < Environment.ProcessorCount; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount)
+                {
+                    e0.Set();
+                }
+            });
+        }
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    public static void RunMoreThanMaxJobsMakesOneJobWaitForStarvationDetection()
+    {
+        ManualResetEvent e0 = new ManualResetEvent(false);
+        AutoResetEvent jobsQueued = new AutoResetEvent(false);
+        int count = 0;
+        AutoResetEvent e1 = new AutoResetEvent(false);
+        for(int i = 0; i < Environment.ProcessorCount; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount)
+                {
+                    jobsQueued.Set();
+                }
+                e0.CheckedWait();
+            });
+        }
+        jobsQueued.CheckedWait();
+        ThreadPool.QueueUserWorkItem( _ => e1.Set());
+        Thread.Sleep(500); // Sleep for the gate thread delay to wait for starvation
+        e1.CheckedWait();
+        e0.Set();
+    }
+
+    [Fact]
+    public static void ThreadPoolCanPickUpOneJobWhenThreadIsAvailable()
+    {
+        ManualResetEvent e0 = new ManualResetEvent(false);
+        AutoResetEvent jobsQueued = new AutoResetEvent(false);
+        AutoResetEvent testJobCompleted = new AutoResetEvent(false);
+        int count = 0;
+
+        for(int i = 0; i < Environment.ProcessorCount - 1; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount - 1)
+                {
+                    jobsQueued.Set();
+                }
+                e0.CheckedWait();
+            });
+        }
+        jobsQueued.CheckedWait();
+        ThreadPool.QueueUserWorkItem( _ => testJobCompleted.Set());
+        testJobCompleted.CheckedWait();
+        e0.Set();
+    }
+
+    [Fact]
+    public static void ThreadPoolCanPickUpMultipleJobsWhenThreadsAreAvailable()
+    {
+        ManualResetEvent e0 = new ManualResetEvent(false);
+        AutoResetEvent jobsQueued = new AutoResetEvent(false);
+        AutoResetEvent testJobCompleted = new AutoResetEvent(false);
+        int count = 0;
+
+        for(int i = 0; i < Environment.ProcessorCount - 1; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount - 1)
+                {
+                    jobsQueued.Set();
+                }
+                e0.CheckedWait();
+            });
+        }
+        jobsQueued.CheckedWait();
+        int testJobsCount = 0;
+        int maxCount = 5;
+        void Job(object _)
+        {
+            if(Interlocked.Increment(ref testJobsCount) != maxCount)
+            {
+                ThreadPool.QueueUserWorkItem(Job);
+            }
+            else
+            {
+                testJobCompleted.Set();
+            }
+        }
+        ThreadPool.QueueUserWorkItem(Job);
+        testJobCompleted.CheckedWait();
+        e0.Set();
+    }
+
+    private static WaitCallback CreateRecursiveJob(int jobCount, int targetJobCount, AutoResetEvent testJobCompleted)
+    {
+        return _ =>
+        {
+            if (jobCount == targetJobCount)
+            {
+                testJobCompleted.Set();
+            }
+            else
+            {
+                ThreadPool.QueueUserWorkItem(CreateRecursiveJob(jobCount + 1, targetJobCount, testJobCompleted));
+            }
+        };
+    }
+
+    [Fact]
+    [OuterLoop]
+    public static void RunJobsAfterThreadTimeout()
+    {
+        ManualResetEvent e0 = new ManualResetEvent(false);
+        AutoResetEvent jobsQueued = new AutoResetEvent(false);
+        AutoResetEvent testJobCompleted = new AutoResetEvent(false);
+        int count = 0;
+
+        for(int i = 0; i < Environment.ProcessorCount - 1; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount - 1)
+                {
+                    jobsQueued.Set();
+                }
+                e0.CheckedWait();
+            });
+        }
+        jobsQueued.CheckedWait();
+        ThreadPool.QueueUserWorkItem( _ => testJobCompleted.Set());
+        testJobCompleted.CheckedWait();
+        Console.Write("Sleeping to time out thread\n");
+        Thread.Sleep(21000);
+        ThreadPool.QueueUserWorkItem( _ => testJobCompleted.Set());
+        testJobCompleted.CheckedWait();
+        e0.Set();
+        Console.Write("Sleeping to time out all threads\n");
+        Thread.Sleep(21000);
+        ThreadPool.QueueUserWorkItem( _ => testJobCompleted.Set());
+        testJobCompleted.CheckedWait();
+    }
+
+    [Fact]
+    public static void WorkQueueDepletionTest()
+    {
+        ManualResetEvent e0 = new ManualResetEvent(false);
+        int numLocalScheduled = 1;
+        int numGlobalScheduled = 1;
+        int numToSchedule = Environment.ProcessorCount * 64;
+        int numCompleted = 0;
+        object syncRoot = new object();
+        void ThreadLocalJob()
+        {
+            if(Interlocked.Increment(ref numLocalScheduled) <= numToSchedule)
+            {
+                Task.Factory.StartNew(ThreadLocalJob);
+            }
+            if(Interlocked.Increment(ref numLocalScheduled) <= numToSchedule)
+            {
+                Task.Factory.StartNew(ThreadLocalJob);
+            }
+            if (Interlocked.Increment(ref numCompleted) == numToSchedule * 2)
+            {
+                e0.Set();
+            }
+        }
+        void GlobalJob(object _)
+        {
+            if(Interlocked.Increment(ref numGlobalScheduled) <= numToSchedule)
+            {
+                ThreadPool.QueueUserWorkItem(GlobalJob);
+            }
+            if(Interlocked.Increment(ref numGlobalScheduled) <= numToSchedule)
+            {
+                ThreadPool.QueueUserWorkItem(GlobalJob);
+            }
+            if (Interlocked.Increment(ref numCompleted) == numToSchedule * 2)
+            {
+                e0.Set();
+            }
+        }
+        Task.Factory.StartNew(ThreadLocalJob);
+        ThreadPool.QueueUserWorkItem(GlobalJob);
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    public static void WorkerThreadStateReset()
+    {
+        var cultureInfo = new CultureInfo("pt-BR");
+        var expectedCultureInfo = CultureInfo.CurrentCulture;
+        var expectedUICultureInfo = CultureInfo.CurrentUICulture;
+        int count = 0;
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        for(int i = 0; i < Environment.ProcessorCount; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                CultureInfo.CurrentCulture = cultureInfo;
+                CultureInfo.CurrentUICulture = cultureInfo;
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount)
+                {
+                    e0.Set();
+                }
+            });
+        }
+        e0.CheckedWait();
+        // Run the test again to make sure we can reuse the threads.
+        count = 0;
+        for(int i = 0; i < Environment.ProcessorCount; ++i)
+        {
+            ThreadPool.QueueUserWorkItem( _ => {
+                Assert.Equal(expectedCultureInfo, CultureInfo.CurrentCulture);
+                Assert.Equal(expectedUICultureInfo, CultureInfo.CurrentUICulture);
+                Assert.Equal(ThreadPriority.Normal, Thread.CurrentThread.Priority);
+                if(Interlocked.Increment(ref count) == Environment.ProcessorCount)
+                {
+                    e0.Set();
+                }
+            });
+        }
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    public static void SettingMinThreadsWillCreateThreadsUpToMinimum()
+    {
+        ThreadPool.GetMinThreads(out int minThreads, out int unusedMin);
+        ThreadPool.GetMaxThreads(out int maxThreads, out int unusedMax);
+        try
+        {
+            ManualResetEvent e0 = new ManualResetEvent(false);
+            AutoResetEvent jobsQueued = new AutoResetEvent(false);
+            int count = 0;
+            ThreadPool.SetMaxThreads(minThreads, unusedMax);
+            for(int i = 0; i < minThreads + 1; ++i)
+            {
+                ThreadPool.QueueUserWorkItem( _ => {
+                    if(Interlocked.Increment(ref count) == minThreads + 1)
+                    {
+                        jobsQueued.Set();
+                    }
+                    e0.CheckedWait();
+                });
+            }
+            Assert.False(jobsQueued.WaitOne(ThreadTestHelpers.ExpectedTimeoutMilliseconds));
+            Assert.True(ThreadPool.SetMaxThreads(minThreads + 1, unusedMax));
+            Assert.True(ThreadPool.SetMinThreads(minThreads + 1, unusedMin));
+
+            jobsQueued.CheckedWait();
+
+            e0.Set();
+        }
+        finally
+        {
+            ThreadPool.SetMinThreads(minThreads, unusedMin);
+            ThreadPool.SetMaxThreads(maxThreads, unusedMax);
+        }
+    }
+}
+
+internal static class WaitThreadTests
+{
+    private const int WaitThreadTimeoutTimeMs = 20000;
+
+    [Fact]
+    public static void SignalingRegisteredHandleCallsCalback()
+    {
+        var e0 = new AutoResetEvent(false);
+        var e1 = new AutoResetEvent(false);
+        ThreadPool.RegisterWaitForSingleObject(e0, (_, timedOut) =>
+        {
+            if(!timedOut)
+            {
+                e1.Set();
+            }
+        }, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        e0.Set();
+        e1.CheckedWait();
+    }
+
+    [Fact]
+    public static void TimingOutRegisteredHandleCallsCallback()
+    {
+        var e0 = new AutoResetEvent(false);
+        var e1 = new AutoResetEvent(false);
+        ThreadPool.RegisterWaitForSingleObject(e0, (_, timedOut) =>
+        {
+            if(timedOut)
+            {
+                e1.Set();
+            }
+        }, null, ThreadTestHelpers.ExpectedTimeoutMilliseconds, true);
+        e1.CheckedWait();
+    }
+
+    [Fact]
+    public static void UnregisteringBeforeSignalingDoesNotCallCallback()
+    {
+        var e0 = new AutoResetEvent(false);
+        var e1 = new AutoResetEvent(false);
+        var registeredWaitHandle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) =>
+        {
+            e1.Set();
+        }, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        registeredWaitHandle.Unregister(null);
+        Assert.False(e1.WaitOne(ThreadTestHelpers.ExpectedTimeoutMilliseconds));
+    }
+
+    [Fact]
+    public static void RepeatingWaitFiresUntilUnregistered()
+    {
+        var e0 = new AutoResetEvent(false);
+        var e1 = new AutoResetEvent(false);
+        var registered = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) =>
+        {
+            e1.Set();
+        }, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, false);
+        for (int i = 0; i < 4; ++i)
+        {
+            e0.Set();
+            e1.CheckedWait();
+        }
+        registered.Unregister(null);
+        e0.Set();
+        Assert.False(e1.WaitOne(ThreadTestHelpers.ExpectedTimeoutMilliseconds));
+    }
+
+    [Fact]
+    public static void UnregisterEventSignaledWhenUnregistered()
+    {
+        var e0 = new AutoResetEvent(false);
+        var e1 = new AutoResetEvent(false);
+        var registered = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        registered.Unregister(e1);
+        e1.CheckedWait();
+    }
+
+    [Fact]
+    public static void CanRegisterMoreThan64Waits()
+    {
+        RegisteredWaitHandle[] handles = new RegisteredWaitHandle[65];
+        for(int i = 0; i < 65; ++i) {
+            handles[i] = ThreadPool.RegisterWaitForSingleObject(new AutoResetEvent(false), (_, __) => {}, null, -1, true);
+        }
+        for(int i = 0; i < 65; ++i) {
+            handles[i].Unregister(null);
+        }
+    }
+
+    [Fact]
+    public static void StateIsPasssedThroughToCallback()
+    {
+        object state = new object();
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        ThreadPool.RegisterWaitForSingleObject(new AutoResetEvent(true), (callbackState, _) =>
+        {
+            if(state == callbackState)
+            {
+                e0.Set();
+            }
+        }, state, 0, true);
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    [OuterLoop]
+    public static void WaitWithLongerTimeoutThanWaitThreadCanStillTimeout()
+    {
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        ThreadPool.RegisterWaitForSingleObject(new AutoResetEvent(false), (_, __) => e0.Set(), null, WaitThreadTimeoutTimeMs + 1000, true);
+        Thread.Sleep(WaitThreadTimeoutTimeMs);
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    public static void UnregisterCallbackIsNotCalledAfterCallbackFinishesIfAnotherCallbackOnSameWaitRunning()
+    {
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        AutoResetEvent e1 = new AutoResetEvent(false);
+        AutoResetEvent e2 = new AutoResetEvent(false);
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) =>
+        {
+            e2.WaitOne(ThreadTestHelpers.UnexpectedTimeoutMilliseconds);
+        }, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, false);
+        e0.Set();
+        Thread.Sleep(50);
+        e0.Set();
+        Thread.Sleep(50);
+        handle.Unregister(e1);
+        Assert.False(e1.WaitOne(ThreadTestHelpers.ExpectedTimeoutMilliseconds));
+        e2.Set();
+    }
+
+    [Fact]
+    public static void CallingUnregisterOnAutomaticallyUnregisteredHandleReturnsTrue()
+    {
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        e0.Set();
+        Thread.Sleep(ThreadTestHelpers.ExpectedTimeoutMilliseconds);
+        Assert.True(handle.Unregister(null));
+    }
+
+    [Fact]
+    public static void EventSetAfterUnregisterNotObservedOnWaitThread()
+    {
+        AutoResetEvent e0 = new AutoResetEvent(false);
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        handle.Unregister(null);
+        e0.Set();
+        e0.CheckedWait();
+    }
+
+    [Fact]
+    public static void BlockingUnregister()
+    {
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(new AutoResetEvent(false), (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        handle.Unregister(new InvalidWaitHandle());
+    }
+
+    [Fact]
+    public static void CanDisposeEventAfterUnblockingUnregister()
+    {
+        using(var e0 = new AutoResetEvent(false))
+        {
+            RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+            handle.Unregister(null);
+        }
+    }
+
+    [Fact]
+    public static void UnregisterEventSignaledWhenUnregisteredEvenIfAutoUnregistered()
+    {
+        var e0 = new AutoResetEvent(false);
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) => {}, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        e0.Set();
+        Thread.Sleep(50); // Ensure the callback has happened
+        var e1 = new AutoResetEvent(false);
+        handle.Unregister(e1);
+        e1.CheckedWait();
+    }
+
+    [Fact]
+    public static void BlockingUnregisterBlocksEvenIfCallbackExecuting()
+    {
+        bool callbackComplete = false;
+        var e0 = new AutoResetEvent(false);
+        RegisteredWaitHandle handle = ThreadPool.RegisterWaitForSingleObject(e0, (_, __) =>
+        {
+            Thread.Sleep(300);
+            callbackComplete = true;
+        }, null, ThreadTestHelpers.UnexpectedTimeoutMilliseconds, true);
+        e0.Set();
+        Thread.Sleep(100); // Give the wait thread time to process removals.
+        handle.Unregister(new InvalidWaitHandle());
+        Assert.True(callbackComplete);
+    }
+}
+
 internal static class ThreadTestHelpers
 {
     public const int ExpectedTimeoutMilliseconds = 50;
     public const int ExpectedMeasurableTimeoutMilliseconds = 500;
     public const int UnexpectedTimeoutMilliseconds = 1000 * 30;
+
+    public static void CheckedWait(this WaitHandle wh)
+    {
+        Assert.True(wh.WaitOne(UnexpectedTimeoutMilliseconds));
+    }
+}
+
+internal sealed class InvalidWaitHandle : WaitHandle
+{
 }
 
 internal sealed class Stopwatch

@@ -176,7 +176,7 @@
       "inputs": {
         "SymbolsPath": "\\\\cpvsbuild\\drops\\DotNetCore\\$(Build.DefinitionName)\\$(Build.BuildNumber)\\symbols",
         "SearchPattern": "**\\*.pdb",
-        "SymbolsFolder": "$(Build.SourcesDirectory)\\$(SourceFolder)\\bin\\Product",
+        "SymbolsFolder": "$(Build.SourcesDirectory)\\$(SourceFolder)\\bin\\Windows_NT.$(Platform).$(Configuration)",
         "SkipIndexing": "false",
         "TreatNotIndexedAsWarning": "false",
         "SymbolsMaximumWaitTime": "",
@@ -198,7 +198,7 @@
       },
       "inputs": {
         "symbolStore": "\\\\cpvsbuild\\drops\\DotNetCore\\$(Build.DefinitionName)\\$(Build.BuildNumber)\\symbols",
-        "contacts": "crummel;sedarg",
+        "contacts": "crummel;simonn;michals",
         "project": "DDE"
       }
     },
@@ -477,7 +477,7 @@
       "fetchDepth": "0",
       "gitLfsSupport": "false",
       "skipSyncSource": "false",
-      "cleanOptions": "0"
+      "cleanOptions": "3"
     },
     "id": "0a2b2664-c1be-429c-9b40-8a24dee27a4a",
     "type": "TfsGit",
@@ -491,11 +491,11 @@
   "defaultBranch": "refs/heads/master",
   "queue": {
     "pool": {
-      "id": 39,
-      "name": "DotNet-Build"
+      "id": 97,
+      "name": "DotNetCore-Build"
     },
-    "id": 36,
-    "name": "DotNet-Build"
+    "id": 330,
+    "name": "DotNetCore-Build"
   },
   "path": "\\",
   "type": "build",

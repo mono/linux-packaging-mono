@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -20,10 +20,37 @@ namespace Internal.Runtime.Augments
             return GetEnvironmentVariableCore(variable);
         }
 
+        public static string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target)
+        {
+            if (target == EnvironmentVariableTarget.Process)
+                return GetEnvironmentVariable(variable);
+
+            if (variable == null)
+                throw new ArgumentNullException(nameof(variable));
+
+            bool fromMachine = ValidateAndConvertRegistryTarget(target);
+            return GetEnvironmentVariableFromRegistry(variable, fromMachine: fromMachine);
+        }
+
         public static void SetEnvironmentVariable(string variable, string value)
         {
             ValidateVariableAndValue(variable, ref value);
+
             SetEnvironmentVariableCore(variable, value);
+        }
+
+        public static void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target)
+        {
+            if (target == EnvironmentVariableTarget.Process)
+            {
+                SetEnvironmentVariable(variable, value);
+                return;
+            }
+
+            ValidateVariableAndValue(variable, ref value);
+
+            bool fromMachine = ValidateAndConvertRegistryTarget(target);
+            SetEnvironmentVariableFromRegistry(variable, value, fromMachine: fromMachine);
         }
 
         private static void ValidateVariableAndValue(string variable, ref string value)
@@ -56,37 +83,78 @@ namespace Internal.Runtime.Augments
             }
         }
 
-        // TODO Perf: Once CoreCLR gets PopulateEnvironmentVariables(), get rid of GetEnvironmentVariables() and have 
-        // corefx call PopulateEnvironmentVariables() instead so we don't have to create a dictionary just to copy it into
-        // another dictionary.
-        public static IDictionary GetEnvironmentVariables()
-        {
-            IDictionary dictionary = new Dictionary<string, string>(EnumerateEnvironmentVariables());
-            return dictionary;
-        }
-
-        public static string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target)
+        public static IEnumerable<KeyValuePair<string, string>> EnumerateEnvironmentVariables(EnvironmentVariableTarget target)
         {
             if (target == EnvironmentVariableTarget.Process)
-                return GetEnvironmentVariable(variable);
-            throw new NotImplementedException();
+                return EnumerateEnvironmentVariables();
+
+            bool fromMachine = ValidateAndConvertRegistryTarget(target);
+            return EnumerateEnvironmentVariablesFromRegistry(fromMachine: fromMachine);
         }
 
-        public static void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target)
+        private static bool ValidateAndConvertRegistryTarget(EnvironmentVariableTarget target)
         {
-            if (target == EnvironmentVariableTarget.Process)
+            Debug.Assert(target != EnvironmentVariableTarget.Process);
+            if (target == EnvironmentVariableTarget.Machine)
+                return true;
+            else if (target == EnvironmentVariableTarget.User)
+                return false;
+            else
+                throw new ArgumentOutOfRangeException(nameof(target), target, SR.Format(SR.Arg_EnumIllegalVal, target));
+        }
+
+        public static int CurrentManagedThreadId => System.Threading.ManagedThreadId.Current;
+        public static void FailFast(string message, Exception error) => RuntimeExceptionHelpers.FailFast(message, error);
+
+        internal static void ShutdownCore()
+        {
+            // Here we'll handle AppDomain.ProcessExit, shut down threading etc.
+        }
+
+        private static int s_latchedExitCode;
+        public static int ExitCode
+        {
+            get
             {
-                SetEnvironmentVariable(variable, value);
-                return;
+                return s_latchedExitCode;
             }
-            throw new NotImplementedException();
+            set
+            {
+                s_latchedExitCode = value;
+            }
         }
 
-        public static IDictionary GetEnvironmentVariables(EnvironmentVariableTarget target)
+        public static bool HasShutdownStarted => false; // .NET Core does not have shutdown finalization
+
+        public static string StackTrace
         {
-            if (target == EnvironmentVariableTarget.Process)
-                return GetEnvironmentVariables();
-            throw new NotImplementedException();
+            // Disable inlining to have predictable stack frame to skip
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get
+            {
+                // RhGetCurrentThreadStackTrace returns the number of frames(cFrames) added to input buffer.
+                // It returns a negative value, -cFrames which is the required array size, if the buffer is too small.
+                // Initial array length is deliberately chosen to be 0 so that we reallocate to exactly the right size
+                // for StackFrameHelper.FormatStackTrace call. If we want to do this optimistically with one call change
+                // FormatStackTrace to accept an explicit length.
+                IntPtr[] frameIPs = Array.Empty<IntPtr>();
+                int cFrames = RuntimeImports.RhGetCurrentThreadStackTrace(frameIPs);
+                if (cFrames < 0)
+                {
+                    frameIPs = new IntPtr[-cFrames];
+                    cFrames = RuntimeImports.RhGetCurrentThreadStackTrace(frameIPs);
+                    if (cFrames < 0)
+                    {
+                        return "";
+                    }
+                }
+
+                return Internal.Diagnostics.StackTraceHelper.FormatStackTrace(frameIPs, 1, true);
+            }
         }
+
+        public static int TickCount => Environment.TickCount;
+
+        public static int ProcessorCount => Environment.ProcessorCount;
     }
 }

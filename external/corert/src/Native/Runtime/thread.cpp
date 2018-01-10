@@ -33,6 +33,9 @@
 EXTERN_C REDHAWK_API void* REDHAWK_CALLCONV RhpHandleAlloc(void* pObject, int type);
 EXTERN_C REDHAWK_API void REDHAWK_CALLCONV RhHandleFree(void*);
 
+static int (*g_RuntimeInitializationCallback)();
+static Thread* g_RuntimeInitializingThread;
+
 #ifdef _MSC_VER
 extern "C" void _ReadWriteBarrier(void);
 #pragma intrinsic(_ReadWriteBarrier)
@@ -289,10 +292,10 @@ void Thread::Construct()
     m_numDynamicTypesTlsCells = 0;
     m_pDynamicTypesTlsCells = NULL;
 
-#if CORERT
+#ifndef PROJECTN
     m_pThreadLocalModuleStatics = NULL;
     m_numThreadLocalModuleStatics = 0;
-#endif // CORERT
+#endif // PROJECTN
 
     // NOTE: We do not explicitly defer to the GC implementation to initialize the alloc_context.  The 
     // alloc_context will be initialized to 0 via the static initialization of tls_CurrentThread. If the
@@ -320,6 +323,8 @@ void Thread::Construct()
     if (StressLog::StressLogOn(~0u, 0))
         m_pThreadStressLog = StressLog::CreateThreadStressLog(this);
 #endif // STRESS_LOG
+
+    m_threadAbortException = NULL;
 }
 
 bool Thread::IsInitialized()
@@ -332,6 +337,8 @@ bool Thread::IsInitialized()
 //
 void Thread::SetGCSpecial(bool isGCSpecial)
 {
+    if (!IsInitialized())
+        Construct();
     if (isGCSpecial)
         SetState(TSF_IsGcSpecialThread);
     else
@@ -376,7 +383,7 @@ void Thread::Destroy()
         delete[] m_pDynamicTypesTlsCells;
     }
 
-#if CORERT
+#ifndef PROJECTN
     if (m_pThreadLocalModuleStatics != NULL)
     {
         for (UInt32 i = 0; i < m_numThreadLocalModuleStatics; i++)
@@ -388,7 +395,7 @@ void Thread::Destroy()
         }
         delete[] m_pThreadLocalModuleStatics;
     }
-#endif // CORERT
+#endif // !PROJECTN
 
     RedhawkGCInterface::ReleaseAllocContext(GetAllocContext());
 
@@ -529,6 +536,10 @@ void Thread::GcScanRootsWorker(void * pfnEnumCallback, void * pvCallbackData, St
         PTR_RtuObjectRef pExceptionObj = dac_cast<PTR_RtuObjectRef>(&curExInfo->m_exception);
         RedhawkGCInterface::EnumGcRef(pExceptionObj, GCRK_Object, pfnEnumCallback, pvCallbackData);
     }
+
+    // Keep alive the ThreadAbortException that's stored in the target thread during thread abort
+    PTR_RtuObjectRef pThreadAbortExceptionObj = dac_cast<PTR_RtuObjectRef>(&m_threadAbortException);
+    RedhawkGCInterface::EnumGcRef(pThreadAbortExceptionObj, GCRK_Object, pfnEnumCallback, pvCallbackData);    
 }
 
 #ifndef DACCESS_COMPILE
@@ -1107,10 +1118,22 @@ FORCEINLINE bool Thread::InlineTryFastReversePInvoke(ReversePInvokeFrame * pFram
     return true;
 }
 
+EXTERN_C void RhSetRuntimeInitializationCallback(int (*fPtr)())
+{
+    g_RuntimeInitializationCallback = fPtr;
+}
+
 void Thread::ReversePInvokeAttachOrTrapThread(ReversePInvokeFrame * pFrame)
 {
     if (!IsStateSet(TSF_Attached))
+    {
+        if (g_RuntimeInitializationCallback != NULL && g_RuntimeInitializingThread != this)
+        {
+            EnsureRuntimeInitialized();
+        }
+
         ThreadStore::AttachCurrentThread();
+    }
 
     // If the thread is already in cooperative mode, this is a bad transition.
     if (IsCurrentThreadInCooperativeMode())
@@ -1141,6 +1164,24 @@ void Thread::ReversePInvokeAttachOrTrapThread(ReversePInvokeFrame * pFrame)
     }
 }
 
+void Thread::EnsureRuntimeInitialized()
+{
+    while (PalInterlockedCompareExchangePointer((void *volatile *)&g_RuntimeInitializingThread, this, NULL) != NULL)
+    {
+        PalSleep(1);
+    }
+
+    if (g_RuntimeInitializationCallback != NULL)
+    {
+        if (g_RuntimeInitializationCallback() != 0)
+            RhFailFast();
+
+        g_RuntimeInitializationCallback = NULL;
+    }
+
+    PalInterlockedExchangePointer((void *volatile *)&g_RuntimeInitializingThread, NULL);
+}
+
 FORCEINLINE void Thread::InlineReversePInvokeReturn(ReversePInvokeFrame * pFrame)
 {
     m_pTransitionFrame = pFrame->m_savedPInvokeTransitionFrame;
@@ -1150,7 +1191,48 @@ FORCEINLINE void Thread::InlineReversePInvokeReturn(ReversePInvokeFrame * pFrame
     }
 }
 
-#if CORERT
+FORCEINLINE void Thread::InlinePInvoke(PInvokeTransitionFrame * pFrame)
+{
+    pFrame->m_pThread = this;
+    // set our mode to preemptive
+    m_pTransitionFrame = pFrame;
+
+    // We need to prevent compiler reordering between above write and below read.
+    _ReadWriteBarrier();
+
+    // now check if we need to trap the thread
+    if (ThreadStore::IsTrapThreadsRequested())
+    {
+        RhpWaitForSuspend2();
+    }
+}
+
+FORCEINLINE void Thread::InlinePInvokeReturn(PInvokeTransitionFrame * pFrame)
+{
+    m_pTransitionFrame = NULL;
+    if (ThreadStore::IsTrapThreadsRequested())
+    {
+        RhpWaitForGC2(pFrame);
+    }
+}
+
+Object * Thread::GetThreadAbortException()
+{
+    return m_threadAbortException;
+}
+
+void Thread::SetThreadAbortException(Object *exception)
+{
+    m_threadAbortException = exception;
+}
+
+COOP_PINVOKE_HELPER(Object *, RhpGetThreadAbortException, ())
+{
+    Thread * pCurThread = ThreadStore::RawGetCurrentThread();
+    return pCurThread->GetThreadAbortException();
+}
+
+#ifndef PROJECTN
 Object* Thread::GetThreadStaticStorageForModule(UInt32 moduleIndex)
 {
     // Return a pointer to the TLS storage if it has already been
@@ -1223,7 +1305,17 @@ COOP_PINVOKE_HELPER(Boolean, RhSetThreadStaticStorageForModule, (Array * pStorag
     Thread * pCurrentThread = ThreadStore::RawGetCurrentThread();
     return pCurrentThread->SetThreadStaticStorageForModule((Object*)pStorage, moduleIndex);
 }
-#endif // CORERT
+
+// This is function is used to quickly query a value that can uniquely identify a thread
+COOP_PINVOKE_HELPER(UInt8*, RhCurrentNativeThreadId, ())
+{
+#ifndef PLATFORM_UNIX
+    return PalNtCurrentTeb();
+#else
+    return (UInt8*)ThreadStore::RawGetCurrentThread();
+#endif // PLATFORM_UNIX
+}
+#endif // !PROJECTN
 
 // Standard calling convention variant and actual implementation for RhpReversePInvokeAttachOrTrapThread
 EXTERN_C NOINLINE void FASTCALL RhpReversePInvokeAttachOrTrapThread2(ReversePInvokeFrame * pFrame)
@@ -1252,5 +1344,21 @@ COOP_PINVOKE_HELPER(void, RhpReversePInvokeReturn2, (ReversePInvokeFrame * pFram
 {
     pFrame->m_savedThread->InlineReversePInvokeReturn(pFrame);
 }
+
+#ifdef USE_PORTABLE_HELPERS
+
+COOP_PINVOKE_HELPER(void, RhpPInvoke2, (PInvokeTransitionFrame* pFrame))
+{
+    Thread * pCurThread = ThreadStore::RawGetCurrentThread();
+    pCurThread->InlinePInvoke(pFrame);
+}
+
+COOP_PINVOKE_HELPER(void, RhpPInvokeReturn2, (PInvokeTransitionFrame* pFrame))
+{
+    //reenter cooperative mode
+    pFrame->m_pThread->InlinePInvokeReturn(pFrame);
+}
+
+#endif //USE_PORTABLE_HELPERS
 
 #endif // !DACCESS_COMPILE

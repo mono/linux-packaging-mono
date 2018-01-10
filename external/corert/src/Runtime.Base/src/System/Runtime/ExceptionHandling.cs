@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -154,6 +155,7 @@ namespace System.Runtime
             AppendExceptionStackFrame = 3,
             CheckStaticClassConstruction = 4,
             GetSystemArrayEEType = 5,
+            OnFirstChance = 6,
         }
 
         // Given an address pointing somewhere into a managed module, get the classlib-defined fail-fast 
@@ -190,9 +192,11 @@ namespace System.Runtime
 #if AMD64
         [StructLayout(LayoutKind.Explicit, Size = 0x4d0)]
 #elif ARM
-        [StructLayout(LayoutKind.Explicit, Size=0x1a0)]
+        [StructLayout(LayoutKind.Explicit, Size = 0x1a0)]
 #elif X86
-        [StructLayout(LayoutKind.Explicit, Size=0x2cc)]
+        [StructLayout(LayoutKind.Explicit, Size = 0x2cc)]
+#elif ARM64
+        [StructLayout(LayoutKind.Explicit, Size = 0x390)]
 #else
         [StructLayout(LayoutKind.Explicit, Size = 0x10)] // this is small enough that it should trip an assert in RhpCopyContextFromExInfo
 #endif
@@ -210,6 +214,25 @@ namespace System.Runtime
 #endif
         }
 
+        private static void OnFirstChanceExceptionViaClassLib(object exception)
+        {
+            IntPtr pOnFirstChanceFunction =
+                (IntPtr)InternalCalls.RhpGetClasslibFunctionFromEEType((IntPtr)exception.m_pEEType, ClassLibFunctionId.OnFirstChance);
+
+            if (pOnFirstChanceFunction == IntPtr.Zero)
+            {
+                return;
+            }
+
+            try
+            {
+                CalliIntrinsics.CallVoid(pOnFirstChanceFunction, exception);
+            }
+            catch
+            {
+                // disallow all exceptions leaking out of callbacks
+            }
+        }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static unsafe void UnhandledExceptionFailFastViaClasslib(
@@ -311,7 +334,7 @@ namespace System.Runtime
             return e;
         }
 
-        // Given an ExceptionID and an EEtype address, get an exception object of a type that the module containing 
+        // Given an ExceptionID and an EEType address, get an exception object of a type that the module containing 
         // the given address will understand. This finds the classlib-defined GetRuntimeException function and asks 
         // it for the exception object.
         internal static Exception GetClasslibExceptionFromEEType(ExceptionIDs id, IntPtr pEEType)
@@ -321,7 +344,7 @@ namespace System.Runtime
             IntPtr pGetRuntimeExceptionFunction = IntPtr.Zero;
             if (pEEType != IntPtr.Zero)
             {
-                pGetRuntimeExceptionFunction = (IntPtr)InternalCalls.RhpGetClasslibFunctionFromEEtype(pEEType, ClassLibFunctionId.GetRuntimeException);
+                pGetRuntimeExceptionFunction = (IntPtr)InternalCalls.RhpGetClasslibFunctionFromEEType(pEEType, ClassLibFunctionId.GetRuntimeException);
             }
 
             // Return the exception object we get from the classlib.
@@ -400,7 +423,7 @@ namespace System.Runtime
 
                 case ExceptionIDs.InvalidCast:
                     return new InvalidCastException();
-                    
+
                 default:
                     Debug.Assert(false, "unexpected ExceptionID");
                     FallbackFailFast(RhFailFastReason.InternalError, null);
@@ -413,6 +436,7 @@ namespace System.Runtime
         {
             STATUS_REDHAWK_NULL_REFERENCE = 0x00000000u,
             STATUS_REDHAWK_WRITE_BARRIER_NULL_REFERENCE = 0x00000042u,
+            STATUS_REDHAWK_THREAD_ABORT = 0x00000043u,
 
             STATUS_DATATYPE_MISALIGNMENT = 0x80000002u,
             STATUS_ACCESS_VIOLATION = 0xC0000005u,
@@ -445,9 +469,8 @@ namespace System.Runtime
             InstructionFaultFlag = 0x10
         }
 
-        [StackOnly]
         [StructLayout(LayoutKind.Explicit)]
-        public struct ExInfo
+        public ref struct ExInfo
         {
             internal void Init(object exceptionObj, bool instructionFault = false)
             {
@@ -526,8 +549,9 @@ namespace System.Runtime
 
             IntPtr faultingCodeAddress = exInfo._pExContext->IP;
             bool instructionFault = true;
+            ExceptionIDs exceptionId = default(ExceptionIDs);
+            Exception exceptionToThrow = null;
 
-            ExceptionIDs exceptionId;
             switch (exceptionCode)
             {
                 case (uint)HwExceptionCode.STATUS_REDHAWK_NULL_REFERENCE:
@@ -540,6 +564,10 @@ namespace System.Runtime
                     // faulting instruction.
                     instructionFault = false;
                     exceptionId = ExceptionIDs.NullReference;
+                    break;
+
+                case (uint)HwExceptionCode.STATUS_REDHAWK_THREAD_ABORT:
+                    exceptionToThrow = InternalCalls.RhpGetThreadAbortException();
                     break;
 
                 case (uint)HwExceptionCode.STATUS_DATATYPE_MISALIGNMENT:
@@ -565,11 +593,13 @@ namespace System.Runtime
                     // know the complete set of HW faults generated by managed code and do not need to handle
                     // this case.
                     FailFastViaClasslib(RhFailFastReason.InternalError, null, faultingCodeAddress);
-                    exceptionId = ExceptionIDs.NullReference;
                     break;
             }
 
-            Exception exceptionToThrow = GetClasslibException(exceptionId, faultingCodeAddress);
+            if (exceptionId != default(ExceptionIDs))
+            {
+                exceptionToThrow = GetClasslibException(exceptionId, faultingCodeAddress);
+            }
 
             exInfo.Init(exceptionToThrow, instructionFault);
             DispatchEx(ref exInfo._frameIter, ref exInfo, MaxTryRegionIdx);
@@ -638,7 +668,10 @@ namespace System.Runtime
 
             bool isValid = frameIter.Init(exInfo._pExContext, (exInfo._kind & ExKind.InstructionFaultFlag) != 0);
             Debug.Assert(isValid, "RhThrowEx called with an unexpected context");
+
+            OnFirstChanceExceptionViaClassLib(exceptionObj);
             DebuggerNotify.BeginFirstPass(exceptionObj, frameIter.ControlPC, frameIter.SP);
+
             for (; isValid; isValid = frameIter.Next(out startIdx, out unwoundReversePInvoke))
             {
                 // For GC stackwalking, we'll happily walk across native code blocks, but for EH dispatch, we

@@ -223,7 +223,7 @@ namespace Internal.Runtime.Augments
                 }
                 else
                 {
-                    result = WaitHandle.WaitForSingleObject(waitHandle.DangerousGetHandle(), millisecondsTimeout);
+                    result = WaitHandle.WaitForSingleObject(waitHandle.DangerousGetHandle(), millisecondsTimeout, true);
                 }
 
                 return result == (int)Interop.Constants.WaitObject0;
@@ -274,7 +274,7 @@ namespace Internal.Runtime.Augments
         }
 
         /// <summary>
-        /// This an entry point for managed threads created by applicatoin
+        /// This is an entry point for managed threads created by application
         /// </summary>
         [NativeCallable(CallingConvention = CallingConvention.StdCall)]
         private static uint ThreadEntryPoint(IntPtr parameter)
@@ -362,7 +362,7 @@ namespace Internal.Runtime.Augments
                                     break;
 
                                 default:
-                                    Debug.Assert(false, "NA apartment without NA qualifier");
+                                    Debug.Fail("NA apartment without NA qualifier");
                                     break;
                             }
                             break;
@@ -370,7 +370,7 @@ namespace Internal.Runtime.Augments
                     break;
 
                 default:
-                    Debug.Assert(false, "bad return from CoGetApartmentType");
+                    Debug.Fail("bad return from CoGetApartmentType");
                     break;
             }
 

@@ -17,33 +17,32 @@ namespace Internal.Runtime.TypeLoader
         private IntPtr _elements;
         private uint _elementsCount;
         private TypeManagerHandle _moduleHandle;
-        private bool isDebuggerPrepared;
+        private ulong[] debuggerPreparedExternalReferences;
 
-        public bool IsInitialized() { return isDebuggerPrepared || !_moduleHandle.IsNull; }
+        public bool IsInitialized() { return (debuggerPreparedExternalReferences != null) || !_moduleHandle.IsNull; }
 
         private unsafe bool Initialize(NativeFormatModuleInfo module, ReflectionMapBlob blobId)
         {
-            if (module == null)
-            {
-                isDebuggerPrepared = true;
-            }
-            else
-            {
-                _moduleHandle = module.Handle;
+            _moduleHandle = module.Handle;
 
-                byte* pBlob;
-                uint cbBlob;
-                if (!module.TryFindBlob(blobId, out pBlob, out cbBlob))
-                {
-                    _elements = IntPtr.Zero;
-                    _elementsCount = 0;
-                    return false;
-                }
-
-                _elements = (IntPtr)pBlob;
-                _elementsCount = (uint)(cbBlob / sizeof(TableElement));
+            byte* pBlob;
+            uint cbBlob;
+            if (!module.TryFindBlob(blobId, out pBlob, out cbBlob))
+            {
+                _elements = IntPtr.Zero;
+                _elementsCount = 0;
+                return false;
             }
+
+            _elements = (IntPtr)pBlob;
+            _elementsCount = (uint)(cbBlob / sizeof(TableElement));
+
             return true;
+        }
+
+        public void InitializeDebuggerReference(ulong[] debuggerPreparedExternalReferences)
+        {
+            this.debuggerPreparedExternalReferences = debuggerPreparedExternalReferences;
         }
 
         /// <summary>
@@ -78,30 +77,23 @@ namespace Internal.Runtime.TypeLoader
 
         unsafe public uint GetRvaFromIndex(uint index)
         {
-#if CORERT
-            // The usage of this API will need to go away since this is not fully portable
-            // and we'll not be able to support this for CppCodegen.
-            throw new PlatformNotSupportedException();
-#else
+#if PROJECTN
             Debug.Assert(!_moduleHandle.IsNull);
 
             if (index >= _elementsCount)
                 throw new BadImageFormatException();
 
             return ((TableElement*)_elements)[index];
+#else
+            // The usage of this API will need to go away since this is not fully portable
+            // and we'll not be able to support this for CppCodegen.
+            throw new PlatformNotSupportedException();
 #endif
         }
 
         unsafe public IntPtr GetIntPtrFromIndex(uint index)
         {
-#if CORERT
-            if (index >= _elementsCount)
-                throw new BadImageFormatException();
-
-            // TODO: indirection through IAT
-            int* pRelPtr32 = &((int*)_elements)[index];
-            return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
-#else
+#if PROJECTN
             uint rva = GetRvaFromIndex(index);
             if ((rva & IndirectionConstants.RVAPointsToIndirection) != 0)
             {
@@ -112,19 +104,19 @@ namespace Internal.Runtime.TypeLoader
             {
                 return (IntPtr)(_moduleHandle.ConvertRVAToPointer(rva));
             }
-#endif
-        }
-
-        unsafe public IntPtr GetFunctionPointerFromIndex(uint index)
-        {
-#if CORERT
+#else
             if (index >= _elementsCount)
                 throw new BadImageFormatException();
 
             // TODO: indirection through IAT
             int* pRelPtr32 = &((int*)_elements)[index];
             return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
-#else
+#endif
+        }
+
+        unsafe public IntPtr GetFunctionPointerFromIndex(uint index)
+        {
+#if PROJECTN
             uint rva = GetRvaFromIndex(index);
 
             if ((rva & DynamicInvokeMapEntry.IsImportMethodFlag) == DynamicInvokeMapEntry.IsImportMethodFlag)
@@ -135,17 +127,26 @@ namespace Internal.Runtime.TypeLoader
             {
                 return (IntPtr)(_moduleHandle.ConvertRVAToPointer(rva));
             }
+#else
+            if (index >= _elementsCount)
+                throw new BadImageFormatException();
+
+            // TODO: indirection through IAT
+            int* pRelPtr32 = &((int*)_elements)[index];
+            return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
 #endif
         }
 
         public RuntimeTypeHandle GetRuntimeTypeHandleFromIndex(uint index)
         {
-            if (isDebuggerPrepared)
+            if (this.debuggerPreparedExternalReferences == null)
             {
-                return typeof(int).TypeHandle;
+                return RuntimeAugments.CreateRuntimeTypeHandle(GetIntPtrFromIndex(index));
             }
-
-            return RuntimeAugments.CreateRuntimeTypeHandle(GetIntPtrFromIndex(index));
+            else
+            {
+                return RuntimeAugments.CreateRuntimeTypeHandle((IntPtr)this.debuggerPreparedExternalReferences[index]);
+            }            
         }
 
         public IntPtr GetGenericDictionaryFromIndex(uint index)
@@ -153,7 +154,7 @@ namespace Internal.Runtime.TypeLoader
             return GetIntPtrFromIndex(index);
         }
 
-#if CORERT
+#if !PROJECTN
         unsafe public IntPtr GetFieldAddressFromIndex(uint index)
         {
             if (index >= _elementsCount)

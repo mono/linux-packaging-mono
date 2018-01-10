@@ -22,7 +22,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.Versioning;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 /* 
    This class allows an application to fail before starting certain 
@@ -244,7 +243,11 @@ namespace System.Runtime
                             UIntPtr numBytes = new UIntPtr(segmentSize);
                             unsafe
                             {
+#if ENABLE_WINRT
+                                void* pMemory = Interop.mincore.VirtualAllocFromApp(null, numBytes, Interop.Kernel32.MEM_COMMIT, Interop.Kernel32.PAGE_READWRITE);
+#else
                                 void* pMemory = Interop.Kernel32.VirtualAlloc(null, numBytes, Interop.Kernel32.MEM_COMMIT, Interop.Kernel32.PAGE_READWRITE);
+#endif
                                 if (pMemory != null)
                                 {
                                     bool r = Interop.Kernel32.VirtualFree(pMemory, UIntPtr.Zero, Interop.Kernel32.MEM_RELEASE);
@@ -285,7 +288,7 @@ namespace System.Runtime
                         break;
 
                     default:
-                        Debug.Assert(false, "Fell through switch statement!");
+                        Debug.Fail("Fell through switch statement!");
                         break;
                 }
             }
@@ -449,7 +452,6 @@ namespace System.Runtime
         }
 
 #if DEBUG
-        [Serializable]
         internal sealed class MemoryFailPointState
         {
             private ulong _segmentSize;

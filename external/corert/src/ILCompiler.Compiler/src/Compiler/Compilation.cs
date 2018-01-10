@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 
 using ILCompiler.DependencyAnalysis;
@@ -23,14 +24,14 @@ namespace ILCompiler
         protected readonly DependencyAnalyzerBase<NodeFactory> _dependencyGraph;
         protected readonly NodeFactory _nodeFactory;
         protected readonly Logger _logger;
+        private readonly DebugInformationProvider _debugInformationProvider;
+        private readonly DevirtualizationManager _devirtualizationManager;
 
         public NameMangler NameMangler => _nodeFactory.NameMangler;
         public NodeFactory NodeFactory => _nodeFactory;
         public CompilerTypeSystemContext TypeSystemContext => NodeFactory.TypeSystemContext;
         public Logger Logger => _logger;
         internal PInvokeILProvider PInvokeILProvider { get; }
-
-        protected abstract bool GenerateDebugInfo { get; }
 
         private readonly TypeGetTypeMethodThunkCache _typeGetTypeMethodThunks;
         private readonly AssemblyGetExecutingAssemblyMethodThunkCache _assemblyGetExecutingAssemblyMethodThunks;
@@ -40,11 +41,15 @@ namespace ILCompiler
             DependencyAnalyzerBase<NodeFactory> dependencyGraph,
             NodeFactory nodeFactory,
             IEnumerable<ICompilationRootProvider> compilationRoots,
+            DebugInformationProvider debugInformationProvider,
+            DevirtualizationManager devirtualizationManager,
             Logger logger)
         {
             _dependencyGraph = dependencyGraph;
             _nodeFactory = nodeFactory;
             _logger = logger;
+            _debugInformationProvider = debugInformationProvider;
+            _devirtualizationManager = devirtualizationManager;
 
             _dependencyGraph.ComputeDependencyRoutine += ComputeDependencyNodeDependencies;
             NodeFactory.AttachToDependencyGraph(_dependencyGraph);
@@ -115,12 +120,7 @@ namespace ILCompiler
 
         public MethodDebugInformation GetDebugInfo(MethodIL methodIL)
         {
-            if (!GenerateDebugInfo)
-                return MethodDebugInformation.None;
-
-            // This method looks odd right now, but it's an extensibility point that lets us generate
-            // fake debugging information for things that don't have physical symbols.
-            return methodIL.GetDebugInfo();
+            return _debugInformationProvider.GetDebugInfo(methodIL);
         }
 
         /// <summary>
@@ -176,7 +176,142 @@ namespace ILCompiler
             return intrinsicMethod;
         }
 
-        void ICompilation.Compile(string outputFile, ObjectDumper dumper)
+        public bool HasFixedSlotVTable(TypeDesc type)
+        {
+            return NodeFactory.VTable(type).HasFixedSlots;
+        }
+
+        public bool IsEffectivelySealed(TypeDesc type)
+        {
+            return _devirtualizationManager.IsEffectivelySealed(type);
+        }
+
+        public bool IsEffectivelySealed(MethodDesc method)
+        {
+            return _devirtualizationManager.IsEffectivelySealed(method);
+        }
+
+        public MethodDesc ResolveVirtualMethod(MethodDesc declMethod, TypeDesc implType)
+        {
+            return _devirtualizationManager.ResolveVirtualMethod(declMethod, implType);
+        }
+
+        public bool NeedsRuntimeLookup(ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            switch (lookupKind)
+            {
+                case ReadyToRunHelperId.TypeHandle:
+                case ReadyToRunHelperId.NecessaryTypeHandle:
+                case ReadyToRunHelperId.DefaultConstructor:
+                    return ((TypeDesc)targetOfLookup).IsRuntimeDeterminedSubtype;
+
+                case ReadyToRunHelperId.MethodDictionary:
+                case ReadyToRunHelperId.MethodEntry:
+                case ReadyToRunHelperId.VirtualDispatchCell:
+                case ReadyToRunHelperId.MethodHandle:
+                    return ((MethodDesc)targetOfLookup).IsRuntimeDeterminedExactMethod;
+
+                case ReadyToRunHelperId.FieldHandle:
+                    return ((FieldDesc)targetOfLookup).OwningType.IsRuntimeDeterminedSubtype;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public ISymbolNode ComputeConstantLookup(ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            switch (lookupKind)
+            {
+                case ReadyToRunHelperId.TypeHandle:
+                    return NodeFactory.ConstructedTypeSymbol((TypeDesc)targetOfLookup);
+                case ReadyToRunHelperId.NecessaryTypeHandle:
+                    return NodeFactory.NecessaryTypeSymbol((TypeDesc)targetOfLookup);
+                case ReadyToRunHelperId.MethodDictionary:
+                    return NodeFactory.MethodGenericDictionary((MethodDesc)targetOfLookup);
+                case ReadyToRunHelperId.MethodEntry:
+                    return NodeFactory.FatFunctionPointer((MethodDesc)targetOfLookup);
+                case ReadyToRunHelperId.MethodHandle:
+                    return NodeFactory.RuntimeMethodHandle((MethodDesc)targetOfLookup);
+                case ReadyToRunHelperId.FieldHandle:
+                    return NodeFactory.RuntimeFieldHandle((FieldDesc)targetOfLookup);
+                case ReadyToRunHelperId.DefaultConstructor:
+                    {
+                        var type = (TypeDesc)targetOfLookup;   
+                        MethodDesc ctor = type.GetDefaultConstructor();
+                        if (ctor == null)
+                        {
+                            MetadataType activatorType = TypeSystemContext.SystemModule.GetKnownType("System", "Activator");
+                            MetadataType classWithMissingCtor = activatorType.GetKnownNestedType("ClassWithMissingConstructor");
+                            ctor = classWithMissingCtor.GetParameterlessConstructor();
+                        }
+                        return NodeFactory.CanonicalEntrypoint(ctor);
+                    }
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public GenericDictionaryLookup ComputeGenericLookup(MethodDesc contextMethod, ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            GenericContextSource contextSource;
+
+            if (contextMethod.RequiresInstMethodDescArg())
+            {
+                contextSource = GenericContextSource.MethodParameter;
+            }
+            else if (contextMethod.RequiresInstMethodTableArg())
+            {
+                contextSource = GenericContextSource.TypeParameter;
+            }
+            else
+            {
+                Debug.Assert(contextMethod.AcquiresInstMethodTableFromThis());
+                contextSource = GenericContextSource.ThisObject;
+            }
+
+            // Can we do a fixed lookup? Start by checking if we can get to the dictionary.
+            // Context source having a vtable with fixed slots is a prerequisite.
+            if (contextSource == GenericContextSource.MethodParameter
+                || HasFixedSlotVTable(contextMethod.OwningType))
+            {
+                DictionaryLayoutNode dictionaryLayout;
+                if (contextSource == GenericContextSource.MethodParameter)
+                    dictionaryLayout = _nodeFactory.GenericDictionaryLayout(contextMethod);
+                else
+                    dictionaryLayout = _nodeFactory.GenericDictionaryLayout(contextMethod.OwningType);
+
+                // If the dictionary layout has fixed slots, we can compute the lookup now. Otherwise defer to helper.
+                if (dictionaryLayout.HasFixedSlots)
+                {
+                    int pointerSize = _nodeFactory.Target.PointerSize;
+
+                    GenericLookupResult lookup = ReadyToRunGenericHelperNode.GetLookupSignature(_nodeFactory, lookupKind, targetOfLookup);
+                    int dictionarySlot = dictionaryLayout.GetSlotForFixedEntry(lookup);
+                    if (dictionarySlot != -1)
+                    {
+                        int dictionaryOffset = dictionarySlot * pointerSize;
+
+                        if (contextSource == GenericContextSource.MethodParameter)
+                        {
+                            return GenericDictionaryLookup.CreateFixedLookup(contextSource, dictionaryOffset);
+                        }
+                        else
+                        {
+                            int vtableSlot = VirtualMethodSlotHelper.GetGenericDictionarySlot(_nodeFactory, contextMethod.OwningType);
+                            int vtableOffset = EETypeNode.GetVTableOffset(pointerSize) + vtableSlot * pointerSize;
+                            return GenericDictionaryLookup.CreateFixedLookup(contextSource, vtableOffset, dictionaryOffset);
+                        }
+                    }
+                }
+            }
+
+            // Fixed lookup not possible - use helper.
+            return GenericDictionaryLookup.CreateHelperLookup(contextSource);
+        }
+
+        CompilationResults ICompilation.Compile(string outputFile, ObjectDumper dumper)
         {
             if (dumper != null)
             {
@@ -191,15 +326,8 @@ namespace ILCompiler
             {
                 dumper.End();
             }
-        }
 
-        void ICompilation.WriteDependencyLog(string fileName)
-        {
-            using (FileStream dgmlOutput = new FileStream(fileName, FileMode.Create))
-            {
-                DgmlWriter.WriteDependencyGraphToStream(dgmlOutput, _dependencyGraph, _nodeFactory);
-                dgmlOutput.Flush();
-            }
+            return new CompilationResults(_dependencyGraph, _nodeFactory);
         }
 
         private class RootingServiceProvider : IRootingServiceProvider
@@ -224,51 +352,68 @@ namespace ILCompiler
 
             public void AddCompilationRoot(TypeDesc type, string reason)
             {
-                if (!ConstructedEETypeNode.CreationAllowed(type))
-                {
-                    _graph.AddRoot(_factory.NecessaryTypeSymbol(type), reason);
-                }
-                else
-                {
-                    _graph.AddRoot(_factory.ConstructedTypeSymbol(type), reason);
-                }
+                _graph.AddRoot(_factory.MaximallyConstructableType(type), reason);
             }
 
-            public void RootStaticBasesForType(TypeDesc type, string reason)
+            public void RootThreadStaticBaseForType(TypeDesc type, string reason)
             {
                 Debug.Assert(!type.IsGenericDefinition);
 
                 MetadataType metadataType = type as MetadataType;
-                if (metadataType != null)
+                if (metadataType != null && metadataType.ThreadStaticFieldSize.AsInt > 0)
                 {
-                    if (metadataType.ThreadStaticFieldSize.AsInt > 0)
-                    {
-                        _graph.AddRoot(_factory.TypeThreadStaticIndex(metadataType), reason);
-                    }
+                    _graph.AddRoot(_factory.TypeThreadStaticIndex(metadataType), reason);
 
-                    if (metadataType.GCStaticFieldSize.AsInt > 0)
-                    {
-                        _graph.AddRoot(_factory.TypeGCStaticsSymbol(metadataType), reason);
-                    }
-
-                    if (metadataType.NonGCStaticFieldSize.AsInt > 0)
-                    {
+                    // Also explicitly root the non-gc base if we have a lazy cctor
+                    if(_factory.TypeSystemContext.HasLazyStaticConstructor(type))
                         _graph.AddRoot(_factory.TypeNonGCStaticsSymbol(metadataType), reason);
-                    }
                 }
             }
-            
+
+            public void RootGCStaticBaseForType(TypeDesc type, string reason)
+            {
+                Debug.Assert(!type.IsGenericDefinition);
+
+                MetadataType metadataType = type as MetadataType;
+                if (metadataType != null && metadataType.GCStaticFieldSize.AsInt > 0)
+                {
+                    _graph.AddRoot(_factory.TypeGCStaticsSymbol(metadataType), reason);
+
+                    // Also explicitly root the non-gc base if we have a lazy cctor
+                    if (_factory.TypeSystemContext.HasLazyStaticConstructor(type))
+                        _graph.AddRoot(_factory.TypeNonGCStaticsSymbol(metadataType), reason);
+                }
+            }
+
+            public void RootNonGCStaticBaseForType(TypeDesc type, string reason)
+            {
+                Debug.Assert(!type.IsGenericDefinition);
+
+                MetadataType metadataType = type as MetadataType;
+                if (metadataType != null && (metadataType.NonGCStaticFieldSize.AsInt > 0 || _factory.TypeSystemContext.HasLazyStaticConstructor(type)))
+                {
+                    _graph.AddRoot(_factory.TypeNonGCStaticsSymbol(metadataType), reason);
+                }
+            }
+
             public void RootVirtualMethodForReflection(MethodDesc method, string reason)
             {
                 Debug.Assert(method.IsVirtual);
 
-                if (!_factory.CompilationModuleGroup.ShouldProduceFullVTable(method.OwningType))
-                    _graph.AddRoot(_factory.VirtualMethodUse(method), reason);
+                // Virtual method use is tracked on the slot defining method only.
+                MethodDesc slotDefiningMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method);
+                if (!_factory.VTable(slotDefiningMethod.OwningType).HasFixedSlots)
+                    _graph.AddRoot(_factory.VirtualMethodUse(slotDefiningMethod), reason);
 
                 if (method.IsAbstract)
                 {
                     _graph.AddRoot(_factory.ReflectableMethod(method), reason);
                 }
+            }
+
+            public void RootModuleMetadata(ModuleDesc module, string reason)
+            {
+                _graph.AddRoot(_factory.ModuleMetadata(module), reason);
             }
         }
     }
@@ -276,7 +421,61 @@ namespace ILCompiler
     // Interface under which Compilation is exposed externally.
     public interface ICompilation
     {
-        void Compile(string outputFileName, ObjectDumper dumper);
-        void WriteDependencyLog(string outputFileName);
+        CompilationResults Compile(string outputFileName, ObjectDumper dumper);
+    }
+
+    public class CompilationResults
+    {
+        private readonly DependencyAnalyzerBase<NodeFactory> _graph;
+        private readonly NodeFactory _factory;
+
+        protected ImmutableArray<DependencyNodeCore<NodeFactory>> MarkedNodes
+        {
+            get
+            {
+                return _graph.MarkedNodeList;
+            }
+        }
+
+        internal CompilationResults(DependencyAnalyzerBase<NodeFactory> graph, NodeFactory factory)
+        {
+            _graph = graph;
+            _factory = factory;
+        }
+
+        public void WriteDependencyLog(string fileName)
+        {
+            using (FileStream dgmlOutput = new FileStream(fileName, FileMode.Create))
+            {
+                DgmlWriter.WriteDependencyGraphToStream(dgmlOutput, _graph, _factory);
+                dgmlOutput.Flush();
+            }
+        }
+
+        public IEnumerable<MethodDesc> CompiledMethodBodies
+        {
+            get
+            {
+                foreach (var node in MarkedNodes)
+                {
+                    if (node is IMethodBodyNode)
+                        yield return ((IMethodBodyNode)node).Method;
+                }
+            }
+        }
+
+        public IEnumerable<TypeDesc> ConstructedEETypes
+        {
+            get
+            {
+                foreach (var node in MarkedNodes)
+                {
+                    if (node is ConstructedEETypeNode || node is CanonicalEETypeNode)
+                    {
+                        yield return ((IEETypeNode)node).Type;
+                    }
+                }
+            }
+        }
     }
 }

@@ -4,7 +4,6 @@
 
 using System.Globalization;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace System
@@ -16,14 +15,14 @@ namespace System
     // specified component.
 
     [Serializable]
-    public sealed class Version : ICloneable, IComparable
-        , IComparable<Version>, IEquatable<Version>
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+    public sealed class Version : ICloneable, IComparable, IComparable<Version>, IEquatable<Version>, ISpanFormattable
     {
         // AssemblyName depends on the order staying the same
-        private readonly int _Major;
-        private readonly int _Minor;
-        private readonly int _Build = -1;
-        private readonly int _Revision = -1;
+        private readonly int _Major; // Do not rename (binary serialization)
+        private readonly int _Minor; // Do not rename (binary serialization)
+        private readonly int _Build = -1; // Do not rename (binary serialization)
+        private readonly int _Revision = -1; // Do not rename (binary serialization)
 
         public Version(int major, int minor, int build, int revision)
         {
@@ -38,7 +37,6 @@ namespace System
 
             if (revision < 0)
                 throw new ArgumentOutOfRangeException(nameof(revision), SR.ArgumentOutOfRange_Version);
-            Contract.EndContractBlock();
 
             _Major = major;
             _Minor = minor;
@@ -57,7 +55,6 @@ namespace System
             if (build < 0)
                 throw new ArgumentOutOfRangeException(nameof(build), SR.ArgumentOutOfRange_Version);
 
-            Contract.EndContractBlock();
 
             _Major = major;
             _Minor = minor;
@@ -71,7 +68,6 @@ namespace System
 
             if (minor < 0)
                 throw new ArgumentOutOfRangeException(nameof(minor), SR.ArgumentOutOfRange_Version);
-            Contract.EndContractBlock();
 
             _Major = major;
             _Minor = minor;
@@ -196,83 +192,105 @@ namespace System
             return accumulator;
         }
 
-        public override String ToString()
-        {
-            if (_Build == -1) return (ToString(2));
-            if (_Revision == -1) return (ToString(3));
-            return (ToString(4));
-        }
+        public override string ToString() =>
+            ToString(DefaultFormatFieldCount);
 
-        public String ToString(int fieldCount)
+        public string ToString(int fieldCount) =>
+            fieldCount == 0 ? string.Empty :
+            fieldCount == 1 ? _Major.ToString() :
+            StringBuilderCache.GetStringAndRelease(ToCachedStringBuilder(fieldCount));
+
+        public bool TryFormat(Span<char> destination, out int charsWritten) =>
+            TryFormat(destination, DefaultFormatFieldCount, out charsWritten);
+
+        public bool TryFormat(Span<char> destination, int fieldCount, out int charsWritten)
         {
-            StringBuilder sb;
-            switch (fieldCount)
+            if (fieldCount == 0)
             {
-                case 0:
-                    return (String.Empty);
-                case 1:
-                    return (_Major.ToString());
-                case 2:
-                    sb = StringBuilderCache.Acquire();
-                    AppendPositiveNumber(_Major, sb);
-                    sb.Append('.');
-                    AppendPositiveNumber(_Minor, sb);
-                    return StringBuilderCache.GetStringAndRelease(sb);
-                default:
-                    if (_Build == -1)
-                        throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "2"), nameof(fieldCount));
-
-                    if (fieldCount == 3)
-                    {
-                        sb = StringBuilderCache.Acquire();
-                        AppendPositiveNumber(_Major, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Minor, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Build, sb);
-                        return StringBuilderCache.GetStringAndRelease(sb);
-                    }
-
-                    if (_Revision == -1)
-                        throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "3"), nameof(fieldCount));
-
-                    if (fieldCount == 4)
-                    {
-                        sb = StringBuilderCache.Acquire();
-                        AppendPositiveNumber(_Major, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Minor, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Build, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Revision, sb);
-                        return StringBuilderCache.GetStringAndRelease(sb);
-                    }
-
-                    throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "4"), nameof(fieldCount));
+                charsWritten = 0;
+                return true;
             }
+            else if (fieldCount == 1)
+            {
+                return _Major.TryFormat(destination, out charsWritten);
+            }
+
+            StringBuilder sb = ToCachedStringBuilder(fieldCount);
+            if (sb.Length <= destination.Length)
+            {
+                sb.CopyTo(0, destination, sb.Length);
+                StringBuilderCache.Release(sb);
+                charsWritten = sb.Length;
+                return true;
+            }
+
+            StringBuilderCache.Release(sb);
+            charsWritten = 0;
+            return false;
         }
 
-        //
-        // AppendPositiveNumber is an optimization to append a number to a StringBuilder object without
-        // doing any boxing and not even creating intermediate string.
-        // Note: as we always have positive numbers then it is safe to convert the number to string 
-        // regardless of the current culture as we'll not have any punctuation marks in the number
-        //
-        private const int ZERO_CHAR_VALUE = (int)'0';
-        private static void AppendPositiveNumber(int num, StringBuilder sb)
+        bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
         {
-            Debug.Assert(num >= 0, "AppendPositiveNumber expect positive numbers");
+            // format and provider are ignored.
+            return TryFormat(destination, out charsWritten);
+        }
 
-            int index = sb.Length;
-            int reminder;
+        private int DefaultFormatFieldCount =>
+            _Build == -1 ? 2 :
+            _Revision == -1 ? 3 :
+            4;
 
-            do
+        private StringBuilder ToCachedStringBuilder(int fieldCount)
+        {
+            // Note: As we always have positive numbers then it is safe to convert the number to string
+            // regardless of the current culture as we'll not have any punctuation marks in the number.
+
+            if (fieldCount == 2)
             {
-                reminder = num % 10;
-                num = num / 10;
-                sb.Insert(index, (char)(ZERO_CHAR_VALUE + reminder));
-            } while (num > 0);
+                StringBuilder sb = StringBuilderCache.Acquire();
+                sb.Append(_Major);
+                sb.Append('.');
+                sb.Append(_Minor);
+                return sb;
+            }
+            else
+            {
+                if (_Build == -1)
+                {
+                    throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "2"), nameof(fieldCount));
+                }
+
+                if (fieldCount == 3)
+                {
+                    StringBuilder sb = StringBuilderCache.Acquire();
+                    sb.Append(_Major);
+                    sb.Append('.');
+                    sb.Append(_Minor);
+                    sb.Append('.');
+                    sb.Append(_Build);
+                    return sb;
+                }
+
+                if (_Revision == -1)
+                {
+                    throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "3"), nameof(fieldCount));
+                }
+
+                if (fieldCount == 4)
+                {
+                    StringBuilder sb = StringBuilderCache.Acquire();
+                    sb.Append(_Major);
+                    sb.Append('.');
+                    sb.Append(_Minor);
+                    sb.Append('.');
+                    sb.Append(_Build);
+                    sb.Append('.');
+                    sb.Append(_Revision);
+                    return sb;
+                }
+
+                throw new ArgumentException(SR.Format(SR.ArgumentOutOfRange_Bounds_Lower_Upper, "0", "4"), nameof(fieldCount));
+            }
         }
 
         public static Version Parse(string input)
@@ -281,104 +299,108 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(input));
             }
-            Contract.EndContractBlock();
 
-            VersionResult r = new VersionResult();
-            r.Init(nameof(input), true);
-            if (!TryParseVersion(input, ref r))
-            {
-                throw r.GetVersionParseException();
-            }
-            return r.m_parsedVersion;
+            return ParseVersion(input.AsReadOnlySpan(), throwOnFailure: true);
         }
+
+        public static Version Parse(ReadOnlySpan<char> input) =>
+            ParseVersion(input, throwOnFailure: true);
 
         public static bool TryParse(string input, out Version result)
         {
-            VersionResult r = new VersionResult();
-            r.Init(nameof(input), false);
-            bool b = TryParseVersion(input, ref r);
-            result = r.m_parsedVersion;
-            return b;
+            if (input == null)
+            {
+                result = null;
+                return false;
+            }
+
+            return (result = ParseVersion(input.AsReadOnlySpan(), throwOnFailure: false)) != null;
         }
 
-        private static bool TryParseVersion(string version, ref VersionResult result)
+        public static bool TryParse(ReadOnlySpan<char> input, out Version result) =>
+            (result = ParseVersion(input, throwOnFailure: false)) != null;
+
+        private static Version ParseVersion(ReadOnlySpan<char> input, bool throwOnFailure)
         {
+            // Find the separator between major and minor.  It must exist.
+            int majorEnd = input.IndexOf('.');
+            if (majorEnd < 0)
+            {
+                if (throwOnFailure) throw new ArgumentException(SR.Arg_VersionString, nameof(input));
+                return null;
+            }
+
+            // Find the ends of the optional minor and build portions.
+            // We musn't have any separators after build.
+            int buildEnd = -1;
+            int minorEnd = input.IndexOf('.', majorEnd + 1);
+            if (minorEnd != -1)
+            {
+                buildEnd = input.IndexOf('.', minorEnd + 1);
+                if (buildEnd != -1)
+                {
+                    if (input.IndexOf('.', buildEnd + 1) != -1)
+                    {
+                        if (throwOnFailure) throw new ArgumentException(SR.Arg_VersionString, nameof(input));
+                        return null;
+                    }
+                }
+            }
+
             int major, minor, build, revision;
 
-            if ((Object)version == null)
+            // Parse the major version
+            if (!TryParseComponent(input.Slice(0, majorEnd), nameof(input), throwOnFailure, out major))
             {
-                result.SetFailure(ParseFailureKind.ArgumentNullException);
-                return false;
+                return null;
             }
 
-            String[] parsedComponents = version.Split('.');
-            int parsedComponentsLength = parsedComponents.Length;
-            if ((parsedComponentsLength < 2) || (parsedComponentsLength > 4))
+            if (minorEnd != -1)
             {
-                result.SetFailure(ParseFailureKind.ArgumentException);
-                return false;
-            }
-
-            if (!TryParseComponent(parsedComponents[0], nameof(version), ref result, out major))
-            {
-                return false;
-            }
-
-            if (!TryParseComponent(parsedComponents[1], nameof(version), ref result, out minor))
-            {
-                return false;
-            }
-
-            parsedComponentsLength -= 2;
-
-            if (parsedComponentsLength > 0)
-            {
-                if (!TryParseComponent(parsedComponents[2], "build", ref result, out build))
+                // If there's more than a major and minor, parse the minor, too.
+                if (!TryParseComponent(input.Slice(majorEnd + 1, minorEnd - majorEnd - 1), nameof(input), throwOnFailure, out minor))
                 {
-                    return false;
+                    return null;
                 }
 
-                parsedComponentsLength--;
-
-                if (parsedComponentsLength > 0)
+                if (buildEnd != -1)
                 {
-                    if (!TryParseComponent(parsedComponents[3], "revision", ref result, out revision))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        result.m_parsedVersion = new Version(major, minor, build, revision);
-                    }
+                    // major.minor.build.revision
+                    return
+                        TryParseComponent(input.Slice(minorEnd + 1, buildEnd - minorEnd - 1), nameof(build), throwOnFailure, out build) &&
+                        TryParseComponent(input.Slice(buildEnd + 1), nameof(revision), throwOnFailure, out revision) ?
+                            new Version(major, minor, build, revision) :
+                            null;
                 }
                 else
                 {
-                    result.m_parsedVersion = new Version(major, minor, build);
+                    // major.minor.build
+                    return TryParseComponent(input.Slice(minorEnd + 1), nameof(build), throwOnFailure, out build) ?
+                        new Version(major, minor, build) :
+                        null;
                 }
             }
             else
             {
-                result.m_parsedVersion = new Version(major, minor);
+                // major.minor
+                return TryParseComponent(input.Slice(majorEnd + 1), nameof(input), throwOnFailure, out minor) ?
+                    new Version(major, minor) :
+                    null;
             }
-
-            return true;
         }
 
-        private static bool TryParseComponent(string component, string componentName, ref VersionResult result, out int parsedComponent)
+        private static bool TryParseComponent(ReadOnlySpan<char> component, string componentName, bool throwOnFailure, out int parsedComponent)
         {
-            if (!Int32.TryParse(component, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedComponent))
+            if (throwOnFailure)
             {
-                result.SetFailure(ParseFailureKind.FormatException, component);
-                return false;
+                if ((parsedComponent = int.Parse(component, NumberStyles.Integer, CultureInfo.InvariantCulture)) < 0)
+                {
+                    throw new ArgumentOutOfRangeException(componentName, SR.ArgumentOutOfRange_Version);
+                }
+                return true;
             }
 
-            if (parsedComponent < 0)
-            {
-                result.SetFailure(ParseFailureKind.ArgumentOutOfRangeException, componentName);
-                return false;
-            }
-
-            return true;
+            return int.TryParse(component, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedComponent) && parsedComponent >= 0;
         }
 
         public static bool operator ==(Version v1, Version v2)
@@ -400,7 +422,6 @@ namespace System
         {
             if ((Object)v1 == null)
                 throw new ArgumentNullException(nameof(v1));
-            Contract.EndContractBlock();
             return (v1.CompareTo(v2) < 0);
         }
 
@@ -408,7 +429,6 @@ namespace System
         {
             if ((Object)v1 == null)
                 throw new ArgumentNullException(nameof(v1));
-            Contract.EndContractBlock();
             return (v1.CompareTo(v2) <= 0);
         }
 
@@ -420,76 +440,6 @@ namespace System
         public static bool operator >=(Version v1, Version v2)
         {
             return (v2 <= v1);
-        }
-
-        internal enum ParseFailureKind
-        {
-            ArgumentNullException,
-            ArgumentException,
-            ArgumentOutOfRangeException,
-            FormatException
-        }
-
-        internal struct VersionResult
-        {
-            internal Version m_parsedVersion;
-            internal ParseFailureKind m_failure;
-            internal string m_exceptionArgument;
-            internal string m_argumentName;
-            internal bool m_canThrow;
-
-            internal void Init(string argumentName, bool canThrow)
-            {
-                m_canThrow = canThrow;
-                m_argumentName = argumentName;
-            }
-
-            internal void SetFailure(ParseFailureKind failure)
-            {
-                SetFailure(failure, String.Empty);
-            }
-
-            internal void SetFailure(ParseFailureKind failure, string argument)
-            {
-                m_failure = failure;
-                m_exceptionArgument = argument;
-                if (m_canThrow)
-                {
-                    throw GetVersionParseException();
-                }
-            }
-
-            internal Exception GetVersionParseException()
-            {
-                switch (m_failure)
-                {
-                    case ParseFailureKind.ArgumentNullException:
-                        return new ArgumentNullException(m_argumentName);
-                    case ParseFailureKind.ArgumentException:
-                        return new ArgumentException(SR.Arg_VersionString);
-                    case ParseFailureKind.ArgumentOutOfRangeException:
-                        return new ArgumentOutOfRangeException(m_exceptionArgument, SR.ArgumentOutOfRange_Version);
-                    case ParseFailureKind.FormatException:
-                        // Regenerate the FormatException as would be thrown by Int32.Parse()
-                        try
-                        {
-                            Int32.Parse(m_exceptionArgument, CultureInfo.InvariantCulture);
-                        }
-                        catch (FormatException e)
-                        {
-                            return e;
-                        }
-                        catch (OverflowException e)
-                        {
-                            return e;
-                        }
-                        Debug.Assert(false, "Int32.Parse() did not throw exception but TryParse failed: " + m_exceptionArgument);
-                        return new FormatException(SR.Format_InvalidString);
-                    default:
-                        Debug.Assert(false, "Unmatched case in Version.GetVersionParseException() for value: " + m_failure);
-                        return new ArgumentException(SR.Arg_VersionString);
-                }
-            }
         }
     }
 }

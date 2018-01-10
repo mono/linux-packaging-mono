@@ -13,7 +13,11 @@ using System.Text;
 namespace Microsoft.Win32
 {
     /// <summary>Registry encapsulation. To get an instance of a RegistryKey use the Registry class's static members then call OpenSubKey.</summary>
+#if REGISTRY_ASSEMBLY
+    public
+#else
     internal
+#endif
     sealed partial class RegistryKey : IDisposable
     {
         public static readonly IntPtr HKEY_CLASSES_ROOT = new IntPtr(unchecked((int)0x80000000));
@@ -155,6 +159,12 @@ namespace Microsoft.Win32
             }
 
             return CreateSubKeyInternalCore(subkey, writable, registryOptions);
+        }
+
+        public void DeleteValue(string name, bool throwOnMissingValue)
+        {
+            EnsureWriteable();
+            DeleteValueCore(name, throwOnMissingValue);
         }
 
         public static RegistryKey OpenBaseKey(RegistryHive hKey, RegistryView view)
@@ -341,6 +351,20 @@ namespace Microsoft.Win32
                 EnsureNotDisposed();
                 return _keyName;
             }
+        }
+
+        //The actual api is SetValue(string name, object value, RegistryValueKind valueKind) but we only need to set Strings
+        // so this is a cut-down version that supports on that.
+        internal void SetValue(string name, string value)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            if (name != null && name.Length > MaxValueLength)
+                throw new ArgumentException(SR.Arg_RegValStrLenBug, nameof(name));
+
+            EnsureWriteable();
+            SetValueCore(name, value);
         }
 
         /// <summary>Retrieves a string representation of this key.</summary>

@@ -5,6 +5,7 @@
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -74,38 +75,69 @@ namespace Internal.Runtime.Augments
         {
             get
             {
-                RuntimeThread currentThread = t_currentThread;
-                return t_currentThread ?? InitializeExistingThread();
+                return t_currentThread ?? InitializeExistingThread(false);
             }
         }
 
         // Slow path executed once per thread
-        private static RuntimeThread InitializeExistingThread()
+        private static RuntimeThread InitializeExistingThread(bool threadPoolThread)
         {
+            Debug.Assert(t_currentThread == null);
+
             var currentThread = new RuntimeThread();
             currentThread._managedThreadId = System.Threading.ManagedThreadId.GetCurrentThreadId();
             Debug.Assert(currentThread._threadState == (int)ThreadState.Unstarted);
+
+            ThreadState state = threadPoolThread ? ThreadPoolThread : 0;
+
             // The main thread is foreground, other ones are background
-            if (currentThread._managedThreadId.Id == System.Threading.ManagedThreadId.IdMainThread)
+            if (currentThread._managedThreadId.Id != System.Threading.ManagedThreadId.IdMainThread)
             {
-                currentThread._threadState = (int)(ThreadState.Running);
+                state |= ThreadState.Background;
             }
-            else
-            {
-                currentThread._threadState = (int)(ThreadState.Running | ThreadState.Background);
-            }
+
+            currentThread._threadState = (int)(state | ThreadState.Running);
             currentThread.PlatformSpecificInitializeExistingThread();
             currentThread._priority = currentThread.GetPriorityLive();
             t_currentThread = currentThread;
+
+            if (threadPoolThread)
+            {
+                RoInitialize();
+            }
+
             return currentThread;
         }
 
-        public static void InitializeThreadPoolThread()
+        // Use ThreadPoolCallbackWrapper instead of calling this function directly
+        internal static RuntimeThread InitializeThreadPoolThread()
         {
-            if (t_currentThread == null)
+            return t_currentThread ?? InitializeExistingThread(true);
+        }
+
+        /// <summary>
+        /// Resets properties of the current thread pool thread that may have been changed by a user callback.
+        /// </summary>
+        internal void ResetThreadPoolThread()
+        {
+            Debug.Assert(this == RuntimeThread.CurrentThread);
+
+            CultureInfo.ResetThreadCulture();
+
+            if (_name != null)
             {
-                InitializeExistingThread().SetThreadStateBit(ThreadPoolThread);
-                RoInitialize();
+                _name = null;
+            }
+
+            if (!GetThreadStateBit(ThreadState.Background))
+            {
+                SetThreadStateBit(ThreadState.Background);
+            }
+
+            ThreadPriority newPriority = ThreadPriority.Normal;
+            if ((_priority != newPriority) && SetPriorityLive(newPriority))
+            {
+                _priority = newPriority;
             }
         }
 
@@ -193,6 +225,21 @@ namespace Internal.Runtime.Augments
                     throw new ThreadStateException(SR.ThreadState_Dead_State);
                 }
                 return GetThreadStateBit(ThreadPoolThread);
+            }
+            internal set
+            {
+                if (IsDead())
+                {
+                    throw new ThreadStateException(SR.ThreadState_Dead_State);
+                }
+                if (value)
+                {
+                    SetThreadStateBit(ThreadPoolThread);
+                }
+                else
+                {
+                    ClearThreadStateBit(ThreadPoolThread);
+                }
             }
         }
 
@@ -324,6 +371,15 @@ namespace Internal.Runtime.Augments
         }
 
         public static void Sleep(int millisecondsTimeout) => SleepInternal(VerifyTimeoutMilliseconds(millisecondsTimeout));
+
+        /// <summary>
+        /// Max value to be passed into <see cref="SpinWait(int)"/> for optimal delaying. Currently, the value comes from
+        /// defaults in CoreCLR's Thread::InitializeYieldProcessorNormalized(). This value is supposed to be normalized to be
+        /// appropriate for the processor.
+        /// TODO: See issue https://github.com/dotnet/corert/issues/4430
+        /// </summary>
+        internal static readonly int OptimalMaxSpinWaitsPerSpinIteration = 64;
+
         public static void SpinWait(int iterations) => RuntimeImports.RhSpinWait(iterations);
         public static bool Yield() => RuntimeImports.RhYield();
 

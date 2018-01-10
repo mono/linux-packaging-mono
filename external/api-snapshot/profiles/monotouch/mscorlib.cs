@@ -675,6 +675,7 @@ namespace System
         public ArithmeticException(string message) { }
         public ArithmeticException(string message, System.Exception innerException) { }
     }
+    [System.SerializableAttribute]
     public abstract partial class Array : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList, System.Collections.IStructuralComparable, System.Collections.IStructuralEquatable, System.ICloneable
     {
         internal Array() { }
@@ -6687,6 +6688,7 @@ namespace System.Collections.Generic
     {
         public static System.Collections.Generic.KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value) { throw null; }
     }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct KeyValuePair<TKey, TValue>

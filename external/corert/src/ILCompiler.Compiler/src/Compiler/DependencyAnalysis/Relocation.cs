@@ -15,11 +15,16 @@ namespace ILCompiler.DependencyAnalysis
         IMAGE_REL_BASED_DIR64           = 0x0A,     // 64 bit address base
         IMAGE_REL_BASED_REL32           = 0x10,     // 32-bit relative address from byte following reloc
         IMAGE_REL_BASED_THUMB_BRANCH24  = 0x13,     // Thumb2: based B, BL
+        IMAGE_REL_BASED_ARM64_BRANCH26  = 0x14,     // Arm64: B, BL
         IMAGE_REL_BASED_RELPTR32        = 0x7C,     // 32-bit relative address from byte starting reloc
                                                     // This is a special NGEN-specific relocation type 
                                                     // for relative pointer (used to make NGen relocation 
                                                     // section smaller)    
         IMAGE_REL_SECREL                = 0x80,     // 32 bit offset from base of section containing target
+
+        IMAGE_REL_BASED_ARM64_PAGEBASE_REL21 = 0x81,   // ADRP
+        IMAGE_REL_BASED_ARM64_PAGEOFFSET_12A = 0x82,   // ADD/ADDS (immediate) with zero shift, for page offset
+        IMAGE_REL_BASED_ARM64_PAGEOFFSET_12L = 0x83,   // LDR (indexed, unsigned immediate), for page offset
     }
 
     public struct Relocation

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Internal.Text;
 using Internal.NativeFormat;
+using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -51,6 +52,7 @@ namespace ILCompiler.DependencyAnalysis
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public Section LdTokenInfoSection => _ldTokenInfoSection;
@@ -92,5 +94,8 @@ namespace ILCompiler.DependencyAnalysis
 
             return new ObjectData(_writerSavedBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.NativeLayoutInfoNode;
     }
 }

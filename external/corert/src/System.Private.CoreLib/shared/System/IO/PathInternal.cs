@@ -10,37 +10,6 @@ namespace System.IO
     /// <summary>Contains internal path helpers that are shared between many projects.</summary>
     internal static partial class PathInternal
     {
-        // Trim trailing white spaces, tabs etc but don't be aggressive in removing everything that has UnicodeCategory of trailing space.
-        // string.WhitespaceChars will trim more aggressively than what the underlying FS does (for ex, NTFS, FAT).
-        //
-        // (This is for compatibility with old behavior.)
-        internal static readonly char[] s_trimEndChars =
-        {
-            (char)0x9,          // Horizontal tab
-            (char)0xA,          // Line feed
-            (char)0xB,          // Vertical tab
-            (char)0xC,          // Form feed
-            (char)0xD,          // Carriage return
-            (char)0x20,         // Space
-            (char)0x85,         // Next line
-            (char)0xA0          // Non breaking space
-        };
-
-        /// <summary>
-        /// Checks for invalid path characters in the given path.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the path is null.</exception>
-        /// <exception cref="System.ArgumentException">Thrown if the path has invalid characters.</exception>
-        /// <param name="path">The path to check for invalid characters.</param>
-        internal static void CheckInvalidPathChars(string path)
-        {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-
-            if (HasIllegalCharacters(path))
-                throw new ArgumentException(SR.Argument_InvalidPathChars, nameof(path));
-        }
-
         /// <summary>
         /// Returns the start index of the filename
         /// in the given path, or 0 if no directory
@@ -56,7 +25,6 @@ namespace System.IO
         internal static int FindFileNameIndex(string path)
         {
             Debug.Assert(path != null);
-            CheckInvalidPathChars(path);
 
             for (int i = path.Length - 1; i >= 0; i--)
             {
@@ -162,7 +130,7 @@ namespace System.IO
                 // Terminal ".." . Files names cannot end in ".."
                 if (index + 2 == searchPattern.Length
                     || IsDirectorySeparator(searchPattern[index + 2]))
-                    throw new ArgumentException(SR.Arg_InvalidSearchPattern);
+                    throw new ArgumentException(SR.Format(SR.Arg_InvalidSearchPattern, searchPattern));
 
                 searchPattern = searchPattern.Substring(index + 2);
             }

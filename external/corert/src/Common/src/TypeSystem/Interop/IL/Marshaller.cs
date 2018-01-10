@@ -225,7 +225,7 @@ namespace Internal.TypeSystem.Interop
                 switch (_homeType)
                 {
                     case HomeType.Arg:
-                        Debug.Assert(false, "Unexpectting setting value on non-byref arg");
+                        Debug.Fail("Unexpectting setting value on non-byref arg");
                         break;
                     case HomeType.Local:
                         stream.EmitStLoc(_var);
@@ -301,20 +301,21 @@ namespace Internal.TypeSystem.Interop
             marshaller.PInvokeFlags = flags;
 
             //
-            // Desktop ignores [Out] on marshaling scenarios where they don't make sense (such as passing
-            // value types and string as [out] without byref). 
+            // Desktop ignores [Out] on marshaling scenarios where they don't make sense
             //
-            if (marshaller.IsManagedByRef)
+            if (isOut)
             {
-                // Passing as [Out] by ref is valid
-                marshaller.Out = isOut;
+                // Passing as [Out] by ref is always valid. 
+                if (!marshaller.IsManagedByRef)
+                {
+                    // Ignore [Out] for ValueType, string and pointers
+                    if (parameterType.IsValueType || parameterType.IsString || parameterType.IsPointer || parameterType.IsFunctionPointer)
+                    {
+                        isOut = false;
+                    }
+                }
             }
-            else
-            {
-                // Passing as [Out] is valid only if it is not ValueType nor string
-                if (!parameterType.IsValueType && !parameterType.IsString)
-                    marshaller.Out = isOut;
-            }
+            marshaller.Out = isOut;
 
             if (!marshaller.In && !marshaller.Out)
             {
@@ -359,6 +360,8 @@ namespace Internal.TypeSystem.Interop
                 case MarshallerKind.BlittableStruct:
                 case MarshallerKind.UnicodeChar:
                     return new BlittableValueMarshaller();
+                case MarshallerKind.BlittableStructPtr:
+                    return new BlittableStructPtrMarshaller();
                 case MarshallerKind.AnsiChar:
                     return new AnsiCharMarshaller();
                 case MarshallerKind.Array:
@@ -935,6 +938,29 @@ namespace Internal.TypeSystem.Interop
             {
                 _ilCodeStreams.CallsiteSetupCodeStream.EmitLdArg(Index - 1);
             }
+        }
+    }
+
+    class BlittableStructPtrMarshaller : Marshaller
+    {
+        protected override void TransformManagedToNative(ILCodeStream codeStream)
+        {
+            if (Out)
+            {
+                // TODO: https://github.com/dotnet/corert/issues/4466
+                throw new NotSupportedException("Marshalling an LPStruct argument not yet implemented");
+            }
+            else
+            {
+                LoadManagedAddr(codeStream);
+                StoreNativeValue(codeStream);
+            }
+        }
+
+        protected override void TransformNativeToManaged(ILCodeStream codeStream)
+        {
+            // TODO: https://github.com/dotnet/corert/issues/4466
+            throw new NotSupportedException("Marshalling an LPStruct argument not yet implemented");
         }
     }
 
@@ -1610,6 +1636,28 @@ namespace Internal.TypeSystem.Interop
 
     class SafeHandleMarshaller : ReferenceMarshaller
     {
+        protected override void AllocNativeToManaged(ILCodeStream codeStream)
+        {
+            var ctor = ManagedType.GetParameterlessConstructor();
+            if (ctor == null)
+            {
+                var emitter = _ilCodeStreams.Emitter;
+
+                MethodSignature ctorSignature = new MethodSignature(0, 0, Context.GetWellKnownType(WellKnownType.Void),
+                      new TypeDesc[] { Context.GetWellKnownType(WellKnownType.String) });
+                MethodDesc exceptionCtor = InteropTypes.GetMissingMemberException(Context).GetKnownMethod(".ctor", ctorSignature);
+
+                string name = ((MetadataType)ManagedType).Name;
+                codeStream.Emit(ILOpcode.ldstr, emitter.NewToken(String.Format("'{0}' does not have a default constructor. Subclasses of SafeHandle must have a default constructor to support marshaling a Windows HANDLE into managed code.", name)));
+                codeStream.Emit(ILOpcode.newobj, emitter.NewToken(exceptionCtor));
+                codeStream.Emit(ILOpcode.throw_);
+            }
+            else
+            {
+                base.AllocNativeToManaged(codeStream);
+            }
+        }
+
         protected override void EmitMarshalArgumentManagedToNative()
         {
             ILEmitter emitter = _ilCodeStreams.Emitter;
@@ -1631,7 +1679,7 @@ namespace Internal.TypeSystem.Interop
                 throw new NotSupportedException("Marshalling an argument as both in and out not yet implemented");
             }
 
-            var safeHandleType = InteropTypes.GetSafeHandleType(Context);
+            var safeHandleType = InteropTypes.GetSafeHandle(Context);
 
             if (Out && IsManagedByRef)
             {
@@ -1686,7 +1734,7 @@ namespace Internal.TypeSystem.Interop
             LoadManagedValue(codeStream);
             LoadNativeValue(codeStream);
             codeStream.Emit(ILOpcode.call, _ilCodeStreams.Emitter.NewToken(
-            InteropTypes.GetSafeHandleType(Context).GetKnownMethod("SetHandle", null)));
+            InteropTypes.GetSafeHandle(Context).GetKnownMethod("SetHandle", null)));
         }
     }
 
@@ -1880,11 +1928,18 @@ namespace Internal.TypeSystem.Interop
                 codeStream.EmitLdArg(0);
                 codeStream.Emit(ILOpcode.ldfld, emitter.NewToken(_managedField));
 
+                var lNullCheck = emitter.NewCodeLabel();
+                codeStream.Emit(ILOpcode.brfalse, lNullCheck);
+
+                codeStream.EmitLdArg(0);
+                codeStream.Emit(ILOpcode.ldfld, emitter.NewToken(_managedField));
+
                 codeStream.Emit(ILOpcode.ldlen);
                 codeStream.Emit(ILOpcode.conv_i4);
                 codeStream.EmitStLoc(vLength);
 
-                
+                codeStream.EmitLabel(lNullCheck);
+
                 Debug.Assert(MarshalAsDescriptor.SizeConst.HasValue);
                 int sizeConst = (int)MarshalAsDescriptor.SizeConst.Value;
 
@@ -1947,8 +2002,6 @@ namespace Internal.TypeSystem.Interop
             // check if ManagedType == null, then return
             codeStream.EmitLdArg(0);
             codeStream.Emit(ILOpcode.ldfld, emitter.NewToken(_managedField));
-            codeStream.Emit(ILOpcode.ldnull);
-            codeStream.Emit(ILOpcode.cgt_un);
             codeStream.Emit(ILOpcode.brfalse, lDone);
 
             codeStream.EmitLdArg(1);

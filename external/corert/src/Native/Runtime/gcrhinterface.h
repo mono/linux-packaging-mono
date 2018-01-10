@@ -157,6 +157,10 @@ public:
     static EEType * GetLastAllocEEType();
     static void SetLastAllocEEType(EEType *pEEType);
 
+    // Used by debugger hook
+    static void* CreateTypedHandle(void* object, int type);
+    static void DestroyTypedHandle(void* handle);
+
 private:
     // The EEType for the last allocation.  This value is used inside of the GC allocator
     // to emit allocation ETW events with type information.  We set this value unconditionally to avoid

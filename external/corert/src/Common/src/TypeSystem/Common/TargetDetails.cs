@@ -18,6 +18,7 @@ namespace Internal.TypeSystem
         ARM64,
         X64,
         X86,
+        Wasm32
     }
 
     /// <summary>
@@ -31,6 +32,7 @@ namespace Internal.TypeSystem
         OSX,
         FreeBSD,
         NetBSD,
+        WebAssembly,
     }
 
     public enum TargetAbi
@@ -54,7 +56,7 @@ namespace Internal.TypeSystem
     /// Represents various details about the compilation target that affect
     /// layout, padding, allocations, or ABI.
     /// </summary>
-    public class TargetDetails
+    public partial class TargetDetails
     {
         /// <summary>
         /// Gets the target CPU architecture.
@@ -92,9 +94,10 @@ namespace Internal.TypeSystem
                     case TargetArchitecture.ARM:
                     case TargetArchitecture.ARMEL:
                     case TargetArchitecture.X86:
+                    case TargetArchitecture.Wasm32:
                         return 4;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                 }
             }
         }
@@ -201,6 +204,7 @@ namespace Internal.TypeSystem
             {
                 case TargetArchitecture.ARM:
                 case TargetArchitecture.ARMEL:
+                case TargetArchitecture.Wasm32:
                     // ARM supports two alignments for objects on the GC heap (4 byte and 8 byte)
                     if (fieldAlignment.IsIndeterminate)
                         return LayoutInt.Indeterminate;
@@ -210,11 +214,12 @@ namespace Internal.TypeSystem
                     else
                         return new LayoutInt(8);
                 case TargetArchitecture.X64:
+                case TargetArchitecture.ARM64:
                     return new LayoutInt(8);
                 case TargetArchitecture.X86:
                     return new LayoutInt(4);
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
 

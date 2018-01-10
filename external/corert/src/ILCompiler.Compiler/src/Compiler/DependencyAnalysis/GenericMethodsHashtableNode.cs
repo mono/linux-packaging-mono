@@ -35,6 +35,7 @@ namespace ILCompiler.DependencyAnalysis
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
@@ -100,6 +101,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public static void GetGenericMethodsHashtableDependenciesForMethod(ref DependencyList dependencies, NodeFactory factory, MethodDesc method)
         {
+            if (!factory.MetadataManager.SupportsReflection)
+                return;
+
             Debug.Assert(method.HasInstantiation && !method.IsCanonicalMethod(CanonicalFormKind.Any));
             
             // Method's containing type
@@ -121,5 +125,8 @@ namespace ILCompiler.DependencyAnalysis
             ISymbolNode dictionaryNode = factory.MethodGenericDictionary(method);
             dependencies.Add(new DependencyListEntry(dictionaryNode, "GenericMethodsHashtable entry dictionary"));
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.GenericMethodsHashtableNode;
     }
 }

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection.Runtime.General;
+using System.Reflection.Runtime.General.NativeFormat;
 using System.Reflection.Runtime.CustomAttributes;
 
 using Internal.Reflection.Core;
@@ -19,7 +20,7 @@ namespace System.Reflection.Runtime.ParameterInfos.NativeFormat
     //
     // This implements ParameterInfo objects owned by MethodBase objects that have an associated Parameter metadata entity.
     //
-    internal sealed partial class NativeFormatMethodParameterInfo : RuntimeMethodParameterInfo
+    internal sealed partial class NativeFormatMethodParameterInfo : RuntimeFatMethodParameterInfo
     {
         private NativeFormatMethodParameterInfo(MethodBase member, MethodHandle methodHandle, int position, ParameterHandle parameterHandle, QSignatureTypeHandle qualifiedParameterTypeHandle, TypeContext typeContext)
             : base(member, position, qualifiedParameterTypeHandle, typeContext)
@@ -46,35 +47,6 @@ namespace System.Reflection.Runtime.ParameterInfos.NativeFormat
             }
         }
 
-        public sealed override IEnumerable<CustomAttributeData> CustomAttributes
-        {
-            get
-            {
-                IEnumerable<CustomAttributeData> customAttributes = RuntimeCustomAttributeData.GetCustomAttributes(this.Reader, _parameter.CustomAttributes);
-                foreach (CustomAttributeData cad in customAttributes)
-                    yield return cad;
-                MethodHandle declaringMethodHandle = _methodHandle;
-                foreach (CustomAttributeData cad in ReflectionCoreExecution.ExecutionEnvironment.GetPseudoCustomAttributes(this.Reader, _parameterHandle, declaringMethodHandle))
-                    yield return cad;
-            }
-        }
-
-        public sealed override Object DefaultValue
-        {
-            get
-            {
-                return DefaultValueInfo.Item2;
-            }
-        }
-
-        public sealed override bool HasDefaultValue
-        {
-            get
-            {
-                return DefaultValueInfo.Item1;
-            }
-        }
-
         public sealed override String Name
         {
             get
@@ -90,34 +62,16 @@ namespace System.Reflection.Runtime.ParameterInfos.NativeFormat
                 throw new InvalidOperationException(SR.NoMetadataTokenAvailable);
             }
         }
-        
-        private Tuple<bool, Object> DefaultValueInfo
+
+        protected sealed override IEnumerable<CustomAttributeData> TrueCustomAttributes => RuntimeCustomAttributeData.GetCustomAttributes(this.Reader, _parameter.CustomAttributes);
+
+        protected sealed override bool GetDefaultValueIfAvailable(bool raw, out object defaultValue)
         {
-            get
-            {
-                Tuple<bool, Object> defaultValueInfo = _lazyDefaultValueInfo;
-                if (defaultValueInfo == null)
-                {
-                    Object defaultValue;
-                    bool hasDefaultValue = ReflectionCoreExecution.ExecutionEnvironment.GetDefaultValueIfAny(
-                        this.Reader,
-                        _parameterHandle,
-                        this.ParameterType,
-                        this.CustomAttributes,
-                        out defaultValue);
-                    if (!hasDefaultValue)
-                    {
-                        defaultValue = IsOptional ? (object)Missing.Value : (object)DBNull.Value;
-                    }
-                    defaultValueInfo = _lazyDefaultValueInfo = Tuple.Create(hasDefaultValue, defaultValue);
-                }
-                return defaultValueInfo;
-            }
+            return DefaultValueParser.GetDefaultValueIfAny(Reader, _parameter.DefaultValue, ParameterType, CustomAttributes, raw, out defaultValue);
         }
 
         private readonly MethodHandle _methodHandle;
         private readonly ParameterHandle _parameterHandle;
         private readonly Parameter _parameter;
-        private volatile Tuple<bool, Object> _lazyDefaultValueInfo;
     }
 }
