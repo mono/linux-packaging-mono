@@ -25,7 +25,6 @@
 using System;
 using System.Security;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +37,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Provides an awaitable context for switching into a target environment.</summary>
     /// <remarks>This type is intended for compiler use only.</remarks>
-    public struct YieldAwaitable
+    public readonly struct YieldAwaitable
     {
         /// <summary>Gets an awaiter for this <see cref="YieldAwaitable"/>.</summary>
         /// <returns>An awaiter for this awaitable.</returns>
@@ -76,7 +75,6 @@ namespace System.Runtime.CompilerServices
             {
                 // Validate arguments
                 if (continuation == null) throw new ArgumentNullException(nameof(continuation));
-                Contract.EndContractBlock();
 
                 // Get the current SynchronizationContext, and if there is one,
                 // post the continuation to it.  However, treat the base type

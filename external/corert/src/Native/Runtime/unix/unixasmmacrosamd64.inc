@@ -222,6 +222,19 @@ C_FUNC(\Name):
 
 .endm
 
+.macro EXPORT_POINTER_TO_ADDRESS Name
+
+1:
+
+        .data
+        .align      8
+C_FUNC(\Name):
+        .quad       1b
+        .global     C_FUNC(\Name)
+        .text
+
+.endm
+
 //
 // CONSTANTS -- INTEGER
 //
@@ -250,6 +263,12 @@ C_FUNC(\Name):
 #define PTFF_SAVE_ALL_SCRATCH    00007F00h
 #define PTFF_RAX_IS_GCREF        00010000h   // iff PTFF_SAVE_RAX: set -> eax is Object, clear -> eax is scalar
 #define PTFF_RAX_IS_BYREF        00020000h   // iff PTFF_SAVE_RAX: set -> eax is ByRef, clear -> eax is Object or scalar
+#define PTFF_THREAD_ABORT        00040000h   // indicates that ThreadAbortException should be thrown when returning from the transition
+
+// These must match the TrapThreadsFlags enum
+#define TrapThreadsFlags_None            0
+#define TrapThreadsFlags_AbortInProgress 1
+#define TrapThreadsFlags_TrapThreads     2
 
 .macro INLINE_GET_TLS_VAR Var
        .att_syntax
@@ -289,7 +308,9 @@ C_FUNC(\Name):
 DEFAULT_FRAME_SAVE_FLAGS = PTFF_SAVE_ALL_PRESERVED + PTFF_SAVE_RSP
 
 .macro PUSH_COOP_PINVOKE_FRAME trashReg
-    lea             \trashReg, [rsp +  8h]
+    push_nonvol_reg rbp                         // push RBP frame
+    mov             rbp, rsp
+    lea             \trashReg, [rsp + 10h]
     push_register   \trashReg                   // save caller's RSP
     push_nonvol_reg r15                         // save preserved registers
     push_nonvol_reg r14                         //   ..
@@ -298,19 +319,15 @@ DEFAULT_FRAME_SAVE_FLAGS = PTFF_SAVE_ALL_PRESERVED + PTFF_SAVE_RSP
     push_nonvol_reg rbx                         //   ..
     push_imm        DEFAULT_FRAME_SAVE_FLAGS    // save the register bitmask
     push_register   \trashReg                   // Thread * (unused by stackwalker)
-    push_nonvol_reg rbp                         // save caller's RBP
-    mov             \trashReg, [rsp + 9*8]      // Find the return address
-    push_register   \trashReg                   // save m_RIP
+    mov             \trashReg, [rsp + 8*8]      // Find and save the callers RBP
+    push_register   \trashReg
+    mov             \trashReg, [rsp + 10*8]     // Find and save the return address
+    push_register   \trashReg
     lea             \trashReg, [rsp]            // trashReg == address of frame
-
-    // stack alignment
-    alloc_stack 8
 .endm
 
 .macro POP_COOP_PINVOKE_FRAME
-    // Adjust for stack alignment and discard RIP
-    free_stack 16
-
+    pop_register r10    // discard RIP
     pop_nonvol_reg rbp  // restore RBP
     pop_register r10    // discard thread
     pop_register r10    // discard bitmask
@@ -320,4 +337,5 @@ DEFAULT_FRAME_SAVE_FLAGS = PTFF_SAVE_ALL_PRESERVED + PTFF_SAVE_RSP
     pop_nonvol_reg r14
     pop_nonvol_reg r15
     pop_register r10    // discard caller RSP
+    pop_register r10    // discard RBP frame
 .endm

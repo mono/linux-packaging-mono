@@ -19,10 +19,12 @@ namespace System.Threading.Tasks
     /// <summary>
     /// Represents an exception used to communicate task cancellation.
     /// </summary>
+    [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public class TaskCanceledException : OperationCanceledException
     {
         [NonSerialized]
-        private Task m_canceledTask; // The task which has been canceled.
+        private readonly Task _canceledTask; // The task which has been canceled.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Threading.Tasks.TaskCanceledException"/> class.
@@ -59,7 +61,7 @@ namespace System.Threading.Tasks
         public TaskCanceledException(Task task) :
             base(SR.TaskCanceledException_ctor_DefaultMessage, task != null ? task.CancellationToken : new CancellationToken())
         {
-            m_canceledTask = task;
+            _canceledTask = task;
         }
 
         /// <summary>
@@ -70,7 +72,6 @@ namespace System.Threading.Tasks
         /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination. </param>
         protected TaskCanceledException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         /// <summary>
@@ -81,9 +82,6 @@ namespace System.Threading.Tasks
         /// <see cref="T:System.Threading.Tasks.TaskCanceledException"/>, in which case
         /// this property will return null.
         /// </remarks>
-        public Task Task
-        {
-            get { return m_canceledTask; }
-        }
+        public Task Task => _canceledTask;
     }
 }

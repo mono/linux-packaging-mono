@@ -11,29 +11,20 @@ using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    public class InterfaceDispatchMapNode : ObjectNode, ISymbolDefinitionNode
+    public class InterfaceDispatchMapNode : ObjectNode, ISymbolDefinitionNode, ISortableSymbolNode
     {
-        const int IndexNotSet = int.MaxValue;
-
-        int _dispatchMapTableIndex;
         TypeDesc _type;
 
         public InterfaceDispatchMapNode(TypeDesc type)
         {
             _type = type;
-            _dispatchMapTableIndex = IndexNotSet;
         }
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            if (_dispatchMapTableIndex == IndexNotSet)
-            {
-                throw new InvalidOperationException("MangledName called before InterfaceDispatchMap index was initialized.");
-            }
-
-            sb.Append(nameMangler.CompilationUnitPrefix).Append("__InterfaceDispatchMap_").Append(_dispatchMapTableIndex.ToStringInvariant());
+            sb.Append(nameMangler.CompilationUnitPrefix).Append("__InterfaceDispatchMap_").Append(nameMangler.SanitizeName(nameMangler.GetMangledTypeName(_type)));
         }
 
         public int Offset => 0;
@@ -51,17 +42,18 @@ namespace ILCompiler.DependencyAnalysis
                     return ObjectNodeSection.DataSection;
             }
         }
-
-        public void SetDispatchMapIndex(NodeFactory factory, int index)
-        {
-            _dispatchMapTableIndex = index;
-            ((EETypeNode)factory.ConstructedTypeSymbol(_type)).SetDispatchMapIndex(_dispatchMapTableIndex);
-        }
-
+        
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
             var result = new DependencyList();
             result.Add(factory.InterfaceDispatchMapIndirection(_type), "Interface dispatch map indirection node");
+
+            // VTable slots of implemented interfaces are consulted during emission
+            foreach (TypeDesc runtimeInterface in _type.NormalizedRuntimeInterfaces())
+            {
+                result.Add(factory.VTable(runtimeInterface), "Interface for a dispatch map");
+            }
+
             return result;
         }
 
@@ -69,10 +61,10 @@ namespace ILCompiler.DependencyAnalysis
         {
             var entryCountReservation = builder.ReserveInt();
             int entryCount = 0;
+            int interfaceIndex = 0;
             
-            for (int interfaceIndex = 0; interfaceIndex < _type.RuntimeInterfaces.Length; interfaceIndex++)
+            foreach (var interfaceType in _type.NormalizedRuntimeInterfaces())
             {
-                var interfaceType = _type.RuntimeInterfaces[interfaceIndex];
                 Debug.Assert(interfaceType.IsInterface);
 
                 IReadOnlyList<MethodDesc> virtualSlots = factory.VTable(interfaceType).Slots;
@@ -88,10 +80,12 @@ namespace ILCompiler.DependencyAnalysis
                     {
                         builder.EmitShort(checked((short)interfaceIndex));
                         builder.EmitShort(checked((short)(interfaceMethodSlot + (interfaceType.HasGenericDictionarySlot() ? 1 : 0))));
-                        builder.EmitShort(checked((short)VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, implMethod)));
+                        builder.EmitShort(checked((short)VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, implMethod.Normalize())));
                         entryCount++;
                     }
                 }
+
+                interfaceIndex++;
             }
 
             builder.EmitInt(entryCountReservation, entryCount);
@@ -109,6 +103,20 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             return objData.ToObjectData();
+        }
+
+        protected internal override int ClassCode => 848664602;
+
+        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        {
+            return comparer.Compare(_type, ((InterfaceDispatchMapNode)other)._type);
+        }
+
+        int ISortableSymbolNode.ClassCode => ClassCode;
+
+        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        {
+            return CompareToImpl((ObjectNode)other, comparer);
         }
     }
 }

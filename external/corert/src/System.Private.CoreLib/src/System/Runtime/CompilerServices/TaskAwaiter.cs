@@ -54,7 +54,7 @@ namespace System.Runtime.CompilerServices
 {
     /// <summary>Provides an awaiter for awaiting a <see cref="System.Threading.Tasks.Task"/>.</summary>
     /// <remarks>This type is intended for compiler use only.</remarks>
-    public struct TaskAwaiter : ICriticalNotifyCompletion
+    public readonly struct TaskAwaiter : ICriticalNotifyCompletion
     {
         /// <summary>The task being awaited.</summary>
         private readonly Task m_task;
@@ -99,6 +99,7 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
         /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
+        [StackTraceHidden] 
         public void GetResult()
         {
             ValidateEnd(m_task);
@@ -109,6 +110,7 @@ namespace System.Runtime.CompilerServices
         /// prior to completing the await.
         /// </summary>
         /// <param name="task">The awaited task.</param>
+        [StackTraceHidden] 
         internal static void ValidateEnd(Task task)
         {
             // Fast checks that can be inlined.
@@ -125,6 +127,7 @@ namespace System.Runtime.CompilerServices
         /// the await on the task, and throws an exception if the task did not complete successfully.
         /// </summary>
         /// <param name="task">The awaited task.</param>
+        [StackTraceHidden]
         private static void HandleNonSuccessAndDebuggerNotification(Task task)
         {
             // NOTE: The JIT refuses to inline ValidateEnd when it contains the contents
@@ -148,6 +151,7 @@ namespace System.Runtime.CompilerServices
         }
 
         /// <summary>Throws an exception to handle a task that completed in a state other than RanToCompletion.</summary>
+        [StackTraceHidden]
         private static void ThrowForNonSuccess(Task task)
         {
             Debug.Assert(task.IsCompleted, "Task must have been completed by now.");
@@ -165,7 +169,7 @@ namespace System.Runtime.CompilerServices
                     if (oceEdi != null)
                     {
                         oceEdi.Throw();
-                        Debug.Assert(false, "Throw() should have thrown");
+                        Debug.Fail("Throw() should have thrown");
                     }
                     throw new TaskCanceledException(task);
 
@@ -176,12 +180,12 @@ namespace System.Runtime.CompilerServices
                     if (edis.Count > 0)
                     {
                         edis[0].Throw();
-                        Debug.Assert(false, "Throw() should have thrown");
+                        Debug.Fail("Throw() should have thrown");
                         break; // Necessary to compile: non-reachable, but compiler can't determine that
                     }
                     else
                     {
-                        Debug.Assert(false, "There should be exceptions if we're Faulted.");
+                        Debug.Fail("There should be exceptions if we're Faulted.");
                         throw task.Exception;
                     }
             }
@@ -253,7 +257,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Provides an awaiter for awaiting a <see cref="System.Threading.Tasks.Task{TResult}"/>.</summary>
     /// <remarks>This type is intended for compiler use only.</remarks>
-    public struct TaskAwaiter<TResult> : ICriticalNotifyCompletion
+    public readonly struct TaskAwaiter<TResult> : ICriticalNotifyCompletion
     {
         /// <summary>The task being awaited.</summary>
         private readonly Task<TResult> m_task;
@@ -299,6 +303,7 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
         /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
+        [StackTraceHidden]
         public TResult GetResult()
         {
             TaskAwaiter.ValidateEnd(m_task);
@@ -308,7 +313,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Provides an awaitable object that allows for configured awaits on <see cref="System.Threading.Tasks.Task"/>.</summary>
     /// <remarks>This type is intended for compiler use only.</remarks>
-    public struct ConfiguredTaskAwaitable
+    public readonly struct ConfiguredTaskAwaitable
     {
         /// <summary>The task being awaited.</summary>
         private readonly ConfiguredTaskAwaitable.ConfiguredTaskAwaiter m_configuredTaskAwaiter;
@@ -333,7 +338,7 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Provides an awaiter for a <see cref="ConfiguredTaskAwaitable"/>.</summary>
         /// <remarks>This type is intended for compiler use only.</remarks>
-        public struct ConfiguredTaskAwaiter : ICriticalNotifyCompletion
+        public readonly struct ConfiguredTaskAwaiter : ICriticalNotifyCompletion
         {
             /// <summary>The task being awaited.</summary>
             private readonly Task m_task;
@@ -386,6 +391,7 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
             /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
+            [StackTraceHidden]
             public void GetResult()
             {
                 TaskAwaiter.ValidateEnd(m_task);
@@ -395,7 +401,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Provides an awaitable object that allows for configured awaits on <see cref="System.Threading.Tasks.Task{TResult}"/>.</summary>
     /// <remarks>This type is intended for compiler use only.</remarks>
-    public struct ConfiguredTaskAwaitable<TResult>
+    public readonly struct ConfiguredTaskAwaitable<TResult>
     {
         /// <summary>The underlying awaitable on whose logic this awaitable relies.</summary>
         private readonly ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter m_configuredTaskAwaiter;
@@ -419,7 +425,7 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Provides an awaiter for a <see cref="ConfiguredTaskAwaitable{TResult}"/>.</summary>
         /// <remarks>This type is intended for compiler use only.</remarks>
-        public struct ConfiguredTaskAwaiter : ICriticalNotifyCompletion
+        public readonly struct ConfiguredTaskAwaiter : ICriticalNotifyCompletion
         {
             /// <summary>The task being awaited.</summary>
             private readonly Task<TResult> m_task;
@@ -471,6 +477,7 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
             /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
+            [StackTraceHidden]
             public TResult GetResult()
             {
                 TaskAwaiter.ValidateEnd(m_task);

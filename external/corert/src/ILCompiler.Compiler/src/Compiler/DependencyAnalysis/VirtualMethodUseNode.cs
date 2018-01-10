@@ -27,7 +27,11 @@ namespace ILCompiler.DependencyAnalysis
 
         public VirtualMethodUseNode(MethodDesc decl)
         {
+            Debug.Assert(!decl.IsRuntimeDeterminedExactMethod);
             Debug.Assert(decl.IsVirtual);
+
+            Debug.Assert(!decl.IsCanonicalMethod(CanonicalFormKind.Any) ||
+                decl.GetCanonMethodTarget(CanonicalFormKind.Specific) == decl);
 
             // Virtual method use always represents the slot defining method of the virtual.
             // Places that might see virtual methods being used through an override need to normalize
@@ -67,6 +71,8 @@ namespace ILCompiler.DependencyAnalysis
 
             dependencies.Add(new DependencyListEntry(factory.VTable(_decl.OwningType), "VTable of a VirtualMethodUse"));
 
+            factory.MetadataManager.GetDependenciesDueToVirtualMethodReflectability(ref dependencies, factory, _decl);
+
             return dependencies;
         }
 
@@ -79,7 +85,7 @@ namespace ILCompiler.DependencyAnalysis
             DefType universalCanonicalOwningType = (DefType)_decl.OwningType.ConvertToCanonForm(CanonicalFormKind.Universal);
             Debug.Assert(universalCanonicalOwningType.IsCanonicalSubtype(CanonicalFormKind.Universal));
 
-            if (!factory.CompilationModuleGroup.ShouldProduceFullVTable(universalCanonicalOwningType))
+            if (!factory.VTable(universalCanonicalOwningType).HasFixedSlots)
             {
                 // This code ensures that in cases where we don't structurally force all universal canonical instantiations
                 // to have full vtables, that we ensure that all vtables are equivalently shaped between universal and non-universal types

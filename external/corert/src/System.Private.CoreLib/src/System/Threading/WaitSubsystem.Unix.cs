@@ -171,7 +171,7 @@ namespace System.Threading
             /// by the thread. See <see cref="ThreadWaitInfo.LockedMutexesHead"/>. So, acquire the lock only after all
             /// possibilities for exceptions have been exhausted.
             ThreadWaitInfo waitInfo = RuntimeThread.CurrentThread.WaitInfo;
-            bool acquiredLock = waitableObject.Wait(waitInfo, 0);
+            bool acquiredLock = waitableObject.Wait(waitInfo, timeoutMilliseconds: 0, interruptible: false, prioritize: false);
             Debug.Assert(acquiredLock);
             return safeWaitHandle;
         }
@@ -183,7 +183,13 @@ namespace System.Threading
 
         public static void SetEvent(IntPtr handle)
         {
-            WaitableObject waitableObject = HandleManager.FromHandle(handle);
+            SetEvent(HandleManager.FromHandle(handle));
+        }
+
+        public static void SetEvent(WaitableObject waitableObject)
+        {
+            Debug.Assert(waitableObject != null);
+
             s_lock.Acquire();
             try
             {
@@ -197,7 +203,13 @@ namespace System.Threading
 
         public static void ResetEvent(IntPtr handle)
         {
-            WaitableObject waitableObject = HandleManager.FromHandle(handle);
+            ResetEvent(HandleManager.FromHandle(handle));
+        }
+
+        public static void ResetEvent(WaitableObject waitableObject)
+        {
+            Debug.Assert(waitableObject != null);
+
             s_lock.Acquire();
             try
             {
@@ -212,8 +224,14 @@ namespace System.Threading
         public static int ReleaseSemaphore(IntPtr handle, int count)
         {
             Debug.Assert(count > 0);
+            return ReleaseSemaphore(HandleManager.FromHandle(handle), count);
+        }
 
-            WaitableObject waitableObject = HandleManager.FromHandle(handle);
+        public static int ReleaseSemaphore(WaitableObject waitableObject, int count)
+        {
+            Debug.Assert(waitableObject != null);
+            Debug.Assert(count > 0);
+
             s_lock.Acquire();
             try
             {
@@ -227,7 +245,13 @@ namespace System.Threading
 
         public static void ReleaseMutex(IntPtr handle)
         {
-            WaitableObject waitableObject = HandleManager.FromHandle(handle);
+            ReleaseMutex(HandleManager.FromHandle(handle));
+        }
+
+        public static void ReleaseMutex(WaitableObject waitableObject)
+        {
+            Debug.Assert(waitableObject != null);
+
             s_lock.Acquire();
             try
             {
@@ -239,45 +263,46 @@ namespace System.Threading
             }
         }
 
-        public static bool Wait(IntPtr handle, int timeoutMilliseconds)
+        public static bool Wait(IntPtr handle, int timeoutMilliseconds, bool interruptible)
         {
             Debug.Assert(timeoutMilliseconds >= -1);
+            return Wait(HandleManager.FromHandle(handle), timeoutMilliseconds, interruptible);
+        }
 
-            ThreadWaitInfo waitInfo = RuntimeThread.CurrentThread.WaitInfo;
-            if (waitInfo.CheckAndResetPendingInterrupt)
-            {
-                throw new ThreadInterruptedException();
-            }
+        public static bool Wait(
+            WaitableObject waitableObject,
+            int timeoutMilliseconds,
+            bool interruptible = true,
+            bool prioritize = false)
+        {
+            Debug.Assert(waitableObject != null);
+            Debug.Assert(timeoutMilliseconds >= -1);
 
-            return HandleManager.FromHandle(handle).Wait(waitInfo, timeoutMilliseconds);
+            return waitableObject.Wait(RuntimeThread.CurrentThread.WaitInfo, timeoutMilliseconds, interruptible, prioritize);
         }
 
         public static int Wait(
             RuntimeThread currentThread,
             SafeWaitHandle[] safeWaitHandles,
             WaitHandle[] waitHandles,
+            int numWaitHandles,
             bool waitForAll,
             int timeoutMilliseconds)
         {
             Debug.Assert(currentThread == RuntimeThread.CurrentThread);
             Debug.Assert(safeWaitHandles != null);
-            Debug.Assert(safeWaitHandles.Length >= waitHandles.Length);
-            Debug.Assert(waitHandles.Length > 0);
-            Debug.Assert(waitHandles.Length <= WaitHandle.MaxWaitHandles);
+            Debug.Assert(numWaitHandles > 0);
+            Debug.Assert(numWaitHandles <= safeWaitHandles.Length);
+            Debug.Assert(numWaitHandles <= waitHandles.Length);
+            Debug.Assert(numWaitHandles <= WaitHandle.MaxWaitHandles);
             Debug.Assert(timeoutMilliseconds >= -1);
 
             ThreadWaitInfo waitInfo = currentThread.WaitInfo;
-            if (waitInfo.CheckAndResetPendingInterrupt)
-            {
-                throw new ThreadInterruptedException();
-            }
-
-            int count = waitHandles.Length;
-            WaitableObject[] waitableObjects = waitInfo.GetWaitedObjectArray(count);
+            WaitableObject[] waitableObjects = waitInfo.GetWaitedObjectArray(numWaitHandles);
             bool success = false;
             try
             {
-                for (int i = 0; i < count; ++i)
+                for (int i = 0; i < numWaitHandles; ++i)
                 {
                     Debug.Assert(safeWaitHandles[i] != null);
                     WaitableObject waitableObject = HandleManager.FromHandle(safeWaitHandles[i].DangerousGetHandle());
@@ -304,20 +329,55 @@ namespace System.Threading
             {
                 if (!success)
                 {
-                    for (int i = 0; i < count; ++i)
+                    for (int i = 0; i < numWaitHandles; ++i)
                     {
                         waitableObjects[i] = null;
                     }
                 }
             }
 
-            if (count == 1)
+            if (numWaitHandles == 1)
             {
                 WaitableObject waitableObject = waitableObjects[0];
                 waitableObjects[0] = null;
-                return waitableObject.Wait(waitInfo, timeoutMilliseconds) ? 0 : WaitHandle.WaitTimeout;
+                return
+                    waitableObject.Wait(waitInfo, timeoutMilliseconds, interruptible: true, prioritize : false)
+                        ? 0
+                        : WaitHandle.WaitTimeout;
             }
 
+            return
+                WaitableObject.Wait(
+                    waitableObjects,
+                    numWaitHandles,
+                    waitForAll,
+                    waitInfo,
+                    timeoutMilliseconds,
+                    interruptible: true,
+                    prioritize: false,
+                    waitHandlesForAbandon: waitHandles);
+        }
+
+        public static int Wait(
+            RuntimeThread currentThread,
+            WaitableObject waitableObject0,
+            WaitableObject waitableObject1,
+            bool waitForAll,
+            int timeoutMilliseconds,
+            bool interruptible = true,
+            bool prioritize = false)
+        {
+            Debug.Assert(currentThread == RuntimeThread.CurrentThread);
+            Debug.Assert(waitableObject0 != null);
+            Debug.Assert(waitableObject1 != null);
+            Debug.Assert(waitableObject1 != waitableObject0);
+            Debug.Assert(timeoutMilliseconds >= -1);
+
+            ThreadWaitInfo waitInfo = currentThread.WaitInfo;
+            int count = 2;
+            WaitableObject[] waitableObjects = waitInfo.GetWaitedObjectArray(count);
+            waitableObjects[0] = waitableObject0;
+            waitableObjects[1] = waitableObject1;
             return
                 WaitableObject.Wait(
                     waitableObjects,
@@ -325,31 +385,50 @@ namespace System.Threading
                     waitForAll,
                     waitInfo,
                     timeoutMilliseconds,
-                    waitHandles);
+                    interruptible,
+                    prioritize,
+                    waitHandlesForAbandon: null);
         }
 
-        public static bool SignalAndWait(IntPtr handleToSignal, IntPtr handleToWaitOn, int timeoutMilliseconds)
+        public static bool SignalAndWait(
+            IntPtr handleToSignal,
+            IntPtr handleToWaitOn,
+            int timeoutMilliseconds)
         {
             Debug.Assert(timeoutMilliseconds >= -1);
 
+            return
+                SignalAndWait(
+                    HandleManager.FromHandle(handleToSignal),
+                    HandleManager.FromHandle(handleToWaitOn),
+                    timeoutMilliseconds);
+        }
+
+        public static bool SignalAndWait(
+            WaitableObject waitableObjectToSignal,
+            WaitableObject waitableObjectToWaitOn,
+            int timeoutMilliseconds,
+            bool interruptible = true,
+            bool prioritize = false)
+        {
+            Debug.Assert(waitableObjectToSignal != null);
+            Debug.Assert(waitableObjectToWaitOn != null);
+            Debug.Assert(timeoutMilliseconds >= -1);
+
             ThreadWaitInfo waitInfo = RuntimeThread.CurrentThread.WaitInfo;
-
-            // A pending interrupt does not signal the specified handle
-            if (waitInfo.CheckAndResetPendingInterrupt)
-            {
-                throw new ThreadInterruptedException();
-            }
-
-            WaitableObject waitableObjectToSignal = HandleManager.FromHandle(handleToSignal);
-            WaitableObject waitableObjectToWaitOn = HandleManager.FromHandle(handleToWaitOn);
-
             bool waitCalled = false;
             s_lock.Acquire();
             try
             {
+                // A pending interrupt does not signal the specified handle
+                if (interruptible && waitInfo.CheckAndResetPendingInterrupt)
+                {
+                    throw new ThreadInterruptedException();
+                }
+
                 waitableObjectToSignal.Signal(1);
                 waitCalled = true;
-                return waitableObjectToWaitOn.Wait_Locked(waitInfo, timeoutMilliseconds);
+                return waitableObjectToWaitOn.Wait_Locked(waitInfo, timeoutMilliseconds, interruptible, prioritize);
             }
             finally
             {
@@ -370,17 +449,9 @@ namespace System.Threading
             ThreadWaitInfo.UninterruptibleSleep0();
         }
 
-        public static void Sleep(int timeoutMilliseconds)
+        public static void Sleep(int timeoutMilliseconds, bool interruptible = true)
         {
-            Debug.Assert(timeoutMilliseconds >= -1);
-
-            ThreadWaitInfo waitInfo = RuntimeThread.CurrentThread.WaitInfo;
-            if (waitInfo.CheckAndResetPendingInterrupt)
-            {
-                throw new ThreadInterruptedException();
-            }
-
-            waitInfo.Sleep(timeoutMilliseconds);
+            ThreadWaitInfo.Sleep(timeoutMilliseconds, interruptible);
         }
 
         public static void Interrupt(RuntimeThread thread)
@@ -398,7 +469,6 @@ namespace System.Threading
             }
         }
 
-        // TODO: Call this
         public static void OnThreadExiting(RuntimeThread thread)
         {
             thread.WaitInfo.OnThreadExiting();

@@ -21,6 +21,7 @@ using System.Runtime.Versioning;
 using Internal.Reflection.Core.NonPortable;
 
 using Internal.Runtime;
+using Internal.Runtime.CompilerServices;
 
 namespace System
 {
@@ -34,6 +35,8 @@ namespace System
     // services to subclasses. 
 
     // PREFER: public class Object
+    [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public unsafe class Object
     {
         // CS0649: Field '{blah}' is never assigned to, and will always have its default value
@@ -42,6 +45,7 @@ namespace System
         // statement on partially typed objects. Wouldn't have to do this if we could directly declared pinned
         // locals.
         // @TODO: Consider making this EETypePtr instead of void *.
+        [NonSerialized]
         internal IntPtr m_pEEType;
 #pragma warning restore
 
@@ -73,7 +77,7 @@ namespace System
         [Intrinsic]
         public Type GetType()
         {
-            return ReflectionCoreNonPortable.GetRuntimeTypeForEEType(EETypePtr);
+            return RuntimeTypeUnifier.GetRuntimeTypeForEEType(EETypePtr);
         }
 
         public virtual String ToString()

@@ -18,7 +18,7 @@ namespace ILCompiler.DependencyAnalysis
     /// Represents a method that should be scanned by an IL scanner and its dependencies
     /// analyzed.
     /// </summary>
-    public class ScannedMethodNode : DependencyNodeCore<NodeFactory>, IMethodNode
+    public class ScannedMethodNode : DependencyNodeCore<NodeFactory>, IMethodBodyNode
     {
         private readonly MethodDesc _method;
         private DependencyList _dependencies;
@@ -62,5 +62,12 @@ namespace ILCompiler.DependencyAnalysis
         public override bool InterestingForDynamicDependencyAnalysis => false;
         public override bool HasDynamicDependencies => false;
         public override bool HasConditionalStaticDependencies => false;
+
+        int ISortableSymbolNode.ClassCode => -1381809560;
+
+        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        {
+            return comparer.Compare(Method, ((ScannedMethodNode)other).Method);
+        }
     }
 }

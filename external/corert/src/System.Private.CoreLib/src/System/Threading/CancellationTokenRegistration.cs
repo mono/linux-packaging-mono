@@ -6,7 +6,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace System.Threading
@@ -17,7 +16,7 @@ namespace System.Threading
     /// <remarks>
     /// To unregister a callback, dispose the corresponding Registration instance.
     /// </remarks>
-    public struct CancellationTokenRegistration : IEquatable<CancellationTokenRegistration>, IDisposable
+    public readonly struct CancellationTokenRegistration : IEquatable<CancellationTokenRegistration>, IDisposable
     {
         private readonly CancellationCallbackInfo m_callbackInfo;
         private readonly SparselyPopulatedArrayAddInfo<CancellationCallbackInfo> m_registrationInfo;
@@ -29,6 +28,13 @@ namespace System.Threading
             m_callbackInfo = callbackInfo;
             m_registrationInfo = registrationInfo;
         }
+
+        /// <summary>
+        /// Gets the <see cref="CancellationToken"/> with which this registration is associated.  If the
+        /// registration isn't associated with a token (such as after the registration has been disposed),
+        /// this will return a default token.
+        /// </summary>
+        public CancellationToken Token => m_callbackInfo?.CancellationTokenSource.Token ?? default(CancellationToken);
 
         /// <summary>
         /// Attempts to deregister the item. If it's already being run, this may fail.

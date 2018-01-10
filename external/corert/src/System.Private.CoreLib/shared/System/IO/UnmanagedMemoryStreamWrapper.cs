@@ -14,7 +14,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -82,7 +81,6 @@ namespace System.IO
             {
                 return (int)_unmanagedStream.Capacity;
             }
-            [SuppressMessage("Microsoft.Contracts", "CC1055")]  // Skip extra error checking to avoid *potential* AppCompat problems.
             set
             {
                 throw new IOException(SR.IO_FixedCapacity);
@@ -114,6 +112,11 @@ namespace System.IO
             return _unmanagedStream.Read(buffer, offset, count);
         }
 
+        public override int Read(Span<byte> destination)
+        {
+            return _unmanagedStream.Read(destination);
+        }
+
         public override int ReadByte()
         {
             return _unmanagedStream.ReadByte();
@@ -136,6 +139,11 @@ namespace System.IO
             _unmanagedStream.Write(buffer, offset, count);
         }
 
+        public override void Write(ReadOnlySpan<byte> source)
+        {
+            _unmanagedStream.Write(source);
+        }
+
         public override void WriteByte(byte value)
         {
             _unmanagedStream.WriteByte(value);
@@ -146,7 +154,6 @@ namespace System.IO
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream), SR.ArgumentNull_Stream);
-            Contract.EndContractBlock();
 
             byte[] buffer = ToArray();
 
@@ -183,7 +190,6 @@ namespace System.IO
             if (!destination.CanWrite)
                 throw new NotSupportedException(SR.NotSupported_UnwritableStream);
 
-            Contract.EndContractBlock();
 
             return _unmanagedStream.CopyToAsync(destination, bufferSize, cancellationToken);
         }
@@ -200,10 +206,20 @@ namespace System.IO
             return _unmanagedStream.ReadAsync(buffer, offset, count, cancellationToken);
         }
 
+        public override ValueTask<int> ReadAsync(Memory<byte> destination, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _unmanagedStream.ReadAsync(destination, cancellationToken);
+        }
+
 
         public override Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
         {
             return _unmanagedStream.WriteAsync(buffer, offset, count, cancellationToken);
+        }
+
+        public override Task WriteAsync(ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return _unmanagedStream.WriteAsync(source, cancellationToken);
         }
     }  // class UnmanagedMemoryStreamWrapper
 }  // namespace

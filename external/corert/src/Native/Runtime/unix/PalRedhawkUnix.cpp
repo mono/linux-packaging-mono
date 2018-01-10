@@ -120,6 +120,12 @@ typedef union _LARGE_INTEGER {
     int64_t QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
+struct FILETIME
+{
+    uint32_t dwLowDateTime;
+    uint32_t dwHighDateTime;
+};
+
 typedef void * LPSECURITY_ATTRIBUTES;
 typedef void* PCONTEXT;
 typedef void* PEXCEPTION_RECORD;
@@ -538,6 +544,7 @@ REDHAWK_PALEXPORT unsigned int REDHAWK_PALAPI PalGetCurrentProcessorNumber()
 #endif //HAVE_SCHED_GETCPU
 }
 
+#if !defined(USE_PORTABLE_HELPERS) && !defined(FEATURE_RX_THUNKS)
 REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalAllocateThunksFromTemplate(HANDLE hTemplateModule, uint32_t templateRva, size_t templateSize, void** newThunksOut)
 {
     PORTABILITY_ASSERT("UNIXTODO: Implement this function");
@@ -547,9 +554,10 @@ REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalFreeThunksFromTemplate(void *pBa
 {
     PORTABILITY_ASSERT("UNIXTODO: Implement this function");
 }
+#endif // !USE_PORTABLE_HELPERS && !FEATURE_RX_THUNKS
 
 REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalMarkThunksAsValidCallTargets(
-    void *virtualAddress, 
+    void *virtualAddress,
     int thunkSize,
     int thunksPerBlock,
     int thunkBlockSize,
@@ -625,6 +633,10 @@ typedef UInt32(__stdcall *BackgroundCallback)(_In_opt_ void* pCallbackContext);
 
 REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalStartBackgroundWork(_In_ BackgroundCallback callback, _In_opt_ void* pCallbackContext, UInt32_BOOL highPriority)
 {
+#ifdef _WASM_
+    // No threads, so we can't start one
+    ASSERT(false);
+#endif // _WASM_
     pthread_attr_t attrs;
 
     int st = pthread_attr_init(&attrs);
@@ -665,7 +677,12 @@ REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalStartBackgroundGCThread(_In_ Background
 
 REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalStartFinalizerThread(_In_ BackgroundCallback callback, _In_opt_ void* pCallbackContext)
 {
+#ifdef _WASM_
+    // WASMTODO: No threads so we can't start the finalizer thread
+    return true;
+#else // _WASM_
     return PalStartBackgroundWork(callback, pCallbackContext, UInt32_TRUE);
+#endif // _WASM_
 }
 
 // Returns a 64-bit tick count with a millisecond resolution. It tries its best
@@ -723,12 +740,17 @@ REDHAWK_PALEXPORT UInt32 REDHAWK_PALAPI PalGetTickCount()
 REDHAWK_PALEXPORT HANDLE REDHAWK_PALAPI PalGetModuleHandleFromPointer(_In_ void* pointer)
 {
     HANDLE moduleHandle = NULL;
+
+    // Emscripten's implementation of dladdr corrupts memory,
+    // but always returns 0 for the module handle, so just skip the call
+#if !defined(_WASM_)
     Dl_info info;
     int st = dladdr(pointer, &info);
     if (st != 0)
     {
         moduleHandle = info.dli_fbase;
     }
+#endif //!defined(_WASM_)
 
     return moduleHandle;
 }
@@ -794,6 +816,11 @@ bool QueryCacheSize()
             }
         }
     }
+
+#elif defined(_WASM_)
+    // Processor cache size not available on WebAssembly, but we can't start up without it, so pick the same default as the GC does
+    success = true;
+    g_cbLargestOnDieCache = 256 * 1024;
 #else
 #error Do not know how to get cache size on this platform
 #endif // __linux__
@@ -1015,12 +1042,6 @@ extern "C" void LeaveCriticalSection(CRITICAL_SECTION * lpCriticalSection)
     pthread_mutex_unlock(&lpCriticalSection->mutex);
 }
 
-extern "C" unsigned __int64  __readgsqword(unsigned long Offset)
-{
-    // UNIXTODO: The TLS stuff needs to be better abstracted.
-    return 0;
-}
-
 extern "C" UInt32_BOOL IsDebuggerPresent()
 {
     // UNIXTODO: Implement this function
@@ -1079,24 +1100,6 @@ extern "C" UInt16 RtlCaptureStackBackTrace(UInt32 arg1, UInt32 arg2, void* arg3,
     return 0;
 }
 
-extern "C" HANDLE GetProcessHeap()
-{
-    // UNIXTODO: Consider using some special value?
-    return (HANDLE)1;
-}
-
-extern "C" void* HeapAlloc(HANDLE heap, UInt32 flags, UIntNative bytes)
-{
-    return malloc(bytes);
-}
-
-extern "C" UInt32_BOOL HeapFree(HANDLE heap, UInt32 flags, void * mem)
-{
-    free(mem);
-
-    return UInt32_TRUE;
-}
-
 typedef UInt32 (__stdcall *HijackCallback)(HANDLE hThread, _In_ PAL_LIMITED_CONTEXT* pThreadContext, _In_opt_ void* pCallbackContext);
 
 REDHAWK_PALEXPORT UInt32 REDHAWK_PALAPI PalHijack(HANDLE hThread, _In_ HijackCallback callback, _In_opt_ void* pCallbackContext)
@@ -1124,6 +1127,11 @@ REDHAWK_PALEXPORT uint32_t REDHAWK_PALAPI PalCompatibleWaitAny(UInt32_BOOL alert
     return WaitForSingleObjectEx(pHandles[0], timeout, alertable);
 }
 
+#ifndef __has_builtin
+#define __has_builtin(x) 0
+#endif
+
+#if !__has_builtin(_mm_pause)
 extern "C" void _mm_pause()
 // Defined for implementing PalYieldProcessor in PalRedhawk.h
 {
@@ -1131,6 +1139,7 @@ extern "C" void _mm_pause()
   __asm__ volatile ("pause");
 #endif
 }
+#endif
 
 extern "C" Int32 _stricmp(const char *string1, const char *string2)
 {
@@ -1217,8 +1226,6 @@ REDHAWK_PALEXPORT bool PalGetMaximumStackBounds(_Out_ void** ppStackLowOut, _Out
     return true;
 }
 
-extern "C" int main(int argc, char** argv);
-
 // retrieves the full path to the specified module, if moduleBase is NULL retreieves the full path to the
 // executable module of the current process.
 //
@@ -1226,13 +1233,12 @@ extern "C" int main(int argc, char** argv);
 //
 REDHAWK_PALEXPORT Int32 PalGetModuleFileName(_Out_ const TCHAR** pModuleNameOut, HANDLE moduleBase)
 {
-    if (moduleBase == NULL)
-    {
-        // Get an address of the "main" function, which causes the dladdr to return
-        // path of the main executable
-        moduleBase = (HANDLE)&main;
-    }
-
+#if defined(_WASM_)
+    // Emscripten's implementation of dladdr corrupts memory and doesn't have the real name, so make up a name instead
+    const TCHAR* wasmModuleName = "WebAssemblyModule";
+    *pModuleNameOut = wasmModuleName;
+    return strlen(wasmModuleName);
+#else // _WASM_
     Dl_info dl;
     if (dladdr(moduleBase, &dl) == 0)
     {
@@ -1242,6 +1248,7 @@ REDHAWK_PALEXPORT Int32 PalGetModuleFileName(_Out_ const TCHAR** pModuleNameOut,
 
     *pModuleNameOut = dl.dli_fname;
     return strlen(dl.dli_fname);
+#endif // defined(_WASM_)
 }
 
 GCSystemInfo g_SystemInfo;
@@ -1328,6 +1335,21 @@ extern "C" void FlushProcessWriteBuffers()
 
     status = pthread_mutex_unlock(&g_flushProcessWriteBuffersMutex);
     FATAL_ASSERT(status == 0, "Failed to unlock the flushProcessWriteBuffersMutex lock");
+}
+
+static const int64_t SECS_BETWEEN_1601_AND_1970_EPOCHS = 11644473600LL;
+static const int64_t SECS_TO_100NS = 10000000; /* 10^7 */
+
+extern "C" void GetSystemTimeAsFileTime(FILETIME *lpSystemTimeAsFileTime)
+{
+    struct timeval time = { 0 };
+    gettimeofday(&time, NULL);
+
+    int64_t result = ((int64_t)time.tv_sec + SECS_BETWEEN_1601_AND_1970_EPOCHS) * SECS_TO_100NS +
+        (time.tv_usec * 10);
+
+    lpSystemTimeAsFileTime->dwLowDateTime = (uint32_t)result;
+    lpSystemTimeAsFileTime->dwHighDateTime = (uint32_t)(result >> 32);
 }
 
 extern "C" UInt32_BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
@@ -1534,7 +1556,12 @@ bool GCToOSInterface::VirtualCommit(void* address, size_t size)
 //  true if it has succeeded, false if it has failed
 bool GCToOSInterface::VirtualDecommit(void* address, size_t size)
 {
-    return mprotect(address, size, PROT_NONE) == 0;
+    // TODO: This can fail, however the GC does not handle the failure gracefully
+    // Explicitly calling mmap instead of mprotect here makes it
+    // that much more clear to the operating system that we no
+    // longer need these pages. Also, GC depends on re-commited pages to
+    // be zeroed-out.
+    return mmap(address, size, PROT_NONE, MAP_FIXED | MAP_ANON | MAP_PRIVATE, -1, 0) != NULL;
 }
 
 // Reset virtual memory range. Indicates that data in the memory range specified by address and size is no

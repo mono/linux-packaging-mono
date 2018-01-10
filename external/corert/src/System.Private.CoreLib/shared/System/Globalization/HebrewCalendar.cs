@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace System.Globalization
 {
@@ -536,9 +535,7 @@ namespace System.Globalization
             //
             //  Save the Gregorian date values.
             //
-            gregorianYear = time.Year;
-            gregorianMonth = time.Month;
-            gregorianDay = time.Day;
+            time.GetDatePart(out gregorianYear, out gregorianMonth, out gregorianDay);
 
             __DateBuffer lunarDate = new __DateBuffer();    // lunar month and day for Jan 1
 
@@ -1097,7 +1094,6 @@ namespace System.Globalization
                 throw new ArgumentOutOfRangeException(nameof(year),
                     SR.ArgumentOutOfRange_NeedNonNegNum);
             }
-            Contract.EndContractBlock();
 
             if (year < 100)
             {

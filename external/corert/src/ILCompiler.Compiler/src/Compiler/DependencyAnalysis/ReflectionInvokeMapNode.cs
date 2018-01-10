@@ -44,9 +44,17 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectNodeSection Section => _externalReferences.Section;
 
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
+
         public override bool StaticDependenciesAreComputed => true;
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
+
+        private bool MethodRequiresInstArg(MethodDesc method, bool isUnboxingStub)
+        {
+            // Similar to RequiresInstArg, but will do the right thing for instantiating unboxing stubs (canonical non-generic instance methods on valuetypes)
+            return method.IsSharedByGenericInstantiations && (method.HasInstantiation || method.Signature.IsStatic || (method.ImplementationType.IsValueType && !isUnboxingStub));
+        }
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -68,20 +76,17 @@ namespace ILCompiler.DependencyAnalysis
             {
                 MethodDesc method = mappingEntry.Entity;
 
-                // The current format requires us to have an EEType for the owning type. We might want to lift this.
-                if (!factory.MetadataManager.TypeGeneratesEEType(method.OwningType))
+                if (!factory.MetadataManager.ShouldMethodBeInInvokeMap(method))
                     continue;
 
-                // We have a method body, we have a metadata token, but we can't get an invoke stub. Bail.
-                if (!factory.MetadataManager.IsReflectionInvokable(method))
-                    continue;
+                bool useUnboxingStub = method.OwningType.IsValueType && !method.Signature.IsStatic;
 
                 InvokeTableFlags flags = 0;
 
                 if (method.HasInstantiation)
                     flags |= InvokeTableFlags.IsGenericMethod;
 
-                if (method.GetCanonMethodTarget(CanonicalFormKind.Specific).RequiresInstArg())
+                if (MethodRequiresInstArg(method.GetCanonMethodTarget(CanonicalFormKind.Specific), useUnboxingStub))
                     flags |= InvokeTableFlags.RequiresInstArg;
 
                 if (method.IsDefaultConstructor)
@@ -130,7 +135,6 @@ namespace ILCompiler.DependencyAnalysis
 
                 if ((flags & InvokeTableFlags.HasEntrypoint) != 0)
                 {
-                    bool useUnboxingStub = method.OwningType.IsValueType && !method.Signature.IsStatic;
                     vertex = writer.GetTuple(vertex,
                         writer.GetUnsignedConstant(_externalReferences.GetIndex(
                             factory.MethodEntrypoint(method.GetCanonMethodTarget(CanonicalFormKind.Specific), useUnboxingStub))));
@@ -185,5 +189,8 @@ namespace ILCompiler.DependencyAnalysis
 
             return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.ReflectionInvokeMapNode;
     }
 }

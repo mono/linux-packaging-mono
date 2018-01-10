@@ -41,7 +41,9 @@ namespace ILCompiler
                 if (!type.HasInstantiation)
                 {
                     RootMethods(type, "Library module method", rootProvider);
-                    rootProvider.RootStaticBasesForType(type, "Library module type statics");
+                    rootProvider.RootThreadStaticBaseForType(type, "Library module type statics");
+                    rootProvider.RootGCStaticBaseForType(type, "Library module type statics");
+                    rootProvider.RootNonGCStaticBaseForType(type, "Library module type statics");
                 }
             }
         }
@@ -83,6 +85,10 @@ namespace ILCompiler
         public static void CheckCanGenerateMethod(MethodDesc method)
         {
             MethodSignature signature = method.Signature;
+
+            // Vararg methods are not supported in .NET Core
+            if ((signature.Flags & MethodSignatureFlags.UnmanagedCallingConventionMask) == MethodSignatureFlags.CallingConventionVarargs)
+                ThrowHelper.ThrowBadImageFormatException();
 
             CheckTypeCanBeUsedInSignature(signature.ReturnType);
 

@@ -7,10 +7,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.Runtime.CompilerServices
 {
-    // This attribute is only for use in a Class Library 
-    [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field)]
-    internal sealed class IntrinsicAttribute : Attribute { }
-
 #if PROJECTN
     [AttributeUsage(AttributeTargets.Field)]
     internal sealed class BoundAttribute : Attribute { }
@@ -18,7 +14,4 @@ namespace System.Runtime.CompilerServices
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
     public sealed class BoundsCheckingAttribute : Attribute { }
 #endif
-
-    [AttributeUsage(AttributeTargets.Struct)]
-    public sealed class StackOnlyAttribute : Attribute { }
 }

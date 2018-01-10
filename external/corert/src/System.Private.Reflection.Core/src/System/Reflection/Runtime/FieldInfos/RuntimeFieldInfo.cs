@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
 using System.Reflection.Runtime.General;
@@ -25,9 +25,8 @@ namespace System.Reflection.Runtime.FieldInfos
     //
     // The Runtime's implementation of fields.
     //
-    [Serializable]
     [DebuggerDisplay("{_debugName}")]
-    internal abstract partial class RuntimeFieldInfo : FieldInfo, ISerializable, ITraceableTypeMember
+    internal abstract partial class RuntimeFieldInfo : FieldInfo, ITraceableTypeMember
     {
         //
         // contextType    - the type that supplies the type context (i.e. substitutions for generic parameters.) Though you
@@ -52,6 +51,27 @@ namespace System.Reflection.Runtime.FieldInfos
             _reflectedType = reflectedType;
         }
 
+        public sealed override IEnumerable<CustomAttributeData> CustomAttributes
+        {
+            get
+            {
+#if ENABLE_REFLECTION_TRACE
+                if (ReflectionTrace.Enabled)
+                    ReflectionTrace.FieldInfo_CustomAttributes(this);
+#endif
+
+                foreach (CustomAttributeData cad in TrueCustomAttributes)
+                    yield return cad;
+
+                if (DeclaringType.IsExplicitLayout)
+                {
+                    int offset = ExplicitLayoutFieldOffsetData;
+                    CustomAttributeTypedArgument offsetArgument = new CustomAttributeTypedArgument(typeof(int), offset);
+                    yield return new RuntimePseudoCustomAttributeData(typeof(FieldOffsetAttribute), new CustomAttributeTypedArgument[] { offsetArgument }, null);
+                }
+            }
+        }
+
         public sealed override Type DeclaringType
         {
             get
@@ -71,11 +91,6 @@ namespace System.Reflection.Runtime.FieldInfos
             {
                 return this.FieldRuntimeType;
             }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
         }
 
         public abstract override Type[] GetOptionalCustomModifiers();
@@ -176,8 +191,19 @@ namespace System.Reflection.Runtime.FieldInfos
             }
         }
 
+        public sealed override object GetRawConstantValue()
+        {
+            if (!IsLiteral)
+                throw new InvalidOperationException();
+
+            object defaultValue;
+            if (!GetDefaultValueIfAvailable(raw: true, defaultValue: out defaultValue))
+                throw new BadImageFormatException(); // Field marked literal but has no default value.
+
+            return defaultValue;
+        }
+
         // Types that derive from RuntimeFieldInfo must implement the following public surface area members
-        public abstract override IEnumerable<CustomAttributeData> CustomAttributes { get; }
         public abstract override FieldAttributes Attributes { get; }
         public abstract override int MetadataToken { get; }
         public abstract override String ToString();
@@ -188,7 +214,7 @@ namespace System.Reflection.Runtime.FieldInfos
         /// <summary>
         /// Get the default value if exists for a field by parsing metadata. Return false if there is no default value.
         /// </summary>
-        protected abstract bool TryGetDefaultValue(out object defaultValue);
+        protected abstract bool GetDefaultValueIfAvailable(bool raw, out object defaultValue);
 
         /// <summary>
         /// Return a FieldAccessor object for accessing the value of a non-literal field. May rely on metadata to create correct accessor.
@@ -208,7 +234,7 @@ namespace System.Reflection.Runtime.FieldInfos
                         // For desktop compat, we return the metadata literal as is and do not attempt to convert or validate against the Field type.
 
                         Object defaultValue;
-                        if (!TryGetDefaultValue(out defaultValue))
+                        if (!GetDefaultValueIfAvailable(raw: false, defaultValue: out defaultValue))
                         {
                             throw new BadImageFormatException(); // Field marked literal but has no default value.
                         }
@@ -252,6 +278,9 @@ namespace System.Reflection.Runtime.FieldInfos
         /// Return the DefiningTypeInfo as a RuntimeTypeInfo (instead of as a format specific type info)
         /// </summary>
         protected abstract RuntimeTypeInfo DefiningType { get; }
+
+        protected abstract IEnumerable<CustomAttributeData> TrueCustomAttributes { get; }
+        protected abstract int ExplicitLayoutFieldOffsetData { get; }
 
         /// <summary>
         /// Returns the field offset (asserts and throws if not an instance field). Does not include the size of the object header.

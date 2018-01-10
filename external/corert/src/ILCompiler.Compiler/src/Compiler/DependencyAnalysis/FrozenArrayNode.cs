@@ -45,14 +45,14 @@ namespace ILCompiler.DependencyAnalysis
 
         private IEETypeNode GetEETypeNode(NodeFactory factory)
         {
-            var fieldType = _preInitFieldInfo.Field.FieldType;
+            var fieldType = _preInitFieldInfo.Type;
             var node = factory.ConstructedTypeSymbol(fieldType);
             Debug.Assert(!node.RepresentsIndirectionCell);  // Array are always local
             return node;
         }
 
         public override void EncodeData(ref ObjectDataBuilder dataBuilder, NodeFactory factory, bool relocsOnly)
-        {           
+        {
             // Sync Block
             dataBuilder.EmitZeroPointer();
 
@@ -72,22 +72,40 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             // byte contents
-            dataBuilder.EmitBytes(_preInitFieldInfo.Data);
+            _preInitFieldInfo.WriteData(ref dataBuilder, factory, relocsOnly);
         }
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
-            return new DependencyListEntry[]
+            ObjectDataBuilder builder = new ObjectDataBuilder(factory, true);
+            EncodeData(ref builder, factory, true);
+            Relocation[] relocs = builder.ToObjectData().Relocs;
+            DependencyList dependencies = null;
+
+            if (relocs != null)
             {
-                new DependencyListEntry(GetEETypeNode(factory), "Frozen preinitialized array"),
-            };
+                dependencies = new DependencyList();
+                foreach (Relocation reloc in relocs)
+                {
+                    dependencies.Add(reloc.Target, "reloc");
+                }
+            }
+
+            return dependencies;
         }
 
         protected override void OnMarked(NodeFactory factory)
         {
             factory.FrozenSegmentRegion.AddEmbeddedObject(this);
+        }
+
+        protected internal override int ClassCode => 1789429316;
+
+        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        {
+            return _preInitFieldInfo.CompareTo(((FrozenArrayNode)other)._preInitFieldInfo, comparer);
         }
     }
 }

@@ -115,6 +115,17 @@ namespace Internal.Runtime.TypeLoader
             {
                 if (!_templateComputed)
                 {
+                    // Multidimensional arrays and szarrays of pointers don't implement generic interfaces and are special cases. They use
+                    // typeof(object[,]) as their template.
+                    if (TypeBeingBuilt.IsMdArray || (TypeBeingBuilt.IsSzArray && ((ArrayType)TypeBeingBuilt).ElementType.IsPointer))
+                    {
+                        _templateType = TypeBeingBuilt.Context.ResolveRuntimeTypeHandle(typeof(object[,]).TypeHandle);
+                        _templateTypeLoaderNativeLayout = false;
+                        _nativeLayoutComputed = _nativeLayoutTokenComputed = _templateComputed = true;
+
+                        return _templateType;
+                    }
+
                     // Locate the template type and native layout info
                     _templateType = TypeBeingBuilt.Context.TemplateLookup.TryGetTypeTemplate(TypeBeingBuilt, ref _nativeLayoutInfo);
                     Debug.Assert(_templateType == null || !_templateType.RuntimeTypeHandle.IsNull());
@@ -372,23 +383,23 @@ namespace Internal.Runtime.TypeLoader
                     }
                     else
                     {
-                        // This should only happen for non-universal templates
-                        Debug.Assert(TypeBeingBuilt.IsTemplateCanonical());
-
-                        // Canonical template type loader case
                         unsafe
                         {
-                            return templateType.GetRuntimeTypeHandle().ToEETypePtr()->NumVtableSlots;
+                            if (TypeBeingBuilt.IsMdArray || (TypeBeingBuilt.IsSzArray && ((ArrayType)TypeBeingBuilt).ElementType.IsPointer))
+                            {
+                                // MDArray types and pointer arrays have the same vtable as the System.Array type they "derive" from.
+                                // They do not implement the generic interfaces that make this interesting for normal arrays.
+                                return TypeBeingBuilt.BaseType.GetRuntimeTypeHandle().ToEETypePtr()->NumVtableSlots;
+                            }
+                            else
+                            {
+                                // This should only happen for non-universal templates
+                                Debug.Assert(TypeBeingBuilt.IsTemplateCanonical());
+
+                                // Canonical template type loader case
+                                return templateType.GetRuntimeTypeHandle().ToEETypePtr()->NumVtableSlots;
+                            }
                         }
-                    }
-                }
-                else if (TypeBeingBuilt.IsMdArray || (TypeBeingBuilt.IsSzArray && ((ArrayType)TypeBeingBuilt).ElementType.IsPointer))
-                {
-                    // MDArray types and pointer arrays have the same vtable as the System.Array type they "derive" from.
-                    // They do not implement the generic interfaces that make this interesting for normal arrays.
-                    unsafe
-                    {
-                        return TypeBeingBuilt.BaseType.GetRuntimeTypeHandle().ToEETypePtr()->NumVtableSlots;
                     }
                 }
                 else
@@ -996,7 +1007,12 @@ namespace Internal.Runtime.TypeLoader
                 {
                     if (arrayType.ElementType is DefType)
                     {
-                        return checked((ushort)((DefType)arrayType.ElementType).InstanceFieldSize.AsInt);
+                        uint size = (uint)((DefType)arrayType.ElementType).InstanceFieldSize.AsInt;
+
+                        if (size > ArrayTypesConstants.MaxSizeForValueClassInArray && arrayType.ElementType.IsValueType)
+                            ThrowHelper.ThrowTypeLoadException(ExceptionStringID.ClassLoadValueClassTooLarge, arrayType.ElementType);
+
+                        return checked((ushort)size);
                     }
                     else
                     {
@@ -1006,6 +1022,45 @@ namespace Internal.Runtime.TypeLoader
                 else
                 {
                     return null;
+                }
+            }
+        }
+
+        public uint NullableValueOffset
+        {
+            get
+            {
+                if (!TypeBeingBuilt.IsNullable)
+                    return 0;
+
+                if (TypeBeingBuilt.IsTemplateCanonical())
+                {
+                    // Pull the GC Desc from the canonical instantiation
+                    TypeDesc templateType = TypeBeingBuilt.ComputeTemplate();
+                    bool success = templateType.RetrieveRuntimeTypeHandleIfPossible();
+                    Debug.Assert(success);
+                    unsafe
+                    {
+                        return templateType.RuntimeTypeHandle.ToEETypePtr()->NullableValueOffset;
+                    }
+                }
+                else
+                {
+                    int fieldCount = 0;
+                    uint nullableValueOffset = 0;
+
+                    foreach (FieldDesc f in GetFieldsForGCLayout())
+                    {
+                        if (fieldCount == 1)
+                        {
+                            nullableValueOffset = checked((uint)f.Offset.AsInt);
+                        }
+                        fieldCount++;
+                    }
+
+                    // Nullable<T> only has two fields. HasValue and Value
+                    Debug.Assert(fieldCount == 2);
+                    return nullableValueOffset;
                 }
             }
         }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -85,7 +86,7 @@ namespace System.Diagnostics.Tracing
                 var scratchNew = scratchOld + size;
                 if (this.scratchEnd < scratchNew)
                 {
-                    throw new IndexOutOfRangeException(Resources.GetResourceString("EventSource_AddScalarOutOfRange"));
+                    throw new IndexOutOfRangeException(SR.EventSource_AddScalarOutOfRange);
                 }
 
                 this.ScalarsBegin();
@@ -272,20 +273,20 @@ namespace System.Diagnostics.Tracing
             var pinsTemp = this.pins;
             if (this.pinsEnd <= pinsTemp)
             {
-                throw new IndexOutOfRangeException(Resources.GetResourceString("EventSource_PinArrayOutOfRange"));
+                throw new IndexOutOfRangeException(SR.EventSource_PinArrayOutOfRange);
             }
 
             var datasTemp = this.datas;
             if (this.datasEnd <= datasTemp)
             {
-                throw new IndexOutOfRangeException(Resources.GetResourceString("EventSource_DataDescriptorsOutOfRange"));
+                throw new IndexOutOfRangeException(SR.EventSource_DataDescriptorsOutOfRange);
             }
 
             this.pins = pinsTemp + 1;
             this.datas = datasTemp + 1;
 
             *pinsTemp = GCHandle.Alloc(value, GCHandleType.Pinned);
-            datasTemp->m_Ptr = (long)(ulong)(UIntPtr)(void*)pinsTemp->AddrOfPinnedObject();
+            datasTemp->DataPointer = pinsTemp->AddrOfPinnedObject();
             datasTemp->m_Size = size;
         }
 
@@ -296,10 +297,10 @@ namespace System.Diagnostics.Tracing
                 var datasTemp = this.datas;
                 if (this.datasEnd <= datasTemp)
                 {
-                    throw new IndexOutOfRangeException(Resources.GetResourceString("EventSource_DataDescriptorsOutOfRange"));
+                    throw new IndexOutOfRangeException(SR.EventSource_DataDescriptorsOutOfRange);
                 }
 
-                datasTemp->m_Ptr = (long)(ulong)(UIntPtr)this.scratch;
+                datasTemp->DataPointer = (IntPtr) this.scratch;
                 this.writingScalars = true;
             }
         }

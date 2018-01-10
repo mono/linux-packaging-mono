@@ -17,10 +17,6 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectNode NodeForLinkage(NodeFactory factory) => this;
 
-        // Cloned EEType does not have its own interface dispatch map. The runtime dispatching
-        // routine will use its primary type's dispatch map instead.
-        protected override bool TrackInterfaceDispatchMapDepenendency => false;
-
         //
         // A cloned type must be named differently than the type it is a clone of so the linker
         // will have an unambiguous symbol to resolve
@@ -38,5 +34,7 @@ namespace ILCompiler.DependencyAnalysis
             //
             objData.EmitPointerReloc(factory.NecessaryTypeSymbol(_type));
         }
+
+        protected internal override int ClassCode => -288888778;
     }
 }

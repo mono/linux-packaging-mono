@@ -22,13 +22,6 @@ namespace System.IO
 
         internal const string ParentDirectoryPrefix = @"../";
 
-        /// <summary>Returns a value indicating if the given path contains invalid characters.</summary>
-        internal static bool HasIllegalCharacters(string path)
-        {
-            Debug.Assert(path != null);
-            return path.IndexOf(InvalidPathChar) >= 0;
-        }
-
         internal static int GetRootLength(string path)
         {
             return path.Length > 0 && IsDirectorySeparator(path[0]) ? 1 : 0;
@@ -105,5 +98,15 @@ namespace System.IO
             path.Length > 1 && IsDirectorySeparator(path[path.Length - 1]) ? // exclude root "/"
             path.Substring(0, path.Length - 1) :
             path;
+
+        /// <summary>
+        /// Returns true if the path is effectively empty for the current OS.
+        /// For unix, this is empty or null. For Windows, this is empty, null, or 
+        /// just spaces ((char)32).
+        /// </summary>
+        internal static bool IsEffectivelyEmpty(string path)
+        {
+            return string.IsNullOrEmpty(path);
+        }
     }
 }

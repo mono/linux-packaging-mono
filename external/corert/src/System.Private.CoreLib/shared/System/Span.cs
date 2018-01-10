@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime;
 using System.Runtime.CompilerServices;
-using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
-using EditorBrowsableAttribute = System.ComponentModel.EditorBrowsableAttribute;
+using System.Runtime.Versioning;
+using Internal.Runtime.CompilerServices;
 
 #pragma warning disable 0809  //warning CS0809: Obsolete member 'Span<T>.Equals(object)' overrides non-obsolete member 'object.Equals(object)'
 
@@ -22,10 +22,13 @@ namespace System
     /// Span represents a contiguous region of arbitrary memory. Unlike arrays, it can point to either managed
     /// or native memory, or to memory allocated on the stack. It is type- and memory-safe.
     /// </summary>
-    public struct Span<T>
+    [DebuggerTypeProxy(typeof(SpanDebugView<>))]
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
+    [NonVersionable]
+    public readonly ref struct Span<T>
     {
         /// <summary>A byref or a native ptr.</summary>
-        private readonly ByReference<T> _pointer;
+        internal readonly ByReference<T> _pointer;
         /// <summary>The number of elements this Span contains.</summary>
 #if PROJECTN
         [Bound]
@@ -49,32 +52,6 @@ namespace System
 
             _pointer = new ByReference<T>(ref Unsafe.As<byte, T>(ref array.GetRawSzArrayData()));
             _length = array.Length;
-        }
-
-        /// <summary>
-        /// Creates a new span over the portion of the target array beginning
-        /// at 'start' index and covering the remainder of the array.
-        /// </summary>
-        /// <param name="array">The target array.</param>
-        /// <param name="start">The index at which to begin the span.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="array"/> is a null
-        /// reference (Nothing in Visual Basic).</exception>
-        /// <exception cref="System.ArrayTypeMismatchException">Thrown when <paramref name="array"/> is covariant and array's type is not exactly T[].</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified <paramref name="start"/> is not in the range (&lt;0 or &gt;=Length).
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span(T[] array, int start)
-        {
-            if (array == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                ThrowHelper.ThrowArrayTypeMismatchException();
-            if ((uint)start > (uint)array.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-
-            _pointer = new ByReference<T>(ref Unsafe.Add(ref Unsafe.As<byte, T>(ref array.GetRawSzArrayData()), start));
-            _length = array.Length - start;
         }
 
         /// <summary>
@@ -141,6 +118,7 @@ namespace System
         /// <param name="objectData">A reference to data within that object.</param>
         /// <param name="length">The number of <typeparamref name="T"/> elements the memory contains.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static Span<T> DangerousCreate(object obj, ref T objectData, int length) => new Span<T>(ref objectData, length);
 
         // Constructor for internal use only.
@@ -153,11 +131,16 @@ namespace System
             _length = length;
         }
 
+        //Debugger Display = {T[length]}
+        private string DebuggerDisplay => string.Format("{{{0}[{1}]}}", typeof(T).Name, _length);
+
         /// <summary>
         /// Returns a reference to the 0th element of the Span. If the Span is empty, returns a reference to the location where the 0th element
         /// would have been stored. Such a reference can be used for pinning but must never be dereferenced.
         /// </summary>
-        public ref T DangerousGetPinnableReference()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal ref T DangerousGetPinnableReference()
         {
             return ref _pointer.Value;
         }
@@ -165,12 +148,26 @@ namespace System
         /// <summary>
         /// The number of items in the span.
         /// </summary>
-        public int Length => _length;
+        public int Length
+        {
+            [NonVersionable]
+            get
+            {
+                return _length;
+            }
+        }
 
         /// <summary>
         /// Returns true if Length is 0.
         /// </summary>
-        public bool IsEmpty => _length == 0;
+        public bool IsEmpty
+        {
+            [NonVersionable]
+            get
+            {
+                return _length == 0;
+            }
+        }
 
         /// <summary>
         /// Returns a reference to specified element of the Span.
@@ -189,10 +186,9 @@ namespace System
                 return ref Unsafe.Add(ref _pointer.Value, index);
             }
 #else
-#if CORERT
             [Intrinsic]
-#endif
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [NonVersionable]
             get
             {
                 if ((uint)index >= (uint)_length)
@@ -347,12 +343,13 @@ namespace System
         /// <summary>
         /// Defines an implicit conversion of an array to a <see cref="Span{T}"/>
         /// </summary>
-        public static implicit operator Span<T>(T[] array) => new Span<T>(array);
+        public static implicit operator Span<T>(T[] array) => array != null ? new Span<T>(array) : default;
 
         /// <summary>
         /// Defines an implicit conversion of a <see cref="ArraySegment{T}"/> to a <see cref="Span{T}"/>
         /// </summary>
-        public static implicit operator Span<T>(ArraySegment<T> arraySegment) => new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+        public static implicit operator Span<T>(ArraySegment<T> arraySegment)
+            => arraySegment.Array != null ? new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count) : default;
 
         /// <summary>
         /// Defines an implicit conversion of a <see cref="Span{T}"/> to a <see cref="ReadOnlySpan{T}"/>
@@ -412,5 +409,47 @@ namespace System
         /// Returns an empty <see cref="Span{T}"/>
         /// </summary>
         public static Span<T> Empty => default(Span<T>);
+
+        /// <summary>Gets an enumerator for this span.</summary>
+        public Enumerator GetEnumerator() => new Enumerator(this);
+
+        /// <summary>Enumerates the elements of a <see cref="Span{T}"/>.</summary>
+        public ref struct Enumerator
+        {
+            /// <summary>The span being enumerated.</summary>
+            private readonly Span<T> _span;
+            /// <summary>The next index to yield.</summary>
+            private int _index;
+
+            /// <summary>Initialize the enumerator.</summary>
+            /// <param name="span">The span to enumerate.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal Enumerator(Span<T> span)
+            {
+                _span = span;
+                _index = -1;
+            }
+
+            /// <summary>Advances the enumerator to the next element of the span.</summary>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                int index = _index + 1;
+                if (index < _span.Length)
+                {
+                    _index = index;
+                    return true;
+                }
+
+                return false;
+            }
+
+            /// <summary>Gets the element at the current position of the enumerator.</summary>
+            public ref T Current
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => ref _span[_index];
+            }
+        }
     }
 }

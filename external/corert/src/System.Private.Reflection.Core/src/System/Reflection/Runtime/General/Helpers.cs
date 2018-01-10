@@ -15,8 +15,8 @@ using System.Reflection.Runtime.MethodInfos;
 
 using Internal.LowLevelLinq;
 using Internal.Runtime.Augments;
+using Internal.Reflection.Augments;
 using Internal.Reflection.Core.Execution;
-using Internal.Reflection.Core.NonPortable;
 using Internal.Reflection.Extensions.NonPortable;
 
 namespace System.Reflection.Runtime.General
@@ -86,35 +86,6 @@ namespace System.Reflection.Runtime.General
             return new ReadOnlyCollection<T>(enumeration.ToArray());
         }
 
-        public static T[] ReadOnlyCollectionToArray<T>(this IReadOnlyCollection<T> collection)
-        {
-            int count = collection.Count;
-            T[] result = new T[count];
-            int i = 0;
-            foreach (T element in collection)
-            {
-                result[i++] = element;
-            }
-            Debug.Assert(i == count);
-            return result;
-        }
-
-        public static Array ReadOnlyCollectionToEnumArray<T>(this IReadOnlyCollection<T> collection, Type enumType) where T : struct
-        {
-            Debug.Assert(typeof(T).IsPrimitive);
-            Debug.Assert(enumType.IsEnum);
-
-            int count = collection.Count;
-            T[] result = (T[])Array.CreateInstance(enumType, count);
-            int i = 0;
-            foreach (T element in collection)
-            {
-                result[i++] = element;
-            }
-            Debug.Assert(i == count);
-            return result;
-        }
-
         public static MethodInfo FilterAccessor(this MethodInfo accessor, bool nonPublic)
         {
             if (nonPublic)
@@ -124,18 +95,9 @@ namespace System.Reflection.Runtime.General
             return null;
         }
 
-        public static object ToRawValue(this object defaultValueOrLiteral)
-        {
-            Enum e = defaultValueOrLiteral as Enum;
-            if (e != null)
-                return RuntimeAugments.GetEnumValue(e);
-            return defaultValueOrLiteral;
-        }
-
         public static Type GetTypeCore(this Assembly assembly, string name, bool ignoreCase)
         {
-            RuntimeAssembly runtimeAssembly = assembly as RuntimeAssembly;
-            if (runtimeAssembly != null)
+            if (assembly is RuntimeAssembly runtimeAssembly)
             {
                 // Not a recursion - this one goes to the actual instance method on RuntimeAssembly.
                 return runtimeAssembly.GetTypeCore(name, ignoreCase: ignoreCase);
@@ -161,7 +123,7 @@ namespace System.Reflection.Runtime.General
         public static TypeLoadException CreateTypeLoadException(string typeName, string assemblyName)
         {
             string message = SR.Format(SR.TypeLoad_TypeNotFoundInAssembly, typeName, assemblyName);
-            return ReflectionCoreNonPortable.CreateTypeLoadException(message, typeName);
+            return ReflectionAugments.CreateTypeLoadException(message, typeName);
         }
 
         // Escape identifiers as described in "Specifying Fully Qualified Type Names" on msdn.
@@ -231,6 +193,48 @@ namespace System.Reflection.Runtime.General
             object[] result = (object[])Array.CreateInstance(actualElementType, count);
             attributes.CopyTo(result, 0);
             return result;
+        }
+
+        public static bool GetCustomAttributeDefaultValueIfAny(IEnumerable<CustomAttributeData> customAttributes, bool raw, out object defaultValue)
+        {
+            // Legacy: If there are multiple default value attribute, the desktop picks one at random (and so do we...)
+            foreach (CustomAttributeData cad in customAttributes)
+            {
+                Type attributeType = cad.AttributeType;
+                if (attributeType.IsSubclassOf(typeof(CustomConstantAttribute)))
+                {
+                    if (raw)
+                    {
+                        foreach (CustomAttributeNamedArgument namedArgument in cad.NamedArguments)
+                        {
+                            if (namedArgument.MemberName.Equals("Value"))
+                            {
+                                defaultValue = namedArgument.TypedValue.Value;
+                                return true;
+                            }
+                        }
+                        defaultValue = null;
+                        return false;
+                    }
+                    else
+                    {
+                        CustomConstantAttribute customConstantAttribute = (CustomConstantAttribute)(cad.Instantiate());
+                        defaultValue = customConstantAttribute.Value;
+                        return true;
+                    }
+                }
+                if (attributeType.Equals(typeof(DecimalConstantAttribute)))
+                {
+                    // We should really do a non-instanting check if "raw == false" but given that we don't support
+                    // reflection-only loads, there isn't an observable difference.
+                    DecimalConstantAttribute decimalConstantAttribute = (DecimalConstantAttribute)(cad.Instantiate());
+                    defaultValue = decimalConstantAttribute.Value;
+                    return true;
+                }
+            }
+
+            defaultValue = null;
+            return false;
         }
     }
 }

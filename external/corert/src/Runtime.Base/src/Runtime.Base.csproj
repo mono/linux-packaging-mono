@@ -1,30 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
 
   <PropertyGroup>
-    <ProjectGuid>{CA7FAACD-89ED-4D41-8377-92C1D9055720}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Runtime.Base</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ExcludeDefaultReferences>true</ExcludeDefaultReferences>
     <IsCoreAssembly>true</IsCoreAssembly>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <!-- Hack to disable analyzers. Replace once https://github.com/dotnet/buildtools/issues/1349 is fixed. -->
-    <CodeAnalyzerDir>$(MSBuildThisFileDirectory)/Documentation</CodeAnalyzerDir>
-  </PropertyGroup>
-
-  <!-- Default configurations to help VS understand the options -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|arm'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|arm'" />
-
-  <PropertyGroup>
-    <SkipCommonResourcesIncludes>true</SkipCommonResourcesIncludes>
+    <EnableFxCopAnalyzers>false</EnableFxCopAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -46,7 +30,7 @@
     <Compile Include="System\Nullable.cs" />
     <Compile Include="System\Object.cs" />
     <Compile Include="System\Runtime\CachedInterfaceDispatch.cs" />
-    <Compile Include="System\Runtime\CompilerServices\StackOnlyAttribute.cs" />
+    <Compile Include="System\Runtime\CompilerServices\IsByRefLikeAttribute.cs" />
     <Compile Include="System\Runtime\DispatchResolve.cs" />
     <Compile Include="System\Runtime\GCStress.cs" />
   </ItemGroup>
@@ -92,7 +76,6 @@
     <Compile Include="System\Runtime\CompilerServices\ManuallyManagedAttribute.cs" />
     <Compile Include="System\Runtime\CompilerServices\MethodImplAttribute.cs" />
     <Compile Include="System\Runtime\CompilerServices\RuntimeHelpers.cs" />
-    <Compile Include="System\Runtime\CompilerServices\Unsafe.cs" />
     <Compile Include="System\Runtime\CompilerServices\UnsafeValueTypeAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\CallingConvention.cs" />
     <Compile Include="System\Runtime\InteropServices\CharSet.cs" />
@@ -106,6 +89,9 @@
     <Compile Include="System\Runtime\InteropServices\StructLayoutAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\UnsafeGCHandle.cs" />
     <Compile Include="RhBaseName.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Internal\Runtime\CompilerServices\Unsafe.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\src\Internal\Runtime\EEType.Constants.cs" >
@@ -125,7 +111,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(BaseIntermediateOutputPath)\Native\$(BinDirOSGroup).$(BinDirPlatform).$(BinDirConfiguration)\Runtime\Full\AsmOffsets.cs" />
+    <Compile Condition="'$(Platform)'!='wasm'" Include="$(BaseIntermediateOutputPath)\Native\$(BinDirOSGroup).$(BinDirPlatform).$(BinDirConfiguration)\Runtime\Full\AsmOffsets.cs" />
+    <Compile Condition="'$(Platform)'=='wasm'" Include="$(BaseIntermediateOutputPath)\Native\$(BinDirOSGroup).$(BinDirPlatform).$(BinDirConfiguration)\Runtime\Portable\AsmOffsets.cs" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />

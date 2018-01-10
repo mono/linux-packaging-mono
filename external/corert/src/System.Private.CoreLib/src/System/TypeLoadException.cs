@@ -7,30 +7,31 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public partial class TypeLoadException : SystemException
     {
         public TypeLoadException()
             : base(SR.Arg_TypeLoadException)
         {
-            HResult = __HResults.COR_E_TYPELOAD;
+            HResult = HResults.COR_E_TYPELOAD;
         }
 
         public TypeLoadException(string message)
             : base(message)
         {
-            HResult = __HResults.COR_E_TYPELOAD;
+            HResult = HResults.COR_E_TYPELOAD;
         }
 
         public TypeLoadException(string message, Exception inner)
             : base(message, inner)
         {
-            HResult = __HResults.COR_E_TYPELOAD;
+            HResult = HResults.COR_E_TYPELOAD;
         }
 
         protected TypeLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _typeName = info.GetString("TypeLoadClassName");
+            // Ignoring serialization input
         }
 
         public override string Message
@@ -56,9 +57,12 @@ namespace System
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("TypeLoadClassName", _typeName, typeof(string));
+            info.AddValue("TypeLoadClassName", null, typeof(string));
+            info.AddValue("TypeLoadAssemblyName", null, typeof(string));
+            info.AddValue("TypeLoadMessageArg", null, typeof(string));
+            info.AddValue("TypeLoadResourceID", 0, typeof(int));
         }
 
-        private string _typeName;
+        private readonly string _typeName;
     }
 }

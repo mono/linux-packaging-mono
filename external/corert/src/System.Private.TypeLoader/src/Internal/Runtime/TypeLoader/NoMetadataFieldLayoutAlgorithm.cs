@@ -23,11 +23,6 @@ namespace Internal.Runtime.TypeLoader
             return type.RuntimeTypeHandle.ToEETypePtr()->HasGCPointers;
         }
 
-        public unsafe override bool ComputeIsByRefLike(DefType type)
-        {
-            return type.RuntimeTypeHandle.ToEETypePtr()->IsByRefLike;
-        }
-
         /// <summary>
         /// Reads the minimal information about type layout encoded in the 
         /// EEType. That doesn't include field information.
@@ -114,13 +109,11 @@ namespace Internal.Runtime.TypeLoader
             }
             else
             {
-                // We must delegate to algorithms that can work off of a sort of metadata
-                if (type.HasNativeLayout)
-                    return s_nativeLayoutFieldAlgorithm.ComputeHomogeneousFloatAggregateElementType(type);
-                else if (type is MetadataType)
-                    return _metadataFieldLayoutAlgorithm.ComputeHomogeneousFloatAggregateElementType(type);
-                else
-                    return null; // If there isn't any form of metadata, it can't matter... as HFA is not part of the ABI except on ARM
+                Debug.Assert(
+                    type.Context.Target.Architecture == TargetArchitecture.X86 ||
+                    type.Context.Target.Architecture == TargetArchitecture.X64);
+
+                return null;
             }
         }
 
@@ -142,13 +135,11 @@ namespace Internal.Runtime.TypeLoader
             }
             else
             {
-                // We must delegate to algorithms that can work off of a sort of metadata
-                if (type.HasNativeLayout)
-                    return s_nativeLayoutFieldAlgorithm.ComputeValueTypeShapeCharacteristics(type);
-                else if (type is MetadataType)
-                    return _metadataFieldLayoutAlgorithm.ComputeValueTypeShapeCharacteristics(type);
-                else
-                    return ValueTypeShapeCharacteristics.None; // If there isn't any form of metadata, it can't matter... as HFA is not part of the ABI except on ARM
+                Debug.Assert(
+                    type.Context.Target.Architecture == TargetArchitecture.X86 ||
+                    type.Context.Target.Architecture == TargetArchitecture.X64);
+
+                return ValueTypeShapeCharacteristics.None;
             }
         }
     }

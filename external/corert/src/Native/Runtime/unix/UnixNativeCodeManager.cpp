@@ -11,6 +11,7 @@
 #include "ICodeManager.h"
 #include "UnixNativeCodeManager.h"
 #include "varint.h"
+#include "holder.h"
 
 #include "CommonMacros.inl"
 
@@ -24,9 +25,9 @@
 #define UBF_FUNC_KIND_HANDLER   0x01
 #define UBF_FUNC_KIND_FILTER    0x02
 
-#define UBF_FUNC_HAS_EHINFO     0x04
-
-#define UBF_FUNC_REVERSE_PINVOKE 0x08
+#define UBF_FUNC_HAS_EHINFO             0x04
+#define UBF_FUNC_REVERSE_PINVOKE        0x08
+#define UBF_FUNC_HAS_ASSOCIATED_DATA    0x10
 
 struct UnixNativeMethodInfo
 {
@@ -129,6 +130,9 @@ void UnixNativeCodeManager::EnumGcRefs(MethodInfo *    pMethodInfo,
 
     uint8_t unwindBlockFlags = *p++;
 
+    if ((unwindBlockFlags & UBF_FUNC_HAS_ASSOCIATED_DATA) != 0)
+        p += sizeof(int32_t);
+
     if ((unwindBlockFlags & UBF_FUNC_HAS_EHINFO) != 0)
         p += sizeof(int32_t);
 
@@ -174,6 +178,9 @@ bool UnixNativeCodeManager::UnwindStackFrame(MethodInfo *    pMethodInfo,
     PTR_UInt8 p = pNativeMethodInfo->pMainLSDA;
 
     uint8_t unwindBlockFlags = *p++;
+
+    if ((unwindBlockFlags & UBF_FUNC_HAS_ASSOCIATED_DATA) != 0)
+        p += sizeof(int32_t);
 
     if ((unwindBlockFlags & UBF_FUNC_REVERSE_PINVOKE) != 0)
     {
@@ -264,6 +271,9 @@ bool UnixNativeCodeManager::EHEnumInit(MethodInfo * pMethodInfo, PTR_VOID * pMet
 
     uint8_t unwindBlockFlags = *p++;
 
+    if ((unwindBlockFlags & UBF_FUNC_HAS_ASSOCIATED_DATA) != 0)
+        p += sizeof(int32_t);
+
     // return if there is no EH info associated with this method
     if ((unwindBlockFlags & UBF_FUNC_HAS_EHINFO) == 0)
     {
@@ -337,6 +347,11 @@ bool UnixNativeCodeManager::EHEnumNext(EHEnumState * pEHEnumState, EHClause * pE
     return true;
 }
 
+PTR_VOID UnixNativeCodeManager::GetOsModuleHandle()
+{
+    return (PTR_VOID)m_moduleBase;
+}
+
 PTR_VOID UnixNativeCodeManager::GetMethodStartAddress(MethodInfo * pMethodInfo)
 {
     UnixNativeMethodInfo * pNativeMethodInfo = (UnixNativeMethodInfo *)pMethodInfo;
@@ -355,25 +370,47 @@ void * UnixNativeCodeManager::GetClasslibFunction(ClasslibFunctionId functionId)
     return m_pClasslibFunctions[id];
 }
 
+PTR_VOID UnixNativeCodeManager::GetAssociatedData(PTR_VOID ControlPC)
+{
+    UnixNativeMethodInfo methodInfo;
+    if (!FindMethodInfo(ControlPC, (MethodInfo*)&methodInfo))
+        return NULL;
+
+    PTR_UInt8 p = methodInfo.pMainLSDA;
+
+    uint8_t unwindBlockFlags = *p++;
+    if ((unwindBlockFlags & UBF_FUNC_HAS_ASSOCIATED_DATA) == 0)
+        return NULL;
+
+    return dac_cast<PTR_VOID>(p + *dac_cast<PTR_Int32>(p));
+}
+
 extern "C" bool __stdcall RegisterCodeManager(ICodeManager * pCodeManager, PTR_VOID pvStartRange, UInt32 cbRange);
+extern "C" void __stdcall UnregisterCodeManager(ICodeManager * pCodeManager);
+extern "C" bool __stdcall RegisterUnboxingStubs(PTR_VOID pvStartRange, UInt32 cbRange);
 
 extern "C"
-bool RhpRegisterUnixModule(void * pModule, 
-                           void * pvStartRange, UInt32 cbRange,
-                           void ** pClasslibFunctions, UInt32 nClasslibFunctions)
+bool RhRegisterOSModule(void * pModule,
+                        void * pvManagedCodeStartRange, UInt32 cbManagedCodeRange,
+                        void * pvUnboxingStubsStartRange, UInt32 cbUnboxingStubsRange,
+                        void ** pClasslibFunctions, UInt32 nClasslibFunctions)
 {
-    UnixNativeCodeManager * pUnixNativeCodeManager = new (nothrow) UnixNativeCodeManager((TADDR)pModule,
+    NewHolder<UnixNativeCodeManager> pUnixNativeCodeManager = new (nothrow) UnixNativeCodeManager((TADDR)pModule,
         pClasslibFunctions, nClasslibFunctions);
+
     if (pUnixNativeCodeManager == nullptr)
+        return false;
+
+    if (!RegisterCodeManager(pUnixNativeCodeManager, pvManagedCodeStartRange, cbManagedCodeRange))
+        return false;
+
+    if (!RegisterUnboxingStubs(pvUnboxingStubsStartRange, cbUnboxingStubsRange))
     {
+        UnregisterCodeManager(pUnixNativeCodeManager);
         return false;
     }
 
-    if (!RegisterCodeManager(pUnixNativeCodeManager, pvStartRange, cbRange))
-    {
-        delete pUnixNativeCodeManager;
-        return false;
-    }
+    pUnixNativeCodeManager.SuppressRelease();
 
     return true;
 }

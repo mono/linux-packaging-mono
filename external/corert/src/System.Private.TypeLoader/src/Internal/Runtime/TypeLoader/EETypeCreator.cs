@@ -120,12 +120,12 @@ namespace Internal.Runtime.TypeLoader
 
         public static IntPtr AllocateMemory(int cbBytes)
         {
-            return InteropExtensions.MemAlloc(new UIntPtr((uint)cbBytes));
+            return PInvokeMarshal.MemAlloc(new IntPtr(cbBytes));
         }
 
         public static void FreeMemory(IntPtr memoryPtrToFree)
         {
-            InteropExtensions.MemFree(memoryPtrToFree);
+            PInvokeMarshal.MemFree(memoryPtrToFree);
         }
     }
 
@@ -186,9 +186,10 @@ namespace Internal.Runtime.TypeLoader
 
                 if (pTemplateEEType != null)
                 {
-                    valueTypeFieldPaddingEncoded = EEType.ComputeValueTypeFieldPaddingFieldValue(
+                    valueTypeFieldPaddingEncoded = EETypeBuilderHelpers.ComputeValueTypeFieldPaddingFieldValue(
                         pTemplateEEType->ValueTypeFieldPadding, 
-                        (uint)pTemplateEEType->FieldAlignmentRequirement);
+                        (uint)pTemplateEEType->FieldAlignmentRequirement,
+                        IntPtr.Size);
                     baseSize = (int)pTemplateEEType->BaseSize;
                     isValueType = pTemplateEEType->IsValueType;
                     hasFinalizer = pTemplateEEType->IsFinalizable;
@@ -269,7 +270,7 @@ namespace Internal.Runtime.TypeLoader
                         // Add Object type pointer field to base size
                         baseSize += IntPtr.Size;
 
-                        valueTypeFieldPaddingEncoded = (uint)EEType.ComputeValueTypeFieldPaddingFieldValue(cbValueTypeFieldPadding, (uint)state.FieldAlignment.Value);
+                        valueTypeFieldPaddingEncoded = (uint)EETypeBuilderHelpers.ComputeValueTypeFieldPaddingFieldValue(cbValueTypeFieldPadding, (uint)state.FieldAlignment.Value, IntPtr.Size);
                     }
 
                     // Minimum base size is 3 pointers, and requires us to bump the size of an empty class type
@@ -296,12 +297,9 @@ namespace Internal.Runtime.TypeLoader
                     UInt32 rareFlags = optionalFields.GetFieldValue(EETypeOptionalFieldTag.RareFlags, 0);
                     rareFlags |= (uint)EETypeRareFlags.IsDynamicTypeFlag;          // Set the IsDynamicTypeFlag
                     rareFlags &= ~(uint)EETypeRareFlags.NullableTypeViaIATFlag;    // Remove the NullableTypeViaIATFlag flag
-                    rareFlags &= ~(uint)EETypeRareFlags.HasSealedVTableEntriesFlag;// Remove the HasSealedVTableEntriesFlag
-                                                                                   // we'll set IsDynamicTypeWithSealedVTableEntriesFlag instead
 
-                    // Set the IsDynamicTypeWithSealedVTableEntriesFlag if needed
                     if (state.NumSealedVTableEntries > 0)
-                        rareFlags |= (uint)EETypeRareFlags.IsDynamicTypeWithSealedVTableEntriesFlag;
+                        rareFlags |= (uint)EETypeRareFlags.HasSealedVTableEntriesFlag;
 
                     if (requiresDynamicDispatchMap)
                         rareFlags |= (uint)EETypeRareFlags.HasDynamicallyAllocatedDispatchMapFlag;
@@ -320,7 +318,9 @@ namespace Internal.Runtime.TypeLoader
                         rareFlags |= (uint)EETypeRareFlags.RequiresAlign8Flag;
                     else
                         rareFlags &= ~(uint)EETypeRareFlags.RequiresAlign8Flag;
+#endif
 
+#if ARM || ARM64
                     if (state.IsHFA)
                         rareFlags |= (uint)EETypeRareFlags.IsHFAFlag;
                     else
@@ -340,6 +340,24 @@ namespace Internal.Runtime.TypeLoader
                         rareFlags |= (uint)EETypeRareFlags.IsByRefLikeFlag;
                     else
                         rareFlags &= ~(uint)EETypeRareFlags.IsByRefLikeFlag;
+
+                    if (isNullable)
+                    {
+                        rareFlags |= (uint)EETypeRareFlags.IsNullableFlag;
+                        uint nullableValueOffset = state.NullableValueOffset;
+
+                        // The stored offset is never zero (Nullable has a boolean there indicating whether the value is valid). 
+                        // If the real offset is one, then the field isn't set. Otherwise the offset is encoded - 1 to save space.
+                        if (nullableValueOffset == 1)
+                            optionalFields.ClearField(EETypeOptionalFieldTag.NullableValueOffset);
+                        else
+                            optionalFields.SetFieldValue(EETypeOptionalFieldTag.NullableValueOffset, checked(nullableValueOffset - 1));
+                    }
+                    else
+                    {
+                        rareFlags &= ~(uint)EETypeRareFlags.IsNullableFlag;
+                        optionalFields.ClearField(EETypeOptionalFieldTag.NullableValueOffset);
+                    }
 
                     rareFlags |= (uint)EETypeRareFlags.HasDynamicModuleFlag;
 
@@ -430,7 +448,7 @@ namespace Internal.Runtime.TypeLoader
                         // GCDesc data in *reverse* order for instance GCDescs (subtracts 4 from the pointer values at each iteration).
                         //    - For the first GCDesc, we use (pEEType - 4) to point to the first 4-byte integer directly preceeding the EEType
                         //    - For the second GCDesc, given that the state.NonUniversalInstanceGCDesc already points to the first byte preceeding the template EEType, we 
-                        //      subtract 3 to point to the first 4-byte integer directly preceeding the template EEtype
+                        //      subtract 3 to point to the first 4-byte integer directly preceeding the template EEType
                         TestGCDescsForEquality(new IntPtr((byte*)pEEType - 4), state.NonUniversalInstanceGCDesc - 3, cbGCDesc, true);
                     }
 #endif
@@ -441,7 +459,7 @@ namespace Internal.Runtime.TypeLoader
                     pEEType->OptionalFieldsPtr = (byte*)pEEType + cbEEType;
                     optionalFields.WriteToEEType(pEEType, cbOptionalFieldsSize);
 
-#if CORERT
+#if !PROJECTN
                     pEEType->PointerToTypeManager = PermanentAllocatedMemoryBlobs.GetPointerToIntPtr(moduleInfo.Handle.GetIntPtrUNSAFE());
 #endif
                     pEEType->DynamicModule = dynamicModulePtr;
@@ -1008,6 +1026,8 @@ namespace Internal.Runtime.TypeLoader
             CreateEETypeWorker(typeof(void*).TypeHandle.ToEETypePtr(), hashCodeOfNewType, 0, false, state);
             Debug.Assert(!state.HalfBakedRuntimeTypeHandle.IsNull());
 
+            TypeLoaderLogger.WriteLine("Allocated new POINTER type " + pointerType.ToString() + " with hashcode value = 0x" + hashCodeOfNewType.LowLevelToString() + " with eetype = " + state.HalfBakedRuntimeTypeHandle.ToIntPtr().LowLevelToString());
+
             state.HalfBakedRuntimeTypeHandle.ToEETypePtr()->RelatedParameterType = pointeeTypeHandle.ToEETypePtr();
 
             return state.HalfBakedRuntimeTypeHandle;
@@ -1021,6 +1041,8 @@ namespace Internal.Runtime.TypeLoader
             // Ideally this should be typeof(void&) but C# doesn't support that syntax. We adjust for this below.
             CreateEETypeWorker(typeof(void*).TypeHandle.ToEETypePtr(), hashCodeOfNewType, 0, false, state);
             Debug.Assert(!state.HalfBakedRuntimeTypeHandle.IsNull());
+
+            TypeLoaderLogger.WriteLine("Allocated new BYREF type " + byRefType.ToString() + " with hashcode value = 0x" + hashCodeOfNewType.LowLevelToString() + " with eetype = " + state.HalfBakedRuntimeTypeHandle.ToIntPtr().LowLevelToString());
 
             state.HalfBakedRuntimeTypeHandle.ToEETypePtr()->RelatedParameterType = pointeeTypeHandle.ToEETypePtr();
 
@@ -1085,13 +1107,23 @@ namespace Internal.Runtime.TypeLoader
             return state.HalfBakedRuntimeTypeHandle;
         }
 
-        public static IntPtr GetDictionary(EEType* pEEType)
+        public static int GetDictionaryOffsetInEEtype(EEType* pEEType)
         {
             // Dictionary slot is the first vtable slot
 
             EEType* pBaseType = pEEType->BaseType;
             int dictionarySlot = (pBaseType == null ? 0 : pBaseType->NumVtableSlots);
-            return *(IntPtr*)((byte*)pEEType + sizeof(EEType) + dictionarySlot * IntPtr.Size);
+            return sizeof(EEType) + dictionarySlot * IntPtr.Size;
+        }
+
+        public static IntPtr GetDictionaryAtOffset(EEType* pEEType, int offset)
+        {
+            return *(IntPtr*)((byte*)pEEType + offset);
+        }
+
+        public static IntPtr GetDictionary(EEType* pEEType)
+        {
+            return GetDictionaryAtOffset(pEEType, GetDictionaryOffsetInEEtype(pEEType));
         }
 
         public static int GetDictionarySlotInVTable(TypeDesc type)
@@ -1119,6 +1151,25 @@ namespace Internal.Runtime.TypeLoader
 
             typeWithDictionary = null;
             return -1;
+        }
+
+        public static EEType* GetBaseEETypeForDictionaryPtr(EEType* pEEType, IntPtr dictionaryPtr)
+        {
+            // Look for the exact base type that owns the dictionary
+            IntPtr curDictPtr = GetDictionary(pEEType);
+            EEType* pBaseEEType = pEEType;
+
+            while (curDictPtr != dictionaryPtr)
+            {
+                pBaseEEType = pBaseEEType->BaseType;
+                Debug.Assert(pBaseEEType != null);
+                // Since in multifile scenario, the base type's dictionary may end up having
+                // a copy in each module, therefore the lookup of the right base type should be
+                // based on the dictionary pointer in the current EEtype, instead of the base EEtype.
+                curDictPtr = GetDictionaryAtOffset(pEEType, EETypeCreator.GetDictionaryOffsetInEEtype(pBaseEEType));
+            }
+
+            return pBaseEEType;
         }
     }
 }

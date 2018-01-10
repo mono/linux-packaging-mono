@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 
 namespace System.Collections
 {
@@ -29,7 +28,7 @@ namespace System.Collections
         // implementation of a collection, and use one of the internal objects
         // found in that code.
         //
-        // In the absense of a static Synchronized method on a collection, 
+        // In the absence of a static Synchronized method on a collection, 
         // the expected usage for SyncRoot would look like this:
         // 
         // ICollection col = ...

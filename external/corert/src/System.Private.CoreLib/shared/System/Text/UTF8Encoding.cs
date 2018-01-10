@@ -15,10 +15,9 @@
 #define FASTLOOP
 
 using System;
-using System.Runtime.Serialization;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace System.Text
 {
@@ -51,19 +50,23 @@ namespace System.Text
 
         private const int UTF8_CODEPAGE = 65001;
 
-        // Allow for devirtualization (see https://github.com/dotnet/coreclr/pull/9230)
+        // Allow for de-virtualization (see https://github.com/dotnet/coreclr/pull/9230)
         internal sealed class UTF8EncodingSealed : UTF8Encoding
         {
             public UTF8EncodingSealed(bool encoderShouldEmitUTF8Identifier) : base(encoderShouldEmitUTF8Identifier) { }
+
+            public override ReadOnlySpan<byte> Preamble => _emitUTF8Identifier ? s_preamble : Array.Empty<byte>();
         }
 
         // Used by Encoding.UTF8 for lazy initialization
         // The initialization code will not be run until a static member of the class is referenced
         internal static readonly UTF8EncodingSealed s_default = new UTF8EncodingSealed(encoderShouldEmitUTF8Identifier: true);
 
+        internal static readonly byte[] s_preamble = new byte[3] { 0xEF, 0xBB, 0xBF };
+
         // Yes, the idea of emitting U+FEFF as a UTF-8 identifier has made it into
         // the standard.
-        private bool _emitUTF8Identifier = false;
+        internal readonly bool _emitUTF8Identifier = false;
 
         private bool _isThrowException = false;
 
@@ -111,7 +114,7 @@ namespace System.Text
         // WARNING: otherwise it'll break VB's way of declaring these.
         //
         // The following methods are copied from EncodingNLS.cs.
-        // Unfortunately EncodingNLS.cs is internal and we're public, so we have to reimpliment them here.
+        // Unfortunately EncodingNLS.cs is internal and we're public, so we have to re-implement them here.
         // These should be kept in sync for the following classes:
         // EncodingNLS, UTF7Encoding, UTF8Encoding, UTF32Encoding, ASCIIEncoding, UnicodeEncoding
 
@@ -134,7 +137,6 @@ namespace System.Text
 
             if (chars.Length - index < count)
                 throw new ArgumentOutOfRangeException("chars", SR.ArgumentOutOfRange_IndexCountBuffer);
-            Contract.EndContractBlock();
 
             // If no input, return 0, avoid fixed empty array problem
             if (count == 0)
@@ -155,7 +157,6 @@ namespace System.Text
             // Validate input
             if (chars==null)
                 throw new ArgumentNullException("s");
-            Contract.EndContractBlock();
 
             fixed (char* pChars = chars)
                 return GetByteCount(pChars, chars.Length, null);
@@ -174,7 +175,6 @@ namespace System.Text
 
             if (count < 0)
                 throw new ArgumentOutOfRangeException("count", SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // Call it with empty encoder
             return GetByteCount(chars, count, null);
@@ -199,15 +199,10 @@ namespace System.Text
 
             if (byteIndex < 0 || byteIndex > bytes.Length)
                 throw new ArgumentOutOfRangeException("byteIndex", SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
 
             int byteCount = bytes.Length - byteIndex;
 
-            // Fixed doesn't like 0 length arrays.
-            if (bytes.Length == 0)
-                bytes = new byte[1];
-
-            fixed (char* pChars = s) fixed (byte* pBytes = &bytes[0])
+            fixed (char* pChars = s) fixed (byte* pBytes = &MemoryMarshal.GetReference((Span<byte>)bytes))
                 return GetBytes(pChars + charIndex, charCount, pBytes + byteIndex, byteCount, null);
         }
 
@@ -240,7 +235,6 @@ namespace System.Text
 
             if (byteIndex < 0 || byteIndex > bytes.Length)
                 throw new ArgumentOutOfRangeException("byteIndex", SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
 
             // If nothing to encode return 0, avoid fixed problem
             if (charCount == 0)
@@ -249,11 +243,7 @@ namespace System.Text
             // Just call pointer version
             int byteCount = bytes.Length - byteIndex;
 
-            // Fixed doesn't like 0 length arrays.
-            if (bytes.Length == 0)
-                bytes = new byte[1];
-
-            fixed (char* pChars = chars) fixed (byte* pBytes = &bytes[0])
+            fixed (char* pChars = chars) fixed (byte* pBytes = &MemoryMarshal.GetReference((Span<byte>)bytes))
                 // Remember that byteCount is # to decode, not size of array.
                 return GetBytes(pChars + charIndex, charCount, pBytes + byteIndex, byteCount, null);
         }
@@ -271,7 +261,6 @@ namespace System.Text
 
             if (charCount < 0 || byteCount < 0)
                 throw new ArgumentOutOfRangeException((charCount < 0 ? "charCount" : "byteCount"), SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             return GetBytes(chars, charCount, bytes, byteCount, null);
         }
@@ -295,7 +284,6 @@ namespace System.Text
 
             if (bytes.Length - index < count)
                 throw new ArgumentOutOfRangeException("bytes", SR.ArgumentOutOfRange_IndexCountBuffer);
-            Contract.EndContractBlock();
 
             // If no input just return 0, fixed doesn't like 0 length arrays.
             if (count == 0)
@@ -319,7 +307,6 @@ namespace System.Text
 
             if (count < 0)
                 throw new ArgumentOutOfRangeException("count", SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             return GetCharCount(bytes, count, null);
         }
@@ -344,7 +331,6 @@ namespace System.Text
 
             if (charIndex < 0 || charIndex > chars.Length)
                 throw new ArgumentOutOfRangeException("charIndex", SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
 
             // If no input, return 0 & avoid fixed problem
             if (byteCount == 0)
@@ -353,11 +339,7 @@ namespace System.Text
             // Just call pointer version
             int charCount = chars.Length - charIndex;
 
-            // Fixed doesn't like 0 length arrays.
-            if (chars.Length == 0)
-                chars = new char[1];
-
-            fixed (byte* pBytes = bytes) fixed (char* pChars = &chars[0])
+            fixed (byte* pBytes = bytes) fixed (char* pChars = &MemoryMarshal.GetReference((Span<char>)chars))
                 // Remember that charCount is # to decode, not size of array
                 return GetChars(pBytes + byteIndex, byteCount, pChars + charIndex, charCount, null);
         }
@@ -375,7 +357,6 @@ namespace System.Text
 
             if (charCount < 0 || byteCount < 0)
                 throw new ArgumentOutOfRangeException((charCount < 0 ? "charCount" : "byteCount"), SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             return GetChars(bytes, byteCount, chars, charCount, null);
         }
@@ -399,7 +380,6 @@ namespace System.Text
 
             if (bytes.Length - index < count)
                 throw new ArgumentOutOfRangeException("bytes", SR.ArgumentOutOfRange_IndexCountBuffer);
-            Contract.EndContractBlock();
 
             // Avoid problems with empty input buffer
             if (count == 0) return String.Empty;
@@ -586,7 +566,7 @@ namespace System.Text
 
                     // Do our fallback.  Actually we already know its a mixed up surrogate,
                     // so the ref pSrc isn't gonna do anything.
-                    pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be enregistered
+                    pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be en-registered
                     fallbackBuffer.InternalFallback(unchecked((char)ch), ref pSrcForFallback);
                     pSrc = pSrcForFallback;
 
@@ -631,7 +611,7 @@ namespace System.Text
                 if (availableChars <= 13)
                 {
                     // try to get over the remainder of the ascii characters fast though
-                    char* pLocalEnd = pEnd; // hint to get pLocalEnd enregistered
+                    char* pLocalEnd = pEnd; // hint to get pLocalEnd en-registered
                     while (pSrc < pLocalEnd)
                     {
                         ch = *pSrc;
@@ -844,7 +824,7 @@ namespace System.Text
 
             int ch = 0;
 
-            // assume that JIT will enregister pSrc, pTarget and ch
+            // assume that JIT will en-register pSrc, pTarget and ch
 
             if (baseEncoder != null)
             {
@@ -856,7 +836,7 @@ namespace System.Text
                 {
                     // We always need the fallback buffer in get bytes so we can flush any remaining ones if necessary
                     fallbackBuffer = encoder.FallbackBuffer;
-                    if (fallbackBuffer.Remaining > 0 && encoder.m_throwOnOverflow)
+                    if (fallbackBuffer.Remaining > 0 && encoder._throwOnOverflow)
                         throw new ArgumentException(SR.Format(SR.Argument_EncoderFallbackNotEmpty, this.EncodingName, encoder.Fallback.GetType()));
 
                     // Set our internal fallback interesting things.
@@ -984,7 +964,7 @@ namespace System.Text
 
                     // Do our fallback.  Actually we already know its a mixed up surrogate,
                     // so the ref pSrc isn't gonna do anything.
-                    pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be enregistered
+                    pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be en-registered
                     fallbackBuffer.InternalFallback(unchecked((char)ch), ref pSrcForFallback);
                     pSrc = pSrcForFallback;
 
@@ -1026,7 +1006,7 @@ namespace System.Text
                     Debug.Assert(pSrc >= chars || pTarget == bytes,
                         "[UTF8Encoding.GetBytes]Expected pSrc to be within buffer or to throw with insufficient room.");
                     ThrowBytesOverflow(encoder, pTarget == bytes);  // Throw if we must
-                    ch = 0;                                         // Nothing left over (we backed up to start of pair if supplimentary)
+                    ch = 0;                                         // Nothing left over (we backed up to start of pair if supplementary)
                     break;
                 }
 
@@ -1091,7 +1071,7 @@ namespace System.Text
                     }
 
                     // try to get over the remainder of the ascii characters fast though
-                    char* pLocalEnd = pEnd; // hint to get pLocalEnd enregistered
+                    char* pLocalEnd = pEnd; // hint to get pLocalEnd en-registered
                     while (pSrc < pLocalEnd)
                     {
                         ch = *pSrc;
@@ -1279,11 +1259,11 @@ namespace System.Text
                     "[UTF8Encoding.GetBytes] Expected no mustflush or 0 leftover ch " + ch.ToString("X2", CultureInfo.InvariantCulture));
 
                 encoder.surrogateChar = ch;
-                encoder.m_charsUsed = (int)(pSrc - chars);
+                encoder._charsUsed = (int)(pSrc - chars);
             }
 
             Debug.Assert(fallbackBuffer == null || fallbackBuffer.Remaining == 0 ||
-                baseEncoder == null || !baseEncoder.m_throwOnOverflow,
+                baseEncoder == null || !baseEncoder._throwOnOverflow,
                 "[UTF8Encoding.GetBytes]Expected empty fallback buffer if not converting");
 
             return (int)(pTarget - bytes);
@@ -1326,7 +1306,7 @@ namespace System.Text
                 charCount -= (ch >> 30);        // Adjust char count for # of expected bytes and expected output chars.
 
                 // Shouldn't have anything in fallback buffer for GetCharCount
-                // (don't have to check m_throwOnOverflow for count)
+                // (don't have to check _throwOnOverflow for count)
                 Debug.Assert(!decoder.InternalHasFallbackBuffer || decoder.FallbackBuffer.Remaining == 0,
                     "[UTF8Encoding.GetCharCount]Expected empty fallback buffer at start");
             }
@@ -1373,12 +1353,12 @@ namespace System.Text
                     {
                         if ((ch & (FinalByte >> 6)) != 0)
                         {
-                            // this is 3rd byte (of 4 byte supplimentary) - nothing to do
+                            // this is 3rd byte (of 4 byte supplementary) - nothing to do
                             continue;
                         }
 
-                        // 2nd byte, check for non-shortest form of supplimentary char and the valid
-                        // supplimentary characters in range 0x010000 - 0x10FFFF at the same time
+                        // 2nd byte, check for non-shortest form of supplementary char and the valid
+                        // supplementary characters in range 0x010000 - 0x10FFFF at the same time
                         if (!InRange(ch & 0x1F0, 0x10, 0x100))
                         {
                             goto InvalidByteSequence;
@@ -1407,7 +1387,7 @@ namespace System.Text
                 goto EncodeChar;
 
             InvalidByteSequence:
-                // this code fragment should be close to the gotos referencing it
+                // this code fragment should be close to the goto referencing it
                 // Have to do fallback for invalid bytes
                 if (fallback == null)
                 {
@@ -1508,7 +1488,7 @@ namespace System.Text
                 if (availableBytes <= 13)
                 {
                     // try to get over the remainder of the ascii characters fast though
-                    byte* pLocalEnd = pEnd; // hint to get pLocalEnd enregistered
+                    byte* pLocalEnd = pEnd; // hint to get pLocalEnd en-registered
                     while (pSrc < pLocalEnd)
                     {
                         ch = *pSrc;
@@ -1698,7 +1678,7 @@ namespace System.Text
             // May have a problem if we have to flush
             if (ch != 0)
             {
-                // We were already adjusting for these, so need to unadjust
+                // We were already adjusting for these, so need to un-adjust
                 charCount += (ch >> 30);
                 if (baseDecoder == null || baseDecoder.MustFlush)
                 {
@@ -1716,7 +1696,7 @@ namespace System.Text
             }
 
             // Shouldn't have anything in fallback buffer for GetCharCount
-            // (don't have to check m_throwOnOverflow for count)
+            // (don't have to check _throwOnOverflow for count)
             Debug.Assert(fallback == null || fallback.Remaining == 0,
                 "[UTF8Encoding.GetCharCount]Expected empty fallback buffer at end");
 
@@ -1758,7 +1738,7 @@ namespace System.Text
                 ch = decoder.bits;
 
                 // Shouldn't have anything in fallback buffer for GetChars
-                // (don't have to check m_throwOnOverflow for chars, we always use all or none so always should be empty)
+                // (don't have to check _throwOnOverflow for chars, we always use all or none so always should be empty)
                 Debug.Assert(!decoder.InternalHasFallbackBuffer || decoder.FallbackBuffer.Remaining == 0,
                     "[UTF8Encoding.GetChars]Expected empty fallback buffer at start");
             }
@@ -1862,9 +1842,9 @@ namespace System.Text
                         fallback = baseDecoder.FallbackBuffer;
                     fallback.InternalInitialize(bytes, pAllocatedBufferEnd);
                 }
-                // This'll back us up the appropriate # of bytes if we didn't get anywhere
-                pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be enregistered
-                pTargetForFallback = pTarget; // Avoid passing pTarget by reference to allow it to be enregistered
+                // That'll back us up the appropriate # of bytes if we didn't get anywhere
+                pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be en-registered
+                pTargetForFallback = pTarget; // Avoid passing pTarget by reference to allow it to be en-registered
                 bool fallbackResult = FallbackInvalidByteSequence(ref pSrcForFallback, ch, fallback, ref pTargetForFallback);
                 pSrc = pSrcForFallback;
                 pTarget = pTargetForFallback;
@@ -1973,7 +1953,7 @@ namespace System.Text
                     pSrc--;
 
                     // Throw that we don't have enough room (pSrc could be < chars if we had started to process
-                    // a 4 byte sequence alredy)
+                    // a 4 byte sequence already)
                     Debug.Assert(pSrc >= bytes || pTarget == chars,
                         "[UTF8Encoding.GetChars]Expected pSrc to be within input buffer or throw due to no output]");
                     ThrowCharsOverflow(baseDecoder, pTarget == chars);
@@ -2270,9 +2250,9 @@ namespace System.Text
                     fallback.InternalInitialize(bytes, pAllocatedBufferEnd);
                 }
 
-                // This'll back us up the appropriate # of bytes if we didn't get anywhere
-                pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be enregistered
-                pTargetForFallback = pTarget; // Avoid passing pTarget by reference to allow it to be enregistered
+                // That'll back us up the appropriate # of bytes if we didn't get anywhere
+                pSrcForFallback = pSrc; // Avoid passing pSrc by reference to allow it to be en-registered
+                pTargetForFallback = pTarget; // Avoid passing pTarget by reference to allow it to be en-registered
                 bool fallbackResult = FallbackInvalidByteSequence(ref pSrcForFallback, ch, fallback, ref pTargetForFallback);
                 pSrc = pSrcForFallback;
                 pTarget = pTargetForFallback;
@@ -2298,17 +2278,17 @@ namespace System.Text
 
                 // If we're storing flush data we expect all bits to be used or else
                 // we're stuck in the middle of a conversion
-                Debug.Assert(!baseDecoder.MustFlush || ch == 0 || !baseDecoder.m_throwOnOverflow,
+                Debug.Assert(!baseDecoder.MustFlush || ch == 0 || !baseDecoder._throwOnOverflow,
                     "[UTF8Encoding.GetChars]Expected no must flush or no left over bits or no throw on overflow.");
 
                 // Remember our leftover bits.
                 decoder.bits = ch;
 
-                baseDecoder.m_bytesUsed = (int)(pSrc - bytes);
+                baseDecoder._bytesUsed = (int)(pSrc - bytes);
             }
 
             // Shouldn't have anything in fallback buffer for GetChars
-            // (don't have to check m_throwOnOverflow for chars)
+            // (don't have to check _throwOnOverflow for chars)
             Debug.Assert(fallback == null || fallback.Remaining == 0,
                 "[UTF8Encoding.GetChars]Expected empty fallback buffer at end");
 
@@ -2317,7 +2297,7 @@ namespace System.Text
 
         // During GetChars we had an invalid byte sequence
         // pSrc is backed up to the start of the bad sequence if we didn't have room to
-        // fall it back.  Otherwise pSrc remains wher it is.
+        // fall it back.  Otherwise pSrc remains where it is.
         private unsafe bool FallbackInvalidByteSequence(
             ref byte* pSrc, int ch, DecoderFallbackBuffer fallback, ref char* pTarget)
         {
@@ -2445,7 +2425,6 @@ namespace System.Text
             if (charCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(charCount),
                      SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // Characters would be # of characters + 1 in case left over high surrogate is ? * max fallback
             long byteCount = (long)charCount + 1;
@@ -2468,7 +2447,6 @@ namespace System.Text
             if (byteCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(byteCount),
                      SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // Figure out our length, 1 char per input byte + 1 char if 1st byte is last byte of 4 byte surrogate pair
             long charCount = ((long)byteCount + 1);
@@ -2498,6 +2476,10 @@ namespace System.Text
                 return Array.Empty<byte>();
         }
 
+        public override ReadOnlySpan<byte> Preamble =>
+            GetType() != typeof(UTF8Encoding) ? GetPreamble() : // in case a derived UTF8Encoding overrode GetPreamble
+            _emitUTF8Identifier ? s_preamble :
+            Array.Empty<byte>();
 
         public override bool Equals(Object value)
         {
@@ -2519,7 +2501,7 @@ namespace System.Text
                    UTF8_CODEPAGE + (_emitUTF8Identifier ? 1 : 0);
         }
 
-        private sealed class UTF8Encoder : EncoderNLS, ISerializable
+        private sealed class UTF8Encoder : EncoderNLS
         {
             // We must save a high surrogate value until the next call, looking
             // for a low surrogate value.
@@ -2530,18 +2512,12 @@ namespace System.Text
                 // base calls reset
             }
 
-            // ISerializable implementation
-            void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-            {
-                throw new PlatformNotSupportedException();
-            }
-
             public override void Reset()
 
             {
                 this.surrogateChar = 0;
-                if (m_fallbackBuffer != null)
-                    m_fallbackBuffer.Reset();
+                if (_fallbackBuffer != null)
+                    _fallbackBuffer.Reset();
             }
 
             // Anything left in our encoder?
@@ -2554,7 +2530,7 @@ namespace System.Text
             }
         }
 
-        private sealed class UTF8Decoder : DecoderNLS, ISerializable
+        private sealed class UTF8Decoder : DecoderNLS
         {
             // We'll need to remember the previous information. See the comments around definition
             // of FinalByte for details.
@@ -2565,23 +2541,11 @@ namespace System.Text
                 // base calls reset
             }
 
-            // Constructor called by serialization, have to handle deserializing from Everett
-            internal UTF8Decoder(SerializationInfo info, StreamingContext context)
-            {
-                throw new PlatformNotSupportedException();
-            }
-
-            // ISerializable implementation, get data for this object
-            void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-            {
-                throw new PlatformNotSupportedException();
-            }
-
             public override void Reset()
             {
                 this.bits = 0;
-                if (m_fallbackBuffer != null)
-                    m_fallbackBuffer.Reset();
+                if (_fallbackBuffer != null)
+                    _fallbackBuffer.Reset();
             }
 
             // Anything left in our decoder?

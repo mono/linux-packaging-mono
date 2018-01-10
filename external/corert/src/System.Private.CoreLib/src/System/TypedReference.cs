@@ -7,13 +7,14 @@ using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
+using Internal.Runtime.CompilerServices;
 using Internal.Reflection.Augments;
 
 namespace System
 {
     [CLSCompliant(false)]
     [StructLayout(LayoutKind.Sequential)]
-    public struct TypedReference
+    public ref struct TypedReference
     {
         // Do not change the ordering of these fields. The JIT has a dependency on this layout.
         private readonly ByReference<byte> _value;

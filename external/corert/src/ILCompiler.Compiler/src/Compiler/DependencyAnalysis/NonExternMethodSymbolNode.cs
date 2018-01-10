@@ -2,23 +2,34 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 using ILCompiler.DependencyAnalysisFramework;
+using Internal.Text;
 using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
+    public static class ProjectNDependencyBehavior
+    {
+        // Temporary static variable to enable full analysis when using the ProjectN abi
+        // When full analysis is fully supported, remove this class and field forever.
+        public static bool EnableFullAnalysis = false;
+    }
+
     /// <summary>
     /// Represents a symbol that is defined externally but modeled as a method
     /// in the DependencyAnalysis infrastructure during compilation that is compiled 
     /// in the current compilation process
     /// </summary>
-    public class NonExternMethodSymbolNode : ExternSymbolNode, IMethodNode
+    public class NonExternMethodSymbolNode : ExternSymbolNode, IMethodBodyNodeWithFuncletSymbols, ISpecialUnboxThunkNode, IExportableSymbolNode
     {
         private MethodDesc _method;
+        private bool _isUnboxing;
         private List<DependencyListEntry> _compilationDiscoveredDependencies;
+        ISymbolNode[] _funcletSymbols = Array.Empty<ISymbolNode>();
         bool _dependenciesQueried;
         bool _hasCompiledBody;
 
@@ -26,7 +37,22 @@ namespace ILCompiler.DependencyAnalysis
             : base(isUnboxing ? UnboxingStubNode.GetMangledName(factory.NameMangler, method) :
                   factory.NameMangler.GetMangledMethodName(method))
         {
+            _isUnboxing = isUnboxing;
             _method = method;
+
+            // Ensure all method bodies are fully canonicalized or not at all.
+            Debug.Assert(!method.IsCanonicalMethod(CanonicalFormKind.Any) || (method.GetCanonMethodTarget(CanonicalFormKind.Specific) == method));
+            Debug.Assert(!method.IsCanonicalMethod(CanonicalFormKind.Universal) || (method.GetCanonMethodTarget(CanonicalFormKind.Universal) == method));
+        }
+
+        protected override string GetName(NodeFactory factory) => "Non" + base.GetName(factory);
+
+        public ExportForm GetExportForm(NodeFactory factory)
+        {
+            ExportForm exportForm = factory.CompilationModuleGroup.GetExportMethodForm(_method, IsSpecialUnboxingThunk);
+            if (exportForm == ExportForm.ByName)
+                return ExportForm.None; // Non-extern symbols exported by name are naturally handled by the linker
+            return exportForm;
         }
 
         public MethodDesc Method
@@ -37,12 +63,42 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
+        public bool IsSpecialUnboxingThunk
+        {
+            get
+            {
+                if (_isUnboxing)
+                {
+                    if (!_method.HasInstantiation && _method.OwningType.IsValueType && !_method.Signature.IsStatic)
+                        return _method.IsCanonicalMethod(CanonicalFormKind.Any);
+                }
+
+                return false;
+            }
+        }
+        public ISymbolNode GetUnboxingThunkTarget(NodeFactory factory)
+        {
+            Debug.Assert(IsSpecialUnboxingThunk);
+
+            return factory.MethodEntrypoint(_method.GetCanonMethodTarget(CanonicalFormKind.Specific), false);
+        }
+
         public bool HasCompiledBody => _hasCompiledBody;
         public void SetHasCompiledBody()
         {
             // This method isn't expected to be called multiple times
             Debug.Assert(!_hasCompiledBody);
             _hasCompiledBody = true;
+        }
+
+        public void SetFuncletCount(int funcletCount)
+        {
+            Debug.Assert(funcletCount > 0);
+            Debug.Assert(_funcletSymbols.Length == 0);
+            ISymbolNode[] funclets = new ISymbolNode[funcletCount];
+            for (int funcletId = 1; funcletId <= funcletCount; funcletId++)
+                funclets[funcletId - 1] = new FuncletSymbol(this, funcletId);
+            _funcletSymbols = funclets;
         }
 
         public void AddCompilationDiscoveredDependency(IDependencyNode<NodeFactory> node, string reason)
@@ -57,13 +113,21 @@ namespace ILCompiler.DependencyAnalysis
         {
             get
             {
-                // TODO Change this to
-                // return HasCompiledBody;
-                // when we fix up creation of NonExternMethodSymbolNode to be correctly handled
-                return true;
+                if (ProjectNDependencyBehavior.EnableFullAnalysis)
+                    return HasCompiledBody;
+                else
+                    return true;
             }
         }
 
+        ISymbolNode[] IMethodBodyNodeWithFuncletSymbols.FuncletSymbols
+        {
+            get
+            {
+                return _funcletSymbols;
+            }
+        }
+        
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
             _dependenciesQueried = true;
@@ -76,7 +140,57 @@ namespace ILCompiler.DependencyAnalysis
                 dependencies.AddRange(_compilationDiscoveredDependencies);
             }
 
+            if (MethodAssociatedDataNode.MethodHasAssociatedData(factory, this))
+            {
+                dependencies = dependencies ?? new DependencyList();
+                dependencies.Add(new DependencyListEntry(factory.MethodAssociatedData(this), "Method associated data"));
+            }
+
             return dependencies;
+        }
+
+        private class FuncletSymbol : ISymbolNodeWithFuncletId
+        {
+            public FuncletSymbol(NonExternMethodSymbolNode methodSymbol, int funcletId)
+            {
+                _funcletId = funcletId;
+                _methodSymbol = methodSymbol;
+            }
+
+            private int _funcletId;
+            private NonExternMethodSymbolNode _methodSymbol;
+
+            public ISymbolNode AssociatedMethodSymbol => _methodSymbol;
+
+            public int FuncletId => _funcletId;
+
+            public int Offset => 0;
+
+            public bool RepresentsIndirectionCell => false;
+            public bool InterestingForDynamicDependencyAnalysis => false;
+            public bool HasDynamicDependencies => false;
+            public bool HasConditionalStaticDependencies => false;
+            public bool StaticDependenciesAreComputed => true;
+            public bool Marked => _methodSymbol.Marked;
+            public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
+            {
+                _methodSymbol.AppendMangledName(nameMangler, sb);
+            }
+
+            public IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory context)
+            {
+                return null;
+            }
+
+            public IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory context)
+            {
+                return null;
+            }
+
+            public IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory context)
+            {
+                return null;
+            }
         }
     }
 }

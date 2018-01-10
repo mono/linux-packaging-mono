@@ -14,7 +14,6 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
@@ -43,6 +42,7 @@ namespace System
 
 
     [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     sealed public partial class TimeZoneInfo : IEquatable<TimeZoneInfo>, ISerializable, IDeserializationCallback
     {
         // ---- SECTION:  members for internal support ---------*
@@ -180,7 +180,7 @@ namespace System
 
                 public override int GetHashCode()
                 {
-                    return FormatProvider.GetHashCodeOrdinalIgnoreCase(_string);
+                    return TextInfo.GetHashCodeOrdinalIgnoreCase(_string);
                 }
 
                 public bool Equals(OrdinalIgnoreCaseString other)
@@ -325,7 +325,6 @@ namespace System
             {
                 throw new ArgumentException(SR.Argument_DateTimeOffsetIsNotAmbiguous, nameof(dateTimeOffset));
             }
-            Contract.EndContractBlock();
 
             DateTime adjustedTime = (TimeZoneInfo.ConvertTime(dateTimeOffset, this)).DateTime;
 
@@ -366,7 +365,6 @@ namespace System
             {
                 throw new ArgumentException(SR.Argument_DateTimeIsNotAmbiguous, nameof(dateTime));
             }
-            Contract.EndContractBlock();
 
             DateTime adjustedTime;
             if (dateTime.Kind == DateTimeKind.Local)
@@ -732,7 +730,6 @@ namespace System
                 throw new ArgumentNullException(nameof(destinationTimeZone));
             }
 
-            Contract.EndContractBlock();
             // calculate the destination time zone offset
             DateTime utcDateTime = dateTimeOffset.UtcDateTime;
             TimeSpan destinationOffset = GetUtcOffsetFromUtc(utcDateTime, destinationTimeZone);
@@ -760,7 +757,6 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(destinationTimeZone));
             }
-            Contract.EndContractBlock();
 
             // Special case to give a way clearing the cache without exposing ClearCachedData()
             if (dateTime.Ticks == 0)
@@ -800,7 +796,6 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(destinationTimeZone));
             }
-            Contract.EndContractBlock();
 
             DateTimeKind sourceKind = cachedData.GetCorrespondingKind(sourceTimeZone);
             if (((flags & TimeZoneInfoOptions.NoThrowOnInvalidTime) == 0) && (dateTime.Kind != DateTimeKind.Unspecified) && (dateTime.Kind != sourceKind))
@@ -998,7 +993,6 @@ namespace System
             }
 
             // check the utcOffset and supportsDaylightSavingTime members
-            Contract.EndContractBlock();
 
             if (_baseUtcOffset != other._baseUtcOffset
             || _supportsDaylightSavingTime != other._supportsDaylightSavingTime)
@@ -1050,7 +1044,6 @@ namespace System
         {
             get
             {
-                Contract.Ensures(Contract.Result<TimeZoneInfo>() != null);
                 return s_cachedData.Local;
             }
         }
@@ -1098,7 +1091,6 @@ namespace System
             {
                 throw new ArgumentException(SR.Argument_InvalidSerializedString, nameof(source));
             }
-            Contract.EndContractBlock();
 
             return StringSerializer.GetDeserializedTimeZoneInfo(source);
         }
@@ -1112,7 +1104,6 @@ namespace System
         {
             get
             {
-                Contract.Ensures(Contract.Result<TimeZoneInfo>() != null);
                 return s_utcTimeZone;
             }
         }
@@ -1848,7 +1839,6 @@ namespace System
         //
         // Helper function that validates the TimeSpan is within +/- 14.0 hours
         //
-        [Pure]
         internal static Boolean UtcOffsetOutOfRange(TimeSpan offset)
         {
             return (offset.TotalHours < -14.0 || offset.TotalHours > 14.0);
@@ -1887,7 +1877,6 @@ namespace System
             {
                 throw new ArgumentException(SR.Argument_TimeSpanHasSeconds, nameof(baseUtcOffset));
             }
-            Contract.EndContractBlock();
 
             adjustmentRulesSupportDst = false;
 
@@ -1963,15 +1952,14 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            Contract.EndContractBlock();
 
-            info.AddValue("Id", _id);
-            info.AddValue("DisplayName", _displayName);
-            info.AddValue("StandardName", _standardDisplayName);
-            info.AddValue("DaylightName", _daylightDisplayName);
-            info.AddValue("BaseUtcOffset", _baseUtcOffset);
-            info.AddValue("AdjustmentRules", _adjustmentRules);
-            info.AddValue("SupportsDaylightSavingTime", _supportsDaylightSavingTime);
+            info.AddValue("Id", _id); // Do not rename (binary serialization)
+            info.AddValue("DisplayName", _displayName); // Do not rename (binary serialization)
+            info.AddValue("StandardName", _standardDisplayName); // Do not rename (binary serialization)
+            info.AddValue("DaylightName", _daylightDisplayName); // Do not rename (binary serialization)
+            info.AddValue("BaseUtcOffset", _baseUtcOffset); // Do not rename (binary serialization)
+            info.AddValue("AdjustmentRules", _adjustmentRules); // Do not rename (binary serialization)
+            info.AddValue("SupportsDaylightSavingTime", _supportsDaylightSavingTime); // Do not rename (binary serialization)
         }
 
         private TimeZoneInfo(SerializationInfo info, StreamingContext context)
@@ -1981,13 +1969,13 @@ namespace System
                 throw new ArgumentNullException(nameof(info));
             }
 
-            _id = (String)info.GetValue("Id", typeof(String));
-            _displayName = (String)info.GetValue("DisplayName", typeof(String));
-            _standardDisplayName = (String)info.GetValue("StandardName", typeof(String));
-            _daylightDisplayName = (String)info.GetValue("DaylightName", typeof(String));
-            _baseUtcOffset = (TimeSpan)info.GetValue("BaseUtcOffset", typeof(TimeSpan));
-            _adjustmentRules = (AdjustmentRule[])info.GetValue("AdjustmentRules", typeof(AdjustmentRule[]));
-            _supportsDaylightSavingTime = (Boolean)info.GetValue("SupportsDaylightSavingTime", typeof(Boolean));
+            _id = (String)info.GetValue("Id", typeof(String)); // Do not rename (binary serialization)
+            _displayName = (String)info.GetValue("DisplayName", typeof(String)); // Do not rename (binary serialization)
+            _standardDisplayName = (String)info.GetValue("StandardName", typeof(String)); // Do not rename (binary serialization)
+            _daylightDisplayName = (String)info.GetValue("DaylightName", typeof(String)); // Do not rename (binary serialization)
+            _baseUtcOffset = (TimeSpan)info.GetValue("BaseUtcOffset", typeof(TimeSpan)); // Do not rename (binary serialization)
+            _adjustmentRules = (AdjustmentRule[])info.GetValue("AdjustmentRules", typeof(AdjustmentRule[])); // Do not rename (binary serialization)
+            _supportsDaylightSavingTime = (Boolean)info.GetValue("SupportsDaylightSavingTime", typeof(Boolean)); // Do not rename (binary serialization)
         }
 
         internal class TimeZoneInformation
@@ -2835,7 +2823,6 @@ namespace System
                     throw new ArgumentException(SR.Argument_DateTimeHasTimeOfDay,
                         nameof(dateEnd));
                 }
-                Contract.EndContractBlock();
             }
 
 
@@ -2864,14 +2851,13 @@ namespace System
                 {
                     throw new ArgumentNullException(nameof(info));
                 }
-                Contract.EndContractBlock();
 
-                info.AddValue("DateStart", _dateStart);
-                info.AddValue("DateEnd", _dateEnd);
-                info.AddValue("DaylightDelta", _daylightDelta);
-                info.AddValue("DaylightTransitionStart", _daylightTransitionStart);
-                info.AddValue("DaylightTransitionEnd", _daylightTransitionEnd);
-                info.AddValue("BaseUtcOffsetDelta", _baseUtcOffsetDelta);
+                info.AddValue("DateStart", _dateStart); // Do not rename (binary serialization)
+                info.AddValue("DateEnd", _dateEnd); // Do not rename (binary serialization)
+                info.AddValue("DaylightDelta", _daylightDelta); // Do not rename (binary serialization)
+                info.AddValue("DaylightTransitionStart", _daylightTransitionStart); // Do not rename (binary serialization)
+                info.AddValue("DaylightTransitionEnd", _daylightTransitionEnd); // Do not rename (binary serialization)
+                info.AddValue("BaseUtcOffsetDelta", _baseUtcOffsetDelta); // Do not rename (binary serialization)
             }
 
             private AdjustmentRule(SerializationInfo info, StreamingContext context)
@@ -2881,13 +2867,13 @@ namespace System
                     throw new ArgumentNullException(nameof(info));
                 }
 
-                _dateStart = (DateTime)info.GetValue("DateStart", typeof(DateTime));
-                _dateEnd = (DateTime)info.GetValue("DateEnd", typeof(DateTime));
-                _daylightDelta = (TimeSpan)info.GetValue("DaylightDelta", typeof(TimeSpan));
-                _daylightTransitionStart = (TransitionTime)info.GetValue("DaylightTransitionStart", typeof(TransitionTime));
-                _daylightTransitionEnd = (TransitionTime)info.GetValue("DaylightTransitionEnd", typeof(TransitionTime));
+                _dateStart = (DateTime)info.GetValue("DateStart", typeof(DateTime)); // Do not rename (binary serialization)
+                _dateEnd = (DateTime)info.GetValue("DateEnd", typeof(DateTime)); // Do not rename (binary serialization)
+                _daylightDelta = (TimeSpan)info.GetValue("DaylightDelta", typeof(TimeSpan)); // Do not rename (binary serialization)
+                _daylightTransitionStart = (TransitionTime)info.GetValue("DaylightTransitionStart", typeof(TransitionTime)); // Do not rename (binary serialization)
+                _daylightTransitionEnd = (TransitionTime)info.GetValue("DaylightTransitionEnd", typeof(TransitionTime)); // Do not rename (binary serialization)
 
-                object o = info.GetValueNoThrow("BaseUtcOffsetDelta", typeof(TimeSpan));
+                object o = info.GetValueNoThrow("BaseUtcOffsetDelta", typeof(TimeSpan)); // Do not rename (binary serialization)
                 if (o != null)
                 {
                     _baseUtcOffsetDelta = (TimeSpan)o;
@@ -2910,7 +2896,7 @@ namespace System
         **
         ============================================================*/
         [Serializable]
-        public struct TransitionTime : IEquatable<TransitionTime>, ISerializable, IDeserializationCallback
+        public readonly struct TransitionTime : IEquatable<TransitionTime>, ISerializable, IDeserializationCallback
         {
             // ---- SECTION:  members supporting exposed properties -------------*
             private readonly DateTime _timeOfDay;
@@ -2972,7 +2958,6 @@ namespace System
             }
 
             // ---- SECTION: public methods --------------*
-            [Pure]
             public override bool Equals(Object obj)
             {
                 if (obj is TransitionTime)
@@ -2992,7 +2977,6 @@ namespace System
                 return (!t1.Equals(t2));
             }
 
-            [Pure]
             public bool Equals(TransitionTime other)
             {
                 bool equal = (_isFixedDateRule == other._isFixedDateRule
@@ -3106,7 +3090,6 @@ namespace System
                 {
                     throw new ArgumentOutOfRangeException(nameof(dayOfWeek), SR.ArgumentOutOfRange_DayOfWeek);
                 }
-                Contract.EndContractBlock();
 
                 if (timeOfDay.Year != 1 || timeOfDay.Month != 1
                 || timeOfDay.Day != 1 || (timeOfDay.Ticks % TimeSpan.TicksPerMillisecond != 0))
@@ -3136,14 +3119,13 @@ namespace System
                 {
                     throw new ArgumentNullException(nameof(info));
                 }
-                Contract.EndContractBlock();
 
-                info.AddValue("TimeOfDay", _timeOfDay);
-                info.AddValue("Month", _month);
-                info.AddValue("Week", _week);
-                info.AddValue("Day", _day);
-                info.AddValue("DayOfWeek", _dayOfWeek);
-                info.AddValue("IsFixedDateRule", _isFixedDateRule);
+                info.AddValue("TimeOfDay", _timeOfDay); // Do not rename (binary serialization)
+                info.AddValue("Month", _month); // Do not rename (binary serialization)
+                info.AddValue("Week", _week); // Do not rename (binary serialization)
+                info.AddValue("Day", _day); // Do not rename (binary serialization)
+                info.AddValue("DayOfWeek", _dayOfWeek); // Do not rename (binary serialization)
+                info.AddValue("IsFixedDateRule", _isFixedDateRule); // Do not rename (binary serialization)
             }
 
             private TransitionTime(SerializationInfo info, StreamingContext context)
@@ -3153,12 +3135,12 @@ namespace System
                     throw new ArgumentNullException(nameof(info));
                 }
 
-                _timeOfDay = (DateTime)info.GetValue("TimeOfDay", typeof(DateTime));
-                _month = (byte)info.GetValue("Month", typeof(byte));
-                _week = (byte)info.GetValue("Week", typeof(byte));
-                _day = (byte)info.GetValue("Day", typeof(byte));
-                _dayOfWeek = (DayOfWeek)info.GetValue("DayOfWeek", typeof(DayOfWeek));
-                _isFixedDateRule = (Boolean)info.GetValue("IsFixedDateRule", typeof(Boolean));
+                _timeOfDay = (DateTime)info.GetValue("TimeOfDay", typeof(DateTime)); // Do not rename (binary serialization)
+                _month = (byte)info.GetValue("Month", typeof(byte)); // Do not rename (binary serialization)
+                _week = (byte)info.GetValue("Week", typeof(byte)); // Do not rename (binary serialization)
+                _day = (byte)info.GetValue("Day", typeof(byte)); // Do not rename (binary serialization)
+                _dayOfWeek = (DayOfWeek)info.GetValue("DayOfWeek", typeof(DayOfWeek)); // Do not rename (binary serialization)
+                _isFixedDateRule = (Boolean)info.GetValue("IsFixedDateRule", typeof(Boolean)); // Do not rename (binary serialization)
             }
         }
 

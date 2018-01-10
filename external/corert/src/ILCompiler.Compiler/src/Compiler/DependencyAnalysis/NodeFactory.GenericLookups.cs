@@ -53,14 +53,9 @@ namespace ILCompiler.DependencyAnalysis
                     return new MethodEntryGenericLookupResult(key.Method, key.IsUnboxingStub);
                 });
 
-                _virtualCallHelpers = new NodeCache<MethodDesc, GenericLookupResult>(method =>
+                _virtualDispatchCells = new NodeCache<MethodDesc, GenericLookupResult>(method =>
                 {
-                    return new VirtualDispatchGenericLookupResult(method);
-                });
-
-                _virtualResolveHelpers = new NodeCache<MethodDesc, GenericLookupResult>(method =>
-                {
-                    return new VirtualResolveGenericLookupResult(method);
+                    return new VirtualDispatchCellGenericLookupResult(method);
                 });
 
                 _typeThreadStaticBaseIndexSymbols = new NodeCache<TypeDesc, GenericLookupResult>(type =>
@@ -206,18 +201,11 @@ namespace ILCompiler.DependencyAnalysis
                 return _methodDictionaries.GetOrAdd(method);
             }
 
-            private NodeCache<MethodDesc, GenericLookupResult> _virtualCallHelpers;
+            private NodeCache<MethodDesc, GenericLookupResult> _virtualDispatchCells;
 
-            public GenericLookupResult VirtualCall(MethodDesc method)
+            public GenericLookupResult VirtualDispatchCell(MethodDesc method)
             {
-                return _virtualCallHelpers.GetOrAdd(method);
-            }
-
-            private NodeCache<MethodDesc, GenericLookupResult> _virtualResolveHelpers;
-
-            public GenericLookupResult VirtualMethodAddress(MethodDesc method)
-            {
-                return _virtualResolveHelpers.GetOrAdd(method);
+                return _virtualDispatchCells.GetOrAdd(method);
             }
 
             private NodeCache<MethodKey, GenericLookupResult> _methodEntrypoints;
@@ -308,6 +296,26 @@ namespace ILCompiler.DependencyAnalysis
             public GenericLookupResult ConstrainedMethodUse(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
             {
                 return _constrainedMethodUses.GetOrAdd(new ConstrainedMethodUseKey(constrainedMethod, constraintType, directCall));
+            }
+
+            private static NodeCache<int, GenericLookupResult> s_integers = new NodeCache<int, GenericLookupResult>(slotIndex =>
+            {
+                return new IntegerLookupResult(slotIndex);
+            });
+
+            public static GenericLookupResult Integer(int integer)
+            {
+                return s_integers.GetOrAdd(integer);
+            }
+
+            private static NodeCache<int, GenericLookupResult> s_pointersToSlots = new NodeCache<int, GenericLookupResult>(slotIndex =>
+            {
+                return new PointerToSlotLookupResult(slotIndex);
+            });
+
+            public static GenericLookupResult PointerToSlot(int slotIndex)
+            {
+                return s_pointersToSlots.GetOrAdd(slotIndex);
             }
         }
 

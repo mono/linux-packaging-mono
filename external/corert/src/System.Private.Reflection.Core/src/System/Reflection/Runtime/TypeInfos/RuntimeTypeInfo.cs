@@ -5,13 +5,14 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using System.Reflection.Runtime.General;
 using System.Reflection.Runtime.MethodInfos;
 
 using Internal.Reflection.Core.Execution;
 using Internal.Reflection.Tracing;
 using Internal.Reflection.Augments;
+
+using EnumInfo = Internal.Runtime.Augments.EnumInfo;
 
 using IRuntimeImplementedType = Internal.Reflection.Core.NonPortable.IRuntimeImplementedType;
 
@@ -34,9 +35,8 @@ namespace System.Reflection.Runtime.TypeInfos
     //   - Overrides many "NotImplemented" members in TypeInfo with abstracts so failure to implement
     //     shows up as build error.
     //
-    [Serializable]
     [DebuggerDisplay("{_debugName}")]
-    internal abstract partial class RuntimeTypeInfo : TypeInfo, ISerializable, ITraceableTypeMember, ICloneable, IRuntimeImplementedType
+    internal abstract partial class RuntimeTypeInfo : TypeInfo, ITraceableTypeMember, ICloneable, IRuntimeImplementedType
     {
         protected RuntimeTypeInfo()
         {
@@ -51,7 +51,11 @@ namespace System.Reflection.Runtime.TypeInfos
         protected abstract override bool IsByRefImpl();
         protected abstract override bool IsPointerImpl();
         public abstract override bool IsGenericParameter { get; }
+        public abstract override bool IsGenericTypeParameter { get; }
+        public abstract override bool IsGenericMethodParameter { get; }
         public abstract override bool IsConstructedGenericType { get; }
+        public abstract override bool IsByRefLike { get; }
+        public sealed override bool IsCollectible => false;
 
         public abstract override Assembly Assembly { get; }
 
@@ -110,22 +114,7 @@ namespace System.Reflection.Runtime.TypeInfos
 
         public abstract override bool ContainsGenericParameters { get; }
 
-        //
-        // Left unsealed so that RuntimeNamedTypeInfo and RuntimeConstructedGenericTypeInfo and RuntimeGenericParameterTypeInfo can override.
-        //
-        public override IEnumerable<CustomAttributeData> CustomAttributes
-        {
-            get
-            {
-#if ENABLE_REFLECTION_TRACE
-                if (ReflectionTrace.Enabled)
-                    ReflectionTrace.TypeInfo_CustomAttributes(this);
-#endif
-
-                Debug.Assert(IsArray || IsByRef || IsPointer);
-                return Empty<CustomAttributeData>.Enumerable;
-            }
-        }
+        public abstract override IEnumerable<CustomAttributeData> CustomAttributes { get; }
  
         //
         // Left unsealed as generic parameter types must override.
@@ -207,11 +196,6 @@ namespace System.Reflection.Runtime.TypeInfos
         public sealed override InterfaceMapping GetInterfaceMap(Type interfaceType)
         {
             throw new PlatformNotSupportedException(SR.PlatformNotSupported_InterfaceMap);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
         }
 
         //
@@ -449,24 +433,42 @@ namespace System.Reflection.Runtime.TypeInfos
             // In a pay-for-play world, this can cause needless MissingMetadataExceptions. There is no harm in creating
             // the Type object for an inconsistent generic type - no EEType will ever match it so any attempt to "invoke" it
             // will throw an exception.
+            bool foundSignatureType = false;
             RuntimeTypeInfo[] runtimeTypeArguments = new RuntimeTypeInfo[typeArguments.Length];
             for (int i = 0; i < typeArguments.Length; i++)
             {
-                RuntimeTypeInfo runtimeTypeArgument = typeArguments[i] as RuntimeTypeInfo;
+                RuntimeTypeInfo runtimeTypeArgument = runtimeTypeArguments[i] = typeArguments[i] as RuntimeTypeInfo;
                 if (runtimeTypeArgument == null)
                 {
                     if (typeArguments[i] == null)
                         throw new ArgumentNullException();
+
+                    if (typeArguments[i].IsSignatureType)
+                    {
+                        foundSignatureType = true;
+                    }
                     else
+                    {
                         throw new PlatformNotSupportedException(SR.PlatformNotSupported_MakeGenericType); // "PlatformNotSupported" because on desktop, passing in a foreign type is allowed and creates a RefEmit.TypeBuilder
+                    }
                 }
+            }
+
+            if (foundSignatureType)
+                return ReflectionAugments.MakeGenericSignatureType(this, typeArguments);
+
+            for (int i = 0; i < typeArguments.Length; i++)
+            {
+                RuntimeTypeInfo runtimeTypeArgument = runtimeTypeArguments[i];
 
                 // Desktop compatibility: Treat generic type definitions as a constructed generic type using the generic parameters as type arguments.
                 if (runtimeTypeArgument.IsGenericTypeDefinition)
-                    runtimeTypeArgument = runtimeTypeArgument.GetConstructedGenericType(runtimeTypeArgument.RuntimeGenericTypeParameters);
+                    runtimeTypeArgument = runtimeTypeArguments[i] = runtimeTypeArgument.GetConstructedGenericType(runtimeTypeArgument.RuntimeGenericTypeParameters);
 
-                runtimeTypeArguments[i] = runtimeTypeArgument;
+                if (runtimeTypeArgument.IsByRefLike)
+                    throw new TypeLoadException(SR.CannotUseByRefLikeTypeInInstantiation);
             }
+
             return this.GetConstructedGenericType(runtimeTypeArguments);
         }
 
@@ -612,6 +614,8 @@ namespace System.Reflection.Runtime.TypeInfos
                 return null;
             }
         }
+
+        internal EnumInfo EnumInfo => Cache.EnumInfo;
 
         internal abstract Type InternalDeclaringType { get; }
 

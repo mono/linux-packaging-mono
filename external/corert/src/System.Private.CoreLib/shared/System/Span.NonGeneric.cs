@@ -5,6 +5,9 @@
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+using Internal.Runtime.CompilerServices;
 
 #if BIT64
 using nuint = System.UInt64;
@@ -15,10 +18,47 @@ using nuint = System.UInt32;
 namespace System
 {
     /// <summary>
-    /// Extension methods and non-generic helpers for Span and ReadOnlySpan
+    /// Extension methods and non-generic helpers for Span, ReadOnlySpan, Memory, and ReadOnlyMemory.
     /// </summary>
     public static class Span
     {
+        /// <summary>Creates a new <see cref="ReadOnlyMemory{T}"/> over the portion of the target string.</summary>
+        /// <param name="text">The target string.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="text"/> is a null reference (Nothing in Visual Basic).</exception>
+        public static ReadOnlyMemory<char> AsReadOnlyMemory(this string text)
+        {
+            if (text == null)
+            {
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.text);
+            }
+
+            return new ReadOnlyMemory<char>(text, 0, text.Length);
+        }
+
+        /// <summary>Attempts to get the underlying <see cref="string"/> from a <see cref="ReadOnlyMemory{T}"/>.</summary>
+        /// <param name="readOnlyMemory">The memory that may be wrapping a <see cref="string"/> object.</param>
+        /// <param name="text">The string.</param>
+        /// <param name="start">The starting location in <paramref name="text"/>.</param>
+        /// <param name="length">The number of items in <paramref name="text"/>.</param>
+        /// <returns></returns>
+        public static bool TryGetString(this ReadOnlyMemory<char> readOnlyMemory, out string text, out int start, out int length)
+        {
+            if (readOnlyMemory.GetObjectStartLength(out int offset, out int count) is string s)
+            {
+                text = s;
+                start = offset;
+                length = count;
+                return true;
+            }
+            else
+            {
+                text = null;
+                start = 0;
+                length = 0;
+                return false;
+            }
+        }
+
         /// <summary>
         /// Casts a Span of one primitive type <typeparamref name="T"/> to Span of bytes.
         /// That type may not contain pointers or references. This is checked at runtime in order to preserve type safety.
@@ -35,7 +75,7 @@ namespace System
                 ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
 
             return new Span<byte>(
-                ref Unsafe.As<T, byte>(ref source.DangerousGetPinnableReference()),
+                ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(source)),
                 checked(source.Length * Unsafe.SizeOf<T>()));
         }
 
@@ -55,7 +95,7 @@ namespace System
                 ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
 
             return new ReadOnlySpan<byte>(
-                ref Unsafe.As<T, byte>(ref source.DangerousGetPinnableReference()),
+                ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(source)),
                 checked(source.Length * Unsafe.SizeOf<T>()));
         }
 
@@ -107,7 +147,7 @@ namespace System
                 ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(TTo));
 
             return new ReadOnlySpan<TTo>(
-                ref Unsafe.As<TFrom, TTo>(ref source.DangerousGetPinnableReference()),
+                ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(source)),
                 checked((int)((long)source.Length * Unsafe.SizeOf<TFrom>() / Unsafe.SizeOf<TTo>())));
         }
 
@@ -118,7 +158,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="text"/> is a null
         /// reference (Nothing in Visual Basic).</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<char> AsSpan(this string text)
+        public static ReadOnlySpan<char> AsReadOnlySpan(this string text)
         {
             if (text == null)
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.text);
@@ -165,7 +205,7 @@ namespace System
             if (byteLength == 0)
                 return;
             
-#if AMD64 && CORECLR
+#if CORECLR && (AMD64 || ARM64)
             if (byteLength > 4096) goto PInvoke;
             Unsafe.InitBlockUnaligned(ref b, 0, (uint)byteLength);
             return;

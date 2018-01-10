@@ -56,14 +56,12 @@ namespace System.IO
 
         internal const int MaxShortPath = 260;
         internal const int MaxShortDirectoryPath = 248;
-        internal const int MaxLongPath = short.MaxValue;
         // \\?\, \\.\, \??\
         internal const int DevicePrefixLength = 4;
         // \\
         internal const int UncPrefixLength = 2;
         // \\?\UNC\, \\.\UNC\
         internal const int UncExtendedPrefixLength = 8;
-        internal const int MaxComponentLength = 255;
 
         /// <summary>
         /// Returns true if the given character is a valid drive letter
@@ -146,36 +144,6 @@ namespace System.IO
                 && (path[1] == '\\' || path[1] == '?')
                 && path[2] == '?'
                 && path[3] == '\\';
-        }
-
-        /// <summary>
-        /// Returns a value indicating if the given path contains invalid characters (", &lt;, &gt;, | 
-        /// NUL, or any ASCII char whose integer representation is in the range of 1 through 31).
-        /// Does not check for wild card characters ? and *.
-        /// </summary>
-        internal static bool HasIllegalCharacters(string path)
-        {
-            // This is equivalent to IndexOfAny(InvalidPathChars) >= 0,
-            // except faster since IndexOfAny grows slower as the input
-            // array grows larger.
-            // Since we know that some of the characters we're looking
-            // for are contiguous in the alphabet-- the path cannot contain
-            // characters 0-31-- we can optimize this for our specific use
-            // case and use simple comparison operations.
-
-            for (int i = 0; i < path.Length; i++)
-            {
-                char c = path[i];
-                if (c <= '|') // fast path for common case - '|' is highest illegal character
-                {
-                    if (c <= '\u001f' || c == '|')
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -439,9 +407,22 @@ namespace System.IO
             return IsDirectorySeparator(ch) || VolumeSeparatorChar == ch;
         }
 
-        internal static string TrimEndingDirectorySeparator(string path) =>
-            EndsInDirectorySeparator(path) ?
-            path.Substring(0, path.Length - 1) :
-            path;
+        /// <summary>
+        /// Returns true if the path is effectively empty for the current OS.
+        /// For unix, this is empty or null. For Windows, this is empty, null, or 
+        /// just spaces ((char)32).
+        /// </summary>
+        internal static bool IsEffectivelyEmpty(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return true;
+
+            foreach (char c in path)
+            {
+                if (c != ' ')
+                    return false;
+            }
+            return true;
+        }
     }
 }

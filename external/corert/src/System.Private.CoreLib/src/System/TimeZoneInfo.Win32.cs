@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -901,19 +900,20 @@ namespace System
         static unsafe private string TryGetLocalizedNameByNativeResource(string filePath, int resource)
         {
             using (SafeLibraryHandle handle =
-                       Interop.mincore.LoadLibraryEx_SafeHandle(filePath, IntPtr.Zero, Interop.mincore.LOAD_LIBRARY_AS_DATAFILE))
+                       Interop.Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Interop.Kernel32.LOAD_LIBRARY_AS_DATAFILE))
             {
                 if (!handle.IsInvalid)
                 {
-                    StringBuilder localizedResource = StringBuilderCache.Acquire(Interop.mincore.LOAD_STRING_MAX_LENGTH);
-                    localizedResource.Length = Interop.mincore.LOAD_STRING_MAX_LENGTH;
+                    const int LoadStringMaxLength = 500;
 
-                    int result = Interop.mincore.LoadString(handle, resource,
-                                     localizedResource, localizedResource.Length);
+                    StringBuilder localizedResource = new StringBuilder(LoadStringMaxLength);
+
+                    int result = Interop.User32.LoadString(handle, resource,
+                                     localizedResource, LoadStringMaxLength);
 
                     if (result != 0)
                     {
-                        return StringBuilderCache.GetStringAndRelease(localizedResource);
+                        return localizedResource.ToString();
                     }
                 }
             }

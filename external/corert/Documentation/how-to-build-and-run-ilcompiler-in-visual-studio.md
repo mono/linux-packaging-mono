@@ -4,15 +4,19 @@ _Note_:
 
 * Instructions below assume `c:\corert` is the repo root.
 
-# Build ILCompiler #
 
-Build your repo by issuing the following command at repo root:
+# Building ILCompiler in Visual Studio 2017 #
+
+First, build your repo by issuing the following command at repo root, by default this builds Debug x64:
 
 ```
 build.cmd
 ```
+Then when building ILCompiler.sln in Visual Studio, remember to select the appropriate configuration that you built. By default, `build.cmd` builds Debug x64 and so `Debug` and `x64` must be selected in the solution build configuration drop downs.
 
-If you changed `c:\corert\src\ILCompiler\repro\project.json`
+---
+
+If you changed `c:\corert\src\ILCompiler\repro\repro.csproj`
 
 ```
 build.cmd clean
@@ -24,7 +28,7 @@ _Note: The size of NuGet packages is approximately 2.75 GB, so download might ta
 
 1. Open c:\corert\src\ILCompiler\ILCompiler.sln in VS
 
-  - Set "desktop" project in solution explorer as your startup project
+  - Set "ILCompiler" project in solution explorer as your startup project
 
   - Set startup command line to:
 `@c:\corert\bin\obj\Windows_NT.x64.Debug\ryujit.rsp`
@@ -47,7 +51,7 @@ _Note: The size of NuGet packages is approximately 2.75 GB, so download might ta
 
 1. Open `c:\corert\src\ILCompiler\ILCompiler.sln` in VS
 
-  - Set "desktop" project in solution explorer as your startup project
+  - Set "ILCompiler" project in solution explorer as your startup project
 
   - Set startup command line to:
 `@c:\corert\bin\obj\Windows_NT.x64.Debug\cpp.rsp`
@@ -63,3 +67,7 @@ _Note: The size of NuGet packages is approximately 2.75 GB, so download might ta
 
   - Set breakpoint at repro::Program::Main in main.cpp
   - Build, run & step through as with any other C++ program
+
+## Writing your repro code in IL ##
+
+If you want to write your repro code using IL (instead of C#), you can search/replace `"repro\repro.csproj"` to `"repro\repro.ilproj"` in ILCompiler.sln which switches to repro.ilproj instead of repro.csproj. Just write your IL code in `repro.il` and build/debug as usual. All the instructions above still would work as expected. Just make sure don't check-in that change.

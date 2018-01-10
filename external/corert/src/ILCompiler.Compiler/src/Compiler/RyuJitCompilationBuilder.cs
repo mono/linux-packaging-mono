@@ -7,7 +7,11 @@ using System.Collections.Generic;
 
 using ILCompiler.DependencyAnalysis;
 using ILCompiler.DependencyAnalysisFramework;
+
 using Internal.JitInterface;
+using Internal.TypeSystem;
+
+using Debug = System.Diagnostics.Debug;
 
 namespace ILCompiler
 {
@@ -71,14 +75,23 @@ namespace ILCompiler
                     break;
             }
 
-            if (_generateDebugInfo)
+            // Do not bother with debug information if the debug info provider never gives anything.
+            if (!(_debugInformationProvider is NullDebugInformationProvider))
                 jitFlagBuilder.Add(CorJitFlag.CORJIT_FLAG_DEBUG_INFO);
 
-            var factory = new RyuJitNodeFactory(_context, _compilationGroup, _metadataManager, _nameMangler);
+            if (_context.Target.MaximumSimdVectorLength != SimdVectorLength.None)
+            {
+                // TODO: AVX
+                Debug.Assert(_context.Target.MaximumSimdVectorLength == SimdVectorLength.Vector128Bit);
+                jitFlagBuilder.Add(CorJitFlag.CORJIT_FLAG_FEATURE_SIMD);
+            }
+
+            var interopStubManager = new CompilerGeneratedInteropStubManager(_compilationGroup, _context, new InteropStateManager(_compilationGroup.GeneratedAssembly));
+            var factory = new RyuJitNodeFactory(_context, _compilationGroup, _metadataManager, interopStubManager, _nameMangler, _vtableSliceProvider, _dictionaryLayoutProvider);
 
             var jitConfig = new JitConfigProvider(jitFlagBuilder.ToArray(), _ryujitOptions);
-            DependencyAnalyzerBase<NodeFactory> graph = CreateDependencyGraph(factory);
-            return new RyuJitCompilation(graph, factory, _compilationRoots, _logger, jitConfig);
+            DependencyAnalyzerBase<NodeFactory> graph = CreateDependencyGraph(factory, new ObjectNode.ObjectNodeComparer(new CompilerComparer()));
+            return new RyuJitCompilation(graph, factory, _compilationRoots, _debugInformationProvider, _logger, _devirtualizationManager, jitConfig);
         }
     }
 }

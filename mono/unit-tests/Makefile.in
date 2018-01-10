@@ -79,6 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+@DISABLE_INTERPRETER_FALSE@am__append_1 = $(monodir)/mono/mini/libmono-ee-interp.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@check_PROGRAMS = test-sgen-qsort$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-memfuncs$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-linked-list-set$(EXEEXT) \
@@ -177,7 +178,7 @@ am__test_mono_string_SOURCES_DIST = test-mono-string.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_string_OBJECTS = test_mono_string-test-mono-string.$(OBJEXT)
 test_mono_string_OBJECTS = $(am_test_mono_string_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_DEPENDENCIES = $(am__DEPENDENCIES_3) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	../mini/libmini.la \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(mini_libs) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_4)
 test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -730,6 +731,7 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
+mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@noinst_LTLIBRARIES = libtestlib.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_SOURCES = 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
@@ -755,12 +757,12 @@ sgen_libs = \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_SOURCES = test-mono-callspec.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_CFLAGS = $(AM_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDADD = $(test_ldadd) ../mini/libmini.la $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_DEPENDENCIES = callspec.exe
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_SOURCES = test-mono-string.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_CFLAGS = $(test-cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_LDADD = $(test_ldadd) ../mini/libmini.la $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am

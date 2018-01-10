@@ -5,8 +5,10 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using Internal.Runtime.Augments;
 using System.Diagnostics;
+
+using Internal.Runtime.Augments;
+using Internal.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices
 {
@@ -48,50 +50,28 @@ namespace System.Runtime.InteropServices
             }
         }
 
-        public static void CopyToManaged(IntPtr source, Array destination, int startIndex, int length)
-        {
-            Array.CopyToManaged(source, destination, startIndex, length);
-        }
-
-        public static void CopyToNative(Array array, int startIndex, IntPtr destination, int length)
-        {
-            Array.CopyToNative(array, startIndex, destination, length);
-        }
-
         public static int GetElementSize(this Array array)
         {
             return array.EETypePtr.ComponentSize;
         }
 
-        public static unsafe IntPtr GetAddrOfPinnedArrayFromEETypeField(this Array array)
+        internal static bool MightBeBlittable(this EETypePtr eeType)
         {
-            return (IntPtr)Unsafe.AsPointer(ref array.GetRawArrayData());
+            //
+            // This is used as the approximate implementation of MethodTable::IsBlittable(). It  will err in the direction of declaring
+            // things blittable since it is used for argument validation only.
+            //
+            return !eeType.HasPointers;
         }
 
         public static bool IsBlittable(this RuntimeTypeHandle handle)
         {
-            //
-            // @todo: B#754744 This is used as the Project N equivalent of MethodTable::IsBlittable(). The current implementation is rather... approximate.
-            //
-            return handle.ToEETypePtr().IsPrimitive ||
-                   !handle.ToEETypePtr().HasPointers;
+            return handle.ToEETypePtr().MightBeBlittable();
         }
 
-        internal static bool MightBeBlittable(this EETypePtr eeType)
+        public static bool IsBlittable(this Object obj)
         {
-            //
-            // @todo: B#754744 This is used as the Project N equivalent of MethodTable::IsBlittable(). The current implementation is rather... approximate. This
-            //     version will err in the direction of declaring things blittable. This is used for the pinned GCHandle validation code where false positives
-            //     are the lesser evil (on the grounds that for V1, at least, app developers will almost always be testing IL versions of their apps and will notice
-            //     any failures on that platform.)
-            //
-            return eeType.IsPrimitive ||
-                   !eeType.HasPointers;
-        }
-
-        public static bool IsElementTypeBlittable(this Array array)
-        {
-            return array.IsElementTypeBlittable;
+            return obj.EETypePtr.MightBeBlittable();
         }
 
         public static bool IsGenericType(this RuntimeTypeHandle handle)
@@ -112,42 +92,6 @@ namespace System.Runtime.InteropServices
             return genericTypeDefinitionHandle.ToEETypePtr().ToPointer()->GenericArgumentCount;
         }
 
-        public static TKey FindEquivalentKeyUnsafe<TKey, TValue>(
-            this ConditionalWeakTable<TKey, TValue> table,
-            TKey key,
-            out TValue value
-            )
-            where TKey : class
-            where TValue : class
-        {
-            return table.FindEquivalentKeyUnsafe(key, out value);
-        }
-
-        public static System.Collections.Generic.ICollection<TValue> GetValues<TKey, TValue>(
-            this ConditionalWeakTable<TKey, TValue> table
-            )
-            where TKey : class
-            where TValue : class
-        {
-            return table.Values;
-        }
-
-        public static System.Collections.Generic.ICollection<TKey> GetKeys<TKey, TValue>(
-            this ConditionalWeakTable<TKey, TValue> table
-            )
-            where TKey : class
-            where TValue : class
-        {
-            return table.Keys;
-        }
-
-        public static void Clear<TKey, TValue>(
-            this ConditionalWeakTable<TKey, TValue> table)
-        where TKey : class
-        where TValue : class
-        {
-            table.Clear();
-        }
         //TODO:Remove Delegate.GetNativeFunctionPointer
         public static IntPtr GetNativeFunctionPointer(this Delegate del)
         {
@@ -155,8 +99,7 @@ namespace System.Runtime.InteropServices
         }
         public static IntPtr GetFunctionPointer(this Delegate del, out RuntimeTypeHandle typeOfFirstParameterIfInstanceDelegate)
         {
-            bool dummyIsOpenInstanceFunction;
-            return del.GetFunctionPointer(out typeOfFirstParameterIfInstanceDelegate, out dummyIsOpenInstanceFunction);
+            return del.GetFunctionPointer(out typeOfFirstParameterIfInstanceDelegate, out bool _, out bool _);
         }
 
         //
@@ -170,10 +113,9 @@ namespace System.Runtime.InteropServices
             if (!del.IsOpenStatic)
                 return IntPtr.Zero;
 
-            bool dummyIsOpenInstanceFunction;
             RuntimeTypeHandle typeOfFirstParameterIfInstanceDelegate;
 
-            IntPtr funcPtr = del.GetFunctionPointer(out typeOfFirstParameterIfInstanceDelegate, out dummyIsOpenInstanceFunction);
+            IntPtr funcPtr = del.GetFunctionPointer(out typeOfFirstParameterIfInstanceDelegate, out bool _, out bool _);
 
             // if the function pointer points to a jump stub return the target
             return RuntimeImports.RhGetJmpStubCodeTarget(funcPtr);
@@ -495,16 +437,6 @@ namespace System.Runtime.InteropServices
         public static void RestoreReentrantWaits()
         {
             RuntimeThread.RestoreReentrantWaits();
-        }
-
-        public static IntPtr MemAlloc(UIntPtr sizeInBytes)
-        {
-            return Interop.MemAlloc(sizeInBytes);
-        }
-
-        public static void MemFree(IntPtr allocatedMemory)
-        {
-            Interop.MemFree(allocatedMemory);
         }
 
         public static IntPtr GetCriticalHandle(CriticalHandle criticalHandle)
