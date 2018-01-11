@@ -279,6 +279,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_try_type_resolve@Base 4.1.0.1738
  mono_domain_try_unload@Base 4.1.0.1738
  mono_domain_unload@Base 4.1.0.1738
+ mono_ee_api_version@Base 5.11.0.210
+ mono_ee_interp_init@Base 5.11.0.210
  mono_environment_exitcode_get@Base 4.1.0.1738
  mono_environment_exitcode_set@Base 4.1.0.1738
  mono_error_cleanup@Base 4.1.0.1738
