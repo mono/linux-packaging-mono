@@ -8307,6 +8307,14 @@ namespace System.ServiceModel.Description
         public abstract System.ServiceModel.Channels.Message ToMessage(object typedMessage);
         public abstract System.ServiceModel.Channels.Message ToMessage(object typedMessage, System.ServiceModel.Channels.MessageVersion version);
     }
+    public partial class UseRequestHeadersForMetadataAddressBehavior : System.ServiceModel.Description.IServiceBehavior
+    {
+        public UseRequestHeadersForMetadataAddressBehavior() { }
+        public System.Collections.Generic.IDictionary<string, int> DefaultPortsByScheme { get { throw null; } }
+        void System.ServiceModel.Description.IServiceBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<System.ServiceModel.Description.ServiceEndpoint> endpoints, System.ServiceModel.Channels.BindingParameterCollection bindingParameters) { }
+        void System.ServiceModel.Description.IServiceBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase) { }
+        void System.ServiceModel.Description.IServiceBehavior.Validate(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase) { }
+    }
     [System.MonoTODOAttribute]
     public partial class WsdlContractConversionContext
     {

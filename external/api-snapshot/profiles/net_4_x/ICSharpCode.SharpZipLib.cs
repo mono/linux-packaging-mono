@@ -16,6 +16,7 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 namespace ICSharpCode.SharpZipLib
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class SharpZipBaseException : System.ApplicationException
     {
         public SharpZipBaseException() { }
@@ -25,12 +26,14 @@ namespace ICSharpCode.SharpZipLib
 }
 namespace ICSharpCode.SharpZipLib.BZip2
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class BZip2
     {
         public BZip2() { }
         public static void Compress(System.IO.Stream instream, System.IO.Stream outstream, int blockSize) { }
         public static void Decompress(System.IO.Stream instream, System.IO.Stream outstream) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class BZip2Constants
     {
         internal BZip2Constants() { }
@@ -46,11 +49,13 @@ namespace ICSharpCode.SharpZipLib.BZip2
         public static readonly int RUNA;
         public static readonly int RUNB;
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class BZip2Exception : ICSharpCode.SharpZipLib.SharpZipBaseException
     {
         public BZip2Exception() { }
         public BZip2Exception(string message) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class BZip2InputStream : System.IO.Stream
     {
         public BZip2InputStream(System.IO.Stream stream) { }
@@ -68,6 +73,7 @@ namespace ICSharpCode.SharpZipLib.BZip2
         public override void Write(byte[] array, int offset, int count) { }
         public override void WriteByte(byte val) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class BZip2OutputStream : System.IO.Stream
     {
         public BZip2OutputStream(System.IO.Stream stream) { }
@@ -90,6 +96,7 @@ namespace ICSharpCode.SharpZipLib.BZip2
 }
 namespace ICSharpCode.SharpZipLib.Checksums
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class Adler32 : ICSharpCode.SharpZipLib.Checksums.IChecksum
     {
         public Adler32() { }
@@ -99,6 +106,7 @@ namespace ICSharpCode.SharpZipLib.Checksums
         public void Update(byte[] buf, int off, int len) { }
         public void Update(int bval) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class Crc32 : ICSharpCode.SharpZipLib.Checksums.IChecksum
     {
         public Crc32() { }
@@ -108,6 +116,7 @@ namespace ICSharpCode.SharpZipLib.Checksums
         public void Update(byte[] buf, int off, int len) { }
         public void Update(int bval) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial interface IChecksum
     {
         long Value { get; }
@@ -116,6 +125,7 @@ namespace ICSharpCode.SharpZipLib.Checksums
         void Update(byte[] buf, int off, int len);
         void Update(int bval);
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class StrangeCRC : ICSharpCode.SharpZipLib.Checksums.IChecksum
     {
         public StrangeCRC() { }
@@ -128,13 +138,17 @@ namespace ICSharpCode.SharpZipLib.Checksums
 }
 namespace ICSharpCode.SharpZipLib.Core
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DirectoryEventArgs : ICSharpCode.SharpZipLib.Core.ScanEventArgs
     {
         public DirectoryEventArgs(string name, bool hasMatchingFiles) : base (default(string)) { }
         public bool HasMatchingFiles { get { throw null; } }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public delegate void DirectoryFailureDelegate(object sender, ICSharpCode.SharpZipLib.Core.ScanFailureEventArgs e);
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public delegate void FileFailureDelegate(object sender, ICSharpCode.SharpZipLib.Core.ScanFailureEventArgs e);
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class FileSystemScanner
     {
         public ICSharpCode.SharpZipLib.Core.DirectoryFailureDelegate DirectoryFailure;
@@ -151,15 +165,18 @@ namespace ICSharpCode.SharpZipLib.Core
         public void OnProcessFile(string file) { }
         public void Scan(string directory, bool recurse) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial interface INameTransform
     {
         string TransformDirectory(string name);
         string TransformFile(string name);
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial interface IScanFilter
     {
         bool IsMatch(string name);
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class NameAndSizeFilter : ICSharpCode.SharpZipLib.Core.PathFilter
     {
         public NameAndSizeFilter(string filter, long minSize, long maxSize) : base (default(string)) { }
@@ -167,6 +184,7 @@ namespace ICSharpCode.SharpZipLib.Core
         public long MinSize { get { throw null; } set { } }
         public override bool IsMatch(string fileName) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class NameFilter
     {
         public NameFilter(string filter) { }
@@ -177,19 +195,24 @@ namespace ICSharpCode.SharpZipLib.Core
         public static bool IsValidFilterExpression(string toTest) { throw null; }
         public override string ToString() { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class PathFilter : ICSharpCode.SharpZipLib.Core.IScanFilter
     {
         public PathFilter(string filter) { }
         public virtual bool IsMatch(string name) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public delegate void ProcessDirectoryDelegate(object Sender, ICSharpCode.SharpZipLib.Core.DirectoryEventArgs e);
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public delegate void ProcessFileDelegate(object sender, ICSharpCode.SharpZipLib.Core.ScanEventArgs e);
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ScanEventArgs : System.EventArgs
     {
         public ScanEventArgs(string name) { }
         public bool ContinueRunning { get { throw null; } set { } }
         public string Name { get { throw null; } }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ScanFailureEventArgs
     {
         public ScanFailureEventArgs(string name, System.Exception e) { }
@@ -200,11 +223,13 @@ namespace ICSharpCode.SharpZipLib.Core
 }
 namespace ICSharpCode.SharpZipLib.Encryption
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public abstract partial class PkzipClassic : System.Security.Cryptography.SymmetricAlgorithm
     {
         protected PkzipClassic() { }
         public static byte[] GenerateKeys(byte[] seed) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class PkzipClassicManaged : ICSharpCode.SharpZipLib.Encryption.PkzipClassic
     {
         public PkzipClassicManaged() { }
@@ -220,6 +245,7 @@ namespace ICSharpCode.SharpZipLib.Encryption
 }
 namespace ICSharpCode.SharpZipLib.GZip
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class GZipConstants
     {
         internal GZipConstants() { }
@@ -230,11 +256,13 @@ namespace ICSharpCode.SharpZipLib.GZip
         public const int FTEXT = 1;
         public static readonly int GZIP_MAGIC;
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class GZipException : ICSharpCode.SharpZipLib.SharpZipBaseException
     {
         public GZipException() { }
         public GZipException(string message) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class GZipInputStream : ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream
     {
         protected ICSharpCode.SharpZipLib.Checksums.Crc32 crc;
@@ -243,6 +271,7 @@ namespace ICSharpCode.SharpZipLib.GZip
         public GZipInputStream(System.IO.Stream baseInputStream, int size) : base (default(System.IO.Stream)) { }
         public override int Read(byte[] buf, int offset, int len) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class GZipOutputStream : ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream
     {
         protected ICSharpCode.SharpZipLib.Checksums.Crc32 crc;
@@ -257,12 +286,15 @@ namespace ICSharpCode.SharpZipLib.GZip
 }
 namespace ICSharpCode.SharpZipLib.Tar
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class InvalidHeaderException : ICSharpCode.SharpZipLib.Tar.TarException
     {
         public InvalidHeaderException() { }
         public InvalidHeaderException(string msg) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public delegate void ProgressMessageHandler(ICSharpCode.SharpZipLib.Tar.TarArchive archive, ICSharpCode.SharpZipLib.Tar.TarEntry entry, string message);
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarArchive
     {
         protected TarArchive() { }
@@ -288,6 +320,7 @@ namespace ICSharpCode.SharpZipLib.Tar
         public void SetUserInfo(int userId, string userName, int groupId, string groupName) { }
         public void WriteEntry(ICSharpCode.SharpZipLib.Tar.TarEntry sourceEntry, bool recurse) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarBuffer
     {
         public const int BlockSize = 512;
@@ -311,6 +344,7 @@ namespace ICSharpCode.SharpZipLib.Tar
         public void WriteBlock(byte[] block) { }
         public void WriteBlock(byte[] buf, int offset) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarEntry : System.ICloneable
     {
         public TarEntry(ICSharpCode.SharpZipLib.Tar.TarHeader header) { }
@@ -339,11 +373,13 @@ namespace ICSharpCode.SharpZipLib.Tar
         public void SetNames(string userName, string groupName) { }
         public void WriteEntryHeader(byte[] outbuf) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarException : ICSharpCode.SharpZipLib.SharpZipBaseException
     {
         public TarException() { }
         public TarException(string message) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarHeader : System.ICloneable
     {
         public static readonly int CHKSUMLEN;
@@ -418,6 +454,7 @@ namespace ICSharpCode.SharpZipLib.Tar
         public static void SetValueDefaults(int userId, string userName, int groupId, string groupName) { }
         public void WriteHeader(byte[] outbuf) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarInputStream : System.IO.Stream
     {
         protected ICSharpCode.SharpZipLib.Tar.TarBuffer buffer;
@@ -451,6 +488,7 @@ namespace ICSharpCode.SharpZipLib.Tar
         public void Skip(long numToSkip) { }
         public override void Write(byte[] array, int offset, int count) { }
         public override void WriteByte(byte val) { }
+        [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
         public partial class EntryFactoryAdapter : ICSharpCode.SharpZipLib.Tar.TarInputStream.IEntryFactory
         {
             public EntryFactoryAdapter() { }
@@ -458,6 +496,7 @@ namespace ICSharpCode.SharpZipLib.Tar
             public ICSharpCode.SharpZipLib.Tar.TarEntry CreateEntry(string name) { throw null; }
             public ICSharpCode.SharpZipLib.Tar.TarEntry CreateEntryFromFile(string fileName) { throw null; }
         }
+        [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
         public partial interface IEntryFactory
         {
             ICSharpCode.SharpZipLib.Tar.TarEntry CreateEntry(byte[] headerBuf);
@@ -465,6 +504,7 @@ namespace ICSharpCode.SharpZipLib.Tar
             ICSharpCode.SharpZipLib.Tar.TarEntry CreateEntryFromFile(string fileName);
         }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class TarOutputStream : System.IO.Stream
     {
         protected byte[] assemBuf;
@@ -498,6 +538,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 }
 namespace ICSharpCode.SharpZipLib.Zip
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public enum CompressionMethod
     {
         BZip2 = 11,
@@ -506,6 +547,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         Stored = 0,
         WinZipAES = 99,
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class FastZip
     {
         public FastZip() { }
@@ -524,6 +566,7 @@ namespace ICSharpCode.SharpZipLib.Zip
             Prompt = 0,
         }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class FastZipEvents
     {
         public ICSharpCode.SharpZipLib.Core.DirectoryFailureDelegate DirectoryFailure;
@@ -536,6 +579,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public void OnProcessDirectory(string directory, bool hasMatchingFiles) { }
         public void OnProcessFile(string file) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class KeysRequiredEventArgs : System.EventArgs
     {
         public KeysRequiredEventArgs(string name) { }
@@ -543,6 +587,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public string FileName { get { throw null; } }
         public byte[] Key { get { throw null; } set { } }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public sealed partial class ZipConstants
     {
         public const int CENATT = 36;
@@ -600,6 +645,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public static string ConvertToString(byte[] data) { throw null; }
         public static string ConvertToString(byte[] data, int length) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipEntry : System.ICloneable
     {
         public ZipEntry(ICSharpCode.SharpZipLib.Zip.ZipEntry e) { }
@@ -629,11 +675,13 @@ namespace ICSharpCode.SharpZipLib.Zip
         public object Clone() { throw null; }
         public override string ToString() { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipException : ICSharpCode.SharpZipLib.SharpZipBaseException
     {
         public ZipException() { }
         public ZipException(string msg) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipFile : System.Collections.IEnumerable
     {
         public ICSharpCode.SharpZipLib.Zip.ZipFile.KeysRequiredEventHandler KeysRequired;
@@ -655,6 +703,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public bool TestArchive(bool testData) { throw null; }
         public delegate void KeysRequiredEventHandler(object sender, ICSharpCode.SharpZipLib.Zip.KeysRequiredEventArgs e);
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipInputStream : ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream
     {
         public ZipInputStream(System.IO.Stream baseInputStream) : base (default(System.IO.Stream)) { }
@@ -668,6 +717,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public override int Read(byte[] destination, int index, int count) { throw null; }
         public override int ReadByte() { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipNameTransform : ICSharpCode.SharpZipLib.Core.INameTransform
     {
         public ZipNameTransform() { }
@@ -677,6 +727,7 @@ namespace ICSharpCode.SharpZipLib.Zip
         public string TransformDirectory(string name) { throw null; }
         public string TransformFile(string name) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class ZipOutputStream : ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream
     {
         public ZipOutputStream(System.IO.Stream baseOutputStream) : base (default(System.IO.Stream)) { }
@@ -692,6 +743,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 }
 namespace ICSharpCode.SharpZipLib.Zip.Compression
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class Deflater
     {
         public static int BEST_COMPRESSION;
@@ -720,6 +772,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public void SetLevel(int lvl) { }
         public void SetStrategy(ICSharpCode.SharpZipLib.Zip.Compression.DeflateStrategy strategy) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DeflaterConstants
     {
         public static int[] COMPR_FUNC;
@@ -751,6 +804,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public const int WSIZE = 32768;
         public DeflaterConstants() { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DeflaterEngine : ICSharpCode.SharpZipLib.Zip.Compression.DeflaterConstants
     {
         public DeflaterEngine(ICSharpCode.SharpZipLib.Zip.Compression.DeflaterPending pending) { }
@@ -766,6 +820,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public void SetInput(byte[] buf, int off, int len) { }
         public void SetLevel(int lvl) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DeflaterHuffman
     {
         public ICSharpCode.SharpZipLib.Zip.Compression.DeflaterPending pending;
@@ -779,6 +834,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public void SendAllTrees(int blTreeCodes) { }
         public bool TallyDist(int dist, int len) { throw null; }
         public bool TallyLit(int lit) { throw null; }
+        [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
         public partial class Tree
         {
             public short[] freqs;
@@ -797,16 +853,19 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
             public void WriteTree(ICSharpCode.SharpZipLib.Zip.Compression.DeflaterHuffman.Tree blTree) { }
         }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DeflaterPending : ICSharpCode.SharpZipLib.Zip.Compression.PendingBuffer
     {
         public DeflaterPending() { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public enum DeflateStrategy
     {
         Default = 0,
         Filtered = 1,
         HuffmanOnly = 2,
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class Inflater
     {
         public Inflater() { }
@@ -826,6 +885,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public void SetInput(byte[] buf) { }
         public void SetInput(byte[] buffer, int offset, int length) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class InflaterHuffmanTree
     {
         public static ICSharpCode.SharpZipLib.Zip.Compression.InflaterHuffmanTree defDistTree;
@@ -833,6 +893,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
         public InflaterHuffmanTree(byte[] codeLengths) { }
         public int GetSymbol(ICSharpCode.SharpZipLib.Zip.Compression.Streams.StreamManipulator input) { throw null; }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class PendingBuffer
     {
         protected byte[] buf;
@@ -854,6 +915,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 }
 namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 {
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class DeflaterOutputStream : System.IO.Stream
     {
         protected System.IO.Stream baseOutputStream;
@@ -887,6 +949,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
         public override void Write(byte[] buf, int off, int len) { }
         public override void WriteByte(byte bval) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class InflaterInputBuffer
     {
         public InflaterInputBuffer(System.IO.Stream stream) { }
@@ -906,6 +969,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
         public int ReadRawBuffer(byte[] outBuffer, int offset, int length) { throw null; }
         public void SetInflaterInput(ICSharpCode.SharpZipLib.Zip.Compression.Inflater inflater) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class InflaterInputStream : System.IO.Stream
     {
         protected System.IO.Stream baseInputStream;
@@ -934,6 +998,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
         public override void Write(byte[] array, int offset, int count) { }
         public override void WriteByte(byte val) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class OutputWindow
     {
         public OutputWindow() { }
@@ -946,6 +1011,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
         public void Reset() { }
         public void Write(int abyte) { }
     }
+    [System.ObsoleteAttribute("This assembly has been deprecated. Please use https://www.nuget.org/packages/SharpZipLib/ instead.")]
     public partial class StreamManipulator
     {
         public StreamManipulator() { }
