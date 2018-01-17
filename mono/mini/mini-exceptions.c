@@ -316,7 +316,7 @@ mono_get_throw_exception_addr (void)
 	return &throw_exception_func;
 }
 
-static gboolean
+static gboolean 
 is_address_protected (MonoJitInfo *ji, MonoJitExceptionInfo *ei, gpointer ip)
 {
 	MonoTryBlockHoleTableJitInfo *table;
@@ -337,7 +337,7 @@ is_address_protected (MonoJitInfo *ji, MonoJitExceptionInfo *ei, gpointer ip)
 
 	for (i = 0; i < table->num_holes; ++i) {
 		MonoTryBlockHoleJitInfo *hole = &table->holes [i];
-		if (ji->clauses [hole->clause].try_offset == ji->clauses [clause].try_offset && hole->offset <= offset && hole->offset + hole->length > offset)
+		if (hole->clause == clause && hole->offset <= offset && hole->offset + hole->length > offset)
 			return FALSE;
 	}
 	return TRUE;
@@ -2034,7 +2034,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 		} else {
 			free_stack = 0xffffff;
 		}
-				
+
 		for (i = clause_index_start; i < ji->num_clauses; i++) {
 			MonoJitExceptionInfo *ei = &ji->clauses [i];
 			gboolean filtered = FALSE;
@@ -2155,6 +2155,11 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 #endif
 					} else {
 						MONO_CONTEXT_SET_IP (ctx, ei->handler_start);
+						/*
+						 * When the exception is thrown in async fashion, we can have the stack pointer
+						 * unaligned. Make sure we resume to the catch handler with an aligned stack.
+						 */
+						MONO_CONTEXT_SET_SP (ctx, (mgreg_t)MONO_CONTEXT_GET_SP (ctx) & ~(MONO_ARCH_FRAME_ALIGNMENT - 1));
 					}
 					mono_set_lmf (lmf);
 #ifndef DISABLE_PERFCOUNTERS
