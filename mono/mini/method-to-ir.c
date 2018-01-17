@@ -682,8 +682,9 @@ ip_in_finally_clause (MonoCompile *cfg, int offset)
 	return FALSE;
 }
 
+/* Find clauses between ip and target, from inner to outer */
 static GList*
-mono_find_final_block (MonoCompile *cfg, unsigned char *ip, unsigned char *target, int type)
+mono_find_leave_clauses (MonoCompile *cfg, unsigned char *ip, unsigned char *target)
 {
 	MonoMethodHeader *header = cfg->header;
 	MonoExceptionClause *clause;
@@ -694,8 +695,7 @@ mono_find_final_block (MonoCompile *cfg, unsigned char *ip, unsigned char *targe
 		clause = &header->clauses [i];
 		if (MONO_OFFSET_IN_CLAUSE (clause, (ip - header->code)) && 
 		    (!MONO_OFFSET_IN_CLAUSE (clause, (target - header->code)))) {
-			if (clause->flags == type)
-				res = g_list_append (res, clause);
+			res = g_list_append_mempool (cfg->mempool, res, clause);
 		}
 	}
 	return res;
@@ -11483,11 +11483,17 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			cfg->cbb->try_end = (intptr_t)(ip - header->code);
 #endif
 
-			if ((handlers = mono_find_final_block (cfg, ip, target, MONO_EXCEPTION_CLAUSE_FINALLY))) {
+			if ((handlers = mono_find_leave_clauses (cfg, ip, target))) {
 				GList *tmp;
-
+				/*
+				 * For each finally clause that we exit we need to invoke the finally block.
+				 * After each invocation we need to add try holes for all the clauses that
+				 * we already exited.
+				 */
 				for (tmp = handlers; tmp; tmp = tmp->next) {
 					MonoExceptionClause *clause = (MonoExceptionClause *)tmp->data;
+					if (clause->flags != MONO_EXCEPTION_CLAUSE_FINALLY)
+						continue;
 					MonoInst *abort_exc = (MonoInst *)mono_find_exvar_for_offset (cfg, clause->handler_offset);
 					MonoBasicBlock *dont_throw;
 
@@ -11499,7 +11505,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 					MONO_INST_NEW (cfg, ins, OP_CALL_HANDLER);
 					ins->inst_target_bb = tblock;
-					ins->inst_eh_block = clause;
+					ins->inst_eh_blocks = tmp;
 					MONO_ADD_INS (cfg->cbb, ins);
 					cfg->cbb->has_call_handler = 1;
 
@@ -11509,10 +11515,10 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, abort_exc->dreg, 0);
 					MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_PBEQ, dont_throw);
 					mono_emit_jit_icall (cfg, mono_thread_self_abort, NULL);
-					cfg->cbb->clause_hole = clause;
+					cfg->cbb->clause_holes = tmp;
 
 					MONO_START_BB (cfg, dont_throw);
-					cfg->cbb->clause_hole = clause;
+					cfg->cbb->clause_holes = tmp;
 
 					if (COMPILE_LLVM (cfg)) {
 						MonoBasicBlock *target_bb;
@@ -11526,7 +11532,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 						link_bblock (cfg, tblock, target_bb);
 					}
 				}
-				g_list_free (handlers);
 			} 
 
 			MONO_INST_NEW (cfg, ins, OP_BR);

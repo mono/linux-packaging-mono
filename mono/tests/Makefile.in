@@ -761,7 +761,7 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-46661.cs w32message.cs runtime-invoke.gen.cs \
 	imt_big_iface_test.cs bug-58782-plain-throw.cs \
 	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
-	bug-59281.cs $(am__append_5) $(am__append_6)
+	bug-59281.cs threads-leak.cs $(am__append_5) $(am__append_6)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
