@@ -506,6 +506,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_write@Base 4.1.0.1738
  eg_getdtablesize@Base 5.7.0.181
  eg_utf8_to_utf16_with_nuls@Base 5.7.0.181
+ eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
  g_utf16_ascii_equal@Base 5.11.0.187
  g_utf16_asciiz_equal@Base 5.11.0.187
@@ -1765,7 +1766,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_timer_stop@Base 5.7.0.181
  monoeg_g_ucs4_to_utf16@Base 5.7.0.181
  monoeg_g_ucs4_to_utf8@Base 5.7.0.181
- monoeg_g_unichar_case@Base 5.7.0.181
  monoeg_g_unichar_isxdigit@Base 5.7.0.181
  monoeg_g_unichar_to_utf8@Base 5.7.0.181
  monoeg_g_unichar_tolower@Base 5.7.0.181
