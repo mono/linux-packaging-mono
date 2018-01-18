@@ -84,35 +84,39 @@ target_triplet = @target@
 @HOST_WIN32_TRUE@am__append_3 = --config tests-config --runtime $(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),mono)
 @HOST_WIN32_FALSE@am__append_4 = --config tests-config --runtime $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @AMD64_TRUE@am__append_5 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
-@X86_TRUE@am__append_6 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
-@HOST_WIN32_TRUE@am__append_7 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
+# requires working altstack
+@AMD64_TRUE@@HOST_WIN32_FALSE@am__append_6 = bug-60862.cs
+@X86_TRUE@am__append_7 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
+# requires working altstack
+@HOST_WIN32_FALSE@@X86_TRUE@am__append_8 = bug-60862.cs
+@HOST_WIN32_TRUE@am__append_9 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
 
 # #651684
-@AMD64_TRUE@am__append_8 = finally_guard.exe
-@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_9 = w32message.exe
-@HOST_WIN32_TRUE@@X86_TRUE@am__append_10 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@AMD64_TRUE@am__append_10 = finally_guard.exe
+@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_11 = w32message.exe
+@HOST_WIN32_TRUE@@X86_TRUE@am__append_12 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
 
 
 # bug #71274
-@POWERPC_TRUE@am__append_11 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+@POWERPC_TRUE@am__append_13 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_12 = monitor.exe threadpool-exceptions5.exe appdomain-unload.exe \
+@POWERPC64_TRUE@am__append_14 = monitor.exe threadpool-exceptions5.exe appdomain-unload.exe \
 @POWERPC64_TRUE@	pinvoke2.exe pinvoke3.exe pinvoke11.exe threadpool-exceptions7.exe winx64structs.exe bug-10127.exe pinvoke_ppcc.exe \
 @POWERPC64_TRUE@	pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe abort-cctor.exe load-exceptions.exe \
 @POWERPC64_TRUE@	sgen-domain-unload-2.exe sgen-weakref-stress.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw.exe \
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe sgen-new-threads-collect.exe sgen-bridge.exe
 
-@ARM_TRUE@am__append_13 = filter-stack.exe weak-fields.exe
-@ARM64_TRUE@am__append_14 = weak-fields.exe
+@ARM_TRUE@am__append_15 = filter-stack.exe weak-fields.exe
+@ARM64_TRUE@am__append_16 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_15 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_17 = filter-stack.exe monitor.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_16 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_18 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe
@@ -149,7 +153,7 @@ target_triplet = @target@
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-@FULL_AOT_TESTS_TRUE@am__append_17 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_19 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -219,11 +223,11 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
 @FULL_AOT_TESTS_TRUE@	weak-fields.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_18 = \
+@HYBRID_AOT_TESTS_TRUE@am__append_20 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
-@ENABLE_COOP_TRUE@am__append_19 = \
+@ENABLE_COOP_TRUE@am__append_21 = \
 @ENABLE_COOP_TRUE@	abort-cctor.exe \
 @ENABLE_COOP_TRUE@	bug-58782-plain-throw.exe \
 @ENABLE_COOP_TRUE@	bug-58782-capture-and-throw.exe
@@ -783,7 +787,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
 	struct-explicit-layout.cs bug-59281.cs \
 	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
-	threads-init.cs $(am__append_5) $(am__append_6)
+	threads-init.cs bug-60848.cs $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
@@ -917,10 +922,10 @@ TESTS_GSHARED_SRC = \
 	bug-1147.cs	\
 	generic-type-builder.2.cs
 
-PLATFORM_DISABLED_TESTS = $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15) $(am__append_16)
+PLATFORM_DISABLED_TESTS = $(am__append_9) $(am__append_10) \
+	$(am__append_11) $(am__append_12) $(am__append_13) \
+	$(am__append_14) $(am__append_15) $(am__append_16) \
+	$(am__append_17) $(am__append_18)
 @ARM64_TRUE@INTERP_PLATFORM_DISABLED_TESTS = \
 @ARM64_TRUE@	assemblyresolve_event6.exe \
 @ARM64_TRUE@	finalizer-exception.exe
@@ -938,7 +943,7 @@ PLATFORM_DISABLED_TESTS = $(am__append_7) $(am__append_8) \
 
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
 @ENABLE_COOP_TRUE@COOP_DISABLED_TESTS = thunks.exe
-PROFILE_DISABLED_TESTS = $(am__append_17) $(am__append_18)
+PROFILE_DISABLED_TESTS = $(am__append_19) $(am__append_20)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -954,7 +959,7 @@ CI_DISABLED_TESTS = \
 # failing tests which we temporarily disable for PRs
 # so they don't interfere with other people's work
 CI_PR_DISABLED_TESTS = appdomain-threadpool-unload.exe \
-	$(am__append_19)
+	$(am__append_21)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 LLVM_DISABLED_TESTS = \
@@ -1000,6 +1005,7 @@ DISABLED_TESTS = \
 #                exit code 0, but doesn't actually execute the test.
 # block_guard_restore_aligment_on_exit.exe: flaky (10% of the time it hangs and thus times out)
 # weak-fields.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=60973
+# bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 INTERP_DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
 	$(INTERP_PLATFORM_DISABLED_TESTS) \
@@ -1018,6 +1024,7 @@ INTERP_DISABLED_TESTS = \
 	bug-58782-capture-and-throw.exe \
 	bug-58782-plain-throw.exe \
 	bug445361.exe \
+	bug-60862.exe \
 	calliGenericTest.exe \
 	cominterop.exe \
 	context-static.exe \
