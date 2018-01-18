@@ -1,3 +1,15 @@
+mono (5.8.0.103-0xamarin2) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [5f283ef] Revert "Revert "Build on PPC64el with MCS, Roslyn is
+    pretty ropey on here right now"" [9d69f74] Revert "Build on PPC64el
+    with MCS, Roslyn is pretty ropey on here right now"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 18 Jan 2018 20:04:17 +0000
+
 mono (5.8.0.103-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.8.0.103.tar.bz2
