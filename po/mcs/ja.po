@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-01-19 08:56+0000\n"
+"POT-Creation-Date: 2018-01-20 08:55+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -2123,19 +2123,19 @@ msgid ""
 "The `default value' operator cannot be applied to an operand of a static type"
 msgstr ""
 
-#: mcs/mcs/expression.cs:3468
-#, fuzzy, csharp-format
-msgid "Operator `{0}' cannot be applied to operand `default'"
-msgstr "属性 `{0}' は複数回指定することができません"
-
-#: mcs/mcs/expression.cs:3472
+#: mcs/mcs/expression.cs:3467
 #, csharp-format
 msgid "Operator `{0}' cannot be applied to operands of type `{1}' and `{2}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:4279
+#: mcs/mcs/expression.cs:4274
 msgid "To cast a negative value, you must enclose the value in parentheses"
 msgstr ""
+
+#: mcs/mcs/expression.cs:4323
+#, fuzzy, csharp-format
+msgid "Operator `{0}' cannot be applied to operand `default'"
+msgstr "属性 `{0}' は複数回指定することができません"
 
 #: mcs/mcs/expression.cs:4328
 #, csharp-format
@@ -3022,69 +3022,69 @@ msgid ""
 "suffix `{1}' to create a literal of this type"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1489
+#: mcs/mcs/membercache.cs:1491
 msgid ""
 "A partial method declaration and partial method implementation cannot differ "
 "on use of `params' modifier"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1492
+#: mcs/mcs/membercache.cs:1494
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "an extension method or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1496
+#: mcs/mcs/membercache.cs:1498
 #, csharp-format
 msgid ""
 "Overloaded contructor `{0}' cannot differ on use of parameter modifiers only"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1500
+#: mcs/mcs/membercache.cs:1502
 #, fuzzy, csharp-format
 msgid ""
 "Overloaded method `{0}' cannot differ on use of parameter modifiers only"
 msgstr "Conditionalメソッド `{0}' ではoutパラメータを指定できません"
 
-#: mcs/mcs/membercache.cs:1509
+#: mcs/mcs/membercache.cs:1511
 msgid ""
 "A partial method declaration and partial method implementation must both use "
 "the same tuple element names"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1538
+#: mcs/mcs/membercache.cs:1540
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`static' or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1544
+#: mcs/mcs/membercache.cs:1546
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`unsafe' or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1552
+#: mcs/mcs/membercache.cs:1554
 #, fuzzy, csharp-format
 msgid "A partial method `{0}' declaration is already defined"
 msgstr "部分メソッド `{0}' はインターフェースを明示的に実装できません"
 
-#: mcs/mcs/membercache.cs:1556
+#: mcs/mcs/membercache.cs:1558
 #, fuzzy, csharp-format
 msgid "A partial method `{0}' implementation is already defined"
 msgstr "部分メソッド `{0}' はインターフェースを明示的に実装できません"
 
-#: mcs/mcs/membercache.cs:1567 mcs/mcs/property.cs:81
+#: mcs/mcs/membercache.cs:1569 mcs/mcs/property.cs:81
 #, csharp-format
 msgid "A member `{0}' is already reserved"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1578
+#: mcs/mcs/membercache.cs:1580
 #, csharp-format
 msgid "Duplicate user-defined conversion in type `{0}'"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1584
+#: mcs/mcs/membercache.cs:1586
 #, csharp-format
 msgid ""
 "A member `{0}' is already defined. Rename this member or use different "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-01-19 08:56+0000\n"
+"POT-Creation-Date: 2018-01-20 08:55+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -2347,24 +2347,24 @@ msgstr ""
 "O operador \"valor padrão\" não pode ser aplicado a um operando de um tipo "
 "estático"
 
-#: mcs/mcs/expression.cs:3468
-#, fuzzy, csharp-format
-msgid "Operator `{0}' cannot be applied to operand `default'"
-msgstr ""
-"O operador \"{0}\" não pode ser aplicado aos operados do tipo \"{1}\" e "
-"\"{2}\""
-
-#: mcs/mcs/expression.cs:3472
+#: mcs/mcs/expression.cs:3467
 #, csharp-format
 msgid "Operator `{0}' cannot be applied to operands of type `{1}' and `{2}'"
 msgstr ""
 "O operador \"{0}\" não pode ser aplicado aos operados do tipo \"{1}\" e "
 "\"{2}\""
 
-#: mcs/mcs/expression.cs:4279
+#: mcs/mcs/expression.cs:4274
 msgid "To cast a negative value, you must enclose the value in parentheses"
 msgstr ""
 "Para fazer o cast do valor negativo, você deve colocar o valor em parênteses"
+
+#: mcs/mcs/expression.cs:4323
+#, fuzzy, csharp-format
+msgid "Operator `{0}' cannot be applied to operand `default'"
+msgstr ""
+"O operador \"{0}\" não pode ser aplicado aos operados do tipo \"{1}\" e "
+"\"{2}\""
 
 #: mcs/mcs/expression.cs:4328
 #, fuzzy, csharp-format
@@ -3429,7 +3429,7 @@ msgstr ""
 "Literal do tipo double não pode ser implicitamente convertido para o tipo "
 "\"{0}\". Adicione o sufixo \"{1}\" para criar um literal desse tipo"
 
-#: mcs/mcs/membercache.cs:1489
+#: mcs/mcs/membercache.cs:1491
 msgid ""
 "A partial method declaration and partial method implementation cannot differ "
 "on use of `params' modifier"
@@ -3437,7 +3437,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial não "
 "podem diferir no uso do modificador \"params\""
 
-#: mcs/mcs/membercache.cs:1492
+#: mcs/mcs/membercache.cs:1494
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "an extension method or neither"
@@ -3445,7 +3445,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas um método de extenção ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1496
+#: mcs/mcs/membercache.cs:1498
 #, fuzzy, csharp-format
 msgid ""
 "Overloaded contructor `{0}' cannot differ on use of parameter modifiers only"
@@ -3453,7 +3453,7 @@ msgstr ""
 "Um método sobrecarregado \"{0}\" não pode diferir no uso de modificadores de "
 "parâmetros somente"
 
-#: mcs/mcs/membercache.cs:1500
+#: mcs/mcs/membercache.cs:1502
 #, fuzzy, csharp-format
 msgid ""
 "Overloaded method `{0}' cannot differ on use of parameter modifiers only"
@@ -3461,7 +3461,7 @@ msgstr ""
 "Um método sobrecarregado \"{0}\" não pode diferir no uso de modificadores de "
 "parâmetros somente"
 
-#: mcs/mcs/membercache.cs:1509
+#: mcs/mcs/membercache.cs:1511
 #, fuzzy
 msgid ""
 "A partial method declaration and partial method implementation must both use "
@@ -3470,7 +3470,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas inseguras ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1538
+#: mcs/mcs/membercache.cs:1540
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`static' or neither"
@@ -3478,7 +3478,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas estáticas ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1544
+#: mcs/mcs/membercache.cs:1546
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`unsafe' or neither"
@@ -3486,27 +3486,27 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas inseguras ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1552
+#: mcs/mcs/membercache.cs:1554
 #, csharp-format
 msgid "A partial method `{0}' declaration is already defined"
 msgstr "Uma declaração do método parcial \"{0}\" já está definida"
 
-#: mcs/mcs/membercache.cs:1556
+#: mcs/mcs/membercache.cs:1558
 #, csharp-format
 msgid "A partial method `{0}' implementation is already defined"
 msgstr "Uma implementação do método parcial \"{0}\" já esa definido"
 
-#: mcs/mcs/membercache.cs:1567 mcs/mcs/property.cs:81
+#: mcs/mcs/membercache.cs:1569 mcs/mcs/property.cs:81
 #, csharp-format
 msgid "A member `{0}' is already reserved"
 msgstr "Um membro \"{0}\" já está reservado"
 
-#: mcs/mcs/membercache.cs:1578
+#: mcs/mcs/membercache.cs:1580
 #, csharp-format
 msgid "Duplicate user-defined conversion in type `{0}'"
 msgstr "Conversão definida pelo usuário duplicada no topo \"{0}\""
 
-#: mcs/mcs/membercache.cs:1584
+#: mcs/mcs/membercache.cs:1586
 #, csharp-format
 msgid ""
 "A member `{0}' is already defined. Rename this member or use different "

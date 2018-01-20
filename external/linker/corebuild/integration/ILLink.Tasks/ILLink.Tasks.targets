@@ -16,8 +16,18 @@
     <LinkDuringPublish Condition=" '$(LinkDuringPublish)' != 'true' ">false</LinkDuringPublish>
     <ShowLinkerSizeComparison Condition=" '$(ShowLinkerSizeComparison)' == '' ">false</ShowLinkerSizeComparison>
     <LinkerDumpDependencies Condition=" '$(LinkerDumpDependencies)' == '' ">false</LinkerDumpDependencies>
+    <UsedApplicationAssemblyAction Condition=" '$(UsedApplicationAssemblyAction)' == '' ">Copy</UsedApplicationAssemblyAction>
+    <UnusedApplicationAssemblyAction Condition=" '$(UnusedApplicationAssemblyAction)' == '' ">Delete</UnusedApplicationAssemblyAction>
+    <UsedPlatformAssemblyAction Condition=" '$(UsedPlatformAssemblyAction)' == '' ">Link</UsedPlatformAssemblyAction>
+    <UnusedPlatformAssemblyAction Condition=" '$(UnusedPlatformAssemblyAction)' == '' ">Delete</UnusedPlatformAssemblyAction>
+    <RootAllApplicationAssemblies Condition=" '$(RootAllApplicationAssemblies)' == '' ">true</RootAllApplicationAssemblies>
+    <RootAllApplicationAssemblies Condition=" '$(RootAllApplicationAssemblies)' != 'true' ">false</RootAllApplicationAssemblies>
   </PropertyGroup>
-  
+
+  <!-- This depends on LinkDuringPublish, so it needs to be imported
+       after the property is set. -->
+  <Import Project="$(MSBuildThisFileDirectory)ILLink.CrossGen.targets" />
+
   <ItemGroup>
     <!-- LinkerRootDescriptors (the ItemGroup) is set to contain
          LinkerRootDescriptors (the Property), which allows adding
@@ -166,14 +176,41 @@
                            Condition="Exists('%(Identity)') And '$(_DebugSymbolsProduced)' == 'true' " />
     </ItemGroup>
   </Target>
-  
+
+  <UsingTask TaskName="SetAssemblyActions" AssemblyFile="$(LinkTaskDllPath)" />
+  <Target Name="_SetAssemblyActions"
+          DependsOnTargets="_ComputeManagedAssembliesToLink;_ComputePlatformLibraries">
+
+      <ItemGroup>
+          <_PlatformAssembliesToLink Include="@(PlatformLibraries->'%(Filename)')" />
+          <_PlatformAssembliesToLink Include="System.Private.CoreLib" />
+          <_ApplicationAssembliesToLink Include="@(_ManagedAssembliesToLink->'%(Filename)')" />
+          <_ApplicationAssembliesToLink Remove="@(_PlatformAssembliesToLink)" />
+      </ItemGroup>
+
+      <SetAssemblyActions AssemblyPaths="@(_ManagedAssembliesToLink)"
+                          ApplicationAssemblyNames="@(_ApplicationAssembliesToLink)"
+                          PlatformAssemblyNames="@(_PlatformAssembliesToLink)"
+                          UsedApplicationAssemblyAction="$(UsedApplicationAssemblyAction)"
+                          UnusedApplicationAssemblyAction="$(UnusedApplicationAssemblyAction)"
+                          UsedPlatformAssemblyAction="$(UsedPlatformAssemblyAction)"
+                          UnusedPlatformAssemblyAction="$(UnusedPlatformAssemblyAction)">
+        <Output TaskParameter="AssemblyPathsWithActions" ItemName="_ManagedAssembliesToLinkWithActions" />
+      </SetAssemblyActions>
+
+      <ItemGroup>
+          <_ManagedAssembliesToLink Remove="@(_ManagedAssembliesToLink)" />
+          <_ManagedAssembliesToLink Include="@(_ManagedAssembliesToLinkWithActions)" />
+      </ItemGroup>
+  </Target>
+    
   <!-- This calls the linker. Inputs are the managed assemblies to
        link, and root specifications. The semaphore enables msbuild to
        skip linking during an incremental build, when the semaphore is
        up to date with respect to _ManagedAssembliesToLink. -->
   <UsingTask TaskName="ILLink" AssemblyFile="$(LinkTaskDllPath)" />
   <Target Name="ILLink"
-          DependsOnTargets="_ComputeManagedAssembliesToLink;_ComputeLinkerRootAssemblies;_ComputeLinkerRootDescriptors"
+          DependsOnTargets="_ComputeManagedAssembliesToLink;_ComputeLinkerRootAssemblies;_ComputeLinkerRootDescriptors;_SetAssemblyActions"
           Inputs="@(_ManagedAssembliesToLink);@(LinkerRootDescriptors);$(MSBuildAllProjects)"
           Outputs="$(_LinkSemaphore)">
     <!-- These extra arguments have been hard-coded for now, as this
@@ -181,7 +218,7 @@
          the future we will want to generate these depending on the
          scenario in which the linker is invoked. -->
     <PropertyGroup>
-      <ExtraLinkerArgs Condition=" '$(ExtraLinkerArgs)' == '' ">-t -c link -l none -b true</ExtraLinkerArgs>
+      <ExtraLinkerArgs Condition=" '$(ExtraLinkerArgs)' == '' ">-t -l none -b true</ExtraLinkerArgs>
     </PropertyGroup>
     <ILLink AssemblyPaths="@(_ManagedAssembliesToLink)"
             RootAssemblyNames="@(LinkerRootAssemblies)"
@@ -225,7 +262,6 @@
     </FindNativeDeps>
 
   </Target>
-
 
   <!-- Computes the managed assemblies that are input to the
        linker. Includes managed assemblies from
@@ -293,20 +329,37 @@
        be part of the build step or pack step, OR pack could be made
        to work on the publish output. -->
   <Target Name="_ComputeLinkerRootAssemblies"
-          DependsOnTargets="_ComputeManagedResolvedAssembliesToPublish;_ComputePlatformLibraries">
-    <!-- By default, roots are everything minus the framework
-         assemblies (except for System.Private.CoreLib, which we
-         always root for now). This doesn't include the intermediate
-         assembly, because we root it separately using an xml file,
-         which lets us explicitly root everything. -->
-    <ItemGroup>
+          DependsOnTargets="_ComputeManagedResolvedAssembliesToPublish;_ComputePlatformLibraries;_CheckSystemPrivateCorelibEmbeddedRoots">
+    <!-- If RootAllApplicationAssemblies is true, roots are everything minus the framework
+         assemblies. This doesn't include the intermediate assembly,
+         because we root it separately using an xml file,
+         which lets us explicitly root everything.
+
+         If RootAllApplicationAssemblies is false, only intermediate assembly's Main method is rooted.
+
+         System.Private.CoreLib is rooted unless it has an embedded
+         xml descriptor file. -->
+
+    <ItemGroup Condition=" '$(RootAllApplicationAssemblies)' == 'true' ">
       <_LinkerRootAssemblies Include="@(_ManagedResolvedAssembliesToPublish->'%(Filename)')" />
       <_LinkerRootAssemblies Remove="@(PlatformLibraries->'%(Filename)')" />
-      <_LinkerRootAssemblies Include="System.Private.CoreLib" />
+      <_LinkerRootAssemblies Remove="System.Private.CoreLib" Condition=" '$(_SPCHasEmbeddedRootDescriptor)' == 'true' "/>
       <LinkerRootAssemblies Include="@(_LinkerRootAssemblies)" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(RootAllApplicationAssemblies)' == 'false' ">
+      <LinkerRootAssemblies Include="@(IntermediateAssembly)" />
+      <LinkerRootAssemblies Include="System.Private.CoreLib" Condition=" '$(_SPCHasEmbeddedRootDescriptor)' == 'false' "/>
     </ItemGroup>
   </Target>
 
+  <UsingTask TaskName="CheckEmbeddedRootDescriptor" AssemblyFile="$(LinkTaskDllPath)" />
+  <Target Name="_CheckSystemPrivateCorelibEmbeddedRoots"
+          DependsOnTargets="_ComputeManagedAssembliesToLink">
+    <CheckEmbeddedRootDescriptor AssemblyPath="@(_ManagedAssembliesToLink->WithMetadataValue('Filename', 'System.Private.CoreLib'))">
+      <Output TaskParameter="HasEmbeddedRootDescriptor" PropertyName="_SPCHasEmbeddedRootDescriptor" />
+    </CheckEmbeddedRootDescriptor>
+  </Target>
 
   <!-- Platform libraries are the managed runtime assets needed by the
        "platform", currently Microsoft.NETCore.App. -->
@@ -327,7 +380,8 @@
        dynamically include the generated descriptor files for the
        intermediate assembly. -->
   <Target Name="_ComputeLinkerRootDescriptors"
-          DependsOnTargets="_GenerateIntermediateRootDescriptor">
+          DependsOnTargets="_GenerateIntermediateRootDescriptor"
+          Condition=" '$(RootAllApplicationAssemblies)' == 'true' ">
     <ItemGroup>
       <LinkerRootDescriptors Include="$(_IntermediateRootDescriptorPath)" />
     </ItemGroup>
@@ -339,7 +393,8 @@
   <UsingTask TaskName="CreateRootDescriptorFile" AssemblyFile="$(LinkTaskDllPath)" />
   <Target Name="_GenerateIntermediateRootDescriptor"
           Inputs="@(IntermediateAssembly)"
-          Outputs="$(_IntermediateRootDescriptorPath)">
+          Outputs="$(_IntermediateRootDescriptorPath)"
+          Condition=" '$(RootAllApplicationAssemblies)' == 'true' ">
     <CreateRootDescriptorFile AssemblyNames="@(IntermediateAssembly->'%(Filename)')"
                               RootDescriptorFilePath="$(_IntermediateRootDescriptorPath)" />
   </Target>
