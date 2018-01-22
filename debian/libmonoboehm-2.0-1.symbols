@@ -603,6 +603,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_from_typeref_checked@Base 4.1.0.1738
  mono_class_get@Base 4.1.0.1738
  mono_class_get_byref_type@Base 4.1.0.1738
+ mono_class_get_checked@Base 5.11.0.285
  mono_class_get_checked@Base 5.11.0.284
  mono_class_get_context@Base 4.9.0.1707
  mono_class_get_element_class@Base 4.1.0.1738
