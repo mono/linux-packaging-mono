@@ -80,20 +80,20 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @DISABLE_INTERPRETER_FALSE@am__append_1 = $(monodir)/mono/mini/libmono-ee-interp.la
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@check_PROGRAMS = test-sgen-qsort$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-memfuncs$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-linked-list-set$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-conc-hashtable$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-callspec$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-string$(EXEEXT)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@TESTS = test-sgen-qsort$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-memfuncs$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-linked-list-set$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-conc-hashtable$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-callspec$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-string$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@check_PROGRAMS = test-sgen-qsort$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-memfuncs$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@TESTS = test-sgen-qsort$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-memfuncs$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
 subdir = mono/unit-tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -114,18 +114,18 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_DEPENDENCIES = ../metadata/libmonoruntimesgen.la \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	../sgen/libmonosgen.la \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	../utils/libmonoutils.la
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_DEPENDENCIES = ../metadata/libmonoruntimesgen.la \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	../sgen/libmonosgen.la \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	../utils/libmonoutils.la
 am_libtestlib_la_OBJECTS =
 libtestlib_la_OBJECTS = $(am_libtestlib_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_libtestlib_la_rpath =
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_libtestlib_la_rpath =
 am__test_conc_hashtable_SOURCES_DIST = test-conc-hashtable.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
 test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
 am__DEPENDENCIES_1 =
 @LOADED_LLVM_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
@@ -133,20 +133,22 @@ am__DEPENDENCIES_1 =
 am__DEPENDENCIES_3 = libtestlib.la $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_conc_hashtable_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_conc_hashtable_CFLAGS) $(CFLAGS) \
 	$(test_conc_hashtable_LDFLAGS) $(LDFLAGS) -o $@
 am__test_memfuncs_SOURCES_DIST = test-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_memfuncs_OBJECTS = test_memfuncs-test-memfuncs.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_memfuncs_OBJECTS = test_memfuncs-test-memfuncs.$(OBJEXT)
 test_memfuncs_OBJECTS = $(am_test_memfuncs_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_memfuncs_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_memfuncs_CFLAGS) \
 	$(CFLAGS) $(test_memfuncs_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_callspec_SOURCES_DIST = test-mono-callspec.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_callspec_OBJECTS = test_mono_callspec-test-mono-callspec.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_callspec_OBJECTS = test_mono_callspec-test-mono-callspec.$(OBJEXT)
 test_mono_callspec_OBJECTS = $(am_test_mono_callspec_OBJECTS)
 am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
 	$(monodir)/mono/sgen/libmonosgen.la \
@@ -157,37 +159,41 @@ test_mono_callspec_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(test_mono_callspec_CFLAGS) $(CFLAGS) \
 	$(test_mono_callspec_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_handle_SOURCES_DIST = test-mono-handle.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_handle_OBJECTS = test_mono_handle-test-mono-handle.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_handle_OBJECTS = test_mono_handle-test-mono-handle.$(OBJEXT)
 test_mono_handle_OBJECTS = $(am_test_mono_handle_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_mono_handle_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_handle_CFLAGS) $(CFLAGS) \
 	$(test_mono_handle_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_linked_list_set_SOURCES_DIST =  \
 	test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-test-mono-linked-list-set.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-test-mono-linked-list-set.$(OBJEXT)
 test_mono_linked_list_set_OBJECTS =  \
 	$(am_test_mono_linked_list_set_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_linked_list_set_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_mono_linked_list_set_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_linked_list_set_CFLAGS) $(CFLAGS) \
 	$(test_mono_linked_list_set_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_string_SOURCES_DIST = test-mono-string.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_string_OBJECTS = test_mono_string-test-mono-string.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_string_OBJECTS = test_mono_string-test-mono-string.$(OBJEXT)
 test_mono_string_OBJECTS = $(am_test_mono_string_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_DEPENDENCIES = $(am__DEPENDENCIES_3) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(mini_libs) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_4)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(mini_libs) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_4)
 test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_string_CFLAGS) $(CFLAGS) \
 	$(test_mono_string_LDFLAGS) $(LDFLAGS) -o $@
 am__test_sgen_qsort_SOURCES_DIST = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
 test_sgen_qsort_OBJECTS = $(am_test_sgen_qsort_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_sgen_qsort_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_sgen_qsort_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_sgen_qsort_CFLAGS) $(CFLAGS) $(test_sgen_qsort_LDFLAGS) \
@@ -732,39 +738,39 @@ sgen_libs = \
 	$(GLIB_LIBS) $(LIBICONV)
 
 mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@noinst_LTLIBRARIES = libtestlib.la
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_SOURCES = 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_sgen_qsort_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_sgen_qsort_LDADD = $(test_ldadd)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_sgen_qsort_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_memfuncs_SOURCES = test-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_memfuncs_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_memfuncs_LDADD = $(test_ldadd)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_memfuncs_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_linked_list_set_SOURCES = test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_linked_list_set_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_linked_list_set_LDADD = $(test_ldadd)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_linked_list_set_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_conc_hashtable_SOURCES = test-conc-hashtable.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_conc_hashtable_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_conc_hashtable_LDADD = $(test_ldadd)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_conc_hashtable_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_SOURCES = test-mono-handle.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_LDADD = $(test_ldadd)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_SOURCES = test-mono-callspec.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_CFLAGS = $(AM_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_DEPENDENCIES = callspec.exe
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_SOURCES = test-mono-string.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_CFLAGS = $(test-cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_string_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@noinst_LTLIBRARIES = libtestlib.la
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_SOURCES = 
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_CFLAGS = $(test_cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_SOURCES = test-memfuncs.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_CFLAGS = $(test_cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_SOURCES = test-mono-linked-list-set.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_CFLAGS = $(test_cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_SOURCES = test-conc-hashtable.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_CFLAGS = $(test_cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_SOURCES = test-mono-handle.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_CFLAGS = $(test_cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_SOURCES = test-mono-callspec.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_CFLAGS = $(AM_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_DEPENDENCIES = callspec.exe
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_SOURCES = test-mono-string.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test-cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am
 
 .SUFFIXES:
@@ -1282,8 +1288,6 @@ distdir: $(DISTFILES)
 	done
 @CROSS_COMPILE_TRUE@check-local:
 @HOST_WIN32_TRUE@check-local:
-@SUPPORT_BOEHM_FALSE@check-local:
-@SUPPORT_SGEN_FALSE@check-local:
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
@@ -1325,8 +1329,6 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 @CROSS_COMPILE_TRUE@clean-local:
 @HOST_WIN32_TRUE@clean-local:
-@SUPPORT_BOEHM_FALSE@clean-local:
-@SUPPORT_SGEN_FALSE@clean-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
@@ -1416,21 +1418,21 @@ uninstall-am:
 	recheck tags tags-am uninstall uninstall-am
 
 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@.NOTPARALLEL:
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@.NOTPARALLEL:
 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@check-local:
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	if [ -e test-suite.log ]; then \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		if grep -q "# FAIL:  0\|tests passed" test-suite.log; then successbool=True && failures=0; else successbool=False && failures=1; fi; \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		echo "<?xml version='1.0' encoding='utf-8'?><test-results failures='$$failures' total='1' not-run='0' name='unit-tests.dummy' date='$$(date +%F)' time='$$(date +%T)'><test-suite name='MonoTests.unit-tests' success='$$successbool' time='0'><results><test-case name='MonoTests.unit-tests.100percentsuccess' executed='True' success='$$successbool' time='0'>" > TestResult-unit-tests.xml; \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		if [ $$failures -ne 0 ]; then echo "<failure><message>"'<![CDATA[' >> TestResult-unit-tests.xml && cat test-suite.log >> TestResult-unit-tests.xml && echo "]]></message><stack-trace></stack-trace></failure>" >> TestResult-unit-tests.xml; fi; \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		echo "</test-case></results></test-suite></test-results>" >> TestResult-unit-tests.xml; \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	fi;
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@check-local:
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	if [ -e test-suite.log ]; then \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@		if grep -q "# FAIL:  0\|tests passed" test-suite.log; then successbool=True && failures=0; else successbool=False && failures=1; fi; \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@		echo "<?xml version='1.0' encoding='utf-8'?><test-results failures='$$failures' total='1' not-run='0' name='unit-tests.dummy' date='$$(date +%F)' time='$$(date +%T)'><test-suite name='MonoTests.unit-tests' success='$$successbool' time='0'><results><test-case name='MonoTests.unit-tests.100percentsuccess' executed='True' success='$$successbool' time='0'>" > TestResult-unit-tests.xml; \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@		if [ $$failures -ne 0 ]; then echo "<failure><message>"'<![CDATA[' >> TestResult-unit-tests.xml && cat test-suite.log >> TestResult-unit-tests.xml && echo "]]></message><stack-trace></stack-trace></failure>" >> TestResult-unit-tests.xml; fi; \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@		echo "</test-case></results></test-suite></test-results>" >> TestResult-unit-tests.xml; \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	fi;
 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@clean-local:
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	rm -f callspec.exe callspec.pdb
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@clean-local:
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	rm -f callspec.exe callspec.pdb
 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@%.exe: %.cs
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@%.exe: %.cs
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

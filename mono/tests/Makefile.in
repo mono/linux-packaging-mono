@@ -939,6 +939,15 @@ PLATFORM_DISABLED_TESTS = $(am__append_9) $(am__append_10) \
 @ARM_TRUE@	delegate3.exe \
 @ARM_TRUE@	thunks.exe \
 @ARM_TRUE@	finalizer-exception.exe \
+@ARM_TRUE@	delegate5.exe \
+@ARM_TRUE@	delegate8.exe \
+@ARM_TRUE@	bug-323114.exe \
+@ARM_TRUE@	threadpool-exceptions3.exe \
+@ARM_TRUE@	threadpool-exceptions6.exe \
+@ARM_TRUE@	bug-80392.2.exe \
+@ARM_TRUE@	remoting3.exe \
+@ARM_TRUE@	remoting2.exe \
+@ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	monitor-abort.exe
 
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
