@@ -3003,7 +3003,7 @@ decode_buffer (ProfContext *ctx)
 					}
 					name = pstrdup ((char*)p);
 					while (*p++);
-					if (ctx->data_version > 12) {
+					if (ctx->data_version > 12 && ctx->data_version < 15) {
 						type = *p++;
 						unit = *p++;
 						variance = *p++;
@@ -3040,7 +3040,7 @@ decode_buffer (ProfContext *ctx)
 						}
 					}
 
-					if (ctx->data_version > 12)
+					if (ctx->data_version > 12 && ctx->data_version < 15)
 						type = *p++;
 					else
 						type = decode_uleb128 (p, &p);
@@ -4048,7 +4048,7 @@ flush_context (ProfContext *ctx)
 	}
 }
 
-static const char *reports = "header,jit,gc,sample,alloc,call,metadata,exception,monitor,thread,heapshot,counters,coverage";
+static const char *reports = "header,jit,gc,sample,alloc,call,metadata,exception,monitor,thread,domain,context,heapshot,counters,coverage";
 
 static const char*
 match_option (const char *p, const char *opt)

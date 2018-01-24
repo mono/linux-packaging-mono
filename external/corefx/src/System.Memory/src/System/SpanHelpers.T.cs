@@ -4,6 +4,9 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 
 namespace System
 {
@@ -101,7 +104,7 @@ namespace System
             }
             return -1;
 
-        Found: // Workaround for https://github.com/dotnet/coreclr/issues/9692
+        Found: // Workaround for https://github.com/dotnet/coreclr/issues/13549
             return (int)(byte*)index;
         Found1:
             return (int)(byte*)(index + 1);
@@ -179,7 +182,7 @@ namespace System
         Equal:
             return true;
 
-        NotEqual: // Workaround for https://github.com/dotnet/coreclr/issues/9692
+        NotEqual: // Workaround for https://github.com/dotnet/coreclr/issues/13549
             return false;
         }
     }

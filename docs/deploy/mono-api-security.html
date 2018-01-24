@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -210,7 +220,8 @@ mono_declsec_flags_from_assembly (MonoAssembly *assembly)
              <div>	 the declarative security flags for the assembly.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Get the security actions (in the form of flags) associated with the specified assembly.</div>
+             <div>
+ Get the security actions (in the form of flags) associated with the specified assembly.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -234,7 +245,10 @@ mono_declsec_flags_from_class (MonoClass *klass)
              <div>	 the declarative security flags for the class.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Get the security actions (in the form of flags) associated with the specified class. 	 We cache the flags inside the <code>MonoClass</code> structure as this will get  	 called very often (at least for each method).</div>
+             <div>
+ Get the security actions (in the form of flags) associated with the specified class.
+ We cache the flags inside the <code>MonoClass</code> structure as this will get 
+ called very often (at least for each method).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -258,7 +272,10 @@ mono_declsec_flags_from_method (MonoMethod *method)
              <div>	 the declarative security flags for the method (only).
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Get the security actions (in the form of flags) associated with the specified method. 	 To keep <code>MonoMethod</code> size down we do not cache the declarative security flags 	 (except for the stack modifiers which are kept in the MonoJitInfo structure)</div>
+             <div>
+ Get the security actions (in the form of flags) associated with the specified method.
+ To keep <code>MonoMethod</code> size down we do not cache the declarative security flags
+ (except for the stack modifiers which are kept in the MonoJitInfo structure)</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -314,7 +331,10 @@ mono_declsec_get_demands (MonoMethod *method, MonoDeclSecurityActions* demands)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	 Collect all actions (that requires to generate code in mini) assigned for 	 the specified method. 	 Don't use the content of actions if the function return <code>FALSE</code>.</div>
+             <div>
+ Collect all actions (that requires to generate code in mini) assigned for
+ the specified method.
+ Don't use the content of actions if the function return <code>FALSE</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -338,7 +358,9 @@ mono_declsec_get_inheritdemands_class (MonoClass *klass, MonoDeclSecurityActions
              <div>	 <code>TRUE</code> if inheritance demands (any kind) are present, <code>FALSE</code> otherwise.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Collect all Inherit actions - <code>InheritanceDemand</code>, <code>NonCasInheritanceDemand</code> and <code>InheritanceDemandChoice</code> (2.0). 	 Don't use the content of actions if the function return <code>FALSE</code>.</div>
+             <div>
+ Collect all Inherit actions - <code>InheritanceDemand</code>, <code>NonCasInheritanceDemand</code> and <code>InheritanceDemandChoice</code> (2.0).
+ Don't use the content of actions if the function return <code>FALSE</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -359,7 +381,8 @@ mono_declsec_get_inheritdemands_method (MonoMethod *method, MonoDeclSecurityActi
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>actions</i></td><td> <code>InheritanceDemand</code>, <code>NonCasInheritanceDemand</code> and <code>InheritanceDemandChoice</code> (2.0).</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Don't use the content of actions if the function return <code>FALSE</code>.</div>
+             <div>
+ Don't use the content of actions if the function return <code>FALSE</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -380,6 +403,7 @@ mono_declsec_get_linkdemands (MonoMethod *method, MonoDeclSecurityActions* klass
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>actions</i></td><td> <code>LinkDemand</code>, <code>NonCasLinkDemand</code> and <code>LinkDemandChoice</code> (2.0).</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Don't use the content of actions if the function return <code>FALSE</code>.</div>
+             <div>
+ Don't use the content of actions if the function return <code>FALSE</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->

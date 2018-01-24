@@ -47,6 +47,7 @@
     <Compile Include="Assertions\KeptMemberInAssemblyAttribute.cs" />
     <Compile Include="Assertions\KeptResourceAttribute.cs" />
     <Compile Include="Assertions\KeptResourceInAssemblyAttribute.cs" />
+    <Compile Include="Assertions\KeptSecurityAttribute.cs" />
     <Compile Include="Assertions\KeptTypeInAssemblyAttribute.cs" />
     <Compile Include="Assertions\RemovedAssemblyAttribute.cs" />
     <Compile Include="Assertions\RemovedMemberInAssemblyAttribute.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Metadata\BaseMetadataAttribute.cs" />
     <Compile Include="Metadata\SetupCompileAfterAttribute.cs" />
     <Compile Include="Metadata\SetupCompileAssemblyNameAttribute.cs" />
+    <Compile Include="Metadata\SetupCompileArgumentAttribute.cs" />
     <Compile Include="Metadata\SetupCompileBeforeAttribute.cs" />
     <Compile Include="Metadata\DefineAttribute.cs" />
     <Compile Include="Metadata\IncludeBlacklistStepAttribute.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="Assertions\KeptAttributeAttribute.cs" />
     <Compile Include="Assertions\RemovedForwarderAttribute.cs" />
     <Compile Include="Metadata\SetupLinkerActionAttribute.cs" />
+    <Compile Include="Metadata\SetupLinkerArgumentAttribute.cs" />
     <Compile Include="Metadata\SetupLinkerCoreActionAttribute.cs" />
     <Compile Include="Metadata\SetupCompileResourceAttribute.cs" />
   </ItemGroup>

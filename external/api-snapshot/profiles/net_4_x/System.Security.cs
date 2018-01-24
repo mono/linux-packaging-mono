@@ -521,14 +521,12 @@ namespace System.Security.Cryptography.Xml
         protected EncryptedReference() { }
         protected EncryptedReference(string uri) { }
         protected EncryptedReference(string uri, System.Security.Cryptography.Xml.TransformChain transformChain) { }
-        [System.MonoTODOAttribute("Always returns false")]
         protected internal bool CacheValid { get { throw null; } }
         protected string ReferenceType { get { throw null; } set { } }
         public System.Security.Cryptography.Xml.TransformChain TransformChain { get { throw null; } set { } }
         public string Uri { get { throw null; } set { } }
         public void AddTransform(System.Security.Cryptography.Xml.Transform transform) { }
         public virtual System.Xml.XmlElement GetXml() { throw null; }
-        [System.MonoTODOAttribute("Make compliant.")]
         public virtual void LoadXml(System.Xml.XmlElement value) { }
     }
     public abstract partial class EncryptedType
@@ -565,11 +563,8 @@ namespace System.Security.Cryptography.Xml
         public const string XmlEncSHA512Url = "http://www.w3.org/2001/04/xmlenc#sha512";
         public const string XmlEncTripleDESKeyWrapUrl = "http://www.w3.org/2001/04/xmlenc#kw-tripledes";
         public const string XmlEncTripleDESUrl = "http://www.w3.org/2001/04/xmlenc#tripledes-cbc";
-        [System.MonoTODOAttribute]
         public EncryptedXml() { }
-        [System.MonoTODOAttribute]
         public EncryptedXml(System.Xml.XmlDocument document) { }
-        [System.MonoTODOAttribute]
         public EncryptedXml(System.Xml.XmlDocument document, System.Security.Policy.Evidence evidence) { }
         public System.Security.Policy.Evidence DocumentEvidence { get { throw null; } set { } }
         public System.Text.Encoding Encoding { get { throw null; } set { } }
@@ -577,20 +572,18 @@ namespace System.Security.Cryptography.Xml
         public System.Security.Cryptography.PaddingMode Padding { get { throw null; } set { } }
         public string Recipient { get { throw null; } set { } }
         public System.Xml.XmlResolver Resolver { get { throw null; } set { } }
+        public int XmlDSigSearchDepth { get { throw null; } set { } }
         public void AddKeyNameMapping(string keyName, object keyObject) { }
         public void ClearKeyNameMappings() { }
         public byte[] DecryptData(System.Security.Cryptography.Xml.EncryptedData encryptedData, System.Security.Cryptography.SymmetricAlgorithm symmetricAlgorithm) { throw null; }
         public void DecryptDocument() { }
         public virtual byte[] DecryptEncryptedKey(System.Security.Cryptography.Xml.EncryptedKey encryptedKey) { throw null; }
-        [System.MonoTODOAttribute("Test this.")]
         public static byte[] DecryptKey(byte[] keyData, System.Security.Cryptography.RSA rsa, bool useOAEP) { throw null; }
         public static byte[] DecryptKey(byte[] keyData, System.Security.Cryptography.SymmetricAlgorithm symmetricAlgorithm) { throw null; }
-        [System.MonoTODOAttribute]
         public System.Security.Cryptography.Xml.EncryptedData Encrypt(System.Xml.XmlElement inputElement, System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         public System.Security.Cryptography.Xml.EncryptedData Encrypt(System.Xml.XmlElement inputElement, string keyName) { throw null; }
         public byte[] EncryptData(byte[] plaintext, System.Security.Cryptography.SymmetricAlgorithm symmetricAlgorithm) { throw null; }
         public byte[] EncryptData(System.Xml.XmlElement inputElement, System.Security.Cryptography.SymmetricAlgorithm symmetricAlgorithm, bool content) { throw null; }
-        [System.MonoTODOAttribute("Test this.")]
         public static byte[] EncryptKey(byte[] keyData, System.Security.Cryptography.RSA rsa, bool useOAEP) { throw null; }
         public static byte[] EncryptKey(byte[] keyData, System.Security.Cryptography.SymmetricAlgorithm symmetricAlgorithm) { throw null; }
         public virtual byte[] GetDecryptionIV(System.Security.Cryptography.Xml.EncryptedData encryptedData, string symmetricAlgorithmUri) { throw null; }
@@ -613,7 +606,6 @@ namespace System.Security.Cryptography.Xml
         public EncryptionProperty() { }
         public EncryptionProperty(System.Xml.XmlElement elementProperty) { }
         public string Id { get { throw null; } }
-        [System.MonoTODOAttribute("Always returns null")]
         public System.Xml.XmlElement PropertyElement { get { throw null; } set { } }
         public string Target { get { throw null; } }
         public System.Xml.XmlElement GetXml() { throw null; }
@@ -697,7 +689,6 @@ namespace System.Security.Cryptography.Xml
         public KeyInfoRetrievalMethod() { }
         public KeyInfoRetrievalMethod(string strUri) { }
         public KeyInfoRetrievalMethod(string strUri, string typeName) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public string Type { get { throw null; } set { } }
         public string Uri { get { throw null; } set { } }
         public override System.Xml.XmlElement GetXml() { throw null; }

@@ -19,6 +19,8 @@
 #endif
 
 #include "jit-icalls.h"
+#include "aot-runtime.h"
+#include "mini-runtime.h"
 #include <mono/utils/mono-error-internals.h>
 #include <mono/metadata/exception-internals.h>
 #include <mono/metadata/threads-types.h>
@@ -276,7 +278,7 @@ mono_lldiv (gint64 a, gint64 b)
 		return 0;
 	}
 	else if (b == -1 && a == (-9223372036854775807LL - 1LL)) {
-		mono_set_pending_exception (mono_get_exception_arithmetic ());
+		mono_set_pending_exception (mono_get_exception_overflow ());
 		return 0;
 	}
 #endif
@@ -292,7 +294,7 @@ mono_llrem (gint64 a, gint64 b)
 		return 0;
 	}
 	else if (b == -1 && a == (-9223372036854775807LL - 1LL)) {
-		mono_set_pending_exception (mono_get_exception_arithmetic ());
+		mono_set_pending_exception (mono_get_exception_overflow ());
 		return 0;
 	}
 #endif
@@ -1774,7 +1776,8 @@ mono_resolve_generic_virtual_iface_call (MonoVTable *vt, int imt_slot, MonoMetho
 		m = mono_marshal_get_synchronized_wrapper (m);
 
 	addr = compiled_method = mono_compile_method_checked (m, &error);
-	mono_error_raise_exception (&error);
+	if (!is_ok (&error))
+		mono_llvm_raise_exception (mono_error_convert_to_exception (&error));
 	g_assert (addr);
 
 	addr = mini_add_method_wrappers_llvmonly (m, addr, FALSE, need_unbox_tramp, &arg);
@@ -1903,25 +1906,6 @@ mono_ckfinite (double d)
 	if (isinf (d) || isnan (d))
 		mono_set_pending_exception (mono_get_exception_arithmetic ());
 	return d;
-}
-
-/*
- * mono_interruption_checkpoint_from_trampoline:
- *
- *   Check whenever the thread has a pending exception, and throw it
- * if needed.
- * Architectures should move away from calling this function and
- * instead call mono_thread_force_interruption_checkpoint_noraise (),
- * rewrind to the parent frame, and throw the exception normally.
- */
-void
-mono_interruption_checkpoint_from_trampoline (void)
-{
-	MonoException *ex;
-
-	ex = mono_thread_force_interruption_checkpoint_noraise ();
-	if (ex)
-		mono_raise_exception (ex);
 }
 
 void

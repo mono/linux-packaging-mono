@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -311,7 +321,9 @@ mono_image_close (MonoImage *image)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> The image file we wish to close</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Closes an image file, deallocates all memory consumed and 	 unmaps all possible sections of the file</div>
+             <div>
+ Closes an image file, deallocates all memory consumed and
+ unmaps all possible sections of the file</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -332,7 +344,8 @@ mono_image_addref (MonoImage *image)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> The image file we wish to add a reference to</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Increases the reference count of an image.</div>
+             <div>
+ Increases the reference count of an image.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -431,7 +444,8 @@ mono_image_get_assembly (MonoImage *image)
              <div>	 the assembly that holds this image.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Use this routine to get the assembly that owns this image.</div>
+             <div>
+ Use this routine to get the assembly that owns this image.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -455,7 +469,9 @@ mono_image_get_entry_point (MonoImage *image)
              <div>	 the token for the entry point method in the image
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Use this routine to determine the metadata token for method that 	 has been flagged as the entry point.</div>
+             <div>
+ Use this routine to determine the metadata token for method that
+ has been flagged as the entry point.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -479,7 +495,8 @@ mono_image_get_filename (MonoImage *image)
              <div>	 the filename.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Used to get the filename that hold the actual <code>MonoImage</code></div>
+             <div>
+ Used to get the filename that hold the actual <code>MonoImage</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -525,7 +542,12 @@ mono_image_get_resource (MonoImage *image, guint32 offset, guint32 *size)
              <div>	 the pointer to the resource whose offset is <i>offset</i>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is a low-level routine that fetches a resource from the 	 metadata that starts at a given <i>offset</i>.  The <i>size</i> parameter is 	 filled with the data field as encoded in the metadata. 	<p /></div>
+             <div>
+<p />
+ This is a low-level routine that fetches a resource from the
+ metadata that starts at a given <i>offset</i>.  The <i>size</i> parameter is
+ filled with the data field as encoded in the metadata.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -585,7 +607,10 @@ mono_image_is_dynamic (MonoImage *image)
              <div>	 <code>TRUE</code> if the image was created dynamically, <code>FALSE</code> if not.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Determines if the given image was created dynamically through the 	 <code>System.Reflection.Emit</code> API</div>
+             <div>
+<p />
+ Determines if the given image was created dynamically through the
+ <code>System.Reflection.Emit</code> API</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -627,7 +652,8 @@ mono_image_loaded (const char *name)
              <div>	 the loaded <code>MonoImage</code>, or <code>NULL</code> on failure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 This routine verifies that the given image is loaded. Reflection-only loads do not count.</div>
+             <div>
+ This routine verifies that the given image is loaded. Reflection-only loads do not count.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -699,7 +725,8 @@ mono_get_method_constrained (MonoImage *image, guint32 token, MonoClass *constra
 	 as the function return value; and the original CIL-stream method as
 	 declared in <i>cil_method</i>. The latter is used for verification.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 This is used when JITing the <code>constrained.</code> opcode.</div>
+             <div>
+ This is used when JITing the <code>constrained.</code> opcode.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -727,7 +754,11 @@ mono_image_strong_name_position (MonoImage *image, guint32 *size)
 
 	 is stored.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 If the image has a strong name, and <i>size</i> is not <code>NULL</code>, the value 	 pointed to by size will have the size of the strong name. 	<p /></div>
+             <div>
+<p />
+ If the image has a strong name, and <i>size</i> is not <code>NULL</code>, the value
+ pointed to by size will have the size of the strong name.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -752,7 +783,13 @@ mono_image_get_public_key (MonoImage *image, guint32 *size)
 
 	 to the public key.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is used to obtain the public key in the <i>image</i>. 	<p /> 	 If the image has a public key, and <i>size</i> is not <code>NULL</code>, the value 	 pointed to by size will have the size of the public key. 	<p /></div>
+             <div>
+<p />
+ This is used to obtain the public key in the <i>image</i>.
+<p />
+ If the image has a public key, and <i>size</i> is not <code>NULL</code>, the value
+ pointed to by size will have the size of the public key.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -777,7 +814,11 @@ mono_image_get_strong_name (MonoImage *image, guint32 *size)
 
 	 pointer to the public key.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 If the image has a strong name, and <i>size</i> is not <code>NULL</code>, the value 	 pointed to by size will have the size of the strong name. 	<p /></div>
+             <div>
+<p />
+ If the image has a strong name, and <i>size</i> is not <code>NULL</code>, the value
+ pointed to by size will have the size of the strong name.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -802,7 +843,9 @@ mono_image_has_authenticode_entry (MonoImage *image)
 
 	 directory.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 Use this routine to determine if the image has a Authenticode 	 Certificate Table.</div>
+             <div>
+ Use this routine to determine if the image has a Authenticode
+ Certificate Table.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -830,7 +873,11 @@ mono_image_rva_map (MonoImage *image, guint32 addr)
 
 	 RVA is not valid for this image. </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is a low-level routine used by the runtime to map relative 	 virtual address (RVA) into their location in memory.  	<p /></div>
+             <div>
+<p />
+ This is a low-level routine used by the runtime to map relative
+ virtual address (RVA) into their location in memory. 
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -854,7 +901,11 @@ mono_image_ensure_section_idx (MonoImage *image, int section)
              <div>	 <code>TRUE</code> on success
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine makes sure that we have an in-memory copy of 	 an image section (<code>.text</code>, <code>.rsrc</code>, <code>.data</code>). 	<p /></div>
+             <div>
+<p />
+ This routine makes sure that we have an in-memory copy of
+ an image section (<code>.text</code>, <code>.rsrc</code>, <code>.data</code>).
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -878,7 +929,11 @@ mono_image_ensure_section (MonoImage *image, const char *section)
              <div>	 <code>TRUE</code> on success
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine makes sure that we have an in-memory copy of 	 an image section (.text, .rsrc, .data). 	<p /></div>
+             <div>
+<p />
+ This routine makes sure that we have an in-memory copy of
+ an image section (.text, .rsrc, .data).
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -916,7 +971,9 @@ mono_images_init (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	  Initialize the global variables used by this module.</div>
+             <div>
+<p />
+  Initialize the global variables used by this module.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -936,7 +993,9 @@ mono_images_cleanup (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	  Free all resources used by this module.</div>
+             <div>
+<p />
+  Free all resources used by this module.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1015,6 +1074,10 @@ mono_image_loaded_full (const char *name, gboolean refonly)
              <div>	 the loaded <code>MonoImage</code>, or <code>NULL</code> on failure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine verifies that the given image is loaded. 	 It checks either reflection-only loads only, or normal loads only, as specified by parameter. 	<p /></div>
+             <div>
+<p />
+ This routine verifies that the given image is loaded.
+ It checks either reflection-only loads only, or normal loads only, as specified by parameter.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->

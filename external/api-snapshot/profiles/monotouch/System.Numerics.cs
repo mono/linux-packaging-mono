@@ -32,6 +32,7 @@ namespace System.Numerics
         public BigInteger(double value) { throw null;}
         public BigInteger(int value) { throw null;}
         public BigInteger(long value) { throw null;}
+        public BigInteger(System.ReadOnlySpan<byte> value) { throw null;}
         public BigInteger(float value) { throw null;}
         [System.CLSCompliantAttribute(false)]
         public BigInteger(uint value) { throw null;}
@@ -60,6 +61,7 @@ namespace System.Numerics
         public override bool Equals(object obj) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public bool Equals(ulong other) { throw null; }
+        public int GetByteCount() { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Numerics.BigInteger GreatestCommonDivisor(System.Numerics.BigInteger left, System.Numerics.BigInteger right) { throw null; }
         public static double Log(System.Numerics.BigInteger value) { throw null; }
@@ -157,6 +159,7 @@ namespace System.Numerics
         public static System.Numerics.BigInteger operator -(System.Numerics.BigInteger left, System.Numerics.BigInteger right) { throw null; }
         public static System.Numerics.BigInteger operator -(System.Numerics.BigInteger value) { throw null; }
         public static System.Numerics.BigInteger operator +(System.Numerics.BigInteger value) { throw null; }
+        public static System.Numerics.BigInteger Parse(System.ReadOnlySpan<char> value, System.Globalization.NumberStyles style=(System.Globalization.NumberStyles)(7), System.IFormatProvider provider=null) { throw null; }
         public static System.Numerics.BigInteger Parse(string value) { throw null; }
         public static System.Numerics.BigInteger Parse(string value, System.Globalization.NumberStyles style) { throw null; }
         public static System.Numerics.BigInteger Parse(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) { throw null; }
@@ -169,8 +172,10 @@ namespace System.Numerics
         public string ToString(System.IFormatProvider provider) { throw null; }
         public string ToString(string format) { throw null; }
         public string ToString(string format, System.IFormatProvider provider) { throw null; }
+        public static bool TryParse(System.ReadOnlySpan<char> value, out System.Numerics.BigInteger result, System.Globalization.NumberStyles style=(System.Globalization.NumberStyles)(7), System.IFormatProvider provider=null) { result = default(System.Numerics.BigInteger); throw null; }
         public static bool TryParse(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider, out System.Numerics.BigInteger result) { result = default(System.Numerics.BigInteger); throw null; }
         public static bool TryParse(string value, out System.Numerics.BigInteger result) { result = default(System.Numerics.BigInteger); throw null; }
+        public bool TryWriteBytes(System.Span<byte> destination, out int bytesWritten) { bytesWritten = default(int); throw null; }
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]

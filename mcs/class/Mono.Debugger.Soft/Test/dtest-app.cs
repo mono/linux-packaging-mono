@@ -343,7 +343,8 @@ public class Tests : TestsBase, ITest2
 		gc_suspend ();
 		set_ip ();
 		step_filters ();
-		local_reflect ();
+		if (args.Length > 0 && args [0] == "local-reflect")
+			local_reflect ();
 		if (args.Length > 0 && args [0] == "domain-test")
 			/* This takes a lot of time, so execute it conditionally */
 			domains ();
@@ -356,6 +357,7 @@ public class Tests : TestsBase, ITest2
 		if (args.Length > 0 && args [0] == "invoke-abort")
 			new Tests ().invoke_abort ();
 		new Tests ().evaluate_method ();
+		Bug59649 ();
 		return 3;
 	}
 
@@ -1719,6 +1721,11 @@ public class Tests : TestsBase, ITest2
 			attach_break ();
 		}
 	}
+
+	public static void Bug59649 ()
+	{
+		UninitializedClass.Call();//Breakpoint here and step in
+	}
 }
 
 public class SentinelClass : MarshalByRefObject {
@@ -1797,5 +1804,23 @@ public class LineNumbers
 	}
 }
 
+class UninitializedClass
+{
+	static string DummyCall()
+	{
+		//Should NOT step into this method
+		//if StepFilter.StaticCtor is set
+		//because this is part of static class initilization
+		return String.Empty;
+	}
+
+	static string staticField = DummyCall();
+
+	public static void Call()
+	{
+		//Should step into this method
+		//Console.WriteLine ("Call called");
+	}
+}
 
 

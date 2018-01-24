@@ -199,7 +199,7 @@ namespace System.Runtime.Versioning
                     }
                     try
                     {
-                        _version = new Version(value);
+                        _version = Version.Parse(value);
                     }
                     catch (Exception e)
                     {

@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+#if !MONO
 using System.ComponentModel;
+#endif
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -157,7 +159,9 @@ namespace System.Threading.Tasks
 
         /// <summary>Creates a method builder for use with an async method.</summary>
         /// <returns>The created builder.</returns>
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)] // intended only for compiler consumption
+#endif
         public static AsyncValueTaskMethodBuilder<TResult> CreateAsyncMethodBuilder() => AsyncValueTaskMethodBuilder<TResult>.Create();
     }
 }

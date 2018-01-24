@@ -42,6 +42,8 @@
 
 #include "mini.h"
 #include "mini-amd64.h"
+#include "mini-runtime.h"
+#include "aot-runtime.h"
 #include "tasklets.h"
 
 #define ALIGN_TO(val,align) (((val) + ((align) - 1)) & ~((align) - 1))
@@ -71,6 +73,7 @@ static LONG CALLBACK seh_unhandled_exception_filter(EXCEPTION_POINTERS* ep)
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 
+#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
 static gpointer
 get_win32_restore_stack (void)
 {
@@ -114,6 +117,14 @@ get_win32_restore_stack (void)
 
 	return start;
 }
+#else
+static gpointer
+get_win32_restore_stack (void)
+{
+	// _resetstkoflw unsupported on none desktop Windows platforms.
+	return NULL;
+}
+#endif /* G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) */
 
 /*
  * Unhandled Exception Filter
@@ -139,12 +150,16 @@ static LONG CALLBACK seh_vectored_exception_handler(EXCEPTION_POINTERS* ep)
 
 	switch (er->ExceptionCode) {
 	case EXCEPTION_STACK_OVERFLOW:
-		if (mono_arch_handle_exception (ctx, domain->stack_overflow_ex)) {
-			/* need to restore stack protection once stack is unwound
-			 * restore_stack will restore stack protection and then
-			 * resume control to the saved stack_restore_ctx */
-			mono_sigctx_to_monoctx (ctx, &jit_tls->stack_restore_ctx);
-			ctx->Rip = (guint64)restore_stack;
+		if (!mono_aot_only && restore_stack) {
+			if (mono_arch_handle_exception (ctx, domain->stack_overflow_ex)) {
+				/* need to restore stack protection once stack is unwound
+				 * restore_stack will restore stack protection and then
+				 * resume control to the saved stack_restore_ctx */
+				mono_sigctx_to_monoctx (ctx, &jit_tls->stack_restore_ctx);
+				ctx->Rip = (guint64)restore_stack;
+			}
+		} else {
+			jit_tls->mono_win_chained_exception_needs_run = TRUE;
 		}
 		break;
 	case EXCEPTION_ACCESS_VIOLATION:
@@ -181,7 +196,8 @@ static LONG CALLBACK seh_vectored_exception_handler(EXCEPTION_POINTERS* ep)
 
 void win32_seh_init()
 {
-	restore_stack = get_win32_restore_stack ();
+	if (!mono_aot_only)
+		restore_stack = get_win32_restore_stack ();
 
 	mono_old_win_toplevel_exception_filter = SetUnhandledExceptionFilter(seh_unhandled_exception_filter);
 	mono_win_vectored_exception_handle = AddVectoredExceptionHandler (1, seh_vectored_exception_handler);
@@ -643,35 +659,12 @@ mono_arch_unwind_frame (MonoDomain *domain, MonoJitTlsData *jit_tls,
 	} else if (*lmf) {
 		guint64 rip;
 
-		if (((guint64)(*lmf)->previous_lmf) & 2) {
-			MonoLMFExt *ext = (MonoLMFExt*)(*lmf);
-
-			if (ext->debugger_invoke) {
-				/*
-				 * This LMF entry is created by the soft debug code to mark transitions to
-				 * managed code done during invokes.
-				 */
-				frame->type = FRAME_TYPE_DEBUGGER_INVOKE;
-				memcpy (new_ctx, &ext->ctx, sizeof (MonoContext));
-			} else if (ext->interp_exit) {
-				frame->type = FRAME_TYPE_INTERP_TO_MANAGED;
-				frame->interp_exit_data = ext->interp_exit_data;
-			} else {
-				g_assert_not_reached ();
-			}
-
-			*lmf = (MonoLMF *)(((guint64)(*lmf)->previous_lmf) & ~7);
-
-			return TRUE;
-		}
+		g_assert ((((guint64)(*lmf)->previous_lmf) & 2) == 0);
 
 		if (((guint64)(*lmf)->previous_lmf) & 4) {
 			MonoLMFTramp *ext = (MonoLMFTramp*)(*lmf);
 
 			rip = (guint64)MONO_CONTEXT_GET_IP (ext->ctx);
-		} else if (((guint64)(*lmf)->previous_lmf) & 1) {
-			/* This LMF has the rip field set */
-			rip = (*lmf)->rip;
 		} else if ((*lmf)->rsp == 0) {
 			/* Top LMF entry */
 			return FALSE;
@@ -899,19 +892,6 @@ mono_arch_handle_altstack_exception (void *sigctx, MONO_SIG_HANDLER_INFO_TYPE *s
 	UCONTEXT_REG_RSI (sigctx) = (guint64)exc;
 	UCONTEXT_REG_RDX (sigctx) = stack_ovf;
 #endif
-}
-
-guint64
-mono_amd64_get_original_ip (void)
-{
-	MonoLMF *lmf = mono_get_lmf ();
-
-	g_assert (lmf);
-
-	/* Reset the change to previous_lmf */
-	lmf->previous_lmf = (gpointer)((guint64)lmf->previous_lmf & ~1);
-
-	return lmf->rip;
 }
 
 #ifndef DISABLE_JIT
@@ -1758,6 +1738,21 @@ mono_arch_unwindinfo_get_code_count (GSList *unwind_ops)
 	return unwindinfo.CountOfCodes;
 }
 
+PUNWIND_INFO
+mono_arch_unwindinfo_alloc_unwind_info (GSList *unwind_ops)
+{
+	if (!unwind_ops)
+		return NULL;
+
+	return initialize_unwind_info_internal (unwind_ops);
+}
+
+void
+mono_arch_unwindinfo_free_unwind_info (PUNWIND_INFO unwind_info)
+{
+	g_free (unwind_info);
+}
+
 guint
 mono_arch_unwindinfo_init_method_unwind_info (gpointer cfg)
 {
@@ -1807,7 +1802,7 @@ mono_arch_unwindinfo_install_method_unwind_info (gpointer *monoui, gpointer code
 	}
 #endif /* ENABLE_CHECKED_BUILD_UNWINDINFO */
 
-	g_free (unwindinfo);
+	mono_arch_unwindinfo_free_unwind_info (unwindinfo);
 	*monoui = 0;
 
 	// Register unwind info in table.

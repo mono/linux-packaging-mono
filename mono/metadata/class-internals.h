@@ -111,7 +111,7 @@ struct _MonoMethodPInvoke {
 	gpointer addr;
 	/* add marshal info */
 	guint16 piflags;  /* pinvoke flags */
-	guint16 implmap_idx;  /* index into IMPLMAP */
+	guint32 implmap_idx;  /* index into IMPLMAP */
 };
 
 /* 
@@ -328,6 +328,7 @@ struct _MonoClass {
 	guint has_finalize_inited    : 1; /* has_finalize is initialized */
 	guint fields_inited : 1; /* setup_fields () has finished */
 	guint has_failure : 1; /* See mono_class_get_exception_data () for a MonoErrorBoxed with the details */
+	guint has_weak_fields : 1; /* class has weak reference fields */
 
 	MonoClass  *parent;
 	MonoClass  *nested_in;
@@ -383,7 +384,7 @@ struct _MonoClass {
 };
 
 typedef struct {
-	MonoClass class;
+	MonoClass klass;
 	guint32	flags;
 	/*
 	 * From the TypeDef table
@@ -396,7 +397,7 @@ typedef struct {
 } MonoClassDef;
 
 typedef struct {
-	MonoClassDef class;
+	MonoClassDef klass;
 	MonoGenericContainer *generic_container;
 	/* The canonical GENERICINST where we instantiate a generic type definition with its own generic parameters.*/
 	/* Suppose we have class T`2<A,B> {...}.  canonical_inst is the GTD T`2 applied to A and B. */
@@ -404,21 +405,21 @@ typedef struct {
 } MonoClassGtd;
 
 typedef struct {
-	MonoClass class;
+	MonoClass klass;
 	MonoGenericClass *generic_class;
 } MonoClassGenericInst;
 
 typedef struct {
-	MonoClass class;
+	MonoClass klass;
 } MonoClassGenericParam;
 
 typedef struct {
-	MonoClass class;
+	MonoClass klass;
 	guint32 method_count;
 } MonoClassArray;
 
 typedef struct {
-	MonoClass class;
+	MonoClass klass;
 } MonoClassPointer;
 
 #ifdef COMPRESSED_INTERFACE_BITMAP
@@ -700,6 +701,7 @@ typedef struct MonoCachedClassInfo {
 	guint has_static_refs : 1;
 	guint no_special_static_fields : 1;
 	guint is_generic_container : 1;
+	guint has_weak_fields : 1;
 	guint32 cctor_token;
 	MonoImage *finalize_image;
 	guint32 finalize_token;
@@ -717,7 +719,6 @@ typedef struct {
 	MonoMethodSignature *sig;
 	const char *c_symbol;
 	MonoMethod *wrapper_method;
-	gboolean no_raise;
 } MonoJitICallInfo;
 
 void
@@ -1036,6 +1037,9 @@ MonoMethod *
 mono_class_inflate_generic_method_checked (MonoMethod *method, MonoGenericContext *context, MonoError *error);
 
 MonoImageSet *
+mono_metadata_get_image_set_for_class (MonoClass *klass);
+
+MonoImageSet *
 mono_metadata_get_image_set_for_method (MonoMethodInflated *method);
 
 MONO_API MonoMethodSignature *
@@ -1234,7 +1238,7 @@ MonoJitICallInfo *
 mono_register_jit_icall (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save);
 
 MonoJitICallInfo *
-mono_register_jit_icall_full (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save, gboolean no_raise, const char *c_symbol);
+mono_register_jit_icall_full (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean no_wrapper, const char *c_symbol);
 
 void
 mono_register_jit_icall_wrapper (MonoJitICallInfo *info, gconstpointer wrapper);
@@ -1477,16 +1481,16 @@ void
 mono_class_set_field_count (MonoClass *klass, guint32 count);
 
 MonoMarshalType*
-mono_class_get_marshal_info (MonoClass *class);
+mono_class_get_marshal_info (MonoClass *klass);
 
 void
-mono_class_set_marshal_info (MonoClass *class, MonoMarshalType *marshal_info);
+mono_class_set_marshal_info (MonoClass *klass, MonoMarshalType *marshal_info);
 
 guint32
-mono_class_get_ref_info_handle (MonoClass *class);
+mono_class_get_ref_info_handle (MonoClass *klass);
 
 guint32
-mono_class_set_ref_info_handle (MonoClass *class, guint32 value);
+mono_class_set_ref_info_handle (MonoClass *klass, guint32 value);
 
 MonoErrorBoxed*
 mono_class_get_exception_data (MonoClass *klass);
@@ -1519,13 +1523,19 @@ void
 mono_class_set_field_def_values (MonoClass *klass, MonoFieldDefaultValue *values);
 
 guint32
-mono_class_get_declsec_flags (MonoClass *class);
+mono_class_get_declsec_flags (MonoClass *klass);
 
 void
-mono_class_set_declsec_flags (MonoClass *class, guint32 value);
+mono_class_set_declsec_flags (MonoClass *klass, guint32 value);
 
 void
 mono_class_set_is_com_object (MonoClass *klass);
+
+void
+mono_class_set_weak_bitmap (MonoClass *klass, int nbits, gsize *bits);
+
+gsize*
+mono_class_get_weak_bitmap (MonoClass *klass, int *nbits);
 
 /*Now that everything has been defined, let's include the inline functions */
 #include <mono/metadata/class-inlines.h>

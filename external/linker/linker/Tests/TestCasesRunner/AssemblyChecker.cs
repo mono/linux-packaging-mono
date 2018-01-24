@@ -8,7 +8,7 @@ using Mono.Linker.Tests.Extensions;
 using NUnit.Framework;
 
 namespace Mono.Linker.Tests.TestCasesRunner {
-	class AssemblyChecker {
+	public class AssemblyChecker {
 		readonly AssemblyDefinition originalAssembly, linkedAssembly;
 
 		HashSet<string> linkedMembers;
@@ -26,7 +26,8 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			// TODO: Implement fully, probably via custom Kept attribute
 			Assert.IsFalse (linkedAssembly.MainModule.HasExportedTypes);
 
-			VerifyCustomAttributes (linkedAssembly, originalAssembly);
+			VerifyCustomAttributes (originalAssembly, linkedAssembly);
+			VerifySecurityAttributes (originalAssembly, linkedAssembly);
 
 			VerifyResources (originalAssembly, linkedAssembly);
 
@@ -88,6 +89,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 			VerifyGenericParameters (original, linked);
 			VerifyCustomAttributes (original, linked);
+			VerifySecurityAttributes (original, linked);
 
 			foreach (var td in original.NestedTypes) {
 				VerifyTypeDefinition (td, linked?.NestedTypes.FirstOrDefault (l => td.FullName == l.FullName));
@@ -248,9 +250,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 		void VerifyMethod (MethodDefinition src, MethodDefinition linked)
 		{
-			var srcSignature = src.GetSignature ();
-			bool expectedKept = ShouldBeKept (src, srcSignature) || (linked != null && linked.DeclaringType.Module.EntryPoint == linked);
-
+			bool expectedKept = ShouldMethodBeKept (src);
 			VerifyMethodInternal (src, linked, expectedKept);
 		}
 
@@ -264,13 +264,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 				return;
 			}
 
-			if (linked == null)
-				Assert.Fail ($"Method `{src.FullName}' should have been kept");
-
-			Assert.AreEqual (src?.Attributes, linked?.Attributes, $"Method `{src}' attributes");
-
-			VerifyGenericParameters (src, linked);
-			VerifyCustomAttributes (src, linked);
+			VerifyMethodKept (src, linked);
 		}
 
 		void VerifyMemberBackingField (IMemberDefinition src, TypeDefinition linkedType)
@@ -300,6 +294,19 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			linkedMembers.Remove (srcField.FullName);
 		}
 
+		protected virtual void VerifyMethodKept (MethodDefinition src, MethodDefinition linked)
+		{
+			if (linked == null)
+				Assert.Fail ($"Method `{src.FullName}' should have been kept");
+
+			Assert.AreEqual (src?.Attributes, linked.Attributes, $"Method `{src}' attributes");
+
+			VerifyGenericParameters (src, linked);
+			VerifyCustomAttributes (src, linked);
+			VerifyParameters (src, linked);
+			VerifySecurityAttributes (src, linked);
+		}
+
 		void VerifyResources (AssemblyDefinition original, AssemblyDefinition linked)
 		{
 			var expectedResources = original.MainModule.AllDefinedTypes ()
@@ -308,28 +315,63 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			Assert.That (linked.MainModule.Resources.Select (r => r.Name), Is.EquivalentTo (expectedResources));
 		}
 
-		static void VerifyCustomAttributes (ICustomAttributeProvider src, ICustomAttributeProvider linked)
+		protected virtual void VerifyCustomAttributes (ICustomAttributeProvider src, ICustomAttributeProvider linked)
 		{
-			var expectedAttrs = new List<string> (GetCustomAttributeCtorValues<string> (src, nameof (KeptAttributeAttribute)));
-			var linkedAttrs = new List<string> (FilterLinkedAttributes (linked));
+			var expectedAttrs = GetCustomAttributeCtorValues<object> (src, nameof (KeptAttributeAttribute))
+				.Select (attr => attr.ToString ())
+				.ToList ();
 
-			// FIXME: Linker unused attributes removal is not working
-			// Assert.That (linkedAttrs, Is.EquivalentTo (expectedAttrs), $"Custom attributes on `{src}' are not matching");
+			var linkedAttrs = FilterLinkedAttributes (linked).ToList ();
+
+			Assert.That (linkedAttrs, Is.EquivalentTo (expectedAttrs), $"Custom attributes on `{src}' are not matching");
 		}
 
-		static IEnumerable<string> FilterLinkedAttributes (ICustomAttributeProvider linked)
+		protected virtual void VerifySecurityAttributes (ICustomAttributeProvider src, ISecurityDeclarationProvider linked)
+		{
+			var expectedAttrs = GetCustomAttributeCtorValues<object> (src, nameof (KeptSecurityAttribute))
+				.Select (attr => attr.ToString ())
+				.ToList ();
+
+			var linkedAttrs = FilterLinkedSecurityAttributes (linked).ToList ();
+
+			Assert.That (linkedAttrs, Is.EquivalentTo (expectedAttrs), $"Security attributes on `{src}' are not matching");
+		}
+
+		/// <summary>
+		/// Filters out some attributes that should not be taken into consideration when checking the linked result against the expected result
+		/// </summary>
+		/// <param name="linked"></param>
+		/// <returns></returns>
+		protected virtual IEnumerable<string> FilterLinkedAttributes (ICustomAttributeProvider linked)
 		{
 			foreach (var attr in linked.CustomAttributes) {
 				switch (attr.AttributeType.FullName) {
-				case "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute":
-					continue;
+					case "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute":
+					case "System.Runtime.CompilerServices.CompilerGeneratedAttribute":
+						continue;
+
+					// When mcs is used to compile the test cases, backing fields end up with this attribute on them
+					case "System.Diagnostics.DebuggerBrowsableAttribute":
+						continue;
+
+					case "System.Runtime.CompilerServices.CompilationRelaxationsAttribute":
+						if (linked is AssemblyDefinition)
+							continue;
+						break;
 				}
 
 				yield return attr.AttributeType.FullName;
 			}
 		}
 
-		static void VerifyGenericParameters (IGenericParameterProvider src, IGenericParameterProvider linked)
+		protected virtual IEnumerable<string> FilterLinkedSecurityAttributes (ISecurityDeclarationProvider linked)
+		{
+			return linked.SecurityDeclarations
+				.SelectMany (d => d.SecurityAttributes)
+				.Select (attr => attr.AttributeType.ToString ());
+		}
+
+		void VerifyGenericParameters (IGenericParameterProvider src, IGenericParameterProvider linked)
 		{
 			Assert.AreEqual (src.HasGenericParameters, linked.HasGenericParameters);
 			if (src.HasGenericParameters) {
@@ -340,7 +382,23 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			}
 		}
 
-		static bool ShouldBeKept<T> (T member, string signature = null) where T : MemberReference, ICustomAttributeProvider
+		void VerifyParameters (IMethodSignature src, IMethodSignature linked)
+		{
+			Assert.AreEqual (src.HasParameters, linked.HasParameters);
+			if (src.HasParameters) {
+				for (int i = 0; i < src.Parameters.Count; ++i) {
+					VerifyCustomAttributes (src.Parameters [i], linked.Parameters [i]);
+				}
+			}
+		}
+
+		protected virtual bool ShouldMethodBeKept (MethodDefinition method)
+		{
+			var srcSignature = method.GetSignature ();
+			return ShouldBeKept (method, srcSignature) || method.DeclaringType.Module.EntryPoint == method;
+		}
+
+		protected virtual bool ShouldBeKept<T> (T member, string signature = null) where T : MemberReference, ICustomAttributeProvider
 		{
 			if (member.HasAttribute (nameof (KeptAttribute)))
 				return true;
@@ -352,7 +410,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			return GetCustomAttributeCtorValues<string> (cap, nameof (KeptMemberAttribute)).Any (a => a == (signature ?? member.Name));
 		}
 
-		static IEnumerable<T> GetCustomAttributeCtorValues<T> (ICustomAttributeProvider provider, string attributeName) where T : class
+		protected static IEnumerable<T> GetCustomAttributeCtorValues<T> (ICustomAttributeProvider provider, string attributeName) where T : class
 		{
 			return provider.CustomAttributes.
 							Where (w => w.AttributeType.Name == attributeName && w.Constructor.Parameters.Count == 1).

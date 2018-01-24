@@ -34,6 +34,7 @@
 #include "llvm-jit.h"
 #include "aot-compiler.h"
 #include "mini-llvm.h"
+#include "mini-runtime.h"
 
 #ifndef DISABLE_JIT
 
@@ -3853,7 +3854,7 @@ get_mono_personality (EmitContext *ctx)
 	if (!use_debug_personality) {
 		if (ctx->cfg->compile_aot) {
 				personality = get_intrinsic (ctx, default_personality_name);
-		} else if (InterlockedCompareExchange (&mapping_inited, 1, 0) == 0) {
+		} else if (mono_atomic_cas_i32 (&mapping_inited, 1, 0) == 0) {
 				personality = LLVMAddFunction (ctx->lmodule, default_personality_name, personality_type);
 				LLVMAddGlobalMapping (ctx->module->ee, personality, personality);
 		}
@@ -4028,7 +4029,7 @@ emit_handler_start (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef builder
 
 		personality = LLVMGetNamedFunction (lmodule, "mono_personality");
 
-		if (InterlockedCompareExchange (&mapping_inited, 1, 0) == 0)
+		if (mono_atomic_cas_i32 (&mapping_inited, 1, 0) == 0)
 			LLVMAddGlobalMapping (ctx->module->ee, personality, (gpointer)mono_personality);
 #endif
 	}
@@ -6806,6 +6807,9 @@ mono_llvm_emit_method (MonoCompile *cfg)
 	gboolean is_linkonce = FALSE;
 	int i;
 
+	if (cfg->skip)
+		return;
+
 	/* The code below might acquire the loader lock, so use it for global locking */
 	mono_loader_lock ();
 
@@ -8746,9 +8750,12 @@ emit_aot_file_info (MonoLLVMModule *module)
 		fields [tindex ++] = LLVMConstNull (eltype);
 		fields [tindex ++] = LLVMConstNull (eltype);
 	}
+	fields [tindex ++] = AddJitGlobal (module, eltype, "weak_field_indexes");
 
-	for (i = 0; i < MONO_AOT_FILE_INFO_NUM_SYMBOLS; ++i)
+	for (i = 0; i < MONO_AOT_FILE_INFO_NUM_SYMBOLS; ++i) {
+		g_assert (fields [2 + i]);
 		fields [2 + i] = LLVMConstBitCast (fields [2 + i], eltype);
+	}
 
 	/* Scalars */
 	fields [tindex ++] = LLVMConstInt (LLVMInt32Type (), info->plt_got_offset_base, FALSE);

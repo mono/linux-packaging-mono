@@ -2,10 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if MONO
+using System.Diagnostics.Private;
+#endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+#if !MONO
 using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
 using EditorBrowsableAttribute = System.ComponentModel.EditorBrowsableAttribute;
+#endif
 
 #pragma warning disable 0809  //warning CS0809: Obsolete member 'Span<T>.Equals(object)' overrides non-obsolete member 'object.Equals(object)'
 
@@ -15,7 +20,9 @@ namespace System
     /// ReadOnlySpan represents a contiguous region of arbitrary memory. Unlike arrays, it can point to either managed
     /// or native memory, or to memory allocated on the stack. It is type- and memory-safe.
     /// </summary>
-    public struct ReadOnlySpan<T>
+    [DebuggerTypeProxy(typeof(SpanDebugView<>))]
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
+    public readonly ref struct ReadOnlySpan<T>
     {
         /// <summary>
         /// Creates a new read-only span over the entirety of the target array.
@@ -33,33 +40,6 @@ namespace System
             _length = array.Length;
             _pinnable = Unsafe.As<Pinnable<T>>(array);
             _byteOffset = SpanHelpers.PerTypeValues<T>.ArrayAdjustment;
-        }
-
-        /// <summary>
-        /// Creates a new read-only span over the portion of the target array beginning
-        /// at 'start' index and covering the remainder of the array.
-        /// </summary>
-        /// <param name="array">The target array.</param>
-        /// <param name="start">The index at which to begin the read-only span.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="array"/> is a null
-        /// reference (Nothing in Visual Basic).</exception>
-        /// <exception cref="System.ArrayTypeMismatchException">Thrown when <paramref name="array"/> is covariant and array's type is not exactly T[].</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified <paramref name="start"/> is not in the range (&lt;0 or &gt;=Length).
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan(T[] array, int start)
-        {
-            if (array == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-
-            int arrayLength = array.Length;
-            if ((uint)start > (uint)arrayLength)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-
-            _length = arrayLength - start;
-            _pinnable = Unsafe.As<Pinnable<T>>(array);
-            _byteOffset = SpanHelpers.PerTypeValues<T>.ArrayAdjustment.Add<T>(start);
         }
 
         /// <summary>
@@ -125,6 +105,9 @@ namespace System
         /// <param name="objectData">A reference to data within that object.</param>
         /// <param name="length">The number of <typeparamref name="T"/> elements the memory contains.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if !MONO
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public static ReadOnlySpan<T> DangerousCreate(object obj, ref T objectData, int length)
         {
             Pinnable<T> pinnable = Unsafe.As<Pinnable<T>>(obj);
@@ -142,6 +125,9 @@ namespace System
             _pinnable = pinnable;
             _byteOffset = byteOffset;
         }
+
+        //Debugger Display = {T[length]}
+        private string DebuggerDisplay => string.Format("{{{0}[{1}]}}", typeof(T).Name, _length);
 
         /// <summary>
         /// The number of items in the read-only span.
@@ -241,7 +227,9 @@ namespace System
         /// </exception>
         /// </summary>
         [Obsolete("Equals() on Span will always throw an exception. Use == instead.")]
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public override bool Equals(object obj)
         {
             throw new NotSupportedException(SR.CannotCallEqualsOnSpan);
@@ -254,7 +242,9 @@ namespace System
         /// </exception>
         /// </summary>
         [Obsolete("GetHashCode() on Span will always throw an exception.")]
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public override int GetHashCode()
         {
             throw new NotSupportedException(SR.CannotCallGetHashCodeOnSpan);
@@ -331,6 +321,9 @@ namespace System
         /// would have been stored. Such a reference can be used for pinning but must never be dereferenced.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if !MONO
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public ref T DangerousGetPinnableReference()
         {
             if (_pinnable == null)

@@ -21,7 +21,7 @@ namespace System
     //     factory methods - still maintaining advantages 1 & 2
     //
 
-    internal static class ThrowHelper
+    internal static partial class ThrowHelper
     {
         internal static void ThrowArgumentNullException(ExceptionArgument argument) { throw CreateArgumentNullException(argument); }
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -46,8 +46,16 @@ namespace System
         internal static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) { throw CreateArgumentOutOfRangeException(argument); }
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static Exception CreateArgumentOutOfRangeException(ExceptionArgument argument) { return new ArgumentOutOfRangeException(argument.ToString()); }
-    }
 
+        internal static void ThrowInvalidOperationException_OutstandingReferences() { throw CreateInvalidOperationException_OutstandingReferences(); }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception CreateInvalidOperationException_OutstandingReferences() { return new InvalidOperationException(SR.OutstandingReferences); }
+
+        internal static void ThrowObjectDisposedException_MemoryDisposed(string objectName) { throw CreateObjectDisposedException_MemoryDisposed(objectName); }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception CreateObjectDisposedException_MemoryDisposed(string objectName) { return new ObjectDisposedException(objectName, SR.MemoryDisposed); }
+    }
+#if !MONO
     internal enum ExceptionArgument
     {
         array,
@@ -55,5 +63,8 @@ namespace System
         start,
         text,
         obj,
+        ownedMemory,
+        pointer
     }
+#endif
 }

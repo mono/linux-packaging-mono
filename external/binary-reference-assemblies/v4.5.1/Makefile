@@ -7,26 +7,23 @@ Q_CSC = $(if $(V),,@echo "CSC   [$(PROFILE)] $(1)";)
 
 ASSEMBLIES := Accessibility CustomMarshalers	\
 	Microsoft.Build.Engine Microsoft.Build.Framework Microsoft.Build.Tasks.v4.0	\
-	Microsoft.Build.Utilities.v4.0 Microsoft.Build Microsoft.CSharp Microsoft.VisualBasic Microsoft.VisualC Microsoft.Web.Infrastructure	\
-	SMDiagnostics System.ComponentModel.Composition	\
+	Microsoft.Build.Utilities.v4.0 Microsoft.Build Microsoft.CSharp Microsoft.VisualBasic Microsoft.VisualC	\
+	System.ComponentModel.Composition	\
 	System.ComponentModel.DataAnnotations System.Configuration.Install System.Configuration System.Core	\
 	System.Data.DataSetExtensions System.Data.Entity System.Data.Linq System.Data.OracleClient	\
 	System.Data.Services.Client System.Data.Services System.Data System.Design System.DirectoryServices.Protocols	\
 	System.DirectoryServices System.Drawing.Design System.Drawing System.Dynamic System.EnterpriseServices	\
 	System.IO.Compression.FileSystem System.IO.Compression System.IdentityModel.Selectors System.IdentityModel	\
-	System.Json.Microsoft System.Json System.Management System.Messaging System.Net.Http.Formatting	\
-	System.Net.Http.WebRequest System.Net.Http System.Net System.Numerics System.Reactive.Core System.Reactive.Debugger	\
-	System.Reactive.Experimental System.Reactive.Interfaces System.Reactive.Linq System.Reactive.Observable.Aliases	\
-	System.Reactive.PlatformServices System.Reactive.Providers System.Reactive.Runtime.Remoting System.Reactive.Windows.Forms	\
-	System.Reactive.Windows.Threading System.Runtime.Caching System.Runtime.DurableInstancing System.Runtime.Remoting	\
+	System.Management System.Messaging	\
+	System.Net.Http.WebRequest System.Net.Http System.Net System.Numerics	\
+	System.Runtime.Caching System.Runtime.DurableInstancing System.Runtime.Remoting	\
 	System.Runtime.Serialization.Formatters.Soap System.Runtime.Serialization System.Security System.ServiceModel.Activation	\
 	System.ServiceModel.Discovery System.ServiceModel.Internals System.ServiceModel.Routing System.ServiceModel.Web	\
-	System.ServiceModel System.ServiceProcess System.Threading.Tasks.Dataflow System.Transactions System.Web.Abstractions	\
+	System.ServiceModel System.ServiceProcess System.Transactions System.Web.Abstractions	\
 	System.Web.ApplicationServices System.Web.DynamicData System.Web.Extensions.Design System.Web.Extensions	\
-	System.Web.Http.SelfHost System.Web.Http.WebHost System.Web.Http System.Web.Mvc System.Web.Razor System.Web.Routing	\
-	System.Web.Services System.Web.WebPages.Deployment System.Web.WebPages.Razor System.Web.WebPages System.Web	\
+	System.Web.Routing System.Web.Services System.Web	\
 	System.Windows.Forms.DataVisualization System.Windows.Forms System.Windows System.Xaml System.Xml.Linq	\
-	System.Xml.Serialization System.Xml System WindowsBase cscompmgd mscorlib
+	System.Xml.Serialization System.Xml System WindowsBase mscorlib
 
 ASSEMBLIES += bare/System bare/System.Xml bare/System.Configuration bare/System.ServiceModel.Activation bare/System.Web
 
@@ -62,8 +59,6 @@ Microsoft.Build_REFS := mscorlib Microsoft.Build.Framework System.Xml System Sys
 Microsoft.CSharp_REFS := mscorlib System System.Core
 Microsoft.VisualBasic_REFS := mscorlib System System.Windows.Forms System.Drawing
 Microsoft.VisualC_REFS := mscorlib
-Microsoft.Web.Infrastructure_REFS := mscorlib System System.Web
-SMDiagnostics_REFS := mscorlib System.Configuration System System.Xml System.ServiceModel.Internals
 System.ComponentModel.Composition_REFS := mscorlib System System.Core
 System.ComponentModel.DataAnnotations_REFS := mscorlib System System.Core
 System.Configuration.Install_REFS := mscorlib System
@@ -87,26 +82,12 @@ System.IO.Compression.FileSystem_REFS := mscorlib System.IO.Compression System
 System.IO.Compression_REFS := mscorlib System
 System.IdentityModel.Selectors_REFS := mscorlib System.Xml System System.IdentityModel
 System.IdentityModel_REFS := mscorlib System.Configuration System.Runtime.Serialization System.Security System System.Xml System.Web.ApplicationServices
-System.Json.Microsoft_REFS := mscorlib System.Runtime.Serialization System System.Xml System.Core
-System.Json_REFS := mscorlib System System.Core
 System.Management_REFS := mscorlib System System.Configuration.Install
 System.Messaging_REFS := mscorlib System System.Drawing System.Configuration.Install System.Xml System.Windows.Forms
-System.Net.Http.Formatting_REFS := mscorlib System System.Xml System.Xml.Linq System.Runtime.Serialization System.Core System.Data System.Net.Http System.Configuration
 System.Net.Http.WebRequest_REFS := mscorlib System.Net.Http System
 System.Net.Http_REFS := mscorlib System System.Core
 System.Net_REFS := mscorlib System
 System.Numerics_REFS := mscorlib
-System.Reactive.Core_REFS := mscorlib System System.Reactive.Interfaces System.Core
-System.Reactive.Debugger_REFS := mscorlib System.Reactive.Linq
-System.Reactive.Experimental_REFS := mscorlib System.Reactive.Linq System.Reactive.Core System.Core System.Reactive.Interfaces System
-System.Reactive.Interfaces_REFS := mscorlib System.Core
-System.Reactive.Linq_REFS := mscorlib System.Core System System.Reactive.Interfaces System.Reactive.Core
-System.Reactive.Observable.Aliases_REFS := mscorlib System.Reactive.Interfaces System.Core System.Reactive.Providers System.Reactive.Linq
-System.Reactive.PlatformServices_REFS := mscorlib System System.Reactive.Core System.Reactive.Interfaces System.Core System.Reactive.Linq
-System.Reactive.Providers_REFS := mscorlib System.Core System.Reactive.Interfaces System System.Reactive.Core System.Reactive.Linq
-System.Reactive.Runtime.Remoting_REFS := mscorlib System.Reactive.Interfaces System.Reactive.Core System.Core
-System.Reactive.Windows.Forms_REFS := mscorlib System.Reactive.Core System.Reactive.Interfaces System.Windows.Forms
-System.Reactive.Windows.Threading_REFS := mscorlib System System.Reactive.Core System.Reactive.Interfaces WindowsBase
 System.Runtime.Caching_REFS := mscorlib System System.Data System.Configuration
 System.Runtime.DurableInstancing_REFS := mscorlib System.Xml.Linq System.ServiceModel.Internals System.Transactions System.Core System.Runtime.Serialization System
 System.Runtime.Remoting_REFS := mscorlib System System.Web System.Xml System.Runtime.Serialization.Formatters.Soap
@@ -120,23 +101,14 @@ System.ServiceModel.Routing_REFS := mscorlib System.ServiceModel System.Configur
 System.ServiceModel.Web_REFS := mscorlib System.ServiceModel System System.Runtime.Serialization System.Xml System.Xml.Linq System.Configuration System.ServiceModel.Activation System.Core System.Web.Extensions
 System.ServiceModel_REFS := mscorlib System.Xml System.Xml.Linq System.Xaml System System.EnterpriseServices System.Transactions System.IdentityModel System.Runtime.Serialization System.Runtime.DurableInstancing System.Security System.Web.ApplicationServices System.Messaging System.Net.Http System.IdentityModel.Selectors System.Web.Services System.Configuration System.Web System.Core bare/System.ServiceModel.Activation
 System.ServiceProcess_REFS := mscorlib System System.Configuration.Install System.Windows.Forms
-System.Threading.Tasks.Dataflow_REFS := mscorlib System.Core System
 System.Transactions_REFS := mscorlib System.Configuration
 System.Web.Abstractions_REFS := mscorlib System.Web
 System.Web.ApplicationServices_REFS := mscorlib System System.Configuration
 System.Web.DynamicData_REFS := mscorlib System System.Drawing System.Web System.Web.Extensions System.Core System.ComponentModel.DataAnnotations System.Data.Linq
 System.Web.Extensions.Design_REFS := mscorlib System System.Design System.Drawing System.Web.Extensions
 System.Web.Extensions_REFS := mscorlib System.Web System System.Xml System.Drawing System.Data.Linq System.Web.Services System.ServiceModel System.ServiceModel.Activation System.Runtime.Serialization System.Web.ApplicationServices System.Core System.Configuration
-System.Web.Http.SelfHost_REFS := mscorlib System System.ServiceModel System.Net.Http System.Core System.Web.Http System.IdentityModel System.Runtime.Serialization System.Net.Http.Formatting System.Configuration System.Xml
-System.Web.Http.WebHost_REFS := mscorlib System.Web System.Core System System.Net.Http System.Web.Http System.Xml Microsoft.Web.Infrastructure
-System.Web.Http_REFS := mscorlib System System.Net.Http System.Net.Http.Formatting System.Core System.ComponentModel.DataAnnotations System.Runtime.Serialization System.Xml System.Data.Linq
-System.Web.Mvc_REFS := mscorlib System.Web System System.Core System.ComponentModel.DataAnnotations System.Web.Extensions System.Web.WebPages.Razor System.Runtime.Caching System.Web.WebPages System.Xml System.Web.Razor System.Data.Linq Microsoft.Web.Infrastructure
-System.Web.Razor_REFS := mscorlib System System.Core
 System.Web.Routing_REFS := mscorlib System.Web
 System.Web.Services_REFS := mscorlib System System.Configuration System.EnterpriseServices System.Xml bare/System.Web System.DirectoryServices System.Design System.Data
-System.Web.WebPages.Deployment_REFS := mscorlib System.Web System System.Configuration System.Core Microsoft.Web.Infrastructure
-System.Web.WebPages.Razor_REFS := mscorlib System.Web System System.Web.Razor System.Configuration System.Core System.Web.WebPages
-System.Web.WebPages_REFS := mscorlib System.Web System System.Core System.Xml.Linq System.Web.Razor System.ComponentModel.DataAnnotations System.Data.Linq Microsoft.Web.Infrastructure Microsoft.CSharp System.Web.WebPages.Deployment
 System.Web_REFS := mscorlib System.Configuration System.Xml System System.Data System.Drawing System.Runtime.Serialization.Formatters.Soap System.Core System.EnterpriseServices System.Web.ApplicationServices System.ComponentModel.DataAnnotations System.Web.Services
 System.Windows.Forms.DataVisualization_REFS := mscorlib System.Drawing System.Windows.Forms System System.Xml System.Data System.Core
 System.Windows.Forms_REFS := mscorlib System System.Xml System.Drawing System.Runtime.Serialization.Formatters.Soap Accessibility System.Configuration System.Data
@@ -147,7 +119,6 @@ System.Xml.Serialization_REFS := mscorlib System.ServiceModel System.Xml
 System.Xml_REFS := mscorlib System System.Configuration
 System_REFS := mscorlib bare/System.Configuration bare/System.Xml
 WindowsBase_REFS := mscorlib System.Xaml System System.Xml System.Security
-cscompmgd_REFS := mscorlib System
 mscorlib_REFS :=
 
 bare/System_REFS := mscorlib
@@ -218,22 +189,19 @@ ECMA_KEY := ../../../mcs/class/ecma.pub         # Public Key Token: b77a5c561934
 WINFX_KEY := ../../../mcs/class/winfx.pub       # Public Key Token: 31bf3856ad364e35
 MSFINAL_KEY := ../../../mcs/class/msfinal.pub   # Public Key Token: b03f5f7f11d50a3a
 
-ECMA_KEY_ASSEMBLIES := SMDiagnostics System.ComponentModel.Composition System.Core System.Data.DataSetExtensions	\
+ECMA_KEY_ASSEMBLIES := System.ComponentModel.Composition System.Core System.Data.DataSetExtensions	\
 	System.Data.Entity System.Data.Linq System.Data.OracleClient System.Data.Services.Client System.Data.Services	\
 	System.Data System.IO.Compression.FileSystem System.IO.Compression System.IdentityModel.Selectors System.IdentityModel	\
 	System.Numerics System.Runtime.Remoting System.Runtime.Serialization System.ServiceModel.Internals	\
-	System.ServiceModel System.Threading.Tasks.Dataflow System.Transactions System.Windows.Forms System.Xaml	\
+	System.ServiceModel System.Transactions System.Windows.Forms System.Xaml	\
 	System.Xml.Linq System.Xml.Serialization System.Xml System mscorlib bare/System bare/System.Xml
 
-WINFX_KEY_ASSEMBLIES := System.ComponentModel.DataAnnotations Microsoft.Web.Infrastructure System.Json.Microsoft	\
-	System.Json System.Net.Http.Formatting System.Reactive.Core System.Reactive.Debugger System.Reactive.Experimental	\
-	System.Reactive.Interfaces System.Reactive.Linq System.Reactive.Observable.Aliases System.Reactive.PlatformServices	\
-	System.Reactive.Providers System.Reactive.Runtime.Remoting System.Reactive.Windows.Forms System.Reactive.Windows.Threading	\
+WINFX_KEY_ASSEMBLIES := System.ComponentModel.DataAnnotations	\
 	System.Runtime.DurableInstancing System.ServiceModel.Activation System.ServiceModel.Discovery System.ServiceModel.Routing	\
 	System.ServiceModel.Web System.Web.Abstractions System.Web.ApplicationServices System.Web.DynamicData	\
-	System.Web.Extensions.Design System.Web.Extensions System.Web.Http.SelfHost System.Web.Http.WebHost System.Web.Http	\
-	System.Web.Mvc System.Web.Razor System.Web.Routing System.Web.WebPages.Deployment System.Web.WebPages.Razor	\
-	System.Web.WebPages System.Windows.Forms.DataVisualization	\
+	System.Web.Extensions.Design System.Web.Extensions	\
+	System.Web.Routing	\
+	System.Windows.Forms.DataVisualization	\
 	WindowsBase bare/System.ServiceModel.Activation
 
 MSFINAL_KEY_ASSEMBLIES := Accessibility CustomMarshalers Microsoft.Build.Engine Microsoft.Build.Framework	\
@@ -242,7 +210,7 @@ MSFINAL_KEY_ASSEMBLIES := Accessibility CustomMarshalers Microsoft.Build.Engine 
 	System.DirectoryServices System.Drawing.Design System.Drawing System.Dynamic System.EnterpriseServices System.Management	\
 	System.Messaging System.Net.Http.WebRequest System.Net.Http System.Net System.Runtime.Caching	\
 	System.Runtime.Serialization.Formatters.Soap System.Security System.ServiceProcess System.Web.Services	\
-	System.Web System.Windows cscompmgd bare/System.Configuration bare/System.Web
+	System.Web System.Windows bare/System.Configuration bare/System.Web
 
 all: $(addsuffix .dll, $(ASSEMBLIES))
 

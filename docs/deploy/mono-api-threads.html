@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -344,7 +354,11 @@ mono_thread_is_foreign (MonoThread *thread)
              <div>	 <code>TRUE</code> if <i>thread</i> was not created by the runtime.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This function allows one to determine if a thread was created by the mono runtime and has 	 a well defined lifecycle or it's a foreign one, created by the native environment. 	<p /></div>
+             <div>
+<p />
+ This function allows one to determine if a thread was created by the mono runtime and has
+ a well defined lifecycle or it's a foreign one, created by the native environment.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -492,7 +506,11 @@ mono_thread_set_main (MonoThread *thread)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>thread</i></td><td> thread to set as the main thread</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 This function can be used to instruct the runtime to treat <i>thread</i> 	 as the main thread, ie, the thread that would normally execute the <code>Main</code> 	 method. This basically means that at the end of <i>thread</i>, the runtime will 	 wait for the existing foreground threads to quit and other such details.</div>
+             <div>
+ This function can be used to instruct the runtime to treat <i>thread</i>
+ as the main thread, ie, the thread that would normally execute the <code>Main</code>
+ method. This basically means that at the end of <i>thread</i>, the runtime will
+ wait for the existing foreground threads to quit and other such details.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -608,6 +626,10 @@ mono_thread_detach_if_exiting (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Detach the current thread from the runtime if it is exiting, i.e. it is running pthread dtors. 	 This should be used at the end of embedding code which calls into managed code, and which 	 can be called from pthread dtors, like <code>dealloc:</code> implementations in Objective-C.</div>
+             <div>
+<p />
+ Detach the current thread from the runtime if it is exiting, i.e. it is running pthread dtors.
+ This should be used at the end of embedding code which calls into managed code, and which
+ can be called from pthread dtors, like <code>dealloc:</code> implementations in Objective-C.</div>
         </div><!--mapi-description -->
     </div><!--height container -->

@@ -21,7 +21,6 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
             Assert.Empty(rbe.Data);
             Assert.True((rbe.HResult & 0xFFFF0000) == 0x80130000); // Error from .NET
             Assert.Contains(rbe.GetType().FullName, rbe.Message); // Localized, but should contain type name.
-            BinaryFormatterHelpers.AssertRoundtrips(rbe);
         }
 
         [Fact]
@@ -35,7 +34,6 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
             Assert.Same(message, rbe.Message);
             rbe = new RuntimeBinderException(null);
             Assert.Equal(new RuntimeBinderException().Message, rbe.Message);
-            BinaryFormatterHelpers.AssertRoundtrips(rbe);
         }
 
 
@@ -46,7 +44,6 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
             Exception inner = new Exception("This is a test exception");
             RuntimeBinderException rbe = new RuntimeBinderException(message, inner);
             Assert.Same(inner, rbe.InnerException);
-            BinaryFormatterHelpers.AssertRoundtrips(rbe);
         }
 
         [Fact]
@@ -97,7 +94,29 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
                             CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null)
                         }));
             Func<CallSite, object, object, object, object> target = site.Target;
-            Assert.Throws<ArgumentException>("Type Argument", () => target.Invoke(site, null, 2, 2));
+            AssertExtensions.Throws<ArgumentException>("Type Argument", () => target.Invoke(site, null, 2, 2));
+        }
+
+        [Fact]
+        public void NonTypeToCtor()
+        {
+            CallSite<Func<CallSite, object, object>> site = CallSite<Func<CallSite, object, object>>.Create(
+                Binder.InvokeConstructor(
+                    CSharpBinderFlags.None, GetType(),
+                    new[]
+                    {
+                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, "Type Argument")
+                    }
+                )
+            );
+            Func<CallSite, object, object> targ = site.Target;
+            AssertExtensions.Throws<ArgumentException>("Type Argument", () => targ.Invoke(site, 23));
+        }
+
+        [Fact]
+        public void AssertExceptionDeserializationFails()
+        {
+            BinaryFormatterHelpers.AssertExceptionDeserializationFails<RuntimeBinderException>();
         }
     }
 }

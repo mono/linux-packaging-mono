@@ -34,6 +34,8 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.IO.Compression
 {
@@ -130,6 +132,16 @@ namespace System.IO.Compression
 			}
 		}
 
+		internal ValueTask<int> ReadAsyncMemory (Memory<byte> destination, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException ();
+		}
+
+		internal int ReadCore (Span<byte> destination)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public override int Read (byte[] array, int offset, int count)
 		{
 			if (disposed)
@@ -158,6 +170,16 @@ namespace System.IO.Compression
 				IntPtr ptr = new IntPtr (b + offset);
 				native.WriteZStream (ptr, count);
 			}
+		}
+
+		internal Task WriteAsyncMemory (ReadOnlyMemory<byte> source, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException ();
+		}
+
+		internal void WriteCore (ReadOnlySpan<byte> source)
+		{
+			throw new NotImplementedException ();
 		}
 
 		public override void Write (byte[] array, int offset, int count)

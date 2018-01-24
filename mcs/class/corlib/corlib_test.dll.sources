@@ -1,7 +1,6 @@
 Microsoft.Win32/RegistryKeyTest.cs
 Mono/DataConvertTest.cs
 ../Mono/DataConverter.cs
-../../System.Runtime.Caching/Test/Common/AssertExtensions.cs
 System/ActivatorTest.cs
 System/AppDomainManagerTest.cs
 System/AppDomainSetupTest.cs
@@ -199,6 +198,7 @@ System.Resources/ResourceWriterTest.cs
 System.Runtime.CompilerServices/ConditionalWeakTableTest.cs
 System.Runtime.CompilerServices/InternalsVisibleToAttributeTest.cs
 System.Runtime.CompilerServices/MethodImplAttributeTest.cs
+System.Runtime.CompilerServices/RuntimeFeatureTest.cs
 System.Runtime.CompilerServices/RuntimeHelpersTest.cs
 System.Runtime.CompilerServices/RuntimeWrappedExceptionTest.cs
 System.Runtime.CompilerServices/AsyncTaskMethodBuilderTest.cs
