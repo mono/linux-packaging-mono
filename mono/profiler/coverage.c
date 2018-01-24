@@ -47,8 +47,7 @@
  *                 - token
  *   <statement> - Contains data about IL statements. Has no child elements
  *                 Attributes:
- *                    - offset: The offset of the statement in the IL code after the previous
- *                              statement's offset
+ *                    - offset: The offset of the statement in the IL code
  *                    - counter: 1 if the line was covered, 0 if it was not
  *                    - line: The line number in the parent method's file
  *                    - column: The column on the line
@@ -69,15 +68,14 @@
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
-#if defined (HAVE_SYS_ZLIB)
-#include <zlib.h>
-#endif
 
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/profiler.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/metadata-internals.h>
+
+#include <mono/mini/jit.h>
 
 #include <mono/utils/atomic.h>
 #include <mono/utils/hazard-pointer.h>
@@ -112,6 +110,8 @@ struct _MonoProfiler {
 	MonoConcurrentHashTable *classes;
 
 	MonoConcurrentHashTable *image_to_methods;
+
+	GHashTable *uncovered_methods;
 
 	guint32 previous_offset;
 };
@@ -200,12 +200,11 @@ obtain_coverage_for_method (MonoProfiler *prof, const MonoProfilerCoverageData *
 {
 	g_assert (prof == &coverage_profiler);
 
-	int offset = entry->il_offset - coverage_profiler.previous_offset;
 	CoverageEntry *e = g_new (CoverageEntry, 1);
 
 	coverage_profiler.previous_offset = entry->il_offset;
 
-	e->offset = offset;
+	e->offset = entry->il_offset;
 	e->counter = entry->counter;
 	e->filename = g_strdup(entry->file_name ? entry->file_name : "");
 	e->line = entry->line;
@@ -229,11 +228,14 @@ parse_generic_type_names(char *name)
 	do {
 		switch (*name) {
 			case '<':
-				within_generic_declaration = 1;
+				within_generic_declaration ++;
 				break;
 
 			case '>':
-				within_generic_declaration = 0;
+				within_generic_declaration --;
+
+				if (within_generic_declaration)
+					break;
 
 				if (*(name - 1) != '<') {
 					*new_name++ = '`';
@@ -359,7 +361,30 @@ dump_classes_for_image (gpointer key, gpointer value, gpointer userdata)
 	class_name = mono_type_get_name (mono_class_get_type (klass));
 
 	number_of_methods = mono_class_num_methods (klass);
-	fully_covered = count_queue (class_methods);
+
+	GHashTable *covered_methods = g_hash_table_new (NULL, NULL);
+	int count = 0;
+	{
+		MonoLockFreeQueueNode *node;
+		guint count = 0;
+
+		while ((node = mono_lock_free_queue_dequeue (class_methods))) {
+			MethodNode *mnode = (MethodNode*)node;
+			g_hash_table_insert (covered_methods, mnode->method, mnode->method);
+			count++;
+			mono_thread_hazardous_try_free (node, g_free);
+		}
+	}
+	fully_covered = count;
+
+	gpointer iter = NULL;
+	MonoMethod *method;
+	while ((method = mono_class_get_methods (klass, &iter))) {
+		if (!g_hash_table_lookup (covered_methods, method))
+			g_hash_table_insert (coverage_profiler.uncovered_methods, method, method);
+	}
+	g_hash_table_destroy (covered_methods);
+
 	/* We don't handle partial covered yet */
 	partially_covered = 0;
 
@@ -430,6 +455,7 @@ dump_coverage (void)
 	mono_os_mutex_lock (&coverage_profiler.mutex);
 	mono_conc_hashtable_foreach (coverage_profiler.assemblies, dump_assembly, NULL);
 	mono_conc_hashtable_foreach (coverage_profiler.methods, dump_method, NULL);
+	g_hash_table_foreach (coverage_profiler.uncovered_methods, dump_method, NULL);
 	mono_os_mutex_unlock (&coverage_profiler.mutex);
 
 	fprintf (coverage_profiler.file, "</coverage>\n");
@@ -515,7 +541,7 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 		for (guint i = 0; i < coverage_profiler.filters->len; ++i) {
 			// FIXME: Is substring search sufficient?
 			char *filter = (char *)g_ptr_array_index (coverage_profiler.filters, i);
-			if (filter [0] == '+')
+			if (filter [0] == '+' || filter [0] != '-')
 				continue;
 
 			// Skip '-'
@@ -665,8 +691,6 @@ init_suppressed_assemblies (void)
 	/* Don't need to free content as it is referred to by the lines stored in @filters */
 	content = get_file_content (SUPPRESSION_DIR "/mono-profiler-coverage.suppression");
 	if (content == NULL)
-		content = get_file_content (SUPPRESSION_DIR "/mono-profiler-log.suppression");
-	if (content == NULL)
 		return;
 
 	while ((line = get_next_line (content, &content))) {
@@ -701,7 +725,7 @@ unref_coverage_assemblies (gpointer key, gpointer value, gpointer userdata)
 }
 
 static void
-log_shutdown (MonoProfiler *prof)
+cov_shutdown (MonoProfiler *prof)
 {
 	g_assert (prof == &coverage_profiler);
 
@@ -856,6 +880,8 @@ usage (void)
 	mono_profiler_printf ("\toutput=|PROGRAM      write the data to the stdin of PROGRAM");
 	mono_profiler_printf ("\toutput=|PROGRAM      write the data to the stdin of PROGRAM");
 	// mono_profiler_printf ("\tzip                  compress the output data");
+
+	exit (0);
 }
 
 MONO_API void
@@ -864,6 +890,11 @@ mono_profiler_init_coverage (const char *desc);
 void
 mono_profiler_init_coverage (const char *desc)
 {
+	if (mono_jit_aot_compiling ()) {
+		mono_profiler_printf_err ("The coverage profiler does not currently support instrumenting AOT code.");
+		exit (1);
+	}
+
 	GPtrArray *filters = NULL;
 
 	parse_args (desc [strlen("coverage")] == ':' ? desc + strlen ("coverage") + 1 : "");
@@ -893,7 +924,7 @@ mono_profiler_init_coverage (const char *desc)
 		coverage_profiler.file = fopen (coverage_config.output_filename, "w");
 
 	if (!coverage_profiler.file) {
-		mono_profiler_printf_err ("Could not create coverage profiler output file '%s'.", coverage_config.output_filename);
+		mono_profiler_printf_err ("Could not create coverage profiler output file '%s': %s", coverage_config.output_filename, g_strerror (errno));
 		exit (1);
 	}
 
@@ -903,19 +934,14 @@ mono_profiler_init_coverage (const char *desc)
 	coverage_profiler.classes = mono_conc_hashtable_new (NULL, NULL);
 	coverage_profiler.filtered_classes = mono_conc_hashtable_new (NULL, NULL);
 	coverage_profiler.image_to_methods = mono_conc_hashtable_new (NULL, NULL);
+	coverage_profiler.uncovered_methods = g_hash_table_new (NULL, NULL);
 	init_suppressed_assemblies ();
 
 	coverage_profiler.filters = filters;
 
 	MonoProfilerHandle handle = coverage_profiler.handle = mono_profiler_create (&coverage_profiler);
 
-	/*
-	 * Required callbacks. These are either necessary for the profiler itself
-	 * to function, or provide metadata that's needed if other events (e.g.
-	 * allocations, exceptions) are dynamically enabled/disabled.
-	 */
-
-	mono_profiler_set_runtime_shutdown_end_callback (handle, log_shutdown);
+	mono_profiler_set_runtime_shutdown_end_callback (handle, cov_shutdown);
 	mono_profiler_set_runtime_initialized_callback (handle, runtime_initialized);
 
 	mono_profiler_enable_coverage ();

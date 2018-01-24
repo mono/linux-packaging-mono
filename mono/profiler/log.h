@@ -4,12 +4,13 @@
 #include <glib.h>
 #define MONO_PROFILER_UNSTABLE_GC_ROOTS
 #include <mono/metadata/profiler.h>
+#include <mono/metadata/callspec.h>
 
 #define BUF_ID 0x4D504C01
 #define LOG_HEADER_ID 0x4D505A01
 #define LOG_VERSION_MAJOR 2
 #define LOG_VERSION_MINOR 0
-#define LOG_DATA_VERSION 14
+#define LOG_DATA_VERSION 15
 
 /*
  * Changes in major/minor versions:
@@ -71,6 +72,7 @@
                removed type field from TYPE_SAMPLE_HIT
                removed MONO_GC_EVENT_{MARK,RECLAIM}_{START,END}
                reverted the root_type field back to uleb128
+ * version 15: reverted the type, unit, and variance fields back to uleb128
  */
 
 /*
@@ -296,16 +298,16 @@
  * 		if section == MONO_COUNTER_PERFCOUNTERS:
  * 			[section_name: string] section name of counter
  * 		[name: string] name of counter
- * 		[type: byte] type of counter
- * 		[unit: byte] unit of counter
- * 		[variance: byte] variance of counter
+ * 		[type: uleb128] type of counter
+ * 		[unit: uleb128] unit of counter
+ * 		[variance: uleb128] variance of counter
  * 		[index: uleb128] unique index of counter
  * if exinfo == TYPE_SAMPLE_COUNTERS
  * 	while true:
  * 		[index: uleb128] unique index of counter
  * 		if index == 0:
  * 			break
- * 		[type: byte] type of counter value
+ * 		[type: uleb128] type of counter value
  * 		if type == string:
  * 			if value == null:
  * 				[0: byte] 0 -> value is null
@@ -511,6 +513,9 @@ typedef struct {
 	// Heapshot frequency in number of collections (for MONO_HEAPSHOT_X_GC). Can be changed at runtime.
 	unsigned int hs_freq_gc;
 
+	// Should root reports be done even outside of heapshots?
+	gboolean always_do_root_report;
+
 	// Whether to do a heapshot on shutdown.
 	gboolean hs_on_shutdown;
 
@@ -537,6 +542,9 @@ typedef struct {
 
 	// Sample mode. Only used at startup.
 	MonoProfilerSampleMode sampling_mode;
+
+	// Callspec config - which methods are to be instrumented
+	MonoCallSpec callspec;
 } ProfilerConfig;
 
 void proflog_parse_args (ProfilerConfig *config, const char *desc);

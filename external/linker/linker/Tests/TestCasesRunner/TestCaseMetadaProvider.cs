@@ -27,7 +27,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 		public virtual TestCaseLinkerOptions GetLinkerOptions ()
 		{
 			var tclo = new TestCaseLinkerOptions {
-				Il8n = GetOptionAttributeValue (nameof (Il8nAttribute), string.Empty),
+				Il8n = GetOptionAttributeValue (nameof (Il8nAttribute), "none"),
 				IncludeBlacklistStep = GetOptionAttributeValue (nameof (IncludeBlacklistStepAttribute), false),
 				KeepTypeForwarderOnlyAssemblies = GetOptionAttributeValue (nameof (KeepTypeForwarderOnlyAssembliesAttribute), string.Empty),
 				CoreAssembliesAction = GetOptionAttributeValue<string> (nameof (SetupLinkerCoreActionAttribute), null)
@@ -37,6 +37,13 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			{
 				var ca = assemblyAction.ConstructorArguments;
 				tclo.AssembliesAction.Add (new KeyValuePair<string, string> ((string)ca [0].Value, (string)ca [1].Value));
+			}
+
+			foreach (var additionalArgumentAttr in _testCaseTypeDefinition.CustomAttributes.Where (attr => attr.AttributeType.Name == nameof (SetupLinkerArgumentAttribute)))
+			{
+				var ca = additionalArgumentAttr.ConstructorArguments;
+				var values = ((CustomAttributeArgument [])ca [1].Value)?.Select (arg => arg.Value.ToString ()).ToArray ();
+				tclo.AdditionalArguments.Add (new KeyValuePair<string, string []> ((string)ca [0].Value, values));
 			}
 
 			return tclo;
@@ -107,6 +114,13 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 		public virtual string GetAssemblyName ()
 		{
 			return GetOptionAttributeValue (nameof (SetupCompileAssemblyNameAttribute), "test.exe");
+		}
+
+		public virtual IEnumerable<string> GetSetupCompilerArguments ()
+		{
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (SetupCompileArgumentAttribute))
+				.Select (attr => (string) attr.ConstructorArguments.First ().Value);
 		}
 
 		T GetOptionAttributeValue<T> (string attributeName, T defaultValue)

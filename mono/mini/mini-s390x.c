@@ -340,6 +340,8 @@ if (ins->inst_true_bb->native_offset) { 					\
 #include "ir-emit.h"
 #include "trace.h"
 #include "mini-gc.h"
+#include "aot-runtime.h"
+#include "mini-runtime.h"
 
 /*========================= End of Includes ========================*/
 
@@ -449,8 +451,6 @@ static void compare_and_branch(MonoBasicBlock *, MonoInst *, int, gboolean);
 /*------------------------------------------------------------------*/
 /*                 G l o b a l   V a r i a b l e s                  */
 /*------------------------------------------------------------------*/
-
-int mono_exc_esp_offset = 0;
 
 __thread int indent_level = 0;
 __thread FILE *trFd = NULL;
@@ -7315,25 +7315,6 @@ mono_arch_get_seq_point_info (MonoDomain *domain, guint8 *code)
 {
 	NOT_IMPLEMENTED;
 	return NULL;
-}
-
-/*========================= End of Function ========================*/
-
-/*------------------------------------------------------------------*/
-/*                                                                  */
-/* Name		- mono_arch_init_lmf_ext.                           */
-/*                                                                  */
-/* Function -                                                       */
-/*                                                                  */
-/*------------------------------------------------------------------*/
-
-void
-mono_arch_init_lmf_ext (MonoLMFExt *ext, gpointer prev_lmf)
-{
-	ext->lmf.previous_lmf = prev_lmf;
-	/* Mark that this is a MonoLMFExt */
-	ext->lmf.previous_lmf = (gpointer)(((gssize)ext->lmf.previous_lmf) | 2);
-	ext->lmf.ebp = (gssize)ext;
 }
 
 /*========================= End of Function ========================*/

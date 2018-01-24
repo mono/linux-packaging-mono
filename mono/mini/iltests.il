@@ -3098,17 +3098,6 @@ L_3:
     IL_000c:  ret
   }
 
-  .field public static class FLSharedKeys* keys
-
-  .method public hidebysig static int32 test_0_regress_60634 () cil managed
-  {
-	.maxstack 8
-	ldsflda     class FLSharedKeys* Tests::keys
-	initobj    class FLSharedKeys*
-	ldc.i4.0
-	ret
-  }
-
   .method public hidebysig static int32 test_104_conv_u_and_string() cil managed
   {
     .maxstack  8
@@ -3120,4 +3109,14 @@ L_3:
 	ret
   }
 
+  .field public static class FLSharedKeys* keys
+
+  .method public hidebysig static int32 test_0_regress_60634 () cil managed
+  {
+	.maxstack 8
+	ldsflda     class FLSharedKeys* Tests::keys
+	initobj    class FLSharedKeys*
+	ldc.i4.0
+	ret
+  }
 }

@@ -307,6 +307,7 @@ namespace MonoTests.System.Threading
 
 		[Test]
 		[Category ("NotDotNet")] // it hangs.
+		[Category ("InterpreterNotWorking")] /* crashes on linux/arm64 */
 		public void TestStart()
 		{
 		{
@@ -449,6 +450,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("InterpreterNotWorking")]
 		public void TestUndivisibleByPageSizeMaxStackSize ()
 		{
 			const int undivisible_stacksize = 1048573;
@@ -1015,6 +1017,27 @@ namespace MonoTests.System.Threading
 				Assert.IsNull (ex.InnerException, "#B7");
 				Assert.IsNotNull (ex.Message, "#B8");
 			}
+		}
+
+		[Test] // bug #60031
+		public void StoppedThreadsThrowThreadStateException ()
+		{
+			var t = new Thread (() => { });
+			t.Start ();
+			t.Join ();
+
+			Assert.Throws<ThreadStateException> (() => { var isb = t.IsBackground; }, "IsBackground getter");
+			Assert.Throws<ThreadStateException> (() => { var isb = t.ApartmentState; }, "ApartmentState getter");
+			Assert.Throws<ThreadStateException> (() => t.ApartmentState = ApartmentState.MTA, "ApartmentState setter");
+			Assert.Throws<ThreadStateException> (() => t.IsBackground = false, "IsBackground setter");
+			Assert.Throws<ThreadStateException> (() => t.Start (), "Start ()");
+#if MONO_FEATURE_THREAD_SUSPEND_RESUME
+			Assert.Throws<ThreadStateException> (() => t.Resume (), "Resume ()");
+			Assert.Throws<ThreadStateException> (() => t.Suspend (), "Suspend ()");
+#endif
+			Assert.Throws<ThreadStateException> (() => t.GetApartmentState (), "GetApartmentState ()");
+			Assert.Throws<ThreadStateException> (() => t.SetApartmentState (ApartmentState.MTA), "SetApartmentState ()");
+			Assert.Throws<ThreadStateException> (() => t.TrySetApartmentState (ApartmentState.MTA), "TrySetApartmentState ()");
 		}
 	}
 

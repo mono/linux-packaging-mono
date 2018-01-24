@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace System.Net.Http
 {
-    internal abstract class HttpContentReadStream : Stream
+    internal abstract class HttpContentReadStream : HttpContentStream
     {
         protected HttpConnection _connection;
 
@@ -36,14 +36,14 @@ namespace System.Net.Http
 
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 
-        public override int Read(byte[] buffer, int offset, int count) =>
-            ReadAsync(buffer, offset, count, CancellationToken.None).Result;
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            ValidateBufferArgs(buffer, offset, count);
+            return ReadAsync(new Memory<byte>(buffer, offset, count), CancellationToken.None).GetAwaiter().GetResult();
+        }
 
-        // TODO #21452: Restore this once we address unit test build's target
-        //public override void CopyTo(Stream destination, int bufferSize)
-        //{
-        //    CopyToAsync(destination, bufferSize, CancellationToken.None).Wait();
-        //}
+        public override void CopyTo(Stream destination, int bufferSize) =>
+            CopyToAsync(destination, bufferSize, CancellationToken.None).GetAwaiter().GetResult();
 
         protected override void Dispose(bool disposing)
         {

@@ -59,6 +59,9 @@ namespace Mono.Cecil.Tests {
 		[Test]
 		public void Retargetable ()
 		{
+			if (Platform.OnCoreClr)
+				return;
+
 			TestModule ("RetargetableExample.dll", module => {
 				var type = module.Types [1];
 				var property = type.Properties [0];
@@ -76,12 +79,29 @@ namespace Mono.Cecil.Tests {
 		[Test]
 		public void SystemRuntime ()
 		{
+			if (Platform.OnCoreClr)
+				return;
+
 			TestModule ("System.Runtime.dll", module => {
 				Assert.AreEqual ("System.Runtime", module.Assembly.Name.Name);
 				Assert.AreEqual (1, module.AssemblyReferences.Count);
 				Assert.AreNotEqual (module, module.TypeSystem.CoreLibrary);
 				Assert.AreEqual (module.AssemblyReferences [0], module.TypeSystem.CoreLibrary);
 			}, verify: !Platform.OnMono);
+		}
+
+		[Test]
+		public void MismatchedLibraryAndSymbols_DoNotThrow ()
+		{
+			// SQLite-net.dll (from nuget) shiped with mismatched symbol files, but throwIfNoSymbol did not prevent it from throwing
+			var readerParms = new ReaderParameters {
+				ReadSymbols = true,
+				SymbolReaderProvider = new Cil.DefaultSymbolReaderProvider (throwIfNoSymbol: false)
+			};
+
+			using (var module = GetResourceModule ("SQLite-net.dll", readerParms)) {
+				Assert.Null (module.SymbolReader);
+			}
 		}
 	}
 }

@@ -593,7 +593,7 @@ typedef struct {
 static EphemeronLinkNode *ephemeron_list;
 
 /* LOCKING: requires that the GC lock is held */
-static void
+static MONO_PERMIT (need (sgen_gc_locked)) void
 null_ephemerons_for_domain (MonoDomain *domain)
 {
 	EphemeronLinkNode *current = ephemeron_list, *prev = NULL;
@@ -1501,7 +1501,7 @@ mono_gc_get_managed_allocator (MonoClass *klass, gboolean for_box, gboolean know
 		return NULL;
 	if (known_instance_size && ALIGN_TO (klass->instance_size, SGEN_ALLOC_ALIGN) >= SGEN_MAX_SMALL_OBJ_SIZE)
 		return NULL;
-	if (mono_class_has_finalizer (klass) || mono_class_is_marshalbyref (klass))
+	if (mono_class_has_finalizer (klass) || mono_class_is_marshalbyref (klass) || klass->has_weak_fields)
 		return NULL;
 	if (klass->rank)
 		return NULL;
@@ -2643,6 +2643,12 @@ mono_gc_make_descr_for_string (gsize *bitmap, int numbits)
 	return SGEN_DESC_STRING;
 }
 
+void
+mono_gc_register_obj_with_weak_fields (void *obj)
+{
+	return sgen_register_obj_with_weak_fields (obj);
+}
+
 void*
 mono_gc_get_nursery (int *shift_bits, size_t *size)
 {
@@ -2807,7 +2813,7 @@ void
 sgen_client_gchandle_created (int handle_type, GCObject *obj, guint32 handle)
 {
 #ifndef DISABLE_PERFCOUNTERS
-	InterlockedIncrement (&mono_perfcounters->gc_num_handles);
+	mono_atomic_inc_i32 (&mono_perfcounters->gc_num_handles);
 #endif
 
 	MONO_PROFILER_RAISE (gc_handle_created, (handle, handle_type, obj));
@@ -2817,7 +2823,7 @@ void
 sgen_client_gchandle_destroyed (int handle_type, guint32 handle)
 {
 #ifndef DISABLE_PERFCOUNTERS
-	InterlockedDecrement (&mono_perfcounters->gc_num_handles);
+	mono_atomic_dec_i32 (&mono_perfcounters->gc_num_handles);
 #endif
 
 	MONO_PROFILER_RAISE (gc_handle_deleted, (handle, handle_type));
@@ -2886,14 +2892,14 @@ sgen_client_degraded_allocation (void)
 	static gint32 last_major_gc_warned = -1;
 	static gint32 num_degraded = 0;
 
-	gint32 major_gc_count = InterlockedRead (&gc_stats.major_gc_count);
-	if (InterlockedRead (&last_major_gc_warned) < major_gc_count) {
-		gint32 num = InterlockedIncrement (&num_degraded);
+	gint32 major_gc_count = mono_atomic_load_i32 (&gc_stats.major_gc_count);
+	if (mono_atomic_load_i32 (&last_major_gc_warned) < major_gc_count) {
+		gint32 num = mono_atomic_inc_i32 (&num_degraded);
 		if (num == 1 || num == 3)
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "Warning: Degraded allocation.  Consider increasing nursery-size if the warning persists.");
 		else if (num == 10)
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "Warning: Repeated degraded allocation.  Consider increasing nursery-size.");
-		InterlockedWrite (&last_major_gc_warned, major_gc_count);
+		mono_atomic_store_i32 (&last_major_gc_warned, major_gc_count);
 	}
 }
 
@@ -3093,6 +3099,14 @@ gboolean
 mono_gc_is_null (void)
 {
 	return FALSE;
+}
+
+gsize *
+sgen_client_get_weak_bitmap (MonoVTable *vt, int *nbits)
+{
+	MonoClass *klass = vt->klass;
+
+	return mono_class_get_weak_bitmap (klass, nbits);
 }
 
 #endif

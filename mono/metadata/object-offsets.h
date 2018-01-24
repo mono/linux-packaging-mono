@@ -212,7 +212,6 @@ DECL_OFFSET(MonoContext, fregs)
 
 DECL_OFFSET(MonoLMF, rsp)
 DECL_OFFSET(MonoLMF, rbp)
-DECL_OFFSET(MonoLMF, rip)
 
 DECL_OFFSET(DynCallArgs, res)
 
@@ -281,7 +280,7 @@ DECL_OFFSET(SeqPointInfo, ss_tramp_addr)
 DECL_OFFSET(SeqPointInfo, bp_addrs)
 #endif
 
-#ifdef ENABLE_INTERPRETER
+#ifndef DISABLE_INTERPRETER
 DECL_OFFSET(InterpMethodArguments, ilen)
 DECL_OFFSET(InterpMethodArguments, iargs)
 DECL_OFFSET(InterpMethodArguments, flen)

@@ -43,6 +43,7 @@ class DarwinProfile (UnixProfile):
     # ccache uses a different CC since it's not installed yet
     # every thing after ccache needs a working ccache
     default_toolchain = [
+        'cmake',
         'autoconf',
         'automake',
         'ccache',

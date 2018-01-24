@@ -76,6 +76,8 @@
 #include "debugger-agent.h"
 #include "mini.h"
 #include "seq-points.h"
+#include "aot-runtime.h"
+#include "mini-runtime.h"
 #include "interp/interp.h"
 
 /*
@@ -239,11 +241,8 @@ typedef struct {
 	 */
 	InvokeData *invoke;
 
-	/*
-	 * The context where single stepping should resume while the thread is suspended because
-	 * of an EXCEPTION event.
-	 */
-	MonoThreadUnwindState catch_state;
+	StackFrameInfo catch_frame;
+	gboolean has_catch_frame;
 
 	/*
 	 * The context which needs to be restored after handling a single step/breakpoint
@@ -1079,7 +1078,7 @@ finish_agent_init (gboolean on_startup)
 {
 	int res;
 
-	if (InterlockedCompareExchange (&inited, 1, 0) == 1)
+	if (mono_atomic_cas_i32 (&inited, 1, 0) == 1)
 		return;
 
 	if (agent_config.launch) {
@@ -1830,7 +1829,7 @@ send_packet (int command_set, int command, Buffer *data)
 	int len, id;
 	gboolean res;
 
-	id = InterlockedIncrement (&packet_id);
+	id = mono_atomic_inc_i32 (&packet_id);
 
 	len = data->p - data->buf + 11;
 	buffer_init (&buf, len);
@@ -2019,7 +2018,7 @@ get_objref (MonoObject *obj)
 	}
 
 	ref = g_new0 (ObjRef, 1);
-	ref->id = InterlockedIncrement (&objref_id);
+	ref->id = mono_atomic_inc_i32 (&objref_id);
 	ref->handle = mono_gchandle_new_weakref (obj, FALSE);
 
 	g_hash_table_insert (objrefs, GINT_TO_POINTER (ref->id), ref);
@@ -2504,11 +2503,11 @@ get_top_method_ji (gpointer ip, MonoDomain **domain, gpointer *out_ip)
 
 		g_assert (ext->interp_exit);
 		frame = ext->interp_exit_data;
-		ji = mono_interp_frame_get_jit_info (frame);
+		ji = mini_get_interp_callbacks ()->frame_get_jit_info (frame);
 		if (domain)
 			*domain = mono_domain_get ();
 		if (out_ip)
-			*out_ip = mono_interp_frame_get_ip (frame);
+			*out_ip = mini_get_interp_callbacks ()->frame_get_ip (frame);
 	}
 	return ji;
 }
@@ -3239,8 +3238,10 @@ compute_frame_info (MonoInternalThread *thread, DebuggerTlsData *tls)
 		 *
 		 * First we add all the frames from inside the filter; 'tls->ctx' has the current context.
 		 */
-		if (tls->context.valid)
+		if (tls->context.valid) {
 			mono_walk_stack_with_state (process_filter_frame, &tls->context, opts, &user_data);
+			DEBUG_PRINTF (1, "\tFrame: <call filter>\n");
+		}
 		/*
 		 * After that, we resume unwinding from the location where the exception has been thrown.
 		 */
@@ -3271,7 +3272,7 @@ compute_frame_info (MonoInternalThread *thread, DebuggerTlsData *tls)
 		}
 
 		if (i >= tls->frame_count)
-			f->id = InterlockedIncrement (&frame_id);
+			f->id = mono_atomic_inc_i32 (&frame_id);
 
 		new_frames [findex ++] = f;
 	}
@@ -3726,10 +3727,13 @@ process_event (EventKind event, gpointer arg, gint32 il_offset, MonoContext *ctx
 			buffer_add_typeid (&buf, domain, (MonoClass *)arg);
 			break;
 		case EVENT_KIND_BREAKPOINT:
-		case EVENT_KIND_STEP:
-			buffer_add_methodid (&buf, domain, (MonoMethod *)arg);
+		case EVENT_KIND_STEP: {
+			MonoMethod *method = (MonoMethod *)arg;
+
+			buffer_add_methodid (&buf, domain, method);
 			buffer_add_long (&buf, il_offset);
 			break;
+		}
 		case EVENT_KIND_VM_START:
 			buffer_add_domainid (&buf, mono_get_root_domain ());
 			break;
@@ -4283,7 +4287,7 @@ insert_breakpoint (MonoSeqPointInfo *seq_points, MonoDomain *domain, MonoJitInfo
 		DEBUG_PRINTF (1, "[dbg] Attempting to insert seq point at dead IL offset %d, ignoring.\n", (int)bp->il_offset);
 	} else if (count == 0) {
 		if (ji->is_interp) {
-			mono_interp_set_breakpoint (ji, inst->ip);
+			mini_get_interp_callbacks ()->set_breakpoint (ji, inst->ip);
 		} else {
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
 			mono_arch_set_breakpoint (ji, inst->ip);
@@ -4313,7 +4317,7 @@ remove_breakpoint (BreakpointInstance *inst)
 
 	if (count == 1 && inst->native_offset != SEQ_POINT_NATIVE_OFFSET_DEAD_CODE) {
 		if (ji->is_interp)
-			mono_interp_clear_breakpoint (ji, ip);
+			mini_get_interp_callbacks ()->clear_breakpoint (ji, ip);
 		else
 			mono_arch_clear_breakpoint (ji, ip);
 		DEBUG_PRINTF (1, "[dbg] Clear breakpoint at %s [%p].\n", mono_method_full_name (jinfo_get_method (ji), TRUE), ip);
@@ -4437,7 +4441,7 @@ set_bp_in_method (MonoDomain *domain, MonoMethod *method, MonoSeqPointInfo *seq_
 			ji = mono_jit_info_table_find (domain, (char *)code);
 		} else {
 			/* Might be interpreted */
-			ji = mono_interp_find_jit_info (domain, method);
+			ji = mini_get_interp_callbacks ()->find_jit_info (domain, method);
 		}
 		g_assert (ji);
 	}
@@ -4663,6 +4667,42 @@ ss_update (SingleStepReq *req, MonoJitInfo *ji, SeqPoint *sp, DebuggerTlsData *t
 	MonoDebugSourceLocation *loc = NULL;
 	gboolean hit = TRUE;
 
+	if ((ss_req->filter & STEP_FILTER_STATIC_CTOR)) {
+		mono_thread_state_init_from_monoctx (&tls->context, ctx);
+		compute_frame_info (tls->thread, tls);
+
+		gboolean ret = FALSE;
+		gboolean method_in_stack = FALSE;
+
+		for (int i=0; i < tls->frame_count; i++) {
+			MonoMethod *external_method = tls->frames [i]->method;
+			if (method == external_method)
+				method_in_stack = TRUE;
+
+			if (!ret) {
+				ret = (external_method->flags & METHOD_ATTRIBUTE_SPECIAL_NAME);
+				ret = ret && !strcmp (external_method->name, ".cctor");
+				ret = ret && (external_method != req->start_method);
+			}
+		}
+
+		if (!method_in_stack) {
+			fprintf (stderr, "[%p] The instruction pointer of the currently executing method(%s) is not on the recorded stack. This is likely due to a runtime bug. The %d frames are as follow: \n", (gpointer)(gsize)mono_native_thread_id_get (), mono_method_full_name (method, TRUE), tls->frame_count);
+			/*DEBUG_PRINTF (1, "[%p] The instruction pointer of the currently executing method(%s) is not on the recorded stack. This is likely due to a runtime bug. The %d frames are as follow: \n", (gpointer)(gsize)mono_native_thread_id_get (), mono_method_full_name (method, TRUE), tls->frame_count);*/
+
+			for (int i=0; i < tls->frame_count; i++)
+				DEBUG_PRINTF (1, "\t [%p] Frame (%d / %d): %s\n", (gpointer)(gsize)mono_native_thread_id_get (), i, tls->frame_count, mono_method_full_name (tls->frames [i]->method, TRUE));
+		}
+		g_assert (method_in_stack);
+
+		tls->context.valid = FALSE;
+		tls->async_state.valid = FALSE;
+		invalidate_frames (tls);
+
+		if (ret)
+			return FALSE;
+	}
+
 	if (req->async_stepout_method == method) {
 		DEBUG_PRINTF (1, "[%p] Breakpoint hit during async step-out at %s hit, continuing stepping out.\n", (gpointer)(gsize)mono_native_thread_id_get (), method->name);
 		return FALSE;
@@ -4749,7 +4789,9 @@ breakpoint_matches_assembly (MonoBreakpoint *bp, MonoAssembly *assembly)
 static gpointer
 get_this_addr (StackFrame *frame)
 {
-	//Logic inspiered by "add_var" method and took out path that happens in async method for getting this
+	if (frame->ji->is_interp)
+		return mini_get_interp_callbacks ()->frame_get_this (frame->interp_frame);
+
 	MonoDebugVarInfo *var = frame->jit->this_var;
 	if ((var->index & MONO_DEBUG_VAR_ADDRESS_MODE_FLAGS) != MONO_DEBUG_VAR_ADDRESS_MODE_REGOFFSET)
 		return NULL;
@@ -4918,8 +4960,8 @@ process_breakpoint (DebuggerTlsData *tls, gboolean from_signal)
 
 		g_assert (ext->interp_exit);
 		frame = ext->interp_exit_data;
-		ji = mono_interp_frame_get_jit_info (frame);
-		ip = mono_interp_frame_get_ip (frame);
+		ji = mini_get_interp_callbacks ()->frame_get_jit_info (frame);
+		ip = mini_get_interp_callbacks ()->frame_get_ip (frame);
 	}
 
 	g_assert (ji && !ji->is_trampoline);
@@ -5409,11 +5451,11 @@ static void
 start_single_stepping (void)
 {
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
-	int val = InterlockedIncrement (&ss_count);
+	int val = mono_atomic_inc_i32 (&ss_count);
 
 	if (val == 1) {
 		mono_arch_start_single_stepping ();
-		mono_interp_start_single_stepping ();
+		mini_get_interp_callbacks ()->start_single_stepping ();
 	}
 #else
 	g_assert_not_reached ();
@@ -5424,11 +5466,11 @@ static void
 stop_single_stepping (void)
 {
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
-	int val = InterlockedDecrement (&ss_count);
+	int val = mono_atomic_dec_i32 (&ss_count);
 
 	if (val == 0) {
 		mono_arch_stop_single_stepping ();
-		mono_interp_stop_single_stepping ();
+		mini_get_interp_callbacks ()->stop_single_stepping ();
 	}
 #else
 	g_assert_not_reached ();
@@ -5843,23 +5885,14 @@ ss_create (MonoInternalThread *thread, StepSize size, StepDepth depth, StepFilte
 
 	ss_req->start_sp = ss_req->last_sp = MONO_CONTEXT_GET_SP (&tls->context.ctx);
 
-	if (tls->catch_state.valid) {
-		gboolean res;
+	if (tls->has_catch_frame) {
 		StackFrameInfo frame;
-		MonoContext new_ctx;
-		MonoLMF *lmf = NULL;
 
 		/*
 		 * We are stopped at a throw site. Stepping should go to the catch site.
 		 */
-
-		/* Find the the jit info for the catch context */
-		res = mono_find_jit_info_ext (
-			(MonoDomain *)tls->catch_state.unwind_data [MONO_UNWIND_DATA_DOMAIN],
-			(MonoJitTlsData *)((MonoThreadInfo*)thread->thread_info)->jit_data,
-			NULL, &tls->catch_state.ctx, &new_ctx, NULL, &lmf, NULL, &frame);
-		g_assert (res);
-		g_assert (frame.type == FRAME_TYPE_MANAGED);
+		frame = tls->catch_frame;
+		g_assert (frame.type == FRAME_TYPE_MANAGED || frame.type == FRAME_TYPE_INTERP);
 
 		/*
 		 * Find the seq point corresponding to the landing site ip, which is the first seq
@@ -6028,8 +6061,8 @@ mono_debugger_agent_unhandled_exception (MonoException *exc)
 #endif
 
 void
-mono_debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx, 
-				      MonoContext *catch_ctx)
+mono_debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx,
+									  MonoContext *catch_ctx, StackFrameInfo *catch_frame)
 {
 	int i, j, suspend_policy;
 	GSList *events;
@@ -6096,8 +6129,8 @@ mono_debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx
 		return;
 
 	ji = mini_jit_info_table_find (mono_domain_get (), (char *)MONO_CONTEXT_GET_IP (throw_ctx), NULL);
-	if (catch_ctx)
-		catch_ji = mini_jit_info_table_find (mono_domain_get (), (char *)MONO_CONTEXT_GET_IP (catch_ctx), NULL);
+	if (catch_frame)
+		catch_ji = catch_frame->ji;
 	else
 		catch_ji = NULL;
 
@@ -6135,16 +6168,18 @@ mono_debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx
 	mono_loader_unlock ();
 
 	if (tls && ei.caught && catch_ctx) {
-		memset (&tls->catch_state, 0, sizeof (tls->catch_state));
-		tls->catch_state.ctx = *catch_ctx;
-		tls->catch_state.unwind_data [MONO_UNWIND_DATA_DOMAIN] = mono_domain_get ();
-		tls->catch_state.valid = TRUE;
+		if (catch_frame) {
+			tls->has_catch_frame = TRUE;
+			tls->catch_frame = *catch_frame;
+		} else {
+			memset (&tls->catch_frame, 0, sizeof (tls->catch_frame));
+		}
 	}
 
 	process_event (EVENT_KIND_EXCEPTION, &ei, 0, throw_ctx, events, suspend_policy);
 
 	if (tls)
-		tls->catch_state.valid = FALSE;
+		tls->has_catch_frame = FALSE;
 }
 
 void
@@ -7201,18 +7236,12 @@ do_invoke_method (DebuggerTlsData *tls, Buffer *buf, InvokeData *invoke, guint8 
 	 */
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
 	if (invoke->has_ctx) {
-		MonoLMF **lmf_addr;
-
-		lmf_addr = mono_get_lmf_addr ();
-
 		/* Setup our lmf */
 		memset (&ext, 0, sizeof (ext));
-		mono_arch_init_lmf_ext (&ext, *lmf_addr);
-
 		ext.debugger_invoke = TRUE;
 		memcpy (&ext.ctx, &invoke->ctx, sizeof (MonoContext));
 
-		mono_set_lmf ((MonoLMF*)&ext);
+		mono_push_lmf (&ext);
 	}
 #endif
 
@@ -7286,7 +7315,7 @@ do_invoke_method (DebuggerTlsData *tls, Buffer *buf, InvokeData *invoke, guint8 
 
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
 	if (invoke->has_ctx)
-		mono_set_lmf ((MonoLMF *)(((gssize)ext.lmf.previous_lmf) & ~3));
+		mono_pop_lmf ((MonoLMF*)&ext);
 #endif
 
 	*endp = p;
@@ -7895,7 +7924,7 @@ event_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		nmodifiers = decode_byte (p, &p, end);
 
 		req = (EventRequest *)g_malloc0 (sizeof (EventRequest) + (nmodifiers * sizeof (Modifier)));
-		req->id = InterlockedIncrement (&event_request_id);
+		req->id = mono_atomic_inc_i32 (&event_request_id);
 		req->event_kind = event_kind;
 		req->suspend_policy = suspend_policy;
 		req->nmodifiers = nmodifiers;
@@ -9572,7 +9601,7 @@ thread_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 
 		if (tls->frames [0]->ji->is_interp) {
 			MonoJitTlsData *jit_data = ((MonoThreadInfo*)thread->thread_info)->jit_data;
-			mono_interp_set_resume_state (jit_data, NULL, tls->frames [0]->interp_frame, (guint8*)tls->frames [0]->ji->code_start + sp.native_offset);
+			mini_get_interp_callbacks ()->set_resume_state (jit_data, NULL, NULL, tls->frames [0]->interp_frame, (guint8*)tls->frames [0]->ji->code_start + sp.native_offset);
 		} else {
 			MONO_CONTEXT_SET_IP (&tls->restore_state.ctx, (guint8*)tls->frames [0]->ji->code_start + sp.native_offset);
 		}
@@ -9665,7 +9694,7 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 				if (frame->ji->is_interp) {
 					guint8 *addr;
 
-					addr = mono_interp_frame_get_arg (frame->interp_frame, pos);
+					addr = mini_get_interp_callbacks ()->frame_get_arg (frame->interp_frame, pos);
 
 					buffer_add_value_full (buf, sig->params [pos], addr, frame->domain, FALSE, NULL);
 				} else {
@@ -9688,7 +9717,7 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 				if (frame->ji->is_interp) {
 					guint8 *addr;
 
-					addr = mono_interp_frame_get_local (frame->interp_frame, pos);
+					addr = mini_get_interp_callbacks ()->frame_get_local (frame->interp_frame, pos);
 
 					buffer_add_value_full (buf, header->locals [pos], addr, frame->domain, FALSE, NULL);
 				} else {
@@ -9712,7 +9741,7 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 				if (frame->ji->is_interp) {
 					guint8 *addr;
 
-					addr = mono_interp_frame_get_this (frame->interp_frame);
+					addr = mini_get_interp_callbacks ()->frame_get_this (frame->interp_frame);
 
 					buffer_add_value_full (buf, &frame->actual_method->klass->this_arg, addr, frame->domain, FALSE, NULL);
 				} else {
@@ -9727,7 +9756,7 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 				if (frame->ji->is_interp) {
 					guint8 *addr;
 
-					addr = mono_interp_frame_get_this (frame->interp_frame);
+					addr = mini_get_interp_callbacks ()->frame_get_this (frame->interp_frame);
 
 					buffer_add_value_full (buf, &frame->api_method->klass->byval_arg, addr, frame->domain, FALSE, NULL);
 				} else {
@@ -9786,9 +9815,9 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 				guint8 *addr;
 
 				if (is_arg)
-					addr = mono_interp_frame_get_arg (frame->interp_frame, pos);
+					addr = mini_get_interp_callbacks ()->frame_get_arg (frame->interp_frame, pos);
 				else
-					addr = mono_interp_frame_get_local (frame->interp_frame, pos);
+					addr = mini_get_interp_callbacks ()->frame_get_local (frame->interp_frame, pos);
 				set_interp_var (t, addr, val_buf);
 			} else {
 				set_var (t, var, &frame->ctx, frame->domain, val_buf, frame->reg_locations, &tls->restore_state.ctx);
@@ -9819,7 +9848,7 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		if (frame->ji->is_interp) {
 			guint8 *addr;
 
-			addr = mono_interp_frame_get_this (frame->interp_frame);
+			addr = mini_get_interp_callbacks ()->frame_get_this (frame->interp_frame);
 			set_interp_var (&frame->actual_method->klass->this_arg, addr, val_buf);
 		} else {
 			var = jit->this_var;
@@ -10592,8 +10621,8 @@ mono_debugger_agent_free_domain_info (MonoDomain *domain)
 }
 
 void
-mono_debugger_agent_handle_exception (MonoException *ext, MonoContext *throw_ctx,
-									  MonoContext *catch_ctx)
+mono_debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx,
+									  MonoContext *catch_ctx, StackFrameInfo *catch_frame)
 {
 }
 

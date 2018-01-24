@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -241,7 +251,10 @@ mono_type_create_from_typespec (MonoImage *image, guint32 type_spec)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> context where the image is created</td></tr><tr><td><i>type_spec</i></td><td>  typespec token</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates a <code>MonoType</code> representing the <code>TypeSpec</code> indexed by the <i>type_spec</i> 	 token.</div>
+             <div>
+<p />
+ Creates a <code>MonoType</code> representing the <code>TypeSpec</code> indexed by the <i>type_spec</i>
+ token.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -285,7 +298,8 @@ mono_type_get_array_type (MonoType *type)
 	 represents. The info includes details such as rank, array element type
 	 and the sizes and bounds of multidimensional arrays.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_ARRAY</code> .</div>
+             <div>
+ It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_ARRAY</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -309,7 +323,10 @@ mono_type_get_class (MonoType *type)
              <div>	 the <code>MonoClass</code> pointer that describes the class that <i>type</i> represents.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_CLASS</code> or a 	 <code>MONO_TYPE_VALUETYPE</code> . For more general functionality, use <code>mono_class_from_mono_type</code>, 	 instead.</div>
+             <div>
+ It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_CLASS</code> or a
+ <code>MONO_TYPE_VALUETYPE</code> . For more general functionality, use <code>mono_class_from_mono_type</code>,
+ instead.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -373,7 +390,9 @@ mono_type_get_ptr_type (MonoType *type)
 
 	 represents a pointer to.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 \pararm type the <code>MonoType</code> operated on 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_PTR</code> .</div>
+             <div>
+ \pararm type the <code>MonoType</code> operated on
+ It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_PTR</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -398,7 +417,8 @@ mono_type_get_signature (MonoType *type)
 
 	 of the function pointer <i>type</i> represents.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_FNPTR</code> .</div>
+             <div>
+ It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_FNPTR</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -627,6 +647,8 @@ mono_type_to_unmanaged (MonoType *type, MonoMarshalSpec *mspec, gboolean as_fiel
 
 	 describing the underlying native reprensetation of the type.</div>
              <div class="mapi-section">Description</div>
-             <div> 	 The value pointed to by <i>conv</i> will contain the kind of marshalling required for this 	 particular type one of the <code>MONO_MARSHAL_CONV_</code> enumeration values.</div>
+             <div>
+ The value pointed to by <i>conv</i> will contain the kind of marshalling required for this
+ particular type one of the <code>MONO_MARSHAL_CONV_</code> enumeration values.</div>
         </div><!--mapi-description -->
     </div><!--height container -->

@@ -119,17 +119,16 @@ namespace Mono.Profiler.Log {
 
 	// mono/metadata/profiler.h : MonoProfilerCodeBufferType
 	public enum LogJitHelper {
-		Unknown = 0,
-		Method = 1,
-		MethodTrampoline = 2,
-		UnboxTrampoline = 3,
-		ImtTrampoline = 4,
-		GenericsTrampoline = 5,
-		SpecificTrampoline = 6,
-		Helper = 7,
-		Monitor = 8,
-		DelegateInvoke = 9,
-		ExceptionHandling = 10,
+		Method = 0,
+		MethodTrampoline = 1,
+		UnboxTrampoline = 2,
+		ImtTrampoline = 3,
+		GenericsTrampoline = 4,
+		SpecificTrampoline = 5,
+		Helper = 6,
+		Monitor = 7,
+		DelegateInvoke = 8,
+		ExceptionHandling = 9,
 	}
 
 	// mono/metadata/profiler.h : MonoProfilerGCRootType
@@ -139,11 +138,11 @@ namespace Mono.Profiler.Log {
 		WeakReference = 2 << 8,
 		Interior = 4 << 8,
 
-		Stack = 0,
-		Finalizer = 1,
-		Handle = 2,
-		Other = 3,
-		Miscellaneous = 4,
+		Stack = 1 << 0,
+		Finalizer = 1 << 1,
+		Handle = 1 << 2,
+		Other = 1 << 3,
+		Miscellaneous = 1 << 4,
 
 		TypeMask = 0xff,
 	}

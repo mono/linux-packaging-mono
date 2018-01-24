@@ -72,6 +72,10 @@ if INSTALL_UNREAL
 build_profiles += unreal
 endif
 
+if INSTALL_WASM
+build_profiles += wasm
+endif
+
 test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
 
 if BUILD_MCS
@@ -126,7 +130,7 @@ PLATFORM_PATH_SEPARATOR = :
 endif
 
 # assemblies which are excluded from testing in mcs-compileall below
-VERIFY_TESTS_FILTER =
+VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll
 
 if HOST_WIN32
 # Mono.WebBrowser.dll fails to verify on Windows

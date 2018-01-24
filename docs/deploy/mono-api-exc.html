@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -221,13 +231,15 @@
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_reraise_exception (MonoException *ex)
+mono_raise_exception (MonoException *ex) 
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>ex</i></td><td> exception object</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Signal the runtime that the exception <i>ex</i> has been raised in unmanaged code.</div>
+             <div>
+ Signal the runtime that the exception <i>ex</i> has been raised in unmanaged code.
+ DEPRECATED. DO NOT ADD NEW CALLERS FOR THIS FUNCTION.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -248,7 +260,15 @@ mono_unhandled_exception_checked (MonoObjectHandle exc, MonoError *error)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>exc</i></td><td> exception thrown</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This is a VM internal routine. 	<p /> 	 We call this function when we detect an unhandled exception 	 in the default domain. 	<p /> 	 It invokes the * UnhandledException event in AppDomain or prints 	 a warning to the console </div>
+             <div>
+<p />
+ This is a VM internal routine.
+<p />
+ We call this function when we detect an unhandled exception
+ in the default domain.
+<p />
+ It invokes the * UnhandledException event in AppDomain or prints
+ a warning to the console </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -269,7 +289,8 @@ mono_print_unhandled_exception (MonoObject *exc)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>exc</i></td><td> The exception</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Prints the unhandled exception.</div>
+             <div>
+ Prints the unhandled exception.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -298,7 +319,11 @@ mono_exception_from_name_domain (MonoDomain *domain, MonoImage *image,
              <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates an exception object of the given namespace/name class on 	 the given domain. 	<p /></div>
+             <div>
+<p />
+ Creates an exception object of the given namespace/name class on
+ the given domain.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -323,7 +348,11 @@ mono_exception_from_name (MonoImage *image, const char *name_space,
              <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates an exception of the given namespace/name class in the 	 current domain. 	<p /></div>
+             <div>
+<p />
+ Creates an exception of the given namespace/name class in the
+ current domain.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -348,7 +377,10 @@ mono_exception_from_name_msg (MonoImage *image, const char *name_space,
              <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates an exception and initializes its message field. 	<p /></div>
+             <div>
+<p />
+ Creates an exception and initializes its message field.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -373,7 +405,11 @@ mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
              <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates an exception from a constructor that takes two string 	 arguments. 	<p /></div>
+             <div>
+<p />
+ Creates an exception from a constructor that takes two string
+ arguments.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -577,7 +613,8 @@ mono_get_exception_class (void)
              <div>	 The <code>MonoClass*</code> for the <code>type</code>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Use this function to get the <code>MonoClass*</code> that the runtime is using for <code>System.Exception</code> .</div>
+             <div>
+ Use this function to get the <code>MonoClass*</code> that the runtime is using for <code>System.Exception</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1096,7 +1133,10 @@ mono_exception_from_token_two_strings (MonoImage *image, guint32 token,
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	   Same as mono_exception_from_name_two_strings, but lookup the exception class using 	 IMAGE and TOKEN.</div>
+             <div>
+<p />
+   Same as mono_exception_from_name_two_strings, but lookup the exception class using
+ IMAGE and TOKEN.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

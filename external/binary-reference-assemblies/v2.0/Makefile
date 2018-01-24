@@ -13,12 +13,12 @@ ASSEMBLIES := Accessibility CustomMarshalers	\
 	System.Data.Linq System.Data.OracleClient System.Data.Services.Client System.Data.Services	\
 	System.Data System.Design System.DirectoryServices.Protocols System.DirectoryServices	\
 	System.Drawing.Design System.Drawing System.EnterpriseServices System.IdentityModel.Selectors	\
-	System.IdentityModel System.Json System.Management System.Messaging System.Net System.Runtime.Remoting	\
+	System.IdentityModel System.Management System.Messaging System.Net System.Runtime.Remoting	\
 	System.Runtime.Serialization.Formatters.Soap System.Runtime.Serialization System.Security	\
 	System.ServiceModel.Web System.ServiceModel System.ServiceProcess System.Transactions	\
 	System.Web.Abstractions System.Web.DynamicData System.Web.Extensions.Design System.Web.Extensions	\
-	System.Web.Mvc System.Web.Routing System.Web.Services System.Web System.Windows.Forms	\
-	System.Xml.Linq System.Xml System WindowsBase cscompmgd mscorlib
+	System.Web.Routing System.Web.Services System.Web System.Windows.Forms	\
+	System.Xml.Linq System.Xml System WindowsBase mscorlib
 
 ASSEMBLIES += bare/System bare/System.Xml bare/System.Configuration bare/System.Web
 
@@ -50,7 +50,6 @@ System.Drawing_REFS := mscorlib System
 System.EnterpriseServices_REFS := mscorlib System.Transactions
 System.IdentityModel.Selectors_REFS := System.Xml mscorlib System System.IdentityModel
 System.IdentityModel_REFS := mscorlib System System.Web System.Xml System.Runtime.Serialization System.Security
-System.Json_REFS := mscorlib System System.Core
 System.Management_REFS := mscorlib System System.Configuration.Install
 System.Messaging_REFS := mscorlib System System.Configuration.Install System.Xml System.Windows.Forms System.Drawing
 System.Net_REFS := mscorlib System
@@ -66,7 +65,6 @@ System.Web.Abstractions_REFS := System.Web mscorlib System
 System.Web.DynamicData_REFS := mscorlib System.Core System.Data.Linq System System.Web System.Web.Extensions System.Web.Routing System.ComponentModel.DataAnnotations System.Drawing System.Web.Abstractions
 System.Web.Extensions.Design_REFS := mscorlib System System.Design System.Drawing
 System.Web.Extensions_REFS := mscorlib System.Core System System.Web System.Configuration System.Web.Services System.Xml System.ServiceModel System.Data.Linq System.Drawing
-System.Web.Mvc_REFS := mscorlib System.Core System.Web.Abstractions System.Web.Routing System.Web System.ComponentModel.DataAnnotations System System.Web.Extensions System.Data.Linq System.Xml
 System.Web.Routing_REFS := mscorlib System.Web.Abstractions System System.Core System.Web
 System.Web.Services_REFS := System.EnterpriseServices bare/System.Web System.Configuration mscorlib System System.Xml
 System.Web_REFS := mscorlib System.Drawing System System.Xml System.Core System.Configuration System.Data System.Runtime.Serialization.Formatters.Soap System.Web.Services System.EnterpriseServices
@@ -75,7 +73,6 @@ System.Xml.Linq_REFS := mscorlib System.Xml System.Runtime.Serialization System.
 System.Xml_REFS := mscorlib System System.Configuration
 System_REFS := mscorlib bare/System.Configuration bare/System.Xml
 WindowsBase_REFS := System mscorlib System.Xml
-cscompmgd_REFS := mscorlib System
 mscorlib_REFS :=
 
 bare/System_REFS := mscorlib
@@ -98,16 +95,16 @@ ECMA_KEY_ASSEMBLIES := System.Core System.Data.DataSetExtensions System.Data.Lin
 	System.IdentityModel System.Net System.Runtime.Remoting System.Runtime.Serialization System.ServiceModel	\
 	System.Transactions System.Windows.Forms System.Xml.Linq System.Xml System mscorlib bare/System bare/System.Xml
 
-WINFX_KEY_ASSEMBLIES := System.ComponentModel.DataAnnotations System.Json System.ServiceModel.Web	\
+WINFX_KEY_ASSEMBLIES := System.ComponentModel.DataAnnotations System.ServiceModel.Web	\
 	System.Web.Abstractions System.Web.DynamicData System.Web.Extensions.Design System.Web.Extensions	\
-	System.Web.Mvc System.Web.Routing WindowsBase
+	System.Web.Routing WindowsBase
 
 MSFINAL_KEY_ASSEMBLIES := Accessibility CustomMarshalers Microsoft.Build.Engine Microsoft.Build.Framework	\
 	Microsoft.Build.Tasks Microsoft.Build.Utilities Microsoft.VisualC Microsoft.VisualBasic \
 	System.Configuration.Install System.Configuration System.Design System.DirectoryServices.Protocols	\
 	System.DirectoryServices System.Drawing.Design System.Drawing System.EnterpriseServices System.Management	\
 	System.Messaging System.Runtime.Serialization.Formatters.Soap System.Security System.ServiceProcess	\
-	System.Web.Services System.Web cscompmgd bare/System.Configuration bare/System.Web
+	System.Web.Services System.Web bare/System.Configuration bare/System.Web
 
 all: $(addsuffix .dll, $(ASSEMBLIES))
 

@@ -15,6 +15,10 @@ namespace System.IO.Internal
     // Explicitly not [Serializable], so as to avoid accidentally deleting
     // files specified in a serialized payload.
 
+#if MONO
+    [Serializable]
+#endif
+
 #if CODEDOM
     public
 #else

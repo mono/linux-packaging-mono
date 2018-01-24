@@ -37,6 +37,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AssemblyAttributeIsRemovedIfOnlyTypesUsedInAssembly.cs" />
+    <Compile Include="Attributes\AssemblyAttributeKeptInComplexCase.cs" />
+    <Compile Include="Attributes\AttributeOnAssemblyIsKept.cs" />
+    <Compile Include="Attributes\AttributeOnParameterInUsedMethodIsKept.cs" />
     <Compile Include="Attributes\AttributeOnPreservedTypeWithTypeUsedInConstructorIsKept.cs" />
     <Compile Include="Attributes\AttributeOnPreservedTypeWithTypeUsedInDifferentNamespaceIsKept.cs" />
     <Compile Include="Attributes\AttributeOnPreservedTypeWithTypeUsedInFieldIsKept.cs" />
@@ -46,6 +50,10 @@
     <Compile Include="Attributes\AttributeOnPreservedTypeWithUsedSetter.cs" />
     <Compile Include="Attributes\AttributeOnUsedMethodIsKept.cs" />
     <Compile Include="Attributes\AttributeOnUsedPropertyIsKept.cs" />
+    <Compile Include="Attributes\SecurityAttributesOnUsedMethodAreKept.cs" />
+    <Compile Include="Attributes\SecurityAttributesOnUsedTypeAreKept.cs" />
+    <Compile Include="Attributes\Dependencies\AssemblyAttributeIsRemovedIfOnlyTypesUsedInAssembly_Lib.cs" />
+    <Compile Include="Attributes\Dependencies\AssemblyAttributeKeptInComplexCase_Lib.cs" />
     <Compile Include="Basic\ComplexNestedClassesHasUnusedRemoved.cs" />
     <Compile Include="Basic\InterfaceMethodImplementedOnBaseClassDoesNotGetStripped.cs" />
     <Compile Include="Basic\MultiLevelNestedClassesAllRemovedWhenNonUsed.cs" />
@@ -57,19 +65,32 @@
     <Compile Include="Basic\UnusedPropertySetterRemoved.cs" />
     <Compile Include="Basic\UsedPropertyIsKept.cs" />
     <Compile Include="Basic\UsedStructIsKept.cs" />
+    <Compile Include="LinkXml\CanPreserveTypesUsingRegex.cs" />
+    <Compile Include="LinkXml\CanPreserveAnExportedType.cs" />
+    <None Include="LinkXml\Dependencies\CanPreserveAnExportedType_Forwarder.cs" />
+    <Compile Include="LinkXml\CanPreserveExportedTypesUsingRegex.cs" />
+    <Compile Include="LinkXml\Dependencies\CanPreserveAnExportedType_Library.cs" />
     <Compile Include="LinkXml\UnusedAssemblyWithNoDefinedPreserveHasAllTypesPreserved.cs" />
     <Compile Include="LinkXml\UnusedEventPreservedByLinkXmlIsKept.cs" />
     <Compile Include="LinkXml\UnusedTypePreservedByLinkXmlWithCommentIsKept.cs" />
     <Compile Include="LinkXml\UnusedTypeWithNoDefinedPreserveHasAllMembersPreserved.cs" />
+    <Compile Include="References\Individual\CanSkipUnresolved.cs" />
+    <Compile Include="References\Individual\Dependencies\CanSkipUnresolved_Library.cs" />
+    <Compile Include="References\Dependencies\UserAssembliesAreLinkedByDefault_Library1.cs" />
+    <Compile Include="References\UserAssembliesAreLinkedByDefault.cs" />
     <Compile Include="Resources\EmbeddedLinkXmlFileIsNotProcessedIfNameDoesNotMatchAnAssembly.cs" />
     <Compile Include="Resources\EmbeddedLinkXmlFileIsNotProcessedWhenBlacklistStepIsDisabled.cs" />
     <Compile Include="Resources\EmbeddedLinkXmlFileIsNotProcessedWhenCoreLinkActionIsSkip.cs" />
     <Compile Include="Resources\EmbeddedLinkXmlFileIsProcessed.cs" />
     <Compile Include="Resources\NonLinkerEmbeddedResourceHasNoImpact.cs" />
     <Compile Include="TestFramework\CanCompileILAssembly.cs" />
+    <Compile Include="TestFramework\CanCompileTestCaseWithDebugPdbs.cs" />
     <Compile Include="TestFramework\VerifyDefineAttributeBehavior.cs" />
     <None Include="TypeForwarding\Dependencies\ForwarderLibrary.cs" />
     <Compile Include="TestFramework\VerifyResourceInAssemblyAttributesBehavior.cs" />
+    <Compile Include="Tracing\Individual\CanDumpDependenciesToUncompressedXml.cs" />
+    <Compile Include="Tracing\Individual\CanEnableDependenciesDump.cs" />
+    <Compile Include="Tracing\Individual\CanEnableReducedTracing.cs" />
     <Compile Include="TypeForwarding\Dependencies\ImplementationLibrary.cs" />
     <Compile Include="TypeForwarding\Dependencies\LibraryUsingForwarder.cs" />
     <Compile Include="TypeForwarding\Dependencies\ReferenceImplementationLibrary.cs" />
@@ -148,8 +169,12 @@
     <Compile Include="TypeForwarding\MissingTargetReference.cs" />
     <None Include="TypeForwarding\Dependencies\TypeForwarderMissingReference.il" />
     <Compile Include="Basic\UsedInterfaceIsKept.cs" />
+    <Compile Include="LinkXml\PreserveBackingFieldWhenPropertyIsKept.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LinkXml\CanPreserveTypesUsingRegex.xml" />
+    <Content Include="LinkXml\CanPreserveAnExportedType.xml" />
+    <Content Include="LinkXml\CanPreserveExportedTypesUsingRegex.xml" />
     <Content Include="LinkXml\TypeWithPreserveFieldsHasBackingFieldsOfPropertiesRemoved.xml" />
     <Content Include="LinkXml\UnusedAssemblyWithNoDefinedPreserveHasAllTypesPreserved.xml" />
     <Content Include="LinkXml\UnusedEventPreservedByLinkXmlIsKept.xml" />
@@ -172,6 +197,7 @@
     <Content Include="Resources\Dependencies\EmbeddedLinkXmlFileIsProcessed.xml" />
     <Content Include="Resources\Dependencies\NonLinkerEmbeddedResourceHasNoImpact.xml" />
     <Content Include="TestFramework\Dependencies\VerifyResourceInAssemblyAttributesBehavior.txt" />
+    <Content Include="LinkXml\PreserveBackingFieldWhenPropertyIsKept.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mono.Linker.Tests.Cases.Expectations\Mono.Linker.Tests.Cases.Expectations.csproj">
