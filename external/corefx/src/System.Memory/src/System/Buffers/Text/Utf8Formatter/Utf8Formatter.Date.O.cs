@@ -2,8 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+#if !netstandard
+using Internal.Runtime.CompilerServices;
+#endif
 
 namespace System.Buffers.Text
 {
@@ -25,7 +29,7 @@ namespace System.Buffers.Text
             bytesWritten = MinimumBytesNeeded;
             DateTimeKind kind = DateTimeKind.Local;
 
-            if (offset == Utf8Constants.NullUtcOffset)
+            if (offset == Utf8Constants.s_nullUtcOffset)
             {
                 kind = value.Kind;
                 if (kind == DateTimeKind.Local)
@@ -49,7 +53,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
+            ref byte utf8Bytes = ref MemoryMarshal.GetReference(buffer);
 
             FormattingHelpers.WriteDigits(value.Year, 4, ref utf8Bytes, 0);
             Unsafe.Add(ref utf8Bytes, 4) = Utf8Constants.Minus;

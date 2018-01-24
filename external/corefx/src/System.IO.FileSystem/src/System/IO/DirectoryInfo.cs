@@ -4,42 +4,44 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Security;
 
 namespace System.IO
 {
     [Serializable]
     public sealed partial class DirectoryInfo : FileSystemInfo
     {
+        private string _name;
+
         public DirectoryInfo(string path)
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-            Contract.EndContractBlock();
-
-            OriginalPath = PathHelpers.ShouldReviseDirectoryPathToCurrent(path) ? "." : path;
-            FullPath = Path.GetFullPath(path);
-            DisplayPath = GetDisplayName(OriginalPath);
+            Init(originalPath: PathHelpers.ShouldReviseDirectoryPathToCurrent(path) ? "." : path,
+                  fullPath: Path.GetFullPath(path),
+                  isNormalized: true);
         }
 
-        internal DirectoryInfo(string fullPath, string originalPath)
+        internal DirectoryInfo(string originalPath, string fullPath = null, string fileName = null, bool isNormalized = false)
         {
-            Debug.Assert(Path.IsPathRooted(fullPath), "fullPath must be fully qualified!");
+            Init(originalPath, fullPath, fileName, isNormalized);
+        }
 
-            // Fast path when we know a DirectoryInfo exists.
-            OriginalPath = originalPath ?? Path.GetFileName(fullPath);
+        private void Init(string originalPath, string fullPath = null, string fileName = null, bool isNormalized = false)
+        {
+            // Want to throw the original argument name
+            OriginalPath = originalPath ?? throw new ArgumentNullException("path");
+
+            fullPath = fullPath ?? originalPath;
+            Debug.Assert(!isNormalized || !PathInternal.IsPartiallyQualified(fullPath), "should be fully qualified if normalized");
+            fullPath = isNormalized ? fullPath : Path.GetFullPath(fullPath);
+
+            _name = fileName ?? (PathHelpers.IsRoot(fullPath) ?
+                    fullPath :
+                    Path.GetFileName(PathHelpers.TrimEndingDirectorySeparator(fullPath)));
+
             FullPath = fullPath;
-            DisplayPath = GetDisplayName(OriginalPath);
+            DisplayPath = PathHelpers.ShouldReviseDirectoryPathToCurrent(originalPath) ? "." : originalPath;
         }
 
-        public override string Name
-        {
-            get
-            {
-                return GetDirName(FullPath);
-            }
-        }
+        public override string Name => _name;
 
         public DirectoryInfo Parent
         {
@@ -67,7 +69,6 @@ namespace System.IO
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
-            Contract.EndContractBlock();
 
             return CreateSubdirectoryHelper(path);
         }
@@ -123,7 +124,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalGetFiles(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -136,7 +136,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalGetFiles(searchPattern, searchOption);
         }
@@ -170,7 +169,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalGetFileSystemInfos(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -183,7 +181,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalGetFileSystemInfos(searchPattern, searchOption);
         }
@@ -213,7 +210,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalGetDirectories(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -227,7 +223,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalGetDirectories(searchPattern, searchOption);
         }
@@ -253,7 +248,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalEnumerateDirectories(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -264,7 +258,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalEnumerateDirectories(searchPattern, searchOption);
         }
@@ -286,7 +279,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalEnumerateFiles(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -297,7 +289,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalEnumerateFiles(searchPattern, searchOption);
         }
@@ -319,7 +310,6 @@ namespace System.IO
         {
             if (searchPattern == null)
                 throw new ArgumentNullException(nameof(searchPattern));
-            Contract.EndContractBlock();
 
             return InternalEnumerateFileSystemInfos(searchPattern, SearchOption.TopDirectoryOnly);
         }
@@ -330,7 +320,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(searchPattern));
             if ((searchOption != SearchOption.TopDirectoryOnly) && (searchOption != SearchOption.AllDirectories))
                 throw new ArgumentOutOfRangeException(nameof(searchOption), SR.ArgumentOutOfRange_Enum);
-            Contract.EndContractBlock();
 
             return InternalEnumerateFileSystemInfos(searchPattern, searchOption);
         }
@@ -369,7 +358,6 @@ namespace System.IO
                 throw new ArgumentNullException(nameof(destDirName));
             if (destDirName.Length == 0)
                 throw new ArgumentException(SR.Argument_EmptyFileName, nameof(destDirName));
-            Contract.EndContractBlock();
 
             string destination = Path.GetFullPath(destDirName);
             string destinationWithSeparator = destination;
@@ -402,9 +390,10 @@ namespace System.IO
 
             FileSystem.Current.MoveDirectory(FullPath, destination);
 
-            FullPath = destinationWithSeparator;
-            OriginalPath = destDirName;
-            DisplayPath = GetDisplayName(OriginalPath);
+            Init(originalPath: destDirName,
+                 fullPath: destinationWithSeparator,
+                 fileName: _name,
+                 isNormalized: true);
 
             // Flush any cached information about the directory.
             Invalidate();
@@ -426,26 +415,6 @@ namespace System.IO
         public override string ToString()
         {
             return DisplayPath;
-        }
-
-        private static string GetDisplayName(string originalPath)
-        {
-            Debug.Assert(originalPath != null);
-
-            // Desktop documents that the path returned by ToString() should be the original path.
-            // For SL/Phone we only gave the directory name regardless of what was passed in.
-            return PathHelpers.ShouldReviseDirectoryPathToCurrent(originalPath) ?
-                "." :
-                originalPath;
-        }
-
-        private static string GetDirName(string fullPath)
-        {
-            Debug.Assert(fullPath != null);
-
-            return PathHelpers.IsRoot(fullPath) ?
-                fullPath :
-                Path.GetFileName(PathHelpers.TrimEndingDirectorySeparator(fullPath));
         }
     }
 }
