@@ -31,7 +31,7 @@ namespace System
         private readonly int _index;
         private readonly int _length;
 
-        private const int RemoveOwnedFlagBitMask = 0x7FFFFFFF;
+        internal const int RemoveOwnedFlagBitMask = 0x7FFFFFFF;
 
         /// <summary>
         /// Creates a new memory over the entirety of the target array.
@@ -97,7 +97,7 @@ namespace System
         /// Defines an implicit conversion of an array to a <see cref="ReadOnlyMemory{T}"/>
         /// </summary>
         public static implicit operator ReadOnlyMemory<T>(T[] array) => new ReadOnlyMemory<T>(array);
-        
+
         /// <summary>
         /// Defines an implicit conversion of a <see cref="ArraySegment{T}"/> to a <see cref="ReadOnlyMemory{T}"/>
         /// </summary>
@@ -239,33 +239,6 @@ namespace System
         }
 
         /// <summary>
-        /// Get an array segment from the underlying memory. 
-        /// If unable to get the array segment, return false with a default array segment.
-        /// </summary>
-#if !MONO
-        [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
-        public bool DangerousTryGetArray(out ArraySegment<T> arraySegment)
-        {
-            if (_index < 0)
-            {
-                if (((OwnedMemory<T>)_object).TryGetArray(out var segment))
-                {
-                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & RemoveOwnedFlagBitMask), _length);
-                    return true;
-                }
-            }
-            else if (_object is T[] arr)
-            {
-                arraySegment = new ArraySegment<T>(arr, _index, _length);
-                return true;
-            }
-
-            arraySegment = default;
-            return false;
-        }
-
-        /// <summary>
         /// Copies the contents from the memory into a new array.  This heap
         /// allocates, so should generally be avoided, however it is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
@@ -310,13 +283,13 @@ namespace System
         /// Serves as the default hash function.
         /// </summary>
 #if !MONO
-        [EditorBrowsable( EditorBrowsableState.Never)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
 #endif
         public override int GetHashCode()
         {
             return _object != null ? CombineHashCodes(_object.GetHashCode(), _index.GetHashCode(), _length.GetHashCode()) : 0;
         }
-        
+
         private static int CombineHashCodes(int left, int right)
         {
             return ((left << 5) + left) ^ right;

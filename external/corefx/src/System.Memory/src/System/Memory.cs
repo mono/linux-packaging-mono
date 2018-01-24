@@ -80,7 +80,7 @@ namespace System
             _index = start;
             _length = length;
         }
-        
+
         // Constructor for internal use only.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Memory(OwnedMemory<T> owner, int index, int length)
@@ -111,7 +111,7 @@ namespace System
         /// Defines an implicit conversion of an array to a <see cref="Memory{T}"/>
         /// </summary>
         public static implicit operator Memory<T>(T[] array) => new Memory<T>(array);
-        
+
         /// <summary>
         /// Defines an implicit conversion of a <see cref="ArraySegment{T}"/> to a <see cref="Memory{T}"/>
         /// </summary>
@@ -167,7 +167,7 @@ namespace System
         {
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-            
+
             return new Memory<T>(_object, _index + start, length);
         }
 

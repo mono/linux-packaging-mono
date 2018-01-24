@@ -13,6 +13,8 @@
     <!-- Suppress unused field warnings when using PlatformNotSupportedException stubs -->
     <NoWarn>0649</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-FreeBSD-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-FreeBSD-Release|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Linux-Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Linux-Release|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-OSX-Debug|AnyCPU'" />
@@ -423,7 +425,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Win32.Primitives" />
     <Reference Condition="'$(TargetGroup)' != 'uap'" Include="Microsoft.Win32.Registry" />
-    <Reference Condition="'$(TargetGroup)' == 'uap'" Include="System.Buffers" />
+    <Reference Include="System.Buffers" />
     <Reference Include="System.Collections" />
     <Reference Include="System.Collections.Concurrent" />
     <Reference Include="System.Collections.NonGeneric" />

@@ -4,7 +4,12 @@
 
 using System.Diagnostics;
 using System.Buffers.Text;
+
+#if !netstandard
+using Internal.Runtime.CompilerServices;
+#else
 using System.Runtime.CompilerServices;
+#endif
 
 //
 // This code is copied almost verbatim from the same-named file in CoreRT with mechanical changes to Span-ify it.
@@ -196,7 +201,7 @@ namespace System
         //
         private static ulong Mul32x32To64(uint a, uint b)
         {
-            return (ulong)a * (ulong)b;
+            return a * (ulong)b;
         }
 
         //
@@ -455,7 +460,6 @@ namespace System
                 val = Mul64Lossy(val, multval, ref exp);
             }
 
-
             // round & scale down
             if (((int)val & (1 << 10)) != 0)
             {
@@ -518,7 +522,7 @@ namespace System
 
             public static unsafe ulong Mantissa(double d)
             {
-                return (ulong)*((uint*)&d) | ((ulong)(*((uint*)&d + 1) & 0x000fffff) << 32);
+                return (*((uint*)&d)) | ((ulong)(*((uint*)&d + 1) & 0x000fffff) << 32);
             }
 
             public static unsafe bool Sign(double d)

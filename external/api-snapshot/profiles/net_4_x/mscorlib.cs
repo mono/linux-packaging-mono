@@ -3192,6 +3192,7 @@ namespace System
         public string ToString(string format) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
         public string ToString(string format, System.IFormatProvider provider) { throw null; }
+        public bool TryFormat(System.Span<char> destination, out System.Int32 charsWritten, System.ReadOnlySpan<char> format=default(System.ReadOnlySpan<char>), System.IFormatProvider provider=null) { charsWritten = default(int); throw null; }
         public static bool TryParse(string s, System.Globalization.NumberStyles style, System.IFormatProvider provider, out System.Int32 result) { result = default(int); throw null; }
         public static bool TryParse(string s, out System.Int32 result) { result = default(int); throw null; }
     }
@@ -3544,13 +3545,23 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<byte> AsBytes<T>(this System.ReadOnlySpan<T> source) where T : struct { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<byte> AsBytes<T>(this System.Span<T> source) where T : struct { throw null; }
         public static System.ReadOnlyMemory<char> AsReadOnlyMemory(this string text) { throw null; }
+        public static System.ReadOnlyMemory<T> AsReadOnlyMemory<T>(this System.Memory<T> memory) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsReadOnlySpan(this string text) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
+        public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.Span<T> span) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] array) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.ReadOnlySpan<T> span, System.IComparable<T> comparable) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.Span<T> span, System.IComparable<T> comparable) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparer>(this System.ReadOnlySpan<T> span, T value, TComparer comparer) where TComparer : System.Collections.Generic.IComparer<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparable>(this System.ReadOnlySpan<T> span, TComparable comparable) where TComparable : System.IComparable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparer>(this System.Span<T> span, T value, TComparer comparer) where TComparer : System.Collections.Generic.IComparer<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparable>(this System.Span<T> span, TComparable comparable) where TComparable : System.IComparable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] array, System.Memory<T> destination) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] array, System.Span<T> destination) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EndsWith<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EndsWith<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny(this System.ReadOnlySpan<byte> span, byte value0, byte value1) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny(this System.ReadOnlySpan<byte> span, byte value0, byte value1, byte value2) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny(this System.ReadOnlySpan<byte> span, System.ReadOnlySpan<byte> values) { throw null; }
@@ -3561,8 +3572,22 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.ReadOnlySpan<T> span, T value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.Span<T> span, T value) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> values) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1, T value2) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.Span<T> span, System.ReadOnlySpan<T> values) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.Span<T> span, T value0, T value1) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.Span<T> span, T value0, T value1, T value2) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.ReadOnlySpan<T> span, T value) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.Span<T> span, T value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<TTo> NonPortableCast<TFrom, TTo>(this System.ReadOnlySpan<TFrom> source) where TFrom : struct where TTo : struct { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<TTo> NonPortableCast<TFrom, TTo>(this System.Span<TFrom> source) where TFrom : struct where TTo : struct { throw null; }
+        public static bool Overlaps<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second) { throw null; }
+        public static bool Overlaps<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second, out int elementOffset) { elementOffset = default(int); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> first, System.ReadOnlySpan<T> second) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> first, System.ReadOnlySpan<T> second, out int elementOffset) { elementOffset = default(int); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.Span<T> first, System.ReadOnlySpan<T> second) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool StartsWith<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
@@ -3963,7 +3988,6 @@ namespace System
         public int Length { get { throw null; } }
         public System.ReadOnlySpan<T> Span { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public void CopyTo(System.Memory<T> destination) { }
-        public bool DangerousTryGetArray(out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.ReadOnlyMemory<T> other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3989,11 +4013,11 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ReadOnlySpan(T[] array, int start, int length) { throw null;}
         public static System.ReadOnlySpan<T> Empty { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
-        public T this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+        public ref T this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public int Length { get { throw null; } }
         public void CopyTo(System.Span<T> destination) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> DangerousCreate(object obj, ref T objectData, int length) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ref T DangerousGetPinnableReference() { throw null; }
         [System.ObsoleteAttribute("Equals() on Span will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public System.ReadOnlySpan<T>.Enumerator GetEnumerator() { throw null; }
@@ -4222,7 +4246,6 @@ namespace System
         public void Clear() { }
         public void CopyTo(System.Span<T> destination) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> DangerousCreate(object obj, ref T objectData, int length) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ref T DangerousGetPinnableReference() { throw null; }
         [System.ObsoleteAttribute("Equals() on Span will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public void Fill(T value) { }
@@ -4408,6 +4431,7 @@ namespace System
         [System.Security.SecuritySafeCriticalAttribute]
         public System.String Normalize(System.Text.NormalizationForm normalizationForm) { throw null; }
         public static bool operator ==(System.String a, System.String b) { throw null; }
+        public static implicit operator System.ReadOnlySpan<char> (System.String value) { throw null; }
         public static bool operator !=(System.String a, System.String b) { throw null; }
         public System.String PadLeft(int totalWidth) { throw null; }
         public System.String PadLeft(int totalWidth, char paddingChar) { throw null; }
@@ -4977,6 +5001,7 @@ namespace System
         public bool IsAutoLayout { get { throw null; } }
         public bool IsByRef { get { throw null; } }
         public bool IsClass { get { throw null; } }
+        public virtual bool IsCollectible { get { throw null; } }
         public bool IsCOMObject { get { throw null; } }
         public virtual bool IsConstructedGenericType { get { throw null; } }
         public bool IsContextful { get { throw null; } }
@@ -15072,6 +15097,9 @@ namespace System.Runtime.InteropServices
     public static partial class MemoryMarshal
     {
         public static System.Memory<T> AsMemory<T>(System.ReadOnlyMemory<T> readOnlyMemory) { throw null; }
+        public static ref T GetReference<T>(System.ReadOnlySpan<T> span) { throw null; }
+        public static ref T GetReference<T>(System.Span<T> span) { throw null; }
+        public static bool TryGetArray<T>(System.ReadOnlyMemory<T> readOnlyMemory, out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate System.IntPtr ObjectCreationDelegate(System.IntPtr aggregator);
