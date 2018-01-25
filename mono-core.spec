@@ -1177,6 +1177,7 @@ Mono development tools.
 %dir %{_datadir}/mono-2.0/mono
 %dir %{_datadir}/mono-2.0/mono/cil
 %{_datadir}/mono-2.0/mono/cil/cil-opcodes.xml
+%{_datadir}/mono-2.0/mono/profiler/mono-profiler-coverage.suppression
 %{_datadir}/mono-2.0/mono/profiler/mono-profiler-log.suppression
 %{_libdir}/libmono-profiler-*.*
 %{_libdir}/pkgconfig/cecil.pc
@@ -1201,6 +1202,7 @@ Mono development tools.
 %{_mandir}/man1/mkbundle.1%ext_man
 %{_mandir}/man1/mono-api-info.1%ext_man
 %{_mandir}/man1/mono-cil-strip.1%ext_man
+%{_mandir}/man1/mono-profilers.1%ext_man
 %{_mandir}/man1/mono-shlib-cop.1%ext_man
 %{_mandir}/man1/mono-symbolicate.1%ext_man
 %{_mandir}/man1/mono-xmltool.1%ext_man
