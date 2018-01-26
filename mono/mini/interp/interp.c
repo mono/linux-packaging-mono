@@ -4523,17 +4523,6 @@ array_constructed:
 			}
 			frame->ip = ip;
 
-			if (frame->ex_handler != NULL && MONO_OFFSET_IN_HANDLER(frame->ex_handler, frame->ip - rtm->code)) {
-				frame->ex_handler = NULL;
-				frame->ex = NULL;
-				if (frame->imethod->method->wrapper_type != MONO_WRAPPER_RUNTIME_INVOKE) {
-					MonoException *abort_exc = mono_thread_get_undeniable_exception ();
-					if (abort_exc)
-						THROW_EX (abort_exc, frame->ip);
-				}
-
-			}
-
 			if (*ip == MINT_LEAVE_S) {
 				ip += (short) *(ip + 1);
 			} else {
@@ -4555,7 +4544,20 @@ array_constructed:
 			}
 
 			if (frame->imethod->method->wrapper_type != MONO_WRAPPER_RUNTIME_INVOKE) {
-				MonoException *abort_exc = mono_thread_get_undeniable_exception ();
+				stackval tmp_sp;
+
+				child_frame.parent = frame;
+				child_frame.imethod = NULL;
+				/*
+				 * We need for mono_thread_get_undeniable_exception to be able to unwind
+				 * to check the abort threshold. For this to work we use child_frame as a
+				 * dummy frame that is stored in the lmf and serves as the transition frame
+				 */
+				context->current_frame = &child_frame;
+				do_icall (context, MINT_ICALL_V_P, &tmp_sp, mono_thread_get_undeniable_exception);
+				context->current_frame = frame;
+
+				MonoException *abort_exc = (MonoException*)tmp_sp.data.p;
 				if (abort_exc)
 					THROW_EX (abort_exc, frame->ip);
 			}
@@ -5379,6 +5381,7 @@ interp_frame_iter_next (MonoInterpStackIter *iter, StackFrameInfo *frame)
 	/* This is the offset in the interpreter IR */
 	frame->native_offset = (guint8*)iframe->ip - (guint8*)iframe->imethod->code;
 	frame->ji = iframe->imethod->jinfo;
+	frame->managed = TRUE;
 
 	stack_iter->current = iframe->parent;
 
