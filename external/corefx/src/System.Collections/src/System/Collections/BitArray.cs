@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace System.Collections
 {
@@ -46,7 +45,6 @@ namespace System.Collections
             {
                 throw new ArgumentOutOfRangeException(nameof(length), length, SR.ArgumentOutOfRange_NeedNonNegNum);
             }
-            Contract.EndContractBlock();
 
             m_array = new int[GetArrayLength(length, BitsPerInt32)];
             m_length = length;
@@ -74,7 +72,7 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(bytes));
             }
-            Contract.EndContractBlock();
+
             // this value is chosen to prevent overflow when computing m_length.
             // m_length is of type int32 and is exposed as a property, so 
             // type of m_length can't be changed to accommodate.
@@ -124,7 +122,6 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(values));
             }
-            Contract.EndContractBlock();
 
             m_array = new int[GetArrayLength(values.Length, BitsPerInt32)];
             m_length = values.Length;
@@ -152,7 +149,7 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(values));
             }
-            Contract.EndContractBlock();
+
             // this value is chosen to prevent overflow when computing m_length
             if (values.Length > int.MaxValue / BitsPerInt32)
             {
@@ -177,7 +174,6 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(bits));
             }
-            Contract.EndContractBlock();
 
             int arrayLength = GetArrayLength(bits.m_length, BitsPerInt32);
 
@@ -212,7 +208,6 @@ namespace System.Collections
             {
                 throw new ArgumentOutOfRangeException(nameof(index), index, SR.ArgumentOutOfRange_Index);
             }
-            Contract.EndContractBlock();
 
             return (m_array[index / 32] & (1 << (index % 32))) != 0;
         }
@@ -229,7 +224,6 @@ namespace System.Collections
             {
                 throw new ArgumentOutOfRangeException(nameof(index), index, SR.ArgumentOutOfRange_Index);
             }
-            Contract.EndContractBlock();
 
             if (value)
             {
@@ -270,7 +264,6 @@ namespace System.Collections
                 throw new ArgumentNullException(nameof(value));
             if (Length != value.Length)
                 throw new ArgumentException(SR.Arg_ArrayLengthsDiffer);
-            Contract.EndContractBlock();
 
             int ints = GetArrayLength(m_length, BitsPerInt32);
             for (int i = 0; i < ints; i++)
@@ -294,7 +287,6 @@ namespace System.Collections
                 throw new ArgumentNullException(nameof(value));
             if (Length != value.Length)
                 throw new ArgumentException(SR.Arg_ArrayLengthsDiffer);
-            Contract.EndContractBlock();
 
             int ints = GetArrayLength(m_length, BitsPerInt32);
             for (int i = 0; i < ints; i++)
@@ -318,7 +310,6 @@ namespace System.Collections
                 throw new ArgumentNullException(nameof(value));
             if (Length != value.Length)
                 throw new ArgumentException(SR.Arg_ArrayLengthsDiffer);
-            Contract.EndContractBlock();
 
             int ints = GetArrayLength(m_length, BitsPerInt32);
             for (int i = 0; i < ints; i++)
@@ -471,7 +462,6 @@ namespace System.Collections
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() >= 0);
                 return m_length;
             }
             set
@@ -480,7 +470,6 @@ namespace System.Collections
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, SR.ArgumentOutOfRange_NeedNonNegNum);
                 }
-                Contract.EndContractBlock();
 
                 int newints = GetArrayLength(value, BitsPerInt32);
                 if (newints > m_array.Length || newints + _ShrinkThreshold < m_array.Length)
@@ -518,8 +507,6 @@ namespace System.Collections
 
             if (array.Rank != 1)
                 throw new ArgumentException(SR.Arg_RankMultiDimNotSupported, nameof(array));
-
-            Contract.EndContractBlock();
 
             int[] intArray = array as int[];
             if (intArray != null)
@@ -585,8 +572,6 @@ namespace System.Collections
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() >= 0);
-
                 return m_length;
             }
         }

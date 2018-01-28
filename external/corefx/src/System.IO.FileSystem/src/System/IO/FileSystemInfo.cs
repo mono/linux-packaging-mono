@@ -94,12 +94,12 @@ namespace System.IO
         {
             get
             {
-                return FileSystemObject.CreationTime.UtcDateTime;
+                return CreationTimeCore.UtcDateTime;
             }
 
             set
             {
-                FileSystemObject.CreationTime = File.GetUtcDateTimeOffset(value);
+                CreationTimeCore = File.GetUtcDateTimeOffset(value);
             }
         }
 
@@ -121,12 +121,12 @@ namespace System.IO
         {
             get
             {
-                return FileSystemObject.LastAccessTime.UtcDateTime;
+                return LastAccessTimeCore.UtcDateTime;
             }
 
             set
             {
-                FileSystemObject.LastAccessTime = File.GetUtcDateTimeOffset(value);
+                LastAccessTimeCore = File.GetUtcDateTimeOffset(value);
             }
         }
 
@@ -148,29 +148,12 @@ namespace System.IO
         {
             get
             {
-                return FileSystemObject.LastWriteTime.UtcDateTime;
+                return LastWriteTimeCore.UtcDateTime;
             }
 
             set
             {
-                FileSystemObject.LastWriteTime = File.GetUtcDateTimeOffset(value);
-            }
-        }
-
-        public void Refresh()
-        {
-            FileSystemObject.Refresh();
-        }
-
-        public FileAttributes Attributes
-        {
-            get
-            {
-                return FileSystemObject.Attributes;
-            }
-            set
-            {
-                FileSystemObject.Attributes = value;
+                LastWriteTimeCore = File.GetUtcDateTimeOffset(value);
             }
         }
 

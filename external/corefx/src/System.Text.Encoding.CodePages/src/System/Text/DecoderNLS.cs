@@ -5,7 +5,6 @@
 using System.Text;
 using System;
 using System.Globalization;
-using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
 
 namespace System.Text
@@ -103,8 +102,6 @@ namespace System.Text
             if (bytes.Length - index < count)
                 throw new ArgumentOutOfRangeException(nameof(bytes), SR.ArgumentOutOfRange_IndexCountBuffer);
 
-            Contract.EndContractBlock();
-
             // Avoid null fixed problem
             if (bytes.Length == 0)
                 bytes = new byte[1];
@@ -122,7 +119,6 @@ namespace System.Text
 
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // Remember the flush
             m_mustFlush = flush;
@@ -154,8 +150,6 @@ namespace System.Text
             if (charIndex < 0 || charIndex > chars.Length)
                 throw new ArgumentOutOfRangeException(nameof(charIndex), SR.ArgumentOutOfRange_Index);
 
-            Contract.EndContractBlock();
-
             // Avoid empty input fixed problem
             if (bytes.Length == 0)
                 bytes = new byte[1];
@@ -181,7 +175,6 @@ namespace System.Text
 
             if (byteCount < 0 || charCount < 0)
                 throw new ArgumentOutOfRangeException((byteCount < 0 ? nameof(byteCount): nameof(charCount)), SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // Remember our flush
             m_mustFlush = flush;
@@ -213,8 +206,6 @@ namespace System.Text
             if (chars.Length - charIndex < charCount)
                 throw new ArgumentOutOfRangeException(nameof(chars), SR.ArgumentOutOfRange_IndexCountBuffer);
 
-            Contract.EndContractBlock();
-
             // Avoid empty input problem
             if (bytes.Length == 0)
                 bytes = new byte[1];
@@ -244,7 +235,6 @@ namespace System.Text
 
             if (byteCount < 0 || charCount < 0)
                 throw new ArgumentOutOfRangeException((byteCount < 0 ? nameof(byteCount): nameof(charCount)), SR.ArgumentOutOfRange_NeedNonNegNum);
-            Contract.EndContractBlock();
 
             // We don't want to throw
             m_mustFlush = flush;
