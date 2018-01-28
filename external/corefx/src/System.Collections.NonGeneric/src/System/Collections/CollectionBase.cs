@@ -10,8 +10,6 @@
 **
 =============================================================================*/
 
-using System.Diagnostics.Contracts;
-
 namespace System.Collections
 {
     // Useful base class for typed read/write collections where items derive from object
@@ -76,7 +74,6 @@ namespace System.Collections
         {
             if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
             Object temp = InnerList[index];
             OnValidate(temp);
             OnRemove(index, temp);
@@ -123,14 +120,12 @@ namespace System.Collections
             {
                 if (index < 0 || index >= Count)
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_Index);
-                Contract.EndContractBlock();
                 return InnerList[index];
             }
             set
             {
                 if (index < 0 || index >= Count)
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_Index);
-                Contract.EndContractBlock();
                 OnValidate(value);
                 Object temp = InnerList[index];
                 OnSet(index, temp, value);
@@ -197,7 +192,6 @@ namespace System.Collections
         {
             if (index < 0 || index > Count)
                 throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
             OnValidate(value);
             OnInsert(index, value);
             InnerList.Insert(index, value);
@@ -236,7 +230,6 @@ namespace System.Collections
         protected virtual void OnValidate(Object value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            Contract.EndContractBlock();
         }
 
         protected virtual void OnSetComplete(int index, Object oldValue, Object newValue)

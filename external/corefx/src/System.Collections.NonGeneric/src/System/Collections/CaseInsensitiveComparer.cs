@@ -12,7 +12,6 @@
 ============================================================*/
 
 using System.Globalization;
-using System.Diagnostics.Contracts;
 
 namespace System.Collections
 {
@@ -33,7 +32,6 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(culture));
             }
-            Contract.EndContractBlock();
             _compareInfo = culture.CompareInfo;
         }
 
@@ -41,8 +39,6 @@ namespace System.Collections
         {
             get
             {
-                Contract.Ensures(Contract.Result<CaseInsensitiveComparer>() != null);
-
                 return new CaseInsensitiveComparer(CultureInfo.CurrentCulture);
             }
         }
@@ -51,8 +47,6 @@ namespace System.Collections
         {
             get
             {
-                Contract.Ensures(Contract.Result<CaseInsensitiveComparer>() != null);
-
                 if (s_InvariantCaseInsensitiveComparer == null)
                 {
                     s_InvariantCaseInsensitiveComparer = new CaseInsensitiveComparer(CultureInfo.InvariantCulture);

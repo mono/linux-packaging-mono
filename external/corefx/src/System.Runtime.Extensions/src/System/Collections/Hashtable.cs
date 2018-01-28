@@ -13,7 +13,6 @@
 ===========================================================*/
 
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -277,7 +276,6 @@ namespace System.Collections
                 throw new ArgumentOutOfRangeException(nameof(capacity), SR.ArgumentOutOfRange_NeedNonNegNum);
             if (!(loadFactor >= 0.1f && loadFactor <= 1.0f))
                 throw new ArgumentOutOfRangeException(nameof(loadFactor), SR.Format(SR.ArgumentOutOfRange_HashtableLoadFactor, .1, 1.0));
-            Contract.EndContractBlock();
 
             // Based on perf work, .72 is the optimal load factor for this table.  
             _loadFactor = 0.72f * loadFactor;
@@ -364,7 +362,6 @@ namespace System.Collections
         {
             if (d == null)
                 throw new ArgumentNullException(nameof(d), SR.ArgumentNull_Dictionary);
-            Contract.EndContractBlock();
 
             IDictionaryEnumerator e = d.GetEnumerator();
             while (e.MoveNext()) Add(e.Key, e.Value);
@@ -375,7 +372,6 @@ namespace System.Collections
         {
             if (d == null)
                 throw new ArgumentNullException(nameof(d), SR.ArgumentNull_Dictionary);
-            Contract.EndContractBlock();
 
             IDictionaryEnumerator e = d.GetEnumerator();
             while (e.MoveNext()) Add(e.Key, e.Value);
@@ -498,7 +494,6 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(key), SR.ArgumentNull_Key);
             }
-            Contract.EndContractBlock();
 
             uint seed;
             uint incr;
@@ -604,7 +599,7 @@ namespace System.Collections
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex), SR.ArgumentOutOfRange_NeedNonNegNum);
             if (array.Length - arrayIndex < Count)
                 throw new ArgumentException(SR.Arg_ArrayPlusOffTooSmall);
-            Contract.EndContractBlock();
+
             CopyEntries(array, arrayIndex);
         }
 
@@ -660,7 +655,6 @@ namespace System.Collections
                 {
                     throw new ArgumentNullException(nameof(key), SR.ArgumentNull_Key);
                 }
-                Contract.EndContractBlock();
 
                 uint seed;
                 uint incr;
@@ -898,7 +892,7 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(key), SR.ArgumentNull_Key);
             }
-            Contract.EndContractBlock();
+
             if (_count >= _loadsize)
             {
                 expand();
@@ -1041,7 +1035,7 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(key), SR.ArgumentNull_Key);
             }
-            Contract.EndContractBlock();
+
             Debug.Assert(!_isWriterInProgress, "Race condition detected in usages of Hashtable - multiple threads appear to be writing to a Hashtable instance simultaneously!  Don't do that - use Hashtable.Synchronized.");
 
             uint seed;
@@ -1105,7 +1099,6 @@ namespace System.Collections
         {
             if (table == null)
                 throw new ArgumentNullException(nameof(table));
-            Contract.EndContractBlock();
             return new SyncHashtable(table);
         }
 
@@ -1115,7 +1108,7 @@ namespace System.Collections
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            Contract.EndContractBlock();
+
             // This is imperfect - it only works well if all other writes are
             // also using our synchronized wrapper.  But it's still a good idea.
             lock (SyncRoot)
@@ -1286,7 +1279,6 @@ namespace System.Collections
                     throw new ArgumentException(SR.Arg_RankMultiDimNotSupported, nameof(array));
                 if (arrayIndex < 0)
                     throw new ArgumentOutOfRangeException(nameof(arrayIndex), SR.ArgumentOutOfRange_NeedNonNegNum);
-                Contract.EndContractBlock();
                 if (array.Length - arrayIndex < _hashtable._count)
                     throw new ArgumentException(SR.Arg_ArrayPlusOffTooSmall);
                 _hashtable.CopyKeys(array, arrayIndex);
@@ -1333,7 +1325,6 @@ namespace System.Collections
                     throw new ArgumentException(SR.Arg_RankMultiDimNotSupported, nameof(array));
                 if (arrayIndex < 0)
                     throw new ArgumentOutOfRangeException(nameof(arrayIndex), SR.ArgumentOutOfRange_NeedNonNegNum);
-                Contract.EndContractBlock();
                 if (array.Length - arrayIndex < _hashtable._count)
                     throw new ArgumentException(SR.Arg_ArrayPlusOffTooSmall);
                 _hashtable.CopyValues(array, arrayIndex);
@@ -1448,7 +1439,6 @@ namespace System.Collections
                 {
                     throw new ArgumentNullException(nameof(key), SR.ArgumentNull_Key);
                 }
-                Contract.EndContractBlock();
                 return _table.ContainsKey(key);
             }
 
@@ -1642,7 +1632,6 @@ namespace System.Collections
                 {
                     throw new ArgumentNullException(nameof(hashtable));
                 }
-                Contract.EndContractBlock();
 
                 _hashtable = hashtable;
             }
@@ -1697,7 +1686,6 @@ namespace System.Collections
         {
             if (min < 0)
                 throw new ArgumentException(SR.Arg_HTCapacityOverflow);
-            Contract.EndContractBlock();
 
             for (int i = 0; i < primes.Length; i++)
             {
