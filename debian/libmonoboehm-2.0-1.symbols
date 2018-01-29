@@ -584,6 +584,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_bitset_union@Base 4.1.0.1738
  mono_bounded_array_class_get@Base 4.1.0.1738
  mono_build_date@Base 5.8.0.22
+ mono_callspec_cleanup@Base 5.10.0.53
+ mono_callspec_eval@Base 5.10.0.53
+ mono_callspec_eval_exception@Base 5.10.0.53
+ mono_callspec_parse@Base 5.10.0.53
  mono_check_corlib_version@Base 4.1.0.1738
  mono_class_array_element_size@Base 4.1.0.1738
  mono_class_data_size@Base 4.1.0.1738
@@ -1128,6 +1132,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_method_desc_free@Base 4.1.0.1738
  mono_method_desc_from_method@Base 4.1.0.1738
  mono_method_desc_full_match@Base 4.1.0.1738
+ mono_method_desc_is_full@Base 5.10.0.53
  mono_method_desc_match@Base 4.1.0.1738
  mono_method_desc_new@Base 4.1.0.1738
  mono_method_desc_search_in_class@Base 4.1.0.1738
@@ -1236,7 +1241,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
 #MISSING: 5.8.0.22# mono_profiler_get_events@Base 4.1.0.1738
  mono_profiler_get_sample_mode@Base 5.8.0.22
  mono_profiler_install@Base 4.1.0.1738
-#MISSING: 5.8.0.22# mono_profiler_install_allocation@Base 4.1.0.1738
+ mono_profiler_install_allocation@Base 5.10.0.53
 #MISSING: 5.8.0.22# mono_profiler_install_appdomain@Base 4.1.0.1738
 #MISSING: 5.8.0.22# mono_profiler_install_appdomain_name@Base 4.3.0.624
 #MISSING: 5.8.0.22# mono_profiler_install_assembly@Base 4.1.0.1738
@@ -1246,8 +1251,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
 #MISSING: 5.8.0.22# mono_profiler_install_code_chunk_new@Base 4.1.0.1738
 #MISSING: 5.8.0.22# mono_profiler_install_context@Base 4.3.0.624
 #MISSING: 5.8.0.22# mono_profiler_install_coverage_filter@Base 4.1.0.1738
-#MISSING: 5.8.0.22# mono_profiler_install_enter_leave@Base 4.1.0.1738
-#MISSING: 5.8.0.22# mono_profiler_install_exception@Base 4.1.0.1738
+ mono_profiler_install_enter_leave@Base 5.10.0.53
+ mono_profiler_install_exception@Base 5.10.0.53
  mono_profiler_install_gc@Base 4.1.0.1738
 #MISSING: 5.8.0.22# mono_profiler_install_gc_finalize@Base 4.7.0.488
 #MISSING: 5.8.0.22# mono_profiler_install_gc_moves@Base 4.1.0.1738
@@ -1325,9 +1330,11 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_set_sample_hit_callback@Base 5.8.0.22
  mono_profiler_set_sample_mode@Base 5.8.0.22
 #MISSING: 5.8.0.22# mono_profiler_set_statistical_mode@Base 4.1.0.1738
+ mono_profiler_set_thread_exited_callback@Base 5.10.0.53
  mono_profiler_set_thread_name_callback@Base 5.8.0.22
  mono_profiler_set_thread_started_callback@Base 5.8.0.22
  mono_profiler_set_thread_stopped_callback@Base 5.8.0.22
+ mono_profiler_set_thread_stopping_callback@Base 5.10.0.53
  mono_property_get_flags@Base 4.1.0.1738
  mono_property_get_get_method@Base 4.1.0.1738
  mono_property_get_name@Base 4.1.0.1738
@@ -1485,6 +1492,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
  mono_threads_set_default_stacksize@Base 4.1.0.1738
+ mono_trace_init@Base 5.10.0.53
  mono_trace_set_level_string@Base 4.1.0.1738
  mono_trace_set_log_handler@Base 4.1.0.1738
  mono_trace_set_mask_string@Base 4.1.0.1738
@@ -1670,6 +1678,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_printf@Base 5.8.0.22
  monoeg_g_propagate_error@Base 5.8.0.22
  monoeg_g_ptr_array_add@Base 5.8.0.22
+ monoeg_g_ptr_array_capacity@Base 5.10.0.53
  monoeg_g_ptr_array_foreach@Base 5.8.0.22
  monoeg_g_ptr_array_free@Base 5.8.0.22
  monoeg_g_ptr_array_new@Base 5.8.0.22
