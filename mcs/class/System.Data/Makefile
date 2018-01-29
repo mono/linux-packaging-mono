@@ -21,6 +21,16 @@ else
 LIB_REFS += System.EnterpriseServices System.Configuration
 endif
 
+ifdef MONO_FEATURE_APPLETLS
+LIB_MCS_FLAGS += -d:MONO_FEATURE_APPLETLS
+endif
+
+ifndef PROFILE_DISABLE_BTLS
+ifdef HAVE_BTLS
+LIB_MCS_FLAGS += -d:MONO_FEATURE_BTLS
+endif
+endif
+
 TXT_RESOURCE_STRINGS = ../referencesource/System.Data/system.data.txt
 RESX_RESOURCE_STRING = \
 	../../../external/corefx/src/System.Data.Common/src/Resources/Strings.resx	\
@@ -31,6 +41,8 @@ TEST_LIB_REFS = System.Core Mono.Data.Sqlite
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS) -nowarn:618,169,612,219,168
 
 TEST_NUNITLITE_APP_CONFIG_GLOBAL=Test/test-config-file
+
+USE_XTEST_REMOTE_EXECUTOR = YES
 XTEST_LIB_REFS = System System.Core System.Xml Facades/System.Text.Encoding.CodePages Facades/System.Threading.Tasks Facades/System.Runtime.InteropServices.RuntimeInformation 
 
 TEST_MONO_PATH = .

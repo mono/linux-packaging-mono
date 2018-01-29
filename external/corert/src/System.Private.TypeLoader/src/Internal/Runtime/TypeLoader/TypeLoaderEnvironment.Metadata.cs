@@ -446,7 +446,7 @@ namespace Internal.Runtime.TypeLoader
         /// <summary>
         /// Locate the static constructor context given the runtime type handle (EEType) for the type in question.
         /// </summary>
-        /// <param name="typeHandle">EEtype of the type to look up</param>
+        /// <param name="typeHandle">EEType of the type to look up</param>
         public static unsafe IntPtr TryGetStaticClassConstructionContext(RuntimeTypeHandle typeHandle)
         {
             if (RuntimeAugments.HasCctor(typeHandle))
@@ -847,14 +847,14 @@ namespace Internal.Runtime.TypeLoader
             // done at runtime. When working with the CoreRT ABI, the correct slot numbers will be written to the map,
             // and no adjustments will be performed at runtime.
             //
-            
-#if CORERT
+
+#if PROJECTN
             CanonicallyEquivalentEntryLocator canonHelper = new CanonicallyEquivalentEntryLocator(
-                methodHandleDeclaringType, 
+                Instance.GetTypeDefinition(methodHandleDeclaringType), 
                 CanonicalFormKind.Specific);
 #else
             CanonicallyEquivalentEntryLocator canonHelper = new CanonicallyEquivalentEntryLocator(
-                Instance.GetTypeDefinition(methodHandleDeclaringType), 
+                methodHandleDeclaringType,
                 CanonicalFormKind.Specific);
 #endif
 
@@ -931,7 +931,7 @@ namespace Internal.Runtime.TypeLoader
                 {
                     uint slot = entryParser.GetUnsigned();
 
-#if !CORERT
+#if PROJECTN
                     RuntimeTypeHandle searchForSharedGenericTypesInParentHierarchy = declaringTypeOfVirtualInvoke;
                     while (!searchForSharedGenericTypesInParentHierarchy.IsNull())
                     {
@@ -1680,11 +1680,14 @@ namespace Internal.Runtime.TypeLoader
                     return true;
                 }
 
-                // Generic non-shareable method: check the method instantiation arguments
+                // Generic non-shareable method or abstract methods: check for the canonical equivalency of the method 
+                // instantiation arguments that we read from the entry
                 if (((_flags & InvokeTableFlags.RequiresInstArg) == 0) || !_hasEntryPoint)
-                    return _lookupMethodInfo.CompareMethodInstantiation(_methodInstantiation);
+                    return _lookupMethodInfo.CanInstantiationsShareCode(_methodInstantiation, _canonFormKind);
 
-                // Generic shareable method: check for canonical equivalency of the method instantiation arguments
+                // Generic shareable method: check for canonical equivalency of the method instantiation arguments.
+                // The method instantiation arguments are extracted from the generic dictionary pointer that we read from the entry.
+                Debug.Assert(_entryDictionary != IntPtr.Zero);
                 return GetNameAndSignatureAndMethodInstantiation() && _lookupMethodInfo.CanInstantiationsShareCode(_entryMethodInstantiation, _canonFormKind);
             }
 
@@ -1746,7 +1749,7 @@ namespace Internal.Runtime.TypeLoader
                 if ((_flags & InvokeTableFlags.IsUniversalCanonicalEntry) != 0)
                 {
                     // _nameAndSignature should have been read from the InvokeMap entry directly!
-                    Debug.Assert(false, "Universal canonical entries do NOT have dictionary entries!");
+                    Debug.Fail("Universal canonical entries do NOT have dictionary entries!");
                     return false;
                 }
 

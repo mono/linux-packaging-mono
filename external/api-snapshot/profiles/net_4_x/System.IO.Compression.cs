@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
+[assembly:System.CLSCompliantAttribute(true)]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
@@ -39,6 +40,8 @@ namespace System.IO.Compression
         internal ZipArchiveEntry() { }
         public System.IO.Compression.ZipArchive Archive { get { throw null; } }
         public long CompressedLength { get { throw null; } }
+        [System.CLSCompliantAttribute(false)]
+        public uint Crc32 { get { throw null; } }
         public int ExternalAttributes { get { throw null; } set { } }
         public string FullName { get { throw null; } }
         public System.DateTimeOffset LastWriteTime { get { throw null; } set { } }

@@ -7,15 +7,18 @@ using System.Collections;
 namespace System.Data.Odbc
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public sealed class OdbcErrorCollection : ICollection
     {
-        private ArrayList _items = new ArrayList();
+        private ArrayList _items = new ArrayList(); // Do not rename (binary serialization)
 
         internal OdbcErrorCollection()
         {
         }
 
-        Object System.Collections.ICollection.SyncRoot
+        object System.Collections.ICollection.SyncRoot
         {
             get { return this; }
         }

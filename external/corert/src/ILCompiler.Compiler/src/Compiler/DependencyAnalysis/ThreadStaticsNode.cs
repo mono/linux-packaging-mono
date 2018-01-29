@@ -53,7 +53,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
-            List<DependencyListEntry> result = new List<DependencyListEntry>();
+            DependencyList result = new DependencyList();
 
             result.Add(new DependencyListEntry(GetGCStaticEETypeNode(factory), "ThreadStatic EEType"));
 
@@ -62,6 +62,7 @@ namespace ILCompiler.DependencyAnalysis
                 result.Add(new DependencyListEntry(factory.EagerCctorIndirection(_type.GetStaticConstructor()), "Eager .cctor"));
             }
 
+            EETypeNode.AddDependenciesForStaticsNode(factory, _type, ref result);
             return result;
         }
 
@@ -73,6 +74,13 @@ namespace ILCompiler.DependencyAnalysis
             // will be written in this location.
             builder.RequireInitialPointerAlignment();
             builder.EmitPointerReloc(GetGCStaticEETypeNode(factory));
+        }
+
+        protected internal override int ClassCode => 2091208431;
+
+        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        {
+            return comparer.Compare(_type, ((ThreadStaticsNode)other)._type);
         }
     }
 }

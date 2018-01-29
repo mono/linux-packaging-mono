@@ -13,6 +13,9 @@ namespace System.Net
     ///    </para>
     /// </devdoc>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class ProtocolViolationException : InvalidOperationException, ISerializable
     {
         /// <devdoc>
@@ -37,7 +40,6 @@ namespace System.Net
         protected ProtocolViolationException(SerializationInfo serializationInfo, StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
-            throw new PlatformNotSupportedException();
         }
 
         void ISerializable.GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)

@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Threading;
+
+using Internal.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices
 {
@@ -114,10 +116,8 @@ namespace System.Runtime.InteropServices
                     throw new InvalidOperationException(); // SR.InvalidOperation_HandleIsNotInitialized);
                 }
 
-#if CORERT // TODO: Higher level ProjectN frameworks took dependency on this validation missing
                 if (IsPinned())
                     GCHandleValidatePinnedObject(value);
-#endif
 
                 RuntimeImports.RhHandleSet(GetHandleValue(), value);
             }
@@ -150,28 +150,17 @@ namespace System.Runtime.InteropServices
                 if (target == null)
                     return default(IntPtr);
 
-                String targetAsString = target as String;
-                if (targetAsString != null)
+                if (target is String targetAsString)
                 {
-                    fixed (char* ptr = targetAsString)
-                    {
-                        return (IntPtr)ptr;
-                    }
+                    return (IntPtr)Unsafe.AsPointer(ref targetAsString.GetRawStringData());
                 }
 
-                Array targetAsArray = target as Array;
-                if (targetAsArray != null)
+                if (target is Array targetAsArray)
                 {
-                    fixed (byte* ptr = &targetAsArray.GetRawArrayData())
-                    {
-                        return (IntPtr)ptr;
-                    }
+                    return (IntPtr)Unsafe.AsPointer(ref targetAsArray.GetRawArrayData());
                 }
 
-                fixed (byte* ptr = &target.GetRawData())
-                {
-                    return (IntPtr)ptr;
-                }
+                return (IntPtr)Unsafe.AsPointer(ref target.GetRawData());
             }
         }
 
@@ -267,29 +256,10 @@ namespace System.Runtime.InteropServices
 #endif
         }
 
-        //
-        // C# port of GCHandleValidatePinnedObject(OBJECTREF) in MarshalNative.cpp.
-        //
         private static void GCHandleValidatePinnedObject(Object obj)
         {
-            if (obj == null)
-                return;
-            if (obj is String)
-                return;
-            EETypePtr eeType = obj.EETypePtr;
-            if (eeType.IsArray)
-            {
-                EETypePtr elementEEType = eeType.ArrayElementType;
-                if (elementEEType.IsPrimitive)
-                    return;
-                if (elementEEType.IsValueType && elementEEType.MightBeBlittable())
-                    return;
-            }
-            else if (eeType.MightBeBlittable())
-            {
-                return;
-            }
-            throw new ArgumentException(SR.Argument_NotIsomorphic);
+            if (obj != null && !obj.IsBlittable())
+                throw new ArgumentException(SR.Argument_NotIsomorphic);
         }
 
         // The actual integer handle value that the EE uses internally.

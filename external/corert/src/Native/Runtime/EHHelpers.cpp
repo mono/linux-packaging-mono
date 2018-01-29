@@ -87,16 +87,13 @@ COOP_PINVOKE_HELPER(void *, RhpGetClasslibFunctionFromCodeAddress, (void * addre
 // Unmanaged helper to locate one of two classlib-provided functions that the runtime needs to 
 // implement throwing of exceptions out of Rtm, and fail-fast. This may return NULL if the classlib
 // found via the provided address does not have the necessary exports.
-COOP_PINVOKE_HELPER(void *, RhpGetClasslibFunctionFromEEtype, (EEType * pEEtype, ClasslibFunctionId functionId))
+COOP_PINVOKE_HELPER(void *, RhpGetClasslibFunctionFromEEType, (EEType * pEEType, ClasslibFunctionId functionId))
 {
-    if (pEEtype->HasTypeManager())
-    {
-        return pEEtype->GetTypeManagerPtr()->AsTypeManager()->GetClasslibFunction(functionId);
-    }
-    else
+#ifdef PROJECTN
+    if (!pEEType->HasTypeManager())
     {
         RuntimeInstance * pRI = GetRuntimeInstance();
-        Module * pModule = pRI->FindModuleByAddress(pEEtype);
+        Module * pModule = pRI->FindModuleByAddress(pEEType);
         if (pModule != NULL)
         {
             return pModule->GetClasslibFunction(functionId);
@@ -106,6 +103,9 @@ COOP_PINVOKE_HELPER(void *, RhpGetClasslibFunctionFromEEtype, (EEType * pEEtype,
             return NULL;
         }
     }
+#endif // PROJECTN
+
+    return pEEType->GetTypeManagerPtr()->AsTypeManager()->GetClasslibFunction(functionId);
 }
 
 COOP_PINVOKE_HELPER(void, RhpValidateExInfoStack, ())
@@ -190,14 +190,33 @@ COOP_PINVOKE_HELPER(void, RhpCopyContextFromExInfo,
     pContext->Lr  = pPalContext->LR;
     pContext->Pc  = pPalContext->IP;
 #elif defined(_ARM64_)
-    PORTABILITY_ASSERT("@TODO: FIXME:ARM64");
+    pContext->X0 = pPalContext->X0;
+    pContext->X1 = pPalContext->X1;
+    // TODO: Copy registers X2-X7 when we start supporting HVA's
+    pContext->X19 = pPalContext->X19;
+    pContext->X20 = pPalContext->X20;
+    pContext->X21 = pPalContext->X21;
+    pContext->X22 = pPalContext->X22;
+    pContext->X23 = pPalContext->X23;
+    pContext->X24 = pPalContext->X24;
+    pContext->X25 = pPalContext->X25;
+    pContext->X26 = pPalContext->X26;
+    pContext->X27 = pPalContext->X27;
+    pContext->X28 = pPalContext->X28;
+    pContext->Fp = pPalContext->FP;
+    pContext->Sp = pPalContext->SP;
+    pContext->Lr = pPalContext->LR;
+    pContext->Pc = pPalContext->IP;
+#elif defined(_WASM_)
+    // No registers, no work to do yet
 #else
 #error Not Implemented for this architecture -- RhpCopyContextFromExInfo
 #endif
 }
 
 
-#if defined(_AMD64_) || defined(_ARM_) || defined(_X86_)
+#if defined(_AMD64_) || defined(_ARM_) || defined(_X86_) || defined(_ARM64_)
+// ARM64TODO
 struct DISPATCHER_CONTEXT
 {
     UIntNative  ControlPc;
@@ -284,7 +303,7 @@ EXTERN_C Int32 RhpPInvokeExceptionGuard()
 }
 #endif
 
-#if defined(_AMD64_) || defined(_ARM_) || defined(_X86_)
+#if defined(_AMD64_) || defined(_ARM_) || defined(_X86_) || defined(_ARM64_) || defined(_WASM_)
 EXTERN_C REDHAWK_API void __fastcall RhpThrowHwEx();
 #else
 COOP_PINVOKE_HELPER(void, RhpThrowHwEx, ())
@@ -344,10 +363,7 @@ static bool InWriteBarrierHelper(UIntNative faultingIP)
         (UIntNative)&RhpCheckedAssignRefAVLocation,
         (UIntNative)&RhpCheckedLockCmpXchgAVLocation,
         (UIntNative)&RhpCheckedXchgAVLocation,
-#ifdef CORERT
-        (UIntNative)&RhpLockCmpXchg32AVLocation,
-        (UIntNative)&RhpLockCmpXchg64AVLocation,
-#else
+#ifdef PROJECTN
         (UIntNative)&RhpCopyMultibyteDestAVLocation,
         (UIntNative)&RhpCopyMultibyteSrcAVLocation,
         (UIntNative)&RhpCopyMultibyteNoGCRefsDestAVLocation,
@@ -356,6 +372,9 @@ static bool InWriteBarrierHelper(UIntNative faultingIP)
         (UIntNative)&RhpCopyMultibyteWithWriteBarrierSrcAVLocation,
         (UIntNative)&RhpCopyAnyWithWriteBarrierDestAVLocation,
         (UIntNative)&RhpCopyAnyWithWriteBarrierSrcAVLocation,
+#else
+        (UIntNative)&RhpLockCmpXchg32AVLocation,
+        (UIntNative)&RhpLockCmpXchg64AVLocation,
 #endif
     };
 
@@ -375,8 +394,6 @@ static bool InWriteBarrierHelper(UIntNative faultingIP)
 
     return false;
 }
-
-
 
 static UIntNative UnwindWriteBarrierToCaller(
 #ifdef PLATFORM_UNIX
@@ -398,7 +415,8 @@ static UIntNative UnwindWriteBarrierToCaller(
 #elif defined(_ARM_) || defined(_ARM64_)
     UIntNative adjustedFaultingIP = pContext->GetLr();
 #else
-#error "Unknown Architecture"
+    UIntNative adjustedFaultingIP = 0; // initializing to make the compiler happy
+    PORTABILITY_ASSERT("UnwindWriteBarrierToCaller");
 #endif
     return adjustedFaultingIP;
 }

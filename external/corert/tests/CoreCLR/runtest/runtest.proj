@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="src\dir.props" />
   <Import Project="$(ToolsDir)Build.Post.targets" Condition="Exists('$(ToolsDir)Build.Post.targets') AND '$(BuildWrappers)' == 'true'" /> 
   <Import Project="helixperftasks.targets" Condition="'$(Performance)'=='true'"/> 
@@ -66,30 +65,23 @@ $(_XunitEpilog)
       </_XunitWrapperGen>
       <XunitWrapperGenCsProj>
         <![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     
   <Import Project="$(SourceDir)dir.props" />
   <PropertyGroup>
     <Configuration Condition=" '%24(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '%24(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyName>$(XunitWrapper)</AssemblyName>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{95DFC527-4DC1-495E-97D7-E94EE1F7140D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>net45</TargetFramework>
     <IsXunitWrapperProject>true</IsXunitWrapperProject>
     <SkipSigning>true</SkipSigning>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="%24(SolutionDir) == '' Or %24(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <NuGetPackageImportStamp>7a9bfb7d</NuGetPackageImportStamp>
     <CLRTestKind>BuildOnly</CLRTestKind>
     <IsTestProject>true</IsTestProject>
-    <ProjectJson>%24(TestWrappersPackagesConfigFileDirectory)project.json</ProjectJson>
-    <ProjectLockJson>%24(TestWrappersPackagesConfigFileDirectory)project.lock.json</ProjectLockJson>
+    <RestoreOutputPath>%24(IntermediateOutputRootPath)\XUnitTooling</RestoreOutputPath>
     <ReferencePath>$(ReferencePath);$(XunitTestBinBase)\Common\Desktop.Coreclr.TestWrapper\Desktop.Coreclr.TestWrapper</ReferencePath>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
@@ -110,13 +102,13 @@ $(_XunitEpilog)
     <Reference Include="mscorlib" />
     <Reference Include="$(XunitTestBinBase)\Common\Desktop.Coreclr.TestWrapper\Desktop.Coreclr.TestWrapper\Coreclr.TestWrapper.dll" />
   </ItemGroup>
-  <PropertyGroup>
-    <ProjectJson>%24(TestWrappersPackagesConfigFileDirectory)project.json</ProjectJson>
-    <ProjectLockJson>%24(TestWrappersPackagesConfigFileDirectory)project.lock.json</ProjectLockJson>
-  </PropertyGroup>
   <Import Project="$(SourceDir)dir.targets" />
   <PropertyGroup>
-     <OutDir>$(XunitTestBinBase)\$(Category)\</OutDir>
+    <OutDir>$(XunitTestBinBase)\$(Category)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_TargetFrameworkDirectories />
+    <_FullFrameworkReferenceAssemblyPaths />
   </PropertyGroup>
 </Project>
         ]]>

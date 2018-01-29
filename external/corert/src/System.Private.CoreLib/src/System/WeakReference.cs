@@ -21,6 +21,7 @@ using Internal.Runtime.Augments;
 namespace System
 {
     [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public class WeakReference : ISerializable
     {
         // If you fix bugs here, please fix them in WeakReference<T> at the same time.
@@ -57,8 +58,8 @@ namespace System
                 throw new ArgumentNullException(nameof(info));
             }
 
-            Object target = info.GetValue("TrackedObject", typeof(Object));
-            bool trackResurrection = info.GetBoolean("TrackResurrection");
+            Object target = info.GetValue("TrackedObject", typeof(Object)); // Do not rename (binary serialization)
+            bool trackResurrection = info.GetBoolean("TrackResurrection"); // Do not rename (binary serialization)
 
             m_IsLongReference = trackResurrection;
             m_handle = GCHandle.ToIntPtr(GCHandle.Alloc(target, trackResurrection ? GCHandleType.WeakTrackResurrection : GCHandleType.Weak));
@@ -197,7 +198,7 @@ namespace System
             }
             else
             {
-                Debug.Assert(false, "WinRTInteropCallback is null");
+                Debug.Fail("WinRTInteropCallback is null");
             }
 #endif // ENABLE_WINRT
             return null;
@@ -218,7 +219,7 @@ namespace System
             }
             else
             {
-                Debug.Assert(false, "WinRTInteropCallback is null");
+                Debug.Fail("WinRTInteropCallback is null");
             }
 #endif // ENABLE_WINRT
         }
@@ -230,8 +231,8 @@ namespace System
                 throw new ArgumentNullException(nameof(info));
             }
 
-            info.AddValue("TrackedObject", Target, typeof(Object));
-            info.AddValue("TrackResurrection", m_IsLongReference);
+            info.AddValue("TrackedObject", Target, typeof(Object)); // Do not rename (binary serialization)
+            info.AddValue("TrackResurrection", m_IsLongReference); // Do not rename (binary serialization)
         }
 
         // Free all system resources associated with this reference.

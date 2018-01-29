@@ -595,7 +595,7 @@ namespace Internal.Runtime
         {
             get
             {
-                return (RareFlags & EETypeRareFlags.ICastableFlag) != 0;
+                return ((_usFlags & (UInt16)EETypeFlags.ICastableFlag) != 0);
             }
         }
 
@@ -609,16 +609,17 @@ namespace Internal.Runtime
                 Debug.Assert(IsICastable);
 
                 byte* optionalFields = OptionalFieldsPtr;
-                Debug.Assert(optionalFields != null);
-
-                const UInt16 NoSlot = 0xFFFF;
-                UInt16 uiSlot = (UInt16)OptionalFieldsReader.GetInlineField(optionalFields, EETypeOptionalFieldTag.ICastableIsInstSlot, NoSlot);
-                if (uiSlot != NoSlot)
+                if(optionalFields != null)
                 {
-                    if (uiSlot < NumVtableSlots)
-                        return GetVTableStartAddress()[uiSlot];
-                    else
-                        return GetSealedVirtualSlot((UInt16)(uiSlot - NumVtableSlots));
+                    const UInt16 NoSlot = 0xFFFF;
+                    UInt16 uiSlot = (UInt16)OptionalFieldsReader.GetInlineField(optionalFields, EETypeOptionalFieldTag.ICastableIsInstSlot, NoSlot);
+                    if (uiSlot != NoSlot)
+                    {
+                        if (uiSlot < NumVtableSlots)
+                            return GetVTableStartAddress()[uiSlot];
+                        else
+                            return GetSealedVirtualSlot((UInt16)(uiSlot - NumVtableSlots));
+                    }
                 }
 
                 EEType* baseType = BaseType;
@@ -640,16 +641,17 @@ namespace Internal.Runtime
                 Debug.Assert(IsICastable);
 
                 byte* optionalFields = OptionalFieldsPtr;
-                Debug.Assert(optionalFields != null);
-
-                const UInt16 NoSlot = 0xFFFF;
-                UInt16 uiSlot = (UInt16)OptionalFieldsReader.GetInlineField(optionalFields, EETypeOptionalFieldTag.ICastableGetImplTypeSlot, NoSlot);
-                if (uiSlot != NoSlot)
+                if(optionalFields != null)
                 {
-                    if (uiSlot < NumVtableSlots)
-                        return GetVTableStartAddress()[uiSlot];
-                    else
-                        return GetSealedVirtualSlot((UInt16)(uiSlot - NumVtableSlots));
+                    const UInt16 NoSlot = 0xFFFF;
+                    UInt16 uiSlot = (UInt16)OptionalFieldsReader.GetInlineField(optionalFields, EETypeOptionalFieldTag.ICastableGetImplTypeSlot, NoSlot);
+                    if (uiSlot != NoSlot)
+                    {
+                        if (uiSlot < NumVtableSlots)
+                            return GetVTableStartAddress()[uiSlot];
+                        else
+                            return GetSealedVirtualSlot((UInt16)(uiSlot - NumVtableSlots));
+                    }
                 }
 
                 EEType* baseType = BaseType;
@@ -743,16 +745,6 @@ namespace Internal.Runtime
                 // padding for GC heap alignment. Must subtract all of these to get the size used for the fields of
                 // the type (where the fields of the type includes the EEType*)
                 return BaseSize - ((uint)sizeof(ObjHeader) + ValueTypeFieldPadding);
-            }
-        }
-
-        // Mark or determine that a type instance was allocated at runtime (currently only used for unification of
-        // generic instantiations). This is sometimes important for memory management or debugging purposes.
-        internal bool IsRuntimeAllocated
-        {
-            get
-            {
-                return ((_usFlags & (UInt16)EETypeFlags.RuntimeAllocatedFlag) != 0);
             }
         }
 
@@ -1005,6 +997,7 @@ namespace Internal.Runtime
         internal IntPtr GetSealedVirtualSlot(UInt16 slotNumber)
         {
             Debug.Assert(!IsNullable);
+            Debug.Assert((RareFlags & EETypeRareFlags.HasSealedVTableEntriesFlag) != 0);
 
             fixed (EEType* pThis = &this)
             {
@@ -1044,10 +1037,6 @@ namespace Internal.Runtime
             {
                 if (!HasOptionalFields)
                     return null;
-
-                // Runtime allocated EETypes don't copy over optional fields. We should be careful to avoid operations
-                // that require them on paths that can handle such cases.
-                Debug.Assert(!IsRuntimeAllocated);
 
                 UInt32 cbOptionalFieldsOffset = GetFieldOffset(EETypeField.ETF_OptionalFieldsPtr);
                 fixed (EEType* pThis = &this)
@@ -1195,7 +1184,7 @@ namespace Internal.Runtime
             }
         }
 #endif
-#endif // CORERT
+#endif // EETYPE_TYPE_MANAGER
 
         internal unsafe EETypeRareFlags RareFlags
         {
@@ -1228,33 +1217,6 @@ namespace Internal.Runtime
                 else
                     return 1 << ((int)alignmentValue - 1);
             }
-        }
-
-        internal static UInt32 ComputeValueTypeFieldPaddingFieldValue(UInt32 padding, UInt32 alignment)
-        {
-            // For the default case, return 0
-            if ((padding == 0) && (alignment == IntPtr.Size))
-                return 0;
-
-            UInt32 alignmentLog2 = 0;
-            Debug.Assert(alignment != 0);
-
-            while ((alignment & 1) == 0)
-            {
-                alignmentLog2++;
-                alignment = alignment >> 1;
-            }
-            Debug.Assert(alignment == 1);
-
-            Debug.Assert(ValueTypePaddingMax >= padding);
-
-            alignmentLog2++; // Our alignment values here are adjusted by one to allow for a default of 0
-
-            UInt32 paddingLowBits = padding & ValueTypePaddingLowMask;
-            UInt32 paddingHighBits = ((padding & ~ValueTypePaddingLowMask) >> ValueTypePaddingAlignmentShift) << ValueTypePaddingHighShift;
-            UInt32 alignmentLog2Bits = alignmentLog2 << ValueTypePaddingAlignmentShift;
-            Debug.Assert((alignmentLog2Bits & ~ValueTypePaddingAlignmentMask) == 0);
-            return paddingLowBits | paddingHighBits | alignmentLog2Bits;
         }
 
         internal CorElementType CorElementType
@@ -1315,19 +1277,21 @@ namespace Internal.Runtime
             if (eField == EETypeField.ETF_SealedVirtualSlots)
                 return cbOffset;
 
-            if (IsNullable || (RareFlags & EETypeRareFlags.IsDynamicTypeWithSealedVTableEntriesFlag) != 0)
+            if (IsNullable)
                 cbOffset += (UInt32)IntPtr.Size;
 
+            EETypeRareFlags rareFlags = RareFlags;
+
             // in the case of sealed vtable entries on static types, we have a UInt sized relative pointer
-            if ((RareFlags & EETypeRareFlags.HasSealedVTableEntriesFlag) != 0)
-                cbOffset += 4;
+            if ((rareFlags & EETypeRareFlags.HasSealedVTableEntriesFlag) != 0)
+                cbOffset += (IsDynamicType ? (UInt32)IntPtr.Size : 4);
 
             if (eField == EETypeField.ETF_DynamicDispatchMap)
             {
                 Debug.Assert(IsDynamicType);
                 return cbOffset;
             }
-            if ((RareFlags & EETypeRareFlags.HasDynamicallyAllocatedDispatchMapFlag) != 0)
+            if ((rareFlags & EETypeRareFlags.HasDynamicallyAllocatedDispatchMapFlag) != 0)
                 cbOffset += (UInt32)IntPtr.Size;
 
             if (eField == EETypeField.ETF_GenericDefinition)
@@ -1351,7 +1315,7 @@ namespace Internal.Runtime
                 return cbOffset;
             }
 
-            if ((RareFlags & EETypeRareFlags.HasDynamicModuleFlag) != 0)
+            if ((rareFlags & EETypeRareFlags.HasDynamicModuleFlag) != 0)
                 cbOffset += (UInt32)IntPtr.Size;
 
             if (eField == EETypeField.ETF_DynamicTemplateType)
@@ -1364,26 +1328,26 @@ namespace Internal.Runtime
 
             if (eField == EETypeField.ETF_DynamicGcStatics)
             {
-                Debug.Assert((RareFlags & EETypeRareFlags.IsDynamicTypeWithGcStatics) != 0);
+                Debug.Assert((rareFlags & EETypeRareFlags.IsDynamicTypeWithGcStatics) != 0);
                 return cbOffset;
             }
-            if ((RareFlags & EETypeRareFlags.IsDynamicTypeWithGcStatics) != 0)
+            if ((rareFlags & EETypeRareFlags.IsDynamicTypeWithGcStatics) != 0)
                 cbOffset += (UInt32)IntPtr.Size;
 
             if (eField == EETypeField.ETF_DynamicNonGcStatics)
             {
-                Debug.Assert((RareFlags & EETypeRareFlags.IsDynamicTypeWithNonGcStatics) != 0);
+                Debug.Assert((rareFlags & EETypeRareFlags.IsDynamicTypeWithNonGcStatics) != 0);
                 return cbOffset;
             }
-            if ((RareFlags & EETypeRareFlags.IsDynamicTypeWithNonGcStatics) != 0)
+            if ((rareFlags & EETypeRareFlags.IsDynamicTypeWithNonGcStatics) != 0)
                 cbOffset += (UInt32)IntPtr.Size;
 
             if (eField == EETypeField.ETF_DynamicThreadStaticOffset)
             {
-                Debug.Assert((RareFlags & EETypeRareFlags.IsDynamicTypeWithThreadStatics) != 0);
+                Debug.Assert((rareFlags & EETypeRareFlags.IsDynamicTypeWithThreadStatics) != 0);
                 return cbOffset;
             }
-            if ((RareFlags & EETypeRareFlags.IsDynamicTypeWithThreadStatics) != 0)
+            if ((rareFlags & EETypeRareFlags.IsDynamicTypeWithThreadStatics) != 0)
                 cbOffset += 4;
 
             Debug.Assert(false, "Unknown EEType field type");

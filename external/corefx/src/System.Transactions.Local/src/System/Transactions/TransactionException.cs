@@ -11,6 +11,9 @@ namespace System.Transactions
     /// Summary description for TransactionException.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TransactionException : SystemException
     {
         internal static bool IncludeDistributedTxId(Guid distributedTxId)
@@ -100,7 +103,6 @@ namespace System.Transactions
         /// <param name="context"></param>
         protected TransactionException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         internal static TransactionException Create(string message, Guid distributedTxId)
@@ -174,6 +176,9 @@ namespace System.Transactions
     /// Summary description for TransactionAbortedException.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TransactionAbortedException : TransactionException
     {
         internal static new TransactionAbortedException Create(string message, Exception innerException, Guid distributedTxId)
@@ -242,7 +247,6 @@ namespace System.Transactions
         /// <param name="context"></param>
         protected TransactionAbortedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 
@@ -250,6 +254,9 @@ namespace System.Transactions
     /// Summary description for TransactionInDoubtException.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TransactionInDoubtException : TransactionException
     {
         internal static new TransactionInDoubtException Create(TraceSourceType traceSource, string message, Exception innerException, Guid distributedTxId)
@@ -303,7 +310,6 @@ namespace System.Transactions
         /// <param name="context"></param>
         protected TransactionInDoubtException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 
@@ -311,6 +317,9 @@ namespace System.Transactions
     /// Summary description for TransactionManagerCommunicationException.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TransactionManagerCommunicationException : TransactionException
     {
         internal static new TransactionManagerCommunicationException Create(string message, Exception innerException)
@@ -363,12 +372,13 @@ namespace System.Transactions
         /// <param name="context"></param>
         protected TransactionManagerCommunicationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 
-
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TransactionPromotionException : TransactionException
     {
         /// <summary>
@@ -402,7 +412,6 @@ namespace System.Transactions
         /// <param name="context"></param>
         protected TransactionPromotionException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
     }
 }

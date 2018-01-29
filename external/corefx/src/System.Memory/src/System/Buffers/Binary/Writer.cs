@@ -2,8 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+#if !netstandard
+using Internal.Runtime.CompilerServices;
+#endif
 
 namespace System.Buffers.Binary
 {
@@ -24,14 +28,14 @@ namespace System.Buffers.Binary
 #else
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
-                throw new ArgumentException(SR.Format(SR.Argument_InvalidTypeWithPointersNotSupported, typeof(T)));
+                ThrowHelper.ThrowArgumentException_InvalidTypeWithPointersNotSupported(typeof(T));
             }
 #endif
             if ((uint)Unsafe.SizeOf<T>() > (uint)buffer.Length)
             {
-                throw new ArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
-            Unsafe.WriteUnaligned<T>(ref buffer.DangerousGetPinnableReference(), value);
+            Unsafe.WriteUnaligned<T>(ref MemoryMarshal.GetReference(buffer), value);
         }
 
         /// <summary>
@@ -50,14 +54,14 @@ namespace System.Buffers.Binary
 #else
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
-                throw new ArgumentException(SR.Format(SR.Argument_InvalidTypeWithPointersNotSupported, typeof(T)));
+                ThrowHelper.ThrowArgumentException_InvalidTypeWithPointersNotSupported(typeof(T));
             }
 #endif
             if (Unsafe.SizeOf<T>() > (uint)buffer.Length)
             {
                 return false;
             }
-            Unsafe.WriteUnaligned<T>(ref buffer.DangerousGetPinnableReference(), value);
+            Unsafe.WriteUnaligned<T>(ref MemoryMarshal.GetReference(buffer), value);
             return true;
         }
     }

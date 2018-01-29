@@ -30,11 +30,14 @@ namespace System.Reflection.Runtime.General
         {
         }
 
-        public sealed override Assembly Load(AssemblyName refName)
+        public sealed override Assembly Load(AssemblyName assemblyRef, bool throwOnFileNotFound)
         {
-            if (refName == null)
-                throw new ArgumentNullException("assemblyRef");
-            return RuntimeAssembly.GetRuntimeAssembly(refName.ToRuntimeAssemblyName());
+            if (assemblyRef == null)
+                throw new ArgumentNullException(nameof(assemblyRef));
+            if (throwOnFileNotFound)
+                return RuntimeAssembly.GetRuntimeAssembly(assemblyRef.ToRuntimeAssemblyName());
+            else
+                return RuntimeAssembly.GetRuntimeAssemblyIfExists(assemblyRef.ToRuntimeAssemblyName());
         }
 
         public sealed override Assembly Load(byte[] rawAssembly, byte[] pdbSymbolStore)
@@ -200,12 +203,10 @@ namespace System.Reflection.Runtime.General
             if (method == null)
                 throw new ArgumentNullException(nameof(method));
 
-            RuntimeTypeInfo runtimeDelegateType = type as RuntimeTypeInfo;
-            if (runtimeDelegateType == null)
+            if (!(type is RuntimeTypeInfo runtimeDelegateType))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(type));
 
-            RuntimeMethodInfo runtimeMethodInfo = method as RuntimeMethodInfo;
-            if (runtimeMethodInfo == null)
+            if (!(method is RuntimeMethodInfo runtimeMethodInfo))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeMethodInfo, nameof(method));
 
             if (!runtimeDelegateType.IsDelegate)
@@ -231,8 +232,7 @@ namespace System.Reflection.Runtime.General
             if (method == null)
                 throw new ArgumentNullException(nameof(method));
 
-            RuntimeTypeInfo runtimeDelegateType = type as RuntimeTypeInfo;
-            if (runtimeDelegateType == null)
+            if (!(type is RuntimeTypeInfo runtimeDelegateType))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(type));
             if (!runtimeDelegateType.IsDelegate)
                 throw new ArgumentException(SR.Arg_MustBeDelegate);
@@ -260,12 +260,10 @@ namespace System.Reflection.Runtime.General
             if (method == null)
                 throw new ArgumentNullException(nameof(method));
 
-            RuntimeTypeInfo runtimeDelegateType = type as RuntimeTypeInfo;
-            if (runtimeDelegateType == null)
+            if (!(type is RuntimeTypeInfo runtimeDelegateType))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(type));
 
-            RuntimeTypeInfo runtimeContainingType = target as RuntimeTypeInfo;
-            if (runtimeContainingType == null)
+            if (!(target is RuntimeTypeInfo runtimeContainingType))
                 throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(target));
 
             if (!runtimeDelegateType.IsDelegate)
@@ -292,11 +290,11 @@ namespace System.Reflection.Runtime.General
             BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.ExactBinding;
             if (isStatic)
             {
-                bindingFlags |= BindingFlags.Static | BindingFlags.FlattenHierarchy;
+                bindingFlags |= BindingFlags.Static;
             }
             else
             {
-                bindingFlags |= BindingFlags.Instance;
+                bindingFlags |= BindingFlags.Instance | BindingFlags.DeclaredOnly;
             }
             if (ignoreCase)
             {
@@ -310,14 +308,16 @@ namespace System.Reflection.Runtime.General
             {
                 parameterTypes[i] = parameters[i].ParameterType;
             }
-            MethodInfo methodInfo = containingType.GetMethod(method, bindingFlags, null, parameterTypes, null);
-            if (methodInfo == null)
-                return null;
 
-            if (!methodInfo.ReturnType.Equals(invokeMethod.ReturnType))
-                return null;
+            while (containingType != null)
+            {
+                MethodInfo methodInfo = containingType.GetMethod(method, 0, bindingFlags, null, parameterTypes, null);
+                if (methodInfo != null && methodInfo.ReturnType.Equals(invokeMethod.ReturnType))
+                    return (RuntimeMethodInfo)methodInfo; // This cast is safe since we already verified that containingType is runtime implemented.
 
-            return (RuntimeMethodInfo)methodInfo; // This cast is safe since we already verified that containingType is runtime implemented.
+                containingType = (RuntimeTypeInfo)(containingType.BaseType);
+            }
+            return null;
         }
 
         public sealed override Type GetTypeFromCLSID(Guid clsid, string server, bool throwOnError)
@@ -338,7 +338,8 @@ namespace System.Reflection.Runtime.General
                 case RuntimeConstructorInfo constructorInfo:
                     return constructorInfo.LdFtnResult;
                 default:
-                    throw new PlatformNotSupportedException();
+                    Debug.Fail("RuntimeMethodHandle should only return a methodbase implemented by the runtime.");
+                    throw new NotSupportedException();
             }
         }
 
@@ -361,8 +362,7 @@ namespace System.Reflection.Runtime.General
             Type targetType = target.GetType();
             for (int i = 0; i < flds.Length; i++)
             {
-                RuntimeFieldInfo field = flds[i] as RuntimeFieldInfo;
-                if (field == null)
+                if (!(flds[i] is RuntimeFieldInfo field))
                     throw new ArgumentException(SR.Argument_MustBeRuntimeFieldInfo);
                 if (field.IsInitOnly || field.IsStatic)
                     throw new ArgumentException(SR.Argument_TypedReferenceInvalidField);
@@ -387,5 +387,7 @@ namespace System.Reflection.Runtime.General
         }
 
         public sealed override Assembly[] GetLoadedAssemblies() => RuntimeAssembly.GetLoadedAssemblies();
+
+        public sealed override EnumInfo GetEnumInfo(Type type) => type.CastToRuntimeTypeInfo().EnumInfo;
     }
 }

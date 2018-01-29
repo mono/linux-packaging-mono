@@ -67,13 +67,13 @@ namespace System
 
     public class Exception { }
 
-    public struct TypedReference
+    public ref struct TypedReference
     {
         private readonly ByReference<byte> _value;
         private readonly RuntimeTypeHandle _typeHandle;
     }
 
-    public struct ByReference<T> { }
+    public ref struct ByReference<T> { }
 }
 
 namespace System.Collections
@@ -128,3 +128,9 @@ namespace System.Runtime.InteropServices
     }
 }
 
+namespace System.Runtime.CompilerServices
+{
+    public sealed class IsByRefLikeAttribute : Attribute
+    {
+    }
+}

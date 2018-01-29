@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using Internal.IL;
 using Internal.TypeSystem;
 
@@ -97,7 +98,7 @@ namespace ILCompiler
         /// <summary>
         /// Gets a value indicating whether this type has any generic virtual methods.
         /// </summary>
-        public static bool HasGenericVirtualMethod(this TypeDesc type)
+        public static bool HasGenericVirtualMethods(this TypeDesc type)
         {
             foreach (var method in type.GetAllMethods())
             {
@@ -114,6 +115,142 @@ namespace ILCompiler
         public static bool IsCanonicalDefinitionType(this TypeDesc type, CanonicalFormKind kind)
         {
             return type.Context.IsCanonicalDefinitionType(type, kind);
+        }
+
+        /// <summary>
+        /// Gets the value of the field ordinal. Ordinals are computed by also including static fields, but excluding
+        /// literal fields and fields with RVAs.
+        /// </summary>
+        public static int GetFieldOrdinal(this FieldDesc inputField)
+        {
+            // Make sure we are asking the question for a valid instance or static field
+            Debug.Assert(!inputField.HasRva && !inputField.IsLiteral);
+
+            int fieldOrdinal = 0;
+            foreach (FieldDesc field in inputField.OwningType.GetFields())
+            {
+                // If this field does not contribute to layout, skip
+                if (field.HasRva || field.IsLiteral)
+                    continue;
+
+                if (field == inputField)
+                    return fieldOrdinal;
+
+                fieldOrdinal++;
+            }
+
+            Debug.Assert(false);
+            return -1;
+        }
+
+        /// <summary>
+        /// What is the maximum number of steps that need to be taken from this type to its most contained generic type.
+        /// i.e.
+        /// System.Int32 => 0
+        /// List&lt;System.Int32&gt; => 1
+        /// Dictionary&lt;System.Int32,System.Int32&gt; => 1
+        /// Dictionary&lt;List&lt;System.Int32&gt;,&lt;System.Int32&gt; => 2
+        /// </summary>
+        public static int GetGenericDepth(this TypeDesc type)
+        {
+            if (type.HasInstantiation)
+            {
+                int maxGenericDepthInInstantiation = 0;
+                foreach (TypeDesc instantiationType in type.Instantiation)
+                {
+                    maxGenericDepthInInstantiation = Math.Max(instantiationType.GetGenericDepth(), maxGenericDepthInInstantiation);
+                }
+
+                return maxGenericDepthInInstantiation + 1;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Determine if a type has a generic depth greater than a given value
+        /// </summary>
+        public static bool IsGenericDepthGreaterThan(this TypeDesc type, int depth)
+        {
+            if (depth < 0)
+                return true;
+
+            foreach (TypeDesc instantiationType in type.Instantiation)
+            {
+                if (instantiationType.IsGenericDepthGreaterThan(depth - 1))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets a fully canonicalized base type if base type is canonical, or unmodified base type otherwise.
+        /// </summary>
+        public static DefType NormalizedBaseType(this TypeDesc type)
+        {
+            // Base type for Foo<__Canon> where Foo is defined as
+            // class Foo<T> : Bar<T, string> { }
+            // is Bar<__Canon, string>. This method normalizes it to Bar<__Canon, __Canon>.
+            DefType baseType = type.BaseType;
+            if (baseType != null && baseType.IsCanonicalSubtype(CanonicalFormKind.Any))
+                baseType = (DefType)baseType.ConvertToCanonForm(CanonicalFormKind.Specific);
+            return baseType;
+        }
+
+        /// <summary>
+        /// Gets an interface list that is fully canonicalized if the interfaces are canonical or the unmodified
+        /// interface types otherwise.
+        /// </summary>
+        public static NormalizedInterfaceList NormalizedRuntimeInterfaces(this TypeDesc type)
+        {
+            // Interface list for Foo<__Canon> where Foo is defined as
+            // class Foo<T> : IFooer<T, object>
+            // is IFooer<__Canon, object>. This method normalizes it to IFooer<__Canon, __Canon>.
+            return new NormalizedInterfaceList(type);
+        }
+
+        public struct NormalizedInterfaceList
+        {
+            private readonly TypeDesc _type;
+
+            public NormalizedInterfaceList(TypeDesc type)
+            {
+                _type = type;
+            }
+
+            public Enumerator GetEnumerator()
+            {
+                return new Enumerator(_type);
+            }
+
+            public struct Enumerator
+            {
+                private readonly DefType[] _interfaces;
+                private int _index;
+
+                public Enumerator(TypeDesc type)
+                {
+                    _interfaces = type.RuntimeInterfaces;
+                    _index = -1;
+                }
+
+                public DefType Current
+                {
+                    get
+                    {
+                        DefType intface = _interfaces[_index];
+                        if (intface.IsCanonicalSubtype(CanonicalFormKind.Any))
+                            intface = (DefType)intface.ConvertToCanonForm(CanonicalFormKind.Specific);
+                        return intface;
+                    }
+                }
+
+                public bool MoveNext()
+                {
+                    return ++_index < _interfaces.Length;
+                }
+            }
         }
     }
 }

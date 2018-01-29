@@ -258,7 +258,8 @@ private:
         // This type contain gc pointers
         HasPointersFlag         = 0x0020,
 
-        // Unused               = 0x0040,
+        // Type implements ICastable to allow dynamic resolution of interface casts.
+        ICastableTypeFlag       = 0x0040,
 
         // This type is generic and one or more of it's type parameters is co- or contra-variant. This only
         // applies to interface and delegate types.
@@ -287,8 +288,8 @@ public:
         // This type requires 8-byte alignment for its fields on certain platforms (only ARM currently).
         RequiresAlign8Flag      = 0x00000001,
 
-        // Type implements ICastable to allow dynamic resolution of interface casts.
-        ICastableFlag           = 0x00000002,
+        // Old unused flag
+        UNUSED1                 = 0x00000002,
 
         // Type is an instantiation of Nullable<T>.
         IsNullableFlag          = 0x00000004,
@@ -302,10 +303,8 @@ public:
         // This EEType has a Class Constructor
         HasCctorFlag            = 0x0000020,
 
-        // This EEType has sealed vtable entries (note that this flag is only used for
-        // dynamically created types because they always have an optional field (hence the
-        // very explicit flag name).
-        IsDynamicTypeWithSealedVTableEntriesFlag    = 0x00000040,
+        // Old unused flag
+        UNUSED2                 = 0x00000040,
 
         // This EEType was constructed from a universal canonical template, and has
         // its own dynamically created DispatchMap (does not use the DispatchMap of its template type)
@@ -315,8 +314,6 @@ public:
         IsHFAFlag                           = 0x00000100,
 
         // This EEType has sealed vtable entries
-        // This is for statically generated types - we need two different flags because
-        // the sealed vtable entries are reached in different ways in the static and dynamic case
         HasSealedVTableEntriesFlag          = 0x00000200,
 
         // This dynamically created type has gc statics
@@ -477,12 +474,16 @@ public:
 
     DynamicModule* get_DynamicModule();
 
-#if defined(EETYPE_TYPE_MANAGER)
     TypeManagerHandle* GetTypeManagerPtr()
-         { return m_ppTypeManager; }
-#endif
-
+    { 
 #if defined(EETYPE_TYPE_MANAGER)
+        return m_ppTypeManager;
+#else
+        return NULL;
+#endif
+    }
+
+#ifdef PROJECTN
     //
     // PROJX-TODO
     // Needed while we exist in a world where some things are built using CoreRT and some built using 
@@ -490,9 +491,13 @@ public:
     //
     bool HasTypeManager()
     {
+#if defined(EETYPE_TYPE_MANAGER)
         return m_ppTypeManager != nullptr;
-    }
+#else
+        return false;
 #endif
+    }
+#endif // PROJECTN
 
 #ifndef BINDER
     DispatchMap *GetDispatchMap();
@@ -539,18 +544,6 @@ public:
     // only ARM so far).
     bool RequiresAlign8()
         { return (get_RareFlags() & RequiresAlign8Flag) != 0; }
-
-    // Determine whether a type supports ICastable.
-    bool IsICastable()
-        { return (get_RareFlags() & ICastableFlag) != 0; }
-
-    // Retrieve the address of the method that implements ICastable.IsInstanceOfInterface for
-    // ICastable types.
-    inline PTR_Code get_ICastableIsInstanceOfInterfaceMethod();
-
-    // Retrieve the vtable slot number of the method that implements ICastable.GetImplType for ICastable
-    // types.
-    inline PTR_Code get_ICastableGetImplTypeMethod();
 
     // Determine whether a type is an instantiation of Nullable<T>.
     bool IsNullable()

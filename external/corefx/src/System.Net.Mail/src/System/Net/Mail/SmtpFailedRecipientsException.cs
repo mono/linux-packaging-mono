@@ -9,6 +9,9 @@ using System.Runtime.Serialization;
 namespace System.Net.Mail
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class SmtpFailedRecipientsException : SmtpFailedRecipientException, ISerializable
     {
         private SmtpFailedRecipientException[] _innerExceptions;
@@ -31,7 +34,7 @@ namespace System.Net.Mail
 
         protected SmtpFailedRecipientsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
+            _innerExceptions = (SmtpFailedRecipientException[])info.GetValue("innerExceptions", typeof(SmtpFailedRecipientException[]));
         }
 
         public SmtpFailedRecipientsException(string message, SmtpFailedRecipientException[] innerExceptions) :
@@ -70,12 +73,13 @@ namespace System.Net.Mail
         [SuppressMessage("Microsoft.Security", "CA2123:OverrideLinkDemandsShouldBeIdenticalToBase", Justification = "System.dll is still using pre-v4 security model and needs this demand")]
         void ISerializable.GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
-            base.GetObjectData(serializationInfo, streamingContext);
+            GetObjectData(serializationInfo, streamingContext);
         }
 
         public override void GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
             base.GetObjectData(serializationInfo, streamingContext);
+            serializationInfo.AddValue("innerExceptions", _innerExceptions, typeof(SmtpFailedRecipientException[]));
         }
     }
 }

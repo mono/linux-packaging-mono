@@ -8,15 +8,10 @@
 // keep the main files less cluttered.
 //
 
-using System;
 using System.IO;
 using System.Text;
-using System.Reflection;
 using System.Diagnostics;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Runtime.InteropServices;
 using System.Reflection.Runtime.General;
 
 using Internal.LowLevelLinq;
@@ -68,7 +63,6 @@ namespace System.Reflection.Runtime.Assemblies
         public sealed override string CodeBase { get { throw new PlatformNotSupportedException(); } }
         public sealed override Assembly GetSatelliteAssembly(CultureInfo culture) { throw new PlatformNotSupportedException(); }
         public sealed override Assembly GetSatelliteAssembly(CultureInfo culture, Version version) { throw new PlatformNotSupportedException(); }
-        public sealed override string ImageRuntimeVersion { get { throw new PlatformNotSupportedException(); } }
         public sealed override AssemblyName[] GetReferencedAssemblies() { throw new PlatformNotSupportedException(); }
         public sealed override Module GetModule(string name) { throw new PlatformNotSupportedException(); }
     }
@@ -97,21 +91,6 @@ namespace System.Reflection.Runtime.EventInfos
     }
 }
 
-namespace System.Reflection.Runtime.FieldInfos
-{
-    internal abstract partial class RuntimeFieldInfo
-    {
-        public sealed override object GetRawConstantValue()
-        {
-            if (!IsLiteral)
-                throw new InvalidOperationException();
-
-            object value = GetValue(null);
-            return value.ToRawValue();
-        }
-    }
-}
-
 namespace System.Reflection.Runtime.MethodInfos
 {
     internal abstract partial class RuntimeMethodInfo
@@ -123,14 +102,6 @@ namespace System.Reflection.Runtime.MethodInfos
         public sealed override bool IsSecurityCritical => true;
         public sealed override bool IsSecuritySafeCritical => false;
         public sealed override bool IsSecurityTransparent => false;
-    }
-}
-
-namespace System.Reflection.Runtime.ParameterInfos
-{
-    internal abstract partial class RuntimeParameterInfo
-    {
-        public sealed override object RawDefaultValue => DefaultValue.ToRawValue();
     }
 }
 
@@ -157,8 +128,6 @@ namespace System.Reflection.Runtime.PropertyInfos
                 accessors[index++] = setter;
             return accessors;
         }
-
-        public sealed override object GetRawConstantValue() => GetConstantValue().ToRawValue();
     }
 }
 

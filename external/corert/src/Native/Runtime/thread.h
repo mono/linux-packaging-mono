@@ -14,7 +14,7 @@ class Thread;
 // runtime build.
 #define KEEP_THREAD_LAYOUT_CONSTANT
 
-#if defined(_X86_) || defined(_ARM_)
+#if defined(_X86_) || defined(_ARM_) || defined(_WASM_)
 # if defined(FEATURE_SVR_GC) || defined(KEEP_THREAD_LAYOUT_CONSTANT)
 #  define SIZEOF_ALLOC_CONTEXT 40
 # else // FEATURE_SVR_GC
@@ -78,6 +78,7 @@ struct ThreadBuffer
     void **                 m_ppvHijackedReturnAddressLocation;
     void *                  m_pvHijackedReturnAddress;
     PTR_ExInfo              m_pExInfoStackHead;
+    Object*                 m_threadAbortException;                 // ThreadAbortException instance -set only during thread abort
     PTR_VOID                m_pStackLow;
     PTR_VOID                m_pStackHigh;
     PTR_UInt8               m_pTEB;                                 // Pointer to OS TEB structure for this thread
@@ -92,10 +93,10 @@ struct ThreadBuffer
     UInt32          m_numDynamicTypesTlsCells;
     PTR_PTR_UInt8   m_pDynamicTypesTlsCells;
 
-#if CORERT
+#ifndef PROJECTN
     PTR_PTR_VOID    m_pThreadLocalModuleStatics;
     UInt32          m_numThreadLocalModuleStatics;
-#endif // CORERT
+#endif // PROJECTN
 };
 
 struct ReversePInvokeFrame
@@ -141,6 +142,7 @@ private:
     void ResetCachedTransitionFrame();
     void CrossThreadUnhijack();
     void UnhijackWorker();
+    void EnsureRuntimeInitialized();
 #ifdef _DEBUG
     bool DebugIsSuspended();
 #endif
@@ -254,10 +256,16 @@ public:
     bool InlineTryFastReversePInvoke(ReversePInvokeFrame * pFrame);
     void InlineReversePInvokeReturn(ReversePInvokeFrame * pFrame);
 
-#if CORERT
+    void InlinePInvoke(PInvokeTransitionFrame * pFrame);
+    void InlinePInvokeReturn(PInvokeTransitionFrame * pFrame);
+
+    Object * GetThreadAbortException();
+    void SetThreadAbortException(Object *exception);
+
+#ifndef PROJECTN
     Object* GetThreadStaticStorageForModule(UInt32 moduleIndex);
     Boolean SetThreadStaticStorageForModule(Object * pStorage, UInt32 moduleIndex);
-#endif // CORERT
+#endif // PROJECTN
 };
 
 #ifndef GCENV_INCLUDED

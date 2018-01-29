@@ -36,6 +36,9 @@ namespace System.Reflection.Runtime.TypeInfos
         protected abstract override bool IsPointerImpl();
         public sealed override bool IsConstructedGenericType => false;
         public sealed override bool IsGenericParameter => false;
+        public sealed override bool IsGenericTypeParameter => false;
+        public sealed override bool IsGenericMethodParameter => false;
+        public sealed override bool IsByRefLike => false;
 
         //
         // Implements IKeyedItem.PrepareKey.
@@ -70,6 +73,19 @@ namespace System.Reflection.Runtime.TypeInfos
             get
             {
                 return _key.ElementType.Assembly;
+            }
+        }
+
+        public sealed override IEnumerable<CustomAttributeData> CustomAttributes
+        {
+            get
+            {
+#if ENABLE_REFLECTION_TRACE
+                if (ReflectionTrace.Enabled)
+                    ReflectionTrace.TypeInfo_CustomAttributes(this);
+#endif
+
+                return Empty<CustomAttributeData>.Enumerable;
             }
         }
 

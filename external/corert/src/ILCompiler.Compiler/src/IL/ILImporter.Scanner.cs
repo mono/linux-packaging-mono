@@ -34,16 +34,23 @@ namespace Internal.IL
         private class BasicBlock
         {
             // Common fields
+            public enum ImportState : byte
+            {
+                Unmarked,
+                IsPending
+            }
+
             public BasicBlock Next;
 
             public int StartOffset;
-            public int EndOffset;
+            public ImportState State = ImportState.Unmarked;
 
             public bool TryStart;
             public bool FilterStart;
             public bool HandlerStart;
         }
 
+        private bool _isReadOnly;
         private TypeDesc _constrained;
 
         private int _currentInstructionOffset;
@@ -69,7 +76,7 @@ namespace Internal.IL
             // This is e.g. an "extern" method in C# without a DllImport or InternalCall.
             if (methodIL == null)
             {
-                throw new TypeSystemException.InvalidProgramException(ExceptionStringID.InvalidProgramSpecific, method);
+                ThrowHelper.ThrowInvalidProgramException(ExceptionStringID.InvalidProgramSpecific, method);
             }
 
             _compilation = compilation;
@@ -102,6 +109,46 @@ namespace Internal.IL
 
         public DependencyList Import()
         {
+            TypeDesc owningType = _canonMethod.OwningType;
+            if (_factory.TypeSystemContext.HasLazyStaticConstructor(owningType))
+            {
+                // Don't trigger cctor if this is a fallback compilation (bad cctor could have been the reason for fallback).
+                // Otherwise follow the rules from ECMA-335 I.8.9.5.
+                if (!_isFallbackBodyCompilation &&
+                    (_canonMethod.Signature.IsStatic || _canonMethod.IsConstructor || owningType.IsValueType))
+                {
+                    // For beforefieldinit, we can wait for field access.
+                    if (!((MetadataType)owningType).IsBeforeFieldInit)
+                    {
+                        MethodDesc method = _methodIL.OwningMethod;
+                        if (method.OwningType.IsRuntimeDeterminedSubtype)
+                        {
+                            _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.GetNonGCStaticBase, method.OwningType), "Owning type cctor");
+                        }
+                        else
+                        {
+                            _dependencies.Add(_factory.ReadyToRunHelper(ReadyToRunHelperId.GetNonGCStaticBase, method.OwningType), "Owning type cctor");
+                        }
+                    }
+                }
+            }
+
+            if (_canonMethod.IsSynchronized)
+            {
+                const string reason = "Synchronized method";
+                if (_canonMethod.Signature.IsStatic)
+                {
+                    _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.MonitorEnterStatic), reason);
+                    _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.MonitorExitStatic), reason);
+                }
+                else
+                {
+                    _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.MonitorEnter), reason);
+                    _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.MonitorExit), reason);
+                }
+                
+            }
+
             FindBasicBlocks();
             ImportBasicBlocks();
 
@@ -139,7 +186,6 @@ namespace Internal.IL
 
         private void MarkInstructionBoundary() { }
         private void EndImportingBasicBlock(BasicBlock basicBlock) { }
-        private void EndImportingInstruction() { }
 
         private void StartImportingBasicBlock(BasicBlock basicBlock)
         {
@@ -152,6 +198,17 @@ namespace Internal.IL
                     MarkBasicBlock(_basicBlocks[region.HandlerOffset]);
                     if (region.Kind == ILExceptionRegionKind.Filter)
                         MarkBasicBlock(_basicBlocks[region.FilterOffset]);
+
+                    // Once https://github.com/dotnet/corert/issues/3460 is done, this should be deleted.
+                    // Throwing InvalidProgram is not great, but we want to do *something* if this happens
+                    // because doing nothing means problems at runtime. This is not worth piping a
+                    // a new exception with a fancy message for.
+                    if (region.Kind == ILExceptionRegionKind.Catch)
+                    {
+                        TypeDesc catchType = (TypeDesc)_methodIL.GetObject(region.ClassToken);
+                        if (catchType.IsRuntimeDeterminedSubtype)
+                            ThrowHelper.ThrowInvalidProgramException();
+                    }
                 }
             }
 
@@ -165,9 +222,17 @@ namespace Internal.IL
             _currentInstructionOffset = _currentOffset;
         }
 
+        private void EndImportingInstruction()
+        {
+            // The instruction should have consumed any prefixes.
+            _constrained = null;
+            _isReadOnly = false;
+        }
+
         private void ImportJmp(int token)
         {
-            // TODO
+            // JMP is kind of like a tail call (with no arguments pushed on the stack).
+            ImportCall(ILOpcode.call, token);
         }
 
         private void ImportCasting(ILOpcode opcode, int token)
@@ -230,30 +295,6 @@ namespace Internal.IL
                     Debug.Assert(false); break;
             }
 
-            // If we're scanning the fallback body because scanning the real body failed, don't trigger cctor.
-            // Accessing the cctor could have been a reason why we failed.
-            if (!_isFallbackBodyCompilation)
-            {
-                // Do we need to run the cctor?
-                TypeDesc owningType = runtimeDeterminedMethod.OwningType;
-                if (_factory.TypeSystemContext.HasLazyStaticConstructor(owningType))
-                {
-                    // For beforefieldinit, we can wait for field access.
-                    if (!((MetadataType)owningType).IsBeforeFieldInit)
-                    {
-                        // Accessing the static base will trigger the cctor.
-                        if (owningType.IsRuntimeDeterminedSubtype)
-                        {
-                            _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.GetNonGCStaticBase, owningType), reason);
-                        }
-                        else
-                        {
-                            _dependencies.Add(_factory.ReadyToRunHelper(ReadyToRunHelperId.GetNonGCStaticBase, owningType), reason);
-                        }
-                    }
-                }
-            }
-
             if (opcode == ILOpcode.newobj)
             {
                 TypeDesc owningType = runtimeDeterminedMethod.OwningType;
@@ -261,12 +302,8 @@ namespace Internal.IL
                 {
                     // String .ctor handled specially below
                 }
-                else
+                else if (owningType.IsGCPointer)
                 {
-                    // Nullable needs to be unwrapped.
-                    if (owningType.IsNullable)
-                        owningType = owningType.Instantiation[0];
-
                     if (owningType.IsRuntimeDeterminedSubtype)
                     {
                         _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, owningType), reason);
@@ -337,9 +374,53 @@ namespace Internal.IL
                     if (_previousInstructionOffset >= 0 && _ilBytes[_previousInstructionOffset] == (byte)ILOpcode.ldtoken)
                         return;
                 }
+
+                if (IsActivatorDefaultConstructorOf(method))
+                {
+                    if (runtimeDeterminedMethod.IsRuntimeDeterminedExactMethod)
+                    {
+                        _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.DefaultConstructor, runtimeDeterminedMethod.Instantiation[0]), reason);
+                    }
+                    else
+                    {
+                        MethodDesc ctor = method.Instantiation[0].GetDefaultConstructor();
+                        if (ctor == null)
+                        {
+                            MetadataType activatorType = _compilation.TypeSystemContext.SystemModule.GetKnownType("System", "Activator");
+                            MetadataType classWithMissingCtor = activatorType.GetKnownNestedType("ClassWithMissingConstructor");
+                            ctor = classWithMissingCtor.GetParameterlessConstructor();
+                        }
+                        _dependencies.Add(_factory.CanonicalEntrypoint(ctor), reason);
+                    }
+
+                    return;
+                }
+
+                if (method.OwningType.IsByReferenceOfT && (method.IsConstructor || method.Name == "get_Value"))
+                {
+                    return;
+                }
+
+                if (IsEETypePtrOf(method))
+                {
+                    if (runtimeDeterminedMethod.IsRuntimeDeterminedExactMethod)
+                    {
+                        _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, runtimeDeterminedMethod.Instantiation[0]), reason);
+                    }
+                    else
+                    {
+                        _dependencies.Add(_factory.ConstructedTypeSymbol(method.Instantiation[0]), reason);
+                    }
+                    return;
+                }
             }
 
             TypeDesc exactType = method.OwningType;
+
+            if (method.IsNativeCallable && (opcode != ILOpcode.ldftn && opcode != ILOpcode.ldvirtftn))
+            {
+                ThrowHelper.ThrowInvalidProgramException(ExceptionStringID.InvalidProgramNativeCallable, method);
+            }
 
             bool resolvedConstraint = false;
             bool forceUseRuntimeLookup = false;
@@ -353,12 +434,16 @@ namespace Internal.IL
                 // JIT compilation, and require a runtime lookup for the actual code pointer
                 // to call.
 
-                MethodDesc directMethod = _constrained.GetClosestDefType().TryResolveConstraintMethodApprox(method.OwningType, method, out forceUseRuntimeLookup);
-                if (directMethod == null && _constrained.IsEnum)
+                TypeDesc constrained = _constrained;
+                if (constrained.IsRuntimeDeterminedSubtype)
+                    constrained = constrained.ConvertToCanonForm(CanonicalFormKind.Specific);
+
+                MethodDesc directMethod = constrained.GetClosestDefType().TryResolveConstraintMethodApprox(method.OwningType, method, out forceUseRuntimeLookup);
+                if (directMethod == null && constrained.IsEnum)
                 {
                     // Constrained calls to methods on enum methods resolve to System.Enum's methods. System.Enum is a reference
                     // type though, so we would fail to resolve and box. We have a special path for those to avoid boxing.
-                    directMethod = _compilation.TypeSystemContext.TryResolveConstrainedEnumMethod(_constrained, method);
+                    directMethod = _compilation.TypeSystemContext.TryResolveConstrainedEnumMethod(constrained, method);
                 }
                 
                 if (directMethod != null)
@@ -373,15 +458,13 @@ namespace Internal.IL
                     Debug.Assert(!methodAfterConstraintResolution.OwningType.IsInterface);
                     resolvedConstraint = true;
 
-                    exactType = _constrained;
+                    exactType = constrained;
                 }
-                else if (_constrained.IsValueType)
+                else if (constrained.IsValueType)
                 {
-                    // We'll need to box `this`.
+                    // We'll need to box `this`. Note we use _constrained here, because the other one is canonical.
                     AddBoxingDependencies(_constrained, reason);
                 }
-
-                _constrained = null;
             }
 
             MethodDesc targetMethod = methodAfterConstraintResolution;
@@ -466,12 +549,51 @@ namespace Internal.IL
                 {
                     if (targetMethod.IsSharedByGenericInstantiations && !resolvedConstraint && !referencingArrayAddressMethod)
                     {
-                        _dependencies.Add(_factory.RuntimeDeterminedMethod(runtimeDeterminedMethod), reason);
+                        ISymbolNode instParam = null;
+
+                        if (targetMethod.RequiresInstMethodDescArg())
+                        {
+                            instParam = GetGenericLookupHelper(ReadyToRunHelperId.MethodDictionary, runtimeDeterminedMethod);
+                        }
+                        else if (targetMethod.RequiresInstMethodTableArg())
+                        {
+                            bool hasHiddenParameter = true;
+
+                            if (targetMethod.IsIntrinsic)
+                            {
+                                if (_factory.TypeSystemContext.IsSpecialUnboxingThunkTargetMethod(targetMethod))
+                                    hasHiddenParameter = false;
+                            }
+
+                            if (hasHiddenParameter)
+                                instParam = GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, runtimeDeterminedMethod.OwningType);
+                        }
+
+                        if (instParam != null)
+                        {
+                            _dependencies.Add(instParam, reason);
+                        }
+
+                        _dependencies.Add(_factory.CanonicalEntrypoint(targetMethod), reason);
                     }
                     else
                     {
                         Debug.Assert(!forceUseRuntimeLookup);
                         _dependencies.Add(_factory.MethodEntrypoint(targetMethod), reason);
+
+                        if (targetMethod.RequiresInstMethodTableArg() && resolvedConstraint)
+                        {
+                            if (_constrained.IsRuntimeDeterminedSubtype)
+                                _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, _constrained), reason);
+                            else
+                                _dependencies.Add(_factory.ConstructedTypeSymbol(_constrained), reason);
+                        }
+                        
+                        if (referencingArrayAddressMethod && !_isReadOnly)
+                        {
+                            // Address method is special - it expects an instantiation argument, unless a readonly prefix was applied.
+                            _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, runtimeDeterminedMethod.OwningType), reason);
+                        }
                     }
                 }
                 else
@@ -482,7 +604,7 @@ namespace Internal.IL
                     {
                         instParam = _compilation.NodeFactory.MethodGenericDictionary(concreteMethod);
                     }
-                    else if (targetMethod.RequiresInstMethodTableArg() || referencingArrayAddressMethod)
+                    else if (targetMethod.RequiresInstMethodTableArg() || (referencingArrayAddressMethod && !_isReadOnly))
                     {
                         // Ask for a constructed type symbol because we need the vtable to get to the dictionary
                         instParam = _compilation.NodeFactory.ConstructedTypeSymbol(concreteMethod.OwningType);
@@ -529,32 +651,26 @@ namespace Internal.IL
 
                 _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.GVMLookupForSlot), reason);
             }
+            else if (method.OwningType.IsInterface)
+            {
+                if (exactContextNeedsRuntimeLookup)
+                {
+                    _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.VirtualDispatchCell, runtimeDeterminedMethod), reason);
+                }
+                else
+                {
+                    _dependencies.Add(_factory.InterfaceDispatchCell(method), reason);
+                }
+            }
+            else if (_compilation.HasFixedSlotVTable(method.OwningType))
+            {
+                // No dependencies: virtual call through the vtable
+            }
             else
             {
-                ReadyToRunHelperId helper;
-                if (opcode == ILOpcode.ldvirtftn)
-                {
-                    helper = ReadyToRunHelperId.ResolveVirtualFunction;
-                }
-                else
-                {
-                    Debug.Assert(opcode == ILOpcode.callvirt);
-                    helper = ReadyToRunHelperId.VirtualCall;
-                }
-
-                if (exactContextNeedsRuntimeLookup && targetMethod.OwningType.IsInterface)
-                {
-                    _dependencies.Add(GetGenericLookupHelper(helper, runtimeDeterminedMethod), reason);
-                }
-                else
-                {
-                    // Get the slot defining method to make sure our virtual method use tracking gets this right.
-                    // For normal C# code the targetMethod will always be newslot.
-                    MethodDesc slotDefiningMethod = targetMethod.IsNewSlot ?
+                MethodDesc slotDefiningMethod = targetMethod.IsNewSlot ?
                         targetMethod : MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(targetMethod);
-
-                    _dependencies.Add(_factory.ReadyToRunHelper(helper, slotDefiningMethod), reason);
-                }
+                _dependencies.Add(_factory.VirtualMethodUse(slotDefiningMethod), reason);
             }
         }
 
@@ -597,7 +713,14 @@ namespace Internal.IL
             TypeDesc type = (TypeDesc)_methodIL.GetObject(token);
 
             if (!type.IsValueType)
+            {
+                if (opCode == ILOpcode.unbox_any)
+                {
+                    // When applied to a reference type, unbox_any has the same effect as castclass.
+                    ImportCasting(ILOpcode.castclass, token);
+                }
                 return;
+            }
 
             if (type.IsRuntimeDeterminedSubtype)
             {
@@ -624,12 +747,12 @@ namespace Internal.IL
 
         private void ImportRefAnyVal(int token)
         {
-            // TODO
+            _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.GetRefAny), "refanyval");
         }
 
         private void ImportMkRefAny(int token)
         {
-            // TODO
+            _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.TypeHandleToRuntimeType), "mkrefany");
         }
 
         private void ImportLdToken(int token)
@@ -639,16 +762,30 @@ namespace Internal.IL
             if (obj is TypeDesc)
             {
                 var type = (TypeDesc)obj;
+
                 if (type.IsRuntimeDeterminedSubtype)
                 {
                     _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, type), "ldtoken");
                 }
                 else
                 {
-                    if (ConstructedEETypeNode.CreationAllowed(type))
-                        _dependencies.Add(_factory.ConstructedTypeSymbol(type), "ldtoken");
-                    else
-                        _dependencies.Add(_factory.NecessaryTypeSymbol(type), "ldtoken");
+                    _dependencies.Add(_factory.MaximallyConstructableType(type), "ldtoken");
+                }
+
+                // If this is a ldtoken Type / GetValueInternal sequence, we're done.
+                BasicBlock nextBasicBlock = _basicBlocks[_currentOffset];
+                if (nextBasicBlock == null)
+                {
+                    if ((ILOpcode)_ilBytes[_currentOffset] == ILOpcode.call)
+                    {
+                        int methodToken = ReadILTokenAt(_currentOffset + 1);
+                        var method = (MethodDesc)_methodIL.GetObject(methodToken);
+                        if (IsRuntimeTypeHandleGetValueInternal(method))
+                        {
+                            // Codegen expands this and doesn't do the normal ldtoken.
+                            return;
+                        }
+                    }
                 }
 
                 _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.GetRuntimeTypeHandle), "ldtoken");
@@ -712,17 +849,36 @@ namespace Internal.IL
 
         private void ImportConstrainedPrefix(int token)
         {
-            // We convert to canon, because that's what ryujit would see.
             _constrained = (TypeDesc)_methodIL.GetObject(token);
-            if (_constrained.IsRuntimeDeterminedSubtype)
-                _constrained = _constrained.ConvertToCanonForm(CanonicalFormKind.Specific);
+        }
+
+        private void ImportReadOnlyPrefix()
+        {
+            _isReadOnly = true;
         }
 
         private void ImportFieldAccess(int token, bool isStatic, string reason)
         {
-            if (isStatic)
+            var field = (FieldDesc)_methodIL.GetObject(token);
+
+            // Covers both ldsfld/ldsflda and ldfld/ldflda with a static field
+            if (isStatic || field.IsStatic)
             {
-                var field = (FieldDesc)_methodIL.GetObject(token);
+                // ldsfld/ldsflda with an instance field is invalid IL
+                if (isStatic && !field.IsStatic)
+                    ThrowHelper.ThrowInvalidProgramException();
+
+                // References to literal fields from IL body should never resolve.
+                // The CLR would throw a MissingFieldException while jitting and so should we.
+                if (field.IsLiteral)
+                    ThrowHelper.ThrowMissingFieldException(field.OwningType, field.Name);
+
+                if (field.HasRva)
+                {
+                    // We could add a dependency to the data node, but we don't really need it.
+                    // TODO: lazy cctor dependency
+                    return;
+                }
 
                 ReadyToRunHelperId helperId;
                 if (field.IsThreadStatic)
@@ -735,7 +891,6 @@ namespace Internal.IL
                 }
                 else
                 {
-                    Debug.Assert(field.IsStatic);
                     helperId = ReadyToRunHelperId.GetNonGCStaticBase;
                 }
 
@@ -769,6 +924,7 @@ namespace Internal.IL
         private void ImportLoadString(int token)
         {
             // If we care, this can include allocating the frozen string node.
+            _dependencies.Add(_factory.SerializedStringObject(""), "ldstr");
         }
 
         private void ImportBox(int token)
@@ -778,6 +934,13 @@ namespace Internal.IL
 
         private void AddBoxingDependencies(TypeDesc type, string reason)
         {
+            Debug.Assert(!type.IsCanonicalSubtype(CanonicalFormKind.Any));
+
+            // Generic code will have BOX instructions when referring to T - the instruction is a no-op
+            // if the substitution wasn't a value type.
+            if (!type.IsValueType)
+                return;
+
             if (type.IsRuntimeDeterminedSubtype)
             {
                 _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, type), reason);
@@ -838,7 +1001,31 @@ namespace Internal.IL
 
         private void ImportAddressOfElement(int token)
         {
+            TypeDesc elementType = (TypeDesc)_methodIL.GetObject(token);
+            if (elementType.IsGCPointer && !_isReadOnly)
+            {
+                if (elementType.IsRuntimeDeterminedSubtype)
+                    _dependencies.Add(GetGenericLookupHelper(ReadyToRunHelperId.TypeHandle, elementType), "ldelema");
+                else
+                    _dependencies.Add(_factory.NecessaryTypeSymbol(elementType), "ldelema");
+            }
+
             _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.RngChkFail), "ldelema");
+        }
+
+        private void ImportBinaryOperation(ILOpcode opcode)
+        {
+            switch (opcode)
+            {
+                case ILOpcode.add_ovf:
+                case ILOpcode.add_ovf_un:
+                case ILOpcode.mul_ovf:
+                case ILOpcode.mul_ovf_un:
+                case ILOpcode.sub_ovf:
+                case ILOpcode.sub_ovf_un:
+                    _dependencies.Add(GetHelperEntrypoint(ReadyToRunHelper.Overflow), "_ovf");
+                    break;
+            }
         }
 
         private void ImportFallthrough(BasicBlock next)
@@ -852,6 +1039,26 @@ namespace Internal.IL
                 + (_ilBytes[ilOffset + 1] << 8)
                 + (_ilBytes[ilOffset + 2] << 16)
                 + (_ilBytes[ilOffset + 3] << 24));
+        }
+
+        private void ReportInvalidBranchTarget(int targetOffset)
+        {
+            ThrowHelper.ThrowInvalidProgramException();
+        }
+
+        private void ReportFallthroughAtEndOfMethod()
+        {
+            ThrowHelper.ThrowInvalidProgramException();
+        }
+
+        private void ReportMethodEndInsideInstruction()
+        {
+            ThrowHelper.ThrowInvalidProgramException();
+        }
+
+        private void ReportInvalidInstruction(ILOpcode opcode)
+        {
+            ThrowHelper.ThrowInvalidProgramException();
         }
 
         private bool IsRuntimeHelpersInitializeArray(MethodDesc method)
@@ -882,6 +1089,34 @@ namespace Internal.IL
             return false;
         }
 
+        private bool IsActivatorDefaultConstructorOf(MethodDesc method)
+        {
+            if (method.IsIntrinsic && method.Name == "DefaultConstructorOf" && method.Instantiation.Length == 1)
+            {
+                MetadataType owningType = method.OwningType as MetadataType;
+                if (owningType != null)
+                {
+                    return owningType.Name == "Activator" && owningType.Namespace == "System";
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsEETypePtrOf(MethodDesc method)
+        {
+            if (method.IsIntrinsic && method.Name == "EETypePtrOf" && method.Instantiation.Length == 1)
+            {
+                MetadataType owningType = method.OwningType as MetadataType;
+                if (owningType != null)
+                {
+                    return owningType.Name == "EETypePtr" && owningType.Namespace == "System";
+                }
+            }
+
+            return false;
+        }
+
         private TypeDesc GetWellKnownType(WellKnownType wellKnownType)
         {
             return _compilation.TypeSystemContext.GetWellKnownType(wellKnownType);
@@ -903,7 +1138,6 @@ namespace Internal.IL
         private void ImportLoadIndirect(TypeDesc type) { }
         private void ImportStoreIndirect(int token) { }
         private void ImportStoreIndirect(TypeDesc type) { }
-        private void ImportBinaryOperation(ILOpcode opcode) { }
         private void ImportShiftOperation(ILOpcode opcode) { }
         private void ImportCompareOperation(ILOpcode opcode) { }
         private void ImportConvert(WellKnownType wellKnownType, bool checkOverflow, bool unsigned) { }
@@ -920,7 +1154,6 @@ namespace Internal.IL
         private void ImportVolatilePrefix() { }
         private void ImportTailPrefix() { }
         private void ImportNoPrefix(byte mask) { }
-        private void ImportReadOnlyPrefix() { }
         private void ImportThrow() { }
         private void ImportInitObj(int token) { }
         private void ImportLoadLength() { }

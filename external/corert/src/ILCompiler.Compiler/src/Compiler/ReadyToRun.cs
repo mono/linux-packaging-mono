@@ -22,6 +22,9 @@ namespace ILCompiler
         FailFast                    = 0x24,
         ThrowNullRef                = 0x25,
         ThrowDivZero                = 0x26,
+        ThrowArgumentOutOfRange     = 0x27,
+        ThrowArgument               = 0x28,
+        ThrowPlatformNotSupported   = 0x29,
 
         DebugBreak                  = 0x2F,
 

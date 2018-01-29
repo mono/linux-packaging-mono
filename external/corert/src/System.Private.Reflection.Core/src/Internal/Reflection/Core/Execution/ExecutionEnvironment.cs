@@ -44,13 +44,6 @@ namespace Internal.Reflection.Core.Execution
         public abstract string GetLastResortString(RuntimeTypeHandle typeHandle);
 
         //==============================================================================================
-        // Default Value support.
-        //==============================================================================================
-        public abstract bool GetDefaultValueIfAny(MetadataReader reader, ParameterHandle parameterHandle, Type declaredType, IEnumerable<CustomAttributeData> customAttributes, out Object defaultValue);
-        public abstract bool GetDefaultValueIfAny(MetadataReader reader, FieldHandle fieldHandle, Type declaredType, IEnumerable<CustomAttributeData> customAttributes, out Object defaultValue);
-        public abstract bool GetDefaultValueIfAny(MetadataReader reader, PropertyHandle propertyHandle, Type declaredType, IEnumerable<CustomAttributeData> customAttributes, out Object defaultValue);
-
-        //==============================================================================================
         // Reflection Mapping Tables
         //==============================================================================================
         public abstract bool TryGetMetadataForNamedType(RuntimeTypeHandle runtimeTypeHandle, out QTypeDefinition qTypeDefinition);
@@ -79,17 +72,6 @@ namespace Internal.Reflection.Core.Execution
         public abstract FieldAccessor TryGetFieldAccessor(MetadataReader reader, RuntimeTypeHandle declaringTypeHandle, RuntimeTypeHandle fieldTypeHandle, FieldHandle fieldHandle);
 
         //==============================================================================================
-        // Pseudo Custom Attributes
-        //==============================================================================================
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, ScopeDefinitionHandle scopeDefinitionHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, TypeDefinitionHandle typeDefinitionHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, MethodHandle methodHandle, TypeDefinitionHandle declaringTypeHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, ParameterHandle parameterHandle, MethodHandle declaringMethodHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, FieldHandle fieldHandle, TypeDefinitionHandle declaringTypeHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, PropertyHandle propertyHandle, TypeDefinitionHandle declaringTypeHandle);
-        public abstract IEnumerable<CustomAttributeData> GetPseudoCustomAttributes(MetadataReader reader, EventHandle eventHandle, TypeDefinitionHandle declaringTypeHandle);
-
-        //==============================================================================================
         // RuntimeMethodHandle and RuntimeFieldHandle support.
         //==============================================================================================
         public abstract bool TryGetMethodFromHandle(RuntimeMethodHandle runtimeMethodHandle, out RuntimeTypeHandle declaringTypeHandle, out QMethodDefinition methodHandle, out RuntimeTypeHandle[] genericMethodTypeArgumentHandles);
@@ -108,7 +90,6 @@ namespace Internal.Reflection.Core.Execution
         //==============================================================================================
         // Other
         //==============================================================================================
-        public abstract MethodInvoker GetSyntheticMethodInvoker(RuntimeTypeHandle thisType, RuntimeTypeHandle[] parameterTypes, InvokerOptions options, Func<Object, Object[], Object> invoker);
         public abstract bool IsCOMObject(Type type);
         public abstract FieldAccessor CreateLiteralFieldAccessor(object value, RuntimeTypeHandle fieldTypeHandle);
 

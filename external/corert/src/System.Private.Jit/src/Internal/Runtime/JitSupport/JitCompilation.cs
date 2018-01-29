@@ -23,6 +23,7 @@ namespace ILCompiler
             _typeGetTypeMethodThunks = new TypeGetTypeMethodThunkCache(context.GetWellKnownType(WellKnownType.Object));
             _methodILCache = new ILProvider(new PInvokeILProvider(new PInvokeILEmitterConfiguration(forceLazyResolution: true), null));
             _nodeFactory = new NodeFactory(context);
+            _devirtualizationManager = new DevirtualizationManager();
         }
 
         private readonly NodeFactory _nodeFactory;
@@ -30,6 +31,7 @@ namespace ILCompiler
         protected readonly Logger _logger = Logger.Null;
         private readonly TypeGetTypeMethodThunkCache _typeGetTypeMethodThunks;
         private ILProvider _methodILCache;
+        private readonly DevirtualizationManager _devirtualizationManager;
 
         internal Logger Logger => _logger;
 
@@ -95,6 +97,44 @@ namespace ILCompiler
             }
 
             return intrinsicMethod;
+        }
+
+        public bool HasFixedSlotVTable(TypeDesc type)
+        {
+            return true;
+        }
+
+        public bool IsEffectivelySealed(TypeDesc type)
+        {
+            return _devirtualizationManager.IsEffectivelySealed(type);
+        }
+
+        public bool IsEffectivelySealed(MethodDesc method)
+        {
+            return _devirtualizationManager.IsEffectivelySealed(method);
+        }
+
+        public MethodDesc ResolveVirtualMethod(MethodDesc declMethod, TypeDesc implType)
+        {
+            return _devirtualizationManager.ResolveVirtualMethod(declMethod, implType);
+        }
+
+        public bool NeedsRuntimeLookup(ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            // The current plan seem to be to copy paste from ILCompiler.Compilation, but that's not a sustainable plan
+            throw new NotImplementedException();
+        }
+
+        public ISymbolNode ComputeConstantLookup(ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            // The current plan seem to be to copy paste from ILCompiler.Compilation, but that's not a sustainable plan
+            throw new NotImplementedException();
+        }
+
+        public GenericDictionaryLookup ComputeGenericLookup(MethodDesc contextMethod, ReadyToRunHelperId lookupKind, object targetOfLookup)
+        {
+            // The current plan seem to be to copy paste from ILCompiler.Compilation, but that's not a sustainable plan
+            throw new NotImplementedException();
         }
 
         public DelegateCreationInfo GetDelegateCtor(TypeDesc delegateType, MethodDesc target, bool followVirtualDispatch)

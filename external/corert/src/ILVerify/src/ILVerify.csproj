@@ -1,39 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B2C35178-5E42-4010-A72A-938711D7F8F0}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ILVerify</RootNamespace>
-    <AssemblyName>ILVerify</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFrameworks>netcoreapp2.0;net46</TargetFrameworks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CLSCompliant>false</CLSCompliant>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <BaseNuGetRuntimeIdentifier>win7</BaseNuGetRuntimeIdentifier>
-    <!-- AutoGenerateBindingRedirects is not honoring the unification
-         table, and thus breaking unification by explicitly listing
-         bindingRedirects for assemblies that only differ by revision -->
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
+
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ILImporter.Verify.cs" />
     <Compile Include="ILImporter.StackValue.cs" />
+    <Compile Include="SimpleArrayOfTRuntimeInterfacesAlgorithm.cs" />
     <Compile Include="SimpleTypeSystemContext.cs" />
     <Compile Include="VerifierError.cs" />
+    <Compile Include="TypeSystemHelpers.cs" />
+    <Compile Include="InstantiatedGenericParameter.cs" />
+    <Compile Include="AccessVerificationHelpers.cs" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\..\Common\src\TypeSystem\CodeGen\MethodDesc.CodeGen.cs">
       <Link>TypeSystem\CodeGen\MethodDesc.CodeGen.cs</Link>
@@ -194,6 +182,18 @@
     <Compile Include="..\..\Common\src\TypeSystem\Common\RuntimeInterfacesAlgorithm.cs">
       <Link>TypeSystem\Common\RuntimeInterfacesAlgorithm.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\ThrowHelper.Common.cs">
+      <Link>TypeSystem\Common\ThrowHelper.Common.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\ThrowHelper.cs">
+      <Link>TypeSystem\Common\ThrowHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\Utilities\ExceptionTypeNameFormatter.cs">
+      <Link>TypeSystem\Common\Utilities\ExceptionTypeNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\Utilities\ExceptionTypeNameFormatter.Metadata.cs">
+      <Link>TypeSystem\Common\Utilities\ExceptionTypeNameFormatter.Metadata.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\Ecma\CustomAttributeTypeProvider.cs">
       <Link>Ecma\CustomAttributeTypeProvider.cs</Link>
     </Compile>
@@ -245,8 +245,8 @@
     <Compile Include="..\..\Common\src\TypeSystem\IL\MethodILDebugView.cs">
       <Link>IL\MethodILDebugView.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\ILDisassember.cs">
-      <Link>IL\ILDisassember.cs</Link>
+    <Compile Include="..\..\Common\src\TypeSystem\IL\ILDisassembler.cs">
+      <Link>IL\ILDisassembler.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\InstantiatedMethodIL.cs">
       <Link>IL\InstantiatedMethodIL.cs</Link>
@@ -278,6 +278,9 @@
     <Compile Include="..\..\Common\src\System\FormattingHelpers.cs">
       <Link>Common\System\FormattingHelpers.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\TypeSystemConstraintsHelpers.cs">
+      <Link>TypeSystem\Common\TypeSystemConstraintsHelpers.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\src\CommandLine\CommandLineException.cs">
@@ -286,16 +289,14 @@
     <Compile Include="..\..\Common\src\CommandLine\CommandLineHelpers.cs">
       <Link>CommandLine\CommandLineHelpers.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\System\NotImplemented.cs">
+      <Link>System\NotImplemented.cs</Link>
+    </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="project.json" />
+    <PackageReference Include="System.IO.MemoryMappedFiles" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.4.1" />
+    <PackageReference Include="System.CommandLine" Version="0.1.0-e160909-1" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

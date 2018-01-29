@@ -41,6 +41,7 @@ struct AMD64_ALIGN_16 Fp128 {
 
 struct PAL_LIMITED_CONTEXT
 {
+    // Includes special registers, callee saved registers and general purpose registers used to return values from functions (not floating point return registers)
 #ifdef _TARGET_ARM_
     UIntNative  R0;
     UIntNative  R4;
@@ -63,13 +64,37 @@ struct PAL_LIMITED_CONTEXT
     UIntNative GetFp() const { return R7; }
     UIntNative GetLr() const { return LR; }
     void SetIp(UIntNative ip) { IP = ip; }
+    void SetSp(UIntNative sp) { SP = sp; }
 #elif defined(_TARGET_ARM64_)
-    // @TODO: Add ARM64 registers
-    UIntNative IP;
-    UIntNative GetIp() const { PORTABILITY_ASSERT("@TODO: FIXME:ARM64"); }
-    UIntNative GetSp() const { PORTABILITY_ASSERT("@TODO: FIXME:ARM64"); }
-    UIntNative GetFp() const { PORTABILITY_ASSERT("@TODO: FIXME:ARM64"); }
-    UIntNative GetLr() const { PORTABILITY_ASSERT("@TODO: FIXME:ARM64"); }
+    UIntNative  FP;
+    UIntNative  LR;
+
+    UIntNative  X0;
+    UIntNative  X1;
+    UIntNative  X19;
+    UIntNative  X20;
+    UIntNative  X21;
+    UIntNative  X22;
+    UIntNative  X23;
+    UIntNative  X24;
+    UIntNative  X25;
+    UIntNative  X26;
+    UIntNative  X27;
+    UIntNative  X28;
+
+    UIntNative  SP;
+    UIntNative  IP;
+
+    UInt64      D[16 - 8];  // Only the bottom 64-bit value of the V registers V8..V15 needs to be preserved
+                            // (V0-V7 and V16-V31 are not preserved according to the ABI spec).
+
+
+    UIntNative GetIp() const { return IP; }
+    UIntNative GetSp() const { return SP; }
+    UIntNative GetFp() const { return FP; }
+    UIntNative GetLr() const { return LR; }
+    void SetIp(UIntNative ip) { IP = ip; }
+    void SetSp(UIntNative sp) { SP = sp; }
 #elif defined(UNIX_AMD64_ABI)
     // Param regs: rdi, rsi, rdx, rcx, r8, r9, scratch: rax, rdx (both return val), preserved: rbp, rbx, r12-r15
     UIntNative  IP;
@@ -88,7 +113,7 @@ struct PAL_LIMITED_CONTEXT
     void SetIp(UIntNative ip) { IP = ip; }
     void SetSp(UIntNative sp) { Rsp = sp; }
     UIntNative GetFp() const { return Rbp; }
-#else // _TARGET_ARM_
+#elif defined(_TARGET_X86_) || defined(_TARGET_AMD64_)
     UIntNative  IP;
     UIntNative  Rsp;
     UIntNative  Rbp;
@@ -117,6 +142,16 @@ struct PAL_LIMITED_CONTEXT
     UIntNative GetIp() const { return IP; }
     UIntNative GetSp() const { return Rsp; }
     UIntNative GetFp() const { return Rbp; }
+    void SetIp(UIntNative ip) { IP = ip; }
+    void SetSp(UIntNative sp) { Rsp = sp; }
+#else // _TARGET_ARM_
+    UIntNative  IP;
+
+    UIntNative GetIp() const { PORTABILITY_ASSERT("GetIp");  return 0; }
+    UIntNative GetSp() const { PORTABILITY_ASSERT("GetSp"); return 0; }
+    UIntNative GetFp() const { PORTABILITY_ASSERT("GetFp"); return 0; }
+    void SetIp(UIntNative ip) { PORTABILITY_ASSERT("SetIp"); }
+    void SetSp(UIntNative sp) { PORTABILITY_ASSERT("GetSp"); }
 #endif // _TARGET_ARM_
 };
 

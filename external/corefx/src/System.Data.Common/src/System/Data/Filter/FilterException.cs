@@ -9,12 +9,14 @@ using System.Runtime.Serialization;
 namespace System.Data
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class InvalidExpressionException : DataException
     {
         protected InvalidExpressionException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public InvalidExpressionException() : base() { }
@@ -24,12 +26,14 @@ namespace System.Data
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class EvaluateException : InvalidExpressionException
     {
         protected EvaluateException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public EvaluateException() : base() { }
@@ -39,12 +43,14 @@ namespace System.Data
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class SyntaxErrorException : InvalidExpressionException
     {
         protected SyntaxErrorException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public SyntaxErrorException() : base() { }

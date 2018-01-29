@@ -55,8 +55,8 @@ run_test_dir()
 
     local __msbuild_dir=${CoreRT_TestRoot}/../Tools
 
-    echo ${__msbuild_dir}/dotnetcli/dotnet ${__msbuild_dir}/MSBuild.dll /ds /m /p:IlcPath=${CoreRT_ToolchainDir} /p:Configuration=${CoreRT_BuildType} /p:Platform=${CoreRT_BuildArch} /p:RepoLocalBuild=true "/p:FrameworkLibPath=${CoreRT_TestRoot}/../bin/Product/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/lib" "/p:FrameworkObjPath=${CoreRT_TestRoot}/../bin/obj/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/Framework" ${__extra_args} "${__extra_cxxflags}" "${__extra_linkflags}" ${__dir_path}/${__filename}.csproj
-    ${__msbuild_dir}/dotnetcli/dotnet ${__msbuild_dir}/MSBuild.dll /ds /m /p:IlcPath=${CoreRT_ToolchainDir} /p:Configuration=${CoreRT_BuildType} /p:Platform=${CoreRT_BuildArch} /p:RepoLocalBuild=true "/p:FrameworkLibPath=${CoreRT_TestRoot}/../bin/Product/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/lib" "/p:FrameworkObjPath=${CoreRT_TestRoot}/../bin/obj/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/Framework" ${__extra_args} "${__extra_cxxflags}" "${__extra_linkflags}" ${__dir_path}/${__filename}.csproj
+    echo ${__msbuild_dir}/dotnetcli/dotnet ${__msbuild_dir}/MSBuild.dll /ds /m /p:IlcPath=${CoreRT_ToolchainDir} /p:Configuration=${CoreRT_BuildType} /p:Platform=${CoreRT_BuildArch} /p:RepoLocalBuild=true "/p:FrameworkLibPath=${CoreRT_TestRoot}/../bin/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/lib" "/p:FrameworkObjPath=${CoreRT_TestRoot}/../bin/obj/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/Framework" ${__extra_args} "${__extra_cxxflags}" "${__extra_linkflags}" ${__dir_path}/${__filename}.csproj
+    ${__msbuild_dir}/dotnetcli/dotnet ${__msbuild_dir}/MSBuild.dll /ds /m /p:IlcPath=${CoreRT_ToolchainDir} /p:Configuration=${CoreRT_BuildType} /p:Platform=${CoreRT_BuildArch} /p:OSGroup=${CoreRT_BuildOS} /p:RepoLocalBuild=true "/p:FrameworkLibPath=${CoreRT_TestRoot}/../bin/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/lib" "/p:FrameworkObjPath=${CoreRT_TestRoot}/../bin/obj/${CoreRT_BuildOS}.${CoreRT_BuildArch}.${CoreRT_BuildType}/Framework" ${__extra_args} "${__extra_cxxflags}" "${__extra_linkflags}" ${__dir_path}/${__filename}.csproj
 
     local __exitcode=$?
 
@@ -135,7 +135,6 @@ run_coreclr_tests()
     fi
 
     XunitTestBinBase=${CoreRT_TestExtRepo}
-    CORE_ROOT=${CoreRT_TestRoot}/CoreCLR/runtest
     pushd ${CoreRT_TestRoot}/CoreCLR/runtest
 
     export CoreRT_TestRoot
@@ -153,8 +152,8 @@ run_coreclr_tests()
         CoreRT_TestSelectionArg=
     fi
 
-    echo ./runtest.sh --testRootDir=${CoreRT_TestExtRepo} --coreOverlayDir=${CoreRT_TestRoot}/CoreCLR ${CoreRT_TestSelectionArg} --logdir=$__LogDir
-    ./runtest.sh --testRootDir=${CoreRT_TestExtRepo} --coreOverlayDir=${CoreRT_TestRoot}/CoreCLR ${CoreRT_TestSelectionArg} --logdir=$__LogDir
+    echo ./runtest.sh --testRootDir=${CoreRT_TestExtRepo} --coreOverlayDir=${CoreRT_TestRoot}/CoreCLR ${CoreRT_TestSelectionArg} --logdir=$__LogDir --disableEventLogging
+    ./runtest.sh --testRootDir=${CoreRT_TestExtRepo} --coreOverlayDir=${CoreRT_TestRoot}/CoreCLR ${CoreRT_TestSelectionArg} --logdir=$__LogDir --disableEventLogging
 }
 
 CoreRT_TestRoot="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -267,10 +266,10 @@ if [ ${CoreRT_CrossBuild} != 0 ]; then
                  source $ROOTFS_DIR/etc/os-release
              fi
              if [ "$ID" = "tizen" ]; then
-                 CoreRT_CrossCXXFlags="${CoreRT_CrossCXXFlags} -isystem ${CoreRT_CrossRootFS}/usr/lib/gcc/armv7l-tizen-linux-gnueabi/4.9.2/include/c++ `
-                                      `-isystem ${CoreRT_CrossRootFS}//usr/lib/gcc/armv7l-tizen-linux-gnueabi/4.9.2/include/c++/armv7l-tizen-linux-gnueabi `
+                 TIZEN_TOOLCHAIN="armv7l-tizen-linux-gnueabi/6.2.1"
+                 CoreRT_CrossCXXFlags="${CoreRT_CrossCXXFlags} -isystem ${CoreRT_CrossRootFS}/usr/lib/gcc/${TIZEN_TOOLCHAIN}/include/c++ `
+                                      `-isystem ${CoreRT_CrossRootFS}//usr/lib/gcc/${TIZEN_TOOLCHAIN}/include/c++/armv7l-tizen-linux-gnueabi `
                                       `-isystem ${CoreRT_CrossRootFS}/armel/usr/include"
-                 TIZEN_TOOLCHAIN="armv7l-tizen-linux-gnueabi/4.9.2"
                  CoreRT_CrossLinkerFlags="${CoreRT_CrossLinkerFlags} -B${CoreRT_CrossRootFS}/usr/lib/gcc/${TIZEN_TOOLCHAIN} `
                                          `-L${CoreRT_CrossRootFS}/usr/lib/gcc/${TIZEN_TOOLCHAIN}"
              else
@@ -321,6 +320,10 @@ __CppPassedTests=0
 __JitTotalTests=0
 __JitPassedTests=0
 
+
+if [ ! -d ${__CoreRTTestBinDir} ]; then
+    mkdir -p ${__CoreRTTestBinDir}
+fi
 echo > ${__CoreRTTestBinDir}/testResults.tmp
 
 __BuildOsLowcase=$(echo "${CoreRT_BuildOS}" | tr '[:upper:]' '[:lower:]')
@@ -352,8 +355,7 @@ else
     __TestResultsLog=${__CoreRTTestBinDir}/testResults.xml
 fi
 
-echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>" > ${__TestResultsLog}
-echo "<assemblies>"  >> ${__TestResultsLog}
+echo "<assemblies>"  > ${__TestResultsLog}
 echo "<assembly name=\"ILCompiler\" total=\"${__TotalTests}\" passed=\"${__PassedTests}\" failed=\"${__FailedTests}\" skipped=\"0\">"  >> ${__TestResultsLog}
 echo "<collection total=\"${__TotalTests}\" passed=\"${__PassedTests}\" failed=\"${__FailedTests}\" skipped=\"0\">"  >> ${__TestResultsLog}
 cat "${__CoreRTTestBinDir}/testResults.tmp" >> ${__TestResultsLog}

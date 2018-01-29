@@ -25,16 +25,16 @@ namespace Internal.Runtime
         {
             fixed (EEType* pThis = &this)
             {
-                IntPtr pGetArrayEEType = (IntPtr)InternalCalls.RhpGetClasslibFunctionFromEEtype(new IntPtr(pThis), EH.ClassLibFunctionId.GetSystemArrayEEType);
+                IntPtr pGetArrayEEType = (IntPtr)InternalCalls.RhpGetClasslibFunctionFromEEType(new IntPtr(pThis), EH.ClassLibFunctionId.GetSystemArrayEEType);
                 if (pGetArrayEEType != IntPtr.Zero)
                     return (EEType*)CalliIntrinsics.Call<IntPtr>(pGetArrayEEType);
             }
-#if CORERT
-            EH.FallbackFailFast(RhFailFastReason.InternalError, null);
-            return null;
-#else
+#if PROJECTN
             fixed (EEType* pThis = &this)
                 return InternalCalls.RhpGetArrayBaseType(pThis);
+#else
+            EH.FallbackFailFast(RhFailFastReason.InternalError, null);
+            return null;
 #endif
         }
 
@@ -77,7 +77,7 @@ namespace Internal.Runtime
         {
             fixed (EEType* pThis = &this)
             {
-                if (!IsRuntimeAllocated && !IsDynamicType)
+                if (!IsDynamicType)
                     return (IntPtr)pThis;
 
                 // There are currently four types of runtime allocated EETypes, arrays, pointers, byrefs, and generic types.

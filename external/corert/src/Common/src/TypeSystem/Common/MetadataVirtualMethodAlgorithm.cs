@@ -209,6 +209,8 @@ namespace Internal.TypeSystem
 
             // Step 4, name/sig match virtual function resolve
             MethodDesc resolutionTarget = FindNameSigOverrideForVirtualMethod(group.DefiningMethod, uninstantiatedType);
+            if (resolutionTarget == null)
+                return null;
 
             // Step 5, convert resolution target from uninstantiated form target to objecttype target,
             // and instantiate as appropriate
@@ -293,7 +295,7 @@ namespace Internal.TypeSystem
                     {
                         if (implMethod != null)
                         {
-                            throw new NotImplementedException("NYI: differentiating between overloads on instantiations when the instantiated signatures match.");
+                            throw NotImplemented.ActiveIssue("https://github.com/dotnet/corert/issues/190");
                         }
                         implMethod = candidate;
                     }
@@ -466,6 +468,11 @@ namespace Internal.TypeSystem
             return ResolveInterfaceMethodToVirtualMethodOnType(interfaceMethod, (MetadataType)currentType);
         }
 
+        public override MethodDesc ResolveVariantInterfaceMethodToVirtualMethodOnType(MethodDesc interfaceMethod, TypeDesc currentType)
+        {
+            return ResolveVariantInterfaceMethodToVirtualMethodOnType(interfaceMethod, (MetadataType)currentType);
+        }
+
         //////////////////////// INTERFACE RESOLUTION
         //Interface function resolution
         //    Interface function resolution follows the following rules
@@ -538,11 +545,39 @@ namespace Internal.TypeSystem
             }
         }
 
+        public static MethodDesc ResolveVariantInterfaceMethodToVirtualMethodOnType(MethodDesc interfaceMethod, MetadataType currentType)
+        {
+            MetadataType interfaceType = (MetadataType)interfaceMethod.OwningType;
+            bool foundInterface = IsInterfaceImplementedOnType(currentType, interfaceType);
+            MethodDesc implMethod;
+
+            if (foundInterface)
+            {
+                implMethod = ResolveInterfaceMethodToVirtualMethodOnType(interfaceMethod, currentType);
+                if (implMethod != null)
+                    return implMethod;
+            }
+
+            foreach (TypeDesc iface in currentType.RuntimeInterfaces)
+            {
+                if (iface.CanCastTo(interfaceType))
+                {
+                    implMethod = iface.FindMethodOnTypeWithMatchingTypicalMethod(interfaceMethod);
+                    Debug.Assert(implMethod != null);
+                    implMethod = ResolveInterfaceMethodToVirtualMethodOnType(implMethod, currentType);
+                    if (implMethod != null)
+                        return implMethod;
+                }
+            }
+
+            return null;
+        }
+
         // Helper routine used during implicit interface implementation discovery
         private static MethodDesc ResolveInterfaceMethodToVirtualMethodOnTypeRecursive(MethodDesc interfaceMethod, MetadataType currentType)
         {
             while (true)
-            {
+            {       
                 if (currentType == null)
                     return null;
 

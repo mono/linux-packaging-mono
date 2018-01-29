@@ -31,7 +31,7 @@
 #endif
 
 #ifndef _INC_WINDOWS
-//#ifndef DACCESS_COMPILE 
+//#ifndef DACCESS_COMPILE
 
 // There are some fairly primitive type definitions below but don't pull them into the rest of Redhawk unless
 // we have to (in which case these definitions will move to CommonTypes.h).
@@ -101,21 +101,6 @@ struct SYSTEM_INFO
 
 // defined in gcrhenv.cpp
 bool __SwitchToThread(uint32_t dwSleepMSec, uint32_t dwSwitchCount);
-
-struct OSVERSIONINFOEXW
-{
-    UInt32 dwOSVersionInfoSize;
-    UInt32 dwMajorVersion;
-    UInt32 dwMinorVersion;
-    UInt32 dwBuildNumber;
-    UInt32 dwPlatformId;
-    WCHAR  szCSDVersion[128];
-    UInt16 wServicePackMajor;
-    UInt16 wServicePackMinor;
-    UInt16 wSuiteMask;
-    UInt8 wProductType;
-    UInt8 wReserved;
-};
 
 struct FILETIME
 {
@@ -408,35 +393,43 @@ typedef struct DECLSPEC_ALIGN(16) _CONTEXT {
     // Integer registers
     //
     UInt32 Cpsr;       // NZVF + DAIF + CurrentEL + SPSel
-    UInt64 X0;
-    UInt64 X1;
-    UInt64 X2;
-    UInt64 X3;
-    UInt64 X4;
-    UInt64 X5;
-    UInt64 X6;
-    UInt64 X7;
-    UInt64 X8;
-    UInt64 X9;
-    UInt64 X10;
-    UInt64 X11;
-    UInt64 X12;
-    UInt64 X13;
-    UInt64 X14;
-    UInt64 X15;
-    UInt64 X16;
-    UInt64 X17;
-    UInt64 X18;
-    UInt64 X19;
-    UInt64 X20;
-    UInt64 X21;
-    UInt64 X22;
-    UInt64 X23;
-    UInt64 X24;
-    UInt64 X25;
-    UInt64 X26;
-    UInt64 X27;
-    UInt64 X28;
+    union {
+        struct {
+            UInt64 X0;
+            UInt64 X1;
+            UInt64 X2;
+            UInt64 X3;
+            UInt64 X4;
+            UInt64 X5;
+            UInt64 X6;
+            UInt64 X7;
+            UInt64 X8;
+            UInt64 X9;
+            UInt64 X10;
+            UInt64 X11;
+            UInt64 X12;
+            UInt64 X13;
+            UInt64 X14;
+            UInt64 X15;
+            UInt64 X16;
+            UInt64 X17;
+            UInt64 X18;
+            UInt64 X19;
+            UInt64 X20;
+            UInt64 X21;
+            UInt64 X22;
+            UInt64 X23;
+            UInt64 X24;
+            UInt64 X25;
+            UInt64 X26;
+            UInt64 X27;
+            UInt64 X28;
+#pragma warning(push)
+#pragma warning(disable:4201) // nameless struct
+        };
+        UInt64 X[29];
+    };
+#pragma warning(pop)
     UInt64 Fp; // X29
     UInt64 Lr; // X30
     UInt64 Sp;
@@ -464,8 +457,16 @@ typedef struct DECLSPEC_ALIGN(16) _CONTEXT {
     UIntNative GetLr() { return Lr; }
 } CONTEXT, *PCONTEXT;
 
-#endif 
+#elif defined(_WASM_)
 
+typedef struct DECLSPEC_ALIGN(8) _CONTEXT {
+    // TODO: Figure out if WebAssembly has a meaningful context available
+    void SetIp(UIntNative ip) {  }
+    void SetArg0Reg(UIntNative val) {  }
+    void SetArg1Reg(UIntNative val) {  }
+    UIntNative GetIp() { return 0; }
+} CONTEXT, *PCONTEXT;
+#endif 
 
 #define EXCEPTION_MAXIMUM_PARAMETERS 15 // maximum number of exception parameters
 
@@ -508,11 +509,6 @@ typedef enum _EXCEPTION_DISPOSITION {
 #else
 #define NULL_AREA_SIZE                   (64*1024)
 #endif
-
-#define GetExceptionCode            _exception_code
-#define GetExceptionInformation     (struct _EXCEPTION_POINTERS *)_exception_info
-EXTERN_C unsigned long __cdecl _exception_code(void);
-EXTERN_C void *        __cdecl _exception_info(void);
 
 //#endif // !DACCESS_COMPILE
 #endif // !_INC_WINDOWS
@@ -611,9 +607,6 @@ typedef IntNative (WINAPI *FARPROC)();
 #define THREAD_PRIORITY_HIGHEST 2
 
 #define NOERROR                 0x0
-
-#define TLS_OUT_OF_INDEXES      0xFFFFFFFF
-#define TLS_NUM_INLINE_SLOTS    64
 
 #define SUSPENDTHREAD_FAILED    0xFFFFFFFF
 #define RESUMETHREAD_FAILED     0xFFFFFFFF
@@ -818,7 +811,7 @@ typedef UInt32 (__stdcall *BackgroundCallback)(_In_opt_ void* pCallbackContext);
 REDHAWK_PALIMPORT bool REDHAWK_PALAPI PalStartBackgroundGCThread(_In_ BackgroundCallback callback, _In_opt_ void* pCallbackContext);
 REDHAWK_PALIMPORT bool REDHAWK_PALAPI PalStartFinalizerThread(_In_ BackgroundCallback callback, _In_opt_ void* pCallbackContext);
 
-typedef UInt32 (__stdcall *PalHijackCallback)(HANDLE hThread, _In_ PAL_LIMITED_CONTEXT* pThreadContext, _In_opt_ void* pCallbackContext);
+typedef UInt32_BOOL (*PalHijackCallback)(HANDLE hThread, _In_ PAL_LIMITED_CONTEXT* pThreadContext, _In_opt_ void* pCallbackContext);
 REDHAWK_PALIMPORT UInt32 REDHAWK_PALAPI PalHijack(HANDLE hThread, _In_ PalHijackCallback callback, _In_opt_ void* pCallbackContext);
 
 #ifdef FEATURE_ETW

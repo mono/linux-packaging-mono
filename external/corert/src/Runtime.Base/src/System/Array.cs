@@ -5,6 +5,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using Internal.Runtime.CompilerServices;
+
 namespace System
 {
     // CONTRACT with Runtime
@@ -42,7 +44,7 @@ namespace System
         }
     }
 
-    // To accomodate class libraries that wish to implement generic interfaces on arrays, all class libraries
+    // To accommodate class libraries that wish to implement generic interfaces on arrays, all class libraries
     // are now required to provide an Array<T> class that derives from Array.
     internal class Array<T> : Array
     {

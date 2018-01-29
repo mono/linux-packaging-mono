@@ -7,19 +7,13 @@ extern alias System_Private_CoreLib;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using Internal.Runtime;
 using Internal.Runtime.Augments;
 using Internal.Runtime.TypeLoader;
 
-using Internal.Metadata.NativeFormat;
-
-using Internal.Reflection.Core;
 using Internal.Reflection.Core.Execution;
-using Internal.Reflection.Execution.MethodInvokers;
 using Internal.NativeFormat;
 
 namespace Internal.Reflection.Execution
@@ -168,7 +162,11 @@ namespace Internal.Reflection.Execution
             String pathToRunningExe = RuntimeAugments.TryGetFullPathToMainApplication();
             String directoryContainingRunningExe = System_Private_CoreLib::System.IO.Path.GetDirectoryName(pathToRunningExe);
             String fullName = System_Private_CoreLib::System.IO.Path.Combine(directoryContainingRunningExe, name);
-            return (Stream)RuntimeAugments.OpenFileIfExists(fullName);
+
+            if (RuntimeAugments.FileExists(fullName))
+                return new FileStream(fullName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            else
+                return null;
         }
 
         /// <summary>

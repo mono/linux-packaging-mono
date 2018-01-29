@@ -85,6 +85,24 @@ partial class Interop
             internal int hr;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct COSERVERINFO
+        {
+            internal int  Reserved1;
+            internal IntPtr Name;
+            internal IntPtr AuthInfo;
+            internal int Reserved2;
+        }
+
+        [Flags]
+        internal enum CLSCTX : int
+        {
+            CLSCTX_INPROC_SERVER = 0x1,
+            CLSCTX_LOCAL_SERVER = 0x4,
+            CLSCTX_REMOTE_SERVER = 0x10,
+            CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER
+        }
+
         [MethodImplAttribute(MethodImplOptions.NoInlining)]
         static unsafe internal string ConvertBSTRToString(IntPtr pBSTR)
         {
@@ -143,6 +161,9 @@ partial class Interop
 
         internal const int TYPE_E_TYPEMISMATCH = unchecked((int)0x80028CA0);
         internal const int DISP_E_OVERFLOW = unchecked((int)0x8002000A);
+
+        internal const int CLASS_E_NOAGGREGATION = unchecked((int)0x80040110);
+        internal const int CLASS_E_CLASSNOTAVAILABLE = unchecked((int)0x80040111);
 
         /// <summary>
         /// Error indicates that you are accessing a CCW whose target object has already been garbage

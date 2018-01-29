@@ -22,20 +22,12 @@ namespace ILCompiler
             DependencyAnalyzerBase<NodeFactory> dependencyGraph,
             NodeFactory nodeFactory,
             IEnumerable<ICompilationRootProvider> roots,
+            DebugInformationProvider debugInformationProvider,
             Logger logger,
             CppCodegenConfigProvider options)
-            : base(dependencyGraph, nodeFactory, GetCompilationRoots(roots, nodeFactory), logger)
+            : base(dependencyGraph, nodeFactory, GetCompilationRoots(roots, nodeFactory), debugInformationProvider, null, logger)
         {
             Options = options;
-        }
-
-        protected override bool GenerateDebugInfo
-        {
-            get
-            {
-                /// Some degree of control exposed by <see cref="CppCodegenConfigProvider.NoLineNumbersString"/>.
-                return true;
-            }
         }
 
         private static IEnumerable<ICompilationRootProvider> GetCompilationRoots(IEnumerable<ICompilationRootProvider> existingRoots, NodeFactory factory)
@@ -49,6 +41,8 @@ namespace ILCompiler
         protected override void CompileInternal(string outputFile, ObjectDumper dumper)
         {
             _cppWriter = new CppWriter(this, outputFile);
+
+            _dependencyGraph.ComputeMarkedNodes();
 
             var nodes = _dependencyGraph.MarkedNodeList;
 

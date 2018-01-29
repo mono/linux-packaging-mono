@@ -58,4 +58,8 @@ public:
     PTR_VOID GetMethodStartAddress(MethodInfo * pMethodInfo);
 
     void * GetClasslibFunction(ClasslibFunctionId functionId);
+
+    PTR_VOID GetAssociatedData(PTR_VOID ControlPC);
+
+    PTR_VOID GetOsModuleHandle();
 };

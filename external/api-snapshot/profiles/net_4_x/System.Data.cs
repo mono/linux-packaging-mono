@@ -21,7 +21,6 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityTransparentAttribute]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace Microsoft.SqlServer.Server
 {
@@ -181,8 +180,9 @@ namespace Microsoft.SqlServer.Server
         public SqlMetaData(string name, System.Data.SqlDbType dbType, string database, string owningSchema, string objectName) { }
         public SqlMetaData(string name, System.Data.SqlDbType dbType, string database, string owningSchema, string objectName, bool useServerDefault, bool isUniqueKey, System.Data.SqlClient.SortOrder columnSortOrder, int sortOrdinal) { }
         public SqlMetaData(string name, System.Data.SqlDbType dbType, System.Type userDefinedType) { }
+        public SqlMetaData(string name, System.Data.SqlDbType dbType, System.Type userDefinedType, string serverTypeName) { }
+        public SqlMetaData(string name, System.Data.SqlDbType dbType, System.Type userDefinedType, string serverTypeName, bool useServerDefault, bool isUniqueKey, System.Data.SqlClient.SortOrder columnSortOrder, int sortOrdinal) { }
         public System.Data.SqlTypes.SqlCompareOptions CompareOptions { get { throw null; } }
-        [System.MonoTODOAttribute]
         public System.Data.DbType DbType { get { throw null; } }
         public bool IsUniqueKey { get { throw null; } }
         public long LocaleId { get { throw null; } }
@@ -194,6 +194,7 @@ namespace Microsoft.SqlServer.Server
         public System.Data.SqlClient.SortOrder SortOrder { get { throw null; } }
         public int SortOrdinal { get { throw null; } }
         public System.Data.SqlDbType SqlDbType { get { throw null; } }
+        public System.Type Type { get { throw null; } }
         public string TypeName { get { throw null; } }
         public bool UseServerDefault { get { throw null; } }
         public string XmlSchemaCollectionDatabase { get { throw null; } }
@@ -1403,7 +1404,7 @@ namespace System.Data
         public int RowCount { get { throw null; } }
         public void CopyToRows(System.Data.DataRow[] array) { }
         public void CopyToRows(System.Data.DataRow[] array, int arrayIndex) { }
-        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext context) { }
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public enum DbType
     {
@@ -2864,6 +2865,17 @@ namespace System.Data.Common
 }
 namespace System.Data.Odbc
 {
+    public static partial class ODBC32
+    {
+        public enum RETCODE
+        {
+            ERROR = -1,
+            INVALID_HANDLE = -2,
+            NO_DATA = 100,
+            SUCCESS = 0,
+            SUCCESS_WITH_INFO = 1,
+        }
+    }
     public sealed partial class OdbcCommand : System.Data.Common.DbCommand, System.ICloneable
     {
         public OdbcCommand() { }
@@ -3932,8 +3944,8 @@ namespace System.Data.SqlClient
         public new System.Data.SqlClient.SqlTransaction Transaction { get { throw null; } set { } }
         public override System.Data.UpdateRowSource UpdatedRowSource { get { throw null; } set { } }
         public event System.Data.StatementCompletedEventHandler StatementCompleted { add { } remove { } }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginExecuteNonQuery() { throw null; }
+        public System.IAsyncResult BeginExecuteNonQuery(System.AsyncCallback callback, object stateObject) { throw null; }
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginExecuteReader() { throw null; }
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
@@ -3949,6 +3961,7 @@ namespace System.Data.SqlClient
         protected override System.Data.Common.DbParameter CreateDbParameter() { throw null; }
         public new System.Data.SqlClient.SqlParameter CreateParameter() { throw null; }
         protected override void Dispose(bool disposing) { }
+        public int EndExecuteNonQuery(System.IAsyncResult asyncResult) { throw null; }
         protected override System.Data.Common.DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior) { throw null; }
         protected override System.Threading.Tasks.Task<System.Data.Common.DbDataReader> ExecuteDbDataReaderAsync(System.Data.CommandBehavior behavior, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override int ExecuteNonQuery() { throw null; }
@@ -4344,6 +4357,7 @@ namespace System.Data.SqlClient
         Subscribe = 1,
         Unknown = -1,
     }
+    [System.ComponentModel.TypeConverterAttribute("System.Data.SqlClient.SqlParameter.SqlParameterConverter")]
     public sealed partial class SqlParameter : System.Data.Common.DbParameter, System.Data.IDataParameter, System.Data.IDbDataParameter, System.ICloneable
     {
         public SqlParameter() { }
@@ -4360,17 +4374,20 @@ namespace System.Data.SqlClient
         public int LocaleId { get { throw null; } set { } }
         public int Offset { get { throw null; } set { } }
         public override string ParameterName { get { throw null; } set { } }
-        public override byte Precision { get { throw null; } set { } }
-        public override byte Scale { get { throw null; } set { } }
+        [System.ComponentModel.DefaultValueAttribute((byte)0)]
+        public new byte Precision { get { throw null; } set { } }
+        [System.ComponentModel.DefaultValueAttribute((byte)0)]
+        public new byte Scale { get { throw null; } set { } }
         public override int Size { get { throw null; } set { } }
         public override string SourceColumn { get { throw null; } set { } }
         public override bool SourceColumnNullMapping { get { throw null; } set { } }
         public override System.Data.DataRowVersion SourceVersion { get { throw null; } set { } }
+        [System.Data.Common.DbProviderSpecificTypePropertyAttribute(true)]
         public System.Data.SqlDbType SqlDbType { get { throw null; } set { } }
         public object SqlValue { get { throw null; } set { } }
         public string TypeName { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public string UdtTypeName { get { throw null; } set { } }
+        [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.StringConverter))]
         public override object Value { get { throw null; } set { } }
         public string XmlSchemaCollectionDatabase { get { throw null; } set { } }
         public string XmlSchemaCollectionName { get { throw null; } set { } }

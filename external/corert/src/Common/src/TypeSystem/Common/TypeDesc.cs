@@ -453,7 +453,8 @@ namespace Internal.TypeSystem
                         return field.FieldType;
                 }
 
-                throw new TypeSystemException.TypeLoadException(ExceptionStringID.ClassLoadGeneral, this);
+                ThrowHelper.ThrowTypeLoadException(ExceptionStringID.ClassLoadGeneral, this);
+                return null; // Unreachable
             }
         }
 
@@ -614,6 +615,18 @@ namespace Internal.TypeSystem
             get
             {
                 return HasInstantiation && IsTypeDefinition;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this is a byref-like type
+        /// (a <code>TypedReference</code>, <code>Span&lt;T&gt;</code>, etc.).
+        /// </summary>
+        public bool IsByRefLike
+        {
+            get
+            {
+                return (GetTypeFlags(TypeFlags.IsByRefLike | TypeFlags.IsByRefLikeComputed) & TypeFlags.IsByRefLike) != 0;
             }
         }
     }

@@ -76,6 +76,21 @@ namespace Internal.Runtime.TypeLoader
             return TypeLoaderEnvironment.ConvertUnboxingFunctionPointerToUnderlyingNonUnboxingPointer(unboxingFunctionPointer, declaringType);
         }
 
+        public override bool TryGetPointerTypeForTargetType(RuntimeTypeHandle pointeeTypeHandle, out RuntimeTypeHandle pointerTypeHandle)
+        {
+            return TypeLoaderEnvironment.Instance.TryGetPointerTypeForTargetType(pointeeTypeHandle, out pointerTypeHandle);
+        }
+
+        public override bool TryGetArrayTypeForElementType(RuntimeTypeHandle elementTypeHandle, bool isMdArray, int rank, out RuntimeTypeHandle arrayTypeHandle)
+        {
+            return TypeLoaderEnvironment.Instance.TryGetArrayTypeForElementType(elementTypeHandle, isMdArray, rank, out arrayTypeHandle);
+        }
+
+        public override IntPtr UpdateFloatingDictionary(IntPtr context, IntPtr dictionaryPtr)
+        {
+            return TypeLoaderEnvironment.Instance.UpdateFloatingDictionary(context, dictionaryPtr);
+        }
+
         /// <summary>
         /// Register a new runtime-allocated code thunk in the diagnostic stream.
         /// </summary>
@@ -205,7 +220,7 @@ namespace Internal.Runtime.TypeLoader
             return !type.RuntimeTypeHandle.IsNull();
         }
 
-        private TypeDesc GetConstructedTypeFromParserAndNativeLayoutContext(ref NativeParser parser, NativeLayoutInfoLoadContext nativeLayoutContext)
+        internal TypeDesc GetConstructedTypeFromParserAndNativeLayoutContext(ref NativeParser parser, NativeLayoutInfoLoadContext nativeLayoutContext)
         {
             TypeDesc parsedType = nativeLayoutContext.GetType(ref parser);
             if (parsedType == null)
@@ -503,6 +518,67 @@ namespace Internal.Runtime.TypeLoader
             }
         }
 
+        public unsafe IntPtr UpdateFloatingDictionary(IntPtr context, IntPtr dictionaryPtr)
+        {
+            IntPtr newFloatingDictionary;
+            bool isNewlyAllocatedDictionary;
+            bool isTypeContext = context != dictionaryPtr;
+
+            if (isTypeContext)
+            {
+                // Look for the exact base type that owns the dictionary. We may be having
+                // a virtual method run on a derived type and the generic lookup are performed
+                // on the base type's dictionary.
+                EEType* pEEType = (EEType*)context.ToPointer();
+                context = (IntPtr)EETypeCreator.GetBaseEETypeForDictionaryPtr(pEEType, dictionaryPtr);
+            }
+
+            using (LockHolder.Hold(_typeLoaderLock))
+            {
+                // Check if some other thread already allocated a floating dictionary and updated the fixed portion
+                if(*(IntPtr*)dictionaryPtr != IntPtr.Zero)
+                    return *(IntPtr*)dictionaryPtr;
+
+                try
+                {
+                    if (t_isReentrant)
+                        Environment.FailFast("Reentrant update to floating dictionary");
+                    t_isReentrant = true;
+
+                    newFloatingDictionary = TypeBuilder.TryBuildFloatingDictionary(context, isTypeContext, dictionaryPtr, out isNewlyAllocatedDictionary);
+
+                    t_isReentrant = false;
+                }
+                catch
+                {
+                    // Catch and rethrow any exceptions instead of using finally block. Otherwise, filters that are run during 
+                    // the first pass of exception unwind may hit the re-entrancy fail fast above.
+
+                    // TODO: Convert this to filter for better diagnostics once we switch to Roslyn
+
+                    t_isReentrant = false;
+                    throw;
+                }
+            }
+
+            if (newFloatingDictionary == IntPtr.Zero)
+            {
+                Environment.FailFast("Unable to update floating dictionary");
+                return IntPtr.Zero;
+            }
+
+            // The pointer to the floating dictionary is the first slot of the fixed dictionary.
+            if (Interlocked.CompareExchange(ref *(IntPtr*)dictionaryPtr, newFloatingDictionary, IntPtr.Zero) != IntPtr.Zero)
+            {
+                // Some other thread beat us and updated the pointer to the floating dictionary.
+                // Free the one allocated by the current thread
+                if (isNewlyAllocatedDictionary)
+                    MemoryHelpers.FreeMemory(newFloatingDictionary);
+            }
+
+            return *(IntPtr*)dictionaryPtr;
+        }
+
         public bool CanInstantiationsShareCode(RuntimeTypeHandle[] genericArgHandles1, RuntimeTypeHandle[] genericArgHandles2, CanonicalFormKind kind)
         {
             if (genericArgHandles1.Length != genericArgHandles2.Length)
@@ -589,13 +665,29 @@ namespace Internal.Runtime.TypeLoader
 
         public static unsafe bool TryGetTargetOfUnboxingAndInstantiatingStub(IntPtr maybeInstantiatingAndUnboxingStub, out IntPtr targetMethod)
         {
-            targetMethod = IntPtr.Zero;
+            targetMethod = RuntimeAugments.GetTargetOfUnboxingAndInstantiatingStub(maybeInstantiatingAndUnboxingStub);
+            if (targetMethod != IntPtr.Zero)
+            {
+                return true;
+            }
+
+            // TODO: The rest of the code in this function is specific to ProjectN only. When we kill the binder, get rid of this
+            // linear search code (the only API that should be used for the lookup is the one above)
 
             // Get module
             IntPtr associatedModule = RuntimeAugments.GetOSModuleFromPointer(maybeInstantiatingAndUnboxingStub);
             if (associatedModule == IntPtr.Zero)
             {
                 return false;
+            }
+
+            // Module having a type manager means we are not in ProjectN mode. Bail out earlier.
+            foreach (TypeManagerHandle handle in ModuleList.Enumerate())
+            {
+                if (handle.OsModuleBase == associatedModule && handle.IsTypeManager)
+                {
+                    return false;
+                }
             }
 
             // Get UnboxingAndInstantiatingTable

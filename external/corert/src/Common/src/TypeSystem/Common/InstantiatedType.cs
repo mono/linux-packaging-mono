@@ -104,6 +104,14 @@ namespace Internal.TypeSystem
                     flags |= TypeFlags.HasFinalizer;
             }
 
+            if ((mask & TypeFlags.IsByRefLikeComputed) != 0)
+            {
+                flags |= TypeFlags.IsByRefLikeComputed;
+
+                if (_typeDef.IsByRefLike)
+                    flags |= TypeFlags.IsByRefLike;
+            }
+
             return flags;
         }
 
@@ -259,15 +267,6 @@ namespace Internal.TypeSystem
         public override TypeDesc GetTypeDefinition()
         {
             return _typeDef;
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder(_typeDef.ToString());
-            sb.Append('<');
-            sb.Append(_instantiation.ToString());
-            sb.Append('>');
-            return sb.ToString();
         }
 
         // Properties that are passed through from the type definition

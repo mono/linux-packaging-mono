@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Internal.Runtime.Augments;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace System.Threading
@@ -24,24 +23,27 @@ namespace System.Threading
 
         //
         // It's important that we always return the same SynchronizationContext object for any particular ICoreDispatcher
-        // object, as long as any existing instance is still reachable.  This allows reference equality checks against the 
-        // SynchronizationContext to determine if two instances represent the same dispatcher.  Async frameworks rely on this.
-        // To accomplish this, we use a ConditionalWeakTable to track which instances of WinRTSynchronizationContext are bound
-        // to each ICoreDispatcher instance.
+        // or IDispatcherQueue object, as long as any existing instance is still reachable. This allows reference equality
+        // checks against the SynchronizationContext to determine if two instances represent the same dispatcher. Async
+        // frameworks rely on this. To accomplish this, we use a ConditionalWeakTable to track which instance of
+        // SynchronizationContext is bound to each ICoreDispatcher/IDispatcherQueue instance.
         //
         private static readonly ConditionalWeakTable<Object, WinRTSynchronizationContext> s_winRTContextCache =
             new ConditionalWeakTable<Object, WinRTSynchronizationContext>();
 
         private static SynchronizationContext GetWinRTContext()
         {
-            var dispatcher = WinRTInterop.Callbacks.GetCurrentCoreDispatcher();
+            // Optimization: WinRT dispatchers are supported for STA and ASTA apartment types only
+            if (RuntimeThread.GetCurrentApartmentType() != RuntimeThread.ApartmentType.STA)
+                return null;
+
+            object dispatcher = WinRTInterop.Callbacks.GetCurrentWinRTDispatcher();
             if (dispatcher == null)
                 return null;
 
             return s_winRTContextCache.GetValue(dispatcher, _dispatcher => new WinRTSynchronizationContext(_dispatcher));
         }
     }
-
 
     internal sealed class WinRTSynchronizationContext : SynchronizationContext
     {
@@ -99,10 +101,9 @@ namespace System.Threading
         {
             if (d == null)
                 throw new ArgumentNullException(nameof(d));
-            Contract.EndContractBlock();
 
             var invoker = new Invoker(d, state);
-            WinRTInterop.Callbacks.PostToCoreDispatcher(m_dispatcher, Invoker.InvokeDelegate, invoker);
+            WinRTInterop.Callbacks.PostToWinRTDispatcher(m_dispatcher, Invoker.InvokeDelegate, invoker);
         }
 
         public override void Send(SendOrPostCallback d, object state)

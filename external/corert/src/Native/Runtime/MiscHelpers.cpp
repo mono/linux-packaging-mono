@@ -122,150 +122,87 @@ COOP_PINVOKE_HELPER(UInt32, RhGetLoadedOSModules, (Array * pResultArray))
     return cModules;
 }
 
-// Get the list of currently loaded Redhawk modules (as OS HMODULE handles or TypeManager pointers as appropriate).
-//  The caller provides a reference
-// to an array of pointer-sized elements and we return the total number of modules currently loaded (whether
-// that is less than, equal to or greater than the number of elements in the array). If there are more modules
-// loaded than the array will hold then the array is filled to capacity and the caller can tell further
-// modules are available based on the return count. It is also possible to call this method without an array,
-// in which case just the module count is returned (note that it's still possible for the module count to
-// increase between calls to this method).
-COOP_PINVOKE_HELPER(UInt32, RhGetLoadedModules, (Array * pResultArray))
-{
-    // Note that we depend on the fact that this is a COOP helper to make writing into an unpinned array safe.
-
-    // If a result array is passed then it should be an array type with pointer-sized components that are not
-    // GC-references.
-    ASSERT(!pResultArray || pResultArray->get_EEType()->IsArray());
-    ASSERT(!pResultArray || !pResultArray->get_EEType()->HasReferenceFields());
-    ASSERT(!pResultArray || pResultArray->get_EEType()->get_ComponentSize() == sizeof(void*));
-
-    UInt32 cResultArrayElements = pResultArray ? pResultArray->GetArrayLength() : 0;
-    TypeManagerHandle * pResultElements = pResultArray ? (TypeManagerHandle*)(pResultArray + 1) : NULL;
-
-    UInt32 cModules = 0;
-
-    FOREACH_MODULE(pModule)
-    {
-        if (pResultArray && (cModules < cResultArrayElements))
-            pResultElements[cModules] = TypeManagerHandle::Create(pModule->GetOsModuleHandle());
-
-        cModules++;
-    }
-    END_FOREACH_MODULE
-
-    ReaderWriterLock::ReadHolder read(&GetRuntimeInstance()->GetTypeManagerLock());
-
-    RuntimeInstance::TypeManagerList typeManagers = GetRuntimeInstance()->GetTypeManagerList();
-    
-    for (RuntimeInstance::TypeManagerList::Iterator iter = typeManagers.Begin(); iter != typeManagers.End(); iter++)
-    {
-        if (pResultArray && (cModules < cResultArrayElements))
-            pResultElements[cModules] = TypeManagerHandle::Create(iter->m_pTypeManager);
-        cModules++;
-    }
-
-    return cModules;
-}
-
 COOP_PINVOKE_HELPER(HANDLE, RhGetOSModuleFromPointer, (PTR_VOID pPointerVal))
 {
-    // TODO, this will always return nullptr in TypeManager based systems.
     Module * pModule = GetRuntimeInstance()->FindModuleByAddress(pPointerVal);
 
     if (pModule != NULL)
         return pModule->GetOsModuleHandle();
+
+    ICodeManager * pCodeManager = GetRuntimeInstance()->FindCodeManagerByAddress(pPointerVal);
+
+    if (pCodeManager != NULL)
+        return (HANDLE)pCodeManager->GetOsModuleHandle();
 
     return NULL;
 }
 
 COOP_PINVOKE_HELPER(HANDLE, RhGetOSModuleFromEEType, (EEType * pEEType))
 {
-#if CORERT
-    return pEEType->GetTypeManagerPtr()->AsTypeManager()->GetOsModuleHandle();
-#else
-#if EETYPE_TYPE_MANAGER
-    if (pEEType->HasTypeManager())
-        return pEEType->GetTypeManagerPtr()->AsTypeManager()->GetOsModuleHandle();
-#endif
-
-    // For dynamically created types, return the module handle that contains the template type
-    if (pEEType->IsDynamicType())
-        pEEType = pEEType->get_DynamicTemplateType();
-
-    if (pEEType->get_DynamicModule() != nullptr)
-        return nullptr;
-
-    FOREACH_MODULE(pModule)
+#ifdef PROJECTN
+    if (!pEEType->HasTypeManager())
     {
-        if (pModule->ContainsReadOnlyDataAddress(pEEType) || pModule->ContainsDataAddress(pEEType))
-            return pModule->GetOsModuleHandle();
-    }
-    END_FOREACH_MODULE
+        // For dynamically created types, return the module handle that contains the template type
+        if (pEEType->IsDynamicType())
+            pEEType = pEEType->get_DynamicTemplateType();
 
-    // We should never get here (an EEType not located in any module) so fail fast to indicate the bug.
-    RhFailFast();
-    return NULL;
-#endif // !CORERT
+        if (pEEType->get_DynamicModule() != nullptr)
+            return nullptr;
+
+        FOREACH_MODULE(pModule)
+        {
+            if (pModule->ContainsReadOnlyDataAddress(pEEType) || pModule->ContainsDataAddress(pEEType))
+                return pModule->GetOsModuleHandle();
+        }
+        END_FOREACH_MODULE
+
+        // We should never get here (an EEType not located in any module) so fail fast to indicate the bug.
+        RhFailFast();
+        return NULL;
+    }
+#endif // PROJECTN
+
+    return pEEType->GetTypeManagerPtr()->AsTypeManager()->GetOsModuleHandle();
 }
 
 COOP_PINVOKE_HELPER(TypeManagerHandle, RhGetModuleFromEEType, (EEType * pEEType))
 {
-#if CORERT
-    return *pEEType->GetTypeManagerPtr();
-#else
-#if EETYPE_TYPE_MANAGER
-    if (pEEType->HasTypeManager())
-        return *pEEType->GetTypeManagerPtr();
-#endif
-
-    // For dynamically created types, return the module handle that contains the template type
-    if (pEEType->IsDynamicType())
-        pEEType = pEEType->get_DynamicTemplateType();
-
-    if (pEEType->get_DynamicModule() != nullptr)
+#ifdef PROJECTN
+    if (!pEEType->HasTypeManager())
     {
+        // For dynamically created types, return the module handle that contains the template type
+        if (pEEType->IsDynamicType())
+            pEEType = pEEType->get_DynamicTemplateType();
+
+        if (pEEType->get_DynamicModule() != nullptr)
+        {
+            // We should never get here (an EEType not located in any module) so fail fast to indicate the bug.
+            RhFailFast();
+            return TypeManagerHandle::Null();
+        }
+
+        FOREACH_MODULE(pModule)
+        {
+            if (pModule->ContainsReadOnlyDataAddress(pEEType) || pModule->ContainsDataAddress(pEEType))
+                return TypeManagerHandle::Create(pModule->GetOsModuleHandle());
+        }
+        END_FOREACH_MODULE
+
         // We should never get here (an EEType not located in any module) so fail fast to indicate the bug.
         RhFailFast();
         return TypeManagerHandle::Null();
     }
+#endif // PROJECTN
 
-    FOREACH_MODULE(pModule)
-    {
-        if (pModule->ContainsReadOnlyDataAddress(pEEType) || pModule->ContainsDataAddress(pEEType))
-            return TypeManagerHandle::Create(pModule->GetOsModuleHandle());
-    }
-    END_FOREACH_MODULE
-
-    // We should never get here (an EEType not located in any module) so fail fast to indicate the bug.
-    RhFailFast();
-    return TypeManagerHandle::Null();
-#endif // !CORERT
+    return *pEEType->GetTypeManagerPtr();
 }
 
 COOP_PINVOKE_HELPER(Boolean, RhFindBlob, (TypeManagerHandle *pTypeManagerHandle, UInt32 blobId, UInt8 ** ppbBlob, UInt32 * pcbBlob))
 {
     TypeManagerHandle typeManagerHandle = *pTypeManagerHandle;
 
-    if (typeManagerHandle.IsTypeManager())
-    {
-        ReadyToRunSectionType section =
-            (ReadyToRunSectionType)((UInt32)ReadyToRunSectionType::ReadonlyBlobRegionStart + blobId);
-        ASSERT(section <= ReadyToRunSectionType::ReadonlyBlobRegionEnd);
-
-        TypeManager* pModule = typeManagerHandle.AsTypeManager();
-
-        int length;
-        void* pBlob;
-        pBlob = pModule->GetModuleSection(section, &length);
-
-        *ppbBlob = (UInt8*)pBlob;
-        *pcbBlob = (UInt32)length;
-
-        return pBlob != NULL;
-    }
-#if !CORERT
-    else
+#ifdef PROJECTN
+    if (!typeManagerHandle.IsTypeManager())
     {
         HANDLE hOsModule = typeManagerHandle.AsOsModule();
         // Search for the Redhawk module contained by the OS module.
@@ -302,14 +239,28 @@ COOP_PINVOKE_HELPER(Boolean, RhFindBlob, (TypeManagerHandle *pTypeManagerHandle,
             }
         }
         END_FOREACH_MODULE
+
+        // If we get here we were passed a bad module handle and should fail fast since this indicates a nasty bug
+        // (which could lead to the wrong blob being returned in some cases).
+        RhFailFast();
+        return FALSE;
     }
-#endif // !CORERT
+#endif // PROJECTN
 
-    // If we get here we were passed a bad module handle and should fail fast since this indicates a nasty bug
-    // (which could lead to the wrong blob being returned in some cases).
-    RhFailFast();
+    ReadyToRunSectionType section =
+        (ReadyToRunSectionType)((UInt32)ReadyToRunSectionType::ReadonlyBlobRegionStart + blobId);
+    ASSERT(section <= ReadyToRunSectionType::ReadonlyBlobRegionEnd);
 
-    return FALSE;
+    TypeManager* pModule = typeManagerHandle.AsTypeManager();
+
+    int length;
+    void* pBlob;
+    pBlob = pModule->GetModuleSection(section, &length);
+
+    *ppbBlob = (UInt8*)pBlob;
+    *pcbBlob = (UInt32)length;
+
+    return pBlob != NULL;
 }
 
 // This helper is not called directly but is used by the implementation of RhpCheckCctor to locate the
@@ -332,6 +283,11 @@ COOP_PINVOKE_HELPER(void *, GetClasslibCCtorCheck, (void * pReturnAddress))
     return pCallback;
 }
 
+COOP_PINVOKE_HELPER(void *, RhGetTargetOfUnboxingAndInstantiatingStub, (void * pUnboxStub))
+{
+    return GetRuntimeInstance()->GetTargetOfUnboxingAndInstantiatingStub(pUnboxStub);
+}
+
 COOP_PINVOKE_HELPER(Boolean, RhpHasDispatchMap, (EEType * pEEType))
 {
     return pEEType->HasDispatchMap();
@@ -349,7 +305,7 @@ COOP_PINVOKE_HELPER(EEType *, RhpGetArrayBaseType, (EEType * pEEType))
 
 // Obtain the address of a thread static field for the current thread given the enclosing type and a field cookie
 // obtained from a fixed up binder blob field record.
-COOP_PINVOKE_HELPER(UInt8 *, RhGetThreadStaticFieldAddress, (EEType * pEEType, ThreadStaticFieldOffsets* pFieldCookie))
+COOP_PINVOKE_HELPER(UInt8 *, RhGetThreadStaticFieldAddress, (EEType * pEEType, UInt32 startingOffsetInTlsBlock, UInt32 fieldOffset))
 {
     RuntimeInstance * pRuntimeInstance = GetRuntimeInstance();
 
@@ -361,36 +317,57 @@ COOP_PINVOKE_HELPER(UInt8 *, RhGetThreadStaticFieldAddress, (EEType * pEEType, T
 
     if (pEEType->IsDynamicType())
     {
+        // Specific TLS storage is allocated for each dynamic type. There is no starting offset since it's not a 
+        // TLS storage block shared by multiple types.
+        ASSERT(startingOffsetInTlsBlock == 0);
+
         // Special case for thread static fields on dynamic types: the TLS storage is managed by the runtime
         // for each dynamically created type with thread statics. The TLS storage size allocated for each type
         // is the size of all the thread statics on that type. We use the field offset to get the thread static
         // data for that field on the current thread.
         UInt8* pTlsStorage = ThreadStore::GetCurrentThread()->GetThreadLocalStorageForDynamicType(pEEType->get_DynamicThreadStaticOffset());
         ASSERT(pTlsStorage != NULL);
-        return (pFieldCookie != NULL ? pTlsStorage + pFieldCookie->FieldOffset : pTlsStorage);
+        return pTlsStorage + fieldOffset;
     }
     else
     {
-        // In all other cases the field cookie contains an offset from the base of all Redhawk thread statics
-        // to the field. The TLS index and offset adjustment (in cases where the module was linked with native
-        // code using .tls) is that from the exe module.
+#if EETYPE_TYPE_MANAGER && PROJECTN /* TODO: CORERT */
+        if (pEEType->HasTypeManager())
+        {
+            TypeManager* pTypeManager = pEEType->GetTypeManagerPtr()->AsTypeManager();
+            ASSERT(pTypeManager != NULL);
 
-        // In the separate compilation case, the generic unification logic should assure
-        // that the pEEType parameter passed in is indeed the "winner" of generic unification,
-        // not one of the "losers".
-        // TODO: come up with an assert to check this.
-        Module * pModule = pRuntimeInstance->FindModuleByReadOnlyDataAddress(pEEType);
-        if (pModule == NULL)
-            pModule = pRuntimeInstance->FindModuleByDataAddress(pEEType);
-        ASSERT(pModule != NULL);
-        ModuleHeader * pExeModuleHeader = pModule->GetModuleHeader();
+            UInt32* pTlsIndex = pTypeManager->GetPointerToTlsIndex();
+            if (pTlsIndex == NULL)
+                return NULL;
+            
+            uiTlsIndex = *pTlsIndex;
+            uiFieldOffset = startingOffsetInTlsBlock + fieldOffset;
+        }
+        else
+#endif
+        {
+            // The startingOffsetInTlsBlock is an offset from the base of all Redhawk thread statics
+            // to the field. The TLS index and offset adjustment (in cases where the module was linked with native
+            // code using .tls) is that from the exe module.
 
-        uiTlsIndex = *pExeModuleHeader->PointerToTlsIndex;
-        uiFieldOffset = pExeModuleHeader->TlsStartOffset + pFieldCookie->StartingOffsetInTlsBlock + pFieldCookie->FieldOffset;
+            // In the separate compilation case, the generic unification logic should assure
+            // that the pEEType parameter passed in is indeed the "winner" of generic unification,
+            // not one of the "losers".
+            // TODO: come up with an assert to check this.
+            Module * pModule = pRuntimeInstance->FindModuleByReadOnlyDataAddress(pEEType);
+            if (pModule == NULL)
+                pModule = pRuntimeInstance->FindModuleByDataAddress(pEEType);
+            ASSERT(pModule != NULL);
+            ModuleHeader * pExeModuleHeader = pModule->GetModuleHeader();
+
+            uiTlsIndex = *pExeModuleHeader->PointerToTlsIndex;
+            uiFieldOffset = pExeModuleHeader->TlsStartOffset + startingOffsetInTlsBlock + fieldOffset;
+        }
+
+        // Now look at the current thread and retrieve the address of the field.
+        return ThreadStore::GetCurrentThread()->GetThreadLocalStorage(uiTlsIndex, uiFieldOffset);
     }
-
-    // Now look at the current thread and retrieve the address of the field.
-    return ThreadStore::GetCurrentThread()->GetThreadLocalStorage(uiTlsIndex, uiFieldOffset);
 }
 
 #if _TARGET_ARM_
@@ -445,105 +422,153 @@ inline Int32 GetThumb2BlRel24(UInt16 * p)
 // or unboxing stub, and if so, return the address that stub jumps to
 COOP_PINVOKE_HELPER(UInt8 *, RhGetCodeTarget, (UInt8 * pCodeOrg))
 {
-    // Search for the module containing the code
-    FOREACH_MODULE(pModule)
-    {
-        // If the code pointer doesn't point to a module's stub range,
-        // it can't be pointing to a stub
-        if (!pModule->ContainsStubAddress(pCodeOrg))
-            continue;
+    Module * pModule = NULL;
+    bool unboxingStub = false;
 
-        bool unboxingStub = false;
+    // First, check the unboxing stubs regions known by the runtime (if any exist)
+    if (!GetRuntimeInstance()->IsUnboxingStub(pCodeOrg))
+    {
+        // Search for the module containing the code
+        FOREACH_MODULE(pCurrentModule)
+        {
+            // If the code pointer doesn't point to a module's stub range,
+            // it can't be pointing to a stub
+            if (pCurrentModule->ContainsStubAddress(pCodeOrg))
+            {
+                pModule = pCurrentModule;
+                break;
+            }
+        }
+        END_FOREACH_MODULE;
+
+        if (pModule == NULL)
+            return pCodeOrg;
+    }
 
 #ifdef _TARGET_AMD64_
-        UInt8 * pCode = pCodeOrg;
+    UInt8 * pCode = pCodeOrg;
 
-        // is this "add rcx,8"?
-        if (pCode[0] == 0x48 && pCode[1] == 0x83 && pCode[2] == 0xc1 && pCode[3] == 0x08)
-        {
-            // unboxing sequence
-            unboxingStub = true;
-            pCode += 4;
-        }
-        // is this an indirect jump?
-        if (pCode[0] == 0xff && pCode[1] == 0x25)
-        {
-            // normal import stub - dist to IAT cell is relative to the point *after* the instruction
-            Int32 distToIatCell = *(Int32 *)&pCode[2];
-            UInt8 ** pIatCell = (UInt8 **)(pCode + 6 + distToIatCell);
-            ASSERT(pModule->ContainsDataAddress(pIatCell));
-            return *pIatCell;
-        }
-        // is this an unboxing stub followed by a relative jump?
-        else if (unboxingStub && pCode[0] == 0xe9)
-        {
-            // relatie jump - dist is relative to the point *after* the instruction
-            Int32 distToTarget = *(Int32 *)&pCode[1];
-            UInt8 * target = pCode + 5 + distToTarget;
-            return target;
-        }
-        return pCodeOrg;
+    // is this "add rcx/rdi,8"?
+    if (pCode[0] == 0x48 &&
+        pCode[1] == 0x83 &&
+#ifdef UNIX_AMD64_ABI
+        pCode[2] == 0xc7 &&
+#else
+        pCode[2] == 0xc1 &&
+#endif
+        pCode[3] == 0x08)
+    {
+        // unboxing sequence
+        unboxingStub = true;
+        pCode += 4;
+    }
+    // is this an indirect jump?
+    if (pCode[0] == 0xff && pCode[1] == 0x25)
+    {
+        // normal import stub - dist to IAT cell is relative to the point *after* the instruction
+        Int32 distToIatCell = *(Int32 *)&pCode[2];
+        UInt8 ** pIatCell = (UInt8 **)(pCode + 6 + distToIatCell);
+        ASSERT(pModule == NULL || pModule->ContainsDataAddress(pIatCell));
+        return *pIatCell;
+    }
+    // is this an unboxing stub followed by a relative jump?
+    else if (unboxingStub && pCode[0] == 0xe9)
+    {
+        // relative jump - dist is relative to the point *after* the instruction
+        Int32 distToTarget = *(Int32 *)&pCode[1];
+        UInt8 * target = pCode + 5 + distToTarget;
+        return target;
+    }
 
 #elif _TARGET_X86_
-        UInt8 * pCode = pCodeOrg;
+    UInt8 * pCode = pCodeOrg;
 
-        // is this "add ecx,4"?
-        if (pCode[0] == 0x83 && pCode[1] == 0xc1 && pCode[2] == 0x04)
-        {
-            // unboxing sequence
-            unboxingStub = true;
-            pCode += 3;
-        }
-        // is this an indirect jump?
-        if (pCode[0] == 0xff && pCode[1] == 0x25)
-        {
-            // normal import stub - address of IAT follows
-            UInt8 **pIatCell = *(UInt8 ***)&pCode[2];
-            ASSERT(pModule->ContainsDataAddress(pIatCell));
-            return *pIatCell;
-        }
-        // is this an unboxing stub followed by a relative jump?
-        else if (unboxingStub && pCode[0] == 0xe9)
-        {
-            // relatie jump - dist is relative to the point *after* the instruction
-            Int32 distToTarget = *(Int32 *)&pCode[1];
-            UInt8 * pTarget = pCode + 5 + distToTarget;
-            return pTarget;
-        }
-        return pCodeOrg;
+    // is this "add ecx,4"?
+    if (pCode[0] == 0x83 && pCode[1] == 0xc1 && pCode[2] == 0x04)
+    {
+        // unboxing sequence
+        unboxingStub = true;
+        pCode += 3;
+    }
+    // is this an indirect jump?
+    if (pCode[0] == 0xff && pCode[1] == 0x25)
+    {
+        // normal import stub - address of IAT follows
+        UInt8 **pIatCell = *(UInt8 ***)&pCode[2];
+        ASSERT(pModule == NULL || pModule->ContainsDataAddress(pIatCell));
+        return *pIatCell;
+    }
+    // is this an unboxing stub followed by a relative jump?
+    else if (unboxingStub && pCode[0] == 0xe9)
+    {
+        // relative jump - dist is relative to the point *after* the instruction
+        Int32 distToTarget = *(Int32 *)&pCode[1];
+        UInt8 * pTarget = pCode + 5 + distToTarget;
+        return pTarget;
+    }
 
 #elif _TARGET_ARM_
-        const UInt16 THUMB_BIT = 1;
-        UInt16 * pCode = (UInt16 *)((size_t)pCodeOrg & ~THUMB_BIT);
-        // is this "adds r0,4"?
-        if (pCode[0] == 0x3004)
+    const UInt16 THUMB_BIT = 1;
+    UInt16 * pCode = (UInt16 *)((size_t)pCodeOrg & ~THUMB_BIT);
+    // is this "adds r0,4"?
+    if (pCode[0] == 0x3004)
+    {
+        // unboxing sequence
+        unboxingStub = true;
+        pCode += 1;
+    }
+    // is this movw r12,#imm16; movt r12,#imm16; ldr pc,[r12]
+    // or movw r12,#imm16; movt r12,#imm16; bx r12
+    if  ((pCode[0] & 0xfbf0) == 0xf240 && (pCode[1] & 0x0f00) == 0x0c00
+        && (pCode[2] & 0xfbf0) == 0xf2c0 && (pCode[3] & 0x0f00) == 0x0c00
+        && ((pCode[4] == 0xf8dc && pCode[5] == 0xf000) || pCode[4] == 0x4760))
+    {
+        if (pCode[4] == 0xf8dc && pCode[5] == 0xf000)
         {
-            // unboxing sequence
-            unboxingStub = true;
-            pCode += 1;
-        }
-        // is this movw r12,#imm16; movt r12,#imm16; ldr pc,[r12]?
-        if  ((pCode[0] & 0xfbf0) == 0xf240 && (pCode[1] & 0x0f00) == 0x0c00
-          && (pCode[2] & 0xfbf0) == 0xf2c0 && (pCode[3] & 0x0f00) == 0x0c00
-          && pCode[4] == 0xf8dc && pCode[5] == 0xf000)
-        {
+            // ldr pc,[r12]
             UInt8 **pIatCell = (UInt8 **)GetThumb2Mov32(pCode);
             return *pIatCell;
         }
-        // is this an unboxing stub followed by a relative jump?
-        else if (unboxingStub && (pCode[0] & 0xf800) == 0xf000 && (pCode[1] & 0xd000) == 0x9000)
+        else if (pCode[4] == 0x4760)
         {
-            Int32 distToTarget = GetThumb2BlRel24(pCode);
-            UInt8 * pTarget = (UInt8 *)(pCode + 2) + distToTarget + THUMB_BIT;
-            return (UInt8 *)pTarget;
+            // bx r12
+            return (UInt8 *)GetThumb2Mov32(pCode);
         }
-#elif _TARGET_ARM64_
-    PORTABILITY_ASSERT("@TODO: FIXME:ARM64");
-#else
-#error 'Unsupported Architecture'
-#endif
     }
-    END_FOREACH_MODULE;
+    // is this an unboxing stub followed by a relative jump?
+    else if (unboxingStub && (pCode[0] & 0xf800) == 0xf000 && (pCode[1] & 0xd000) == 0x9000)
+    {
+        Int32 distToTarget = GetThumb2BlRel24(pCode);
+        UInt8 * pTarget = (UInt8 *)(pCode + 2) + distToTarget + THUMB_BIT;
+        return (UInt8 *)pTarget;
+    }
+
+#elif _TARGET_ARM64_
+    UInt32 * pCode = (UInt32 *)pCodeOrg;
+    // is this "add x0,x0,#8"?
+    if (pCode[0] == 0x91002000)
+    {
+        // unboxing sequence
+        unboxingStub = true;
+        pCode++;
+    }
+    // is this an indirect jump?
+    if (/* ARM64TODO */ false)
+    {
+        // ARM64TODO
+    }
+    // is this an unboxing stub followed by a relative jump?
+    else if (unboxingStub && (pCode[0] >> 26) == 0x5)
+    {
+        // relative jump - dist is relative to the instruction
+        // offset = SignExtend(imm26:'00', 64);
+        Int64 distToTarget = ((Int64)pCode[0] << 38) >> 36;
+        return (UInt8 *)pCode + distToTarget;
+    }
+#else
+    UNREFERENCED_PARAMETER(unboxingStub);
+    PORTABILITY_ASSERT("RhGetCodeTarget");
+#endif
 
     return pCodeOrg;
 }
@@ -598,7 +623,7 @@ COOP_PINVOKE_HELPER(UInt8 *, RhGetJmpStubCodeTarget, (UInt8 * pCodeOrg))
 #elif _TARGET_ARM64_
         PORTABILITY_ASSERT("@TODO: FIXME:ARM64");
 #else
-#error 'Unsupported Architecture'
+        PORTABILITY_ASSERT("RhGetJmpStubCodeTarget");
 #endif
     }
     END_FOREACH_MODULE;
@@ -770,3 +795,14 @@ COOP_PINVOKE_HELPER(void, RhSetThreadExitCallback, (void * pCallback))
 }
 
 #endif // PLATFORM_UNIX
+
+EXTERN_C void * FASTCALL RecoverLoopHijackTarget(UInt32 entryIndex, ModuleHeader * pModuleHeader)
+{
+    Module * pModule = GetRuntimeInstance()->FindModuleByReadOnlyDataAddress(pModuleHeader);
+    return pModule->RecoverLoopHijackTarget(entryIndex, pModuleHeader);
+}
+
+COOP_PINVOKE_HELPER(Int32, RhGetProcessCpuCount, ())
+{
+    return PalGetProcessCpuCount();
+}

@@ -27,9 +27,11 @@ namespace Internal.TypeSystem
         FileLoadErrorGeneric,
 
         // InvalidProgramException
+        InvalidProgramDefault,
         InvalidProgramSpecific,
         InvalidProgramVararg,
         InvalidProgramCallVirtFinalize,
+        InvalidProgramNativeCallable,
 
         // BadImageFormatException
         BadImageFormatGeneric,

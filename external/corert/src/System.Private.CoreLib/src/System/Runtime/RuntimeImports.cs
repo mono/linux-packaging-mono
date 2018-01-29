@@ -6,7 +6,9 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+
 using Internal.Runtime;
+using Internal.Runtime.CompilerServices;
 
 #if BIT64
 using nuint = System.UInt64;
@@ -33,18 +35,35 @@ namespace System.Runtime
         [RuntimeImport(RuntimeLibrary, "RhpSetHighLevelDebugFuncEvalHelper")]
         internal static extern void RhpSetHighLevelDebugFuncEvalHelper(IntPtr highLevelDebugFuncEvalHelper);
 
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void RhpSetHighLevelDebugFuncEvalAbortHelper(IntPtr highLevelDebugFuncEvalAbortHelper);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhpSendCustomEventToDebugger")]
         internal static extern void RhpSendCustomEventToDebugger(IntPtr payload, int length);
 
-        [DllImport(RuntimeLibrary, ExactSpelling = true)]
-        internal static extern IntPtr RhpGetFuncEvalTargetAddress();
-
-        [DllImport(RuntimeLibrary, ExactSpelling = true)]
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         internal static extern uint RhpGetFuncEvalParameterBufferSize();
 
-        [DllImport(RuntimeLibrary, ExactSpelling = true)]
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint RhpGetFuncEvalMode();
+
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         internal static extern unsafe uint RhpRecordDebuggeeInitiatedHandle(void* objectHandle);
+
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void RhpVerifyDebuggerCleanup();
+
+        [DllImport(RuntimeLibrary, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr RhpGetCurrentThread();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhpInitiateThreadAbort")]
+        internal static extern void RhpInitiateThreadAbort(IntPtr thread, Exception exception, bool doRudeAbort);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhpCancelThreadAbort")]
+        internal static extern void RhpCancelThreadAbort(IntPtr thread);
 
         //
         // calls to GC
@@ -176,8 +195,16 @@ namespace System.Runtime
         internal static extern ulong RhGetGCSegmentSize();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhGetAllocatedBytesForCurrentThread")]
+        internal static extern long RhGetAllocatedBytesForCurrentThread();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhCompareObjectContentsAndPadding")]
         internal extern static bool RhCompareObjectContentsAndPadding(object obj1, object obj2);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhGetProcessCpuCount")]
+        internal static extern int RhGetProcessCpuCount();
 
         //
         // calls for GCHandle.
@@ -231,7 +258,17 @@ namespace System.Runtime
         // Get object reference from handle.
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhHandleGet")]
-        internal static extern Object RhHandleGet(IntPtr handle);
+        private static extern Object _RhHandleGet(IntPtr handle);
+
+        internal static unsafe Object RhHandleGet(IntPtr handle)
+        {
+#if DEBUG
+            // The runtime performs additional checks in debug builds
+            return _RhHandleGet(handle);
+#else
+            return Unsafe.As<IntPtr, Object>(ref *(IntPtr*)handle);
+#endif
+        }
 
         // Get primary and secondary object references from dependent handle.
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -310,10 +347,9 @@ namespace System.Runtime
         [RuntimeImport(RuntimeLibrary, "RhNewArray")]
         internal static extern Array RhNewArray(EETypePtr pEEType, int length);
 
-        // @todo: Should we just have a proper export for this?
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhNewArray")]
-        internal static extern String RhNewArrayAsString(EETypePtr pEEType, int length);
+        [RuntimeImport(RuntimeLibrary, "RhNewString")]
+        internal static extern String RhNewString(EETypePtr pEEType, int length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhBox")]
@@ -499,34 +535,9 @@ namespace System.Runtime
             return RhGetModuleSection(ref module, section, out length);
         }
 
-#if CORERT
-        internal static uint RhGetLoadedOSModules(IntPtr[] resultArray)
-        {
-            IntPtr[] loadedModules = Internal.Runtime.CompilerHelpers.StartupCodeHelpers.OSModules;
-            if (resultArray != null)
-            {
-                Array.Copy(loadedModules, resultArray, Math.Min(loadedModules.Length, resultArray.Length));
-            }
-            return (uint)loadedModules.Length;
-        }
-
-        internal static uint RhGetLoadedModules(TypeManagerHandle[] resultArray)
-        {
-            TypeManagerHandle[] loadedModules = Internal.Runtime.CompilerHelpers.StartupCodeHelpers.Modules;
-            if (resultArray != null)
-            {
-                Array.Copy(loadedModules, resultArray, Math.Min(loadedModules.Length, resultArray.Length));
-            }
-            return (uint)loadedModules.Length;
-        }
-#else
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetLoadedOSModules")]
         internal static extern uint RhGetLoadedOSModules(IntPtr[] resultArray);
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhGetLoadedModules")]
-        internal static extern uint RhGetLoadedModules(TypeManagerHandle[] resultArray);
-#endif
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetOSModuleFromPointer")]
@@ -546,9 +557,9 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetThreadStaticFieldAddress")]
-        internal static extern unsafe byte* RhGetThreadStaticFieldAddress(EETypePtr pEEType, IntPtr fieldCookie);
+        internal static extern unsafe byte* RhGetThreadStaticFieldAddress(EETypePtr pEEType, int threadStaticsBlockOffset, int fieldOffset);
 
-#if CORERT
+#if !PROJECTN
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetThreadStaticStorageForModule")]
         internal static unsafe extern Array RhGetThreadStaticStorageForModule(Int32 moduleIndex);
@@ -556,6 +567,10 @@ namespace System.Runtime
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhSetThreadStaticStorageForModule")]
         internal static unsafe extern bool RhSetThreadStaticStorageForModule(Array storage, Int32 moduleIndex);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhCurrentNativeThreadId")]
+        internal static unsafe extern IntPtr RhCurrentNativeThreadId();
 #endif
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -568,11 +583,15 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetCodeTarget")]
-        internal static extern IntPtr RhGetCodeTarget(IntPtr pCode);
+        public static extern IntPtr RhGetCodeTarget(IntPtr pCode);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetJmpStubCodeTarget")]
         internal static extern IntPtr RhGetJmpStubCodeTarget(IntPtr pCode);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhGetTargetOfUnboxingAndInstantiatingStub")]
+        public static extern IntPtr RhGetTargetOfUnboxingAndInstantiatingStub(IntPtr pCode);
 
         //
         // EH helpers
@@ -709,7 +728,7 @@ namespace System.Runtime
         [RuntimeImport(RuntimeLibrary, "RhpEtwExceptionThrown")]
         internal extern static unsafe void RhpEtwExceptionThrown(char* exceptionTypeName, char* exceptionMessage, IntPtr faultingIP, long hresult);
 
-#if CORERT
+#if !PROJECTN
         //
         // Interlocked helpers
         //
@@ -740,7 +759,7 @@ namespace System.Runtime
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhpMemoryBarrier")]
         internal extern static void MemoryBarrier();
-#endif // CORERT
+#endif // !PROJECTN
 
         [Intrinsic]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

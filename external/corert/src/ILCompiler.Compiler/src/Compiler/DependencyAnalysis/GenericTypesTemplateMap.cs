@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 
 using Internal.Text;
+using ILCompiler.DependencyAnalysisFramework;
 using Internal.TypeSystem;
 using Internal.NativeFormat;
 
@@ -35,6 +36,7 @@ namespace ILCompiler.DependencyAnalysis
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
+        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
@@ -56,11 +58,13 @@ namespace ILCompiler.DependencyAnalysis
                 if (!IsEligibleToHaveATemplate(type))
                     continue;
 
-                if (factory.Target.Abi == TargetAbi.ProjectN)
+                if ((factory.Target.Abi == TargetAbi.ProjectN) && !ProjectNDependencyBehavior.EnableFullAnalysis)
                 {
-                    // If the type does not have fully constructed type, don't emit it.
+                    // If the type does not have fully constructed type, don't track its dependencies.
                     // TODO: Remove the workaround once we stop using the STS dependency analysis.
-                    if (!factory.ConstructedTypeSymbol(type).Marked)
+                    IDependencyNode node = factory.MaximallyConstructableType(type);
+
+                    if (!node.Marked)
                         continue;
                 }
 
@@ -91,16 +95,21 @@ namespace ILCompiler.DependencyAnalysis
         
         public static void GetTemplateTypeDependencies(ref DependencyList dependencies, NodeFactory factory, TypeDesc type)
         {
+            if (!factory.MetadataManager.SupportsReflection)
+                return;
+
             TypeDesc templateType = ConvertArrayOfTToRegularArray(factory, type);
 
             if (!IsEligibleToHaveATemplate(templateType))
                 return;
 
-            if (factory.Target.Abi == TargetAbi.ProjectN)
+            if ((factory.Target.Abi == TargetAbi.ProjectN) && !ProjectNDependencyBehavior.EnableFullAnalysis)
             {
                 // If the type does not have fully constructed type, don't track its dependencies.
                 // TODO: Remove the workaround once we stop using the STS dependency analysis.
-                if (!factory.ConstructedTypeSymbol(templateType).Marked)
+                IDependencyNode node = factory.MaximallyConstructableType(templateType);
+
+                if (!node.Marked)
                     return;
             }
 
@@ -150,5 +159,8 @@ namespace ILCompiler.DependencyAnalysis
 
             return false;
         }
+
+        protected internal override int Phase => (int)ObjectNodePhase.Ordered;
+        protected internal override int ClassCode => (int)ObjectNodeOrder.GenericTypesTemplateMap;
     }
 }

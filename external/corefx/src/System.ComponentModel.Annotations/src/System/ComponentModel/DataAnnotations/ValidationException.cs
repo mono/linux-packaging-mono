@@ -10,6 +10,9 @@ namespace System.ComponentModel.DataAnnotations
     ///     Exception used for validation using <see cref="ValidationAttribute" />.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.ComponentModel.DataAnnotations, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
+#endif
     public class ValidationException : Exception
     {
         private ValidationResult _validationResult;
@@ -45,7 +48,6 @@ namespace System.ComponentModel.DataAnnotations
         /// </summary>
         /// <remarks>The long form of this constructor is preferred because it gives better error reporting.</remarks>
         public ValidationException()
-            : base()
         {
         }
 
@@ -78,7 +80,6 @@ namespace System.ComponentModel.DataAnnotations
         protected ValidationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         /// <summary>
@@ -92,17 +93,8 @@ namespace System.ComponentModel.DataAnnotations
         /// <value>
         ///     This property will never be null.
         /// </value>
-        public ValidationResult ValidationResult
-        {
-            get
-            {
-                if (_validationResult == null)
-                {
-                    _validationResult = new ValidationResult(Message);
-                }
-                return _validationResult;
-            }
-        }
+        public ValidationResult ValidationResult =>
+            _validationResult ?? (_validationResult = new ValidationResult(Message));
 
         /// <summary>
         ///     Gets the value that caused the validating attribute to trigger the exception

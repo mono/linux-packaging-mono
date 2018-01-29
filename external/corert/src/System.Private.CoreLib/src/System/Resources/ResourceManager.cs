@@ -10,13 +10,13 @@
 #define FEATURE_APPX
 #endif // ENABLE_WINRT
 
+using Internal.Reflection.Augments;
 using Internal.Runtime.Augments;
 using Internal.Runtime.CompilerServices;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -50,8 +50,23 @@ namespace System.Resources
                                                               Version version,
                                                               bool throwOnFileNotFound)
         {
-            // TODO: Make this work (but we can't throw NotImplemented because that would break all resource lookups)
-            return null;
+            AssemblyName mainAssemblyAn = mainAssembly.GetName();
+            AssemblyName an = new AssemblyName();
+
+            an.CultureInfo = culture;
+            an.Name = name;
+            an.SetPublicKeyToken(mainAssemblyAn.GetPublicKeyToken());
+            an.Flags = mainAssemblyAn.Flags;
+            an.Version = version ?? mainAssemblyAn.Version;
+
+            Assembly retAssembly = ReflectionAugments.ReflectionCoreCallbacks.Load(an, false);
+
+            if (retAssembly == mainAssembly || (retAssembly == null && throwOnFileNotFound))
+            {
+                throw new FileNotFoundException(SR.Format(SR.IO_FileNotFound_FileName, an.Name));
+            }
+
+            return retAssembly;
         }
     }
 
@@ -168,7 +183,6 @@ namespace System.Resources
     // belonging to that type may not be initialized. FrameworkEventSource.Log
     // is one such example.
     //
-    [Serializable]
     public class ResourceManager
     {
         internal class CultureNameResourceSetPair
@@ -268,12 +282,10 @@ namespace System.Resources
 
             SetAppXConfiguration();
 
-            if (_bUsingModernResourceManagement == false)
-            {
-                _lastUsedResourceCache = new CultureNameResourceSetPair();
-                ResourceManagerMediator mediator = new ResourceManagerMediator(this);
-                resourceGroveler = new ManifestBasedResourceGroveler(mediator);
-            }
+            // Now we can use the managed resources even when using PRI's to support the APIs GetObject, GetStream...etc.
+            _lastUsedResourceCache = new CultureNameResourceSetPair();
+            ResourceManagerMediator mediator = new ResourceManagerMediator(this);
+            resourceGroveler = new ManifestBasedResourceGroveler(mediator);
         }
 
         // Constructs a Resource Manager for files beginning with 
@@ -292,7 +304,6 @@ namespace System.Resources
                 throw new ArgumentNullException(nameof(baseName));
             if (null == resourceDir)
                 throw new ArgumentNullException(nameof(resourceDir));
-            Contract.EndContractBlock();
 
             BaseNameField = baseName;
 
@@ -313,7 +324,6 @@ namespace System.Resources
 
             if (null == assembly)
                 throw new ArgumentNullException(nameof(assembly));
-            Contract.EndContractBlock();
 
             MainAssembly = assembly;
             BaseNameField = baseName;
@@ -398,18 +408,16 @@ namespace System.Resources
         // security check in each constructor prevents it.
         private void CommonAssemblyInit()
         {
-            if (_bUsingModernResourceManagement == false)
-            {
-                UseManifest = true;
+            // Now we can use the managed resources even when using PRI's to support the APIs GetObject, GetStream...etc.
+            UseManifest = true;
 
-                _resourceSets = new Dictionary<String, ResourceSet>();
-                _lastUsedResourceCache = new CultureNameResourceSetPair();
+            _resourceSets = new Dictionary<String, ResourceSet>();
+            _lastUsedResourceCache = new CultureNameResourceSetPair();
 
-                _fallbackLoc = UltimateResourceFallbackLocation.MainAssembly;
+            _fallbackLoc = UltimateResourceFallbackLocation.MainAssembly;
 
-                ResourceManagerMediator mediator = new ResourceManagerMediator(this);
-                resourceGroveler = new ManifestBasedResourceGroveler(mediator);
-            }
+            ResourceManagerMediator mediator = new ResourceManagerMediator(this);
+            resourceGroveler = new ManifestBasedResourceGroveler(mediator);
 
             _neutralResourcesCulture = ManifestBasedResourceGroveler.GetNeutralResourcesLanguage(MainAssembly, ref _fallbackLoc);
         }
@@ -419,14 +427,7 @@ namespace System.Resources
         {
             get
             {
-                if (_bUsingModernResourceManagement)
-                {
-                    throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty, nameof(BaseName)));
-                }
-                else
-                {
-                    return BaseNameField;
-                }
+                return BaseNameField;
             }
         }
 
@@ -434,28 +435,8 @@ namespace System.Resources
         // GetString or GetObject.
         public virtual bool IgnoreCase
         {
-            get
-            {
-                if (_bUsingModernResourceManagement)
-                {
-                    return false;
-                }
-                else
-                {
-                    return _ignoreCase;
-                }
-            }
-            set
-            {
-                if (_bUsingModernResourceManagement)
-                {
-                    throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty, nameof(IgnoreCase)));
-                }
-                else
-                {
-                    _ignoreCase = value;
-                }
-            }
+            get { return _ignoreCase; }
+            set { _ignoreCase = value; }
         }
 
         // Returns the Type of the ResourceSet the ResourceManager uses
@@ -464,14 +445,7 @@ namespace System.Resources
         {
             get
             {
-                if (_bUsingModernResourceManagement)
-                {
-                    throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty, nameof(ResourceSetType)));
-                }
-                else
-                {
-                    return (_userResourceSet == null) ? typeof(RuntimeResourceSet) : _userResourceSet;
-                }
+                return (_userResourceSet == null) ? typeof(RuntimeResourceSet) : _userResourceSet;
             }
         }
 
@@ -479,25 +453,11 @@ namespace System.Resources
         {
             get
             {
-                if (_bUsingModernResourceManagement)
-                {
-                    throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty, nameof(FallbackLocation)));
-                }
-                else
-                {
-                    return _fallbackLoc;
-                }
+                return _fallbackLoc;
             }
             set
             {
-                if (_bUsingModernResourceManagement)
-                {
-                    throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty, nameof(FallbackLocation)));
-                }
-                else
-                {
-                    _fallbackLoc = value;
-                }
+                _fallbackLoc = value;
             }
         }
 
@@ -547,9 +507,6 @@ namespace System.Resources
         // such as ".ResX", or a completely different format for naming files.
         protected virtual String GetResourceFileName(CultureInfo culture)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetResourceFileName)));
-
             StringBuilder sb = new StringBuilder(255);
             sb.Append(BaseNameField);
             // If this is the neutral culture, don't append culture name.
@@ -634,9 +591,6 @@ namespace System.Resources
         //         
         public virtual ResourceSet GetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetResourceSet)));
-
             if (null == culture)
                 throw new ArgumentNullException(nameof(culture));
 
@@ -672,9 +626,6 @@ namespace System.Resources
         // This will take a minimal number of locks.
         protected virtual ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(InternalGetResourceSet)));
-
             Dictionary<String, ResourceSet> localResourceSets = _resourceSets;
             ResourceSet rs = null;
             CultureInfo foundCulture = null;
@@ -782,7 +733,7 @@ namespace System.Resources
 
             foreach (SatelliteContractVersionAttribute attr in attrs)
             {
-                Contract.Assert(v == null, "Cannot have multiple instances of SatelliteContractVersionAttribute on an assembly!");
+                Debug.Assert(v == null, "Cannot have multiple instances of SatelliteContractVersionAttribute on an assembly!");
                 v = attr.Version;
             }
 
@@ -794,7 +745,7 @@ namespace System.Resources
             Version ver;
             try
             {
-                ver = new Version(v);
+                ver = Version.Parse(v);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -804,7 +755,7 @@ namespace System.Resources
                 // BCL directory.
                 if (a == typeof(Object).GetTypeInfo().Assembly)
                 {
-                    Contract.Assert(false, System.CoreLib.Name + "'s SatelliteContractVersionAttribute is a malformed version string!");
+                    Debug.Fail(System.CoreLib.Name + "'s SatelliteContractVersionAttribute is a malformed version string!");
                     return null;
                 }
 
@@ -827,7 +778,7 @@ namespace System.Resources
                                           String typeName2,
                                           AssemblyName asmName2)
         {
-            Contract.Assert(asmTypeName1 != null, "asmTypeName1 was unexpectedly null");
+            Debug.Assert(asmTypeName1 != null, "asmTypeName1 was unexpectedly null");
 
             // First, compare type names
             int comma = asmTypeName1.IndexOf(',');
@@ -883,9 +834,9 @@ namespace System.Resources
 #if FEATURE_APPX
         // Throws WinRT hresults
         private string GetStringFromPRI(String stringName, String startingCulture, String neutralResourcesCulture) {
-            Contract.Assert(_bUsingModernResourceManagement);
-            Contract.Assert(_WinRTResourceManager != null);
-            Contract.Assert(_PRIonAppXInitialized);
+            Debug.Assert(_bUsingModernResourceManagement);
+            Debug.Assert(_WinRTResourceManager != null);
+            Debug.Assert(_PRIonAppXInitialized);
         
             if (stringName.Length == 0)
                 return null;
@@ -926,13 +877,17 @@ namespace System.Resources
         [NonSerialized]
         private PRIExceptionInfo _PRIExceptionInfo; // Written only by SetAppXConfiguration
 
-        // When running under AppX, the toolchain stamped assemblies with embedded resources
-        // with HasEmbeddedStringResourcesAttribute
+        // If it is framework assembly we'll return true. the reason is in .NetNative we don't merge the resources to the app PRI file.
+        // The framework assemblies are tagged with attribute [assembly: AssemblyMetadata(".NETFrameworkAssembly", "")]
         private bool ShouldUseSatelliteAssemblyResourceLookupUnderAppX(Assembly resourcesAssembly)
         {
-            foreach (CustomAttributeData attrData in resourcesAssembly.CustomAttributes)
+            if (typeof(Object).Assembly == resourcesAssembly)
+                return true;
+
+            foreach (var attrib in resourcesAssembly.GetCustomAttributes())
             {
-                if (attrData.AttributeType.Equals(typeof(HasEmbeddedStringResourcesAttribute)))
+                AssemblyMetadataAttribute meta = attrib as AssemblyMetadataAttribute;
+                if (meta != null && meta.Key.Equals(".NETFrameworkAssembly"))
                 {
                     return true;
                 }
@@ -947,40 +902,38 @@ namespace System.Resources
 
         private void SetAppXConfiguration()
         {
-            Contract.Assert(_bUsingModernResourceManagement == false); // Only this function writes to this member
+            Debug.Assert(_bUsingModernResourceManagement == false); // Only this function writes to this member
 #if FEATURE_APPX
-            Contract.Assert(_WinRTResourceManager == null); // Only this function writes to this member
-            Contract.Assert(_PRIonAppXInitialized == false); // Only this function writes to this member
-            Contract.Assert(_PRIExceptionInfo == null); // Only this function writes to this member
-
-            bool bUsingSatelliteAssembliesUnderAppX = false;
+            Debug.Assert(_WinRTResourceManager == null); // Only this function writes to this member
+            Debug.Assert(_PRIonAppXInitialized == false); // Only this function writes to this member
+            Debug.Assert(_PRIExceptionInfo == null); // Only this function writes to this member
 
             Assembly resourcesAssembly = MainAssembly;
 
             if (resourcesAssembly != null)
             {
-                s_IsAppXModel = true;
-
-                // If we have the type information from the ResourceManager(Type) constructor, we use it. Otherwise, we use BaseNameField.
-                String reswFilename = _locationInfo == null ? BaseNameField : _locationInfo.FullName;
-
-                // The only way this can happen is if a class inherited from ResourceManager and
-                // did not set the BaseNameField before calling the protected ResourceManager() constructor.
-                // For other constructors, we would already have thrown an ArgumentNullException by now.
-                // Throwing an ArgumentNullException now is not the right thing to do because technically
-                // ResourceManager() takes no arguments, and because it is not documented as throwing
-                // any exceptions. Instead, let's go through the rest of the initialization with this set to
-                // an empty string. We may in fact fail earlier for another reason, but otherwise we will
-                // throw a MissingManifestResourceException when GetString is called indicating that a
-                // resW filename called "" could not be found.
-                if (reswFilename == null)
-                    reswFilename = String.Empty;
-
-                WindowsRuntimeResourceManagerBase WRRM = null;
-                bool bWRRM_Initialized = false;
-
-                if (!bUsingSatelliteAssembliesUnderAppX)
+#if ENABLE_WINRT
+                WinRTInteropCallbacks callbacks = WinRTInterop.UnsafeCallbacks;
+                if (callbacks != null && callbacks.IsAppxModel())
+                    s_IsAppXModel = true;
+#endif
+                if (s_IsAppXModel)
                 {
+                    // If we have the type information from the ResourceManager(Type) constructor, we use it. Otherwise, we use BaseNameField.
+                    String reswFilename = _locationInfo == null ? BaseNameField : _locationInfo.FullName;
+
+                    // The only way this can happen is if a class inherited from ResourceManager and
+                    // did not set the BaseNameField before calling the protected ResourceManager() constructor.
+                    // For other constructors, we would already have thrown an ArgumentNullException by now.
+                    // Throwing an ArgumentNullException now is not the right thing to do because technically
+                    // ResourceManager() takes no arguments, and because it is not documented as throwing
+                    // any exceptions. Instead, let's go through the rest of the initialization with this set to
+                    // an empty string. We may in fact fail earlier for another reason, but otherwise we will
+                    // throw a MissingManifestResourceException when GetString is called indicating that a
+                    // resW filename called "" could not be found.
+                    if (reswFilename == null)
+                        reswFilename = String.Empty;
+
                     // See AssemblyNative::IsFrameworkAssembly for details on which kinds of assemblies are considered Framework assemblies.
                     // The Modern Resource Manager is not used for such assemblies - they continue to use satellite assemblies (i.e. .resources.dll files).
                     _bUsingModernResourceManagement = !ShouldUseSatelliteAssemblyResourceLookupUnderAppX(resourcesAssembly);
@@ -988,9 +941,6 @@ namespace System.Resources
                     if (_bUsingModernResourceManagement)
                     {
                         // Only now are we certain that we need the PRI file.
-
-                        // Note that if IsAppXDesignMode is false, we haven't checked if the PRI file exists.
-                        // This is by design. We will find out in the call to WindowsRuntimeResourceManager.Initialize below.
 
                         // At this point it is important NOT to set _bUsingModernResourceManagement to false
                         // if the PRI file does not exist because we are now certain we need to load PRI
@@ -1000,62 +950,61 @@ namespace System.Resources
                         // the MissingManifestResourceException from this function, but from GetString. See the
                         // comment below on the reason for this.
 
-                        if (WRRM != null && bWRRM_Initialized)
+                        _WinRTResourceManager = GetWinRTResourceManager();
+
+                        try
                         {
-                            // Reuse the one successfully created earlier
-                            _WinRTResourceManager = WRRM;
-                            _PRIonAppXInitialized = true;
+                            _PRIonAppXInitialized = _WinRTResourceManager.Initialize(reswFilename, out _PRIExceptionInfo);
+
+                            // Note that _PRIExceptionInfo might be null - this is OK.
+                            // In that case we will just throw the generic
+                            // MissingManifestResource_NoPRIresources exception.
+                            // See the implementation of GetString for more details.
                         }
-                        else
+                        // We would like to be able to throw a MissingManifestResourceException here if PRI resources
+                        // could not be loaded for a recognized reason. However, the ResourceManager constructors
+                        // that call SetAppXConfiguration are not documented as throwing MissingManifestResourceException,
+                        // and since they are part of the portable profile, we cannot start throwing a new exception type
+                        // as that would break existing portable libraries. Hence we must save the exception information
+                        // now and throw the exception on the first call to GetString.
+                        catch (FileNotFoundException)
                         {
-                            _WinRTResourceManager = GetWinRTResourceManager();
-
-                            try
-                            {
-                                _PRIonAppXInitialized = _WinRTResourceManager.Initialize(reswFilename, out _PRIExceptionInfo);
-
-                                // Note that _PRIExceptionInfo might be null - this is OK.
-                                // In that case we will just throw the generic
-                                // MissingManifestResource_NoPRIresources exception.
-                                // See the implementation of GetString for more details.
-                            }
-                            // We would like to be able to throw a MissingManifestResourceException here if PRI resources
-                            // could not be loaded for a recognized reason. However, the ResourceManager constructors
-                            // that call SetAppXConfiguration are not documented as throwing MissingManifestResourceException,
-                            // and since they are part of the portable profile, we cannot start throwing a new exception type
-                            // as that would break existing portable libraries. Hence we must save the exception information
-                            // now and throw the exception on the first call to GetString.
-                            catch (FileNotFoundException)
-                            {
-                                // We will throw MissingManifestResource_NoPRIresources from GetString
-                                // when we see that _PRIonAppXInitialized is false.
-                            }
-                            catch (Exception e)
-                            {
-                                // ERROR_MRM_MAP_NOT_FOUND can be thrown by the call to ResourceManager.get_AllResourceMaps
-                                // in WindowsRuntimeResourceManager.Initialize.
-                                // In this case _PRIExceptionInfo is now null and we will just throw the generic
-                                // MissingManifestResource_NoPRIresources exception.
-                                // See the implementation of GetString for more details.
-                                if (e.HResult != __HResults.ERROR_MRM_MAP_NOT_FOUND)
-                                    throw; // Unexpected exception code. Bubble it up to the caller.
-                            }
-                            // Allow all other exception types to bubble up to the caller.
-
-                            // Yes, this causes us to potentially throw exception types that are not documented.
-
-                            // Ultimately the tradeoff is the following:
-                            // -We could ignore unknown exceptions or rethrow them as inner exceptions
-                            // of exceptions that the ResourceManager class is already documented as throwing.
-                            // This would allow existing portable libraries to gracefully recover if they don't care
-                            // too much about the ResourceManager object they are using. However it could
-                            // mask potentially fatal errors that we are not aware of, such as a disk drive failing.
-
-
-                            // The alternative, which we chose, is to throw unknown exceptions. This may tear
-                            // down the process if the portable library and app don't expect this exception type.
-                            // On the other hand, this won't mask potentially fatal errors we don't know about.
+                            // We will throw MissingManifestResource_NoPRIresources from GetString
+                            // when we see that _PRIonAppXInitialized is false.
                         }
+                        catch (Exception e)
+                        {
+                            // ERROR_MRM_MAP_NOT_FOUND can be thrown by the call to ResourceManager.get_AllResourceMaps
+                            // in WindowsRuntimeResourceManager.Initialize.
+                            // In this case _PRIExceptionInfo is now null and we will just throw the generic
+                            // MissingManifestResource_NoPRIresources exception.
+                            // See the implementation of GetString for more details.
+                            if (e.HResult != HResults.ERROR_MRM_MAP_NOT_FOUND)
+                                throw; // Unexpected exception code. Bubble it up to the caller.
+                        }
+
+                        if (!_PRIonAppXInitialized)
+                        {
+                            // if we couldn't find resources in the PRI, we fallback using the managed resources.
+                            // if try to get resources that no existing, we'll throw anyway.
+                            _bUsingModernResourceManagement = false;
+                        }
+
+                        // Allow all other exception types to bubble up to the caller.
+
+                        // Yes, this causes us to potentially throw exception types that are not documented.
+
+                        // Ultimately the tradeoff is the following:
+                        // -We could ignore unknown exceptions or rethrow them as inner exceptions
+                        // of exceptions that the ResourceManager class is already documented as throwing.
+                        // This would allow existing portable libraries to gracefully recover if they don't care
+                        // too much about the ResourceManager object they are using. However it could
+                        // mask potentially fatal errors that we are not aware of, such as a disk drive failing.
+
+
+                        // The alternative, which we chose, is to throw unknown exceptions. This may tear
+                        // down the process if the portable library and app don't expect this exception type.
+                        // On the other hand, this won't mask potentially fatal errors we don't know about.
                     }
                 }
             }
@@ -1082,7 +1031,6 @@ namespace System.Resources
         {
             if (null == name)
                 throw new ArgumentNullException(nameof(name));
-            Contract.EndContractBlock();
 
             // Recursion guard so framework resource lookups can't stack overflow
             if (ts_recursionCount > 10)
@@ -1193,9 +1141,6 @@ namespace System.Resources
         // 
         public virtual Object GetObject(String name)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetObject)));
-
             return GetObject(name, (CultureInfo)null, true);
         }
 
@@ -1204,9 +1149,6 @@ namespace System.Resources
         // Returns null if the resource wasn't found.
         public virtual Object GetObject(String name, CultureInfo culture)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetObject)));
-
             return GetObject(name, culture, true);
         }
 
@@ -1214,7 +1156,6 @@ namespace System.Resources
         {
             if (null == name)
                 throw new ArgumentNullException(nameof(name));
-            Contract.EndContractBlock();
 
 #if FEATURE_APPX
             if(s_IsAppXModel)
@@ -1293,17 +1234,11 @@ namespace System.Resources
 
         public UnmanagedMemoryStream GetStream(String name)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetStream)));
-
             return GetStream(name, (CultureInfo)null);
         }
 
         public UnmanagedMemoryStream GetStream(String name, CultureInfo culture)
         {
-            if (_bUsingModernResourceManagement)
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod, nameof(GetStream)));
-
             Object obj = GetObject(name, culture, false);
             UnmanagedMemoryStream ums = obj as UnmanagedMemoryStream;
             if (ums == null && obj != null)

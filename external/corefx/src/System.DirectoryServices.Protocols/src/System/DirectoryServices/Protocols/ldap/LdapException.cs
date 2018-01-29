@@ -65,6 +65,9 @@ namespace System.DirectoryServices.Protocols
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.DirectoryServices.Protocols, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public class LdapException : DirectoryException, ISerializable
     {
         protected LdapException(SerializationInfo info, StreamingContext context) : base(info, context) { }
@@ -104,6 +107,9 @@ namespace System.DirectoryServices.Protocols
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.DirectoryServices.Protocols, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public class TlsOperationException : DirectoryOperationException
     {
         protected TlsOperationException(SerializationInfo info, StreamingContext context) : base(info, context) { }

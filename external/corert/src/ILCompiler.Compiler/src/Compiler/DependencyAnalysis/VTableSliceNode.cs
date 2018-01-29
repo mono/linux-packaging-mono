@@ -21,6 +21,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public VTableSliceNode(TypeDesc type)
         {
+            Debug.Assert(!type.IsArray, "Wanted to call GetClosestDefType?");
+            Debug.Assert(!type.IsCanonicalSubtype(CanonicalFormKind.Any) ||
+                type.ConvertToCanonForm(CanonicalFormKind.Specific) == type);
             _type = type;
         }
 
@@ -29,9 +32,30 @@ namespace ILCompiler.DependencyAnalysis
             get;
         }
 
+        public TypeDesc Type => _type;
+
+        /// <summary>
+        /// Gets a value indicating whether the slots are assigned at the beginning of the compilation.
+        /// </summary>
+        public abstract bool HasFixedSlots
+        {
+            get;
+        }
+
         protected override string GetName(NodeFactory factory) => $"__vtable_{factory.NameMangler.GetMangledTypeName(_type).ToString()}";
 
         public override bool StaticDependenciesAreComputed => true;
+
+        public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
+        {
+            DefType baseType = _type.NormalizedBaseType();
+            if (baseType != null)
+            {
+                return new[] { new DependencyListEntry(factory.VTable(baseType), "Base type VTable") };
+            }
+
+            return null;
+        }
 
         public override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory factory) => null;
         public override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
@@ -40,9 +64,9 @@ namespace ILCompiler.DependencyAnalysis
         public override bool HasDynamicDependencies => false;
         public override bool HasConditionalStaticDependencies => false;
 
-        protected IEnumerable<MethodDesc> GetAllVirtualMethods()
+        protected static IEnumerable<MethodDesc> GetAllVirtualMethods(TypeDesc type)
         {
-            foreach (MethodDesc method in _type.GetAllMethods())
+            foreach (MethodDesc method in type.GetAllMethods())
             {
                 if (method.IsVirtual)
                     yield return method;
@@ -51,23 +75,55 @@ namespace ILCompiler.DependencyAnalysis
     }
 
     /// <summary>
+    /// Represents a VTable slice with fixed slots whose assignment was determined at the time the slice was allocated.
+    /// </summary>
+    internal class PrecomputedVTableSliceNode : VTableSliceNode
+    {
+        private readonly IReadOnlyList<MethodDesc> _slots;
+
+        public PrecomputedVTableSliceNode(TypeDesc type, IReadOnlyList<MethodDesc> slots)
+            : base(type)
+        {
+            _slots = slots;
+        }
+
+        public override IReadOnlyList<MethodDesc> Slots
+        {
+            get
+            {
+                return _slots;
+            }
+        }
+
+        public override bool HasFixedSlots
+        {
+            get
+            {
+                return true;
+            }
+        }
+    }
+
+    /// <summary>
     /// Represents a VTable slice for a complete type - a type with all virtual method slots generated,
     /// irrespective of whether they are used.
     /// </summary>
-    internal sealed class EagerlyBuiltVTableSliceNode : VTableSliceNode
+    internal sealed class EagerlyBuiltVTableSliceNode : PrecomputedVTableSliceNode
     {
-        private MethodDesc[] _slots;
-
         public EagerlyBuiltVTableSliceNode(TypeDesc type)
-            : base(type)
+            : base(type, ComputeSlots(type))
+        {
+        }
+
+        private static IReadOnlyList<MethodDesc> ComputeSlots(TypeDesc type)
         {
             var slots = new ArrayBuilder<MethodDesc>();
 
             bool isObjectType = type.IsObject;
-            DefType defType = _type.GetClosestDefType();
+            DefType defType = type.GetClosestDefType();
 
-            IEnumerable<MethodDesc> allSlots = _type.IsInterface ?
-                GetAllVirtualMethods() : defType.EnumAllVirtualSlots();
+            IEnumerable<MethodDesc> allSlots = type.IsInterface ?
+                GetAllVirtualMethods(type) : defType.EnumAllVirtualSlots();
 
             foreach (var method in allSlots)
             {
@@ -86,28 +142,7 @@ namespace ILCompiler.DependencyAnalysis
                 slots.Add(method);
             }
 
-            _slots = slots.ToArray();
-        }
-
-        public override IReadOnlyList<MethodDesc> Slots
-        {
-            get
-            {
-                return _slots;
-            }
-        }
-
-        public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
-        {
-            if (_type.HasBaseType)
-            {
-                return new DependencyListEntry[]
-                {
-                    new DependencyListEntry(factory.VTable(_type.BaseType), "Base type VTable")
-                };
-            }
-
-            return null;
+            return slots.ToArray();
         }
     }
 
@@ -153,6 +188,14 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
+        public override bool HasFixedSlots
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public void AddEntry(NodeFactory factory, MethodDesc virtualMethod)
         {
             // GVMs are not emitted in the type's vtable.
@@ -161,16 +204,6 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(_slots == null && _usedMethods != null);
 
             _usedMethods.Add(virtualMethod);
-        }
-
-        public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
-        {
-            if (_type.HasBaseType)
-            {
-                return new[] { new DependencyListEntry(factory.VTable(_type.BaseType), "Base type VTable") };
-            }
-
-            return null;
         }
 
         public override bool HasConditionalStaticDependencies
@@ -188,7 +221,7 @@ namespace ILCompiler.DependencyAnalysis
             DefType defType = _type.GetClosestDefType();
 
             IEnumerable<MethodDesc> allSlots = _type.IsInterface ?
-                GetAllVirtualMethods() : defType.EnumAllVirtualSlots();
+                GetAllVirtualMethods(_type) : defType.EnumAllVirtualSlots();
 
             foreach (var method in allSlots)
             {

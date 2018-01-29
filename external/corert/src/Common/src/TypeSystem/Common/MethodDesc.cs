@@ -19,6 +19,7 @@ namespace Internal.TypeSystem
         UnmanagedCallingConventionCdecl      = 0x0001,
         UnmanagedCallingConventionStdCall    = 0x0002,
         UnmanagedCallingConventionThisCall   = 0x0003,
+        CallingConventionVarargs             = 0x0005,
 
         Static = 0x0010,
     }
@@ -26,7 +27,7 @@ namespace Internal.TypeSystem
     /// <summary>
     /// Represents the parameter types, the return type, and flags of a method.
     /// </summary>
-    public sealed partial class MethodSignature
+    public sealed partial class MethodSignature : TypeSystemEntity
     {
         internal MethodSignatureFlags _flags;
         internal int _genericParameterCount;
@@ -131,6 +132,8 @@ namespace Internal.TypeSystem
         {
             return TypeHashingAlgorithms.ComputeMethodSignatureHashCode(_returnType.GetHashCode(), _parameters);
         }
+
+        public override TypeSystemContext Context => _returnType.Context;
     }
 
     /// <summary>
@@ -466,8 +469,7 @@ namespace Internal.TypeSystem
             get
             {
                 TypeDesc owningType = OwningType;
-                return owningType.HasFinalizer && 
-                    (owningType.GetFinalizer() == this || owningType.IsObject && Name == "Finalize");
+                return (owningType.IsObject && Name == "Finalize") || (owningType.HasFinalizer && owningType.GetFinalizer() == this);
             }
         }
 
