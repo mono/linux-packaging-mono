@@ -20,8 +20,6 @@ namespace System
             }
         }
 
-        public static int ProcessorCount => (int)Interop.Sys.SysConf(Interop.Sys.SysConfName._SC_NPROCESSORS_ONLN);
-
         private static int ComputeExecutionId()
         {
             int executionId = Interop.Sys.SchedGetCpu();
@@ -33,5 +31,13 @@ namespace System
 
             return executionId;
         }
+
+#if DEBUG
+        [Obsolete("ExpandEnvironmentVariables() only called on Windows so not implemented on Unix.")]
+        public static string ExpandEnvironmentVariables(string name)
+        {
+            throw new PlatformNotSupportedException("ExpandEnvironmentVariables() only called on Windows so not implemented on Unix.");
+        }
+#endif
     }
 }

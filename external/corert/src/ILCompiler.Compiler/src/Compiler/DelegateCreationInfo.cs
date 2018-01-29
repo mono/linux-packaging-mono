@@ -96,7 +96,7 @@ namespace ILCompiler
                     return factory.GenericLookup.MethodEntry(TargetMethod, TargetMethodIsUnboxingThunk);
 
                 case TargetKind.InterfaceDispatch:
-                    return factory.GenericLookup.VirtualMethodAddress(TargetMethod);
+                    return factory.GenericLookup.VirtualDispatchCell(TargetMethod);
 
                 case TargetKind.MethodHandle:
                     return factory.GenericLookup.MethodHandle(TargetMethod);
@@ -129,7 +129,7 @@ namespace ILCompiler
                     return factory.RuntimeMethodHandle(TargetMethod);
 
                 case TargetKind.VTableLookup:
-                    Debug.Assert(false, "Need to do runtime lookup");
+                    Debug.Fail("Need to do runtime lookup");
                     return null;
 
                 default:
@@ -313,5 +313,33 @@ namespace ILCompiler
         {
             return Constructor.GetHashCode() ^ TargetMethod.GetHashCode();
         }
+
+#if !SUPPORT_JIT
+        internal int CompareTo(DelegateCreationInfo other, TypeSystemComparer comparer)
+        {
+            var compare = _targetKind - other._targetKind;
+            if (compare != 0)
+                return compare;
+
+            compare = comparer.Compare(TargetMethod, other.TargetMethod);
+            if (compare != 0)
+                return compare;
+
+            compare = comparer.Compare(Constructor.Method, other.Constructor.Method);
+            if (compare != 0)
+                return compare;
+
+            if (Thunk == other.Thunk)
+                return 0;
+
+            if (Thunk == null)
+                return -1;
+
+            if (other.Thunk == null)
+                return 1;
+
+            return comparer.Compare(Thunk.Method, other.Thunk.Method);
+        }
+#endif
     }
 }

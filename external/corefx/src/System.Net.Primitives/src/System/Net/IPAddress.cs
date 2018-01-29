@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -399,36 +400,17 @@ namespace System.Net
 
         public static long HostToNetworkOrder(long host)
         {
-#if BIGENDIAN
-            return host;
-#else
-            ulong value = (ulong)host;
-            value = (value << 32) | (value >> 32);
-            value = (value & 0x0000FFFF0000FFFF) << 16 | (value & 0xFFFF0000FFFF0000) >> 16;
-            value = (value & 0x00FF00FF00FF00FF) << 8 | (value & 0xFF00FF00FF00FF00) >> 8;
-            return (long)value;
-#endif
+            return BitConverter.IsLittleEndian ? BinaryPrimitives.ReverseEndianness(host) : host;
         }
 
         public static int HostToNetworkOrder(int host)
         {
-#if BIGENDIAN
-            return host;
-#else
-            uint value = (uint)host;
-            value = (value << 16) | (value >> 16);
-            value = (value & 0x00FF00FF) << 8 | (value & 0xFF00FF00) >> 8;
-            return (int)value;
-#endif
+            return BitConverter.IsLittleEndian ? BinaryPrimitives.ReverseEndianness(host) : host;
         }
 
         public static short HostToNetworkOrder(short host)
         {
-#if BIGENDIAN
-            return host;
-#else
-            return unchecked((short)((((int)host & 0xFF) << 8) | (int)((host >> 8) & 0xFF)));
-#endif
+            return BitConverter.IsLittleEndian ? BinaryPrimitives.ReverseEndianness(host) : host;
         }
 
         public static long NetworkToHostOrder(long network)
@@ -635,29 +617,22 @@ namespace System.Net
                 Debug.Assert(scopeWritten);
 
                 hashCode = Marvin.ComputeHash32(
-                    ref addressAndScopeIdSpan[0],
-                    addressAndScopeIdLength,
+                    addressAndScopeIdSpan,
                     Marvin.DefaultSeed);
             }
             else
             {
+                Span<uint> addressOrScopeIdSpan = stackalloc uint[1];
+                addressOrScopeIdSpan[0] = _addressOrScopeId;
+ 
                 // For IPv4 addresses, we use Marvin on the integer representation of the Address.
                 hashCode = Marvin.ComputeHash32(
-                    ref Unsafe.As<uint, byte>(ref _addressOrScopeId),
-                    sizeof(uint),
+                    addressOrScopeIdSpan.AsBytes(),
                     Marvin.DefaultSeed);
             }
 
             _hashCode = hashCode;
             return _hashCode;
-        }
-
-        // For security, we need to be able to take an IPAddress and make a copy that's immutable and not derived.
-        internal IPAddress Snapshot()
-        {
-            return IsIPv4 ?
-                new IPAddress(PrivateAddress) :
-                new IPAddress(_numbers, PrivateScopeId);
         }
 
         // IPv4 192.168.1.1 maps as ::FFFF:192.168.1.1

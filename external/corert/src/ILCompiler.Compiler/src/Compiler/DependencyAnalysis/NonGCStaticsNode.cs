@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 
 using Internal.Text;
 using Internal.TypeSystem;
@@ -17,16 +18,23 @@ namespace ILCompiler.DependencyAnalysis
     /// with the class constructor context if the type has a class constructor that
     /// needs to be triggered before the type members can be accessed.
     /// </summary>
-    public class NonGCStaticsNode : ObjectNode, IExportableSymbolNode
+    public class NonGCStaticsNode : ObjectNode, IExportableSymbolNode, ISortableSymbolNode
     {
         private MetadataType _type;
         private NodeFactory _factory;
+        private List<PreInitFieldInfo> _sortedPreInitFields;
 
         public NonGCStaticsNode(MetadataType type, NodeFactory factory)
         {
             Debug.Assert(!type.IsCanonicalSubtype(CanonicalFormKind.Specific));
             _type = type;
             _factory = factory;
+            var preInitFieldInfos = PreInitFieldInfo.GetPreInitFieldInfos(_type, hasGCStaticBase: false);
+            if (preInitFieldInfos != null)
+            {
+                _sortedPreInitFields = new List<PreInitFieldInfo>(preInitFieldInfos);
+                _sortedPreInitFields.Sort(PreInitFieldInfo.FieldDescCompare);
+            }
         }
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
@@ -65,9 +73,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public MetadataType Type => _type;
 
-        public virtual bool IsExported(NodeFactory factory)
+        public virtual ExportForm GetExportForm(NodeFactory factory)
         {
-            return factory.CompilationModuleGroup.ExportsType(Type);
+            return factory.CompilationModuleGroup.GetExportTypeForm(Type);
         }
 
         private static int GetClassConstructorContextSize(TargetDetails target)
@@ -94,14 +102,17 @@ namespace ILCompiler.DependencyAnalysis
 
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
+            DependencyList dependencyList = null;
+
             if (factory.TypeSystemContext.HasEagerStaticConstructor(_type))
             {
-                var result = new DependencyList();
-                result.Add(factory.EagerCctorIndirection(_type.GetStaticConstructor()), "Eager .cctor");
-                return result;
+                dependencyList = new DependencyList();
+                dependencyList.Add(factory.EagerCctorIndirection(_type.GetStaticConstructor()), "Eager .cctor");
             }
 
-            return null;
+            EETypeNode.AddDependenciesForStaticsNode(factory, _type, ref dependencyList);
+
+            return dependencyList;
         }
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly)
@@ -131,10 +142,54 @@ namespace ILCompiler.DependencyAnalysis
                 builder.RequireInitialAlignment(_type.NonGCStaticFieldAlignment.AsInt);
             }
 
-            builder.EmitZeros(_type.NonGCStaticFieldSize.AsInt);
+            if (_sortedPreInitFields != null)
+            {
+                int staticOffsetBegin = builder.CountBytes;
+                int staticOffsetEnd = builder.CountBytes + _type.NonGCStaticFieldSize.AsInt;
+                int staticOffset = staticOffsetBegin;
+                int idx = 0;
+
+                while (staticOffset < staticOffsetEnd)
+                {
+                    int writeTo = staticOffsetEnd;
+                    if (idx < _sortedPreInitFields.Count)
+                        writeTo = staticOffsetBegin + _sortedPreInitFields[idx].Field.Offset.AsInt;
+
+                    // Emit the zeros before the next preinitField
+                    builder.EmitZeros(writeTo - staticOffset);
+                    staticOffset = writeTo;
+
+                    // Emit the data 
+                    if (idx < _sortedPreInitFields.Count)
+                    {
+                        _sortedPreInitFields[idx].WriteData(ref builder, factory);
+                        idx++;
+                        staticOffset = builder.CountBytes;
+                    }
+                }
+            }
+            else
+            {
+                builder.EmitZeros(_type.NonGCStaticFieldSize.AsInt);
+            }
+
             builder.AddSymbol(this);
 
             return builder.ToObjectData();
+        }
+
+        protected internal override int ClassCode => -1173104872;
+
+        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        {
+            return comparer.Compare(_type, ((NonGCStaticsNode)other)._type);
+        }
+
+        int ISortableSymbolNode.ClassCode => ClassCode;
+
+        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        {
+            return CompareToImpl((ObjectNode)other, comparer);
         }
     }
 }

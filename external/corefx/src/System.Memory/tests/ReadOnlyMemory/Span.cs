@@ -66,10 +66,10 @@ namespace System.MemoryTests
             ReadOnlyMemory<int> memory;
 
             memory = new ReadOnlyMemory<int>(empty);
-            memory.Span.Validate();
+            memory.Span.ValidateNonNullEmpty();
 
             memory = new ReadOnlyMemory<int>(empty, 0, empty.Length);
-            memory.Span.Validate();
+            memory.Span.ValidateNonNullEmpty();
 
             OwnedMemory<int> owner = new CustomMemoryForTest<int>(empty);
             ((ReadOnlyMemory<int>)owner.Memory).Span.Validate();
@@ -92,6 +92,18 @@ namespace System.MemoryTests
 
             OwnedMemory<int> owner = new CustomMemoryForTest<int>(aAsIntArray);
             ((ReadOnlyMemory<int>)owner.Memory).Span.Validate(42, -1);
+        }
+
+        [Fact]
+        public static void SpanFromDefaultMemory()
+        {
+            ReadOnlyMemory<int> memory = default;
+            ReadOnlySpan<int> span = memory.Span;
+            Assert.True(span.SequenceEqual(default));
+
+            ReadOnlyMemory<string> memoryObject = default;
+            ReadOnlySpan<string> spanObject = memoryObject.Span;
+            Assert.True(spanObject.SequenceEqual(default));
         }
 
     }

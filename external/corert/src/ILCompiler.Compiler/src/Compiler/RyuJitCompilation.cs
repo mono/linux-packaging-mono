@@ -23,25 +23,20 @@ namespace ILCompiler
             DependencyAnalyzerBase<NodeFactory> dependencyGraph,
             NodeFactory nodeFactory,
             IEnumerable<ICompilationRootProvider> roots,
+            DebugInformationProvider debugInformationProvider,
             Logger logger,
+            DevirtualizationManager devirtualizationManager,
             JitConfigProvider configProvider)
-            : base(dependencyGraph, nodeFactory, roots, logger)
+            : base(dependencyGraph, nodeFactory, roots, debugInformationProvider, devirtualizationManager, logger)
         {
             _jitConfigProvider = configProvider;
-        }
-
-        protected override bool GenerateDebugInfo
-        {
-            get
-            {
-                return _jitConfigProvider.HasFlag(CorJitFlag.CORJIT_FLAG_DEBUG_INFO);
-            }
         }
 
         protected override void CompileInternal(string outputFile, ObjectDumper dumper)
         {
             _corInfo = new CorInfoImpl(this, _jitConfigProvider);
 
+            _dependencyGraph.ComputeMarkedNodes();
             var nodes = _dependencyGraph.MarkedNodeList;
 
             NodeFactory.SetMarkingComplete();
@@ -85,7 +80,10 @@ namespace ILCompiler
                     MethodIL throwingIL = TypeSystemThrowingILEmitter.EmitIL(method, ex);
                     _corInfo.CompileMethod(methodCodeNodeNeedingCode, throwingIL);
 
-                    // TODO: Log as a warning
+                    // TODO: Log as a warning. For now, just log to the logger; but this needs to
+                    // have an error code, be supressible, the method name/sig needs to be properly formatted, etc.
+                    // https://github.com/dotnet/corert/issues/72
+                    Logger.Writer.WriteLine($"Warning: Method `{method}` will always throw because: {ex.Message}");
                 }
             }
         }

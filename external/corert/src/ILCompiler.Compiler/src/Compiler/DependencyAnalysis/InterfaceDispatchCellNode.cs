@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Diagnostics;
 
 using Internal.Runtime;
@@ -13,8 +12,8 @@ namespace ILCompiler.DependencyAnalysis
 {
     public class InterfaceDispatchCellNode : ObjectNode, ISymbolDefinitionNode
     {
-        MethodDesc _targetMethod;
-        string _callSiteIdentifier;
+        private readonly MethodDesc _targetMethod;
+        private readonly string _callSiteIdentifier;
 
         public InterfaceDispatchCellNode(MethodDesc targetMethod, string callSiteIdentifier)
         {
@@ -49,7 +48,21 @@ namespace ILCompiler.DependencyAnalysis
         public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
 
         public override bool StaticDependenciesAreComputed => true;
-        
+
+        protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
+        {
+            DependencyList result = new DependencyList();
+
+            if (!factory.VTable(_targetMethod.OwningType).HasFixedSlots)
+            {
+                result.Add(factory.VirtualMethodUse(_targetMethod), "Interface method use");
+            }
+
+            factory.MetadataManager.GetDependenciesDueToVirtualMethodReflectability(ref result, factory, _targetMethod);
+            
+            return result;
+        }
+
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
             ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
@@ -58,7 +71,9 @@ namespace ILCompiler.DependencyAnalysis
             objData.RequireInitialAlignment(_targetMethod.Context.Target.PointerSize * 2);
             objData.AddSymbol(this);
 
-            if (factory.Target.Architecture == TargetArchitecture.ARM)
+            TargetArchitecture targetArchitecture = factory.Target.Architecture;
+            if (targetArchitecture == TargetArchitecture.ARM ||
+                targetArchitecture == TargetArchitecture.ARMEL)
             {
                 objData.EmitPointerReloc(factory.InitialInterfaceDispatchStub);
             }
@@ -97,6 +112,14 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             return objData.ToObjectData();
+        }
+
+        protected internal override int ClassCode => -2023802120;
+
+        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        {
+            var compare = comparer.Compare(_targetMethod, ((InterfaceDispatchCellNode)other)._targetMethod);
+            return compare != 0 ? compare : string.Compare(_callSiteIdentifier, ((InterfaceDispatchCellNode)other)._callSiteIdentifier);
         }
     }
 }

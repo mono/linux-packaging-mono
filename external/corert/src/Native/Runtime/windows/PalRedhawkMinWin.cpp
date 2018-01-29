@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <evntprov.h>
-#ifndef CORERT
+#ifdef PROJECTN
 #include <roapi.h>
 #endif
 
@@ -30,7 +30,6 @@ uint32_t PalEventWrite(REGHANDLE arg1, const EVENT_DESCRIPTOR * arg2, uint32_t a
     return EventWrite(arg1, arg2, arg3, arg4);
 }
 
-#define NO_STRESS_LOG
 #include "gcenv.h"
 
 
@@ -113,7 +112,7 @@ REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalHasCapability(PalCapability capability)
 // or if the thread was already registered with a different fiber.
 // Parameters:
 //  thread        - thread to attach
-extern "C" void PalAttachThread(void* thread)
+REDHAWK_PALEXPORT void REDHAWK_PALAPI PalAttachThread(void* thread)
 {
     void* threadFromCurrentFiber = FlsGetValue(g_flsIndex);
 
@@ -135,7 +134,7 @@ extern "C" void PalAttachThread(void* thread)
 //  thread        - thread to detach
 // Return:
 //  true if the thread was detached, false if there was no attached thread
-extern "C" bool PalDetachThread(void* thread)
+REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalDetachThread(void* thread)
 {
     ASSERT(g_flsIndex != FLS_OUT_OF_INDEXES);
     void* threadFromCurrentFiber = FlsGetValue(g_flsIndex);
@@ -163,35 +162,7 @@ extern "C" UInt64 PalGetCurrentThreadIdForLogging()
     return GetCurrentThreadId();
 }
 
-#define SUPPRESS_WARNING_4127   \
-    __pragma(warning(push))     \
-    __pragma(warning(disable:4127)) /* conditional expression is constant*/
-
-#define POP_WARNING_STATE       \
-    __pragma(warning(pop))
-
-#define WHILE_0             \
-    SUPPRESS_WARNING_4127   \
-    while(0)                \
-    POP_WARNING_STATE       \
-
-#define RETURN_RESULT(success)                          \
-    do                                                  \
-    {                                                   \
-        if (success)                                    \
-            return S_OK;                                \
-        else                                            \
-        {                                               \
-            DWORD lasterror = GetLastError();           \
-            if (lasterror == 0)                         \
-                return E_FAIL;                          \
-            return HRESULT_FROM_WIN32(lasterror);       \
-        }                                               \
-    }                                                   \
-    WHILE_0;
-
-extern "C" int __stdcall PalGetModuleFileName(_Out_ const TCHAR** pModuleNameOut, HANDLE moduleBase);
-
+#if !defined(USE_PORTABLE_HELPERS) && !defined(FEATURE_RX_THUNKS)
 REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalAllocateThunksFromTemplate(_In_ HANDLE hTemplateModule, UInt32 templateRva, size_t templateSize, _Outptr_result_bytebuffer_(templateSize) void** newThunksOut)
 {
 #ifdef XBOX_ONE
@@ -231,9 +202,10 @@ REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalFreeThunksFromTemplate(_In_ void
     return UnmapViewOfFile(pBaseAddress);
 #endif    
 }
+#endif // !USE_PORTABLE_HELPERS && !FEATURE_RX_THUNKS
 
 REDHAWK_PALEXPORT UInt32_BOOL REDHAWK_PALAPI PalMarkThunksAsValidCallTargets(
-    void *virtualAddress, 
+    void *virtualAddress,
     int thunkSize,
     int thunksPerBlock,
     int thunkBlockSize,
@@ -292,7 +264,11 @@ REDHAWK_PALEXPORT _Success_(return) bool REDHAWK_PALAPI PalGetThreadContext(HAND
     // at a point where the kernel cannot guarantee a completely accurate context. We'll fail the request in
     // this case (which should force our caller to resume the thread and try again -- since this is a fairly
     // narrow window we're highly likely to succeed next time).
-    if ((win32ctx.ContextFlags & CONTEXT_EXCEPTION_REPORTING) &&
+    // Note: in some cases (x86 WOW64, ARM32 on ARM64) the OS will not set the CONTEXT_EXCEPTION_REPORTING flag
+    // if the thread is executing in kernel mode (i.e. in the middle of a syscall or exception handling).
+    // Therefore, we should treat the absence of the CONTEXT_EXCEPTION_REPORTING flag as an indication that
+    // it is not safe to manipulate with the current state of the thread context.
+    if ((win32ctx.ContextFlags & CONTEXT_EXCEPTION_REPORTING) == 0 ||
         (win32ctx.ContextFlags & (CONTEXT_SERVICE_ACTIVE | CONTEXT_EXCEPTION_ACTIVE)))
         return false;
 
@@ -329,6 +305,24 @@ REDHAWK_PALEXPORT _Success_(return) bool REDHAWK_PALAPI PalGetThreadContext(HAND
     pCtx->R11 = win32ctx.R11;
     pCtx->SP = win32ctx.Sp;
     pCtx->LR = win32ctx.Lr;
+#elif defined(_ARM64_)
+    pCtx->IP = win32ctx.Pc;
+    pCtx->X0 = win32ctx.X0;
+    pCtx->X1 = win32ctx.X1;
+    // TODO: Copy X2-X7 when we start supporting HVA's
+    pCtx->X19 = win32ctx.X19;
+    pCtx->X20 = win32ctx.X20;
+    pCtx->X21 = win32ctx.X21;
+    pCtx->X22 = win32ctx.X22;
+    pCtx->X23 = win32ctx.X23;
+    pCtx->X24 = win32ctx.X24;
+    pCtx->X25 = win32ctx.X25;
+    pCtx->X26 = win32ctx.X26;
+    pCtx->X27 = win32ctx.X27;
+    pCtx->X28 = win32ctx.X28;
+    pCtx->SP = win32ctx.Sp;
+    pCtx->LR = win32ctx.Lr;
+    pCtx->FP = win32ctx.Fp;
 #else
 #error Unsupported platform
 #endif
@@ -1062,7 +1056,8 @@ UInt32 CountBits(size_t bfBitfield)
 // 'answers' between the current implementation and the CLR implementation.
 //
 //#define TRACE_CACHE_TOPOLOGY
-#ifdef _DEBUG
+#if defined(_DEBUG) && !defined(_ARM64_)
+// ARM64TODO: restore
 void DumpCacheTopology(_In_reads_(cRecords) SYSTEM_LOGICAL_PROCESSOR_INFORMATION * pProcInfos, UInt32 cRecords)
 {
     printf("----------------\n");
@@ -1114,7 +1109,7 @@ void DumpCacheTopologyResults(UInt32 maxCpuId, CpuVendor cpuVendor, _In_reads_(c
     printf("        g_cbLargestOnDieCache: 0x%08zx 0x%08zx :CLR_LargestOnDieCache(TRUE)\n", g_cbLargestOnDieCache, CLR_GetLargestOnDieCacheSize(TRUE, pProcInfos, cRecords));
     printf("g_cbLargestOnDieCacheAdjusted: 0x%08zx 0x%08zx :CLR_LargestOnDieCache(FALSE)\n", g_cbLargestOnDieCacheAdjusted, CLR_GetLargestOnDieCacheSize(FALSE, pProcInfos, cRecords));
 }
-#endif // _DEBUG
+#endif // defined(_DEBUG) && !defined(_ARM64_)
 
 // Method used to initialize the above values.
 bool PalQueryProcessorTopology()
@@ -1287,18 +1282,21 @@ bool PalQueryProcessorTopology()
         g_cbLargestOnDieCache = cbCache;
         g_cbLargestOnDieCacheAdjusted = cbCacheAdjusted;
 
-#ifdef _DEBUG
-#ifdef TRACE_CACHE_TOPOLOGY
+#if defined(_DEBUG)
+#if defined(TRACE_CACHE_TOPOLOGY) && !defined(_ARM64_)
+// ARM64TODO: restore
         DumpCacheTopologyResults(maxCpuId, cpuVendor, pProcInfos, cRecords);
-#endif // TRACE_CACHE_TOPOLOGY
+#endif // defined(TRACE_CACHE_TOPOLOGY) && !defined(_ARM64_)
         if ((CLR_GetLargestOnDieCacheSize(TRUE, pProcInfos, cRecords) != g_cbLargestOnDieCache) ||
             (CLR_GetLargestOnDieCacheSize(FALSE, pProcInfos, cRecords) != g_cbLargestOnDieCacheAdjusted) ||
             (CLR_GetLogicalCpuCount(pProcInfos, cRecords) != g_cLogicalCpus))
         {
+#if !defined(_ARM64_)
             DumpCacheTopologyResults(maxCpuId, cpuVendor, pProcInfos, cRecords);
+#endif
             assert(!"QueryProcessorTopology doesn't match CLR's results.  See stdout for more info.");
         }
-#endif // TRACE_CACHE_TOPOLOGY
+#endif
     }
 
     if (pProcInfos)
@@ -1354,7 +1352,7 @@ REDHAWK_PALEXPORT _Ret_maybenull_ void* REDHAWK_PALAPI PalSetWerDataBuffer(_In_ 
 
 static LARGE_INTEGER g_performanceFrequency;
 
-#ifndef CORERT
+#ifdef PROJECTN
 static bool g_roInitialized;
 #endif
 
@@ -1368,7 +1366,7 @@ bool GCToOSInterface::Initialize()
         return false;
     }
 
-#ifndef CORERT
+#ifdef PROJECTN
     // TODO: Remove the RoInitialize call when we implement non-WinRT framework for classic apps
     HRESULT hr = RoInitialize(RO_INIT_MULTITHREADED);
 
@@ -1392,7 +1390,7 @@ bool GCToOSInterface::Initialize()
 //  Must be called on the same thread as Initialize.
 void GCToOSInterface::Shutdown()
 {
-#ifndef CORERT
+#ifdef PROJECTN
     if (g_roInitialized)
     {
         RoUninitialize();

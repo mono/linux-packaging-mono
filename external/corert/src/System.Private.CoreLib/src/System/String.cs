@@ -9,15 +9,18 @@
 **
 ===========================================================*/
 
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
+
+using Internal.Runtime.CompilerServices;
 
 namespace System
 {
@@ -73,6 +76,8 @@ namespace System
     //
     [StructLayout(LayoutKind.Sequential)]
     [System.Runtime.CompilerServices.EagerStaticClassConstructionAttribute]
+    [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public sealed partial class String : IComparable, IEnumerable, IEnumerable<char>, IComparable<String>, IEquatable<String>, IConvertible, ICloneable
     {
 #if BIT64
@@ -94,7 +99,9 @@ namespace System
         // See https://github.com/dotnet/corert/blob/master/Documentation/design-docs/diagnostics/diagnostics-tools-contract.md for more details. 
         // Please do not change the type, the name, or the semantic usage of this member without understanding the implication for tools. 
         // Get in touch with the diagnostics team if you have questions.
+        [NonSerialized]
         private int _stringLength;
+        [NonSerialized]
         private char _firstChar;
 
 #pragma warning restore
@@ -143,7 +150,6 @@ namespace System
 
             if (startIndex > value.Length - length)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
-            Contract.EndContractBlock();
 
             if (length > 0)
             {
@@ -210,7 +216,6 @@ namespace System
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndex);
             }
-            Contract.EndContractBlock();
 
             char* pFrom = ptr + startIndex;
             if (pFrom < ptr)
@@ -390,6 +395,50 @@ namespace System
             else
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_NegativeCount);
         }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern String(ReadOnlySpan<char> value);
+
+        [DependencyReductionRoot]
+        private unsafe static string Ctor(ReadOnlySpan<char> value)
+        {
+            if (value.Length == 0)
+            {
+                return Empty;
+            }
+
+            string result = FastAllocateString(value.Length);
+            fixed (char* dest = &result._firstChar, src = &MemoryMarshal.GetReference(value))
+            {
+                wstrcpy(dest, src, value.Length);
+            }
+            return result;
+        }
+
+        public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (length > 0)
+            {
+                string result = FastAllocateString(length);
+                action(new Span<char>(ref result.GetRawStringData(), length), state);
+                return result;
+            }
+
+            if (length == 0)
+            {
+                return Empty;
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(length));
+        }
+
+        public static implicit operator ReadOnlySpan<char>(string value) =>
+            value != null ? new ReadOnlySpan<char>(ref value.GetRawStringData(), value.Length) : default;
 
         public object Clone()
         {
@@ -583,19 +632,12 @@ namespace System
 
         internal static String FastAllocateString(int length)
         {
-            try
-            {
-                // We allocate one extra char as an interop convenience so that our strings are null-
-                // terminated, however, we don't pass the extra +1 to the array allocation because the base
-                // size of this object includes the _firstChar field.
-                string newStr = RuntimeImports.RhNewArrayAsString(EETypePtr.EETypePtrOf<string>(), length);
-                Debug.Assert(newStr._stringLength == length);
-                return newStr;
-            }
-            catch (OverflowException)
-            {
-                throw new OutOfMemoryException();
-            }
+            // We allocate one extra char as an interop convenience so that our strings are null-
+            // terminated, however, we don't pass the extra +1 to the string allocation because the base
+            // size of this object includes the _firstChar field.
+            string newStr = RuntimeImports.RhNewString(EETypePtr.EETypePtrOf<string>(), length);
+            Debug.Assert(newStr._stringLength == length);
+            return newStr;
         }
 
         internal static unsafe void wstrcpy(char* dmem, char* smem, int charCount)

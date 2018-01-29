@@ -5,6 +5,8 @@
 
 struct ExInfo;
 typedef DPTR(ExInfo) PTR_ExInfo;
+typedef VPTR(ICodeManager) PTR_ICodeManager;
+
 enum ExKind : UInt8
 {
     EK_HardwareFault = 2,
@@ -36,14 +38,14 @@ public:
     StackFrameIterator(Thread * pThreadToWalk, PTR_PAL_LIMITED_CONTEXT pCtx);
 
 
-    bool            IsValid();
-    void            CalculateCurrentMethodState();
-    void            Next();
-    PTR_VOID        GetEffectiveSafePointAddress();
-    REGDISPLAY *    GetRegisterSet();
-    ICodeManager *  GetCodeManager();
-    MethodInfo *    GetMethodInfo();
-    bool            GetHijackedReturnValueLocation(PTR_RtuObjectRef * pLocation, GCRefKind * pKind);
+    bool             IsValid();
+    void             CalculateCurrentMethodState();
+    void             Next();
+    PTR_VOID         GetEffectiveSafePointAddress();
+    REGDISPLAY *     GetRegisterSet();
+    PTR_ICodeManager GetCodeManager();
+    MethodInfo *     GetMethodInfo();
+    bool             GetHijackedReturnValueLocation(PTR_RtuObjectRef * pLocation, GCRefKind * pKind);
 
     static bool     IsValidReturnAddress(PTR_VOID pvAddress);
 
@@ -151,6 +153,18 @@ private:
         PTR_UIntNative pR9;
         PTR_UIntNative pR10;
         PTR_UIntNative pR11;
+#elif defined(_TARGET_ARM64_)
+        PTR_UIntNative pX19;
+        PTR_UIntNative pX20;
+        PTR_UIntNative pX21;
+        PTR_UIntNative pX22;
+        PTR_UIntNative pX23;
+        PTR_UIntNative pX24;
+        PTR_UIntNative pX25;
+        PTR_UIntNative pX26;
+        PTR_UIntNative pX27;
+        PTR_UIntNative pX28;
+        PTR_UIntNative pFP;
 #elif defined(UNIX_AMD64_ABI)
         PTR_UIntNative pRbp;
         PTR_UIntNative pRbx;
@@ -178,7 +192,7 @@ protected:
     PTR_VOID            m_FramePointer;
     PTR_VOID            m_ControlPC;
     REGDISPLAY          m_RegDisplay;
-    ICodeManager *      m_pCodeManager;
+    PTR_ICodeManager    m_pCodeManager;
     MethodInfo          m_methodInfo;
     PTR_VOID            m_effectiveSafePointAddress;
     PTR_RtuObjectRef    m_pHijackedReturnValue;

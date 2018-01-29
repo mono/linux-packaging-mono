@@ -12,10 +12,12 @@ using Debug = System.Diagnostics.Debug;
 
 namespace ILCompiler
 {
-    class EmptyMetadataManager : MetadataManager
+    public class EmptyMetadataManager : MetadataManager
     {
-        public EmptyMetadataManager(CompilationModuleGroup group, CompilerTypeSystemContext typeSystemContext)
-            : base(group, typeSystemContext, new FullyBlockedMetadataPolicy())
+        public override bool SupportsReflection => false;
+
+        public EmptyMetadataManager(CompilerTypeSystemContext typeSystemContext)
+            : base(typeSystemContext, new FullyBlockedMetadataPolicy())
         {
         }
 
@@ -39,13 +41,19 @@ namespace ILCompiler
             return MetadataCategory.None;
         }
 
-        protected override void ComputeMetadata(NodeFactory factory, out byte[] metadataBlob, out List<MetadataMapping<MetadataType>> typeMappings, out List<MetadataMapping<MethodDesc>> methodMappings, out List<MetadataMapping<FieldDesc>> fieldMappings)
+        protected override void ComputeMetadata(NodeFactory factory,
+                                                out byte[] metadataBlob, 
+                                                out List<MetadataMapping<MetadataType>> typeMappings,
+                                                out List<MetadataMapping<MethodDesc>> methodMappings,
+                                                out List<MetadataMapping<FieldDesc>> fieldMappings,
+                                                out List<MetadataMapping<MethodDesc>> stackTraceMapping)
         {
             metadataBlob = Array.Empty<byte>();
 
             typeMappings = new List<MetadataMapping<MetadataType>>();
             methodMappings = new List<MetadataMapping<MethodDesc>>();
             fieldMappings = new List<MetadataMapping<FieldDesc>>();
+            stackTraceMapping = new List<MetadataMapping<MethodDesc>>();
         }
 
         /// <summary>

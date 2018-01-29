@@ -58,6 +58,7 @@ namespace Internal.JitInterface
         CORINFO_HELP_NEW_MDARR,         // multi-dim array helper (with or without lower bounds - dimensions passed in as vararg)
         CORINFO_HELP_NEW_MDARR_NONVARARG,// multi-dim array helper (with or without lower bounds - dimensions passed in as unmanaged array)
         CORINFO_HELP_NEWARR_1_DIRECT,   // helper for any one dimensional array creation
+        CORINFO_HELP_NEWARR_1_R2R_DIRECT, // wrapper for R2R direct call, which extracts method table from ArrayTypeDesc
         CORINFO_HELP_NEWARR_1_OBJ,      // optimized 1-D object arrays
         CORINFO_HELP_NEWARR_1_VC,       // optimized 1-D value class arrays
         CORINFO_HELP_NEWARR_1_ALIGN8,   // like VC, but aligns the array start
@@ -298,6 +299,7 @@ namespace Internal.JitInterface
 
         CORINFO_HELP_THROW_ARGUMENTEXCEPTION,           // throw ArgumentException
         CORINFO_HELP_THROW_ARGUMENTOUTOFRANGEEXCEPTION, // throw ArgumentOutOfRangeException
+        CORINFO_HELP_THROW_PLATFORM_NOT_SUPPORTED,      // throw PlatformNotSupportedException
 
         CORINFO_HELP_JIT_PINVOKE_BEGIN, // Transition to preemptive mode before a P/Invoke, frame is the first argument
         CORINFO_HELP_JIT_PINVOKE_END,   // Transition to cooperative mode after a P/Invoke, frame is the first argument

@@ -440,10 +440,39 @@ namespace Internal.Runtime.TypeLoader
         {
             internal TypeDesc ContainingType;
             internal uint VTableSlot;
+            private TypeDesc ContainingTypeTemplate;
 
             internal unsafe override void Prepare(TypeBuilder builder)
             {
                 builder.RegisterForPreparation(ContainingType);
+                ContainingTypeTemplate = ContainingType.ComputeTemplate();
+            }
+
+            //
+            // This helper function will traverse the hierarchy of the containing type of this vtable offset cell, in parallel with
+            // the hierarchy of its template type.
+            // When traversing the template type hierarchy, we have 2 possibilities for the base type:
+            //    - Fully universal canonical. USG types always have a dictionary slot, so if the dynamically created type does not share
+            //      normal canonical code, we subtract 1 from the vtable offset (the dynamic type does not have a dictionary slot in that case)
+            //    - Exact non-canonical type. In that case, we do not need to make any changes to the vtable offset (the binder/ILCompiler
+            //      would have written the correct vtable offset, taking in the account the existance or non-existance of a dictionary slot.
+            //
+            private void AdjustVtableSlot(TypeDesc currentType, TypeDesc currentTemplateType, ref int vtableSlot)
+            {
+                TypeDesc baseType = currentType.BaseType;
+                TypeDesc baseTemplateType = TypeBuilder.GetBaseTypeUsingRuntimeTypeHandle(currentTemplateType);
+
+                Debug.Assert((baseType == null && baseTemplateType == null) || (baseType != null && baseTemplateType != null));
+
+                // Compute the vtable layout for the current type starting with base types first
+                if (baseType != null)
+                    AdjustVtableSlot(baseType, baseTemplateType, ref vtableSlot);
+
+                if (currentType.IsGeneric())
+                {
+                    if (!currentType.CanShareNormalGenericCode() && currentTemplateType.IsCanonicalSubtype(CanonicalFormKind.Universal))
+                        vtableSlot--;
+                }
             }
 
             internal override unsafe IntPtr Create(TypeBuilder builder)
@@ -457,21 +486,11 @@ namespace Internal.Runtime.TypeLoader
 #endif
 
                 int result = (int)VTableSlot;
-                DefType currentType = (DefType)ContainingType;
 
-                while (currentType != null)
-                {
-                    if (currentType.HasInstantiation)
-                    {
-                        // Check if the current type can share code with normal canonical
-                        // generic types. If not, then the vtable layout will not have a 
-                        // slot for a dictionary pointer, and we need to adjust the slot number
-                        if (!currentType.CanShareNormalGenericCode())
-                            result--;
-                    }
-
-                    currentType = currentType.BaseType;
-                }
+                // Check if the current type can share code with normal canonical
+                // generic types. If not, then the vtable layout will not have a 
+                // slot for a dictionary pointer, and we need to adjust the slot number
+                AdjustVtableSlot(ContainingType, ContainingTypeTemplate, ref result);
                 Debug.Assert(result >= 0);
 
                 return (IntPtr)(sizeof(EEType) + result * IntPtr.Size);
@@ -712,7 +731,7 @@ namespace Internal.Runtime.TypeLoader
                             }
                         case TypeLoaderEnvironment.MethodAddressType.UniversalCanonical:
                             {
-                                if (Method.IsCanonicalMethod(CanonicalFormKind.Specific) &&
+                                if (Method.IsCanonicalMethod(CanonicalFormKind.Universal) &&
                                     !NeedsDictionaryParameterToCallCanonicalVersion(Method) &&
                                     !UniversalGenericParameterLayout.MethodSignatureHasVarsNeedingCallingConventionConverter(
                                         Method.GetTypicalMethodDefinition().Signature))
@@ -737,11 +756,13 @@ namespace Internal.Runtime.TypeLoader
 
                         bool methodRequestedIsCanonical = Method.IsCanonicalMethod(CanonicalFormKind.Specific);
                         MethodDesc canonAlikeForm;
+#if PROJECTN
                         if (methodRequestedIsCanonical)
                         {
                             canonAlikeForm = Method.ReplaceTypesInConstructionOfMethod(Method.Context.CanonTypeArray, Method.Context.CanonAlikeTypeArray);
                         }
                         else
+#endif
                         {
                             canonAlikeForm = Method;
                         }
@@ -852,7 +873,7 @@ namespace Internal.Runtime.TypeLoader
                     return BuildCallingConventionConverter(builder, Method.UsgFunctionPointer, methodDictionary, true);
                 }
 
-                Debug.Assert(false, "UNREACHABLE");
+                Debug.Fail("UNREACHABLE");
                 return IntPtr.Zero;
             }
 
@@ -870,15 +891,25 @@ namespace Internal.Runtime.TypeLoader
 
                 Debug.Assert(!MethodSignature.IsNativeLayoutSignature || (MethodSignature.NativeLayoutSignature() != IntPtr.Zero));
 
-                CallConverterThunk.ThunkKind thunkKind;
+                CallConverterThunk.ThunkKind thunkKind = default(CallConverterThunk.ThunkKind);
                 if (usgConverter)
                 {
                     if (genericMethod || containingTypeIsValueType)
                     {
-                        if (dictionary == IntPtr.Zero)
-                            thunkKind = CallConverterThunk.ThunkKind.StandardToGenericPassthruInstantiating;
+                        if (Method.UnboxingStub)
+                        {
+                            if (dictionary == IntPtr.Zero)
+                                Environment.FailFast("Need standard to generic non-instantiating unboxing stub thunk kind");
+                            else
+                                thunkKind = CallConverterThunk.ThunkKind.StandardUnboxingAndInstantiatingGeneric;
+                        }
                         else
-                            thunkKind = CallConverterThunk.ThunkKind.StandardToGenericInstantiating;
+                        {
+                            if (dictionary == IntPtr.Zero)
+                                thunkKind = CallConverterThunk.ThunkKind.StandardToGenericPassthruInstantiating;
+                            else
+                                thunkKind = CallConverterThunk.ThunkKind.StandardToGenericInstantiating;
+                        }
                     }
                     else
                     {
@@ -1061,10 +1092,72 @@ namespace Internal.Runtime.TypeLoader
 
             for (uint i = 0; i < count; i++)
             {
-                GenericDictionaryCell cell = ParseAndCreateCell(nativeLayoutInfoLoadContext, ref parser);
-                cell.Prepare(typeBuilder);
-                dictionary[i] = cell;
+                TypeLoaderLogger.WriteLine("  -> DictionaryCell[" + i.LowLevelToString() + "] = ");
+
+                dictionary[i] = ParseAndCreateCell(nativeLayoutInfoLoadContext, ref parser);
             }
+
+            for (uint i = 0; i < count; i++)
+                dictionary[i].Prepare(typeBuilder);
+
+            return dictionary;
+        }
+
+        internal static unsafe GenericDictionaryCell[] BuildFloatingDictionary(TypeBuilder typeBuilder, NativeLayoutInfoLoadContext nativeLayoutInfoLoadContext, NativeParser parser, out int floatingVersionCellIndex, out int floatingVersionInLayout)
+        {
+            //
+            // The format of a dictionary that has a floating portion is as follows:
+            //
+            // "Fixed" portion:
+            //      - First slot is a pointer to the first cell of the "floating" portion
+            //      - Followed by N various dictionary lookup cells
+            // "Floating" portion:
+            //      - Cell containing the version number of the floating portion
+            //      - Followed by N various dictionary lookup cells
+            //
+
+            floatingVersionCellIndex = floatingVersionInLayout = -1;
+
+            uint count = parser.GetSequenceCount();
+            Debug.Assert(count > 1);
+
+            GenericDictionaryCell cell = ParseAndCreateCell(nativeLayoutInfoLoadContext, ref parser);
+            if (!(cell is PointerToOtherDictionarySlotCell))
+            {
+                // This is not a dictionary layout that has a floating portion
+                Debug.Fail("Unreachable: we should never reach here if the target dictionary does not have a floating layout");
+                return null;
+            }
+
+            PointerToOtherDictionarySlotCell pointerToCell = (PointerToOtherDictionarySlotCell)cell;
+            floatingVersionCellIndex = (int)pointerToCell.OtherDictionarySlot;
+            Debug.Assert(count > pointerToCell.OtherDictionarySlot);
+
+            GenericDictionaryCell[] dictionary = new GenericDictionaryCell[count - pointerToCell.OtherDictionarySlot];
+
+            for (uint i = 1; i < pointerToCell.OtherDictionarySlot; i++)
+            {
+                // Parse and discard the fixed dictionary cells. We only need to build the cells of the floating portion
+                ParseAndCreateCell(nativeLayoutInfoLoadContext, ref parser);
+            }
+
+            for (uint i = pointerToCell.OtherDictionarySlot; i < count; i++)
+            {
+                TypeLoaderLogger.WriteLine("  -> FloatingDictionaryCell[" + (i - pointerToCell.OtherDictionarySlot).LowLevelToString() + "] (" + i.LowLevelToString() + " in all) = ");
+
+                cell = ParseAndCreateCell(nativeLayoutInfoLoadContext, ref parser);
+
+                if ((i == pointerToCell.OtherDictionarySlot) && (cell is IntPtrCell))
+                {
+                    // The first cell in the floating portion should always be the version number
+                    floatingVersionInLayout = (int)((IntPtrCell)cell).Value;
+                }
+
+                dictionary[i - pointerToCell.OtherDictionarySlot] = cell;
+            }
+
+            for (uint i = pointerToCell.OtherDictionarySlot; i < count; i++)
+                dictionary[i - pointerToCell.OtherDictionarySlot].Prepare(typeBuilder);
 
             return dictionary;
         }
@@ -1805,15 +1898,7 @@ namespace Internal.Runtime.TypeLoader
                         NativeParser sigParser = parser.GetParserFromRelativeOffset();
                         RuntimeSignature signature = RuntimeSignature.CreateFromNativeLayoutSignature(nativeLayoutInfoLoadContext._module.Handle, sigParser.Offset);
 
-#if TYPE_LOADER_TRACE
-                        TypeLoaderLogger.WriteLine("CallingConventionConverter on: ");
-                        TypeLoaderLogger.WriteLine("     -> Flags: " + ((int)flags).LowLevelToString());
-                        TypeLoaderLogger.WriteLine("     -> Signature: " + signature.NativeLayoutSignature().LowLevelToString());
-                        for (int i = 0; !nativeLayoutInfoLoadContext._typeArgumentHandles.IsNull && i < nativeLayoutInfoLoadContext._typeArgumentHandles.Length; i++)
-                            TypeLoaderLogger.WriteLine("     -> TypeArg[" + i.LowLevelToString() + "]: " + nativeLayoutInfoLoadContext._typeArgumentHandles[i]);
-                        for (int i = 0; !nativeLayoutInfoLoadContext._methodArgumentHandles.IsNull && i < nativeLayoutInfoLoadContext._methodArgumentHandles.Length; i++)
-                            TypeLoaderLogger.WriteLine("     -> MethodArg[" + i.LowLevelToString() + "]: " + nativeLayoutInfoLoadContext._methodArgumentHandles[i]);
-#endif
+                        TypeLoaderLogger.WriteLine("CallingConventionConverter: Flags=" + ((int)flags).LowLevelToString() + " Signature=" + signature.NativeLayoutSignature().LowLevelToString());
 
                         cell = new CallingConventionConverterCell
                         {
@@ -1834,6 +1919,7 @@ namespace Internal.Runtime.TypeLoader
                     {
                         OtherDictionarySlot = parser.GetUnsigned()
                     };
+                    TypeLoaderLogger.WriteLine("PointerToOtherSlot: " + ((PointerToOtherDictionarySlotCell)cell).OtherDictionarySlot.LowLevelToString());
                     break;
 
                 case FixupSignatureKind.IntValue:
@@ -1841,6 +1927,7 @@ namespace Internal.Runtime.TypeLoader
                     {
                         Value = new IntPtr((int)parser.GetUnsigned())
                     };
+                    TypeLoaderLogger.WriteLine("IntValue: " + ((IntPtrCell)cell).Value.LowLevelToString());
                     break;
 
                 default:

@@ -19,6 +19,9 @@ namespace System.ComponentModel.Design
     ///    </para>
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class CheckoutException : ExternalException
     {
         private const int E_ABORT = unchecked((int)0x80004004);
@@ -71,7 +74,6 @@ namespace System.ComponentModel.Design
         /// </summary>
         protected CheckoutException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         /// <summary>

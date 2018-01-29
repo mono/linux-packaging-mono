@@ -10,10 +10,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using System.Diagnostics.Contracts;
 
 using Internal.Runtime.Augments;
+using Internal.Runtime.CompilerServices;
 using Internal.Reflection.Core.NonPortable;
+using Internal.IntrinsicSupport;
 using EEType = Internal.Runtime.EEType;
 
 #if BIT64
@@ -36,6 +37,7 @@ namespace System
         // CS0649: Field '{blah}' is never assigned to, and will always have its default value
 #pragma warning disable 649
         // This field should be the first field in Array as the runtime/compilers depend on it
+        [NonSerialized]
         private int _numComponents;
 #pragma warning restore
 
@@ -78,12 +80,6 @@ namespace System
             if ((object)elementType == null)
                 throw new ArgumentNullException(nameof(elementType));
 
-            Contract.Ensures(Contract.Result<Array>() != null);
-            Contract.Ensures(Contract.Result<Array>().Rank == 1);
-            Contract.EndContractBlock();
-
-            elementType = elementType.UnderlyingSystemType;
-
             return CreateSzArray(elementType, length);
         }
 
@@ -95,13 +91,6 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(length1));
             if (length2 < 0)
                 throw new ArgumentOutOfRangeException(nameof(length2));
-
-            Contract.Ensures(Contract.Result<Array>() != null);
-            Contract.Ensures(Contract.Result<Array>().Rank == 2);
-            Contract.Ensures(Contract.Result<Array>().GetLength(0) == length1);
-            Contract.Ensures(Contract.Result<Array>().GetLength(1) == length2);
-
-            elementType = elementType.UnderlyingSystemType;
 
             Type arrayType = GetArrayTypeFromElementType(elementType, true, 2);
             int* pLengths = stackalloc int[2];
@@ -121,14 +110,6 @@ namespace System
             if (length3 < 0)
                 throw new ArgumentOutOfRangeException(nameof(length3));
 
-            Contract.Ensures(Contract.Result<Array>() != null);
-            Contract.Ensures(Contract.Result<Array>().Rank == 3);
-            Contract.Ensures(Contract.Result<Array>().GetLength(0) == length1);
-            Contract.Ensures(Contract.Result<Array>().GetLength(1) == length2);
-            Contract.Ensures(Contract.Result<Array>().GetLength(2) == length3);
-
-            elementType = elementType.UnderlyingSystemType;
-
             Type arrayType = GetArrayTypeFromElementType(elementType, true, 3);
             int* pLengths = stackalloc int[3];
             pLengths[0] = length1;
@@ -145,12 +126,6 @@ namespace System
                 throw new ArgumentNullException(nameof(lengths));
             if (lengths.Length == 0)
                 throw new ArgumentException(SR.Arg_NeedAtLeast1Rank);
-
-            Contract.Ensures(Contract.Result<Array>() != null);
-            Contract.Ensures(Contract.Result<Array>().Rank == lengths.Length);
-            Contract.EndContractBlock();
-
-            elementType = elementType.UnderlyingSystemType;
 
             if (lengths.Length == 1)
             {
@@ -175,11 +150,6 @@ namespace System
                 throw new ArgumentException(SR.Arg_RanksAndBounds);
             if (lengths.Length == 0)
                 throw new ArgumentException(SR.Arg_NeedAtLeast1Rank);
-            Contract.Ensures(Contract.Result<Array>() != null);
-            Contract.Ensures(Contract.Result<Array>().Rank == lengths.Length);
-            Contract.EndContractBlock();
-
-            elementType = elementType.UnderlyingSystemType;
 
             return CreateMultiDimArray(elementType, lengths, lowerBounds);
         }
@@ -213,15 +183,29 @@ namespace System
 
         private static Type GetArrayTypeFromElementType(Type elementType, bool multiDim, int rank)
         {
-            if (!elementType.IsRuntimeImplemented())
-                throw new InvalidOperationException(SR.InvalidOperation_ArrayCreateInstance_NotARuntimeType);
-            if (elementType.Equals(typeof(void)))
-                throw new NotSupportedException(SR.NotSupported_VoidArray);
+            elementType = elementType.UnderlyingSystemType;
+            ValidateElementType(elementType);
 
             if (multiDim)
                 return elementType.MakeArrayType(rank);
             else
                 return elementType.MakeArrayType();
+        }
+
+        private static void ValidateElementType(Type elementType)
+        {
+            if (!elementType.IsRuntimeImplemented())
+                throw new ArgumentException(SR.Arg_MustBeType, nameof(elementType));
+            while (elementType.IsArray)
+            {
+                elementType = elementType.GetElementType();
+            }
+            if (elementType.IsByRef || elementType.IsByRefLike)
+                throw new NotSupportedException(SR.NotSupported_ByRefLikeArray);
+            if (elementType.Equals(CommonRuntimeTypes.Void))
+                throw new NotSupportedException(SR.NotSupported_VoidArray);
+            if (elementType.ContainsGenericParameters)
+                throw new NotSupportedException(SR.NotSupported_OpenType);
         }
 
         public void Initialize()
@@ -868,73 +852,6 @@ namespace System
             }
         }
 
-        /// <summary>
-        /// Copy the contents of a native buffer into a managed array.  This requires that the type of the
-        /// destination array be blittable.
-        /// </summary>
-        /// <param name="source">Unmanaged memory to copy from.</param>
-        /// <param name="destination">Array to copy into.  The type of the elements of the array must be blittable</param>
-        /// <param name="startIndex">First index in the destination array to begin copying into</param>
-        /// <param name="length">Number of elements to copy</param>
-        internal static unsafe void CopyToManaged(IntPtr source, Array destination, int startIndex, int length)
-        {
-            if (source == IntPtr.Zero)
-                throw new ArgumentNullException(nameof(source));
-            if (destination == null)
-                throw new ArgumentNullException(nameof(destination));
-            if (!destination.IsElementTypeBlittable)
-                throw new ArgumentException(nameof(destination), SR.Arg_CopyNonBlittableArray);
-            if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.Arg_CopyOutOfRange);
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length), SR.Arg_CopyOutOfRange);
-            if ((uint)startIndex + (uint)length > (uint)destination.Length)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.Arg_CopyOutOfRange);
-
-            nuint bytesToCopy = (nuint)length * destination.ElementSize;
-            nuint startOffset = (nuint)startIndex * destination.ElementSize;
-
-            fixed (byte* pDestination = &destination.GetRawArrayData())
-            {
-                byte* destinationData = pDestination + startOffset;
-                Buffer.Memmove(destinationData, (byte*)source, bytesToCopy);
-            }
-        }
-
-        /// <summary>
-        /// Copy the contents of the source array into unmanaged memory.  This requires that the type of
-        /// the source array be blittable.
-        /// </summary>
-        /// <param name="source">Array to copy from.  This must be non-null and have blittable elements</param>
-        /// <param name="startIndex">First index in the source array to begin copying</param>
-        /// <param name="destination">Pointer to the unmanaged memory to blit the memory into</param>
-        /// <param name="length">Number of elements to copy</param>
-        internal static unsafe void CopyToNative(Array source, int startIndex, IntPtr destination, int length)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (!source.IsElementTypeBlittable)
-                throw new ArgumentException(nameof(source), SR.Arg_CopyNonBlittableArray);
-            if (destination == IntPtr.Zero)
-                throw new ArgumentNullException(nameof(destination));
-            if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.Arg_CopyOutOfRange);
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length), SR.Arg_CopyOutOfRange);
-            if ((uint)startIndex + (uint)length > (uint)source.Length)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.Arg_CopyOutOfRange);
-            Contract.EndContractBlock();
-
-            nuint bytesToCopy = (nuint)length * source.ElementSize;
-            nuint startOffset = (nuint)startIndex * source.ElementSize;
-
-            fixed (byte* pSource = &source.GetRawArrayData())
-            {
-                byte* sourceData = pSource + startOffset;
-                Buffer.Memmove((byte*)destination, sourceData, bytesToCopy);
-            }
-        }
-
         public static void Clear(Array array, int index, int length)
         {
             if (!RuntimeImports.TryArrayClear(array, index, length))
@@ -959,6 +876,7 @@ namespace System
         // implementation of advanced range check elimination in future.
         // Keep in sync with vm\gcscan.cpp and HashHelpers.MaxPrimeArrayLength.
         internal const int MaxArrayLength = 0X7FEFFFFF;
+        internal const int MaxByteArrayLength = MaxArrayLength;
 
         public int GetLength(int dimension)
         {
@@ -1017,37 +935,6 @@ namespace System
             }
 
             return ret;
-        }
-
-        // These functions look odd, as they are part of a complex series of compiler intrinsics
-        // designed to produce very high quality code for equality comparison cases without utilizing
-        // reflection like other platforms. The major complication is that the specification of
-        // IndexOf is that it is supposed to use IEquatable<T> if possible, but that requirement
-        // cannot be expressed in IL directly due to the lack of constraints.
-        // Instead, specialization at call time is used within the compiler. 
-        // 
-        // General Approach
-        // - Perform fancy redirection for Array.GetComparerForReferenceTypesOnly<T>(). If T is a reference 
-        //   type or UniversalCanon, have this redirect to EqualityComparer<T>.get_Default, Otherwise, use 
-        //   the function as is. (will return null in that case)
-        // - Change the contents of the IndexOf functions to have a pair of loops. One for if 
-        //   GetComparerForReferenceTypesOnly returns null, and one for when it does not. 
-        //   - If it does not return null, call the EqualityComparer<T> code.
-        //   - If it does return null, use a special function StructOnlyEquals<T>(). 
-        //     - Calls to that function result in calls to a pair of helper function in 
-        //       EqualityComparerHelpers (StructOnlyEqualsIEquatable, or StructOnlyEqualsNullable) 
-        //       depending on whether or not they are the right function to call.
-        // - The end result is that in optimized builds, we have the same single function compiled size 
-        //   characteristics that the old EqualsOnlyComparer<T>.Equals function had, but we maintain 
-        //   correctness as well.
-        private static EqualityComparer<T> GetComparerForReferenceTypesOnly<T>()
-        {
-#if !CORERT
-            // When T is a reference type or a universal canon type, then this will redirect to EqualityComparer<T>.Default.
-            return null;
-#else
-            return EqualityComparer<T>.Default;
-#endif
         }
 
         // Wraps an IComparer inside an IComparer<Object>.
@@ -1135,7 +1022,6 @@ namespace System
         {
             if (Rank != 2)
                 throw new ArgumentException(SR.Arg_Need2DArray);
-            Contract.EndContractBlock();
 
             int* pIndices = stackalloc int[2];
             pIndices[0] = index1;
@@ -1147,7 +1033,6 @@ namespace System
         {
             if (Rank != 3)
                 throw new ArgumentException(SR.Arg_Need3DArray);
-            Contract.EndContractBlock();
 
             int* pIndices = stackalloc int[3];
             pIndices[0] = index1;
@@ -1265,7 +1150,6 @@ namespace System
         {
             if (Rank != 2)
                 throw new ArgumentException(SR.Arg_Need2DArray);
-            Contract.EndContractBlock();
 
             int* pIndices = stackalloc int[2];
             pIndices[0] = index1;
@@ -1277,7 +1161,6 @@ namespace System
         {
             if (Rank != 3)
                 throw new ArgumentException(SR.Arg_Need3DArray);
-            Contract.EndContractBlock();
 
             int* pIndices = stackalloc int[3];
             pIndices[0] = index1;
@@ -1370,11 +1253,6 @@ namespace System
             }
         }
 
-        private static bool StructOnlyEquals<T>(T left, T right)
-        {
-            return left.Equals(right);
-        }
-
         private sealed partial class ArrayEnumerator : IEnumerator, ICloneable
         {
             public Object Current
@@ -1400,27 +1278,10 @@ namespace System
             }
         }
 
-        internal bool IsElementTypeBlittable
-        {
-            get
-            {
-                if (ElementEEType.IsPrimitive)
-                    return true;
-
-                if (ElementEEType.IsValueType && !ElementEEType.HasPointers)
-                    return true;
-
-                if (ElementEEType.IsPointer)
-                    return true;
-
-                return false;
-            }
-        }
-
         private static int IndexOfImpl<T>(T[] array, T value, int startIndex, int count)
         {
-            // See comment above Array.GetComparerForReferenceTypesOnly for details
-            EqualityComparer<T> comparer = GetComparerForReferenceTypesOnly<T>();
+            // See comment in EqualityComparerHelpers.GetComparerForReferenceTypesOnly for details
+            EqualityComparer<T> comparer = EqualityComparerHelpers.GetComparerForReferenceTypesOnly<T>();
 
             int endIndex = startIndex + count;
             if (comparer != null)
@@ -1435,7 +1296,7 @@ namespace System
             {
                 for (int i = startIndex; i < endIndex; i++)
                 {
-                    if (StructOnlyEquals<T>(array[i], value))
+                    if (EqualityComparerHelpers.StructOnlyEquals<T>(array[i], value))
                         return i;
                 }
             }
@@ -1445,8 +1306,8 @@ namespace System
 
         private static int LastIndexOfImpl<T>(T[] array, T value, int startIndex, int count)
         {
-            // See comment above Array.GetComparerForReferenceTypesOnly for details
-            EqualityComparer<T> comparer = GetComparerForReferenceTypesOnly<T>();
+            // See comment in EqualityComparerHelpers.GetComparerForReferenceTypesOnly for details
+            EqualityComparer<T> comparer = EqualityComparerHelpers.GetComparerForReferenceTypesOnly<T>();
 
             int endIndex = startIndex - count + 1;
             if (comparer != null)
@@ -1461,7 +1322,7 @@ namespace System
             {
                 for (int i = startIndex; i >= endIndex; i--)
                 {
-                    if (StructOnlyEquals<T>(array[i], value))
+                    if (EqualityComparerHelpers.StructOnlyEquals<T>(array[i], value))
                         return i;
                 }
             }

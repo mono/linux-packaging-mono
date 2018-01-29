@@ -2,20 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
-
 namespace System.Globalization
 {
     public partial class TextInfo
     {
-        internal unsafe TextInfo(CultureData cultureData)
-        {
-            _cultureData = cultureData;
-            _cultureName = _cultureData.CultureName;
-            _textInfoName = _cultureData.STEXTINFO;
-        }
-
-        private unsafe void FinishInitialization(string textInfoName)
+        private unsafe void FinishInitialization()
         {
         }
 

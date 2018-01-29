@@ -5,7 +5,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+using Internal.Runtime.CompilerServices;
 
 namespace System
 {
@@ -138,45 +141,82 @@ namespace System
             if (values == null)
                 throw new ArgumentNullException(nameof(values));
 
-            using (IEnumerator<T> en = values.GetEnumerator())
+            if (typeof(T) == typeof(char))
             {
-                if (!en.MoveNext())
-                    return string.Empty;
-
-                // We called MoveNext once, so this will be the first item
-                T currentValue = en.Current;
-
-                // Call ToString before calling MoveNext again, since
-                // we want to stay consistent with the below loop
-                // Everything should be called in the order
-                // MoveNext-Current-ToString, unless further optimizations
-                // can be made, to avoid breaking changes
-                string firstString = currentValue?.ToString();
-
-                // If there's only 1 item, simply call ToString on that
-                if (!en.MoveNext())
+                // Special-case T==char, as we can handle that case much more efficiently,
+                // and string.Concat(IEnumerable<char>) can be used as an efficient
+                // enumerable-based equivalent of new string(char[]).
+                using (IEnumerator<char> en = Unsafe.As<IEnumerable<char>>(values).GetEnumerator())
                 {
-                    // We have to handle the case of either currentValue
-                    // or its ToString being null
-                    return firstString ?? string.Empty;
-                }
-
-                StringBuilder result = StringBuilderCache.Acquire();
-
-                result.Append(firstString);
-
-                do
-                {
-                    currentValue = en.Current;
-
-                    if (currentValue != null)
+                    if (!en.MoveNext())
                     {
-                        result.Append(currentValue.ToString());
+                        // There weren't any chars.  Return the empty string.
+                        return Empty;
                     }
-                }
-                while (en.MoveNext());
 
-                return StringBuilderCache.GetStringAndRelease(result);
+                    char c = en.Current; // save the first char
+
+                    if (!en.MoveNext())
+                    {
+                        // There was only one char.  Return a string from it directly.
+                        return CreateFromChar(c);
+                    }
+
+                    // Create the StringBuilder, add the chars we've already enumerated,
+                    // add the rest, and then get the resulting string.
+                    StringBuilder result = StringBuilderCache.Acquire();
+                    result.Append(c); // first value
+                    do
+                    {
+                        c = en.Current;
+                        result.Append(c);
+                    }
+                    while (en.MoveNext());
+                    return StringBuilderCache.GetStringAndRelease(result);
+                }
+            }
+            else
+            {
+                using (IEnumerator<T> en = values.GetEnumerator())
+                {
+                    if (!en.MoveNext())
+                        return string.Empty;
+
+                    // We called MoveNext once, so this will be the first item
+                    T currentValue = en.Current;
+
+                    // Call ToString before calling MoveNext again, since
+                    // we want to stay consistent with the below loop
+                    // Everything should be called in the order
+                    // MoveNext-Current-ToString, unless further optimizations
+                    // can be made, to avoid breaking changes
+                    string firstString = currentValue?.ToString();
+
+                    // If there's only 1 item, simply call ToString on that
+                    if (!en.MoveNext())
+                    {
+                        // We have to handle the case of either currentValue
+                        // or its ToString being null
+                        return firstString ?? string.Empty;
+                    }
+
+                    StringBuilder result = StringBuilderCache.Acquire();
+
+                    result.Append(firstString);
+
+                    do
+                    {
+                        currentValue = en.Current;
+
+                        if (currentValue != null)
+                        {
+                            result.Append(currentValue.ToString());
+                        }
+                    }
+                    while (en.MoveNext());
+
+                    return StringBuilderCache.GetStringAndRelease(result);
+                }
             }
         }
 
@@ -877,6 +917,91 @@ namespace System
             return Substring(0, startIndex);
         }
 
+        public string Replace(string oldValue, string newValue, bool ignoreCase, CultureInfo culture)
+        {
+            return ReplaceCore(oldValue, newValue, culture, ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None);
+        }
+
+        public string Replace(string oldValue, string newValue, StringComparison comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case StringComparison.CurrentCulture:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.CurrentCulture, CompareOptions.None);
+
+                case StringComparison.CurrentCultureIgnoreCase:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
+
+                case StringComparison.InvariantCulture:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.InvariantCulture, CompareOptions.None);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.InvariantCulture, CompareOptions.IgnoreCase);
+
+                case StringComparison.Ordinal:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+
+                case StringComparison.OrdinalIgnoreCase:
+                    return ReplaceCore(oldValue, newValue, CultureInfo.InvariantCulture, CompareOptions.OrdinalIgnoreCase);
+
+                default:
+                    throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
+            }
+        }
+
+        private unsafe String ReplaceCore(string oldValue, string newValue, CultureInfo culture, CompareOptions options)
+        {
+            if (oldValue == null)
+                throw new ArgumentNullException(nameof(oldValue));
+            if (oldValue.Length == 0)
+                throw new ArgumentException(SR.Argument_StringZeroLength, nameof(oldValue));
+
+            // If they asked to replace oldValue with a null, replace all occurrences
+            // with the empty string.
+            if (newValue == null)
+                newValue = string.Empty;
+
+            CultureInfo referenceCulture = culture ?? CultureInfo.CurrentCulture;
+            StringBuilder result = StringBuilderCache.Acquire();
+
+            int startIndex = 0;
+            int index = 0;
+
+            int matchLength = 0;
+
+            bool hasDoneAnyReplacements = false;
+            CompareInfo ci = referenceCulture.CompareInfo;
+
+            do
+            {
+                index = ci.IndexOf(this, oldValue, startIndex, _stringLength - startIndex, options, &matchLength);
+                if (index >= 0)
+                {
+                    // append the unmodified portion of string
+                    result.Append(this, startIndex, index - startIndex);
+
+                    // append the replacement
+                    result.Append(newValue);
+
+                    startIndex = index + matchLength;
+                    hasDoneAnyReplacements = true;
+                }
+                else if (!hasDoneAnyReplacements)
+                {
+                    // small optimization,
+                    // if we have not done any replacements,
+                    // we will return the original string
+                    return this;
+                }
+                else
+                {
+                    result.Append(this, startIndex, _stringLength - startIndex);
+                }
+            } while (index >= 0);
+
+            return StringBuilderCache.GetStringAndRelease(result);
+        }
+
         // Replaces all instances of oldChar with newChar.
         //
         public String Replace(char oldChar, char newChar)
@@ -1516,7 +1641,7 @@ namespace System
         // Creates a copy of this string in lower case.  The culture is set by culture.
         public String ToLower()
         {
-            return FormatProvider.ToLower(this);
+            return CultureInfo.CurrentCulture.TextInfo.ToLower(this);
         }
 
         // Creates a copy of this string in lower case.  The culture is set by culture.
@@ -1532,12 +1657,12 @@ namespace System
         // Creates a copy of this string in lower case based on invariant culture.
         public String ToLowerInvariant()
         {
-            return FormatProvider.ToLowerInvariant(this);
+            return CultureInfo.InvariantCulture.TextInfo.ToLower(this);
         }
 
         public String ToUpper()
         {
-            return FormatProvider.ToUpper(this);
+            return CultureInfo.CurrentCulture.TextInfo.ToUpper(this);
         }
 
         // Creates a copy of this string in upper case.  The culture is set by culture.
@@ -1553,7 +1678,7 @@ namespace System
         //Creates a copy of this string in upper case based on invariant culture.
         public String ToUpperInvariant()
         {
-            return FormatProvider.ToUpperInvariant(this);
+            return CultureInfo.InvariantCulture.TextInfo.ToUpper(this);
         }
 
         // Trims the whitespace from both ends of the string.  Whitespace is defined by

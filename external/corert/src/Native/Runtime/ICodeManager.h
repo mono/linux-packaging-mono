@@ -77,6 +77,13 @@ enum class ClasslibFunctionId
     AppendExceptionStackFrame = 3,
     CheckStaticClassConstruction = 4,
     GetSystemArrayEEType = 5,
+    OnFirstChanceException = 6,
+};
+
+enum class AssociatedDataFlags : unsigned char
+{
+    None = 0,
+    HasUnboxingStubTarget = 1,
 };
 
 class ICodeManager
@@ -117,5 +124,12 @@ public:
 
     virtual PTR_VOID GetMethodStartAddress(MethodInfo * pMethodInfo) = 0;
 
+    virtual PTR_VOID GetOsModuleHandle() = 0;
+
     virtual void * GetClasslibFunction(ClasslibFunctionId functionId) = 0;
+
+    // Returns any custom data attached to the method. Format:
+    //      AssociatedDataFlags        // 1 byte. Flags describing the data stored
+    //      Data (stream of bytes)     // Variable size (depending on flags). Custom data associated with method
+    virtual PTR_VOID GetAssociatedData(PTR_VOID ControlPC) = 0;
 };

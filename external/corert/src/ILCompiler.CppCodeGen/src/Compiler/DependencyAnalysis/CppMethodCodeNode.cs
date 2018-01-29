@@ -13,7 +13,7 @@ using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    internal class CppMethodCodeNode : DependencyNodeCore<NodeFactory>, IMethodNode
+    internal class CppMethodCodeNode : DependencyNodeCore<NodeFactory>, IMethodBodyNode
     {
         private MethodDesc _method;
         private string _methodCode;
@@ -75,5 +75,12 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory factory) => null;
         public override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
+
+        int ISortableSymbolNode.ClassCode => 1643555522;
+
+        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        {
+            return comparer.Compare(_method, ((CppMethodCodeNode)other)._method);
+        }
     }
 }

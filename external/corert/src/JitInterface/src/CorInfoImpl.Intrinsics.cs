@@ -50,7 +50,7 @@ namespace Internal.JitInterface
             }
             protected override IntrinsicEntry CreateValueFromKey(IntrinsicKey key)
             {
-                Debug.Assert(false, "CreateValueFromKey not supported");
+                Debug.Fail("CreateValueFromKey not supported");
                 return null;
             }
             protected override int GetKeyHashCode(IntrinsicKey key)
@@ -79,6 +79,7 @@ namespace Internal.JitInterface
 
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Sin, "Sin", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Cos, "Cos", "System", "Math");
+            // table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Cbrt, "Cbrt", "System", "Math"); // not in CoreRT yet
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Sqrt, "Sqrt", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Abs, "Abs", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Round, "Round", "System", "Math");
@@ -87,9 +88,12 @@ namespace Internal.JitInterface
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Tan, "Tan", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Tanh, "Tanh", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Asin, "Asin", "System", "Math");
+            // table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Asinh, "Asinh", "System", "Math"); // not in CoreRT yet
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Acos, "Acos", "System", "Math");
+            // table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Acosh, "Acosh", "System", "Math"); // not in CoreRT yet
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Atan, "Atan", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Atan2, "Atan2", "System", "Math");
+            // table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Atanh, "Atanh", "System", "Math"); // not in CoreRT yet
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Log10, "Log10", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Pow, "Pow", "System", "Math");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Exp, "Exp", "System", "Math");
@@ -124,22 +128,29 @@ namespace Internal.JitInterface
             // table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_GetManagedThreadId, "get_ManagedThreadId", "System", "Thread"); // not in .NET Core
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_ByReference_Ctor, ".ctor", "System", "ByReference`1");
             table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_ByReference_Value, "get_Value", "System", "ByReference`1");
-            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Span_GetItem, "get_Item", "System", "Span`1"); // not handled
-            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_ReadOnlySpan_GetItem, "get_Item", "System", "ReadOnlySpan`1"); // not handled
+            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_Span_GetItem, "get_Item", "System", "Span`1");
+            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_ReadOnlySpan_GetItem, "get_Item", "System", "ReadOnlySpan`1");
+            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_GetRawHandle, "EETypePtrOf", "System", "EETypePtr");
+            table.Add(CorInfoIntrinsics.CORINFO_INTRINSIC_GetRawHandle, "DefaultConstructorOf", "System", "Activator");
 
             // If this assert fails, make sure to add the new intrinsics to the table above and update the expected count below.
-            Debug.Assert((int)CorInfoIntrinsics.CORINFO_INTRINSIC_Count == 49);
+            Debug.Assert((int)CorInfoIntrinsics.CORINFO_INTRINSIC_Count == 54);
 
             return table;
         }
 
         static IntrinsicHashtable s_IntrinsicHashtable = InitializeIntrinsicHashtable();
 
-        private CorInfoIntrinsics getIntrinsicID(CORINFO_METHOD_STRUCT_* ftn, ref bool pMustExpand)
+        private CorInfoIntrinsics getIntrinsicID(CORINFO_METHOD_STRUCT_* ftn, byte* pMustExpand)
         {
-            pMustExpand = false;
-
             var method = HandleToObject(ftn);
+            return getIntrinsicID(method, pMustExpand);
+        }
+
+        private CorInfoIntrinsics getIntrinsicID(MethodDesc method, byte* pMustExpand)
+        {
+            if (pMustExpand != null)
+                *pMustExpand = 0;
 
             Debug.Assert(method.IsIntrinsic);
 
@@ -200,7 +211,13 @@ namespace Internal.JitInterface
                 case CorInfoIntrinsics.CORINFO_INTRINSIC_InitializeArray:
                 case CorInfoIntrinsics.CORINFO_INTRINSIC_ByReference_Ctor:
                 case CorInfoIntrinsics.CORINFO_INTRINSIC_ByReference_Value:
-                    pMustExpand = true;
+                    if (pMustExpand != null)
+                        *pMustExpand = 1;
+                    break;
+
+                case CorInfoIntrinsics.CORINFO_INTRINSIC_GetRawHandle:
+                    if (pMustExpand != null)
+                        *pMustExpand = 1;
                     break;
 
                 default:

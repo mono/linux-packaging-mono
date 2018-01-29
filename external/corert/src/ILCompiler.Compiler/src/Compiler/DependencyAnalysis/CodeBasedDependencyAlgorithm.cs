@@ -18,18 +18,15 @@ namespace ILCompiler.DependencyAnalysis
     {
         public static void AddDependenciesDueToReflectability(ref DependencyList dependencies, NodeFactory factory, MethodDesc method)
         {
-            // TODO: https://github.com/dotnet/corert/issues/3224
-            // Reflection invoke stub handling is here because in the current reflection model we reflection-enable
-            // all methods that are compiled. Ideally the list of reflection enabled methods should be known before
-            // we even start the compilation process (with the invocation stubs being compilation roots like any other).
-            // The existing model has it's problems: e.g. the invocability of the method depends on inliner decisions.
             if (factory.MetadataManager.IsReflectionInvokable(method))
             {
                 if (dependencies == null)
                     dependencies = new DependencyList();
 
+                dependencies.Add(factory.MaximallyConstructableType(method.OwningType), "Reflection invoke");
+
                 if (factory.MetadataManager.HasReflectionInvokeStubForInvokableMethod(method)
-                    && ((factory.Target.Abi != TargetAbi.ProjectN) || !method.IsCanonicalMethod(CanonicalFormKind.Any)))
+                    && ((factory.Target.Abi != TargetAbi.ProjectN) || ProjectNDependencyBehavior.EnableFullAnalysis || !method.IsCanonicalMethod(CanonicalFormKind.Any)))
                 {
                     MethodDesc canonInvokeStub = factory.MetadataManager.GetCanonicalReflectionInvokeStub(method);
                     if (canonInvokeStub.IsSharedByGenericInstantiations)
@@ -42,7 +39,7 @@ namespace ILCompiler.DependencyAnalysis
                 }
 
                 bool skipUnboxingStubDependency = false;
-                if (factory.Target.Abi == TargetAbi.ProjectN)
+                if ((factory.Target.Abi == TargetAbi.ProjectN) && !ProjectNDependencyBehavior.EnableFullAnalysis)
                 {
                     // ProjectN compilation currently computes the presence of these stubs independent from dependency analysis here
                     // TODO: fix that issue and remove this odd treatment of unboxing stubs
@@ -51,7 +48,7 @@ namespace ILCompiler.DependencyAnalysis
                 }
 
                 if (method.OwningType.IsValueType && !method.Signature.IsStatic && !skipUnboxingStubDependency)
-                    dependencies.Add(new DependencyListEntry(factory.MethodEntrypoint(method, unboxingStub: true), "Reflection unboxing stub"));
+                    dependencies.Add(new DependencyListEntry(factory.ExactCallableAddress(method, isUnboxingStub: true), "Reflection unboxing stub"));
 
                 // If the method is defined in a different module than this one, a metadata token isn't known for performing the reference
                 // Use a name/sig reference instead.
@@ -99,49 +96,46 @@ namespace ILCompiler.DependencyAnalysis
                 GenericTypesTemplateMap.GetTemplateTypeDependencies(ref dependencies, factory, owningTemplateType);
             }
 
-            // On Project N, the compiler doesn't generate the interop code on the fly
-            if (method.Context.Target.Abi != TargetAbi.ProjectN)
+            factory.InteropStubManager.AddDependeciesDueToPInvoke(ref dependencies, factory, method);
+
+            if (method.IsIntrinsic && factory.Target.Abi != TargetAbi.ProjectN)
             {
-                if (method.IsPInvoke)
+                if (method.OwningType is MetadataType owningType)
                 {
-                    if (dependencies == null)
-                        dependencies = new DependencyList();
+                    string name = method.Name;
 
-                    MethodSignature methodSig = method.Signature;
-                    AddPInvokeParameterDependencies(ref dependencies, factory, methodSig.ReturnType);
-
-                    for (int i = 0; i < methodSig.Length; i++)
+                    switch (name)
                     {
-                        AddPInvokeParameterDependencies(ref dependencies, factory, methodSig[i]);
-                    }
-                }
-            }
-        }
+                        // The general purpose code in Comparer/EqualityComparer Create method depends on the template
+                        // type loader being able to load the necessary types at runtime.
+                        case "Create":
+                            if (method.IsSharedByGenericInstantiations
+                                && owningType.Module == factory.TypeSystemContext.SystemModule
+                                && owningType.Namespace == "System.Collections.Generic")
+                            {
+                                TypeDesc[] templateDependencies = null;
 
-        private static void AddPInvokeParameterDependencies(ref DependencyList dependencies, NodeFactory factory, TypeDesc parameter)
-        {
-            if (parameter.IsDelegate)
-            {
-                dependencies.Add(factory.NecessaryTypeSymbol(parameter), "Delegate Marshalling Stub");
+                                if (owningType.Name == "Comparer`1")
+                                {
+                                    templateDependencies = Internal.IL.Stubs.ComparerIntrinsics.GetPotentialComparersForType(
+                                        owningType.Instantiation[0]);
+                                }
+                                else if (owningType.Name == "EqualityComparer`1")
+                                {
+                                    templateDependencies = Internal.IL.Stubs.ComparerIntrinsics.GetPotentialEqualityComparersForType(
+                                        owningType.Instantiation[0]);
+                                }
 
-                dependencies.Add(factory.MethodEntrypoint(factory.InteropStubManager.GetOpenStaticDelegateMarshallingStub(parameter)), "Delegate Marshalling Stub");
-                dependencies.Add(factory.MethodEntrypoint(factory.InteropStubManager.GetClosedDelegateMarshallingStub(parameter)), "Delegate Marshalling Stub");
-                dependencies.Add(factory.MethodEntrypoint(factory.InteropStubManager.GetForwardDelegateCreationStub(parameter)), "Delegate Marshalling Stub");
-            }
-            else if (Internal.TypeSystem.Interop.MarshalHelpers.IsStructMarshallingRequired(parameter))
-            {
-                var stub = (Internal.IL.Stubs.StructMarshallingThunk)factory.InteropStubManager.GetStructMarshallingManagedToNativeStub(parameter);
-                dependencies.Add(factory.ConstructedTypeSymbol(factory.InteropStubManager.GetStructMarshallingType(parameter)), "Struct Marshalling Type");
-                dependencies.Add(factory.MethodEntrypoint(stub), "Struct Marshalling stub");
-                dependencies.Add(factory.MethodEntrypoint(factory.InteropStubManager.GetStructMarshallingNativeToManagedStub(parameter)), "Struct Marshalling stub");
-                dependencies.Add(factory.MethodEntrypoint(factory.InteropStubManager.GetStructMarshallingCleanupStub(parameter)), "Struct Marshalling stub");
-
-                foreach (var inlineArrayCandidate in stub.GetInlineArrayCandidates())
-                {
-                    dependencies.Add(factory.ConstructedTypeSymbol(factory.InteropStubManager.GetInlineArrayType(inlineArrayCandidate)), "Struct Marshalling Type");
-                    foreach (var method in inlineArrayCandidate.ElementType.GetMethods())
-                    {
-                        dependencies.Add(factory.MethodEntrypoint(method), "inline array marshalling stub");
+                                if (templateDependencies != null)
+                                {
+                                    dependencies = dependencies ?? new DependencyList();
+                                    foreach (TypeDesc templateType in templateDependencies)
+                                    {
+                                        dependencies.Add(factory.NativeLayout.TemplateTypeLayout(templateType), "Generic comparer");
+                                    }
+                                }
+                            }
+                            break;
                     }
                 }
             }

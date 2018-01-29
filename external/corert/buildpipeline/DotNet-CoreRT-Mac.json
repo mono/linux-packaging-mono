@@ -340,7 +340,7 @@
       "fetchDepth": "0",
       "gitLfsSupport": "false",
       "skipSyncSource": "false",
-      "cleanOptions": "0"
+      "cleanOptions": "3"
     },
     "id": "0a2b2664-c1be-429c-9b40-8a24dee27a4a",
     "type": "TfsGit",
@@ -353,12 +353,12 @@
   "quality": "definition",
   "defaultBranch": "refs/heads/master",
   "queue": {
+    "id": 330,
+    "name": "DotNetCore-Build",
     "pool": {
-      "id": 39,
-      "name": "DotNet-Build"
-    },
-    "id": 36,
-    "name": "DotNet-Build"
+      "id": 97,
+      "name": "DotNetCore-Build"
+    }
   },
   "path": "\\",
   "type": "build",

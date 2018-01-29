@@ -4,6 +4,7 @@
 
 using System;
 
+using Internal.Runtime.DebuggerSupport;
 using Internal.Runtime.TypeLoader;
 
 namespace Internal.Runtime.CompilerHelpers
@@ -13,7 +14,6 @@ namespace Internal.Runtime.CompilerHelpers
         public static void InitializeLibrary()
         {
             TypeLoaderEnvironment.Initialize();
-            DebugFuncEval.Initialize();
         }
     }
 }

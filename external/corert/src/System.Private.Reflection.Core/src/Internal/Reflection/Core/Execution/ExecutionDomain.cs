@@ -91,7 +91,9 @@ namespace Internal.Reflection.Core.Execution
                         foreach (string defaultAssemblyName in defaultAssemblyNames)
                         {
                             RuntimeAssemblyName runtimeAssemblyName = AssemblyNameParser.Parse(defaultAssemblyName);
-                            RuntimeAssembly defaultAssembly = RuntimeAssembly.GetRuntimeAssembly(runtimeAssemblyName);
+                            RuntimeAssembly defaultAssembly = RuntimeAssembly.GetRuntimeAssemblyIfExists(runtimeAssemblyName);
+                            if (defaultAssembly == null)
+                                continue;
                             Type resolvedType = defaultAssembly.GetTypeCore(coreTypeName, ignoreCase: ignoreCase);
                             if (resolvedType != null)
                                 return resolvedType;
@@ -173,17 +175,6 @@ namespace Internal.Reflection.Core.Execution
                 }
                 return RuntimeConstructedGenericMethodInfo.GetRuntimeConstructedGenericMethodInfo(runtimeNamedMethodInfo, genericTypeArguments);
             }
-        }
-
-        //
-        // Get or create a CustomAttributeData object for a specific type and arguments. 
-        //
-        public CustomAttributeData GetCustomAttributeData(Type attributeType, IList<CustomAttributeTypedArgument> constructorArguments, IList<CustomAttributeNamedArgument> namedArguments)
-        {
-            if (!attributeType.IsRuntimeImplemented())
-                throw new InvalidOperationException();
-            RuntimeTypeInfo runtimeAttributeType = attributeType.CastToRuntimeTypeInfo();
-            return new RuntimePseudoCustomAttributeData(runtimeAttributeType, constructorArguments, namedArguments);
         }
 
         //=======================================================================================

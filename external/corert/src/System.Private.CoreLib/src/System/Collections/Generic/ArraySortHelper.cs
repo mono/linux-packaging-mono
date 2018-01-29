@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 #if MONO
 using System.Diagnostics.Private;
 #endif
@@ -15,11 +14,11 @@ namespace System.Collections.Generic
     internal static class IntrospectiveSortUtilities
     {
         // This is the threshold where Introspective sort switches to Insertion sort.
-        // Imperically, 16 seems to speed up most cases without slowing down others, at least for integers.
+        // Empirically, 16 seems to speed up most cases without slowing down others, at least for integers.
         // Large value types may benefit from a smaller number.
         internal const int IntrosortSizeThreshold = 16;
 
-        internal static int FloorLog2(int n)
+        internal static int FloorLog2PlusOne(int n)
         {
             int result = 0;
             while (n >= 1)
@@ -169,7 +168,7 @@ namespace System.Collections.Generic
             if (length < 2)
                 return;
 
-            IntroSort(keys, left, length + left - 1, 2 * IntrospectiveSortUtilities.FloorLog2(keys.Length), comparer);
+            IntroSort(keys, left, length + left - 1, 2 * IntrospectiveSortUtilities.FloorLog2PlusOne(keys.Length), comparer);
         }
 
         private static void IntroSort(T[] keys, int lo, int hi, int depthLimit, Comparison<T> comparer)
@@ -226,7 +225,6 @@ namespace System.Collections.Generic
             Debug.Assert(lo >= 0);
             Debug.Assert(hi > lo);
             Debug.Assert(hi < keys.Length);
-            Contract.Ensures(Contract.Result<int>() >= lo && Contract.Result<int>() <= hi);
 
             // Compute median-of-three.  But also partition them, since we've done the comparison.
             int middle = lo + ((hi - lo) / 2);
@@ -383,10 +381,11 @@ namespace System.Collections.Generic
         private static void SwapIfGreaterWithItems(TKey[] keys, TValue[] values, IComparer<TKey> comparer, int a, int b)
         {
             Debug.Assert(keys != null);
-            Debug.Assert(values == null || values.Length >= keys.Length);
             Debug.Assert(comparer != null);
             Debug.Assert(0 <= a && a < keys.Length);
             Debug.Assert(0 <= b && b < keys.Length);
+            Debug.Assert(values == null || (0 <= a && a < values.Length));
+            Debug.Assert(values == null || (0 <= b && b < values.Length));
 
             if (a != b)
             {
@@ -435,7 +434,7 @@ namespace System.Collections.Generic
             if (length < 2)
                 return;
 
-            IntroSort(keys, values, left, length + left - 1, 2 * IntrospectiveSortUtilities.FloorLog2(keys.Length), comparer);
+            IntroSort(keys, values, left, length + left - 1, 2 * IntrospectiveSortUtilities.FloorLog2PlusOne(keys.Length), comparer);
         }
 
         private static void IntroSort(TKey[] keys, TValue[] values, int lo, int hi, int depthLimit, IComparer<TKey> comparer)
@@ -494,7 +493,6 @@ namespace System.Collections.Generic
             Debug.Assert(lo >= 0);
             Debug.Assert(hi > lo);
             Debug.Assert(hi < keys.Length);
-            Contract.Ensures(Contract.Result<int>() >= lo && Contract.Result<int>() <= hi);
 
             // Compute median-of-three.  But also partition them, since we've done the comparison.
             int middle = lo + ((hi - lo) / 2);

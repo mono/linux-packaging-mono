@@ -12,6 +12,9 @@ namespace System.Xml.XPath
     // Represents the exception that is thrown when there is error processing an
     // XPath expression.
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class XPathException : SystemException
     {
         // we need to keep this members for V1 serialization compatibility
@@ -24,12 +27,37 @@ namespace System.Xml.XPath
 
         protected XPathException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
+            _res = (string)info.GetValue("res", typeof(string));
+            _args = (string[])info.GetValue("args", typeof(string[]));
+
+            // deserialize optional members
+            string version = null;
+            foreach (SerializationEntry e in info)
+            {
+                if (e.Name == "version")
+                {
+                    version = (string)e.Value;
+                }
+            }
+
+            if (version == null)
+            {
+                // deserializing V1 exception
+                _message = CreateMessage(_res, _args);
+            }
+            else
+            {
+                // deserializing V2 or higher exception -> exception message is serialized by the base class (Exception._message)
+                _message = null;
+            }
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
+            info.AddValue("res", _res);
+            info.AddValue("args", _args);
+            info.AddValue("version", "2.0");
         }
 
         public XPathException() : this(string.Empty, (Exception)null) { }

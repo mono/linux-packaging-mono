@@ -18,11 +18,13 @@ using System.Threading;
 using System.Diagnostics;
 
 using Internal.Runtime.Augments;
+using Internal.Runtime.CompilerServices;
 
 namespace System
 {
     // This class is sealed to mitigate security issues caused by Object::MemberwiseClone.
     [Serializable]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public sealed class WeakReference<T> : ISerializable where T : class
     {
         // If you fix bugs here, please fix them in WeakReference at the same time.
@@ -59,8 +61,8 @@ namespace System
                 throw new ArgumentNullException(nameof(info));
             }
 
-            T target = (T)info.GetValue("TrackedObject", typeof(T));
-            bool trackResurrection = info.GetBoolean("TrackResurrection");
+            T target = (T)info.GetValue("TrackedObject", typeof(T)); // Do not rename (binary serialization)
+            bool trackResurrection = info.GetBoolean("TrackResurrection"); // Do not rename (binary serialization)
 
             m_handle = (IntPtr)GCHandle.Alloc(target, trackResurrection ? GCHandleType.WeakTrackResurrection : GCHandleType.Weak);
 
@@ -142,7 +144,7 @@ namespace System
             }
             else
             {
-                Debug.Assert(false, "WinRTInteropCallback is null");
+                Debug.Fail("WinRTInteropCallback is null");
             }
 #endif // ENABLE_WINRT
             return null;
@@ -161,7 +163,7 @@ namespace System
                 callbacks.SetCOMWeakReferenceTarget(this, target);
             else
             {
-                Debug.Assert(false, "WinRTInteropCallback is null");
+                Debug.Fail("WinRTInteropCallback is null");
             }
 #endif // ENABLE_WINRT
         }
@@ -190,8 +192,8 @@ namespace System
                 throw new ArgumentNullException(nameof(info));
             }
 
-            info.AddValue("TrackedObject", this.GetTarget(), typeof(T));
-            info.AddValue("TrackResurrection", m_trackResurrection);
+            info.AddValue("TrackedObject", this.GetTarget(), typeof(T)); // Do not rename (binary serialization)
+            info.AddValue("TrackResurrection", m_trackResurrection); // Do not rename (binary serialization)
         }
     }
 }

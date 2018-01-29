@@ -181,6 +181,43 @@ namespace PInvokeTests
         [DllImport("*", CallingConvention = CallingConvention.StdCall)]
         static extern bool InlineArrayTest(ref InlineArrayStruct ias, ref InlineUnicodeStruct ius);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        public unsafe delegate void SetLastErrorFuncDelegate(int errorCode);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall)]
+        internal static extern IntPtr GetFunctionPointer();
+
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal unsafe struct InlineString
+        {
+            internal uint size;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            internal string name;
+        }
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall)]
+        static extern bool InlineStringTest(ref InlineString ias);
+
+        internal delegate int Callback0();
+        internal delegate int Callback1();
+        internal delegate int Callback2();
+
+        [DllImport("*")]
+        internal static extern bool RegisterCallbacks(ref Callbacks callbacks);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Callbacks
+        {
+            public Callback0 callback0;
+            public Callback1 callback1;
+            public Callback2 callback2;
+        }
+
+        public static int callbackFunc0() { return 0; }
+        public static int callbackFunc1() { return 1; }
+        public static int callbackFunc2() { return 2; }
+
         public static int Main(string[] args)
         {
             TestBlittableType();
@@ -460,6 +497,12 @@ namespace PInvokeTests
 
             Delegate_String ds = new Delegate_String((new ClosedDelegateCLass()).GetString);
             ThrowIfNotEquals(true, ReversePInvoke_String(ds), "Delegate marshalling failed.");
+
+            IntPtr procAddress = GetFunctionPointer();
+            SetLastErrorFuncDelegate funcDelegate =
+                Marshal.GetDelegateForFunctionPointer<SetLastErrorFuncDelegate>(procAddress);
+            funcDelegate(0x204);
+            ThrowIfNotEquals(0x204, Marshal.GetLastWin32Error(), "Not match");
         }
 
         static int Sum(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j)
@@ -519,9 +562,20 @@ namespace PInvokeTests
 
             public ExplicitStruct f2;
         }
+        
+        [StructLayout(LayoutKind.Explicit)]
+        public struct TestStruct2
+        {
+            [FieldOffset(0)]
+            public int f1;
+
+            [FieldOffset(8)]
+            public bool f2;
+        }
 
         private static void TestStruct()
         {
+#if !CODEGEN_CPP
             Console.WriteLine("Testing Structs");
             SequentialStruct ss = new SequentialStruct();
             ss.f0 = 100;
@@ -568,6 +622,10 @@ namespace PInvokeTests
             }
             ThrowIfNotEquals(true, StructTest_Array(ssa, ssa.Length), "Array of struct marshalling failed");
 
+            InlineString ils = new InlineString();
+            InlineStringTest(ref ils);
+            ThrowIfNotEquals("Hello World!", ils.name, "Inline string marshalling failed");
+
             InlineArrayStruct ias = new InlineArrayStruct();
             ias.inlineArray = new short[128];
 
@@ -581,7 +639,24 @@ namespace PInvokeTests
             InlineUnicodeStruct ius = new InlineUnicodeStruct();
             ius.inlineString = "Hello World";
 
-#if !CODEGEN_CPP
+
+            TestStruct2 ts = new TestStruct2() { f1 = 100, f2 = true};
+            int size = Marshal.SizeOf<TestStruct2>(ts);
+            IntPtr memory = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.StructureToPtr<TestStruct2>(ts, memory, false);
+                TestStruct2 ts2 = Marshal.PtrToStructure<TestStruct2>(memory);
+                ThrowIfNotEquals(true, ts2.f1 == 100 && ts2.f2 == true, "Struct marshalling Marshal API failed");
+
+                IntPtr offset = Marshal.OffsetOf<TestStruct2>("f2");
+                ThrowIfNotEquals(new IntPtr(8), offset, "Struct marshalling OffsetOf failed.");
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(memory);
+            }
+
             ThrowIfNotEquals(true, InlineArrayTest(ref ias, ref ius), "inline array marshalling failed");
             bool pass = true;
             for (short i = 0; i < 128; i++)
@@ -610,6 +685,12 @@ namespace PInvokeTests
                 pass = true;
             }
             ThrowIfNotEquals(true, pass, "Struct marshalling scenario6 failed.");
+
+            Callbacks callbacks = new Callbacks();
+            callbacks.callback0 = new Callback0(callbackFunc0);
+            callbacks.callback1 = new Callback1(callbackFunc1);
+            callbacks.callback2 = new Callback2(callbackFunc2);
+            ThrowIfNotEquals(true,  RegisterCallbacks(ref callbacks), "Scenario 7: Struct with delegate marshalling failed");
 #endif
         }
     }

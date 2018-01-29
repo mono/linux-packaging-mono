@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using Internal.Runtime.CompilerServices;
+using System;
 using System.Text;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.IO
 {
@@ -293,7 +295,7 @@ namespace System.IO
             stringLength = Read7BitEncodedInt();
             if (stringLength < 0)
             {
-                throw new IOException(SR.Format(SR.IO_IO_InvalidStringLen_Len, stringLength));
+                throw new IOException(SR.Format(SR.IO_InvalidStringLen_Len, stringLength));
             }
 
             if (stringLength == 0)
@@ -365,17 +367,26 @@ namespace System.IO
             }
 
             // SafeCritical: index and count have already been verified to be a valid range for the buffer
-            return InternalReadChars(buffer, index, count);
+            return InternalReadChars(new Span<char>(buffer, index, count));
         }
 
-        private int InternalReadChars(char[] buffer, int index, int count)
+        public virtual int Read(Span<char> buffer)
         {
-            Debug.Assert(buffer != null);
-            Debug.Assert(index >= 0 && count >= 0);
+            if (_stream == null)
+            {
+                throw new ObjectDisposedException(null, SR.ObjectDisposed_FileClosed);
+            }
+
+            return InternalReadChars(buffer);
+        }
+
+        private int InternalReadChars(Span<char> buffer)
+        {
             Debug.Assert(_stream != null);
 
             int numBytes = 0;
-            int charsRemaining = count;
+            int index = 0;
+            int charsRemaining = buffer.Length;
 
             if (_charBytes == null)
             {
@@ -418,11 +429,29 @@ namespace System.IO
 
                 if (numBytes == 0)
                 {
-                    return (count - charsRemaining);
+                    return (buffer.Length - charsRemaining);
                 }
 
                 Debug.Assert(byteBuffer != null, "expected byteBuffer to be non-null");
-                charsRead = _decoder.GetChars(byteBuffer, position, numBytes, buffer, index, flush: false);
+                checked
+                {
+                    if (position < 0 || numBytes < 0 || position > byteBuffer.Length - numBytes)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(numBytes));
+                    }
+                    if (index < 0 || charsRemaining < 0 || index > buffer.Length - charsRemaining)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(charsRemaining));
+                    }
+                    unsafe
+                    {
+                        fixed (byte* pBytes = byteBuffer)
+                        fixed (char* pChars = &MemoryMarshal.GetReference(buffer))
+                        {
+                            charsRead = _decoder.GetChars(pBytes + position, numBytes, pChars + index, charsRemaining, flush: false);
+                        }
+                    }
+                }
 
                 charsRemaining -= charsRead;
                 index += charsRead;
@@ -433,7 +462,7 @@ namespace System.IO
 
             // we may have read fewer than the number of characters requested if end of stream reached 
             // or if the encoding makes the char count too big for the buffer (e.g. fallback sequence)
-            return (count - charsRemaining);
+            return (buffer.Length - charsRemaining);
         }
 
         private int InternalReadOneChar()
@@ -536,7 +565,7 @@ namespace System.IO
 
             // SafeCritical: we own the chars buffer, and therefore can guarantee that the index and count are valid
             char[] chars = new char[count];
-            int n = InternalReadChars(chars, 0, count);
+            int n = InternalReadChars(new Span<char>(chars));
             if (n != count)
             {
                 char[] copy = new char[n];
@@ -571,6 +600,16 @@ namespace System.IO
             }
 
             return _stream.Read(buffer, index, count);
+        }
+
+        public virtual int Read(Span<byte> buffer)
+        {
+            if (_stream == null)
+            {
+                throw new ObjectDisposedException(null, SR.ObjectDisposed_FileClosed);
+            }
+
+            return _stream.Read(buffer);
         }
 
         public virtual byte[] ReadBytes(int count)

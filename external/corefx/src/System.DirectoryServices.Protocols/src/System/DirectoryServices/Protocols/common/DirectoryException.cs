@@ -9,11 +9,13 @@ using System.Security.Permissions;
 namespace System.DirectoryServices.Protocols
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.DirectoryServices.Protocols, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public class DirectoryException : Exception
     {
         protected DirectoryException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            throw new PlatformNotSupportedException();
         }
 
         public DirectoryException(string message, Exception inner) : base(message, inner)
@@ -30,6 +32,9 @@ namespace System.DirectoryServices.Protocols
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.DirectoryServices.Protocols, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public class DirectoryOperationException : DirectoryException, ISerializable
     {
         protected DirectoryOperationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
@@ -64,6 +69,9 @@ namespace System.DirectoryServices.Protocols
     }
 
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.DirectoryServices.Protocols, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public class BerConversionException : DirectoryException
     {
         protected BerConversionException(SerializationInfo info, StreamingContext context) : base(info, context) { }

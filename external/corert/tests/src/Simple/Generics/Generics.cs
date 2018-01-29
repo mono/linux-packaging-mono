@@ -30,6 +30,7 @@ class Program
         TestGvmDelegates.Run();
         TestGvmDependencies.Run();
         TestFieldAccess.Run();
+        TestNativeLayoutGeneration.Run();
 
         return 100;
     }
@@ -716,6 +717,9 @@ class Program
 
             public virtual string IFaceMethod1(T t) { return "BaseClass.IFaceMethod1"; }
             public virtual string IFaceGVMethod1<U>(T t, U u) { return "BaseClass.IFaceGVMethod1"; }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public virtual string VirtualButNotUsedVirtuallyMethod(T t) { return "BaseClass.VirtualButNotUsedVirtuallyMethod"; }
         }
 
         public class DerivedClass1<T> : BaseClass<T>, IFace<T>
@@ -728,6 +732,12 @@ class Program
             public new virtual string GVMethod3<U>(T t, U u) { return "DerivedClass1.GVMethod3"; }
 
             public override string IFaceMethod1(T t) { return "DerivedClass1.IFaceMethod1"; }
+
+            public string UseVirtualButNotUsedVirtuallyMethod(T t)
+            {
+                // Calling through base produces a `call` instead of `callvirt` instruction.
+                return base.VirtualButNotUsedVirtuallyMethod(t);
+            }
         }
 
         public class DerivedClass2<T> : DerivedClass1<T>, IFace<T>
@@ -801,6 +811,7 @@ class Program
                 new DerivedClass1<string>().GVMethod2<string>("string", "string2");
                 new DerivedClass1<string>().GVMethod3<string>("string", "string2");
                 new DerivedClass1<string>().GVMethod4<string>("string", "string2");
+                new DerivedClass1<string>().UseVirtualButNotUsedVirtuallyMethod("string");
                 new DerivedClass2<string>().Method1("string");
                 new DerivedClass2<string>().Method2("string");
                 new DerivedClass2<string>().Method3("string");
@@ -809,13 +820,15 @@ class Program
                 new DerivedClass2<string>().GVMethod2<string>("string", "string2");
                 new DerivedClass2<string>().GVMethod3<string>("string", "string2");
                 new DerivedClass2<string>().GVMethod4<string>("string", "string2");
-                ((IFace<string>)new BaseClass<string>()).IFaceMethod1("string");
+                Func<IFace<string>> f = () => new BaseClass<string>(); // Hack to prevent devirtualization
+                f().IFaceMethod1("string");
                 ((IFace<string>)new BaseClass<string>()).IFaceGVMethod1<string>("string1", "string2");
 
                 MethodInfo m1 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("Method1");
                 MethodInfo m2 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("Method2");
                 MethodInfo m3 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("Method3");
                 MethodInfo m4 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("Method4");
+                MethodInfo unusedMethod = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("VirtualButNotUsedVirtuallyMethod");
                 MethodInfo gvm1 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("GVMethod1").MakeGenericMethod(typeof(string));
                 MethodInfo gvm2 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("GVMethod2").MakeGenericMethod(typeof(string));
                 MethodInfo gvm3 = typeof(BaseClass<string>).GetTypeInfo().GetDeclaredMethod("GVMethod3").MakeGenericMethod(typeof(string));
@@ -824,6 +837,7 @@ class Program
                 Verify("BaseClass.Method2", m2.Invoke(new BaseClass<string>(), new[] { "" }));
                 Verify("BaseClass.Method3", m3.Invoke(new BaseClass<string>(), new[] { "" }));
                 Verify("BaseClass.Method4", m4.Invoke(new BaseClass<string>(), new[] { "" }));
+                Verify("BaseClass.VirtualButNotUsedVirtuallyMethod", unusedMethod.Invoke(new BaseClass<string>(), new[] { "" }));
                 Verify("DerivedClass1.Method1", m1.Invoke(new DerivedClass1<string>(), new[] { "" }));
                 Verify("DerivedClass1.Method2", m2.Invoke(new DerivedClass1<string>(), new[] { "" }));
                 Verify("BaseClass.Method3", m3.Invoke(new DerivedClass1<string>(), new[] { "" }));
@@ -963,36 +977,50 @@ class Program
 
     class TestConstrainedMethodCalls
     {
+        class Atom1 { }
+        class Atom2 { }
+
         interface IFoo<T>
         {
-            void Frob();
+            bool Frob(object o);
         }
 
         struct Foo<T> : IFoo<T>
         {
             public int FrobbedValue;
 
-            public void Frob()
+            public bool Frob(object o)
             {
                 FrobbedValue = 12345;
+                return o is T[,,];
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static void DoFrob<T, U>(ref T t) where T : IFoo<U>
+        static bool DoFrob<T, U>(ref T t, object o) where T : IFoo<U>
         {
             // Perform a constrained interface call from shared code.
             // This should have been resolved to a direct call at compile time.
-            t.Frob();
+            return t.Frob(o);
         }
 
         public static void Run()
         {
-            var foo = new Foo<object>();
-            DoFrob<Foo<object>, object>(ref foo);
+            var foo1 = new Foo<Atom1>();
+            bool result = DoFrob<Foo<Atom1>, Atom1>(ref foo1, new Atom1[0,0,0]);
 
             // If the FrobbedValue doesn't change when we frob, we must have done box+interface call.
-            if (foo.FrobbedValue != 12345)
+            if (foo1.FrobbedValue != 12345)
+                throw new Exception();
+
+            // Also check we passed the right generic context to Foo.Frob
+            if (!result)
+                throw new Exception();
+
+            // Also check dependency analysis:
+            // EEType for Atom2[,,] that we'll check for was never allocated.
+            var foo2 = new Foo<Atom2>();
+            if (DoFrob<Foo<Atom2>, Atom2>(ref foo2, new object()))
                 throw new Exception();
         }
     }
@@ -1128,6 +1156,21 @@ class Program
             string IMethod1<T>(T t1, T t2);
         }
 
+        interface ICovariant<out T>
+        {
+            string ICovariantGVM<U>();
+        }
+
+        public interface IBar<T>
+        {
+            U IBarGVMethod<U>(Func<T, U> arg);
+        }
+
+        public interface IFace<T>
+        {
+            string IFaceGVMethod1<U>(T t, U u);
+        }
+
         class Base : IFoo<string>, IFoo<int>
         {
             public virtual string GMethod1<T>(T t1, T t2) { return "Base.GMethod1<" + typeof(T) + ">(" + t1 + "," + t2 + ")"; }
@@ -1173,6 +1216,36 @@ class Program
         {
             string IFoo<int>.IMethod1<T>(T t1, T t2) { return "MyStruct3.IFoo<int>.IMethod1<" + typeof(T) + ">(" + t1 + "," + t2 + ")"; }
             public string IMethod1<T>(T t1, T t2) { return "MyStruct3.IMethod1<" + typeof(T) + ">(" + t1 + "," + t2 + ")"; }
+        }
+
+        public class AnotherBaseClass<T>
+        {
+            public virtual string IFaceMethod1(T t) { return "AnotherBaseClass.IFaceMethod1"; }
+            public virtual string IFaceGVMethod1<U>(T t, U u) { return "AnotherBaseClass.IFaceGVMethod1"; }
+        }
+
+        public class AnotherDerivedClass<T> : AnotherBaseClass<T>, IFace<T>
+        {
+        }
+
+        public class BarImplementor : IBar<int>
+        {
+            public virtual U IBarGVMethod<U>(Func<int, U> arg) { return arg(123); }
+        }
+
+        public class Yahoo<T>
+        {
+            public virtual U YahooGVM<U>(Func<T, U> arg) { return default(U); }
+        }
+
+        public class YahooDerived : Yahoo<int>
+        {
+            public override U YahooGVM<U>(Func<int, U> arg) { return arg(456); }
+        }
+
+        public class Covariant<T> : ICovariant<T>
+        {
+            public string ICovariantGVM<U>() { return String.Format("Covariant<{0}>.ICovariantGVM<{1}>", typeof(T).Name, typeof(U).Name); }
         }
 
         static string s_GMethod1;
@@ -1326,6 +1399,20 @@ class Program
                 s_IFooInt = "MyStruct3.IFoo<int>.IMethod1<System.Int32>(5,6)";
                 TestWithStruct(new MyStruct3(), new MyStruct3(), new MyStruct3());
                 Console.WriteLine("====================");
+            }
+
+            {
+                string res = ((IFace<string>)new AnotherDerivedClass<string>()).IFaceGVMethod1<string>("string1", "string2");
+                WriteLineWithVerification("AnotherBaseClass.IFaceGVMethod1", res);
+
+                res = ((IBar<int>)new BarImplementor()).IBarGVMethod<string>((i) => "BarImplementor:" + i.ToString());
+                WriteLineWithVerification("BarImplementor:123", res);
+
+                Yahoo<int> y = new YahooDerived();
+                WriteLineWithVerification("YahooDerived:456", y.YahooGVM<string>((i) => "YahooDerived:" + i.ToString()));
+
+                ICovariant<object> cov = new Covariant<string>();
+                WriteLineWithVerification("Covariant<String>.ICovariantGVM<Exception>", cov.ICovariantGVM<Exception>());
             }
 
             if (s_NumErrors != 0)
@@ -1950,6 +2037,55 @@ class Program
 
             if (s_NumErrors != 0)
                 throw new Exception(s_NumErrors + " errors!");
+        }
+    }
+
+    // Regression test for https://github.com/dotnet/corert/issues/3659
+    class TestNativeLayoutGeneration
+    {
+#pragma warning disable 649 // s_ref was never assigned
+        private static object s_ref;
+#pragma warning restore 649
+
+        class Used
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public virtual string DoStuff()
+            {
+                return "Used";
+            }
+        }
+
+        class Unused<T> : Used
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public override string DoStuff()
+            {
+                return "Unused " + typeof(T).ToString();
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public void Blagh()
+            {
+            }
+        }
+
+        public static void Run()
+        {
+            new Used().DoStuff();
+
+            try
+            {
+                // Call an instance method on something we never allocated, but overrides a used virtual.
+                // This asserted the compiler when trying to build a template for Unused<__Canon>.
+                ((Unused<object>)s_ref).Blagh();
+            }
+            catch (NullReferenceException)
+            {
+                return;
+            }
+
+            throw new Exception();
         }
     }
 }

@@ -821,12 +821,23 @@ void * Module::GetClasslibFunction(ClasslibFunctionId functionId)
     case ClasslibFunctionId::CheckStaticClassConstruction:
         pMethod = m_pModuleHeader->Get_CheckStaticClassConstruction();
         break;
+    case ClasslibFunctionId::OnFirstChanceException:
+        pMethod = m_pModuleHeader->Get_OnFirstChanceException();
+        break;
     default:
         pMethod = NULL;
         break;
     }
 
     return pMethod;
+}
+
+PTR_VOID Module::GetAssociatedData(PTR_VOID ControlPC)
+{
+    UNREFERENCED_PARAMETER(ControlPC);
+
+    // Not supported for ProjectN.
+    return NULL;
 }
 
 // Get classlib-defined helper for running deferred static class constructors. Returns NULL if this is not the
@@ -1022,12 +1033,6 @@ void Module::UnsynchronizedResetHijackedLoops()
             ppvCurIndirCell += GcPollInfo::indirCellsPerBitmapBit;
         }
     }
-}
-
-EXTERN_C void * FASTCALL RecoverLoopHijackTarget(UInt32 entryIndex, ModuleHeader * pModuleHeader)
-{
-    Module * pModule = GetRuntimeInstance()->FindModuleByReadOnlyDataAddress(pModuleHeader);
-    return pModule->RecoverLoopHijackTarget(entryIndex, pModuleHeader);
 }
 
 void * Module::RecoverLoopHijackTarget(UInt32 entryIndex, ModuleHeader * pModuleHeader)

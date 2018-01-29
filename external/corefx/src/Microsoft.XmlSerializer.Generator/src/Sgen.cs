@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace Microsoft.XmlSerializer.Generator
 {
@@ -79,7 +80,14 @@ namespace Microsoft.XmlSerializer.Generator
                     }
                     else if (ArgumentMatch(arg, "type"))
                     {
-                        types.Add(value);
+                        if (value != string.Empty)
+                        {
+                            string[] typelist = value.Split(';');
+                            foreach (var type in typelist)
+                            {
+                                types.Add(type);
+                            }
+                        }
                     }
                     else if (ArgumentMatch(arg, "assembly"))
                     {
@@ -155,7 +163,7 @@ namespace Microsoft.XmlSerializer.Generator
                 if(disableRun)
                 {
                     Console.WriteLine("This tool is not intended to be used directly.");
-                    Console.WriteLine("Please refer to https://github.com/dotnet/core/blob/master/samples/xmlserializergenerator-instructions.md on how to use it.");
+                    Console.WriteLine("Please refer to https://go.microsoft.com/fwlink/?linkid=858594 on how to use it.");
                     return 0;
                 }
 
@@ -256,7 +264,7 @@ namespace Microsoft.XmlSerializer.Generator
 
                 bool gac = assembly.GlobalAssemblyCache;
                 outputDirectory = outputDirectory == null ? (gac ? Environment.CurrentDirectory : Path.GetDirectoryName(assembly.Location)) : outputDirectory;
-                string serializerName = XmlSerializer.GetXmlSerializerAssemblyName(serializableTypes[0], null);
+                string serializerName = GetXmlSerializerAssemblyName(serializableTypes[0], null);
                 string codePath = Path.Combine(outputDirectory, serializerName + ".cs");
 
                 if (!force)
@@ -287,7 +295,15 @@ namespace Microsoft.XmlSerializer.Generator
 
                     using (FileStream fs = File.Create(codePath))
                     {
-                        success = XmlSerializer.GenerateSerializer(serializableTypes, allMappings, fs);
+                        MethodInfo method = typeof(System.Xml.Serialization.XmlSerializer).GetMethod("GenerateSerializer", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (method == null)
+                        {
+                            Console.Error.WriteLine(FormatMessage(parsableerrors: false, warning: false, message: SR.GenerateSerializerNotFound));
+                        }
+                        else
+                        { 
+                            success = (bool)method.Invoke(null, new object[] { serializableTypes, allMappings, fs });
+                        }
                     }
                 }
                 catch (UnauthorizedAccessException)
@@ -359,22 +375,6 @@ namespace Microsoft.XmlSerializer.Generator
             }
             if (xmlTypeMapping != null)
             {
-                if (xmlTypeMapping.Mapping != null && xmlTypeMapping.Mapping is StructMapping)
-                {
-                    foreach (MemberMapping memberMapping in ((StructMapping)xmlTypeMapping.Mapping).Members)
-                    {
-                        MemberInfo memberInfo = memberMapping.MemberInfo;
-                        if (memberInfo != null && memberInfo.MemberType == MemberTypes.Property)
-                        {
-                            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
-                            if (propertyInfo != null && (propertyInfo.SetMethod == null || !propertyInfo.SetMethod.IsPublic))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
-
                 xmlTypeMapping = importer.ImportTypeMapping(type);
                 mappings.Add(xmlTypeMapping);
                 importedTypes.Add(type);
@@ -384,7 +384,7 @@ namespace Microsoft.XmlSerializer.Generator
         private static Assembly LoadAssembly(string assemblyName, bool throwOnFail)
         {
             Assembly assembly = null;
-            string path = Path.GetFullPath(assemblyName);
+            string path = Path.IsPathRooted(assemblyName) ? assemblyName : Path.GetFullPath(assemblyName);
             assembly = Assembly.LoadFile(path);
             if (assembly == null)
             {
@@ -447,6 +447,25 @@ namespace Microsoft.XmlSerializer.Generator
             {
                 WriteWarning(e.InnerException, parsableerrors);
             }
+        }
+
+        private static string GetXmlSerializerAssemblyName(Type type)
+        {
+            return GetXmlSerializerAssemblyName(type, null);
+        }
+
+        private static string GetXmlSerializerAssemblyName(Type type, string defaultNamespace)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+            return GetTempAssemblyName(type.Assembly.GetName(), defaultNamespace);
+        }
+
+        private static string GetTempAssemblyName(AssemblyName parent, string ns)
+        {
+            return parent.Name + ".XmlSerializers" + (ns == null || ns.Length == 0 ? "" : "." + ns.GetHashCode());
         }
     }
 }

@@ -1,21 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup Condition="'$(AssemblyName)' == ''">
     <AssemblyName>System.Private.Reflection.Execution</AssemblyName>
-    <ProjectGuid>{306A4D48-0ACF-41C4-BBA0-BCDAD9253E2D}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyName>System.Private.Reflection.Execution</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <OutputType>Library</OutputType>
-    <ProjectGuid>{306A4D48-0ACF-41C4-BBA0-BCDAD9253E2D}</ProjectGuid>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsDotNetFrameworkProductAssembly>true</IsDotNetFrameworkProductAssembly>
   </PropertyGroup>
-
-  <!-- Default configurations to help VS understand the options -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
 
   <PropertyGroup Condition="'$(EcmaMetadataSupport)' == 'true'">
     <DefineConstants>ECMA_METADATA_SUPPORT;$(DefineConstants)</DefineConstants>
@@ -26,7 +19,7 @@
 
   <!-- Setup the right references -->
   <ItemGroup>
-    <ReferencePath Condition="'$(EcmaMetadataSupport)' == 'true'" Include="$(EcmaMetadataDllPath)\System.Private.Reflection.Metadata.Ecma335.dll" />
+    <ReferencePath Condition="'$(EcmaMetadataSupport)' == 'true'" Include="$(AotPackageReferencePath)\System.Private.Reflection.Metadata.Ecma335.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
@@ -53,7 +46,6 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(EcmaMetadataSupport)' == 'true'">
     <Compile Include="Internal\Reflection\Execution\PayForPlayExperience\DiagnosticMappingTables.Ecma.cs" />
-    <Compile Include="Internal\Reflection\Execution\EcmaFormatEnumInfoImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(NativeFormatCommonPath)\NativeFormat.cs" />
@@ -76,32 +68,27 @@
     <Compile Include="Internal\Reflection\Execution\ExecutionEnvironmentImplementation.ManifestResources.cs" />
     <Compile Include="Internal\Reflection\Execution\ReflectionExecutionDomainCallbacksImplementation.cs" />
     <Compile Include="Internal\Reflection\Execution\MetadataReaderExtensions.cs" />
-    <Compile Include="Internal\Reflection\Execution\EnumInfoImplementation.cs" />
-    <Compile Include="Internal\Reflection\Execution\NativeFormatEnumInfoImplementation.cs" />
-    <Compile Include="Internal\Reflection\Execution\DefaultValueParser.cs" />
     <Compile Include="Internal\Reflection\Execution\MethodInvokeInfo.cs" />
     <Compile Include="Internal\Reflection\Execution\RuntimeHandlesExtensions.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\InstanceFieldAccessor.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\LiteralFieldAccessor.cs" />
+    <Compile Include="Internal\Reflection\Execution\FieldAccessors\PointerTypeFieldAccessorForInstanceFields.cs" />
+    <Compile Include="Internal\Reflection\Execution\FieldAccessors\PointerTypeFieldAccessorForStaticFields.cs" />
+    <Compile Include="Internal\Reflection\Execution\FieldAccessors\PointerTypeFieldAccessorForThreadStaticFields.cs" />
+    <Compile Include="Internal\Reflection\Execution\FieldAccessors\RegularStaticFieldAccessor.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ReferenceTypeFieldAccessorForInstanceFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ReferenceTypeFieldAccessorForStaticFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ReferenceTypeFieldAccessorForThreadStaticFields.cs" />
-    <Compile Include="Internal\Reflection\Execution\FieldAccessors\ReferenceTypeFieldAccessorForUniversalThreadStaticFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\StaticFieldAccessor.cs" />
+    <Compile Include="Internal\Reflection\Execution\FieldAccessors\ThreadStaticFieldAccessor.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ValueTypeFieldAccessorForInstanceFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ValueTypeFieldAccessorForStaticFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\ValueTypeFieldAccessorForThreadStaticFields.cs" />
-    <Compile Include="Internal\Reflection\Execution\FieldAccessors\ValueTypeFieldAccessorForUniversalThreadStaticFields.cs" />
     <Compile Include="Internal\Reflection\Execution\FieldAccessors\WritableStaticFieldAccessor.cs" />
     <Compile Include="Internal\Reflection\Execution\MethodInvokers\MethodInvokerWithMethodInvokeInfo.cs" />
     <Compile Include="Internal\Reflection\Execution\MethodInvokers\InstanceMethodInvoker.cs" />
     <Compile Include="Internal\Reflection\Execution\MethodInvokers\StaticMethodInvoker.cs" />
     <Compile Include="Internal\Reflection\Execution\MethodInvokers\VirtualMethodInvoker.cs" />
-    <Compile Include="Internal\Reflection\Execution\MethodInvokers\StringConstructorMethodInvoker.cs" />
-    <Compile Include="Internal\Reflection\Execution\MethodInvokers\IntPtrConstructorMethodInvoker.cs" />
-    <Compile Include="Internal\Reflection\Execution\MethodInvokers\NullableInstanceMethodInvoker.cs" />
-    <Compile Include="Internal\Reflection\Execution\MethodInvokers\SyntheticMethodInvoker.cs" />
-    <Compile Include="Internal\Reflection\Execution\MethodInvokers\MethodInvokerUtils.cs" />
     <Compile Include="Internal\Reflection\Execution\PayForPlayExperience\DiagnosticMappingTables.cs" />
     <Compile Include="Internal\Reflection\Execution\PayForPlayExperience\MissingMetadataExceptionCreator.cs" />
     <Compile Include="Internal\Reflection\Extensions\NonPortable\CustomAttributeInstantiator.cs" />
@@ -138,8 +125,8 @@
     <Compile Include="..\..\Common\src\System\Collections\Generic\Empty.cs" >
       <Link>System\Collections\Generic\Empty.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\__BlockReflectionAttribute.cs" Condition="'$(IsProjectNLibrary)' != 'true'">
-      <Link>System\Runtime\CompilerServices\__BlockReflectionAttribute.cs</Link>
+    <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\__BlockAllReflectionAttribute.cs" Condition="'$(IsProjectNLibrary)' != 'true'">
+      <Link>System\Runtime\CompilerServices\__BlockAllReflectionAttribute.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />

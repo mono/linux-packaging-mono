@@ -275,17 +275,30 @@ namespace Internal.Runtime.TypeLoader
 
         internal bool GetCallingConverterDataFromMethodSignature_NativeLayout(TypeSystemContext context, RuntimeSignature methodSig, Instantiation typeInstantiation, Instantiation methodInstantiation, out bool hasThis, out TypeDesc[] parameters, out bool[] parametersWithGenericDependentLayout)
         {
-            return GetCallingConverterDataFromMethodSignature_NativeLayout_Common(context, methodSig, typeInstantiation, methodInstantiation, out hasThis, out parameters, out parametersWithGenericDependentLayout, null);
+            return GetCallingConverterDataFromMethodSignature_NativeLayout_Common(
+                context,
+                methodSig,
+                typeInstantiation,
+                methodInstantiation,
+                out hasThis,
+                out parameters,
+                out parametersWithGenericDependentLayout,
+                null,
+                null);
         }
 
-        internal bool GetCallingConverterDataFromMethodSignature_NativeLayout_Debugger(TypeSystemContext context, RuntimeSignature methodSig, Instantiation typeInstantiation, Instantiation methodInstantiation, out bool hasThis, out TypeDesc[] parameters, out bool[] parametersWithGenericDependentLayout, NativeReader nativeReader)
+        internal bool GetCallingConverterDataFromMethodSignature_NativeLayout_Common(
+            TypeSystemContext context, 
+            RuntimeSignature methodSig, 
+            Instantiation typeInstantiation, 
+            Instantiation methodInstantiation, 
+            out bool hasThis, 
+            out TypeDesc[] parameters, 
+            out bool[] parametersWithGenericDependentLayout, 
+            NativeReader nativeReader, 
+            ulong[] debuggerPreparedExternalReferences)
         {
-            return GetCallingConverterDataFromMethodSignature_NativeLayout_Common(context, methodSig, typeInstantiation, methodInstantiation, out hasThis, out parameters, out parametersWithGenericDependentLayout, nativeReader);
-        }
-
-        internal bool GetCallingConverterDataFromMethodSignature_NativeLayout_Common(TypeSystemContext context, RuntimeSignature methodSig, Instantiation typeInstantiation, Instantiation methodInstantiation, out bool hasThis, out TypeDesc[] parameters, out bool[] parametersWithGenericDependentLayout, NativeReader nativeReader)
-        {
-            bool isNotDebuggerCall = nativeReader == null;
+            bool isNotDebuggerCall = debuggerPreparedExternalReferences == null ;
             hasThis = false;
             parameters = null;
 
@@ -295,9 +308,19 @@ namespace Internal.Runtime.TypeLoader
             nativeLayoutContext._typeSystemContext = context;
             nativeLayoutContext._typeArgumentHandles = typeInstantiation;
             nativeLayoutContext._methodArgumentHandles = methodInstantiation;
+            nativeLayoutContext._debuggerPreparedExternalReferences = debuggerPreparedExternalReferences;
 
-            NativeReader reader = isNotDebuggerCall ? GetNativeLayoutInfoReader(methodSig) : nativeReader;
-            NativeFormatModuleInfo module = isNotDebuggerCall ? ModuleList.Instance.GetModuleInfoByHandle(new TypeManagerHandle(methodSig.ModuleHandle)) : null;
+            NativeFormatModuleInfo module = null;
+            NativeReader reader = null;
+            if (isNotDebuggerCall)
+            {
+                reader = GetNativeLayoutInfoReader(methodSig);
+                module = ModuleList.Instance.GetModuleInfoByHandle(new TypeManagerHandle(methodSig.ModuleHandle));
+            }
+            else
+            {
+                reader = nativeReader;
+            }
             NativeParser parser = new NativeParser(reader, methodSig.NativeLayoutOffset);
 
             MethodCallingConvention callingConvention = (MethodCallingConvention)parser.GetUnsigned();
@@ -650,7 +673,7 @@ namespace Internal.Runtime.TypeLoader
                 case TypeSignatureKind.Lookback:
                     {
                         //  Recursion above better have removed all lookbacks
-                        Debug.Assert(false, "Unexpected lookback type");
+                        Debug.Fail("Unexpected lookback type");
                         return false;
                     }
 

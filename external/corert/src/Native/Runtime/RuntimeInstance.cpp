@@ -167,21 +167,38 @@ ICodeManager * RuntimeInstance::FindCodeManagerByAddress(PTR_VOID pvAddress)
             return pModule;
     }
 
-    // TODO: JIT support in DAC
+    // TODO: ICodeManager support in DAC
 #ifndef DACCESS_COMPILE
-#ifdef FEATURE_DYNAMIC_CODE
     for (CodeManagerEntry * pEntry = m_CodeManagerList.GetHead(); pEntry != NULL; pEntry = pEntry->m_pNext)
     {
         if (dac_cast<TADDR>(pvAddress) - dac_cast<TADDR>(pEntry->m_pvStartRange) < pEntry->m_cbRange)
             return pEntry->m_pCodeManager;
     }
 #endif
-#endif
 
     return NULL;
 }
 
-GPTR_DECL(RuntimeInstance, g_pTheRuntimeInstance);
+PTR_UInt8 RuntimeInstance::GetTargetOfUnboxingAndInstantiatingStub(PTR_VOID ControlPC)
+{
+    ICodeManager * pCodeManager = FindCodeManagerByAddress(ControlPC);
+    if (pCodeManager != NULL)
+    {
+        PTR_UInt8 pData = (PTR_UInt8)pCodeManager->GetAssociatedData(ControlPC);
+        if (pData != NULL)
+        {
+            UInt8 flags = *pData++;
+
+            if ((flags & (UInt8)AssociatedDataFlags::HasUnboxingStubTarget) != 0)
+                return pData + *dac_cast<PTR_Int32>(pData);
+        }
+    }
+
+    return NULL;
+}
+
+GPTR_IMPL_INIT(RuntimeInstance, g_pTheRuntimeInstance, NULL);
+
 PTR_RuntimeInstance GetRuntimeInstance()
 {
     return g_pTheRuntimeInstance;
@@ -257,6 +274,14 @@ void RuntimeInstance::EnumAllStaticGCRefs(void * pfnCallback, void * pvCallbackD
     EnumThreadStaticGCRefDescs(pfnCallback, pvCallbackData);
 }
 
+void RuntimeInstance::SetLoopHijackFlags(UInt32 flag)
+{
+    for (TypeManagerList::Iterator iter = m_TypeManagerList.Begin(); iter != m_TypeManagerList.End(); iter++)
+    {
+        iter->m_pTypeManager->SetLoopHijackFlag(flag);
+    }
+}
+
 RuntimeInstance::OsModuleList* RuntimeInstance::GetOsModuleList()
 {
     return dac_cast<DPTR(OsModuleList)>(dac_cast<TADDR>(this) + offsetof(RuntimeInstance, m_OsModuleList));
@@ -288,7 +313,8 @@ RuntimeInstance::RuntimeInstance() :
     m_pStaticGCRefsDescChunkList(NULL),
     m_pThreadStaticGCRefsDescChunkList(NULL),
     m_pGenericUnificationHashtable(NULL),
-    m_conservativeStackReportingEnabled(false)
+    m_conservativeStackReportingEnabled(false),
+    m_pUnboxingStubsRegion(NULL)
 {
 }
 
@@ -306,10 +332,9 @@ HANDLE  RuntimeInstance::GetPalInstance()
     return m_hPalInstance;
 }
 
-bool RuntimeInstance::EnableConservativeStackReporting()
+void RuntimeInstance::EnableConservativeStackReporting()
 {
     m_conservativeStackReportingEnabled = true;
-    return true;
 }
 
 EXTERN_C void REDHAWK_CALLCONV RhpSetHaveNewClasslibs();
@@ -368,7 +393,6 @@ void RuntimeInstance::UnregisterModule(Module *pModule)
     pModule->Destroy();
 }
 
-#ifdef FEATURE_DYNAMIC_CODE
 bool RuntimeInstance::RegisterCodeManager(ICodeManager * pCodeManager, PTR_VOID pvStartRange, UInt32 cbRange)
 {
     CodeManagerEntry * pEntry = new (nothrow) CodeManagerEntry();
@@ -420,7 +444,46 @@ extern "C" void __stdcall UnregisterCodeManager(ICodeManager * pCodeManager)
 {
     return GetRuntimeInstance()->UnregisterCodeManager(pCodeManager);
 }
-#endif
+
+bool RuntimeInstance::RegisterUnboxingStubs(PTR_VOID pvStartRange, UInt32 cbRange)
+{
+    ASSERT(pvStartRange != NULL && cbRange > 0);
+
+    UnboxingStubsRegion * pEntry = new (nothrow) UnboxingStubsRegion();
+    if (NULL == pEntry)
+        return false;
+
+    pEntry->m_pRegionStart = pvStartRange;
+    pEntry->m_cbRegion = cbRange;
+
+    do
+    {
+        pEntry->m_pNextRegion = m_pUnboxingStubsRegion;
+    } 
+    while (PalInterlockedCompareExchangePointer((void *volatile *)&m_pUnboxingStubsRegion, pEntry, pEntry->m_pNextRegion) != pEntry->m_pNextRegion);
+
+    return true;
+}
+
+bool RuntimeInstance::IsUnboxingStub(UInt8* pCode)
+{
+    UnboxingStubsRegion * pCurrent = m_pUnboxingStubsRegion;
+    while (pCurrent != NULL)
+    {
+        UInt8* pUnboxingStubsRegion = dac_cast<UInt8*>(pCurrent->m_pRegionStart);
+        if (pCode >= pUnboxingStubsRegion && pCode < (pUnboxingStubsRegion + pCurrent->m_cbRegion))
+            return true;
+
+        pCurrent = pCurrent->m_pNextRegion;
+    }
+
+    return false;
+}
+
+extern "C" bool __stdcall RegisterUnboxingStubs(PTR_VOID pvStartRange, UInt32 cbRange)
+{
+    return GetRuntimeInstance()->RegisterUnboxingStubs(pvStartRange, cbRange);
+}
 
 bool RuntimeInstance::RegisterTypeManager(TypeManager * pTypeManager)
 {
@@ -480,17 +543,19 @@ RuntimeInstance::TypeManagerList& RuntimeInstance::GetTypeManagerList()
 }
 
 // static 
-RuntimeInstance * RuntimeInstance::Create(HANDLE hPalInstance)
+bool RuntimeInstance::Initialize(HANDLE hPalInstance)
 {
     NewHolder<RuntimeInstance> pRuntimeInstance = new (nothrow) RuntimeInstance();
     if (NULL == pRuntimeInstance)
-        return NULL;
+        return false;
 
     CreateHolder<ThreadStore>  pThreadStore = ThreadStore::Create(pRuntimeInstance);
     if (NULL == pThreadStore)
-        return NULL;
+        return false;
 
     pThreadStore.SuppressRelease();
+    pRuntimeInstance.SuppressRelease();
+
     pRuntimeInstance->m_pThreadStore = pThreadStore;
     pRuntimeInstance->m_hPalInstance = hPalInstance;
 
@@ -498,11 +563,11 @@ RuntimeInstance * RuntimeInstance::Create(HANDLE hPalInstance)
     pRuntimeInstance->m_fProfileThreadCreated = false;
 #endif
 
-    pRuntimeInstance.SuppressRelease();
+    ASSERT_MSG(g_pTheRuntimeInstance == NULL, "multi-instances are not supported");
+    g_pTheRuntimeInstance = pRuntimeInstance;
 
-    return pRuntimeInstance;
+    return true;
 }
-
 
 void RuntimeInstance::Destroy()
 {
@@ -646,7 +711,7 @@ bool RuntimeInstance::CreateGenericAndStaticInfo(EEType *             pEEType,
     }
 
     NewArrayHolder<UInt8> pGcStaticData;
-#ifndef CORERT
+#ifdef PROJECTN
     if (gcStaticDataSize > 0)
     {
         // The value of gcStaticDataSize is read from native layout info in the managed layer, where
@@ -848,61 +913,5 @@ COOP_PINVOKE_HELPER(PTR_UInt8, RhGetThreadLocalStorageForDynamicType, (UInt32 uO
     ASSERT(tlsStorageSize > 0 && numTlsCells > 0);
     return pCurrentThread->AllocateThreadLocalStorageForDynamicType(uOffset, tlsStorageSize, numTlsCells);
 }
-
-#ifndef FEATURE_RX_THUNKS
-
-COOP_PINVOKE_HELPER(void*, RhpGetThunksBase, ());
-COOP_PINVOKE_HELPER(int, RhpGetNumThunkBlocksPerMapping, ());
-COOP_PINVOKE_HELPER(int, RhpGetNumThunksPerBlock, ());
-COOP_PINVOKE_HELPER(int, RhpGetThunkSize, ());
-COOP_PINVOKE_HELPER(int, RhpGetThunkBlockSize, ());
-
-EXTERN_C REDHAWK_API void* __cdecl RhAllocateThunksMapping()
-{
-    static void* pThunksTemplateAddress = NULL;
-
-    void *pThunkMap = NULL;
-
-    int thunkBlocksPerMapping = RhpGetNumThunkBlocksPerMapping();
-    int thunkBlockSize = RhpGetThunkBlockSize();
-    int templateSize = thunkBlocksPerMapping * thunkBlockSize;
-
-    if (pThunksTemplateAddress == NULL)
-    {
-        // First, we use the thunks directly from the thunks template sections in the module until all
-        // thunks in that template are used up.
-        pThunksTemplateAddress = RhpGetThunksBase();
-        pThunkMap = pThunksTemplateAddress;
-    }
-    else
-    {
-        // We've already used the thunks template in the module for some previous thunks, and we 
-        // cannot reuse it here. Now we need to create a new mapping of the thunks section in order to have 
-        // more thunks
-
-        UInt8* pModuleBase = (UInt8*)PalGetModuleHandleFromPointer(pThunksTemplateAddress);
-        int templateRva = (int)((UInt8*)RhpGetThunksBase() - pModuleBase);
-
-        if (!PalAllocateThunksFromTemplate((HANDLE)pModuleBase, templateRva, templateSize, &pThunkMap))
-            return NULL;
-    }
-
-    if (!PalMarkThunksAsValidCallTargets(
-        pThunkMap,
-        RhpGetThunkSize(),
-        RhpGetNumThunksPerBlock(),
-        thunkBlockSize,
-        thunkBlocksPerMapping))
-    {
-        if (pThunkMap != pThunksTemplateAddress)
-            PalFreeThunksFromTemplate(pThunkMap);
-
-        return NULL;
-    }
-
-    return pThunkMap;
-}
-
-#endif      // FEATURE_RX_THUNKS
 
 #endif

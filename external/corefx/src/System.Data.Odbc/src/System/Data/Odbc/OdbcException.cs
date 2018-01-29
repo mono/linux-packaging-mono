@@ -2,13 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Data.Common;
 using System.Runtime.Serialization;
 using System.Text;
 
 namespace System.Data.Odbc
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public sealed class OdbcException : System.Data.Common.DbException
     {
         private OdbcErrorCollection _odbcErrors = new OdbcErrorCollection();
@@ -35,6 +37,13 @@ namespace System.Data.Odbc
             HResult = HResults.OdbcException;
         }
 
+        private OdbcException(SerializationInfo si, StreamingContext sc) : base(si, sc)
+        {
+            // Ignoring ODBC32.RETCODE
+            _odbcErrors = (OdbcErrorCollection)si.GetValue("odbcErrors", typeof(OdbcErrorCollection));
+            HResult = HResults.OdbcException;
+        }
+
         public OdbcErrorCollection Errors
         {
             get
@@ -46,6 +55,8 @@ namespace System.Data.Odbc
         public override void GetObjectData(SerializationInfo si, StreamingContext context)
         {
             base.GetObjectData(si, context);
+            si.AddValue("odbcRetcode", default(ODBC32.RETCODE), typeof(ODBC32.RETCODE)); // Using default value of ODBC32.RETCODE
+            si.AddValue("odbcErrors", _odbcErrors, typeof(OdbcErrorCollection));
         }
 
         // mdac bug 62559 - if we don't have it return nothing (empty string)

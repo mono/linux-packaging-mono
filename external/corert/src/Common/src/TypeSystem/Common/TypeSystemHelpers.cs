@@ -153,7 +153,7 @@ namespace Internal.TypeSystem
                 targetOrBase = targetOrBase.BaseType;
             } while (targetOrBase != null);
 
-            Debug.Assert(false, "method has no related type in the type hierarchy of type");
+            Debug.Fail("method has no related type in the type hierarchy of type");
             return null;
         }
 
@@ -269,6 +269,11 @@ namespace Internal.TypeSystem
         public static MethodDesc ResolveInterfaceMethodToVirtualMethodOnType(this TypeDesc type, MethodDesc interfaceMethod)
         {
             return type.Context.GetVirtualMethodAlgorithmForType(type).ResolveInterfaceMethodToVirtualMethodOnType(interfaceMethod, type);
+        }
+
+        public static MethodDesc ResolveVariantInterfaceMethodToVirtualMethodOnType(this TypeDesc type, MethodDesc interfaceMethod)
+        {
+            return type.Context.GetVirtualMethodAlgorithmForType(type).ResolveVariantInterfaceMethodToVirtualMethodOnType(interfaceMethod, type);
         }
 
         /// <summary>

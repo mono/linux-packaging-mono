@@ -2128,8 +2128,6 @@ namespace System.Drawing.Design
         bool GetToolSupported(System.Drawing.Design.ToolboxItem tool);
         void ToolPicked(System.Drawing.Design.ToolboxItem tool);
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class PaintValueEventArgs : System.EventArgs
     {
         public PaintValueEventArgs(System.ComponentModel.ITypeDescriptorContext context, object value, System.Drawing.Graphics graphics, System.Drawing.Rectangle bounds) { }
@@ -2139,8 +2137,6 @@ namespace System.Drawing.Design
         public object Value { get { throw null; } }
     }
     public delegate void PropertyValueUIHandler(System.ComponentModel.ITypeDescriptorContext context, System.ComponentModel.PropertyDescriptor propDesc, System.Collections.ArrayList valueUIItemList);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class PropertyValueUIItem
     {
         public PropertyValueUIItem(System.Drawing.Image uiItemImage, System.Drawing.Design.PropertyValueUIItemInvokeHandler handler, string tooltip) { }
@@ -2150,16 +2146,12 @@ namespace System.Drawing.Design
         public virtual void Reset() { }
     }
     public delegate void PropertyValueUIItemInvokeHandler(System.ComponentModel.ITypeDescriptorContext context, System.ComponentModel.PropertyDescriptor descriptor, System.Drawing.Design.PropertyValueUIItem invokedItem);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ToolboxComponentsCreatedEventArgs : System.EventArgs
     {
         public ToolboxComponentsCreatedEventArgs(System.ComponentModel.IComponent[] components) { }
         public System.ComponentModel.IComponent[] Components { get { throw null; } }
     }
     public delegate void ToolboxComponentsCreatedEventHandler(object sender, System.Drawing.Design.ToolboxComponentsCreatedEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ToolboxComponentsCreatingEventArgs : System.EventArgs
     {
         public ToolboxComponentsCreatingEventArgs(System.ComponentModel.Design.IDesignerHost host) { }
@@ -2211,7 +2203,6 @@ namespace System.Drawing.Design
         protected void ValidatePropertyType(string propertyName, object value, System.Type expectedType, bool allowNull) { }
         protected virtual object ValidatePropertyValue(string propertyName, object value) { throw null; }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ToolboxItemCollection : System.Collections.ReadOnlyCollectionBase
     {
         public ToolboxItemCollection(System.Drawing.Design.ToolboxItemCollection value) { }
@@ -2222,8 +2213,6 @@ namespace System.Drawing.Design
         public int IndexOf(System.Drawing.Design.ToolboxItem value) { throw null; }
     }
     public delegate System.Drawing.Design.ToolboxItem ToolboxItemCreatorCallback(object serializedObject, string format);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class UITypeEditor
     {
         public UITypeEditor() { }
@@ -3528,7 +3517,6 @@ namespace System.Drawing.Printing
     {
         public InvalidPrinterException(System.Drawing.Printing.PrinterSettings settings) { }
         protected InvalidPrinterException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.Printing.MarginsConverter))]

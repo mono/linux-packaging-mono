@@ -47,11 +47,17 @@ namespace Internal.IL
 
         private byte ReadILByte()
         {
+            if (_currentOffset >= _ilBytes.Length)
+                ReportMethodEndInsideInstruction();
+
             return _ilBytes[_currentOffset++];
         }
 
         private UInt16 ReadILUInt16()
         {
+            if (_currentOffset + 1 >= _ilBytes.Length)
+                ReportMethodEndInsideInstruction();
+
             UInt16 val = (UInt16)(_ilBytes[_currentOffset] + (_ilBytes[_currentOffset + 1] << 8));
             _currentOffset += 2;
             return val;
@@ -59,6 +65,9 @@ namespace Internal.IL
 
         private UInt32 ReadILUInt32()
         {
+            if (_currentOffset + 3 >= _ilBytes.Length)
+                ReportMethodEndInsideInstruction();
+
             UInt32 val = (UInt32)(_ilBytes[_currentOffset] + (_ilBytes[_currentOffset + 1] << 8) + (_ilBytes[_currentOffset + 2] << 16) + (_ilBytes[_currentOffset + 3] << 24));
             _currentOffset += 4;
             return val;
@@ -90,6 +99,9 @@ namespace Internal.IL
 
         private void SkipIL(int bytes)
         {
+            if (_currentOffset + (bytes - 1) >= _ilBytes.Length)
+                ReportMethodEndInsideInstruction();
+
             _currentOffset += bytes;
         }
 
@@ -141,6 +153,7 @@ namespace Internal.IL
                     case ILOpcode.stloc_s:
                     case ILOpcode.ldc_i4_s:
                     case ILOpcode.unaligned:
+                    case ILOpcode.no:
                         SkipIL(1);
                         break;
                     case ILOpcode.ldarg:
@@ -200,7 +213,11 @@ namespace Internal.IL
                     case ILOpcode.leave_s:
                         {
                             int delta = (sbyte)ReadILByte();
-                            CreateBasicBlock(_currentOffset + delta);
+                            int target = _currentOffset + delta;
+                            if ((uint)target < (uint)_basicBlocks.Length)
+                                CreateBasicBlock(target);
+                            else
+                                ReportInvalidBranchTarget(target);
                         }
                         break;
                     case ILOpcode.brfalse_s:
@@ -217,7 +234,11 @@ namespace Internal.IL
                     case ILOpcode.blt_un_s:
                         {
                             int delta = (sbyte)ReadILByte();
-                            CreateBasicBlock(_currentOffset + delta);
+                            int target = _currentOffset + delta;
+                            if ((uint)target < (uint)_basicBlocks.Length)
+                                CreateBasicBlock(target);
+                            else
+                                ReportInvalidBranchTarget(target);
                             CreateBasicBlock(_currentOffset);
                         }
                         break;
@@ -225,7 +246,11 @@ namespace Internal.IL
                     case ILOpcode.leave:
                         {
                             int delta = (int)ReadILUInt32();
-                            CreateBasicBlock(_currentOffset + delta);
+                            int target = _currentOffset + delta;
+                            if ((uint)target < (uint)_basicBlocks.Length)
+                                CreateBasicBlock(target);
+                            else
+                                ReportInvalidBranchTarget(target);
                         }
                         break;
                     case ILOpcode.brfalse:
@@ -242,7 +267,11 @@ namespace Internal.IL
                     case ILOpcode.blt_un:
                         {
                             int delta = (int)ReadILUInt32();
-                            CreateBasicBlock(_currentOffset + delta);
+                            int target = _currentOffset + delta;
+                            if ((uint)target < (uint)_basicBlocks.Length)
+                                CreateBasicBlock(target);
+                            else
+                                ReportInvalidBranchTarget(target);
                             CreateBasicBlock(_currentOffset);
                         }
                         break;
@@ -253,7 +282,11 @@ namespace Internal.IL
                             for (uint i = 0; i < count; i++)
                             {
                                 int delta = (int)ReadILUInt32();
-                                CreateBasicBlock(jmpBase + delta);
+                                int target = jmpBase + delta;
+                                if ((uint)target < (uint)_basicBlocks.Length)
+                                    CreateBasicBlock(target);
+                                else
+                                    ReportInvalidBranchTarget(target);
                             }
                             CreateBasicBlock(_currentOffset);
                         }
@@ -297,13 +330,13 @@ namespace Internal.IL
 
         private void MarkBasicBlock(BasicBlock basicBlock)
         {
-            if (basicBlock.EndOffset == 0)
+            if (basicBlock.State == BasicBlock.ImportState.Unmarked)
             {
                 // Link
                 basicBlock.Next = _pendingBasicBlocks;
                 _pendingBasicBlocks = basicBlock;
 
-                basicBlock.EndOffset = -1;
+                basicBlock.State = BasicBlock.ImportState.IsPending;
             }
         }
 
@@ -403,7 +436,8 @@ namespace Internal.IL
                         break;
                     case ILOpcode.jmp:
                         ImportJmp(ReadILToken());
-                        break;
+                        EndImportingInstruction();
+                        return;
                     case ILOpcode.call:
                         ImportCall(opCode, ReadILToken());
                         break;
@@ -412,6 +446,7 @@ namespace Internal.IL
                         break;
                     case ILOpcode.ret:
                         ImportReturn();
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.br_s:
                     case ILOpcode.brfalse_s:
@@ -431,6 +466,7 @@ namespace Internal.IL
                             ImportBranch(opCode + (ILOpcode.br - ILOpcode.br_s),
                                 _basicBlocks[_currentOffset + delta], (opCode != ILOpcode.br_s) ? _basicBlocks[_currentOffset] : null);
                         }
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.br:
                     case ILOpcode.brfalse:
@@ -450,6 +486,7 @@ namespace Internal.IL
                             ImportBranch(opCode,
                                 _basicBlocks[_currentOffset + delta], (opCode != ILOpcode.br) ? _basicBlocks[_currentOffset] : null);
                         }
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.switch_:
                         {
@@ -461,6 +498,7 @@ namespace Internal.IL
 
                             ImportSwitchJump(jmpBase, jmpDelta, _basicBlocks[_currentOffset]);
                         }
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.ldind_i1:
                         ImportLoadIndirect(WellKnownType.SByte);
@@ -588,6 +626,7 @@ namespace Internal.IL
                         break;
                     case ILOpcode.throw_:
                         ImportThrow();
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.ldfld:
                         ImportLoadField(ReadILToken(), false);
@@ -698,7 +737,7 @@ namespace Internal.IL
                         ImportStoreElement(WellKnownType.Int32);
                         break;
                     case ILOpcode.stelem_i8:
-                        ImportStoreElement(WellKnownType.Int32);
+                        ImportStoreElement(WellKnownType.Int64);
                         break;
                     case ILOpcode.stelem_r4:
                         ImportStoreElement(WellKnownType.Single);
@@ -779,18 +818,21 @@ namespace Internal.IL
                         break;
                     case ILOpcode.endfinally: //both endfinally and endfault
                         ImportEndFinally();
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.leave:
                         {
                             int delta = (int)ReadILUInt32();
                             ImportLeave(_basicBlocks[_currentOffset + delta]);
                         }
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.leave_s:
                         {
                             int delta = (sbyte)ReadILByte();
                             ImportLeave(_basicBlocks[_currentOffset + delta]);
                         }
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.stind_i:
                         ImportStoreIndirect(WellKnownType.IntPtr);
@@ -838,6 +880,7 @@ namespace Internal.IL
                         break;
                     case ILOpcode.endfilter:
                         ImportEndFilter();
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.unaligned:
                         ImportUnalignedPrefix(ReadILByte());
@@ -865,6 +908,7 @@ namespace Internal.IL
                         continue;
                     case ILOpcode.rethrow:
                         ImportRethrow();
+                        EndImportingInstruction();
                         return;
                     case ILOpcode.sizeof_:
                         ImportSizeOf(ReadILToken());
@@ -876,7 +920,18 @@ namespace Internal.IL
                         ImportReadOnlyPrefix();
                         continue;
                     default:
-                        throw new BadImageFormatException("Invalid opcode");
+                        ReportInvalidInstruction(opCode);
+                        EndImportingInstruction();
+                        return;
+                }
+
+                EndImportingInstruction();
+
+                // Check if control falls through the end of method.
+                if (_currentOffset == _basicBlocks.Length)
+                {
+                    ReportFallthroughAtEndOfMethod();
+                    return;
                 }
 
                 BasicBlock nextBasicBlock = _basicBlocks[_currentOffset];
@@ -885,8 +940,6 @@ namespace Internal.IL
                     ImportFallthrough(nextBasicBlock);
                     return;
                 }
-
-                EndImportingInstruction();
             }
         }
 

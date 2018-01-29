@@ -15,22 +15,11 @@
 
 #ifndef DACCESS_COMPILE
 
+typedef void(*HighLevelDebugFuncEvalAbortHelperType)(UInt64);
+
 class DebugFuncEval
 {
 public:
-    /// <summary>
-    /// Retrieve the global FuncEval target address
-    /// </summary>
-    /// <remarks>
-    /// During debugging, if a FuncEval is requested, 
-    /// The func eval infrastructure needs to know which function to call, and
-    /// It will call this API to obtain the target address.
-    /// By the time, the value should have been set through the UpdateFuncEvalTarget() method 
-    /// on the ISosRedhawk7 interface.
-    /// </remarks>
-    static void* GetFuncEvalTarget();
-
-
     /// <summary>
     /// Retrieve the global FuncEval parameter buffer size.
     /// </summary>
@@ -42,6 +31,53 @@ public:
     /// method on the ISosRedhawk7 interface.
     /// </remarks>
     static UInt32 GetFuncEvalParameterBufferSize();
+
+    /// <summary>
+    /// Retrieve the global FuncEval mode.
+    /// </summary>
+    /// <remarks>
+    /// During debugging, if a FuncEval is requested, 
+    /// the func eval infrastructure needs to know what mode to execute the FuncEval request 
+    /// The C# supporting code will call this API to obtain the mode. By that time, the value 
+    /// should have been set through the UpdateFuncEvalMode() method on the ISosRedhawk7 interface.
+    /// </remarks>
+    static UInt32 GetFuncEvalMode();
+
+    /// <summary>
+    /// Retrieve the most recent FuncEval Hijack instruction pointer
+    /// </summary>
+    /// <remarks>
+    /// The most recent FuncEval Hijack instruction pointer is set through the debugger
+    /// It is used for the stack walker to understand the hijack frame
+    /// </remarks>
+    static UInt64 GetMostRecentFuncEvalHijackInstructionPointer();
+
+    /// <summary>
+    /// Retrieve the high level debug func eval abort helper
+    /// </summary>
+    static HighLevelDebugFuncEvalAbortHelperType GetHighLevelDebugFuncEvalAbortHelper();
+
+
+    /// <summary>
+    /// Set the high level debug func eval abort helper
+    /// </summary>
+    static void SetHighLevelDebugFuncEvalAbortHelper(HighLevelDebugFuncEvalAbortHelperType highLevelDebugFuncEvalAbortHelper);
+
+};
+
+#else
+
+class DebugFuncEval
+{
+public:
+    /// <summary>
+    /// Retrieve the most recent FuncEval Hijack instruction pointer
+    /// </summary>
+    /// <remarks>
+    /// The most recent FuncEval Hijack instruction pointer is set through the debugger
+    /// It is used for the stack walker to understand the hijack frame
+    /// </remarks>
+    static UInt64 GetMostRecentFuncEvalHijackInstructionPointer();
 };
 
 #endif //!DACCESS_COMPILE

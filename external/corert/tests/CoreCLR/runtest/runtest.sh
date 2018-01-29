@@ -209,8 +209,7 @@ function xunit_output_end {
         ((errorCount = 1))
     fi
 
-    echo '<?xml version="1.0" encoding="utf-8"?>' >>"$xunitOutputPath"
-    echo '<assemblies>' >>"$xunitOutputPath"
+    echo '<assemblies>' >"$xunitOutputPath"
 
     local line
 
@@ -559,7 +558,7 @@ function set_up_core_dump_generation {
             # Include memory in private and shared file-backed mappings in the dump.
             # This ensures that we can see disassembly from our shared libraries when
             # inspecting the contents of the dump. See 'man core' for details.
-            echo 0x3F > /proc/self/coredump_filter
+            echo -n 0x3F > /proc/self/coredump_filter
         fi
     fi
 }

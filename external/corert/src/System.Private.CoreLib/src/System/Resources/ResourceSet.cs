@@ -21,7 +21,6 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Versioning;
-using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 
 namespace System.Resources
@@ -32,7 +31,6 @@ namespace System.Resources
     // enumerates over an IResourceReader, loading every name and value, and 
     // stores them in a hash table.  Custom IResourceReaders can be used.
     //
-    [Serializable]
     public class ResourceSet : IDisposable, IEnumerable
     {
         [NonSerialized]
@@ -80,7 +78,6 @@ namespace System.Resources
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
-            Contract.EndContractBlock();
             Reader = reader;
             CommonInit();
             ReadResources();
@@ -237,7 +234,6 @@ namespace System.Resources
         {
             if (name == null)
                 throw new ArgumentNullException("name");
-            Contract.EndContractBlock();
 
             Dictionary<object, object> copyOfTable = _table;  // Avoid a race with Dispose
 

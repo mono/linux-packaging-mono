@@ -18,7 +18,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 
 namespace System.Threading.Tasks
 {
@@ -104,7 +103,6 @@ namespace System.Threading.Tasks
             if (taskScheduler == null) throw new ArgumentNullException(nameof(taskScheduler));
             if (maxConcurrencyLevel == 0 || maxConcurrencyLevel < -1) throw new ArgumentOutOfRangeException(nameof(maxConcurrencyLevel));
             if (maxItemsPerTask == 0 || maxItemsPerTask < -1) throw new ArgumentOutOfRangeException(nameof(maxItemsPerTask));
-            Contract.EndContractBlock();
 
             // Store configuration
             m_underlyingTaskScheduler = taskScheduler;
@@ -707,14 +705,14 @@ namespace System.Threading.Tasks
             }
         }
 
-        /// <summary>Asserts that a given synchronization object is either held or not held.</summary>
-        /// <param name="syncObj">The monitor to check.</param>
+        /// <summary>Asserts that a given Lock object is either held or not held.</summary>
+        /// <param name="syncObj">The Lock object to check.</param>
         /// <param name="held">Whether we want to assert that it's currently held or not held.</param>
         [Conditional("DEBUG")]
-        internal static void ContractAssertMonitorStatus(object syncObj, bool held)
+        private static void ContractAssertMonitorStatus(Lock syncObj, bool held)
         {
-            Debug.Assert(syncObj != null, "The monitor object to check must be provided.");
-            Debug.Assert(Monitor.IsEntered(syncObj) == held, "The locking scheme was not correctly followed.");
+            Debug.Assert(syncObj != null, "The Lock object to check must be provided.");
+            Debug.Assert(syncObj.IsAcquired == held, "The locking scheme was not correctly followed.");
         }
 
         /// <summary>Gets the options to use for tasks.</summary>

@@ -44,6 +44,11 @@ namespace Internal.TypeSystem
             }
         }
 
+        protected internal virtual ModuleDesc CanonTypesModule
+        {
+            get { return SystemModule; }
+        }
+
         /// <summary>
         /// Returns true if and only if the '<paramref name="type"/>' is __Canon or __UniversalCanon
         /// that matches the <paramref name="kind"/> parameter.
@@ -95,5 +100,18 @@ namespace Internal.TypeSystem
 
         public abstract bool SupportsCanon { get; }
         public abstract bool SupportsUniversalCanon { get; }
+
+        public MetadataType GetCanonType(string name)
+        {
+            switch (name)
+            {
+                case TypeSystem.CanonType.FullName:
+                    return CanonType;
+                case TypeSystem.UniversalCanonType.FullName:
+                    return UniversalCanonType;
+            }
+
+            return null;
+        }
     }
 }

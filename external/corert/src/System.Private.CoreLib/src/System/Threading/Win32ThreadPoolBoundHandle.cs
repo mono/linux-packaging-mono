@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Internal.Runtime.Augments;
 using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -172,7 +171,7 @@ namespace System.Threading
         [NativeCallable(CallingConvention = CallingConvention.StdCall)]
         private static unsafe void OnNativeIOCompleted(IntPtr instance, IntPtr context, IntPtr overlappedPtr, uint ioResult, UIntPtr numberOfBytesTransferred, IntPtr ioPtr)
         {
-            RuntimeThread.InitializeThreadPoolThread();
+            var wrapper = ThreadPoolCallbackWrapper.Enter();
             Win32ThreadPoolNativeOverlapped* overlapped = (Win32ThreadPoolNativeOverlapped*)overlappedPtr;
 
             ThreadPoolBoundHandle boundHandle = overlapped->Data._boundHandle;
@@ -182,6 +181,7 @@ namespace System.Threading
             boundHandle.Release();
 
             Win32ThreadPoolNativeOverlapped.CompleteWithCallback(ioResult, (uint)numberOfBytesTransferred, overlapped);
+            wrapper.Exit();
         }
 
         private bool AddRef()

@@ -19,7 +19,7 @@ namespace Internal.Compiler
     /// Used by logic which is designed to encode information in il structure, but not used
     /// to support general compilation of IL.
     /// </summary>
-    struct ILStreamReader
+    public struct ILStreamReader
     {
         private byte[] _ilBytes;
         private MethodIL _methodIL;
@@ -175,14 +175,19 @@ namespace Internal.Compiler
         public bool TryReadLdtokenAsTypeSystemEntity(out TypeSystemEntity entity)
         {
             int token;
-            if (!TryReadLdtoken(out token))
+            bool tokenResolved;
+            try
             {
+                tokenResolved = TryReadLdtoken(out token);
+                entity = tokenResolved ?(TypeSystemEntity)_methodIL.GetObject(token) : null;
+            }
+            catch (TypeSystemException.TypeLoadException)
+            {
+                tokenResolved = false;
                 entity = null;
-                return false;
             }
 
-            entity = (TypeSystemEntity)_methodIL.GetObject(token);
-            return true;
+            return tokenResolved;
         }
 
         public TypeSystemEntity ReadLdtokenAsTypeSystemEntity()
@@ -194,7 +199,7 @@ namespace Internal.Compiler
             return result;
         }
 
-        bool TryReadLdcI4(out int value)
+        public bool TryReadLdcI4(out int value)
         {
             ILOpcode opcode = PeekILOpcode();
 

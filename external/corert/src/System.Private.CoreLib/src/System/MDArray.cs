@@ -6,6 +6,9 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using Internal.Runtime.Augments;
+using Internal.Runtime.CompilerServices;
+
 namespace System
 {
     // This file contains wrapper classes that allow ProjectN to support
@@ -23,6 +26,71 @@ namespace System
     //
     // The desktop CLR supports arrays of up to 32 dimensions so that provides
     // an upper limit on how much this needs to be built out.
+
+    internal static class MDPointerArrayHelper
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        private class MDArrayShape
+        {
+            public IntPtr _count;
+            public int _upperBound1;
+            // Followed by rank-1 upperbounds
+            // Then rank lobounds
+        }
+ 
+        public static object GetMDPointerArray(EETypePtr pointerDepthType, EETypePtr elementType, params int[] lengths)
+        {
+            // pointerDepthType is used to encode the pointer rank of the mdarray. This is exceedingly odd and inefficient
+            // but it works, and will allow the parameters to the various helpers to be consistent. This is only 
+            // acceptable as the feature is exceedingly rarely used in practice.
+            int pointerRank = 1;
+            while (pointerDepthType.IsGeneric)
+            {
+                pointerRank++;
+                pointerDepthType = pointerDepthType.Instantiation[0];
+            }
+            
+            int rank = lengths.Length;
+
+            // thPointerType will be the element type of the array once the iPointerRank loop below
+            // finishes.
+            RuntimeTypeHandle thPointerType = new RuntimeTypeHandle(elementType);
+            for (int iPointerRank = 0; iPointerRank < pointerRank; iPointerRank++)
+            {
+                bool pointerTypeConstructionSuccess = RuntimeAugments.TypeLoaderCallbacks.TryGetPointerTypeForTargetType(thPointerType, out thPointerType);
+                if (!pointerTypeConstructionSuccess)
+                    throw new TypeLoadException();
+            }
+
+            RuntimeTypeHandle mdArrayType;
+            bool mdArrayTypeConstruction = RuntimeAugments.TypeLoaderCallbacks.TryGetArrayTypeForElementType(thPointerType, true, rank, out mdArrayType);
+            if (!mdArrayTypeConstruction)
+                throw new TypeLoadException();
+
+            int totalLength = 1;
+            foreach (int length in lengths)
+            {
+                if (length < 0)
+                    throw new OverflowException();
+                totalLength = checked(totalLength * length);
+            }
+
+            MDArrayShape newArray = Unsafe.As<MDArrayShape>(RuntimeImports.RhNewArray(mdArrayType.ToEETypePtr(), totalLength));
+
+            // Assign upper bounds
+            unsafe
+            {
+                fixed(int *pUpperBound = &newArray._upperBound1)
+                {
+                    for (int iRank = 0; iRank < lengths.Length; iRank++)
+                    {
+                        pUpperBound[iRank] = lengths[iRank];
+                    }
+                }
+            }
+            return newArray;
+        }
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public class MDArrayRank2<T>
@@ -45,6 +113,14 @@ namespace System
             return Unsafe.As<T[,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,] array, int index1, int index2)
         {
@@ -61,12 +137,17 @@ namespace System
         public static ref T Address(T[,] array, int index1, int index2)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,] array, int index1, int index2)
+        {
+            return ref InternalAddress(array, index1, index2);
         }
 
         public static T Get(T[,] array, int index1, int index2)
@@ -76,8 +157,8 @@ namespace System
 
         public static void Set(T[,] array, int index1, int index2, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
-            {
+            if (RuntimeHelpers.IsReference<T>())
+            {	
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
 
@@ -109,6 +190,14 @@ namespace System
             return Unsafe.As<T[,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,] array, int index1, int index2, int index3)
         {
@@ -127,12 +216,17 @@ namespace System
         public static ref T Address(T[,,] array, int index1, int index2, int index3)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,] array, int index1, int index2, int index3)
+        {
+            return ref InternalAddress(array, index1, index2, index3);
         }
 
         public static T Get(T[,,] array, int index1, int index2, int index3)
@@ -142,7 +236,7 @@ namespace System
 
         public static void Set(T[,,] array, int index1, int index2, int index3, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -178,6 +272,14 @@ namespace System
             return Unsafe.As<T[,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,] array, int index1, int index2, int index3, int index4)
         {
@@ -198,12 +300,17 @@ namespace System
         public static ref T Address(T[,,,] array, int index1, int index2, int index3, int index4)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,] array, int index1, int index2, int index3, int index4)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4);
         }
 
         public static T Get(T[,,,] array, int index1, int index2, int index3, int index4)
@@ -213,7 +320,7 @@ namespace System
 
         public static void Set(T[,,,] array, int index1, int index2, int index3, int index4, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -252,6 +359,14 @@ namespace System
             return Unsafe.As<T[,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,] array, int index1, int index2, int index3, int index4, int index5)
         {
@@ -274,12 +389,17 @@ namespace System
         public static ref T Address(T[,,,,] array, int index1, int index2, int index3, int index4, int index5)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,] array, int index1, int index2, int index3, int index4, int index5)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5);
         }
 
         public static T Get(T[,,,,] array, int index1, int index2, int index3, int index4, int index5)
@@ -289,7 +409,7 @@ namespace System
 
         public static void Set(T[,,,,] array, int index1, int index2, int index3, int index4, int index5, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -331,6 +451,14 @@ namespace System
             return Unsafe.As<T[,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6)
         {
@@ -355,12 +483,17 @@ namespace System
         public static ref T Address(T[,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6);
         }
 
         public static T Get(T[,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6)
@@ -370,7 +503,7 @@ namespace System
 
         public static void Set(T[,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -415,6 +548,14 @@ namespace System
             return Unsafe.As<T[,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7)
         {
@@ -441,12 +582,17 @@ namespace System
         public static ref T Address(T[,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7);
         }
 
         public static T Get(T[,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7)
@@ -456,7 +602,7 @@ namespace System
 
         public static void Set(T[,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -504,6 +650,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8)
         {
@@ -532,12 +686,17 @@ namespace System
         public static ref T Address(T[,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8);
         }
 
         public static T Get(T[,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8)
@@ -547,7 +706,7 @@ namespace System
 
         public static void Set(T[,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -598,6 +757,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9)
         {
@@ -628,12 +795,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9);
         }
 
         public static T Get(T[,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9)
@@ -643,7 +815,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -697,6 +869,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10)
         {
@@ -729,12 +909,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10);
         }
 
         public static T Get(T[,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10)
@@ -744,7 +929,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -801,6 +986,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11)
         {
@@ -835,12 +1028,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11);
         }
 
         public static T Get(T[,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11)
@@ -850,7 +1048,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -910,6 +1108,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12)
         {
@@ -946,12 +1152,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12);
         }
 
         public static T Get(T[,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12)
@@ -961,7 +1172,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1024,6 +1235,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13)
         {
@@ -1062,12 +1281,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13);
         }
 
         public static T Get(T[,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13)
@@ -1077,7 +1301,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1143,6 +1367,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14)
         {
@@ -1183,12 +1415,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14);
         }
 
         public static T Get(T[,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14)
@@ -1198,7 +1435,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1267,6 +1504,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15)
         {
@@ -1309,12 +1554,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15)
@@ -1324,7 +1574,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1396,6 +1646,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16)
         {
@@ -1440,12 +1698,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16)
@@ -1455,7 +1718,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1530,6 +1793,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17)
         {
@@ -1576,12 +1847,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17)
@@ -1591,7 +1867,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1669,6 +1945,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18)
         {
@@ -1717,12 +2001,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18)
@@ -1732,7 +2021,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1813,6 +2102,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19)
         {
@@ -1863,12 +2160,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19)
@@ -1878,7 +2180,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -1962,6 +2264,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20)
         {
@@ -2014,12 +2324,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20)
@@ -2029,7 +2344,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2116,6 +2431,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21)
         {
@@ -2170,12 +2493,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21)
@@ -2185,7 +2513,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2275,6 +2603,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22)
         {
@@ -2331,12 +2667,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22)
@@ -2346,7 +2687,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2439,6 +2780,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23)
         {
@@ -2497,12 +2846,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23)
@@ -2512,7 +2866,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2608,6 +2962,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24)
         {
@@ -2668,12 +3030,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24)
@@ -2683,7 +3050,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2782,6 +3149,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25)
         {
@@ -2844,12 +3219,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25)
@@ -2859,7 +3239,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -2961,6 +3341,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26)
         {
@@ -3025,12 +3413,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26)
@@ -3040,7 +3433,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -3145,6 +3538,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27)
         {
@@ -3211,12 +3612,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27)
@@ -3226,7 +3632,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -3334,6 +3740,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27, int length28)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27, length28);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28)
         {
@@ -3402,12 +3816,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28)
@@ -3417,7 +3836,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -3528,6 +3947,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27, int length28, int length29)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27, length28, length29);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29)
         {
@@ -3598,12 +4025,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29)
@@ -3613,7 +4045,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -3727,6 +4159,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27, int length28, int length29, int length30)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27, length28, length29, length30);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30)
         {
@@ -3799,12 +4239,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30)
@@ -3814,7 +4259,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -3931,6 +4376,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27, int length28, int length29, int length30, int length31)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27, length28, length29, length30, length31);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31)
         {
@@ -4005,12 +4458,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30, index31);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30, index31);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31)
@@ -4020,7 +4478,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }
@@ -4140,6 +4598,14 @@ namespace System
             return Unsafe.As<T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]>(newArray);
         }
 
+        // Since all multidimensional array handling is done via generics, and generics cannot be used with pointers
+        // in C#, use TPointerDepthType to indicate the pointer rank of the array. This is *highly* inefficient, but
+        // use of this feature is exceedingly rare.
+        public static object PointerArrayCtor<TPointerDepthType>(int length1, int length2, int length3, int length4, int length5, int length6, int length7, int length8, int length9, int length10, int length11, int length12, int length13, int length14, int length15, int length16, int length17, int length18, int length19, int length20, int length21, int length22, int length23, int length24, int length25, int length26, int length27, int length28, int length29, int length30, int length31, int length32)
+        {
+            return MDPointerArrayHelper.GetMDPointerArray(EETypePtr.EETypePtrOf<TPointerDepthType>(), EETypePtr.EETypePtrOf<T>(), length1, length2, length3, length4, length5, length6, length7, length8, length9, length10, length11, length12, length13, length14, length15, length16, length17, length18, length19, length20, length21, length22, length23, length24, length25, length26, length27, length28, length29, length30, length31, length32);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ref T InternalAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, int index32)
         {
@@ -4216,12 +4682,17 @@ namespace System
         public static ref T Address(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, int index32)
         {
             ref T returnValue = ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30, index31, index32);
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 if (!EETypePtr.EETypePtrOf<T>().FastEquals(array.EETypePtr.ArrayElementType))
                     throw new ArrayTypeMismatchException();
             }
             return ref returnValue;
+        }
+
+        public static ref T ReadonlyAddress(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, int index32)
+        {
+            return ref InternalAddress(array, index1, index2, index3, index4, index5, index6, index7, index8, index9, index10, index11, index12, index13, index14, index15, index16, index17, index18, index19, index20, index21, index22, index23, index24, index25, index26, index27, index28, index29, index30, index31, index32);
         }
 
         public static T Get(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, int index32)
@@ -4231,7 +4702,7 @@ namespace System
 
         public static void Set(T[,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,] array, int index1, int index2, int index3, int index4, int index5, int index6, int index7, int index8, int index9, int index10, int index11, int index12, int index13, int index14, int index15, int index16, int index17, int index18, int index19, int index20, int index21, int index22, int index23, int index24, int index25, int index26, int index27, int index28, int index29, int index30, int index31, int index32, T value)
         {
-            if (!EETypePtr.EETypePtrOf<T>().IsValueType)
+            if (RuntimeHelpers.IsReference<T>())
             {
                 RuntimeImports.RhCheckArrayStore(array, value);
             }

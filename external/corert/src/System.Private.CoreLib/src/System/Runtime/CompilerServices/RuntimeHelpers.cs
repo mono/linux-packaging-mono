@@ -157,6 +157,9 @@ namespace System.Runtime.CompilerServices
 
         public static int OffsetToStringData
         {
+            // Workaround to allow WebAssembly to define a size here without a special CoreLib build
+            // https://github.com/dotnet/corert/issues/4506 includes removing this.
+            [Intrinsic] 
             get
             {
                 // Number of bytes from the address pointed to by a reference to
@@ -219,6 +222,13 @@ namespace System.Runtime.CompilerServices
             return !pEEType.IsValueType || pEEType.HasPointers;
         }
 
+        [Intrinsic]
+        public static bool IsReference<T>()
+        {
+            var pEEType = EETypePtr.EETypePtrOf<T>();
+            return !pEEType.IsValueType;
+        }
+
         // Constrained Execution Regions APIs are NOP's because we do not support CERs in .NET Core at all.
         public static void ProbeForSufficientStack() { }
         public static void PrepareConstrainedRegions() { }
@@ -271,7 +281,7 @@ namespace System.Runtime.CompilerServices
                 throw new SerializationException(SR.Format(SR.Serialization_InvalidType, type.ToString()));
             }
 
-            if (type.IsArray || type.IsByRef || type.IsPointer)
+            if (type.HasElementType || type.IsGenericParameter)
             {
                 throw new ArgumentException(SR.Argument_InvalidValue);
             }
@@ -305,7 +315,7 @@ namespace System.Runtime.CompilerServices
 
             if (eeTypePtr.IsNullable)
             {
-                return GetUninitializedObject(ReflectionCoreNonPortable.GetRuntimeTypeForEEType(eeTypePtr.NullableType));
+                return GetUninitializedObject(RuntimeTypeUnifier.GetRuntimeTypeForEEType(eeTypePtr.NullableType));
             }
 
             // Triggering the .cctor here is slightly different than desktop/CoreCLR, which 
