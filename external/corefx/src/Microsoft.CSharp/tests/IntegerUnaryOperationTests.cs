@@ -92,7 +92,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip="https://github.com/mono/mono/issues/6721")]
         [MemberData(nameof(Int32TestNegations))]
         [MemberData(nameof(Int32TestUnaryPluses))]
         [MemberData(nameof(Int32TestOnesComplements))]

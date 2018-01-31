@@ -8,7 +8,7 @@
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 
 #pragma warning disable 0420
