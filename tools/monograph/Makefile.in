@@ -103,7 +103,7 @@ PROGRAMS = $(bin_PROGRAMS)
 monograph_SOURCES = monograph.c
 monograph_OBJECTS = monograph.$(OBJEXT)
 am__DEPENDENCIES_1 =
-@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntimesgen-static.la \
+@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntimesgen.la \
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
 @DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
 @DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
@@ -423,7 +423,7 @@ top_srcdir = @top_srcdir@
 @DISABLE_EXECUTABLES_FALSE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_TRUE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_FALSE@static_libs = \
-@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen-static.la	\
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen.la	\
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
 @DISABLE_EXECUTABLES_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
 @DISABLE_EXECUTABLES_FALSE@	$(LIBGC_STATIC_LIBS)

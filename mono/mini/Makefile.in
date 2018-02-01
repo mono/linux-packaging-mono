@@ -152,153 +152,6 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(libmonoincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
-@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_1 = mono-dtrace.$(OBJEXT)
-libmini_static_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
-	seq-points.c seq-points.h ir-emit.h method-to-ir.c cfgdump.h \
-	cfgdump.c decompose.c mini.h version.h optflags-def.h \
-	jit-icalls.h jit-icalls.c trace.c trace.h patch-info.h \
-	mini-ops.h mini-arch.h dominators.c cfold.c regalloc.h \
-	helpers.c liveness.c ssa.c abcremoval.c abcremoval.h \
-	local-propagation.c driver.c debug-mini.c linear-scan.c \
-	aot-compiler.h aot-compiler.c aot-runtime.c aot-runtime-wasm.c \
-	wasm_m2n_invoke.g.h graph.c mini-codegen.c mini-exceptions.c \
-	mini-trampolines.c branch-opts.c mini-generic-sharing.c \
-	simd-methods.h tasklets.c tasklets.h simd-intrinsics.c \
-	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
-	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
-	debugger-agent.h debugger-agent.c xdebug.c mini-llvm.h \
-	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
-	type-checking.c lldb.h lldb.c memory-access.c mini-profiler.c \
-	interp-stubs.c aot-runtime.h ee.h mini-runtime.h mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
-	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
-	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
-	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
-	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
-	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
-	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
-	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
-	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
-	mini-wasm.h exceptions-wasm.c tramp-wasm.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c
-am__objects_1 = libmini_static_la-mini.lo \
-	libmini_static_la-mini-runtime.lo \
-	libmini_static_la-seq-points.lo \
-	libmini_static_la-method-to-ir.lo libmini_static_la-cfgdump.lo \
-	libmini_static_la-decompose.lo libmini_static_la-jit-icalls.lo \
-	libmini_static_la-trace.lo libmini_static_la-dominators.lo \
-	libmini_static_la-cfold.lo libmini_static_la-helpers.lo \
-	libmini_static_la-liveness.lo libmini_static_la-ssa.lo \
-	libmini_static_la-abcremoval.lo \
-	libmini_static_la-local-propagation.lo \
-	libmini_static_la-driver.lo libmini_static_la-debug-mini.lo \
-	libmini_static_la-linear-scan.lo \
-	libmini_static_la-aot-compiler.lo \
-	libmini_static_la-aot-runtime.lo \
-	libmini_static_la-aot-runtime-wasm.lo \
-	libmini_static_la-graph.lo libmini_static_la-mini-codegen.lo \
-	libmini_static_la-mini-exceptions.lo \
-	libmini_static_la-mini-trampolines.lo \
-	libmini_static_la-branch-opts.lo \
-	libmini_static_la-mini-generic-sharing.lo \
-	libmini_static_la-tasklets.lo \
-	libmini_static_la-simd-intrinsics.lo \
-	libmini_static_la-mini-native-types.lo \
-	libmini_static_la-unwind.lo libmini_static_la-image-writer.lo \
-	libmini_static_la-dwarfwriter.lo libmini_static_la-mini-gc.lo \
-	libmini_static_la-debugger-agent.lo \
-	libmini_static_la-xdebug.lo \
-	libmini_static_la-alias-analysis.lo \
-	libmini_static_la-mini-cross-helpers.lo \
-	libmini_static_la-arch-stubs.lo \
-	libmini_static_la-type-checking.lo libmini_static_la-lldb.lo \
-	libmini_static_la-memory-access.lo \
-	libmini_static_la-mini-profiler.lo \
-	libmini_static_la-interp-stubs.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 = libmini_static_la-mini-llvm.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_2 = libmini_static_la-mini-llvm-loaded.lo
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_3 =  \
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
-@ENABLE_LLVM_TRUE@am__objects_3 = llvm-runtime.lo
-am__objects_4 = libmini_static_la-mini-amd64.lo \
-	libmini_static_la-exceptions-amd64.lo \
-	libmini_static_la-tramp-amd64.lo \
-	libmini_static_la-mini-amd64-gsharedvt.lo \
-	libmini_static_la-tramp-amd64-gsharedvt.lo
-am__objects_5 = libmini_static_la-mini-arm64.lo \
-	libmini_static_la-exceptions-arm64.lo \
-	libmini_static_la-tramp-arm64.lo \
-	libmini_static_la-mini-arm64-gsharedvt.lo \
-	libmini_static_la-tramp-arm64-gsharedvt.lo
-am__objects_6 = libmini_static_la-mini-arm.lo \
-	libmini_static_la-exceptions-arm.lo \
-	libmini_static_la-tramp-arm.lo \
-	libmini_static_la-mini-arm-gsharedvt.lo \
-	libmini_static_la-tramp-arm-gsharedvt.lo
-am__objects_7 = libmini_static_la-mini-mips.lo \
-	libmini_static_la-exceptions-mips.lo \
-	libmini_static_la-tramp-mips.lo
-am__objects_8 = libmini_static_la-mini-ppc.lo \
-	libmini_static_la-exceptions-ppc.lo \
-	libmini_static_la-tramp-ppc.lo
-am__objects_9 = libmini_static_la-mini-s390x.lo \
-	libmini_static_la-exceptions-s390x.lo \
-	libmini_static_la-tramp-s390x.lo
-am__objects_10 = libmini_static_la-mini-sparc.lo \
-	libmini_static_la-exceptions-sparc.lo \
-	libmini_static_la-tramp-sparc.lo
-am__objects_11 = libmini_static_la-mini-wasm.lo \
-	libmini_static_la-exceptions-wasm.lo \
-	libmini_static_la-tramp-wasm.lo
-am__objects_12 = libmini_static_la-mini-x86.lo \
-	libmini_static_la-exceptions-x86.lo \
-	libmini_static_la-tramp-x86.lo \
-	libmini_static_la-mini-x86-gsharedvt.lo \
-	libmini_static_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_13 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_13 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_13 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_13 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_13 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_13 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_13 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_13 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_6)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_5)
-@AMD64_TRUE@am__objects_13 = $(am__objects_4)
-am__objects_14 = libmini_static_la-mini-darwin.lo
-am__objects_15 = libmini_static_la-mini-posix.lo
-am__objects_16 = libmini_static_la-mini-windows.lo \
-	libmini_static_la-mini-windows-dllmain.lo \
-	libmini_static_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_17 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_15)
-@HOST_DARWIN_TRUE@am__objects_17 = $(am__objects_14) $(am__objects_15)
-am__objects_18 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_13) $(am__objects_17)
-am_libmini_static_la_OBJECTS = $(am__objects_18)
-libmini_static_la_OBJECTS = $(am_libmini_static_la_OBJECTS)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
-libmini_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(libmini_static_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@am_libmini_static_la_rpath =
 libmini_la_LIBADD =
 am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	seq-points.h ir-emit.h method-to-ir.c cfgdump.h cfgdump.c \
@@ -335,7 +188,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows.h mini-windows-dllmain.c \
 	mini-windows-dlldac.c
-am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
+am__objects_1 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
 	libmini_la-jit-icalls.lo libmini_la-trace.lo \
@@ -357,100 +210,90 @@ am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-type-checking.lo libmini_la-lldb.lo \
 	libmini_la-memory-access.lo libmini_la-mini-profiler.lo \
 	libmini_la-interp-stubs.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_20 =  \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_20 = libmini_la-mini-llvm-loaded.lo
-am__objects_21 = libmini_la-mini-amd64.lo \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_2 = libmini_la-mini-llvm-loaded.lo
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_3 =  \
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
+@ENABLE_LLVM_TRUE@am__objects_3 = llvm-runtime.lo
+am__objects_4 = libmini_la-mini-amd64.lo \
 	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo \
 	libmini_la-mini-amd64-gsharedvt.lo \
 	libmini_la-tramp-amd64-gsharedvt.lo
-am__objects_22 = libmini_la-mini-arm64.lo \
+am__objects_5 = libmini_la-mini-arm64.lo \
 	libmini_la-exceptions-arm64.lo libmini_la-tramp-arm64.lo \
 	libmini_la-mini-arm64-gsharedvt.lo \
 	libmini_la-tramp-arm64-gsharedvt.lo
-am__objects_23 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
+am__objects_6 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
 	libmini_la-tramp-arm.lo libmini_la-mini-arm-gsharedvt.lo \
 	libmini_la-tramp-arm-gsharedvt.lo
-am__objects_24 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
+am__objects_7 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
 	libmini_la-tramp-mips.lo
-am__objects_25 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
+am__objects_8 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
 	libmini_la-tramp-ppc.lo
-am__objects_26 = libmini_la-mini-s390x.lo \
+am__objects_9 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_27 = libmini_la-mini-sparc.lo \
+am__objects_10 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_28 = libmini_la-mini-wasm.lo libmini_la-exceptions-wasm.lo \
+am__objects_11 = libmini_la-mini-wasm.lo libmini_la-exceptions-wasm.lo \
 	libmini_la-tramp-wasm.lo
-am__objects_29 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
+am__objects_12 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
 	libmini_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_30 = $(am__objects_29)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_30 = $(am__objects_28)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_30 = $(am__objects_27)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_30 = $(am__objects_27)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_30 = $(am__objects_26)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_30 = $(am__objects_25)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_30 = $(am__objects_25)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_30 = $(am__objects_24)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_30 =  \
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@	$(am__objects_23)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_30 = $(am__objects_22)
-@AMD64_TRUE@am__objects_30 = $(am__objects_21)
-am__objects_31 = libmini_la-mini-darwin.lo
-am__objects_32 = libmini_la-mini-posix.lo
-am__objects_33 = libmini_la-mini-windows.lo \
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_13 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_13 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_13 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_13 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_13 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_13 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_13 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_13 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_6)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_5)
+@AMD64_TRUE@am__objects_13 = $(am__objects_4)
+am__objects_14 = libmini_la-mini-darwin.lo
+am__objects_15 = libmini_la-mini-posix.lo
+am__objects_16 = libmini_la-mini-windows.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_34 = $(am__objects_33)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_34 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_32)
-@HOST_DARWIN_TRUE@am__objects_34 = $(am__objects_31) $(am__objects_32)
-am_libmini_la_OBJECTS = $(am__objects_19) $(am__objects_20) \
-	$(am__objects_3) $(am__objects_30) $(am__objects_34)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_17 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_15)
+@HOST_DARWIN_TRUE@am__objects_17 = $(am__objects_14) $(am__objects_15)
+am_libmini_la_OBJECTS = $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_13) $(am__objects_17)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
-@BITCODE_TRUE@libmono_ee_interp_static_la_DEPENDENCIES =  \
-@BITCODE_TRUE@	libmonosgen-2.0.la
-am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_35 = interp/libmono_ee_interp_static_la-interp.lo \
-	interp/libmono_ee_interp_static_la-mintops.lo \
-	interp/libmono_ee_interp_static_la-transform.lo
-am__objects_36 = $(am__objects_35)
-am_libmono_ee_interp_static_la_OBJECTS = $(am__objects_36)
-libmono_ee_interp_static_la_OBJECTS =  \
-	$(am_libmono_ee_interp_static_la_OBJECTS)
-libmono_ee_interp_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) \
-	$(libmono_ee_interp_static_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_INTERPRETER_FALSE@am_libmono_ee_interp_static_la_rpath =
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+@SHARED_MONO_TRUE@am_libmini_la_rpath =
 @BITCODE_TRUE@libmono_ee_interp_la_DEPENDENCIES = libmonosgen-2.0.la
-am__objects_37 = interp/libmono_ee_interp_la-interp.lo \
+am__dirstamp = $(am__leading_dot)dirstamp
+am__objects_18 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
 	interp/libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_37)
+am_libmono_ee_interp_la_OBJECTS = $(am__objects_18)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_ee_interp_la_CFLAGS) $(CFLAGS) \
 	$(libmono_ee_interp_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_INTERPRETER_FALSE@@SHARED_MONO_TRUE@am_libmono_ee_interp_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@@DISABLE_INTERPRETER_FALSE@@SHARED_MONO_TRUE@am_libmono_ee_interp_la_rpath =
-am__DEPENDENCIES_2 =
-@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_3 =  \
+@DISABLE_INTERPRETER_FALSE@@SHARED_MONO_TRUE@am_libmono_ee_interp_la_rpath =
+am__DEPENDENCIES_1 =
+@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 =  \
 @SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc.la
-am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntime.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3)
-@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__DEPENDENCIES_5 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
-@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_4)
+am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
+	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__DEPENDENCIES_4 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
+@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_3)
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5)
+@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
@@ -461,14 +304,14 @@ libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(libmono_llvm_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath = -rpath $(libdir)
-@DISABLE_INTERPRETER_FALSE@am__DEPENDENCIES_6 = libmono-ee-interp.la
-@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_7 =  \
+@DISABLE_INTERPRETER_FALSE@am__DEPENDENCIES_5 = libmono-ee-interp.la
+@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_6 =  \
 @DTRACE_G_REQUIRED_TRUE@	.libs/mono-dtrace.$(OBJEXT)
-@LOADED_LLVM_FALSE@am__DEPENDENCIES_8 = $(am__DEPENDENCIES_2) \
-@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_2)
-libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_6) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_7) \
-	$(am__DEPENDENCIES_8)
+@LOADED_LLVM_FALSE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_1) \
+@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_1)
+libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_5) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_6) \
+	$(am__DEPENDENCIES_7)
 am_libmonoboehm_2_0_la_OBJECTS =
 libmonoboehm_2_0_la_OBJECTS = $(am_libmonoboehm_2_0_la_OBJECTS)
 libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -479,13 +322,13 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath =  \
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
-am__DEPENDENCIES_9 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
+am__DEPENDENCIES_8 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
 	$(monodir)/mono/sgen/libmonosgen.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
-libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_6) \
-	$(am__DEPENDENCIES_9) $(am__DEPENDENCIES_7) \
-	$(am__DEPENDENCIES_8)
+	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_5) \
+	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_6) \
+	$(am__DEPENDENCIES_7)
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -507,61 +350,48 @@ mono_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_boehm_OBJECTS = mono_boehm-main.$(OBJEXT)
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
-@DISABLE_INTERPRETER_FALSE@am__DEPENDENCIES_10 =  \
-@DISABLE_INTERPRETER_FALSE@	libmono-ee-interp-static.la
-@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_11 =  \
-@SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc-static.la
-am__DEPENDENCIES_12 =  \
-	$(monodir)/mono/metadata/libmonoruntime-static.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_11)
-@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_13 = libmini-static.la \
-@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_10) \
-@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_12)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_14 = libmonoboehm-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_14 = $(am__DEPENDENCIES_13)
-mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_14) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
+@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_9 = libmini.la \
+@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_5) \
+@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_3)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_10 = libmonoboehm-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_10 = $(am__DEPENDENCIES_9)
+@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_11 = mono-dtrace.$(OBJEXT)
+mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_10) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_11)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_sgen_OBJECTS = mono_sgen-main-sgen.$(OBJEXT)
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
-am__DEPENDENCIES_15 =  \
-	$(monodir)/mono/metadata/libmonoruntimesgen-static.la \
-	$(monodir)/mono/sgen/libmonosgen-static.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_16 = libmini-static.la \
-@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_10) \
-@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_15)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_17 = libmonosgen-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_17 = $(am__DEPENDENCIES_16)
-mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_17) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
+@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_12 = libmini.la \
+@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_13 = libmonosgen-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_13 = $(am__DEPENDENCIES_12)
+mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_13) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_11)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
 am__monow_SOURCES_DIST = main-sgen.c main.c
-am__objects_38 = main-sgen.$(OBJEXT)
-am__objects_39 = main.$(OBJEXT)
+am__objects_19 = main-sgen.$(OBJEXT)
+am__objects_20 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_38)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_19)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_39)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_20)
 monow_OBJECTS = $(am_monow_OBJECTS)
-am__DEPENDENCIES_18 = $(am__DEPENDENCIES_17) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
-am__DEPENDENCIES_19 = $(am__DEPENDENCIES_14) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
+am__DEPENDENCIES_14 = $(am__DEPENDENCIES_13) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_11)
+am__DEPENDENCIES_15 = $(am__DEPENDENCIES_10) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_11)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_18)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_14)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_19)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_15)
 monow_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(monow_LDFLAGS) $(LDFLAGS) -o $@
@@ -609,15 +439,11 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libmini_static_la_SOURCES) $(libmini_la_SOURCES) \
-	$(libmono_ee_interp_static_la_SOURCES) \
-	$(libmono_ee_interp_la_SOURCES) $(libmono_llvm_la_SOURCES) \
-	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
-	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
-	$(monow_SOURCES)
-DIST_SOURCES = $(am__libmini_static_la_SOURCES_DIST) \
-	$(am__libmini_la_SOURCES_DIST) \
-	$(libmono_ee_interp_static_la_SOURCES) \
+SOURCES = $(libmini_la_SOURCES) $(libmono_ee_interp_la_SOURCES) \
+	$(libmono_llvm_la_SOURCES) $(libmonoboehm_2_0_la_SOURCES) \
+	$(libmonosgen_2_0_la_SOURCES) $(mono_SOURCES) \
+	$(mono_boehm_SOURCES) $(mono_sgen_SOURCES) $(monow_SOURCES)
+DIST_SOURCES = $(am__libmini_la_SOURCES_DIST) \
 	$(libmono_ee_interp_la_SOURCES) \
 	$(am__libmono_llvm_la_SOURCES_DIST) \
 	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
@@ -915,18 +741,6 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
-boehm_static_libs = \
-	$(monodir)/mono/metadata/libmonoruntime-static.la	\
-	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) $(LIBICONV) \
-	$(libgc_static_libs)
-
-sgen_static_libs = \
-	$(monodir)/mono/metadata/libmonoruntimesgen-static.la	\
-	$(monodir)/mono/sgen/libmonosgen-static.la	\
-	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) $(LIBICONV)
-
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
 # if the tests are going to run with framework assemblies compiled with
@@ -967,9 +781,9 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_WIN32_TRUE@	$(am__append_5)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
-@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini-static.la $(interp_libs_static) $(sgen_static_libs)
+@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini.la $(interp_libs) $(sgen_libs)
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoboehm-2.0.la
-@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini-static.la $(interp_libs_static) $(boehm_static_libs)
+@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini.la $(interp_libs) $(boehm_libs)
 @SUPPORT_BOEHM_TRUE@boehm_binaries = mono-boehm
 @SUPPORT_SGEN_FALSE@mono_bin_suffix = boehm
 @SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
@@ -980,8 +794,7 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
 @SHARED_MONO_FALSE@mini_common_lib = 
 @SHARED_MONO_TRUE@mini_common_lib = libmini.la $(interp_libs)
-@DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = $(mini_common_lib) libmini-static.la $(interp_libs_static)
-@DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = $(mini_common_lib)
+noinst_LTLIBRARIES = $(mini_common_lib)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) \
 @LOADED_LLVM_TRUE@	$(LLVM_LDFLAGS) $(am__append_2)
@@ -1139,8 +952,6 @@ interp_sources = \
 
 @DISABLE_INTERPRETER_FALSE@interp_libs = libmono-ee-interp.la
 @DISABLE_INTERPRETER_TRUE@interp_libs = 
-@DISABLE_INTERPRETER_FALSE@interp_libs_static = libmono-ee-interp-static.la
-@DISABLE_INTERPRETER_TRUE@interp_libs_static = 
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@llvm_runtime_sources = \
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.cpp
 
@@ -1330,6 +1141,11 @@ libmono_ee_interp_la_SOURCES = $(interp_sources)
 libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
 libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
+
+#
+# This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
+# compile time dependencies on boehm/sgen.
+#
 libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
 libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
@@ -1340,19 +1156,6 @@ libmonosgen_2_0_la_SOURCES =
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
-
-#
-# This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
-# compile time dependencies on boehm/sgen.
-#
-libmini_static_la_SOURCES = $(libmini_la_SOURCES)
-libmini_static_la_CFLAGS = $(AM_CFLAGS)
-libmini_static_la_LDFLAGS = $(libmonoldflags) -static
-libmini_static_la_LIBADD = $(MONO_DTRACE_OBJECT)
-libmono_ee_interp_static_la_SOURCES = $(libmono_ee_interp_la_SOURCES)
-libmono_ee_interp_static_la_CFLAGS = $(AM_CFLAGS)
-libmono_ee_interp_static_la_LDFLAGS = -static
-@BITCODE_TRUE@libmono_ee_interp_static_la_LIBADD = libmonosgen-2.0.la
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
@@ -1487,9 +1290,6 @@ clean-noinstLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libmini-static.la: $(libmini_static_la_OBJECTS) $(libmini_static_la_DEPENDENCIES) $(EXTRA_libmini_static_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libmini_static_la_LINK) $(am_libmini_static_la_rpath) $(libmini_static_la_OBJECTS) $(libmini_static_la_LIBADD) $(LIBS)
-
 libmini.la: $(libmini_la_OBJECTS) $(libmini_la_DEPENDENCIES) $(EXTRA_libmini_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) $(am_libmini_la_rpath) $(libmini_la_OBJECTS) $(libmini_la_LIBADD) $(LIBS)
 interp/$(am__dirstamp):
@@ -1498,15 +1298,6 @@ interp/$(am__dirstamp):
 interp/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) interp/$(DEPDIR)
 	@: > interp/$(DEPDIR)/$(am__dirstamp)
-interp/libmono_ee_interp_static_la-interp.lo: interp/$(am__dirstamp) \
-	interp/$(DEPDIR)/$(am__dirstamp)
-interp/libmono_ee_interp_static_la-mintops.lo: interp/$(am__dirstamp) \
-	interp/$(DEPDIR)/$(am__dirstamp)
-interp/libmono_ee_interp_static_la-transform.lo:  \
-	interp/$(am__dirstamp) interp/$(DEPDIR)/$(am__dirstamp)
-
-libmono-ee-interp-static.la: $(libmono_ee_interp_static_la_OBJECTS) $(libmono_ee_interp_static_la_DEPENDENCIES) $(EXTRA_libmono_ee_interp_static_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmono_ee_interp_static_la_LINK) $(am_libmono_ee_interp_static_la_rpath) $(libmono_ee_interp_static_la_OBJECTS) $(libmono_ee_interp_static_la_LIBADD) $(LIBS)
 interp/libmono_ee_interp_la-interp.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmono_ee_interp_la-mintops.lo: interp/$(am__dirstamp) \
@@ -1694,92 +1485,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-type-checking.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-unwind.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-xdebug.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-abcremoval.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-alias-analysis.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-aot-compiler.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-aot-runtime-wasm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-aot-runtime.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-arch-stubs.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-branch-opts.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-cfgdump.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-cfold.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-debug-mini.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-debugger-agent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-decompose.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-dominators.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-driver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-dwarfwriter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-amd64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-arm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-arm64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-mips.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-ppc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-s390x.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-sparc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-wasm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-exceptions-x86.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-graph.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-helpers.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-image-writer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-interp-stubs.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-jit-icalls.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-linear-scan.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-liveness.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-lldb.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-local-propagation.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-memory-access.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-method-to-ir.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-amd64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-arm-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-arm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-arm64-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-arm64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-codegen.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-cross-helpers.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-darwin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-exceptions.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-gc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-generic-sharing.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-llvm-loaded.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-llvm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-mips.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-native-types.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-posix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-ppc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-profiler.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-runtime.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-s390x.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-sparc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-trampolines.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-wasm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-windows-dlldac.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-windows-dllmain.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-windows.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-x86-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-x86.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-seq-points.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-simd-intrinsics.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-ssa.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tasklets.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-trace.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-amd64-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-amd64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-arm-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-arm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-arm64-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-arm64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-mips.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-ppc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-s390x.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-sparc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-wasm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-x86-gsharedvt.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-x86.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-type-checking.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-unwind.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-xdebug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
@@ -1792,9 +1497,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_static_la-interp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_static_la-mintops.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_static_la-transform.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1819,608 +1521,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
-
-libmini_static_la-mini.lo: mini.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini.Tpo -c -o libmini_static_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini.Tpo $(DEPDIR)/libmini_static_la-mini.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini.c' object='libmini_static_la-mini.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
-
-libmini_static_la-mini-runtime.lo: mini-runtime.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-runtime.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-runtime.Tpo -c -o libmini_static_la-mini-runtime.lo `test -f 'mini-runtime.c' || echo '$(srcdir)/'`mini-runtime.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-runtime.Tpo $(DEPDIR)/libmini_static_la-mini-runtime.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-runtime.c' object='libmini_static_la-mini-runtime.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-runtime.lo `test -f 'mini-runtime.c' || echo '$(srcdir)/'`mini-runtime.c
-
-libmini_static_la-seq-points.lo: seq-points.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-seq-points.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-seq-points.Tpo -c -o libmini_static_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-seq-points.Tpo $(DEPDIR)/libmini_static_la-seq-points.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='seq-points.c' object='libmini_static_la-seq-points.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
-
-libmini_static_la-method-to-ir.lo: method-to-ir.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-method-to-ir.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-method-to-ir.Tpo -c -o libmini_static_la-method-to-ir.lo `test -f 'method-to-ir.c' || echo '$(srcdir)/'`method-to-ir.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-method-to-ir.Tpo $(DEPDIR)/libmini_static_la-method-to-ir.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='method-to-ir.c' object='libmini_static_la-method-to-ir.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-method-to-ir.lo `test -f 'method-to-ir.c' || echo '$(srcdir)/'`method-to-ir.c
-
-libmini_static_la-cfgdump.lo: cfgdump.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-cfgdump.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-cfgdump.Tpo -c -o libmini_static_la-cfgdump.lo `test -f 'cfgdump.c' || echo '$(srcdir)/'`cfgdump.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-cfgdump.Tpo $(DEPDIR)/libmini_static_la-cfgdump.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cfgdump.c' object='libmini_static_la-cfgdump.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-cfgdump.lo `test -f 'cfgdump.c' || echo '$(srcdir)/'`cfgdump.c
-
-libmini_static_la-decompose.lo: decompose.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-decompose.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-decompose.Tpo -c -o libmini_static_la-decompose.lo `test -f 'decompose.c' || echo '$(srcdir)/'`decompose.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-decompose.Tpo $(DEPDIR)/libmini_static_la-decompose.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decompose.c' object='libmini_static_la-decompose.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-decompose.lo `test -f 'decompose.c' || echo '$(srcdir)/'`decompose.c
-
-libmini_static_la-jit-icalls.lo: jit-icalls.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-jit-icalls.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-jit-icalls.Tpo -c -o libmini_static_la-jit-icalls.lo `test -f 'jit-icalls.c' || echo '$(srcdir)/'`jit-icalls.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-jit-icalls.Tpo $(DEPDIR)/libmini_static_la-jit-icalls.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='jit-icalls.c' object='libmini_static_la-jit-icalls.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-jit-icalls.lo `test -f 'jit-icalls.c' || echo '$(srcdir)/'`jit-icalls.c
-
-libmini_static_la-trace.lo: trace.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-trace.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-trace.Tpo -c -o libmini_static_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-trace.Tpo $(DEPDIR)/libmini_static_la-trace.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='trace.c' object='libmini_static_la-trace.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-trace.lo `test -f 'trace.c' || echo '$(srcdir)/'`trace.c
-
-libmini_static_la-dominators.lo: dominators.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-dominators.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-dominators.Tpo -c -o libmini_static_la-dominators.lo `test -f 'dominators.c' || echo '$(srcdir)/'`dominators.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-dominators.Tpo $(DEPDIR)/libmini_static_la-dominators.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dominators.c' object='libmini_static_la-dominators.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-dominators.lo `test -f 'dominators.c' || echo '$(srcdir)/'`dominators.c
-
-libmini_static_la-cfold.lo: cfold.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-cfold.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-cfold.Tpo -c -o libmini_static_la-cfold.lo `test -f 'cfold.c' || echo '$(srcdir)/'`cfold.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-cfold.Tpo $(DEPDIR)/libmini_static_la-cfold.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cfold.c' object='libmini_static_la-cfold.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-cfold.lo `test -f 'cfold.c' || echo '$(srcdir)/'`cfold.c
-
-libmini_static_la-helpers.lo: helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-helpers.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-helpers.Tpo -c -o libmini_static_la-helpers.lo `test -f 'helpers.c' || echo '$(srcdir)/'`helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-helpers.Tpo $(DEPDIR)/libmini_static_la-helpers.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='helpers.c' object='libmini_static_la-helpers.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-helpers.lo `test -f 'helpers.c' || echo '$(srcdir)/'`helpers.c
-
-libmini_static_la-liveness.lo: liveness.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-liveness.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-liveness.Tpo -c -o libmini_static_la-liveness.lo `test -f 'liveness.c' || echo '$(srcdir)/'`liveness.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-liveness.Tpo $(DEPDIR)/libmini_static_la-liveness.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='liveness.c' object='libmini_static_la-liveness.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-liveness.lo `test -f 'liveness.c' || echo '$(srcdir)/'`liveness.c
-
-libmini_static_la-ssa.lo: ssa.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-ssa.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-ssa.Tpo -c -o libmini_static_la-ssa.lo `test -f 'ssa.c' || echo '$(srcdir)/'`ssa.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-ssa.Tpo $(DEPDIR)/libmini_static_la-ssa.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ssa.c' object='libmini_static_la-ssa.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-ssa.lo `test -f 'ssa.c' || echo '$(srcdir)/'`ssa.c
-
-libmini_static_la-abcremoval.lo: abcremoval.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-abcremoval.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-abcremoval.Tpo -c -o libmini_static_la-abcremoval.lo `test -f 'abcremoval.c' || echo '$(srcdir)/'`abcremoval.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-abcremoval.Tpo $(DEPDIR)/libmini_static_la-abcremoval.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='abcremoval.c' object='libmini_static_la-abcremoval.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-abcremoval.lo `test -f 'abcremoval.c' || echo '$(srcdir)/'`abcremoval.c
-
-libmini_static_la-local-propagation.lo: local-propagation.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-local-propagation.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-local-propagation.Tpo -c -o libmini_static_la-local-propagation.lo `test -f 'local-propagation.c' || echo '$(srcdir)/'`local-propagation.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-local-propagation.Tpo $(DEPDIR)/libmini_static_la-local-propagation.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='local-propagation.c' object='libmini_static_la-local-propagation.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-local-propagation.lo `test -f 'local-propagation.c' || echo '$(srcdir)/'`local-propagation.c
-
-libmini_static_la-driver.lo: driver.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-driver.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-driver.Tpo -c -o libmini_static_la-driver.lo `test -f 'driver.c' || echo '$(srcdir)/'`driver.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-driver.Tpo $(DEPDIR)/libmini_static_la-driver.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='driver.c' object='libmini_static_la-driver.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-driver.lo `test -f 'driver.c' || echo '$(srcdir)/'`driver.c
-
-libmini_static_la-debug-mini.lo: debug-mini.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-debug-mini.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-debug-mini.Tpo -c -o libmini_static_la-debug-mini.lo `test -f 'debug-mini.c' || echo '$(srcdir)/'`debug-mini.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-debug-mini.Tpo $(DEPDIR)/libmini_static_la-debug-mini.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debug-mini.c' object='libmini_static_la-debug-mini.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-debug-mini.lo `test -f 'debug-mini.c' || echo '$(srcdir)/'`debug-mini.c
-
-libmini_static_la-linear-scan.lo: linear-scan.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-linear-scan.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-linear-scan.Tpo -c -o libmini_static_la-linear-scan.lo `test -f 'linear-scan.c' || echo '$(srcdir)/'`linear-scan.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-linear-scan.Tpo $(DEPDIR)/libmini_static_la-linear-scan.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='linear-scan.c' object='libmini_static_la-linear-scan.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-linear-scan.lo `test -f 'linear-scan.c' || echo '$(srcdir)/'`linear-scan.c
-
-libmini_static_la-aot-compiler.lo: aot-compiler.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-aot-compiler.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-aot-compiler.Tpo -c -o libmini_static_la-aot-compiler.lo `test -f 'aot-compiler.c' || echo '$(srcdir)/'`aot-compiler.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-aot-compiler.Tpo $(DEPDIR)/libmini_static_la-aot-compiler.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='aot-compiler.c' object='libmini_static_la-aot-compiler.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-aot-compiler.lo `test -f 'aot-compiler.c' || echo '$(srcdir)/'`aot-compiler.c
-
-libmini_static_la-aot-runtime.lo: aot-runtime.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-aot-runtime.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-aot-runtime.Tpo -c -o libmini_static_la-aot-runtime.lo `test -f 'aot-runtime.c' || echo '$(srcdir)/'`aot-runtime.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-aot-runtime.Tpo $(DEPDIR)/libmini_static_la-aot-runtime.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='aot-runtime.c' object='libmini_static_la-aot-runtime.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-aot-runtime.lo `test -f 'aot-runtime.c' || echo '$(srcdir)/'`aot-runtime.c
-
-libmini_static_la-aot-runtime-wasm.lo: aot-runtime-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-aot-runtime-wasm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-aot-runtime-wasm.Tpo -c -o libmini_static_la-aot-runtime-wasm.lo `test -f 'aot-runtime-wasm.c' || echo '$(srcdir)/'`aot-runtime-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-aot-runtime-wasm.Tpo $(DEPDIR)/libmini_static_la-aot-runtime-wasm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='aot-runtime-wasm.c' object='libmini_static_la-aot-runtime-wasm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-aot-runtime-wasm.lo `test -f 'aot-runtime-wasm.c' || echo '$(srcdir)/'`aot-runtime-wasm.c
-
-libmini_static_la-graph.lo: graph.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-graph.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-graph.Tpo -c -o libmini_static_la-graph.lo `test -f 'graph.c' || echo '$(srcdir)/'`graph.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-graph.Tpo $(DEPDIR)/libmini_static_la-graph.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='graph.c' object='libmini_static_la-graph.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-graph.lo `test -f 'graph.c' || echo '$(srcdir)/'`graph.c
-
-libmini_static_la-mini-codegen.lo: mini-codegen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-codegen.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-codegen.Tpo -c -o libmini_static_la-mini-codegen.lo `test -f 'mini-codegen.c' || echo '$(srcdir)/'`mini-codegen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-codegen.Tpo $(DEPDIR)/libmini_static_la-mini-codegen.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-codegen.c' object='libmini_static_la-mini-codegen.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-codegen.lo `test -f 'mini-codegen.c' || echo '$(srcdir)/'`mini-codegen.c
-
-libmini_static_la-mini-exceptions.lo: mini-exceptions.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-exceptions.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-exceptions.Tpo -c -o libmini_static_la-mini-exceptions.lo `test -f 'mini-exceptions.c' || echo '$(srcdir)/'`mini-exceptions.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-exceptions.Tpo $(DEPDIR)/libmini_static_la-mini-exceptions.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-exceptions.c' object='libmini_static_la-mini-exceptions.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-exceptions.lo `test -f 'mini-exceptions.c' || echo '$(srcdir)/'`mini-exceptions.c
-
-libmini_static_la-mini-trampolines.lo: mini-trampolines.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-trampolines.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-trampolines.Tpo -c -o libmini_static_la-mini-trampolines.lo `test -f 'mini-trampolines.c' || echo '$(srcdir)/'`mini-trampolines.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-trampolines.Tpo $(DEPDIR)/libmini_static_la-mini-trampolines.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-trampolines.c' object='libmini_static_la-mini-trampolines.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-trampolines.lo `test -f 'mini-trampolines.c' || echo '$(srcdir)/'`mini-trampolines.c
-
-libmini_static_la-branch-opts.lo: branch-opts.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-branch-opts.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-branch-opts.Tpo -c -o libmini_static_la-branch-opts.lo `test -f 'branch-opts.c' || echo '$(srcdir)/'`branch-opts.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-branch-opts.Tpo $(DEPDIR)/libmini_static_la-branch-opts.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='branch-opts.c' object='libmini_static_la-branch-opts.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-branch-opts.lo `test -f 'branch-opts.c' || echo '$(srcdir)/'`branch-opts.c
-
-libmini_static_la-mini-generic-sharing.lo: mini-generic-sharing.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-generic-sharing.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-generic-sharing.Tpo -c -o libmini_static_la-mini-generic-sharing.lo `test -f 'mini-generic-sharing.c' || echo '$(srcdir)/'`mini-generic-sharing.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-generic-sharing.Tpo $(DEPDIR)/libmini_static_la-mini-generic-sharing.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-generic-sharing.c' object='libmini_static_la-mini-generic-sharing.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-generic-sharing.lo `test -f 'mini-generic-sharing.c' || echo '$(srcdir)/'`mini-generic-sharing.c
-
-libmini_static_la-tasklets.lo: tasklets.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tasklets.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tasklets.Tpo -c -o libmini_static_la-tasklets.lo `test -f 'tasklets.c' || echo '$(srcdir)/'`tasklets.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tasklets.Tpo $(DEPDIR)/libmini_static_la-tasklets.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tasklets.c' object='libmini_static_la-tasklets.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tasklets.lo `test -f 'tasklets.c' || echo '$(srcdir)/'`tasklets.c
-
-libmini_static_la-simd-intrinsics.lo: simd-intrinsics.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-simd-intrinsics.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-simd-intrinsics.Tpo -c -o libmini_static_la-simd-intrinsics.lo `test -f 'simd-intrinsics.c' || echo '$(srcdir)/'`simd-intrinsics.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-simd-intrinsics.Tpo $(DEPDIR)/libmini_static_la-simd-intrinsics.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simd-intrinsics.c' object='libmini_static_la-simd-intrinsics.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-simd-intrinsics.lo `test -f 'simd-intrinsics.c' || echo '$(srcdir)/'`simd-intrinsics.c
-
-libmini_static_la-mini-native-types.lo: mini-native-types.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-native-types.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-native-types.Tpo -c -o libmini_static_la-mini-native-types.lo `test -f 'mini-native-types.c' || echo '$(srcdir)/'`mini-native-types.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-native-types.Tpo $(DEPDIR)/libmini_static_la-mini-native-types.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-native-types.c' object='libmini_static_la-mini-native-types.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-native-types.lo `test -f 'mini-native-types.c' || echo '$(srcdir)/'`mini-native-types.c
-
-libmini_static_la-unwind.lo: unwind.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-unwind.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-unwind.Tpo -c -o libmini_static_la-unwind.lo `test -f 'unwind.c' || echo '$(srcdir)/'`unwind.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-unwind.Tpo $(DEPDIR)/libmini_static_la-unwind.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='unwind.c' object='libmini_static_la-unwind.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-unwind.lo `test -f 'unwind.c' || echo '$(srcdir)/'`unwind.c
-
-libmini_static_la-image-writer.lo: image-writer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-image-writer.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-image-writer.Tpo -c -o libmini_static_la-image-writer.lo `test -f 'image-writer.c' || echo '$(srcdir)/'`image-writer.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-image-writer.Tpo $(DEPDIR)/libmini_static_la-image-writer.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='image-writer.c' object='libmini_static_la-image-writer.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-image-writer.lo `test -f 'image-writer.c' || echo '$(srcdir)/'`image-writer.c
-
-libmini_static_la-dwarfwriter.lo: dwarfwriter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-dwarfwriter.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-dwarfwriter.Tpo -c -o libmini_static_la-dwarfwriter.lo `test -f 'dwarfwriter.c' || echo '$(srcdir)/'`dwarfwriter.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-dwarfwriter.Tpo $(DEPDIR)/libmini_static_la-dwarfwriter.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dwarfwriter.c' object='libmini_static_la-dwarfwriter.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-dwarfwriter.lo `test -f 'dwarfwriter.c' || echo '$(srcdir)/'`dwarfwriter.c
-
-libmini_static_la-mini-gc.lo: mini-gc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-gc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-gc.Tpo -c -o libmini_static_la-mini-gc.lo `test -f 'mini-gc.c' || echo '$(srcdir)/'`mini-gc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-gc.Tpo $(DEPDIR)/libmini_static_la-mini-gc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-gc.c' object='libmini_static_la-mini-gc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-gc.lo `test -f 'mini-gc.c' || echo '$(srcdir)/'`mini-gc.c
-
-libmini_static_la-debugger-agent.lo: debugger-agent.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-debugger-agent.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-debugger-agent.Tpo -c -o libmini_static_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-debugger-agent.Tpo $(DEPDIR)/libmini_static_la-debugger-agent.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debugger-agent.c' object='libmini_static_la-debugger-agent.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
-
-libmini_static_la-xdebug.lo: xdebug.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-xdebug.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-xdebug.Tpo -c -o libmini_static_la-xdebug.lo `test -f 'xdebug.c' || echo '$(srcdir)/'`xdebug.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-xdebug.Tpo $(DEPDIR)/libmini_static_la-xdebug.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xdebug.c' object='libmini_static_la-xdebug.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-xdebug.lo `test -f 'xdebug.c' || echo '$(srcdir)/'`xdebug.c
-
-libmini_static_la-alias-analysis.lo: alias-analysis.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-alias-analysis.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-alias-analysis.Tpo -c -o libmini_static_la-alias-analysis.lo `test -f 'alias-analysis.c' || echo '$(srcdir)/'`alias-analysis.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-alias-analysis.Tpo $(DEPDIR)/libmini_static_la-alias-analysis.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='alias-analysis.c' object='libmini_static_la-alias-analysis.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-alias-analysis.lo `test -f 'alias-analysis.c' || echo '$(srcdir)/'`alias-analysis.c
-
-libmini_static_la-mini-cross-helpers.lo: mini-cross-helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-cross-helpers.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-cross-helpers.Tpo -c -o libmini_static_la-mini-cross-helpers.lo `test -f 'mini-cross-helpers.c' || echo '$(srcdir)/'`mini-cross-helpers.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-cross-helpers.Tpo $(DEPDIR)/libmini_static_la-mini-cross-helpers.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-cross-helpers.c' object='libmini_static_la-mini-cross-helpers.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-cross-helpers.lo `test -f 'mini-cross-helpers.c' || echo '$(srcdir)/'`mini-cross-helpers.c
-
-libmini_static_la-arch-stubs.lo: arch-stubs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-arch-stubs.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-arch-stubs.Tpo -c -o libmini_static_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-arch-stubs.Tpo $(DEPDIR)/libmini_static_la-arch-stubs.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='arch-stubs.c' object='libmini_static_la-arch-stubs.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
-
-libmini_static_la-type-checking.lo: type-checking.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-type-checking.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-type-checking.Tpo -c -o libmini_static_la-type-checking.lo `test -f 'type-checking.c' || echo '$(srcdir)/'`type-checking.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-type-checking.Tpo $(DEPDIR)/libmini_static_la-type-checking.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='type-checking.c' object='libmini_static_la-type-checking.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-type-checking.lo `test -f 'type-checking.c' || echo '$(srcdir)/'`type-checking.c
-
-libmini_static_la-lldb.lo: lldb.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-lldb.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-lldb.Tpo -c -o libmini_static_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-lldb.Tpo $(DEPDIR)/libmini_static_la-lldb.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldb.c' object='libmini_static_la-lldb.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
-
-libmini_static_la-memory-access.lo: memory-access.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-memory-access.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-memory-access.Tpo -c -o libmini_static_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-memory-access.Tpo $(DEPDIR)/libmini_static_la-memory-access.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memory-access.c' object='libmini_static_la-memory-access.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
-
-libmini_static_la-mini-profiler.lo: mini-profiler.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-profiler.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-profiler.Tpo -c -o libmini_static_la-mini-profiler.lo `test -f 'mini-profiler.c' || echo '$(srcdir)/'`mini-profiler.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-profiler.Tpo $(DEPDIR)/libmini_static_la-mini-profiler.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-profiler.c' object='libmini_static_la-mini-profiler.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-profiler.lo `test -f 'mini-profiler.c' || echo '$(srcdir)/'`mini-profiler.c
-
-libmini_static_la-interp-stubs.lo: interp-stubs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-interp-stubs.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-interp-stubs.Tpo -c -o libmini_static_la-interp-stubs.lo `test -f 'interp-stubs.c' || echo '$(srcdir)/'`interp-stubs.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-interp-stubs.Tpo $(DEPDIR)/libmini_static_la-interp-stubs.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp-stubs.c' object='libmini_static_la-interp-stubs.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-interp-stubs.lo `test -f 'interp-stubs.c' || echo '$(srcdir)/'`interp-stubs.c
-
-libmini_static_la-mini-llvm.lo: mini-llvm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-llvm.Tpo -c -o libmini_static_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-llvm.Tpo $(DEPDIR)/libmini_static_la-mini-llvm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm.c' object='libmini_static_la-mini-llvm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
-
-libmini_static_la-mini-llvm-loaded.lo: mini-llvm-loaded.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-llvm-loaded.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-llvm-loaded.Tpo -c -o libmini_static_la-mini-llvm-loaded.lo `test -f 'mini-llvm-loaded.c' || echo '$(srcdir)/'`mini-llvm-loaded.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-llvm-loaded.Tpo $(DEPDIR)/libmini_static_la-mini-llvm-loaded.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm-loaded.c' object='libmini_static_la-mini-llvm-loaded.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-llvm-loaded.lo `test -f 'mini-llvm-loaded.c' || echo '$(srcdir)/'`mini-llvm-loaded.c
-
-libmini_static_la-mini-amd64.lo: mini-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-amd64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-amd64.Tpo -c -o libmini_static_la-mini-amd64.lo `test -f 'mini-amd64.c' || echo '$(srcdir)/'`mini-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-amd64.Tpo $(DEPDIR)/libmini_static_la-mini-amd64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-amd64.c' object='libmini_static_la-mini-amd64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-amd64.lo `test -f 'mini-amd64.c' || echo '$(srcdir)/'`mini-amd64.c
-
-libmini_static_la-exceptions-amd64.lo: exceptions-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-amd64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-amd64.Tpo -c -o libmini_static_la-exceptions-amd64.lo `test -f 'exceptions-amd64.c' || echo '$(srcdir)/'`exceptions-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-amd64.Tpo $(DEPDIR)/libmini_static_la-exceptions-amd64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-amd64.c' object='libmini_static_la-exceptions-amd64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-amd64.lo `test -f 'exceptions-amd64.c' || echo '$(srcdir)/'`exceptions-amd64.c
-
-libmini_static_la-tramp-amd64.lo: tramp-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-amd64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-amd64.Tpo -c -o libmini_static_la-tramp-amd64.lo `test -f 'tramp-amd64.c' || echo '$(srcdir)/'`tramp-amd64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-amd64.Tpo $(DEPDIR)/libmini_static_la-tramp-amd64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-amd64.c' object='libmini_static_la-tramp-amd64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-amd64.lo `test -f 'tramp-amd64.c' || echo '$(srcdir)/'`tramp-amd64.c
-
-libmini_static_la-mini-amd64-gsharedvt.lo: mini-amd64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-amd64-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Tpo -c -o libmini_static_la-mini-amd64-gsharedvt.lo `test -f 'mini-amd64-gsharedvt.c' || echo '$(srcdir)/'`mini-amd64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-amd64-gsharedvt.c' object='libmini_static_la-mini-amd64-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-amd64-gsharedvt.lo `test -f 'mini-amd64-gsharedvt.c' || echo '$(srcdir)/'`mini-amd64-gsharedvt.c
-
-libmini_static_la-tramp-amd64-gsharedvt.lo: tramp-amd64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-amd64-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-amd64-gsharedvt.Tpo -c -o libmini_static_la-tramp-amd64-gsharedvt.lo `test -f 'tramp-amd64-gsharedvt.c' || echo '$(srcdir)/'`tramp-amd64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-amd64-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-tramp-amd64-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-amd64-gsharedvt.c' object='libmini_static_la-tramp-amd64-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-amd64-gsharedvt.lo `test -f 'tramp-amd64-gsharedvt.c' || echo '$(srcdir)/'`tramp-amd64-gsharedvt.c
-
-libmini_static_la-mini-arm64.lo: mini-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-arm64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-arm64.Tpo -c -o libmini_static_la-mini-arm64.lo `test -f 'mini-arm64.c' || echo '$(srcdir)/'`mini-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-arm64.Tpo $(DEPDIR)/libmini_static_la-mini-arm64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-arm64.c' object='libmini_static_la-mini-arm64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-arm64.lo `test -f 'mini-arm64.c' || echo '$(srcdir)/'`mini-arm64.c
-
-libmini_static_la-exceptions-arm64.lo: exceptions-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-arm64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-arm64.Tpo -c -o libmini_static_la-exceptions-arm64.lo `test -f 'exceptions-arm64.c' || echo '$(srcdir)/'`exceptions-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-arm64.Tpo $(DEPDIR)/libmini_static_la-exceptions-arm64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-arm64.c' object='libmini_static_la-exceptions-arm64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-arm64.lo `test -f 'exceptions-arm64.c' || echo '$(srcdir)/'`exceptions-arm64.c
-
-libmini_static_la-tramp-arm64.lo: tramp-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-arm64.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-arm64.Tpo -c -o libmini_static_la-tramp-arm64.lo `test -f 'tramp-arm64.c' || echo '$(srcdir)/'`tramp-arm64.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-arm64.Tpo $(DEPDIR)/libmini_static_la-tramp-arm64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-arm64.c' object='libmini_static_la-tramp-arm64.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-arm64.lo `test -f 'tramp-arm64.c' || echo '$(srcdir)/'`tramp-arm64.c
-
-libmini_static_la-mini-arm64-gsharedvt.lo: mini-arm64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-arm64-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-arm64-gsharedvt.Tpo -c -o libmini_static_la-mini-arm64-gsharedvt.lo `test -f 'mini-arm64-gsharedvt.c' || echo '$(srcdir)/'`mini-arm64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-arm64-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-mini-arm64-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-arm64-gsharedvt.c' object='libmini_static_la-mini-arm64-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-arm64-gsharedvt.lo `test -f 'mini-arm64-gsharedvt.c' || echo '$(srcdir)/'`mini-arm64-gsharedvt.c
-
-libmini_static_la-tramp-arm64-gsharedvt.lo: tramp-arm64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-arm64-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-arm64-gsharedvt.Tpo -c -o libmini_static_la-tramp-arm64-gsharedvt.lo `test -f 'tramp-arm64-gsharedvt.c' || echo '$(srcdir)/'`tramp-arm64-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-arm64-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-tramp-arm64-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-arm64-gsharedvt.c' object='libmini_static_la-tramp-arm64-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-arm64-gsharedvt.lo `test -f 'tramp-arm64-gsharedvt.c' || echo '$(srcdir)/'`tramp-arm64-gsharedvt.c
-
-libmini_static_la-mini-arm.lo: mini-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-arm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-arm.Tpo -c -o libmini_static_la-mini-arm.lo `test -f 'mini-arm.c' || echo '$(srcdir)/'`mini-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-arm.Tpo $(DEPDIR)/libmini_static_la-mini-arm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-arm.c' object='libmini_static_la-mini-arm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-arm.lo `test -f 'mini-arm.c' || echo '$(srcdir)/'`mini-arm.c
-
-libmini_static_la-exceptions-arm.lo: exceptions-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-arm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-arm.Tpo -c -o libmini_static_la-exceptions-arm.lo `test -f 'exceptions-arm.c' || echo '$(srcdir)/'`exceptions-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-arm.Tpo $(DEPDIR)/libmini_static_la-exceptions-arm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-arm.c' object='libmini_static_la-exceptions-arm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-arm.lo `test -f 'exceptions-arm.c' || echo '$(srcdir)/'`exceptions-arm.c
-
-libmini_static_la-tramp-arm.lo: tramp-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-arm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-arm.Tpo -c -o libmini_static_la-tramp-arm.lo `test -f 'tramp-arm.c' || echo '$(srcdir)/'`tramp-arm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-arm.Tpo $(DEPDIR)/libmini_static_la-tramp-arm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-arm.c' object='libmini_static_la-tramp-arm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-arm.lo `test -f 'tramp-arm.c' || echo '$(srcdir)/'`tramp-arm.c
-
-libmini_static_la-mini-arm-gsharedvt.lo: mini-arm-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-arm-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-arm-gsharedvt.Tpo -c -o libmini_static_la-mini-arm-gsharedvt.lo `test -f 'mini-arm-gsharedvt.c' || echo '$(srcdir)/'`mini-arm-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-arm-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-mini-arm-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-arm-gsharedvt.c' object='libmini_static_la-mini-arm-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-arm-gsharedvt.lo `test -f 'mini-arm-gsharedvt.c' || echo '$(srcdir)/'`mini-arm-gsharedvt.c
-
-libmini_static_la-tramp-arm-gsharedvt.lo: tramp-arm-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-arm-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-arm-gsharedvt.Tpo -c -o libmini_static_la-tramp-arm-gsharedvt.lo `test -f 'tramp-arm-gsharedvt.c' || echo '$(srcdir)/'`tramp-arm-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-arm-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-tramp-arm-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-arm-gsharedvt.c' object='libmini_static_la-tramp-arm-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-arm-gsharedvt.lo `test -f 'tramp-arm-gsharedvt.c' || echo '$(srcdir)/'`tramp-arm-gsharedvt.c
-
-libmini_static_la-mini-mips.lo: mini-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-mips.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-mips.Tpo -c -o libmini_static_la-mini-mips.lo `test -f 'mini-mips.c' || echo '$(srcdir)/'`mini-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-mips.Tpo $(DEPDIR)/libmini_static_la-mini-mips.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-mips.c' object='libmini_static_la-mini-mips.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-mips.lo `test -f 'mini-mips.c' || echo '$(srcdir)/'`mini-mips.c
-
-libmini_static_la-exceptions-mips.lo: exceptions-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-mips.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-mips.Tpo -c -o libmini_static_la-exceptions-mips.lo `test -f 'exceptions-mips.c' || echo '$(srcdir)/'`exceptions-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-mips.Tpo $(DEPDIR)/libmini_static_la-exceptions-mips.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-mips.c' object='libmini_static_la-exceptions-mips.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-mips.lo `test -f 'exceptions-mips.c' || echo '$(srcdir)/'`exceptions-mips.c
-
-libmini_static_la-tramp-mips.lo: tramp-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-mips.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-mips.Tpo -c -o libmini_static_la-tramp-mips.lo `test -f 'tramp-mips.c' || echo '$(srcdir)/'`tramp-mips.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-mips.Tpo $(DEPDIR)/libmini_static_la-tramp-mips.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-mips.c' object='libmini_static_la-tramp-mips.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-mips.lo `test -f 'tramp-mips.c' || echo '$(srcdir)/'`tramp-mips.c
-
-libmini_static_la-mini-ppc.lo: mini-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-ppc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-ppc.Tpo -c -o libmini_static_la-mini-ppc.lo `test -f 'mini-ppc.c' || echo '$(srcdir)/'`mini-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-ppc.Tpo $(DEPDIR)/libmini_static_la-mini-ppc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-ppc.c' object='libmini_static_la-mini-ppc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-ppc.lo `test -f 'mini-ppc.c' || echo '$(srcdir)/'`mini-ppc.c
-
-libmini_static_la-exceptions-ppc.lo: exceptions-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-ppc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-ppc.Tpo -c -o libmini_static_la-exceptions-ppc.lo `test -f 'exceptions-ppc.c' || echo '$(srcdir)/'`exceptions-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-ppc.Tpo $(DEPDIR)/libmini_static_la-exceptions-ppc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-ppc.c' object='libmini_static_la-exceptions-ppc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-ppc.lo `test -f 'exceptions-ppc.c' || echo '$(srcdir)/'`exceptions-ppc.c
-
-libmini_static_la-tramp-ppc.lo: tramp-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-ppc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-ppc.Tpo -c -o libmini_static_la-tramp-ppc.lo `test -f 'tramp-ppc.c' || echo '$(srcdir)/'`tramp-ppc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-ppc.Tpo $(DEPDIR)/libmini_static_la-tramp-ppc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-ppc.c' object='libmini_static_la-tramp-ppc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-ppc.lo `test -f 'tramp-ppc.c' || echo '$(srcdir)/'`tramp-ppc.c
-
-libmini_static_la-mini-s390x.lo: mini-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-s390x.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-s390x.Tpo -c -o libmini_static_la-mini-s390x.lo `test -f 'mini-s390x.c' || echo '$(srcdir)/'`mini-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-s390x.Tpo $(DEPDIR)/libmini_static_la-mini-s390x.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-s390x.c' object='libmini_static_la-mini-s390x.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-s390x.lo `test -f 'mini-s390x.c' || echo '$(srcdir)/'`mini-s390x.c
-
-libmini_static_la-exceptions-s390x.lo: exceptions-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-s390x.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-s390x.Tpo -c -o libmini_static_la-exceptions-s390x.lo `test -f 'exceptions-s390x.c' || echo '$(srcdir)/'`exceptions-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-s390x.Tpo $(DEPDIR)/libmini_static_la-exceptions-s390x.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-s390x.c' object='libmini_static_la-exceptions-s390x.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-s390x.lo `test -f 'exceptions-s390x.c' || echo '$(srcdir)/'`exceptions-s390x.c
-
-libmini_static_la-tramp-s390x.lo: tramp-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-s390x.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-s390x.Tpo -c -o libmini_static_la-tramp-s390x.lo `test -f 'tramp-s390x.c' || echo '$(srcdir)/'`tramp-s390x.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-s390x.Tpo $(DEPDIR)/libmini_static_la-tramp-s390x.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-s390x.c' object='libmini_static_la-tramp-s390x.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-s390x.lo `test -f 'tramp-s390x.c' || echo '$(srcdir)/'`tramp-s390x.c
-
-libmini_static_la-mini-sparc.lo: mini-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-sparc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-sparc.Tpo -c -o libmini_static_la-mini-sparc.lo `test -f 'mini-sparc.c' || echo '$(srcdir)/'`mini-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-sparc.Tpo $(DEPDIR)/libmini_static_la-mini-sparc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-sparc.c' object='libmini_static_la-mini-sparc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-sparc.lo `test -f 'mini-sparc.c' || echo '$(srcdir)/'`mini-sparc.c
-
-libmini_static_la-exceptions-sparc.lo: exceptions-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-sparc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-sparc.Tpo -c -o libmini_static_la-exceptions-sparc.lo `test -f 'exceptions-sparc.c' || echo '$(srcdir)/'`exceptions-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-sparc.Tpo $(DEPDIR)/libmini_static_la-exceptions-sparc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-sparc.c' object='libmini_static_la-exceptions-sparc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-sparc.lo `test -f 'exceptions-sparc.c' || echo '$(srcdir)/'`exceptions-sparc.c
-
-libmini_static_la-tramp-sparc.lo: tramp-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-sparc.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-sparc.Tpo -c -o libmini_static_la-tramp-sparc.lo `test -f 'tramp-sparc.c' || echo '$(srcdir)/'`tramp-sparc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-sparc.Tpo $(DEPDIR)/libmini_static_la-tramp-sparc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-sparc.c' object='libmini_static_la-tramp-sparc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-sparc.lo `test -f 'tramp-sparc.c' || echo '$(srcdir)/'`tramp-sparc.c
-
-libmini_static_la-mini-wasm.lo: mini-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-wasm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-wasm.Tpo -c -o libmini_static_la-mini-wasm.lo `test -f 'mini-wasm.c' || echo '$(srcdir)/'`mini-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-wasm.Tpo $(DEPDIR)/libmini_static_la-mini-wasm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-wasm.c' object='libmini_static_la-mini-wasm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-wasm.lo `test -f 'mini-wasm.c' || echo '$(srcdir)/'`mini-wasm.c
-
-libmini_static_la-exceptions-wasm.lo: exceptions-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-wasm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-wasm.Tpo -c -o libmini_static_la-exceptions-wasm.lo `test -f 'exceptions-wasm.c' || echo '$(srcdir)/'`exceptions-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-wasm.Tpo $(DEPDIR)/libmini_static_la-exceptions-wasm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-wasm.c' object='libmini_static_la-exceptions-wasm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-wasm.lo `test -f 'exceptions-wasm.c' || echo '$(srcdir)/'`exceptions-wasm.c
-
-libmini_static_la-tramp-wasm.lo: tramp-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-wasm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-wasm.Tpo -c -o libmini_static_la-tramp-wasm.lo `test -f 'tramp-wasm.c' || echo '$(srcdir)/'`tramp-wasm.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-wasm.Tpo $(DEPDIR)/libmini_static_la-tramp-wasm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-wasm.c' object='libmini_static_la-tramp-wasm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-wasm.lo `test -f 'tramp-wasm.c' || echo '$(srcdir)/'`tramp-wasm.c
-
-libmini_static_la-mini-x86.lo: mini-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-x86.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-x86.Tpo -c -o libmini_static_la-mini-x86.lo `test -f 'mini-x86.c' || echo '$(srcdir)/'`mini-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-x86.Tpo $(DEPDIR)/libmini_static_la-mini-x86.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-x86.c' object='libmini_static_la-mini-x86.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-x86.lo `test -f 'mini-x86.c' || echo '$(srcdir)/'`mini-x86.c
-
-libmini_static_la-exceptions-x86.lo: exceptions-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-exceptions-x86.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-exceptions-x86.Tpo -c -o libmini_static_la-exceptions-x86.lo `test -f 'exceptions-x86.c' || echo '$(srcdir)/'`exceptions-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-exceptions-x86.Tpo $(DEPDIR)/libmini_static_la-exceptions-x86.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-x86.c' object='libmini_static_la-exceptions-x86.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-exceptions-x86.lo `test -f 'exceptions-x86.c' || echo '$(srcdir)/'`exceptions-x86.c
-
-libmini_static_la-tramp-x86.lo: tramp-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-x86.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-x86.Tpo -c -o libmini_static_la-tramp-x86.lo `test -f 'tramp-x86.c' || echo '$(srcdir)/'`tramp-x86.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-x86.Tpo $(DEPDIR)/libmini_static_la-tramp-x86.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-x86.c' object='libmini_static_la-tramp-x86.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-x86.lo `test -f 'tramp-x86.c' || echo '$(srcdir)/'`tramp-x86.c
-
-libmini_static_la-mini-x86-gsharedvt.lo: mini-x86-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-x86-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-x86-gsharedvt.Tpo -c -o libmini_static_la-mini-x86-gsharedvt.lo `test -f 'mini-x86-gsharedvt.c' || echo '$(srcdir)/'`mini-x86-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-x86-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-mini-x86-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-x86-gsharedvt.c' object='libmini_static_la-mini-x86-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-x86-gsharedvt.lo `test -f 'mini-x86-gsharedvt.c' || echo '$(srcdir)/'`mini-x86-gsharedvt.c
-
-libmini_static_la-tramp-x86-gsharedvt.lo: tramp-x86-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-tramp-x86-gsharedvt.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-tramp-x86-gsharedvt.Tpo -c -o libmini_static_la-tramp-x86-gsharedvt.lo `test -f 'tramp-x86-gsharedvt.c' || echo '$(srcdir)/'`tramp-x86-gsharedvt.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-tramp-x86-gsharedvt.Tpo $(DEPDIR)/libmini_static_la-tramp-x86-gsharedvt.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-x86-gsharedvt.c' object='libmini_static_la-tramp-x86-gsharedvt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-x86-gsharedvt.lo `test -f 'tramp-x86-gsharedvt.c' || echo '$(srcdir)/'`tramp-x86-gsharedvt.c
-
-libmini_static_la-mini-darwin.lo: mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-darwin.Tpo -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-darwin.Tpo $(DEPDIR)/libmini_static_la-mini-darwin.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-darwin.c' object='libmini_static_la-mini-darwin.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-
-libmini_static_la-mini-posix.lo: mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-posix.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-posix.Tpo -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-posix.Tpo $(DEPDIR)/libmini_static_la-mini-posix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-posix.c' object='libmini_static_la-mini-posix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
-
-libmini_static_la-mini-windows.lo: mini-windows.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-windows.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-windows.Tpo -c -o libmini_static_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-windows.Tpo $(DEPDIR)/libmini_static_la-mini-windows.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows.c' object='libmini_static_la-mini-windows.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
-
-libmini_static_la-mini-windows-dllmain.lo: mini-windows-dllmain.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-windows-dllmain.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Tpo -c -o libmini_static_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Tpo $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dllmain.c' object='libmini_static_la-mini-windows-dllmain.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
-
-libmini_static_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-windows-dlldac.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-windows-dlldac.Tpo -c -o libmini_static_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-windows-dlldac.Tpo $(DEPDIR)/libmini_static_la-mini-windows-dlldac.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dlldac.c' object='libmini_static_la-mini-windows-dlldac.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
 
 libmini_la-mini.lo: mini.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini.Tpo -c -o libmini_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
@@ -3024,27 +2124,6 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
 
-interp/libmono_ee_interp_static_la-interp.lo: interp/interp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_static_la-interp.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_static_la-interp.Tpo -c -o interp/libmono_ee_interp_static_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_static_la-interp.Tpo interp/$(DEPDIR)/libmono_ee_interp_static_la-interp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp.c' object='interp/libmono_ee_interp_static_la-interp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_static_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
-
-interp/libmono_ee_interp_static_la-mintops.lo: interp/mintops.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_static_la-mintops.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_static_la-mintops.Tpo -c -o interp/libmono_ee_interp_static_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_static_la-mintops.Tpo interp/$(DEPDIR)/libmono_ee_interp_static_la-mintops.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/mintops.c' object='interp/libmono_ee_interp_static_la-mintops.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_static_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
-
-interp/libmono_ee_interp_static_la-transform.lo: interp/transform.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_static_la-transform.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_static_la-transform.Tpo -c -o interp/libmono_ee_interp_static_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_static_la-transform.Tpo interp/$(DEPDIR)/libmono_ee_interp_static_la-transform.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/transform.c' object='interp/libmono_ee_interp_static_la-transform.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_static_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_static_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
-
 interp/libmono_ee_interp_la-interp.lo: interp/interp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-interp.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-interp.Tpo -c -o interp/libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_la-interp.Tpo interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo
@@ -3398,13 +2477,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 # We build this after libmono was built so it contains the date when the final
 # link was done
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntime.la
-@DISABLE_EXECUTABLES_FALSE@@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntime-static.la
+@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
 @SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
 @SUPPORT_BOEHM_TRUE@mono_boehm-main.$(OBJEXT): buildver-boehm.h
 
-@DISABLE_EXECUTABLES_TRUE@buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
-@DISABLE_EXECUTABLES_FALSE@buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la $(monodir)/mono/sgen/libmonosgen-static.la
+buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
 mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
 main-sgen.$(OBJEXT): buildver-sgen.h
