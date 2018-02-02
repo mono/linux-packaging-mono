@@ -129,8 +129,7 @@ libmonosgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonosgen_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_la_rpath =
+@SUPPORT_SGEN_TRUE@am_libmonosgen_la_rpath =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -431,11 +430,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@shared_libraries = libmonosgen.la
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@shared_libraries = libmonosgen.la
-@SUPPORT_SGEN_TRUE@libraries = $(shared_libraries)
-@DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = $(libraries)
-@DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = $(shared_libraries)
+@SUPPORT_SGEN_TRUE@shared_libraries = libmonosgen.la
+noinst_LTLIBRARIES = $(shared_libraries)
 monosgen_sources = \
 	gc-internal-agnostic.h \
 	sgen-alloc.c \
