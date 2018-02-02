@@ -8194,8 +8194,8 @@ namespace System.Net
     public partial class DownloadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal DownloadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { get { throw null; } }
-        public long TotalBytesToReceive { get { throw null; } }
+        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     public delegate void DownloadProgressChangedEventHandler(object sender, System.Net.DownloadProgressChangedEventArgs e);
     public partial class DownloadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -9037,10 +9037,10 @@ namespace System.Net
     public partial class UploadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal UploadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { get { throw null; } }
-        public long BytesSent { get { throw null; } }
-        public long TotalBytesToReceive { get { throw null; } }
-        public long TotalBytesToSend { get { throw null; } }
+        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long BytesSent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long TotalBytesToSend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     public delegate void UploadProgressChangedEventHandler(object sender, System.Net.UploadProgressChangedEventArgs e);
     public partial class UploadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -9055,7 +9055,6 @@ namespace System.Net
         public byte[] Result { get { throw null; } }
     }
     public delegate void UploadValuesCompletedEventHandler(object sender, System.Net.UploadValuesCompletedEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class WebClient : System.ComponentModel.Component
     {
         public WebClient() { }
@@ -9066,7 +9065,7 @@ namespace System.Net
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
         public bool AllowWriteStreamBuffering { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string BaseAddress { get { throw null; } set { } }
-        public System.Net.Cache.RequestCachePolicy CachePolicy { get { throw null; } set { } }
+        public System.Net.Cache.RequestCachePolicy CachePolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.Text.Encoding Encoding { get { throw null; } set { } }
         public System.Net.WebHeaderCollection Headers { get { throw null; } set { } }
@@ -9092,39 +9091,21 @@ namespace System.Net
         public void CancelAsync() { }
         public byte[] DownloadData(string address) { throw null; }
         public byte[] DownloadData(System.Uri address) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadDataAsync(System.Uri address) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadDataAsync(System.Uri address, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> DownloadDataTaskAsync(string address) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> DownloadDataTaskAsync(System.Uri address) { throw null; }
         public void DownloadFile(string address, string fileName) { }
         public void DownloadFile(System.Uri address, string fileName) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadFileAsync(System.Uri address, string fileName) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadFileAsync(System.Uri address, string fileName, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task DownloadFileTaskAsync(string address, string fileName) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task DownloadFileTaskAsync(System.Uri address, string fileName) { throw null; }
         public string DownloadString(string address) { throw null; }
         public string DownloadString(System.Uri address) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadStringAsync(System.Uri address) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void DownloadStringAsync(System.Uri address, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> DownloadStringTaskAsync(string address) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> DownloadStringTaskAsync(System.Uri address) { throw null; }
         protected virtual System.Net.WebRequest GetWebRequest(System.Uri address) { throw null; }
         protected virtual System.Net.WebResponse GetWebResponse(System.Net.WebRequest request) { throw null; }
@@ -9145,125 +9126,64 @@ namespace System.Net
         protected virtual void OnWriteStreamClosed(System.Net.WriteStreamClosedEventArgs e) { }
         public System.IO.Stream OpenRead(string address) { throw null; }
         public System.IO.Stream OpenRead(System.Uri address) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void OpenReadAsync(System.Uri address) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void OpenReadAsync(System.Uri address, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenReadTaskAsync(string address) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenReadTaskAsync(System.Uri address) { throw null; }
         public System.IO.Stream OpenWrite(string address) { throw null; }
         public System.IO.Stream OpenWrite(string address, string method) { throw null; }
         public System.IO.Stream OpenWrite(System.Uri address) { throw null; }
         public System.IO.Stream OpenWrite(System.Uri address, string method) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void OpenWriteAsync(System.Uri address) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void OpenWriteAsync(System.Uri address, string method) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void OpenWriteAsync(System.Uri address, string method, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenWriteTaskAsync(string address) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenWriteTaskAsync(string address, string method) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenWriteTaskAsync(System.Uri address) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<System.IO.Stream> OpenWriteTaskAsync(System.Uri address, string method) { throw null; }
         public byte[] UploadData(string address, byte[] data) { throw null; }
         public byte[] UploadData(string address, string method, byte[] data) { throw null; }
         public byte[] UploadData(System.Uri address, byte[] data) { throw null; }
         public byte[] UploadData(System.Uri address, string method, byte[] data) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadDataAsync(System.Uri address, byte[] data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadDataAsync(System.Uri address, string method, byte[] data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadDataAsync(System.Uri address, string method, byte[] data, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadDataTaskAsync(string address, byte[] data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadDataTaskAsync(string address, string method, byte[] data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadDataTaskAsync(System.Uri address, byte[] data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadDataTaskAsync(System.Uri address, string method, byte[] data) { throw null; }
         public byte[] UploadFile(string address, string fileName) { throw null; }
         public byte[] UploadFile(string address, string method, string fileName) { throw null; }
         public byte[] UploadFile(System.Uri address, string fileName) { throw null; }
         public byte[] UploadFile(System.Uri address, string method, string fileName) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadFileAsync(System.Uri address, string fileName) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadFileAsync(System.Uri address, string method, string fileName) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadFileAsync(System.Uri address, string method, string fileName, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadFileTaskAsync(string address, string fileName) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadFileTaskAsync(string address, string method, string fileName) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadFileTaskAsync(System.Uri address, string fileName) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadFileTaskAsync(System.Uri address, string method, string fileName) { throw null; }
         public string UploadString(string address, string data) { throw null; }
         public string UploadString(string address, string method, string data) { throw null; }
         public string UploadString(System.Uri address, string data) { throw null; }
         public string UploadString(System.Uri address, string method, string data) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadStringAsync(System.Uri address, string data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadStringAsync(System.Uri address, string method, string data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadStringAsync(System.Uri address, string method, string data, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> UploadStringTaskAsync(string address, string data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> UploadStringTaskAsync(string address, string method, string data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> UploadStringTaskAsync(System.Uri address, string data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<string> UploadStringTaskAsync(System.Uri address, string method, string data) { throw null; }
         public byte[] UploadValues(string address, System.Collections.Specialized.NameValueCollection data) { throw null; }
         public byte[] UploadValues(string address, string method, System.Collections.Specialized.NameValueCollection data) { throw null; }
         public byte[] UploadValues(System.Uri address, System.Collections.Specialized.NameValueCollection data) { throw null; }
         public byte[] UploadValues(System.Uri address, string method, System.Collections.Specialized.NameValueCollection data) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadValuesAsync(System.Uri address, System.Collections.Specialized.NameValueCollection data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadValuesAsync(System.Uri address, string method, System.Collections.Specialized.NameValueCollection data) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public void UploadValuesAsync(System.Uri address, string method, System.Collections.Specialized.NameValueCollection data, object userToken) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadValuesTaskAsync(string address, System.Collections.Specialized.NameValueCollection data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadValuesTaskAsync(string address, string method, System.Collections.Specialized.NameValueCollection data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadValuesTaskAsync(System.Uri address, System.Collections.Specialized.NameValueCollection data) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.Threading.Tasks.Task<byte[]> UploadValuesTaskAsync(System.Uri address, string method, System.Collections.Specialized.NameValueCollection data) { throw null; }
     }
     [System.SerializableAttribute]

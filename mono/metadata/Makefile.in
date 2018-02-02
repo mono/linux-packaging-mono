@@ -112,8 +112,6 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-@DISABLE_EXECUTABLES_FALSE@am_libmonoruntime_config_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@am_libmonoruntime_config_la_rpath =
 libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c w32process-unix.c \
@@ -271,8 +269,7 @@ libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoruntime_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
+@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
 libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
@@ -455,8 +452,7 @@ libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
+@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -842,14 +838,9 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@	w32file-unix-glob.h \
 @HOST_WIN32_FALSE@	w32error-unix.c
 
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@shared_sgen_libraries = libmonoruntimesgen.la 
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@shared_sgen_libraries = libmonoruntimesgen.la 
-@SUPPORT_SGEN_TRUE@sgen_libraries = $(shared_sgen_libraries)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@shared_boehm_libraries = libmonoruntime.la
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@shared_boehm_libraries = libmonoruntime.la
-@SUPPORT_BOEHM_TRUE@boehm_libraries = $(shared_boehm_libraries)
-@DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
-@DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = libmonoruntime-config.la $(shared_sgen_libraries) $(shared_boehm_libraries)
+@SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
+@SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
+noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
@@ -1144,7 +1135,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) $(am_libmonoruntime_config_la_rpath) $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
 ../../support/libm/$(am__dirstamp):
 	@$(MKDIR_P) ../../support/libm
 	@: > ../../support/libm/$(am__dirstamp)
