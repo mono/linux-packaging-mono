@@ -185,19 +185,33 @@ static const felem g_pre_comp[2][16][3] = {
 
 /* Helper functions to convert field elements to/from internal representation */
 static void bin28_to_felem(felem out, const u8 in[28]) {
-  out[0] = *((const uint64_t *)(in)) & 0x00ffffffffffffff;
-  out[1] = (*((const uint64_t *)(in + 7))) & 0x00ffffffffffffff;
-  out[2] = (*((const uint64_t *)(in + 14))) & 0x00ffffffffffffff;
-  out[3] = (*((const uint64_t *)(in + 20))) >> 8;
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+   out[0] = (*((const uint64_t *)(in + 20))) << 8 >> 8;
+   out[1] = (*((const uint64_t *)(in + 14))) >> 8;
+   out[2] = (*((const uint64_t *)(in + 7))) >> 8;
+   out[3] = *((const uint64_t *)(in)) >>8;
+#else
+   out[0] = *((const uint64_t *)(in)) & 0x00ffffffffffffff;
+   out[1] = (*((const uint64_t *)(in + 7))) & 0x00ffffffffffffff;
+   out[2] = (*((const uint64_t *)(in + 14))) & 0x00ffffffffffffff;
+   out[3] = (*((const uint64_t *)(in + 20))) >> 8;
+#endif
 }
 
 static void felem_to_bin28(u8 out[28], const felem in) {
   size_t i;
   for (i = 0; i < 7; ++i) {
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    out[i] = *((u8 *)&in[3] + i + 1);
+    out[i + 7] = *((u8 *)&in[2] + i + 1);
+    out[i + 14] = *((u8 *)&in[1] + i + 1);
+    out[i + 21] = *((u8 *)&in[0] + i + 1);
+#else
     out[i] = in[0] >> (8 * i);
     out[i + 7] = in[1] >> (8 * i);
     out[i + 14] = in[2] >> (8 * i);
     out[i + 21] = in[3] >> (8 * i);
+#endif
   }
 }
 
@@ -223,16 +237,26 @@ static int BN_to_felem(felem out, const BIGNUM *bn) {
 
   felem_bytearray b_in;
   num_bytes = BN_bn2bin(bn, b_in);
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  memcpy(b_out+sizeof(b_out)-num_bytes, b_in, num_bytes);
+  memset(b_out, 0, sizeof(b_out)-num_bytes);
+#else
   flip_endian(b_out, b_in, num_bytes);
+#endif
   bin28_to_felem(out, b_out);
   return 1;
 }
 
 /* From internal representation to OpenSSL BIGNUM */
 static BIGNUM *felem_to_BN(BIGNUM *out, const felem in) {
-  felem_bytearray b_in, b_out;
+  felem_bytearray b_out;
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  felem_to_bin28(b_out, in);
+#else
+  felem_bytearray b_in;
   felem_to_bin28(b_in, in);
   flip_endian(b_out, b_in, sizeof(b_out));
+#endif
   return BN_bin2bn(b_out, sizeof(b_out), out);
 }
 
