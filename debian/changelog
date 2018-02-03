@@ -1,3 +1,9 @@
+mono (5.10.0.79-0xamarin2) alpha; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 03 Feb 2018 19:08:41 +0000
+
 mono (5.10.0.79-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.10.0.79.tar.bz2
