@@ -46,6 +46,7 @@ namespace Mono.Linker.Steps {
 		protected Dictionary<TypeDefinition, CustomAttribute> _assemblyDebuggerDisplayAttributes;
 		protected Dictionary<TypeDefinition, CustomAttribute> _assemblyDebuggerTypeProxyAttributes;
 		protected Queue<CustomAttribute> _topLevelAttributes;
+		protected Queue<CustomAttribute> _lateMarkedAttributes;
 
 		public AnnotationStore Annotations {
 			get { return _context.Annotations; }
@@ -62,6 +63,7 @@ namespace Mono.Linker.Steps {
 			_methods = new Queue<MethodDefinition> ();
 			_virtual_methods = new List<MethodDefinition> ();
 			_topLevelAttributes = new Queue<CustomAttribute> ();
+			_lateMarkedAttributes = new Queue<CustomAttribute> ();
 
 			_assemblyDebuggerDisplayAttributes = new Dictionary<TypeDefinition, CustomAttribute> ();
 			_assemblyDebuggerTypeProxyAttributes = new Dictionary<TypeDefinition, CustomAttribute> ();
@@ -131,7 +133,7 @@ namespace Mono.Linker.Steps {
 			if (QueueIsEmpty ())
 				throw new InvalidOperationException ("No entry methods");
 
-			while (ProcessPrimaryQueue () || ProcessLazyAttributes ())
+			while (ProcessPrimaryQueue () || ProcessLazyAttributes () || ProcessLateMarkedAttributes ())
 
 			// deal with [TypeForwardedTo] pseudo-attributes
 			foreach (AssemblyDefinition assembly in _context.GetAssemblies ()) {
@@ -260,10 +262,15 @@ namespace Mono.Linker.Steps {
 			Tracer.Push (provider);
 			try {
 				foreach (CustomAttribute ca in provider.CustomAttributes) {
-					if (!ShouldMarkCustomAttribute (ca))
-						continue;
 
-					MarkCustomAttribute (ca);
+					if (_context.KeepUsedAttributeTypesOnly) {
+						_lateMarkedAttributes.Enqueue (ca);
+					} else {
+						if (!ShouldMarkCustomAttribute (ca))
+							continue;
+
+						MarkCustomAttribute (ca);
+					}
 				}
 			} finally {
 				Tracer.Pop ();
@@ -305,11 +312,16 @@ namespace Mono.Linker.Steps {
 
 		protected virtual bool ShouldMarkCustomAttribute (CustomAttribute ca)
 		{
+			if (_context.KeepUsedAttributeTypesOnly && !Annotations.IsMarked (ca.AttributeType.Resolve ()))
+				return false;
 			return true;
 		}
 
 		protected virtual bool ShouldMarkTopLevelCustomAttribute (CustomAttribute ca, MethodDefinition resolvedConstructor)
 		{
+			if (!ShouldMarkCustomAttribute (ca))
+				return false;
+
 			// If an attribute's module has not been marked after processing all types in all assemblies and the attribute itself has not been marked,
 			// then surely nothing is using this attribute and there is no need to mark it
 			if (!Annotations.IsMarked (resolvedConstructor.Module) && !Annotations.IsMarked (ca.AttributeType))
@@ -570,6 +582,40 @@ namespace Mono.Linker.Steps {
 			// requeue the items we skipped in case we need to make another pass
 			foreach (var item in skippedItems)
 				_topLevelAttributes.Enqueue (item);
+
+			return markOccurred;
+		}
+
+		bool ProcessLateMarkedAttributes ()
+		{
+			var startingQueueCount = _lateMarkedAttributes.Count;
+			if (startingQueueCount == 0)
+				return false;
+
+			var skippedItems = new List<CustomAttribute> ();
+			var markOccurred = false;
+
+			while (_lateMarkedAttributes.Count != 0) {
+				var customAttribute = _lateMarkedAttributes.Dequeue ();
+
+				var resolved = customAttribute.Constructor.Resolve ();
+				if (resolved == null) {
+					HandleUnresolvedMethod (customAttribute.Constructor);
+					continue;
+				}
+
+				if (!ShouldMarkCustomAttribute (customAttribute)) {
+					skippedItems.Add (customAttribute);
+					continue;
+				}
+
+				markOccurred = true;
+				MarkCustomAttribute (customAttribute);
+			}
+
+			// requeue the items we skipped in case we need to make another pass
+			foreach (var item in skippedItems)
+				_lateMarkedAttributes.Enqueue (item);
 
 			return markOccurred;
 		}
@@ -1573,6 +1619,17 @@ namespace Mono.Linker.Steps {
 
 			foreach (Instruction instruction in body.Instructions)
 				MarkInstruction (instruction);
+
+			MarkThingsUsedViaReflection (body);
+		}
+
+		protected virtual void MarkThingsUsedViaReflection (MethodBody body)
+		{
+			MarkSomethingUsedViaReflection ("GetConstructor", MarkConstructorsUsedViaReflection, body.Instructions);
+			MarkSomethingUsedViaReflection ("GetMethod", MarkMethodsUsedViaReflection, body.Instructions);
+			MarkSomethingUsedViaReflection ("GetProperty", MarkPropertyUsedViaReflection, body.Instructions);
+			MarkSomethingUsedViaReflection ("GetField", MarkFieldUsedViaReflection, body.Instructions);
+			MarkSomethingUsedViaReflection ("GetEvent", MarkEventUsedViaReflection, body.Instructions);
 		}
 
 		protected virtual void MarkInstruction (Instruction instruction)
@@ -1619,6 +1676,153 @@ namespace Mono.Linker.Steps {
 		{
 			MarkCustomAttributes (iface);
 			MarkType (iface.InterfaceType);
+		}
+
+
+		void MarkSomethingUsedViaReflection (string reflectionMethod, Action<Collection<Instruction>, string, TypeDefinition, BindingFlags> markMethod, Collection<Instruction> instructions)
+		{
+			for (var i = 0; i < instructions.Count; i++) {
+				var instruction = instructions [i];
+				if (instruction.OpCode != OpCodes.Call && instruction.OpCode != OpCodes.Callvirt)
+					continue;
+
+				var methodBeingCalled = instruction.Operand as MethodReference;
+				if (methodBeingCalled == null || methodBeingCalled.DeclaringType.Name != "Type" || methodBeingCalled.DeclaringType.Namespace != "System")
+					continue;
+
+				if (methodBeingCalled.Name != reflectionMethod)
+					continue;
+
+				_context.Tracer.Push ($"Reflection-{methodBeingCalled}");
+				var nameOfThingUsedViaReflection = OperandOfNearestInstructionBefore<string> (i, OpCodes.Ldstr, instructions);
+				var bindingFlags = (BindingFlags) OperandOfNearestInstructionBefore<sbyte> (i, OpCodes.Ldc_I4_S, instructions);
+
+				// There might be more than one ldtoken opcode above the call in the IL stream. Be conservative and check all of
+				// the types which were loaded for the method being used.
+				var declaringTypesOfThingInvokedViaReflection = OperandsOfInstructionsBefore (i, OpCodes.Ldtoken, instructions);
+				foreach (var declaringTypeOfThingInvokedViaReflection in declaringTypesOfThingInvokedViaReflection) {
+					var typeDefinition = declaringTypeOfThingInvokedViaReflection?.Resolve ();
+					if (typeDefinition != null)
+						markMethod (instructions, nameOfThingUsedViaReflection, typeDefinition, bindingFlags);
+				}
+				_context.Tracer.Pop ();
+			}
+		}
+
+		void MarkConstructorsUsedViaReflection (Collection<Instruction> instructions, string unused, TypeDefinition declaringType, BindingFlags bindingFlags)
+		{
+			foreach (var method in declaringType.Methods) {
+				if ((bindingFlags == BindingFlags.Default || bindingFlags.IsSet(BindingFlags.Public) == method.IsPublic) && method.Name == ".ctor")
+					MarkMethod (method);
+			}
+		}
+
+		void MarkMethodsUsedViaReflection (Collection<Instruction> instructions, string name, TypeDefinition declaringType, BindingFlags bindingFlags)
+		{
+			if (name == null)
+				return;
+
+			foreach (var method in declaringType.Methods) {
+				if ((bindingFlags == BindingFlags.Default || bindingFlags.IsSet(BindingFlags.Public) == method.IsPublic && bindingFlags.IsSet(BindingFlags.Static) == method.IsStatic)
+					&& method.Name == name)
+					MarkMethod (method);
+			}
+		}
+
+		void MarkPropertyUsedViaReflection (Collection<Instruction> instructions, string name, TypeDefinition declaringType, BindingFlags unused)
+		{
+			if (name == null)
+				return;
+
+			foreach (var property in declaringType.Properties) {
+				if (property.Name == name) {
+					// It is not easy to reliably detect in the IL code whether the getter or setter (or both) are used.
+					// Be conservative and mark everything for the property.
+					MarkProperty (property);
+					MarkMethodIfNotNull (property.GetMethod);
+					MarkMethodIfNotNull (property.SetMethod);
+				}
+			}
+		}
+
+		void MarkFieldUsedViaReflection (Collection<Instruction> instructions, string name, TypeDefinition declaringType, BindingFlags unused)
+		{
+			if (name == null)
+				return;
+
+			foreach (var field in declaringType.Fields) {
+				if (field.Name == name)
+					MarkField (field);
+			}
+		}
+
+		void MarkEventUsedViaReflection (Collection<Instruction> instructions, string name, TypeDefinition declaringType, BindingFlags unused)
+		{
+			if (name == null)
+				return;
+
+			foreach (var eventInfo in declaringType.Events) {
+				if (eventInfo.Name == name)
+					MarkEvent (eventInfo);
+			}
+		}
+
+		static TOperand OperandOfNearestInstructionBefore<TOperand> (int startingInstructionIndex, OpCode opCode, IList<Instruction> instructions)
+		{
+			for (var i = startingInstructionIndex; i >= 0; i--) {
+				if (instructions [i].OpCode == opCode)
+					return (TOperand) instructions [i].Operand;
+			}
+
+			return default (TOperand);
+		}
+
+		static List<TypeReference> OperandsOfInstructionsBefore (int startingInstructionIndex, OpCode opCode, IList<Instruction> instructions)
+		{
+			var operands = new List<TypeReference> ();
+			for (var i = startingInstructionIndex; i >= 0; i--) {
+				if (instructions [i].OpCode == opCode) {
+					var type = instructions [i].Operand as TypeReference;
+					if (type != null)
+						operands.Add (type);
+				}
+			}
+
+			return operands;
+		}
+	}
+
+	// Make our own copy of the BindingFlags enum, so that we don't depend on System.Reflection.
+	[Flags]
+	enum BindingFlags
+	{
+		Default = 0,
+		IgnoreCase = 1,
+		DeclaredOnly = 2,
+		Instance = 4,
+		Static = 8,
+		Public = 16,
+		NonPublic = 32,
+		FlattenHierarchy = 64,
+		InvokeMethod = 256,
+		CreateInstance = 512,
+		GetField = 1024,
+		SetField = 2048,
+		GetProperty = 4096,
+		SetProperty = 8192,
+		PutDispProperty = 16384,
+		PutRefDispProperty = 32768,
+		ExactBinding = 65536,
+		SuppressChangeType = 131072,
+		OptionalParamBinding = 262144,
+		IgnoreReturn = 16777216
+	}
+
+	static class BindingFlagsExtensions
+	{
+		public static bool IsSet(this BindingFlags flags, BindingFlags check)
+		{
+			return (flags & check) == check;
 		}
 	}
 }

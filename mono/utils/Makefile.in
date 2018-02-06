@@ -156,7 +156,7 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-threads-mach-helper.c mono-threads-windows.c \
 	mono-threads-linux.c mono-threads-freebsd.c \
 	mono-threads-netbsd.c mono-threads-openbsd.c \
-	mono-threads-android.c mono-threads-haiku.c \
+	mono-threads-android.c mono-threads-haiku.c mono-threads-aix.c \
 	mono-threads-wasm.c mono-threads.h mono-threads-debug.h \
 	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
 	mono-tls.h mono-tls.c linux_magic.h mono-memory-model.h \
@@ -228,6 +228,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-threads-openbsd.lo \
 	libmonoutils_la-mono-threads-android.lo \
 	libmonoutils_la-mono-threads-haiku.lo \
+	libmonoutils_la-mono-threads-aix.lo \
 	libmonoutils_la-mono-threads-wasm.lo \
 	libmonoutils_la-mono-threads-coop.lo \
 	libmonoutils_la-mono-tls.lo libmonoutils_la-atomic.lo \
@@ -774,6 +775,7 @@ monoutils_sources = \
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads-haiku.c	\
+	mono-threads-aix.c	\
 	mono-threads-wasm.c	\
 	mono-threads.h	\
 	mono-threads-debug.h	\
@@ -959,6 +961,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-sha1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-stdlib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-aix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-android.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-coop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-freebsd.Plo@am__quote@
@@ -1439,6 +1442,13 @@ libmonoutils_la-mono-threads-haiku.lo: mono-threads-haiku.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-threads-haiku.c' object='libmonoutils_la-mono-threads-haiku.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-threads-haiku.lo `test -f 'mono-threads-haiku.c' || echo '$(srcdir)/'`mono-threads-haiku.c
+
+libmonoutils_la-mono-threads-aix.lo: mono-threads-aix.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-threads-aix.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-threads-aix.Tpo -c -o libmonoutils_la-mono-threads-aix.lo `test -f 'mono-threads-aix.c' || echo '$(srcdir)/'`mono-threads-aix.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-threads-aix.Tpo $(DEPDIR)/libmonoutils_la-mono-threads-aix.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-threads-aix.c' object='libmonoutils_la-mono-threads-aix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-threads-aix.lo `test -f 'mono-threads-aix.c' || echo '$(srcdir)/'`mono-threads-aix.c
 
 libmonoutils_la-mono-threads-wasm.lo: mono-threads-wasm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-threads-wasm.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-threads-wasm.Tpo -c -o libmonoutils_la-mono-threads-wasm.lo `test -f 'mono-threads-wasm.c' || echo '$(srcdir)/'`mono-threads-wasm.c
