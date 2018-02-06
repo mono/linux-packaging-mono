@@ -16,7 +16,7 @@
 //         return TaskToApm.End<int>(asyncResult);
 //     }
 
-using System.Diagnostics;
+using System.Diagnostics.Private;
 
 namespace System.Threading.Tasks
 {
