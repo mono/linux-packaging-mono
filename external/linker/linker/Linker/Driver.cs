@@ -75,7 +75,7 @@ namespace Mono.Linker {
 			return _queue.Count > 0;
 		}
 
-		void Run ()
+		public void Run ()
 		{
 			Pipeline p = GetStandardPipeline ();
 			using (LinkContext context = GetDefaultContext (p)) {
@@ -115,6 +115,11 @@ namespace Mono.Linker {
 
 						if (token == "--reduced-tracing") {
 							context.EnableReducedTracing = bool.Parse (GetParam ());
+							continue;
+						}
+
+						if (token == "--used-attrs-only") {
+							context.KeepUsedAttributeTypesOnly = bool.Parse (GetParam ());
 							continue;
 						}
 
@@ -334,6 +339,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("   --dependencies-file Specify the dependencies file path, if unset the default path is used: <output directory>/linker-dependencies.xml.gz");
 			Console.WriteLine ("   --dump-dependencies Dump dependencies for the linker analyzer tool");
 			Console.WriteLine ("   --reduced-tracing   Reduces dependency output related to assemblies that will not be modified");
+			Console.WriteLine ("   --used-attrs-only   Attributes on types, methods, etc will be removed if the attribute type is not used");
 			Console.WriteLine ("   -out                Specify the output directory, default to `output'");
 			Console.WriteLine ("   -c                  Action on the core assemblies, skip, copy, copyused, addbypassngen, addbypassngenused or link, default to skip");
 			Console.WriteLine ("   -u                  Action on the user assemblies, skip, copy, copyused, addbypassngen, addbypassngenused or link, default to link");
