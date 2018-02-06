@@ -1,2 +1,4 @@
 /usr/lib/libmono-profiler-*.so*
+/usr/lib/mono/4.5/Mono.Profiler.Log.*
+/usr/lib/mono/gac/Mono.Profiler.Log/4.0.0.0__*/Mono.Profiler.Log.*
 /usr/share/mono-2.0/mono/profiler/mono-profiler-log.suppression
