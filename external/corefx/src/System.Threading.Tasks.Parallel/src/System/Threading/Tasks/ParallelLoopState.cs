@@ -10,6 +10,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 
 // Prevents compiler warnings/errors regarding the use of ref params in Interlocked methods
 

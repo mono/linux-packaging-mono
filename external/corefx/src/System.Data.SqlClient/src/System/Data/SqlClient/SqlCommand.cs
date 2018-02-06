@@ -1222,8 +1222,7 @@ namespace System.Data.SqlClient
             }
         }
 
-
-        private IAsyncResult BeginExecuteXmlReader(AsyncCallback callback, object stateObject)
+        public IAsyncResult BeginExecuteXmlReader(AsyncCallback callback, object stateObject)
         {
             // Reset _pendingCancel upon entry into any Execute - used to synchronize state
             // between entry into Execute* API and the thread obtaining the stateObject.
@@ -1302,7 +1301,7 @@ namespace System.Data.SqlClient
         }
 
 
-        private XmlReader EndExecuteXmlReader(IAsyncResult asyncResult)
+        public XmlReader EndExecuteXmlReader(IAsyncResult asyncResult)
         {
             Exception asyncException = ((Task)asyncResult).Exception;
             if (asyncException != null)
@@ -1436,7 +1435,7 @@ namespace System.Data.SqlClient
         }
 
 
-        internal SqlDataReader EndExecuteReader(IAsyncResult asyncResult)
+        public SqlDataReader EndExecuteReader(IAsyncResult asyncResult)
         {
             Exception asyncException = ((Task)asyncResult).Exception;
             if (asyncException != null)
