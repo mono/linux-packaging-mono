@@ -3956,12 +3956,15 @@ namespace System.Data.SqlClient
         public System.IAsyncResult BeginExecuteReader(System.Data.CommandBehavior behavior) { throw null; }
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginExecuteXmlReader() { throw null; }
+        public System.IAsyncResult BeginExecuteXmlReader(System.AsyncCallback callback, object stateObject) { throw null; }
         public override void Cancel() { }
         public System.Data.SqlClient.SqlCommand Clone() { throw null; }
         protected override System.Data.Common.DbParameter CreateDbParameter() { throw null; }
         public new System.Data.SqlClient.SqlParameter CreateParameter() { throw null; }
         protected override void Dispose(bool disposing) { }
         public int EndExecuteNonQuery(System.IAsyncResult asyncResult) { throw null; }
+        public System.Data.SqlClient.SqlDataReader EndExecuteReader(System.IAsyncResult asyncResult) { throw null; }
+        public System.Xml.XmlReader EndExecuteXmlReader(System.IAsyncResult asyncResult) { throw null; }
         protected override System.Data.Common.DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior) { throw null; }
         protected override System.Threading.Tasks.Task<System.Data.Common.DbDataReader> ExecuteDbDataReaderAsync(System.Data.CommandBehavior behavior, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override int ExecuteNonQuery() { throw null; }
@@ -4076,6 +4079,8 @@ namespace System.Data.SqlClient
         [System.ObsoleteAttribute("This property is ignored beginning in .NET Framework 4.5.For more information about SqlClient support for asynchronous programming, seehttps://docs.microsoft.com/en-us/dotnet/framework/data/adonet/asynchronous-programming")]
         public bool AsynchronousProcessing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string AttachDBFilename { get { throw null; } set { } }
+        [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
+        public System.Data.SqlClient.SqlAuthenticationMethod Authentication { get { throw null; } set { } }
         [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
         public System.Data.SqlClient.SqlConnectionColumnEncryptionSetting ColumnEncryptionSetting { get { throw null; } set { } }
         [System.ObsoleteAttribute("ConnectionReset has been deprecated.  SqlConnection will ignore the 'connection reset'keyword and always reset the connection")]
