@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
 [assembly:System.CLSCompliantAttribute(true)]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
@@ -18,7 +17,6 @@
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Mono.Btls.Interface, PublicKey=002400000480000094000000060200000024000052534131000400000100010079159977d2d03a8e6bea7a2e74e8d1afcc93e8851974952bb480a12c9134474d04062447c37e0e68c080536fcf3c3fbe2ff9c979ce998475e506e8ce82dd5b0f350dc10e93bf2eeecf874b24770c5081dbea7447fddafa277b22de47d6ffea449674a4f9fccf84d15069089380284dbdd35f46cdff12a1bd78e4ef0065d016df")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Mono.Security, PublicKey=002400000480000094000000060200000024000052534131000400000100010079159977d2d03a8e6bea7a2e74e8d1afcc93e8851974952bb480a12c9134474d04062447c37e0e68c080536fcf3c3fbe2ff9c979ce998475e506e8ce82dd5b0f350dc10e93bf2eeecf874b24770c5081dbea7447fddafa277b22de47d6ffea449674a4f9fccf84d15069089380284dbdd35f46cdff12a1bd78e4ef0065d016df")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("monotouch, PublicKey=0024000004800000940000000602000000240000525341310004000011000000438ac2a5acfbf16cbd2b2b47a62762f273df9cb2795ceccdf77d10bf508e69e7a362ea7a45455bbf3ac955e1f2e2814f144e5d817efc4c6502cc012df310783348304e3ae38573c6d658c234025821fda87a0be8a0d504df564e2c93b2b878925f42503e9d54dfef9f9586d9e6f38a305769587b1de01f6c0410328b2c9733db")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.ComponentModel.DataAnnotations, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Net.Http, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Xamarin.iOS, PublicKey=0024000004800000940000000602000000240000525341310004000011000000438ac2a5acfbf16cbd2b2b47a62762f273df9cb2795ceccdf77d10bf508e69e7a362ea7a45455bbf3ac955e1f2e2814f144e5d817efc4c6502cc012df310783348304e3ae38573c6d658c234025821fda87a0be8a0d504df564e2c93b2b878925f42503e9d54dfef9f9586d9e6f38a305769587b1de01f6c0410328b2c9733db")]
@@ -39,7 +37,6 @@ namespace Microsoft.Win32.SafeHandles
     public sealed partial class SafeX509ChainHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
         internal SafeX509ChainHandle() : base (default(bool)) { }
-        [System.MonoTODOAttribute]
         protected override bool ReleaseHandle() { throw null; }
     }
 }
@@ -4109,9 +4106,7 @@ namespace System.Diagnostics
     public partial class DefaultTraceListener : System.Diagnostics.TraceListener
     {
         public DefaultTraceListener() { }
-        [System.MonoTODOAttribute("AssertUiEnabled defaults to False; should follow Environment.UserInteractive.")]
         public bool AssertUiEnabled { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public string LogFileName { get { throw null; } set { } }
         public override void Fail(string message) { }
         public override void Fail(string message, string detailMessage) { }
@@ -4192,7 +4187,6 @@ namespace System.Diagnostics
         public Process() { }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("Base process priority.")]
-        [System.MonoTODOAttribute]
         public int BasePriority { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -4212,7 +4206,6 @@ namespace System.Diagnostics
         public System.IntPtr Handle { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("Handles for this process.")]
-        [System.MonoTODOAttribute]
         public int HandleCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
@@ -4231,11 +4224,9 @@ namespace System.Diagnostics
         public System.Diagnostics.ProcessModule MainModule { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The handle of the main window of the process.")]
-        [System.MonoTODOAttribute]
         public System.IntPtr MainWindowHandle { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The title of the main window of the process.")]
-        [System.MonoTODOAttribute]
         public string MainWindowTitle { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The maximum amount of physical memory the process has required since it was started.")]
@@ -4249,12 +4240,10 @@ namespace System.Diagnostics
         public System.Diagnostics.ProcessModuleCollection Modules { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The number of bytes that are not pageable.")]
-        [System.MonoTODOAttribute]
         [System.ObsoleteAttribute("Use NonpagedSystemMemorySize64")]
         public int NonpagedSystemMemorySize { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The number of bytes that are not pageable.")]
-        [System.MonoTODOAttribute]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public long NonpagedSystemMemorySize64 { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
@@ -4275,12 +4264,10 @@ namespace System.Diagnostics
         public long PagedSystemMemorySize64 { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The maximum amount of paged memory used by this process.")]
-        [System.MonoTODOAttribute]
         [System.ObsoleteAttribute("Use PeakPagedMemorySize64")]
         public int PeakPagedMemorySize { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The maximum amount of paged memory used by this process.")]
-        [System.MonoTODOAttribute]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public long PeakPagedMemorySize64 { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
@@ -4301,7 +4288,6 @@ namespace System.Diagnostics
         public long PeakWorkingSet64 { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("Process will be of higher priority while it is actively used.")]
-        [System.MonoTODOAttribute]
         public bool PriorityBoostEnabled { get { throw null; } set { } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The priority that the threads in the process run relative to.")]
@@ -4322,18 +4308,15 @@ namespace System.Diagnostics
         public string ProcessName { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("Allowed processor that can be used by this process.")]
-        [System.MonoTODOAttribute]
         public System.IntPtr ProcessorAffinity { get { throw null; } set { } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("Is this process responsive.")]
-        [System.MonoTODOAttribute]
         public bool Responding { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public Microsoft.Win32.SafeHandles.SafeProcessHandle SafeHandle { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The session ID for this process.")]
-        [System.MonoNotSupportedAttribute("")]
         public int SessionId { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
@@ -4360,7 +4343,6 @@ namespace System.Diagnostics
         public System.ComponentModel.ISynchronizeInvoke SynchronizingObject { get { throw null; } set { } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The number of threads of this process.")]
-        [System.MonoTODOAttribute]
         public System.Diagnostics.ProcessThreadCollection Threads { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.Diagnostics.MonitoringDescriptionAttribute("The amount of CPU time the process has used.")]
@@ -4407,10 +4389,8 @@ namespace System.Diagnostics
         public static void EnterDebugMode() { }
         public static System.Diagnostics.Process GetCurrentProcess() { throw null; }
         public static System.Diagnostics.Process GetProcessById(int processId) { throw null; }
-        [System.MonoTODOAttribute("There is no support for retrieving process information from a remote machine")]
         public static System.Diagnostics.Process GetProcessById(int processId, string machineName) { throw null; }
         public static System.Diagnostics.Process[] GetProcesses() { throw null; }
-        [System.MonoTODOAttribute("There is no support for retrieving process information from a remote machine")]
         public static System.Diagnostics.Process[] GetProcesses(string machineName) { throw null; }
         public static System.Diagnostics.Process[] GetProcessesByName(string processName) { throw null; }
         public static System.Diagnostics.Process[] GetProcessesByName(string processName, string machineName) { throw null; }
@@ -4648,48 +4628,33 @@ namespace System.Diagnostics
     {
         internal ProcessThread() { }
         [System.Diagnostics.MonitoringDescriptionAttribute("The base priority of this thread.")]
-        [System.MonoTODOAttribute]
         public int BasePriority { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The current priority of this thread.")]
-        [System.MonoTODOAttribute]
         public int CurrentPriority { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The ID of this thread.")]
-        [System.MonoTODOAttribute]
         public int Id { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.MonoTODOAttribute]
         public int IdealProcessor { set { } }
         [System.Diagnostics.MonitoringDescriptionAttribute("Thread gets a priority boot when interactively used by a user.")]
-        [System.MonoTODOAttribute]
         public bool PriorityBoostEnabled { get { throw null; } set { } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The priority level of this thread.")]
-        [System.MonoTODOAttribute]
         public System.Diagnostics.ThreadPriorityLevel PriorityLevel { get { throw null; } set { } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The amount of CPU time used in privileged mode.")]
-        [System.MonoTODOAttribute]
         public System.TimeSpan PrivilegedProcessorTime { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.MonoTODOAttribute]
         public System.IntPtr ProcessorAffinity { set { } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The start address in memory of this thread.")]
-        [System.MonoTODOAttribute]
         public System.IntPtr StartAddress { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The time this thread was started.")]
-        [System.MonoTODOAttribute]
         public System.DateTime StartTime { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The current state of this thread.")]
-        [System.MonoTODOAttribute]
         public System.Diagnostics.ThreadState ThreadState { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The total amount of CPU time used.")]
-        [System.MonoTODOAttribute]
         public System.TimeSpan TotalProcessorTime { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The amount of CPU time used in user mode.")]
-        [System.MonoTODOAttribute]
         public System.TimeSpan UserProcessorTime { get { throw null; } }
         [System.Diagnostics.MonitoringDescriptionAttribute("The reason why this thread is waiting.")]
-        [System.MonoTODOAttribute]
         public System.Diagnostics.ThreadWaitReason WaitReason { get { throw null; } }
-        [System.MonoTODOAttribute]
         public void ResetIdealProcessor() { }
     }
     public partial class ProcessThreadCollection : System.Collections.ReadOnlyCollectionBase
@@ -4838,7 +4803,7 @@ namespace System.Diagnostics
     {
         protected Switch(string displayName, string description) { }
         protected Switch(string displayName, string description, string defaultSwitchValue) { }
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+//        [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Collections.Specialized.StringDictionary Attributes { get { throw null; } }
         public string Description { get { throw null; } }
         public string DisplayName { get { throw null; } }
@@ -5345,7 +5310,6 @@ namespace System.Net
     {
         internal AuthenticationManager() { }
         public static System.Net.ICredentialPolicy CredentialPolicy { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static System.Collections.Specialized.StringDictionary CustomTargetNameDictionary { get { throw null; } }
         public static System.Collections.IEnumerator RegisteredModules { get { throw null; } }
         public static System.Net.Authorization Authenticate(string challenge, System.Net.WebRequest request, System.Net.ICredentials credentials) { throw null; }
@@ -5642,18 +5606,14 @@ namespace System.Net
     public sealed partial class FtpWebRequest : System.Net.WebRequest
     {
         internal FtpWebRequest() { }
-        [System.MonoTODOAttribute]
         public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override string ConnectionGroupName { get { throw null; } set { } }
         public override long ContentLength { get { throw null; } set { } }
         public long ContentOffset { get { throw null; } set { } }
         public override string ContentType { get { throw null; } set { } }
         public override System.Net.ICredentials Credentials { get { throw null; } set { } }
         public bool EnableSsl { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override System.Net.WebHeaderCollection Headers { get { throw null; } set { } }
-        [System.MonoTODOAttribute("We don't support KeepAlive = true")]
         public bool KeepAlive { get { throw null; } set { } }
         public override string Method { get { throw null; } set { } }
         public override bool PreAuthenticate { get { throw null; } set { } }
@@ -5664,7 +5624,6 @@ namespace System.Net
         public System.Net.ServicePoint ServicePoint { get { throw null; } }
         public override int Timeout { get { throw null; } set { } }
         public bool UseBinary { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override bool UseDefaultCredentials { get { throw null; } set { } }
         public bool UsePassive { get { throw null; } set { } }
         public override void Abort() { }
@@ -5705,7 +5664,6 @@ namespace System.Net
         public System.Net.AuthenticationSchemes AuthenticationSchemes { get { throw null; } set { } }
         public System.Net.AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate { get { throw null; } set { } }
         public System.Security.Authentication.ExtendedProtection.ServiceNameCollection DefaultServiceNames { get { throw null; } }
-        [System.MonoTODOAttribute("not used anywhere in the implementation")]
         public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { get { throw null; } set { } }
         public System.Net.HttpListener.ExtendedProtectionSelector ExtendedProtectionSelectorDelegate { get { throw null; } set { } }
         public bool IgnoreWriteExceptions { get { throw null; } set { } }
@@ -5713,9 +5671,7 @@ namespace System.Net
         public static bool IsSupported { get { throw null; } }
         public System.Net.HttpListenerPrefixCollection Prefixes { get { throw null; } }
         public string Realm { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.Net.HttpListenerTimeoutManager TimeoutManager { get { throw null; } }
-        [System.MonoTODOAttribute("Support for NTLM needs some loving.")]
         public bool UnsafeConnectionNtlmAuthentication { get { throw null; } set { } }
         public void Abort() { }
         public System.IAsyncResult BeginGetContext(System.AsyncCallback callback, object state) { throw null; }
@@ -5739,13 +5695,9 @@ namespace System.Net
         public System.Net.HttpListenerRequest Request { get { throw null; } }
         public System.Net.HttpListenerResponse Response { get { throw null; } }
         public System.Security.Principal.IPrincipal User { get { throw null; } }
-        [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task<System.Net.WebSockets.HttpListenerWebSocketContext> AcceptWebSocketAsync(string subProtocol) { throw null; }
-        [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task<System.Net.WebSockets.HttpListenerWebSocketContext> AcceptWebSocketAsync(string subProtocol, int receiveBufferSize, System.TimeSpan keepAliveInterval) { throw null; }
-        [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task<System.Net.WebSockets.HttpListenerWebSocketContext> AcceptWebSocketAsync(string subProtocol, int receiveBufferSize, System.TimeSpan keepAliveInterval, System.ArraySegment<byte> internalBuffer) { throw null; }
-        [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task<System.Net.WebSockets.HttpListenerWebSocketContext> AcceptWebSocketAsync(string subProtocol, System.TimeSpan keepAliveInterval) { throw null; }
     }
     [System.SerializableAttribute]
@@ -5785,11 +5737,9 @@ namespace System.Net
         public System.Collections.Specialized.NameValueCollection Headers { get { throw null; } }
         public string HttpMethod { get { throw null; } }
         public System.IO.Stream InputStream { get { throw null; } }
-        [System.MonoTODOAttribute("Always returns false")]
         public bool IsAuthenticated { get { throw null; } }
         public bool IsLocal { get { throw null; } }
         public bool IsSecureConnection { get { throw null; } }
-        [System.MonoTODOAttribute]
         public bool IsWebSocketRequest { get { throw null; } }
         public bool KeepAlive { get { throw null; } }
         public System.Net.IPEndPoint LocalEndPoint { get { throw null; } }
@@ -5797,9 +5747,7 @@ namespace System.Net
         public System.Collections.Specialized.NameValueCollection QueryString { get { throw null; } }
         public string RawUrl { get { throw null; } }
         public System.Net.IPEndPoint RemoteEndPoint { get { throw null; } }
-        [System.MonoTODOAttribute("Always returns Guid.Empty")]
         public System.Guid RequestTraceIdentifier { get { throw null; } }
-        [System.MonoTODOAttribute]
         public string ServiceName { get { throw null; } }
         public System.Net.TransportContext TransportContext { get { throw null; } }
         public System.Uri Url { get { throw null; } }
@@ -5842,17 +5790,11 @@ namespace System.Net
     public partial class HttpListenerTimeoutManager
     {
         public HttpListenerTimeoutManager() { }
-        [System.MonoTODOAttribute]
         public System.TimeSpan DrainEntityBody { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.TimeSpan EntityBody { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.TimeSpan HeaderWait { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.TimeSpan IdleConnection { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public long MinSendBytesPerSecond { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.TimeSpan RequestQueue { get { throw null; } set { } }
     }
     public enum HttpRequestHeader
@@ -6006,14 +5948,11 @@ namespace System.Net
         public override long ContentLength { get { throw null; } set { } }
         public override string ContentType { get { throw null; } set { } }
         public System.Net.HttpContinueDelegate ContinueDelegate { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public int ContinueTimeout { get { throw null; } set { } }
         public virtual System.Net.CookieContainer CookieContainer { get { throw null; } set { } }
         public override System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.DateTime Date { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static int DefaultMaximumErrorResponseLength { get { throw null; } set { } }
-        [System.MonoTODOAttribute("Use this")]
         public static int DefaultMaximumResponseHeadersLength { get { throw null; } set { } }
         public string Expect { get { throw null; } set { } }
         public virtual bool HaveResponse { get { throw null; } }
@@ -6022,7 +5961,6 @@ namespace System.Net
         public System.DateTime IfModifiedSince { get { throw null; } set { } }
         public bool KeepAlive { get { throw null; } set { } }
         public int MaximumAutomaticRedirections { get { throw null; } set { } }
-        [System.MonoTODOAttribute("Use this")]
         public int MaximumResponseHeadersLength { get { throw null; } set { } }
         public string MediaType { get { throw null; } set { } }
         public override string Method { get { throw null; } set { } }
@@ -6058,7 +5996,6 @@ namespace System.Net
         public override System.Net.WebResponse EndGetResponse(System.IAsyncResult asyncResult) { throw null; }
         protected override void GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public override System.IO.Stream GetRequestStream() { throw null; }
-        [System.MonoTODOAttribute]
         public System.IO.Stream GetRequestStream(out System.Net.TransportContext context) { context = default(System.Net.TransportContext); throw null; }
         public override System.Net.WebResponse GetResponse() { throw null; }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
@@ -6074,7 +6011,6 @@ namespace System.Net
         public override string ContentType { get { throw null; } }
         public virtual System.Net.CookieCollection Cookies { get { throw null; } set { } }
         public override System.Net.WebHeaderCollection Headers { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsMutuallyAuthenticated { get { throw null; } }
         public System.DateTime LastModified { get { throw null; } }
         public virtual string Method { get { throw null; } }
@@ -6251,7 +6187,6 @@ namespace System.Net
         public System.Net.BindIPEndPoint BindIPEndPointDelegate { get { throw null; } set { } }
         public System.Security.Cryptography.X509Certificates.X509Certificate Certificate { get { throw null; } }
         public System.Security.Cryptography.X509Certificates.X509Certificate ClientCertificate { get { throw null; } }
-        [System.MonoTODOAttribute]
         public int ConnectionLeaseTimeout { get { throw null; } set { } }
         public int ConnectionLimit { get { throw null; } set { } }
         public string ConnectionName { get { throw null; } }
@@ -6260,7 +6195,6 @@ namespace System.Net
         public System.DateTime IdleSince { get { throw null; } }
         public int MaxIdleTime { get { throw null; } set { } }
         public virtual System.Version ProtocolVersion { get { throw null; } }
-        [System.MonoTODOAttribute]
         public int ReceiveBufferSize { get { throw null; } set { } }
         public bool SupportsPipelining { get { throw null; } }
         public bool UseNagleAlgorithm { get { throw null; } set { } }
@@ -6274,20 +6208,16 @@ namespace System.Net
         public const int DefaultPersistentConnectionLimit = 10;
         [System.ObsoleteAttribute("Use ServerCertificateValidationCallback instead", false)]
         public static System.Net.ICertificatePolicy CertificatePolicy { get { throw null; } set { } }
-        [System.MonoTODOAttribute("CRL checks not implemented")]
         public static bool CheckCertificateRevocationList { get { throw null; } set { } }
         [System.ObsoleteAttribute("This API is no longer supported.", true)]
         public static System.Net.CipherSuitesCallback ClientCipherSuitesCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public static int DefaultConnectionLimit { get { throw null; } set { } }
         public static int DnsRefreshTimeout { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static bool EnableDnsRoundRobin { get { throw null; } set { } }
-        [System.MonoTODOAttribute("Always returns EncryptionPolicy.RequireEncryption.")]
         public static System.Net.Security.EncryptionPolicy EncryptionPolicy { get { throw null; } }
         public static bool Expect100Continue { get { throw null; } set { } }
         public static int MaxServicePointIdleTime { get { throw null; } set { } }
         public static int MaxServicePoints { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static bool ReusePort { get { throw null; } set { } }
         public static System.Net.SecurityProtocolType SecurityProtocol { get { throw null; } set { } }
         public static System.Net.Security.RemoteCertificateValidationCallback ServerCertificateValidationCallback { get { throw null; } set { } }
@@ -7021,7 +6951,6 @@ namespace System.Net.Mail
     {
         public MailAddress(string address) { }
         public MailAddress(string address, string displayName) { }
-        [System.MonoTODOAttribute("We don't do anything with displayNameEncoding")]
         public MailAddress(string address, string displayName, System.Text.Encoding displayNameEncoding) { }
         public string Address { get { throw null; } }
         public string DisplayName { get { throw null; } }
@@ -7087,7 +7016,6 @@ namespace System.Net.Mail
         public SmtpClient() { }
         public SmtpClient(string host) { }
         public SmtpClient(string host, int port) { }
-        [System.MonoTODOAttribute("Client certificates not used")]
         public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } }
         public System.Net.ICredentialsByHost Credentials { get { throw null; } set { } }
         public System.Net.Mail.SmtpDeliveryFormat DeliveryFormat { get { throw null; } set { } }
@@ -7096,14 +7024,12 @@ namespace System.Net.Mail
         public string Host { get { throw null; } set { } }
         public string PickupDirectoryLocation { get { throw null; } set { } }
         public int Port { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.Net.ServicePoint ServicePoint { get { throw null; } }
         public string TargetName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public int Timeout { get { throw null; } set { } }
-        public bool UseDefaultCredentials { get { throw null; } [System.MonoNotSupportedAttribute("no DefaultCredential support in Mono")]set { } }
+        public bool UseDefaultCredentials { get { throw null; } set { } }
         public event System.Net.Mail.SendCompletedEventHandler SendCompleted { add { } remove { } }
         public void Dispose() { }
-        [System.MonoTODOAttribute("Does nothing at the moment.")]
         protected virtual void Dispose(bool disposing) { }
         protected void OnSendCompleted(System.ComponentModel.AsyncCompletedEventArgs e) { }
         public void Send(System.Net.Mail.MailMessage message) { }
@@ -7697,7 +7623,6 @@ namespace System.Net.NetworkInformation
         public static System.Net.NetworkInformation.PhysicalAddress Parse(string address) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.MonoTODOAttribute("IPv6 support is missing")]
     public partial class Ping : System.ComponentModel.Component, System.IDisposable
     {
         public Ping() { }
@@ -7893,101 +7818,61 @@ namespace System.Net.Security
     public delegate System.Security.Cryptography.X509Certificates.X509Certificate LocalCertificateSelectionCallback(object sender, string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection localCertificates, System.Security.Cryptography.X509Certificates.X509Certificate remoteCertificate, string[] acceptableIssuers);
     public partial class NegotiateStream : System.Net.Security.AuthenticatedStream
     {
-        [System.MonoTODOAttribute]
         public NegotiateStream(System.IO.Stream innerStream) : base (default(System.IO.Stream), default(bool)) { }
-        [System.MonoTODOAttribute]
         public NegotiateStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen) : base (default(System.IO.Stream), default(bool)) { }
         public override bool CanRead { get { throw null; } }
         public override bool CanSeek { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool CanTimeout { get { throw null; } }
         public override bool CanWrite { get { throw null; } }
-        [System.MonoTODOAttribute]
         public virtual System.Security.Principal.TokenImpersonationLevel ImpersonationLevel { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsAuthenticated { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsEncrypted { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsMutuallyAuthenticated { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsServer { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool IsSigned { get { throw null; } }
         public override long Length { get { throw null; } }
         public override long Position { get { throw null; } set { } }
         public override int ReadTimeout { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public virtual System.Security.Principal.IIdentity RemoteIdentity { get { throw null; } }
         public override int WriteTimeout { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsClient() { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsClient(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName) { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsClient(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel) { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsClient(System.Net.NetworkCredential credential, string targetName) { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsClient(System.Net.NetworkCredential credential, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel) { }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync() { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(System.Net.NetworkCredential credential, string targetName) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(System.Net.NetworkCredential credential, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsServer() { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsServer(System.Net.NetworkCredential credential, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel) { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsServer(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel) { }
-        [System.MonoTODOAttribute]
         public virtual void AuthenticateAsServer(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy) { }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync() { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Net.NetworkCredential credential, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsClient(System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsClient(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsClient(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ChannelBinding binding, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsClient(System.Net.NetworkCredential credential, string targetName, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsClient(System.Net.NetworkCredential credential, string targetName, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel allowedImpersonationLevel, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Net.NetworkCredential credential, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Net.NetworkCredential credential, System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy, System.Net.Security.ProtectionLevel requiredProtectionLevel, System.Security.Principal.TokenImpersonationLevel requiredImpersonationLevel, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy policy, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public override System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         public override System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
-        [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
-        [System.MonoTODOAttribute]
         public virtual void EndAuthenticateAsClient(System.IAsyncResult asyncResult) { }
-        [System.MonoTODOAttribute]
         public virtual void EndAuthenticateAsServer(System.IAsyncResult asyncResult) { }
-        [System.MonoTODOAttribute]
         public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
-        [System.MonoTODOAttribute]
         public override void EndWrite(System.IAsyncResult asyncResult) { }
-        [System.MonoTODOAttribute]
         public override void Flush() { }
-        [System.MonoTODOAttribute]
         public override int Read(byte[] buffer, int offset, int count) { throw null; }
-        [System.MonoTODOAttribute]
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
-        [System.MonoTODOAttribute]
         public override void SetLength(long value) { }
-        [System.MonoTODOAttribute]
         public override void Write(byte[] buffer, int offset, int count) { }
     }
     public enum ProtectionLevel
@@ -8011,7 +7896,6 @@ namespace System.Net.Security
         public SslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen) : base (default(System.IO.Stream), default(bool)) { }
         public SslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen, System.Net.Security.RemoteCertificateValidationCallback userCertificateValidationCallback) : base (default(System.IO.Stream), default(bool)) { }
         public SslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen, System.Net.Security.RemoteCertificateValidationCallback userCertificateValidationCallback, System.Net.Security.LocalCertificateSelectionCallback userCertificateSelectionCallback) : base (default(System.IO.Stream), default(bool)) { }
-        [System.MonoLimitationAttribute("encryptionPolicy is ignored")]
         public SslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen, System.Net.Security.RemoteCertificateValidationCallback userCertificateValidationCallback, System.Net.Security.LocalCertificateSelectionCallback userCertificateSelectionCallback, System.Net.Security.EncryptionPolicy encryptionPolicy) : base (default(System.IO.Stream), default(bool)) { }
         public override bool CanRead { get { throw null; } }
         public override bool CanSeek { get { throw null; } }
@@ -8348,7 +8232,6 @@ namespace System.Net.Sockets
         [System.CLSCompliantAttribute(false)]
         public System.IAsyncResult BeginReceive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode, System.AsyncCallback callback, object state) { errorCode = default(System.Net.Sockets.SocketError); throw null; }
         public System.IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP, System.AsyncCallback callback, object state) { throw null; }
-        [System.MonoTODOAttribute]
         public System.IAsyncResult BeginReceiveMessageFrom(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP, System.AsyncCallback callback, object state) { throw null; }
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginSend(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, System.AsyncCallback callback, object state) { throw null; }
@@ -8375,7 +8258,6 @@ namespace System.Net.Sockets
         public bool DisconnectAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
-        [System.MonoLimitationAttribute("We do not support passing sockets across processes, we merely allow this API to pass the socket across AppDomains")]
         public System.Net.Sockets.SocketInformation DuplicateAndClose(int targetProcessId) { throw null; }
         public System.Net.Sockets.Socket EndAccept(out byte[] buffer, System.IAsyncResult asyncResult) { buffer = default(byte[]); throw null; }
         public System.Net.Sockets.Socket EndAccept(out byte[] buffer, out int bytesTransferred, System.IAsyncResult asyncResult) { buffer = default(byte[]); bytesTransferred = default(int); throw null; }
@@ -8385,7 +8267,6 @@ namespace System.Net.Sockets
         public int EndReceive(System.IAsyncResult asyncResult) { throw null; }
         public int EndReceive(System.IAsyncResult asyncResult, out System.Net.Sockets.SocketError errorCode) { errorCode = default(System.Net.Sockets.SocketError); throw null; }
         public int EndReceiveFrom(System.IAsyncResult asyncResult, ref System.Net.EndPoint endPoint) { throw null; }
-        [System.MonoTODOAttribute]
         public int EndReceiveMessageFrom(System.IAsyncResult asyncResult, ref System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint endPoint, out System.Net.Sockets.IPPacketInformation ipPacketInformation) { ipPacketInformation = default(System.Net.Sockets.IPPacketInformation); throw null; }
         public int EndSend(System.IAsyncResult asyncResult) { throw null; }
         public int EndSend(System.IAsyncResult asyncResult, out System.Net.Sockets.SocketError errorCode) { errorCode = default(System.Net.Sockets.SocketError); throw null; }
@@ -8414,9 +8295,7 @@ namespace System.Net.Sockets
         public int ReceiveFrom(byte[] buffer, ref System.Net.EndPoint remoteEP) { throw null; }
         public int ReceiveFrom(byte[] buffer, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
         public bool ReceiveFromAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
-        [System.MonoTODOAttribute("Not implemented")]
         public int ReceiveMessageFrom(byte[] buffer, int offset, int size, ref System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP, out System.Net.Sockets.IPPacketInformation ipPacketInformation) { ipPacketInformation = default(System.Net.Sockets.IPPacketInformation); throw null; }
-        [System.MonoTODOAttribute("Not implemented")]
         public bool ReceiveMessageFromAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public static void Select(System.Collections.IList checkRead, System.Collections.IList checkWrite, System.Collections.IList checkError, int microSeconds) { }
         public int Send(byte[] buffer) { throw null; }
@@ -8431,7 +8310,6 @@ namespace System.Net.Sockets
         public bool SendAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public void SendFile(string fileName) { }
         public void SendFile(string fileName, byte[] preBuffer, byte[] postBuffer, System.Net.Sockets.TransmitFileOptions flags) { }
-        [System.MonoTODOAttribute("Not implemented")]
         public bool SendPacketsAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public int SendTo(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, System.Net.EndPoint remoteEP) { throw null; }
         public int SendTo(byte[] buffer, int size, System.Net.Sockets.SocketFlags socketFlags, System.Net.EndPoint remoteEP) { throw null; }
@@ -8462,7 +8340,6 @@ namespace System.Net.Sockets
         public System.Net.EndPoint RemoteEndPoint { get { throw null; } set { } }
         public System.Net.Sockets.SendPacketsElement[] SendPacketsElements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Net.Sockets.TransmitFileOptions SendPacketsFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        [System.MonoTODOAttribute("unused property")]
         public int SendPacketsSendSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Net.Sockets.SocketError SocketError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Net.Sockets.SocketFlags SocketFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
@@ -9244,9 +9121,7 @@ namespace System.Security.Authentication
         Ssl2 = 12,
         Ssl3 = 48,
         Tls = 192,
-        [System.MonoTODOAttribute("unsupported")]
         Tls11 = 768,
-        [System.MonoTODOAttribute("unsupported")]
         Tls12 = 3072,
     }
 }
@@ -9265,12 +9140,10 @@ namespace System.Security.Authentication.ExtendedProtection
         Unknown = 0,
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicyTypeConverter))]
-    [System.MonoTODOAttribute]
     [System.SerializableAttribute]
     public partial class ExtendedProtectionPolicy : System.Runtime.Serialization.ISerializable
     {
         protected ExtendedProtectionPolicy(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        [System.MonoTODOAttribute("Not implemented.")]
         public ExtendedProtectionPolicy(System.Security.Authentication.ExtendedProtection.PolicyEnforcement policyEnforcement) { }
         public ExtendedProtectionPolicy(System.Security.Authentication.ExtendedProtection.PolicyEnforcement policyEnforcement, System.Security.Authentication.ExtendedProtection.ChannelBinding customChannelBinding) { }
         public ExtendedProtectionPolicy(System.Security.Authentication.ExtendedProtection.PolicyEnforcement policyEnforcement, System.Security.Authentication.ExtendedProtection.ProtectionScenario protectionScenario, System.Collections.ICollection customServiceNames) { }
@@ -9282,10 +9155,8 @@ namespace System.Security.Authentication.ExtendedProtection
         public System.Security.Authentication.ExtendedProtection.ProtectionScenario ProtectionScenario { get { throw null; } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SerializationFormatter=true)]
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        [System.MonoTODOAttribute]
         public override string ToString() { throw null; }
     }
-    [System.MonoTODOAttribute]
     public partial class ExtendedProtectionPolicyTypeConverter : System.ComponentModel.TypeConverter
     {
         public ExtendedProtectionPolicyTypeConverter() { }
@@ -9443,7 +9314,6 @@ namespace System.Security.Cryptography.X509Certificates
         TrustedPeople = 7,
         TrustedPublisher = 8,
     }
-    [System.MonoTODOAttribute("Some X500DistinguishedNameFlags options aren't supported, like DoNotUsePlusSign, DoNotUseQuotes and ForceUTF8Encoding")]
     public sealed partial class X500DistinguishedName : System.Security.Cryptography.AsnEncodedData
     {
         public X500DistinguishedName(byte[] encodedDistinguishedName) { }
@@ -9511,28 +9381,19 @@ namespace System.Security.Cryptography.X509Certificates
         public System.Security.Cryptography.X509Certificates.X500DistinguishedName SubjectName { get { throw null; } }
         public string Thumbprint { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute("X509ContentType.SerializedCert is not supported")]
         public override byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType, string password) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12, Pkcs7 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(byte[] rawData) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(string fileName) { throw null; }
-        [System.MonoTODOAttribute("always return String.Empty for UpnName, DnsFromAlternativeName and UrlName")]
         public string GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType nameType, bool forIssuer) { throw null; }
         public override void Import(byte[] rawData) { }
-        [System.MonoTODOAttribute("SecureString is incomplete")]
         public override void Import(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
-        [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Import(string fileName) { }
-        [System.MonoTODOAttribute("SecureString is incomplete")]
         public override void Import(string fileName, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
-        [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(string fileName, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Reset() { }
         public override string ToString() { throw null; }
         public override string ToString(bool verbose) { throw null; }
-        [System.MonoTODOAttribute("by default this depends on the incomplete X509Chain")]
         public bool Verify() { throw null; }
     }
     public partial class X509Certificate2Collection : System.Security.Cryptography.X509Certificates.X509CertificateCollection
@@ -9543,31 +9404,20 @@ namespace System.Security.Cryptography.X509Certificates
         public X509Certificate2Collection(System.Security.Cryptography.X509Certificates.X509Certificate2[] certificates) { }
         public new System.Security.Cryptography.X509Certificates.X509Certificate2 this[int index] { get { throw null; } set { } }
         public int Add(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection certificates) { }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2[] certificates) { }
         public bool Contains(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
-        [System.MonoTODOAttribute("only support X509ContentType.Cert")]
         public byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType) { throw null; }
-        [System.MonoTODOAttribute("only support X509ContentType.Cert")]
         public byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType, string password) { throw null; }
-        [System.MonoTODOAttribute("Does not support X509FindType.FindByTemplateName, FindByApplicationPolicy and FindByCertificatePolicy")]
         public System.Security.Cryptography.X509Certificates.X509Certificate2Collection Find(System.Security.Cryptography.X509Certificates.X509FindType findType, object findValue, bool validOnly) { throw null; }
         public new System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator GetEnumerator() { throw null; }
-        [System.MonoTODOAttribute("same limitations as X509Certificate2.Import")]
         public void Import(byte[] rawData) { }
-        [System.MonoTODOAttribute("same limitations as X509Certificate2.Import")]
         public void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
-        [System.MonoTODOAttribute("same limitations as X509Certificate2.Import")]
         public void Import(string fileName) { }
-        [System.MonoTODOAttribute("same limitations as X509Certificate2.Import")]
         public void Import(string fileName, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public void Insert(int index, System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
         public void Remove(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection certificates) { }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2[] certificates) { }
     }
     public sealed partial class X509Certificate2Enumerator : System.Collections.IEnumerator
@@ -9612,15 +9462,12 @@ namespace System.Security.Cryptography.X509Certificates
     {
         public X509Chain() { }
         public X509Chain(bool useMachineContext) { }
-        [System.MonoTODOAttribute("Mono's X509Chain is fully managed. All handles are invalid.")]
         public X509Chain(System.IntPtr chainContext) { }
-        [System.MonoTODOAttribute("Mono's X509Chain is fully managed. Always returns IntPtr.Zero.")]
         public System.IntPtr ChainContext { get { throw null; } }
         public System.Security.Cryptography.X509Certificates.X509ChainElementCollection ChainElements { get { throw null; } }
         public System.Security.Cryptography.X509Certificates.X509ChainPolicy ChainPolicy { get { throw null; } set { } }
         public System.Security.Cryptography.X509Certificates.X509ChainStatus[] ChainStatus { get { throw null; } }
         public Microsoft.Win32.SafeHandles.SafeX509ChainHandle SafeHandle { get { throw null; } }
-        [System.MonoTODOAttribute("Not totally RFC3280 compliant, but neither is MS implementation...")]
         public bool Build(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         public static System.Security.Cryptography.X509Certificates.X509Chain Create() { throw null; }
         public void Dispose() { }
@@ -9814,7 +9661,6 @@ namespace System.Security.Cryptography.X509Certificates
     public sealed partial class X509Store : System.IDisposable
     {
         public X509Store() { }
-        [System.MonoTODOAttribute("Mono's stores are fully managed. All handles are invalid.")]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode=true)]
         public X509Store(System.IntPtr storeHandle) { }
         public X509Store(System.Security.Cryptography.X509Certificates.StoreLocation storeLocation) { }
@@ -9825,16 +9671,13 @@ namespace System.Security.Cryptography.X509Certificates
         public System.Security.Cryptography.X509Certificates.X509Certificate2Collection Certificates { get { throw null; } }
         public System.Security.Cryptography.X509Certificates.StoreLocation Location { get { throw null; } }
         public string Name { get { throw null; } }
-        [System.MonoTODOAttribute("Mono's stores are fully managed. Always returns IntPtr.Zero.")]
         public System.IntPtr StoreHandle { get { throw null; } }
         public void Add(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection certificates) { }
         public void Close() { }
         public void Dispose() { }
         public void Open(System.Security.Cryptography.X509Certificates.OpenFlags flags) { }
         public void Remove(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
-        [System.MonoTODOAttribute("Method isn't transactional (like documented)")]
         public void RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection certificates) { }
     }
     public sealed partial class X509SubjectKeyIdentifierExtension : System.Security.Cryptography.X509Certificates.X509Extension
