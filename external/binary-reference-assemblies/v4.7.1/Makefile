@@ -267,6 +267,7 @@ System.Web_CSC_ARGS := -d:SERVICES_DEP
 ECMA_KEY := ../../../mcs/class/ecma.pub         # Public Key Token: b77a5c561934e089
 WINFX_KEY := ../../../mcs/class/winfx.pub       # Public Key Token: 31bf3856ad364e35
 MSFINAL_KEY := ../../../mcs/class/msfinal.pub   # Public Key Token: b03f5f7f11d50a3a
+OPEN_KEY := ../../../mcs/class/Open.snk         # Public Key Token: cc7b13ffcd2ddd51
 
 ECMA_KEY_ASSEMBLIES := System.ComponentModel.Composition System.Core System.Data.DataSetExtensions	\
 	System.Data.Entity System.Data.Linq System.Data.OracleClient System.Data.Services.Client System.Data.Services	\
@@ -290,6 +291,11 @@ MSFINAL_KEY_ASSEMBLIES := Accessibility CustomMarshalers Microsoft.Build.Engine 
 	System.Runtime.Serialization.Formatters.Soap System.Security System.ServiceProcess System.Web.Services	\
 	System.Web System.Web.Mobile System.Web.RegularExpressions System.Windows bare/System.Configuration bare/System.Web
 
+# most Facades have the msfinal key, but some don't
+MSFINAL_KEY_ASSEMBLIES += $(filter-out Facades/netstandard Facades/System.ValueTuple Facades/System.IO.Compression.ZipFile, $(FACADE_ASSEMBLIES))
+OPEN_KEY_ASSEMBLIES := Facades/netstandard Facades/System.ValueTuple
+ECMA_KEY_ASSEMBLIES += Facades/System.IO.Compression.ZipFile
+
 all: $(addsuffix .dll, $(ASSEMBLIES))
 
 clean:
@@ -311,6 +317,6 @@ endef
 $(foreach asm, $(ECMA_KEY_ASSEMBLIES),    $(eval $(call KEYFILE_TEMPLATE,$(asm), $(ECMA_KEY))))
 $(foreach asm, $(WINFX_KEY_ASSEMBLIES),   $(eval $(call KEYFILE_TEMPLATE,$(asm), $(WINFX_KEY))))
 $(foreach asm, $(MSFINAL_KEY_ASSEMBLIES), $(eval $(call KEYFILE_TEMPLATE,$(asm), $(MSFINAL_KEY))))
-$(foreach asm, $(FACADE_ASSEMBLIES),      $(eval $(call KEYFILE_TEMPLATE,$(asm), $(MSFINAL_KEY))))
+$(foreach asm, $(OPEN_KEY_ASSEMBLIES),    $(eval $(call KEYFILE_TEMPLATE,$(asm), $(OPEN_KEY))))
 
 $(foreach asm, $(ASSEMBLIES), $(eval $(call ASSEMBLY_TEMPLATE,$(asm))))
