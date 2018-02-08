@@ -131,6 +131,9 @@
 /* Enable metadata checked build */
 #undef ENABLE_CHECKED_BUILD_METADATA
 
+/* Enable private types checked build */
+#undef ENABLE_CHECKED_BUILD_PRIVATE_TYPES
+
 /* Enable thread checked build */
 #undef ENABLE_CHECKED_BUILD_THREAD
 

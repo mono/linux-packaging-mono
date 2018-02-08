@@ -438,6 +438,7 @@ G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
 G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
+HAVE_NINJA = @HAVE_NINJA@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -584,7 +585,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -968,7 +968,7 @@ CI_DISABLED_TESTS = \
 # failing tests which we temporarily disable for PRs
 # so they don't interfere with other people's work
 CI_PR_DISABLED_TESTS = appdomain-threadpool-unload.exe \
-	$(am__append_21)
+	monitor-abort.exe monitor-wait-abort.exe $(am__append_21)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
