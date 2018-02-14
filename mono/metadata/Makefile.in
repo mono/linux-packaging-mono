@@ -102,16 +102,52 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+am__installdirs = "$(DESTDIR)$(libdir)" \
+	"$(DESTDIR)$(libmonoruntimeincludedir)"
+LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+libmono_icall_table_la_LIBADD =
+am__libmono_icall_table_la_SOURCES_DIST = icall-table.c
+@DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_OBJECTS =  \
+@DISABLE_ICALL_TABLES_TRUE@	icall-table.lo
+libmono_icall_table_la_OBJECTS = $(am_libmono_icall_table_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+@DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
+@DISABLE_ICALL_TABLES_TRUE@	$(libdir)
 libmonoruntime_config_la_LIBADD =
 am_libmonoruntime_config_la_OBJECTS =  \
 	libmonoruntime_config_la-mono-config-dirs.lo
 libmonoruntime_config_la_OBJECTS =  \
 	$(am_libmonoruntime_config_la_OBJECTS)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c w32process-unix.c \
@@ -140,9 +176,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	environment.h exception.c exception.h exception-internals.h \
 	w32file.c w32file.h w32file-internals.h filewatcher.c \
 	filewatcher.h gc-internals.h icall.c icall-internals.h \
-	icall-def.h image.c image-internals.h jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h marshal-internals.h mempool.c mempool.h \
+	icall-def.h icall-table.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h marshal-internals.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
 	metadata-internals.h method-builder.h method-builder.c \
 	mono-basic-block.c mono-basic-block.h mono-config.c \
@@ -172,8 +208,8 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	callspec.h callspec.c gc-stats.c gc.c monitor.c null-gc.c \
-	null-gc-handles.h null-gc-handles.c boehm-gc.c
+	callspec.h callspec.c icall-table.c gc-stats.c gc.c monitor.c \
+	null-gc.c null-gc-handles.h null-gc-handles.c boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoruntime_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -259,13 +295,15 @@ am__objects_7 = $(am__objects_6) libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-sre-encode.lo libmonoruntime_la-sre-save.lo \
 	libmonoruntime_la-custom-attrs.lo \
 	libmonoruntime_la-fdhandle.lo libmonoruntime_la-callspec.lo
-am__objects_8 = libmonoruntime_la-gc-stats.lo libmonoruntime_la-gc.lo \
+@DISABLE_ICALL_TABLES_FALSE@am__objects_8 =  \
+@DISABLE_ICALL_TABLES_FALSE@	libmonoruntime_la-icall-table.lo
+am__objects_9 = libmonoruntime_la-gc-stats.lo libmonoruntime_la-gc.lo \
 	libmonoruntime_la-monitor.lo
-am__objects_9 = libmonoruntime_la-null-gc.lo \
+am__objects_10 = libmonoruntime_la-null-gc.lo \
 	libmonoruntime_la-null-gc-handles.lo
-am__objects_10 = libmonoruntime_la-boehm-gc.lo
+am__objects_11 = libmonoruntime_la-boehm-gc.lo
 am_libmonoruntime_la_OBJECTS = $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10)
+	$(am__objects_9) $(am__objects_10) $(am__objects_11)
 libmonoruntime_la_OBJECTS = $(am_libmonoruntime_la_OBJECTS)
 libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -301,9 +339,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	environment.h exception.c exception.h exception-internals.h \
 	w32file.c w32file.h w32file-internals.h filewatcher.c \
 	filewatcher.h gc-internals.h icall.c icall-internals.h \
-	icall-def.h image.c image-internals.h jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h marshal-internals.h mempool.c mempool.h \
+	icall-def.h icall-table.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h marshal-internals.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
 	metadata-internals.h method-builder.h method-builder.c \
 	mono-basic-block.c mono-basic-block.h mono-config.c \
@@ -333,11 +371,12 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	callspec.h callspec.c gc-stats.c gc.c monitor.c sgen-bridge.c \
-	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
-	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
-	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-client-mono.h
-@HOST_WIN32_FALSE@am__objects_11 =  \
+	callspec.h callspec.c icall-table.c gc-stats.c gc.c monitor.c \
+	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
+	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
+	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
+	sgen-client-mono.h
+@HOST_WIN32_FALSE@am__objects_12 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
@@ -351,10 +390,10 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32error-unix.lo
-@HOST_ANDROID_TRUE@am__objects_12 = ../../support/libm/libmonoruntimesgen_la-complex.lo
-@HOST_WASM_TRUE@am__objects_13 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
-@HOST_WASM_FALSE@am__objects_14 = libmonoruntimesgen_la-threadpool-worker-default.lo
-@HOST_WIN32_TRUE@am__objects_15 =  \
+@HOST_ANDROID_TRUE@am__objects_13 = ../../support/libm/libmonoruntimesgen_la-complex.lo
+@HOST_WASM_TRUE@am__objects_14 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
+@HOST_WASM_FALSE@am__objects_15 = libmonoruntimesgen_la-threadpool-worker-default.lo
+@HOST_WIN32_TRUE@am__objects_16 =  \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32file-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-icall-windows.lo \
@@ -366,11 +405,11 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32process-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32socket-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32error-win32.lo
-@HOST_WIN32_FALSE@am__objects_16 = $(am__objects_11) $(am__objects_12) \
-@HOST_WIN32_FALSE@	$(am__objects_13) $(am__objects_14)
-@HOST_WIN32_TRUE@am__objects_16 = $(am__objects_15) $(am__objects_12) \
-@HOST_WIN32_TRUE@	$(am__objects_13) $(am__objects_14)
-am__objects_17 = $(am__objects_16) libmonoruntimesgen_la-appdomain.lo \
+@HOST_WIN32_FALSE@am__objects_17 = $(am__objects_12) $(am__objects_13) \
+@HOST_WIN32_FALSE@	$(am__objects_14) $(am__objects_15)
+@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16) $(am__objects_13) \
+@HOST_WIN32_TRUE@	$(am__objects_14) $(am__objects_15)
+am__objects_18 = $(am__objects_17) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-domain.lo \
 	libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-attach.lo libmonoruntimesgen_la-class.lo \
@@ -440,17 +479,18 @@ am__objects_17 = $(am__objects_16) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-custom-attrs.lo \
 	libmonoruntimesgen_la-fdhandle.lo \
 	libmonoruntimesgen_la-callspec.lo
-am__objects_18 = libmonoruntimesgen_la-gc-stats.lo \
+@DISABLE_ICALL_TABLES_FALSE@am__objects_19 = libmonoruntimesgen_la-icall-table.lo
+am__objects_20 = libmonoruntimesgen_la-gc-stats.lo \
 	libmonoruntimesgen_la-gc.lo libmonoruntimesgen_la-monitor.lo
-am__objects_19 = libmonoruntimesgen_la-sgen-bridge.lo \
+am__objects_21 = libmonoruntimesgen_la-sgen-bridge.lo \
 	libmonoruntimesgen_la-sgen-old-bridge.lo \
 	libmonoruntimesgen_la-sgen-new-bridge.lo \
 	libmonoruntimesgen_la-sgen-tarjan-bridge.lo \
 	libmonoruntimesgen_la-sgen-toggleref.lo \
 	libmonoruntimesgen_la-sgen-stw.lo \
 	libmonoruntimesgen_la-sgen-mono.lo
-am_libmonoruntimesgen_la_OBJECTS = $(am__objects_17) $(am__objects_18) \
-	$(am__objects_19)
+am_libmonoruntimesgen_la_OBJECTS = $(am__objects_18) $(am__objects_19) \
+	$(am__objects_20) $(am__objects_21)
 libmonoruntimesgen_la_OBJECTS = $(am_libmonoruntimesgen_la_OBJECTS)
 libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -487,9 +527,11 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libmonoruntime_config_la_SOURCES) \
+SOURCES = $(libmono_icall_table_la_SOURCES) \
+	$(libmonoruntime_config_la_SOURCES) \
 	$(libmonoruntime_la_SOURCES) $(libmonoruntimesgen_la_SOURCES)
-DIST_SOURCES = $(libmonoruntime_config_la_SOURCES) \
+DIST_SOURCES = $(am__libmono_icall_table_la_SOURCES_DIST) \
+	$(libmonoruntime_config_la_SOURCES) \
 	$(am__libmonoruntime_la_SOURCES_DIST) \
 	$(am__libmonoruntimesgen_la_SOURCES_DIST)
 am__can_run_installinfo = \
@@ -497,34 +539,6 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__uninstall_files_from_dir = { \
-  test -z "$$files" \
-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
-         $(am__cd) "$$dir" && rm -f $$files; }; \
-  }
-am__installdirs = "$(DESTDIR)$(libmonoruntimeincludedir)"
 HEADERS = $(libmonoruntimeinclude_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
@@ -844,7 +858,9 @@ top_srcdir = @top_srcdir@
 
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
+@DISABLE_ICALL_TABLES_TRUE@icall_table_libraries = libmono-icall-table.la
 noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
+lib_LTLIBRARIES = $(icall_table_libraries)
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
@@ -857,6 +873,13 @@ libmonoruntime_config_la_SOURCES = \
 	mono-config-dirs.c
 
 libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\" -DMONO_RELOC_LIBDIR=\"../$(reloc_libdir)\"
+
+#
+# This library contains the icall tables if the runtime was configured with --disable-icall-tables
+#
+@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_SOURCES = \
+@DISABLE_ICALL_TABLES_TRUE@	icall-table.c
+
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
@@ -865,6 +888,9 @@ null_gc_sources = \
 	null-gc.c \
 	null-gc-handles.h \
 	null-gc-handles.c
+
+@DISABLE_ICALL_TABLES_FALSE@icall_tables_sources = \
+@DISABLE_ICALL_TABLES_FALSE@	icall-table.c
 
 common_sources = \
 	$(platform_sources)	\
@@ -914,6 +940,7 @@ common_sources = \
 	icall.c			\
 	icall-internals.h \
 	icall-def.h		\
+	icall-table.h	\
 	image.c			\
 	image-internals.h	\
 	jit-info.c		\
@@ -1057,10 +1084,10 @@ sgen_sources = \
 	sgen-mono.c		\
 	sgen-client-mono.h
 
-libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
+libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
 libmonoruntime_la_LIBADD = libmonoruntime-config.la
-libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)
+libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
 libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
@@ -1131,6 +1158,41 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(libdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(libdir)" || exit 1; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
+	}
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	done
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; \
+	locs=`for p in $$list; do echo $$p; done | \
+	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
+	      sort -u`; \
+	test -z "$$locs" || { \
+	  echo rm -f $${locs}; \
+	  rm -f $${locs}; \
+	}
+
 clean-noinstLTLIBRARIES:
 	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 	@list='$(noinst_LTLIBRARIES)'; \
@@ -1141,6 +1203,9 @@ clean-noinstLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+
+libmono-icall-table.la: $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_DEPENDENCIES) $(EXTRA_libmono_icall_table_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) $(am_libmono_icall_table_la_rpath) $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_LIBADD) $(LIBS)
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
@@ -1173,6 +1238,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntime_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntimesgen_la-complex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-assembly.Plo@am__quote@
@@ -1203,6 +1269,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-gc-stats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-handle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-icall-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-icall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-image.Plo@am__quote@
@@ -1306,6 +1373,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-gc-stats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-handle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-icall-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-icall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-image.Plo@am__quote@
@@ -2111,6 +2179,13 @@ libmonoruntime_la-callspec.lo: callspec.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
 
+libmonoruntime_la-icall-table.lo: icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-icall-table.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-icall-table.Tpo -c -o libmonoruntime_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-icall-table.Tpo $(DEPDIR)/libmonoruntime_la-icall-table.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmonoruntime_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+
 libmonoruntime_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-gc-stats.Tpo -c -o libmonoruntime_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-gc-stats.Tpo $(DEPDIR)/libmonoruntime_la-gc-stats.Plo
@@ -2846,6 +2921,13 @@ libmonoruntimesgen_la-callspec.lo: callspec.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
 
+libmonoruntimesgen_la-icall-table.lo: icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-icall-table.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-icall-table.Tpo -c -o libmonoruntimesgen_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-icall-table.Tpo $(DEPDIR)/libmonoruntimesgen_la-icall-table.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmonoruntimesgen_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+
 libmonoruntimesgen_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-gc-stats.Tpo -c -o libmonoruntimesgen_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-gc-stats.Tpo $(DEPDIR)/libmonoruntimesgen_la-gc-stats.Plo
@@ -3030,7 +3112,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -3068,8 +3150,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	mostlyclean-am
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ../../support/libm/$(DEPDIR) ./$(DEPDIR)
@@ -3095,7 +3177,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -3135,24 +3217,26 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libmonoruntimeincludeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-libmonoruntimeincludeHEADERS
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libmonoruntimeincludeHEADERS \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-libmonoruntimeincludeHEADERS
+	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
+	cscopelist-am ctags ctags-am distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-libmonoruntimeincludeHEADERS install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES \
+	uninstall-libmonoruntimeincludeHEADERS
 
 @HOST_WIN32_TRUE@export HOST_CC
 

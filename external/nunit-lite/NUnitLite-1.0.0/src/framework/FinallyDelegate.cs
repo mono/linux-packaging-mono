@@ -35,9 +35,9 @@ namespace NUnit.Framework.Internal
 {
 	[Serializable]
 	class Container : ILogicalThreadAffinative {
-		public string testName;
-		public Container(string testName) {
-			this.testName = testName;
+		public Guid guid;
+		public Container(Guid guid) {
+			this.guid = guid;
 		}
 	}
 
@@ -58,13 +58,13 @@ namespace NUnit.Framework.Internal
 		// so we need a stack of finally delegate continuations
 		Stack<Tuple<TestExecutionContext, long, TestResult>> testStack;
 
-		Dictionary<string, TestResult> lookupTable;
+		Dictionary<Guid, TestResult> lookupTable;
 
 		private static readonly string CONTEXT_KEY = "TestResultName";
 
 		public FinallyDelegate () {
 			this.testStack = new Stack<Tuple<TestExecutionContext, long, TestResult>>();
-			this.lookupTable = new Dictionary<string, TestResult>();
+			this.lookupTable = new Dictionary<Guid, TestResult>();
 		}
 
 		public void Set (TestExecutionContext context, long startTicks, TestResult result) {
@@ -72,15 +72,16 @@ namespace NUnit.Framework.Internal
 
 			/* keep name in LogicalCallContext, because this will be inherited by
 			 * Threads spawned by the test case */
-			CallContext.SetData(CONTEXT_KEY, new Container(result.Test.FullName));
+			var guid = Guid.NewGuid();
+			CallContext.SetData(CONTEXT_KEY, new Container(guid));
 
-			this.lookupTable.Add(result.Test.FullName, result);
+			this.lookupTable.Add(guid, result);
 			this.testStack.Push(frame);
 		}
 
 		public void HandleUnhandledExc (Exception ex) {
 			Container c = (Container) CallContext.GetData(CONTEXT_KEY);
-			TestResult result = this.lookupTable [c.testName];
+			TestResult result = this.lookupTable [c.guid];
 			result.RecordException(ex);
 			result.ThreadCrashFail = true;
 		}

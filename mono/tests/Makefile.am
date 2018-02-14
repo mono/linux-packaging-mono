@@ -961,7 +961,8 @@ CI_DISABLED_TESTS = \
 CI_PR_DISABLED_TESTS = \
 	appdomain-threadpool-unload.exe \
 	monitor-abort.exe \
-	monitor-wait-abort.exe
+	monitor-wait-abort.exe \
+	process-stress-3.exe
 
 if ENABLE_COOP
 CI_PR_DISABLED_TESTS += \
@@ -990,8 +991,8 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
 # abort-try-holes.exe is flaky due to unwinding failure to the finally block when aborting
 # appdomain-marshalbyref-assemblyload.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=49308
-# dim-*: https://github.com/mono/mono/pull/6252
 # threads-init.exe: runs out of system threads
+# dim-constrainedcall.exe: fails on dontnet as well (https://github.com/dotnet/coreclr/issues/15353)
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
@@ -1001,8 +1002,7 @@ KNOWN_FAILING_TESTS = \
 	appdomain-marshalbyref-assemblyload.exe	\
 	abort-try-holes.exe \
 	threads-init.exe \
-	dim-constrainedcall.exe	\
-	dim-diamondshape.exe
+	dim-constrainedcall.exe
 
 DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
@@ -1027,7 +1027,6 @@ INTERP_DISABLED_TESTS = \
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
 	appdomain-unload.exe \
-	array_load_exception.exe \
 	async-exc-compilation.exe \
 	async-with-cb-throws.exe \
 	block_guard_restore_aligment_on_exit.exe \
@@ -1060,7 +1059,11 @@ INTERP_DISABLED_TESTS = \
 	threadpool-exceptions4.exe \
 	threadpool-exceptions5.exe \
 	typeload-unaligned.exe \
-	weak-fields.exe
+	weak-fields.exe \
+	vararg.exe \
+	vararg2.exe \
+	vararg3.exe	\
+	dim-diamondshape.exe
 
 TESTS_CS=$(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL=$(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
