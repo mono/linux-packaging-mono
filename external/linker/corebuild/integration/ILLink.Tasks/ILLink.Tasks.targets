@@ -18,10 +18,14 @@
     <LinkerDumpDependencies Condition=" '$(LinkerDumpDependencies)' == '' ">false</LinkerDumpDependencies>
     <UsedApplicationAssemblyAction Condition=" '$(UsedApplicationAssemblyAction)' == '' ">Copy</UsedApplicationAssemblyAction>
     <UnusedApplicationAssemblyAction Condition=" '$(UnusedApplicationAssemblyAction)' == '' ">Delete</UnusedApplicationAssemblyAction>
-    <UsedPlatformAssemblyAction Condition=" '$(UsedPlatformAssemblyAction)' == '' ">Link</UsedPlatformAssemblyAction>
-    <UnusedPlatformAssemblyAction Condition=" '$(UnusedPlatformAssemblyAction)' == '' ">Delete</UnusedPlatformAssemblyAction>
+    <UsedPlatformAssemblyAction Condition=" '$(UsedPlatformAssemblyAction)' == '' and '$(SelfContained)' == 'true' ">AddBypassNGen</UsedPlatformAssemblyAction>
+    <UsedPlatformAssemblyAction Condition=" '$(UsedPlatformAssemblyAction)' == '' ">Skip</UsedPlatformAssemblyAction>
+    <UnusedPlatformAssemblyAction Condition=" '$(UnusedPlatformAssemblyAction)' == '' and '$(SelfContained)' == 'true' ">Delete</UnusedPlatformAssemblyAction>
+    <UnusedPlatformAssemblyAction Condition=" '$(UnusedPlatformAssemblyAction)' == '' ">Skip</UnusedPlatformAssemblyAction>
     <RootAllApplicationAssemblies Condition=" '$(RootAllApplicationAssemblies)' == '' ">true</RootAllApplicationAssemblies>
     <RootAllApplicationAssemblies Condition=" '$(RootAllApplicationAssemblies)' != 'true' ">false</RootAllApplicationAssemblies>
+    <LinkerTrimNativeDeps Condition=" '$(LinkerTrimNativeDeps)' == '' ">true</LinkerTrimNativeDeps>
+    <LinkerTrimNativeDeps Condition=" '$(LinkerTrimNativeDeps)' != 'true' ">false</LinkerTrimNativeDeps>
   </PropertyGroup>
 
   <!-- This depends on LinkDuringPublish, so it needs to be imported
@@ -256,11 +260,15 @@
       <_NativeDepsToAlwaysKeep Include="hostpolicy.dll;libhostpolicy.dylib;libhostpolicy.so" />
     </ItemGroup>
 
-    <FindNativeDeps ManagedAssemblyPaths="@(_ManagedLinkedAssemblies)"
+    <FindNativeDeps Condition=" '$(LinkerTrimNativeDeps)' == 'true' "
+                    ManagedAssemblyPaths="@(_ManagedLinkedAssemblies)"
                     NativeDepsPaths="@(_NativeResolvedDepsToPublish)"
                     NativeDepsToKeep="@(_NativeDepsToAlwaysKeep)">
       <Output TaskParameter="KeptNativeDepsPaths" ItemName="_NativeKeptDepsToPublish" />
     </FindNativeDeps>
+    <PropertyGroup>
+      <_NativeKeptDepsToPublish Condition=" '$(LinkerTrimNativeDeps)' != 'true' ">"@(_NativeResolvedDepsToPublish)"</_NativeKeptDepsToPublish>
+    </PropertyGroup>
 
   </Target>
 

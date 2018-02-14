@@ -67,7 +67,6 @@ namespace Microsoft.SqlServer.Server
         public virtual long GetBytes(int ordinal, long fieldOffset, byte[] buffer, int bufferOffset, int length) { throw null; }
         public virtual char GetChar(int ordinal) { throw null; }
         public virtual long GetChars(int ordinal, long fieldOffset, char[] buffer, int bufferOffset, int length) { throw null; }
-        public System.Data.IDataReader GetData(int i) { throw null; }
         public virtual string GetDataTypeName(int ordinal) { throw null; }
         public virtual System.DateTime GetDateTime(int ordinal) { throw null; }
         public virtual System.DateTimeOffset GetDateTimeOffset(int ordinal) { throw null; }
@@ -141,6 +140,7 @@ namespace Microsoft.SqlServer.Server
         public virtual void SetTimeSpan(int ordinal, System.TimeSpan value) { }
         public virtual void SetValue(int ordinal, object value) { }
         public virtual int SetValues(params object[] values) { throw null; }
+        System.Data.IDataReader System.Data.IDataRecord.GetData(int ordinal) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=false, Inherited=false)]
     public partial class SqlFacetAttribute : System.Attribute
