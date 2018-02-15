@@ -771,12 +771,6 @@ PLATFORM_DISABLED_TESTS += \
 	sgen-bridge-xref.exe
 endif
 
-if ENABLE_COOP
-COOP_DISABLED_TESTS= thunks.exe
-else
-COOP_DISABLED_TESTS= 
-endif
-
 PROFILE_DISABLED_TESTS=
 
 if FULL_AOT_TESTS
@@ -1034,8 +1028,6 @@ INTERP_DISABLED_TESTS = \
 	bug-415577.exe \
 	bug-45841-fpstack-exceptions.exe \
 	bug-48015.exe \
-	bug-58782-capture-and-throw.exe \
-	bug-58782-plain-throw.exe \
 	bug445361.exe \
 	bug-60862.exe \
 	calliGenericTest.exe \
@@ -1049,6 +1041,7 @@ INTERP_DISABLED_TESTS = \
 	field-access.exe \
 	handleref.exe \
 	nullable_boxing.2.exe \
+	pinvoke.exe \
 	pinvoke2.exe \
 	pinvoke3.exe \
 	safehandle.2.exe \
