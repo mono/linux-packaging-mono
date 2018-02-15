@@ -1180,7 +1180,6 @@ Mono development tools.
 %dir %{_datadir}/mono-2.0/mono/cil
 %{_datadir}/mono-2.0/mono/cil/cil-opcodes.xml
 %{_datadir}/mono-2.0/mono/profiler/mono-profiler-coverage.suppression
-%{_datadir}/mono-2.0/mono/profiler/mono-profiler-log.suppression
 %{_libdir}/libmono-profiler-*.*
 %{_libdir}/pkgconfig/cecil.pc
 %{_libdir}/pkgconfig/dotnet.pc
