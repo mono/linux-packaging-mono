@@ -1,3 +1,14 @@
+mono (5.10.0.116-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [7c227ea] Merge branch 'master' of github.com:mono/linux-packaging-
+    mono [76c6f63] Revert "Remove vanished suppression file"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 15 Feb 2018 22:18:24 +0000
+
 mono (5.10.0.116-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.10.0.116.tar.bz2
