@@ -9,7 +9,10 @@ all:
 	$(MAKE) -C v4.6.1
 	$(MAKE) -C v4.6.2
 	$(MAKE) -C v4.7
+	$(MAKE) -C v4.7.1
 	$(MAKE) -C mono
+	$(MAKE) -C build/monotouch clean
+	$(MAKE) -C build/monodroid clean
 
 clean:
 	$(MAKE) -C v2.0 clean
@@ -22,6 +25,9 @@ clean:
 	$(MAKE) -C v4.6.1 clean
 	$(MAKE) -C v4.6.2 clean
 	$(MAKE) -C v4.7 clean
+	$(MAKE) -C v4.7.1 clean
 	$(MAKE) -C mono clean
+	$(MAKE) -C build/monotouch clean
+	$(MAKE) -C build/monodroid clean
 
 .PHONY: all clean

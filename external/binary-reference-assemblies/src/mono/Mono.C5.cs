@@ -13,6 +13,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("C5: Copenhagen Comprehensive Collection Classes for CLI")]
 [assembly:System.Reflection.AssemblyTrademarkAttribute("")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
+[assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 namespace C5
 {
