@@ -1,3 +1,9 @@
+mono (5.8.0.127-0xamarin1) stable; urgency=medium
+
+  * New release - mono-5.8.0.127.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 16 Feb 2018 16:06:48 +0000
+
 mono (5.8.0.108-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.8.0.108.tar.bz2
