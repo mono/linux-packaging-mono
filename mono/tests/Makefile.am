@@ -956,7 +956,8 @@ CI_PR_DISABLED_TESTS = \
 	appdomain-threadpool-unload.exe \
 	monitor-abort.exe \
 	monitor-wait-abort.exe \
-	process-stress-3.exe
+	process-stress-3.exe \
+	sleep.exe
 
 if ENABLE_COOP
 CI_PR_DISABLED_TESTS += \
@@ -1021,7 +1022,6 @@ INTERP_DISABLED_TESTS = \
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
 	appdomain-unload.exe \
-	async-exc-compilation.exe \
 	async-with-cb-throws.exe \
 	block_guard_restore_aligment_on_exit.exe \
 	bug-335131.2.exe \
