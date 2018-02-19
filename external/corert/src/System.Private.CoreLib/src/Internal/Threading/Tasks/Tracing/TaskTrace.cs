@@ -11,7 +11,10 @@ namespace Internal.Threading.Tasks.Tracing
     /// Calls are forwarded to an instance of <see cref="TaskTraceCallbacks"/>, if one has been
     /// provided.
     /// </summary>
-    public static class TaskTrace
+#if !MONO
+    public 
+#endif
+    static class TaskTrace
     {
         private static TaskTraceCallbacks s_callbacks;
 

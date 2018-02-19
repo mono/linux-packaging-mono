@@ -11,7 +11,7 @@
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 
 using Internal.Runtime.Augments;
@@ -225,7 +225,7 @@ namespace System.Threading.Tasks
     //         - SynchronizationContextAwaitTaskContinuation: awaiting with a "current" sync ctx
 
     /// <summary>Represents a continuation.</summary>
-    internal abstract class TaskContinuation
+    internal abstract partial class TaskContinuation
     {
         /// <summary>Inlines or schedules the continuation.</summary>
         /// <param name="completedTask">The antecedent task that has completed.</param>
@@ -501,7 +501,7 @@ namespace System.Threading.Tasks
     }
 
     /// <summary>Base task continuation class used for await continuations.</summary>
-    internal class AwaitTaskContinuation : TaskContinuation, IThreadPoolWorkItem
+    internal partial class AwaitTaskContinuation : TaskContinuation, IThreadPoolWorkItem
     {
         /// <summary>The ExecutionContext with which to run the continuation.</summary>
         private readonly ExecutionContext m_capturedContext;

@@ -13,6 +13,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 
 
 // Disable the "reference to volatile field not treated as volatile" error.
