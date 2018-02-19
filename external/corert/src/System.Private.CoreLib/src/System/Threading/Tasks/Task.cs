@@ -14,6 +14,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
@@ -127,7 +128,7 @@ namespace System.Threading.Tasks
     /// </remarks>
     [DebuggerTypeProxy(typeof(SystemThreadingTasks_TaskDebugView))]
     [DebuggerDisplay("Id = {Id}, Status = {Status}, Method = {DebuggerDisplayMethodDescription}")]
-    public class Task : IThreadPoolWorkItem, IAsyncResult, IDisposable
+    public partial class Task : IThreadPoolWorkItem, IAsyncResult, IDisposable
     {
         internal static int s_taskIdCounter; //static counter used to generate unique task IDs
 
@@ -2420,6 +2421,7 @@ namespace System.Threading.Tasks
             return true;
         }
 
+#if !MONO
         // A trick so we can refer to the TLS slot with a byref.
         private void ExecuteWithThreadLocal(ref Task currentTaskSlot)
         {
@@ -2474,6 +2476,7 @@ namespace System.Threading.Tasks
                     TaskTrace.TaskCompleted(TaskScheduler.Current.Id, 0, this.Id, IsFaulted);
             }
         }
+#endif
 
         // Cached callback delegate that's lazily initialized due to ContextCallback being SecurityCritical
         private static ContextCallback s_ecCallback;
@@ -6087,7 +6090,7 @@ namespace System.Threading.Tasks
         }
     }  // class Task
 
-    internal sealed class CompletionActionInvoker : IThreadPoolWorkItem
+    internal sealed partial class CompletionActionInvoker : IThreadPoolWorkItem
     {
         private readonly ITaskCompletionAction m_action;
         private readonly Task m_completingTask;
