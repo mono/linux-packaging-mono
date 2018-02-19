@@ -422,7 +422,7 @@ DIST_SUBDIRS = x86 ppc sparc arm arm64 s390x amd64 mips
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 
 # arm needs to build some stuff even in JIT mode
-@ARM_TRUE@SUBDIRS = $(arch_target)
+@ARM_TRUE@SUBDIRS = arm
 all: all-recursive
 
 .SUFFIXES:
