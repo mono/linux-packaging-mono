@@ -955,6 +955,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_guid_to_string@Base 4.1.0.1738
  mono_guid_to_string_minimal@Base 4.5.2.618
  mono_hazard_pointer_get@Base 4.7.0.488
+ mono_icall_table_init@Base 5.13.0.136
  mono_image_add_to_name_cache@Base 4.1.0.1738
  mono_image_addref@Base 4.1.0.1738
  mono_image_close@Base 4.1.0.1738
