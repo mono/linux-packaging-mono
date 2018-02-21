@@ -201,7 +201,7 @@ namespace NUnit.Framework.Internal.WorkItems
             long startTicks = Stopwatch.GetTimestamp();
 #endif
 
-            finD.Set(_context, startTicks, Result);
+            finD?.Set(_context, startTicks, Result);
             PerformWork();
         }
 
@@ -220,7 +220,7 @@ namespace NUnit.Framework.Internal.WorkItems
         /// </summary>
         protected void WorkItemComplete()
         {
-            finD.Complete();
+            finD?.Complete();
             _state = WorkItemState.Complete;
             if (Completed != null)
                 Completed(this, EventArgs.Empty);
