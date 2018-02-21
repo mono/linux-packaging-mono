@@ -429,7 +429,7 @@ cert-sync /etc/pki/tls/certs/ca-bundle.crt
 %package -n libmono-2_0-1
 Summary:        A Library for embedding Mono in your Application
 License:        LGPL-2.1
-Requires:	libmonoboehm-2_0-1
+Requires:	libmonosgen-2_0-1
 Group:          Development/Libraries/C and C++
 
 %description -n libmono-2_0-1
@@ -454,7 +454,7 @@ Summary:        Development files for libmono
 License:        LGPL-2.1
 Group:          Development/Languages/Mono
 Requires:       libmono-2_0-1 = %{version}
-Requires:       libmonoboehm-2_0-devel
+Requires:       libmonosgen-2_0-devel
 Requires:       mono-core = %{version}
 
 %description -n libmono-2_0-devel
