@@ -181,6 +181,15 @@ namespace NUnit.Framework.Internal.WorkItems
 
         private void RunTest()
         {
+            /* using a separate ExecutionContext for every test case,
+             * guarantees us to have a dedicated "namespace" for the
+             * LogicalCallContext per testcase */
+            ExecutionContext ec = ExecutionContext.Capture();
+            ExecutionContext.Run(ec, DispatchWork, null);
+        }
+
+        private void DispatchWork(object o)
+        {
             _context.CurrentTest = this.Test;
             _context.CurrentResult = this.Result;
             _context.Listener.TestStarted(this.Test);
@@ -192,7 +201,7 @@ namespace NUnit.Framework.Internal.WorkItems
             long startTicks = Stopwatch.GetTimestamp();
 #endif
 
-            finD.Set(_context, startTicks, Result);
+            finD?.Set(_context, startTicks, Result);
             PerformWork();
         }
 
@@ -211,7 +220,7 @@ namespace NUnit.Framework.Internal.WorkItems
         /// </summary>
         protected void WorkItemComplete()
         {
-            finD.Complete();
+            finD?.Complete();
             _state = WorkItemState.Complete;
             if (Completed != null)
                 Completed(this, EventArgs.Empty);
