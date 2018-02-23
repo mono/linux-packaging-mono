@@ -674,7 +674,7 @@ def run(cmd, args, cwd, env=None):
         proc = subprocess.Popen(cmd_list, shell=False, cwd=cwd,
                                 env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as e:
-        error(e)
+        error(str(e))
 
     stdout, stderr = proc.communicate()
     exit_code = proc.returncode
