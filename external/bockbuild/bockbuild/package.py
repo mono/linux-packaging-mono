@@ -12,15 +12,6 @@ from util.util import *
 import functools
 
 
-# FancyURLopener is incorrectly documented; this working handler was
-# copied from
-# https://mail.python.org/pipermail/python-bugs-list/2006-February/032155.html
-class MyUrlOpener(urllib.FancyURLopener):
-
-    def http_error_default(*args, **kwargs):
-        return urllib.URLopener.http_error_default(*args, **kwargs)
-
-
 class Package:
 
     def __init__(self, name, version=None, organization=None, configure_flags=None, sources=None, revision=None, git_branch=None, source_dir_name=None, override_properties=None, configure=None):
@@ -292,11 +283,10 @@ class Package:
         def checkout_archive(archive, cache_dest, workspace_dir):
             def create_cache():
                 progress('Downloading: %s' % archive)
-                try:
-                    filename, message = MyUrlOpener().retrieve(archive, cache_dest)
-                except IOError as e:
-                    raise CommandException(
-                        '%s error downloading %s' % (e[1], archive))
+                curl_bin = which('curl')
+                if not curl_bin:
+                    error('curl not found in PATH')
+                run (curl_bin,['-L','-o', cache_dest, archive], None)
 
             def update_cache():
                 pass
