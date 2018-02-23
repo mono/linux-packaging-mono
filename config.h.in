@@ -89,20 +89,14 @@
 /* Disable CAS/CoreCLR security */
 #undef DISABLE_SECURITY
 
-/* Disable major=copying support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_COPYING
+/* Disable gc bridge support in SGEN. */
+#undef DISABLE_SGEN_GC_BRIDGE
 
-/* Disable major=marksweep-fixed support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_FIXED
+/* Disable concurrent gc support in SGEN. */
+#undef DISABLE_SGEN_MAJOR_MARKSWEEP_CONC
 
-/* Disable major=marksweep-fixed-par support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_FIXED_PAR
-
-/* Disable major=marksweep-par support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_PAR
-
-/* Disable wbarrier=remset support in SGEN. */
-#undef DISABLE_SGEN_REMSET
+/* Disable minor=split support in SGEN. */
+#undef DISABLE_SGEN_SPLIT_NURSERY
 
 /* Disable Shadow Copy for AppDomains */
 #undef DISABLE_SHADOW_COPY
