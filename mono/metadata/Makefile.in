@@ -132,15 +132,22 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libmonoruntimeincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
-libmono_icall_table_la_LIBADD =
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_DEPENDENCIES =  \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../utils/libmonoutils.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../sgen/libmonosgen.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	libmonoruntimesgen.la
 am__libmono_icall_table_la_SOURCES_DIST = icall-table.c
-@DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_OBJECTS =  \
-@DISABLE_ICALL_TABLES_TRUE@	icall-table.lo
+@DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_OBJECTS = libmono_icall_table_la-icall-table.lo
 libmono_icall_table_la_OBJECTS = $(am_libmono_icall_table_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmono_icall_table_la_CFLAGS) $(CFLAGS) \
+	$(libmono_icall_table_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
 @DISABLE_ICALL_TABLES_TRUE@	$(libdir)
 libmonoruntime_config_la_LIBADD =
@@ -856,6 +863,7 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@	w32file-unix-glob.h \
 @HOST_WIN32_FALSE@	w32error-unix.c
 
+@BITCODE_TRUE@libmonoldflags = -no-undefined
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
 @DISABLE_ICALL_TABLES_TRUE@icall_table_libraries = libmono-icall-table.la
@@ -880,6 +888,9 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_SOURCES = \
 @DISABLE_ICALL_TABLES_TRUE@	icall-table.c
 
+@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
+@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
@@ -1206,7 +1217,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libmono-icall-table.la: $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_DEPENDENCIES) $(EXTRA_libmono_icall_table_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) $(am_libmono_icall_table_la_rpath) $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmono_icall_table_la_LINK) $(am_libmono_icall_table_la_rpath) $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_LIBADD) $(LIBS)
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
@@ -1239,7 +1250,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntime_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntimesgen_la-complex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icall-table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-assembly.Plo@am__quote@
@@ -1479,6 +1490,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmono_icall_table_la-icall-table.lo: icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_icall_table_la_CFLAGS) $(CFLAGS) -MT libmono_icall_table_la-icall-table.lo -MD -MP -MF $(DEPDIR)/libmono_icall_table_la-icall-table.Tpo -c -o libmono_icall_table_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_icall_table_la-icall-table.Tpo $(DEPDIR)/libmono_icall_table_la-icall-table.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmono_icall_table_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_icall_table_la_CFLAGS) $(CFLAGS) -c -o libmono_icall_table_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
 
 libmonoruntime_config_la-mono-config-dirs.lo: mono-config-dirs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmonoruntime_config_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmonoruntime_config_la-mono-config-dirs.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Tpo -c -o libmonoruntime_config_la-mono-config-dirs.lo `test -f 'mono-config-dirs.c' || echo '$(srcdir)/'`mono-config-dirs.c

@@ -12077,6 +12077,7 @@ namespace System.Reflection.Emit
         public override System.Type DeclaringType { get { throw null; } }
         public override System.RuntimeFieldHandle FieldHandle { get { throw null; } }
         public override System.Type FieldType { get { throw null; } }
+        public override int MetadataToken { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override System.Type ReflectedType { get { throw null; } }
