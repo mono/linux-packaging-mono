@@ -286,7 +286,7 @@ class Package:
                 curl_bin = which('curl')
                 if not curl_bin:
                     error('curl not found in PATH')
-                run (curl_bin,['-L','-o', cache_dest, archive], None)
+                run (curl_bin,['--location','--fail','--output', cache_dest, archive], None)
 
             def update_cache():
                 pass

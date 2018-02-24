@@ -217,6 +217,7 @@ namespace Microsoft.Build.Utilities
         public virtual string ToolExe { get { throw null; } set { } }
         protected abstract string ToolName { get; }
         public string ToolPath { get { throw null; } set { } }
+        public bool YieldDuringToolExecution { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         [System.MonoTODOAttribute]
         protected virtual bool CallHostObjectToExecute() { throw null; }
         public virtual void Cancel() { }
