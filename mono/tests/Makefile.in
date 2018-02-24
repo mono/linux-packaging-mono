@@ -788,8 +788,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
 	struct-explicit-layout.cs bug-59281.cs \
 	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
-	threads-init.cs bug-60848.cs bug-59400.cs $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8)
+	threads-init.cs bug-60848.cs bug-59400.cs \
+	sizeof-empty-structs.cs $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
@@ -1052,7 +1053,6 @@ INTERP_DISABLED_TESTS = \
 	threadpool-exceptions4.exe \
 	threadpool-exceptions5.exe \
 	typeload-unaligned.exe \
-	weak-fields.exe \
 	vararg.exe \
 	vararg2.exe \
 	vararg3.exe	\
