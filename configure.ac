@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.13.0.223],
+AC_INIT(mono, [5.13.0.262],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1314,7 +1314,7 @@ fi
 AC_ARG_ENABLE(minimal, [  --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier, 
      reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, interpreter, simd, soft_debug, perfcounters, normalization, desktop_loader, shared_perfcounters, remoting,
-	 security, lldb, mdb, sgen_marksweep_conc, sgen_split_nursery, sgen_gc_bridge.],
+	 security, lldb, mdb, sgen_marksweep_conc, sgen_split_nursery, sgen_gc_bridge, sgen_debug_helpers.],
 [
 	for feature in `echo "$enable_minimal" | sed -e "s/,/ /g"`; do
 		eval "mono_feature_disable_$feature='yes'"
@@ -1493,6 +1493,10 @@ if test "x$mono_feature_disable_sgen_gc_bridge" = "xyes"; then
 	AC_MSG_NOTICE([Disabled gc bridge support in SGEN.])
 fi
 
+if test "x$mono_feature_disable_sgen_debug_helpers" = "xyes"; then
+	AC_DEFINE(DISABLE_SGEN_DEBUG_HELPERS, 1, [Disable debug helpers in SGEN.])
+	AC_MSG_NOTICE([Disabled debug helpers in SGEN.])
+fi
 
 AC_ARG_ENABLE(executables, [  --disable-executables disable the build of the runtime executables], enable_executables=$enableval, enable_executables=yes)
 AM_CONDITIONAL(DISABLE_EXECUTABLES, test x$enable_executables = xno)
