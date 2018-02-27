@@ -8024,22 +8024,18 @@ namespace System.Globalization
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public override int GetEra(System.DateTime time) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CompareInfo : System.Runtime.Serialization.IDeserializationCallback
     {
         internal CompareInfo() { }
         public int LCID { get { throw null; } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public virtual string Name { get { throw null; } }
-        public System.Globalization.SortVersion Version { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
+        public System.Globalization.SortVersion Version { get { throw null; } }
         public virtual int Compare(string string1, int offset1, int length1, string string2, int offset2, int length2) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int Compare(string string1, int offset1, int length1, string string2, int offset2, int length2, System.Globalization.CompareOptions options) { throw null; }
         public virtual int Compare(string string1, int offset1, string string2, int offset2) { throw null; }
         public virtual int Compare(string string1, int offset1, string string2, int offset2, System.Globalization.CompareOptions options) { throw null; }
         public virtual int Compare(string string1, string string2) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int Compare(string string1, string string2, System.Globalization.CompareOptions options) { throw null; }
         public override bool Equals(object value) { throw null; }
         public static System.Globalization.CompareInfo GetCompareInfo(int culture) { throw null; }
@@ -8055,46 +8051,35 @@ namespace System.Globalization
         public virtual int IndexOf(string source, char value, int startIndex) { throw null; }
         public virtual int IndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
         public virtual int IndexOf(string source, char value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int IndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
         public virtual int IndexOf(string source, string value) { throw null; }
         public virtual int IndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
         public virtual int IndexOf(string source, string value, int startIndex) { throw null; }
         public virtual int IndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
         public virtual int IndexOf(string source, string value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int IndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
         public virtual bool IsPrefix(string source, string prefix) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual bool IsPrefix(string source, string prefix, System.Globalization.CompareOptions options) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public static bool IsSortable(char ch) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public static bool IsSortable(string text) { throw null; }
         public virtual bool IsSuffix(string source, string suffix) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual bool IsSuffix(string source, string suffix, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, char value) { throw null; }
         public virtual int LastIndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, char value, int startIndex) { throw null; }
         public virtual int LastIndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, char value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int LastIndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, string value) { throw null; }
         public virtual int LastIndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, string value, int startIndex) { throw null; }
         public virtual int LastIndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
         public virtual int LastIndexOf(string source, string value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual int LastIndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
         void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender) { }
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CompareOptions
     {
         IgnoreCase = 1,

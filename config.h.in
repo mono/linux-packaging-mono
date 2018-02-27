@@ -89,6 +89,9 @@
 /* Disable CAS/CoreCLR security */
 #undef DISABLE_SECURITY
 
+/* Disable debug helpers in SGEN. */
+#undef DISABLE_SGEN_DEBUG_HELPERS
+
 /* Disable gc bridge support in SGEN. */
 #undef DISABLE_SGEN_GC_BRIDGE
 

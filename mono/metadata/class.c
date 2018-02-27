@@ -387,10 +387,10 @@ mono_type_get_name_recurse (MonoType *type, GString *str, gboolean is_recursed,
 	}
 	case MONO_TYPE_VAR:
 	case MONO_TYPE_MVAR:
-		if (!mono_generic_param_info (type->data.generic_param))
+		if (!mono_generic_param_name (type->data.generic_param))
 			g_string_append_printf (str, "%s%d", type->type == MONO_TYPE_VAR ? "!" : "!!", type->data.generic_param->num);
 		else
-			g_string_append (str, mono_generic_param_info (type->data.generic_param)->name);
+			g_string_append (str, mono_generic_param_name (type->data.generic_param));
 
 		mono_type_name_check_byref (type, str);
 
@@ -616,16 +616,16 @@ inflate_generic_type (MonoImage *image, MonoType *type, MonoGenericContext *cont
 		if (!inst)
 			return NULL;
 		if (num >= inst->type_argc) {
-			MonoGenericParamInfo *info = mono_generic_param_info (type->data.generic_param);
+			const char *pname = mono_generic_param_name (type->data.generic_param);
 			mono_error_set_bad_image (error, image, "MVAR %d (%s) cannot be expanded in this context with %d instantiations",
-				num, info ? info->name : "", inst->type_argc);
+				num, pname ? pname : "", inst->type_argc);
 			return NULL;
 		}
 
 		if (!is_valid_generic_argument (inst->type_argv [num])) {
-			MonoGenericParamInfo *info = mono_generic_param_info (type->data.generic_param);
+			const char *pname = mono_generic_param_name (type->data.generic_param);
 			mono_error_set_bad_image (error, image, "MVAR %d (%s) cannot be expanded with type 0x%x",
-				num, info ? info->name : "", inst->type_argv [num]->type);
+				num, pname ? pname : "", inst->type_argv [num]->type);
 			return NULL;			
 		}
 		/*
@@ -645,15 +645,15 @@ inflate_generic_type (MonoImage *image, MonoType *type, MonoGenericContext *cont
 		if (!inst)
 			return NULL;
 		if (num >= inst->type_argc) {
-			MonoGenericParamInfo *info = mono_generic_param_info (type->data.generic_param);
+			const char *pname = mono_generic_param_name (type->data.generic_param);
 			mono_error_set_bad_image (error, image, "VAR %d (%s) cannot be expanded in this context with %d instantiations",
-				num, info ? info->name : "", inst->type_argc);
+				num, pname ? pname : "", inst->type_argc);
 			return NULL;
 		}
 		if (!is_valid_generic_argument (inst->type_argv [num])) {
-			MonoGenericParamInfo *info = mono_generic_param_info (type->data.generic_param);
+			const char *pname = mono_generic_param_name (type->data.generic_param);
 			mono_error_set_bad_image (error, image, "VAR %d (%s) cannot be expanded with type 0x%x",
-				num, info ? info->name : "", inst->type_argv [num]->type);
+				num, pname ? pname : "", inst->type_argv [num]->type);
 			return NULL;			
 		}
 		nt = mono_metadata_type_dup (image, inst->type_argv [num]);
@@ -3496,6 +3496,16 @@ mono_class_is_assignable_from (MonoClass *klass, MonoClass *oklass)
 			return TRUE;
 
 		if (m_class_is_array_special_interface (klass) && m_class_get_rank (oklass) == 1) {
+			if (mono_class_is_gtd (klass)) {
+				/* klass is an array special gtd like
+				 * IList`1<>, and oklass is X[] for some X.
+				 * Moreover we know that X isn't !0 (the gparam
+				 * of IList`1) because in that case we would
+				 * have returned TRUE for
+				 * MONO_CLASS_IMPLEMENTS_INTERFACE, above.
+				 */
+				return FALSE;
+			}
 			//XXX we could offset this by having the cast target computed at JIT time
 			//XXX we could go even further and emit a wrapper that would do the extra type check
 			MonoClass *iface_klass = mono_class_from_mono_type (mono_class_get_generic_class (klass)->context.class_inst->type_argv [0]);
