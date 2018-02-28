@@ -209,7 +209,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
-	file-mmap.h object-offsets.h abi-details.h \
+	file-mmap.h object-offsets.h abi-details.h class-abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
@@ -372,7 +372,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
-	file-mmap.h object-offsets.h abi-details.h \
+	file-mmap.h object-offsets.h abi-details.h class-abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
@@ -1048,6 +1048,7 @@ common_sources = \
 	file-mmap.h	\
 	object-offsets.h	\
 	abi-details.h	\
+	class-abi-details.h	\
 	metadata-cross-helpers.c	\
 	seq-points-data.h	\
 	seq-points-data.c	\
