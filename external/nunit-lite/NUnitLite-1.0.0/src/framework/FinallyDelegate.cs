@@ -60,6 +60,23 @@ namespace NUnit.Framework.Internal
 
 		Dictionary<Guid, TestResult> lookupTable;
 
+		// Why is CallContext used? Consider the following scenario:
+		//
+		// * say Test_A runs in Thread_1
+		// * Test_A spawns another Thread_2
+		// * Thread_1 finishes with Test_A, and moves on to Test_B
+		// * Thread_2 isn't done yet really, crashes and causes an unhandled exception
+		// * we need a way to map this unhandled exception to Test_A, although Test_B is the currently running test
+		//
+		// => what we need is some sort of "thread local" that gets inherited: when
+		// Thread_1 creates Thread_2, it needs to have the same "thread local" values.
+		// that is achieved with `CallContext`.
+		//
+		// Unfortunately, remoting isn't available on every platform (it will
+		// throw PlatformNotSupportedexception), thus we can't support this
+		// scenario. Luckily, this scenario is very rare.
+
+		Container container = null;
 		private static readonly string CONTEXT_KEY = "TestResultName";
 
 		public FinallyDelegate () {
@@ -73,14 +90,18 @@ namespace NUnit.Framework.Internal
 			/* keep name in LogicalCallContext, because this will be inherited by
 			 * Threads spawned by the test case */
 			var guid = Guid.NewGuid();
-			CallContext.SetData(CONTEXT_KEY, new Container(guid));
+			try {
+				CallContext.SetData(CONTEXT_KEY, new Container(guid));
+			} catch {
+				container = new Container (guid);
+			}
 
 			this.lookupTable.Add(guid, result);
 			this.testStack.Push(frame);
 		}
 
 		public void HandleUnhandledExc (Exception ex) {
-			Container c = (Container) CallContext.GetData(CONTEXT_KEY);
+			Container c = container ?? (Container) CallContext.GetData(CONTEXT_KEY);
 			TestResult result = this.lookupTable [c.guid];
 			result.RecordException(ex);
 			result.ThreadCrashFail = true;
