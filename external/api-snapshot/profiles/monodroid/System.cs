@@ -5252,10 +5252,10 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
-        public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
-        public string Name { get { throw null; } set { } }
-        public string OldName { get { throw null; } set { } }
-        public bool TimedOut { get { throw null; } set { } }
+        public System.IO.WatcherChangeTypes ChangeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string OldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TimedOut { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     [System.FlagsAttribute]
     public enum WatcherChangeTypes

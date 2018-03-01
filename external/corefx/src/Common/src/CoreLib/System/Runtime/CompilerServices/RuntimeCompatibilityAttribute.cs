@@ -14,6 +14,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class RuntimeCompatibilityAttribute : Attribute
     {
         public RuntimeCompatibilityAttribute()

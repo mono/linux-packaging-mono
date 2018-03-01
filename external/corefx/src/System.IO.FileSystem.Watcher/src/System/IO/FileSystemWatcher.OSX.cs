@@ -14,7 +14,15 @@ using FSEventStreamEventId = System.UInt64;
 using CFRunLoopRef = System.IntPtr;
 using Microsoft.Win32.SafeHandles;
 
+#if MONO
+
+using System;
+using System.IO;
+namespace System.IO.CoreFX
+#else
+
 namespace System.IO
+#endif
 {
     public partial class FileSystemWatcher
     {

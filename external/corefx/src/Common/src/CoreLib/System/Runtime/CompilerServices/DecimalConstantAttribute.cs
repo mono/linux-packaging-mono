@@ -7,6 +7,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter, Inherited = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class DecimalConstantAttribute : Attribute
     {
         private Decimal _dec;

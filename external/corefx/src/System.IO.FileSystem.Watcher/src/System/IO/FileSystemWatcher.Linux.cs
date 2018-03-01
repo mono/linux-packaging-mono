@@ -9,7 +9,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if MONO
+
+using System;
+using System.IO;
+namespace System.IO.CoreFX
+#else
+
 namespace System.IO
+#endif
 {
     // Note: This class has an OS Limitation where the inotify API can miss events if a directory is created and immediately has
     //       changes underneath. This is due to the inotify* APIs not being recursive and needing to call inotify_add_watch on

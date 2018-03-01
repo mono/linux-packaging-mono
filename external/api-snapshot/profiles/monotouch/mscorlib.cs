@@ -12513,11 +12513,10 @@ namespace System.Runtime
 namespace System.Runtime.CompilerServices
 {
     [System.AttributeUsageAttribute((System.AttributeTargets)(256))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AccessedThroughPropertyAttribute : System.Attribute
     {
         public AccessedThroughPropertyAttribute(string propertyName) { }
-        public string PropertyName { get { throw null; } }
+        public string PropertyName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(5148), Inherited=false, AllowMultiple=false)]
     public sealed partial class AsyncMethodBuilderAttribute : System.Attribute
@@ -12646,7 +12645,6 @@ namespace System.Runtime.CompilerServices
         public CompilerGeneratedAttribute() { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CompilerGlobalScopeAttribute : System.Attribute
     {
@@ -12723,7 +12721,6 @@ namespace System.Runtime.CompilerServices
         public static void TriggerFailure(System.Diagnostics.Contracts.ContractFailureKind kind, string displayMessage, string userMessage, string conditionText, System.Exception innerException) { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2304), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class CustomConstantAttribute : System.Attribute
     {
@@ -12731,7 +12728,6 @@ namespace System.Runtime.CompilerServices
         public abstract object Value { get; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2304), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class DateTimeConstantAttribute : System.Runtime.CompilerServices.CustomConstantAttribute
     {
@@ -12739,7 +12735,6 @@ namespace System.Runtime.CompilerServices
         public override object Value { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2304), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class DecimalConstantAttribute : System.Attribute
     {
@@ -12768,7 +12763,6 @@ namespace System.Runtime.CompilerServices
     {
         public DisablePrivateReflectionAttribute() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class DiscardableAttribute : System.Attribute
     {
         public DiscardableAttribute() { }
@@ -12788,8 +12782,8 @@ namespace System.Runtime.CompilerServices
     public sealed partial class FixedBufferAttribute : System.Attribute
     {
         public FixedBufferAttribute(System.Type elementType, int length) { }
-        public System.Type ElementType { get { throw null; } }
-        public int Length { get { throw null; } }
+        public System.Type ElementType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     public static partial class FormattableStringFactory
     {
@@ -12808,7 +12802,6 @@ namespace System.Runtime.CompilerServices
     }
     public partial interface ICriticalNotifyCompletion : System.Runtime.CompilerServices.INotifyCompletion
     {
-        [System.Security.SecurityCriticalAttribute]
         void UnsafeOnCompleted(System.Action continuation);
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2304), Inherited=false)]
@@ -12820,7 +12813,6 @@ namespace System.Runtime.CompilerServices
         public override object Value { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(128), Inherited=true)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class IndexerNameAttribute : System.Attribute
     {
@@ -12881,7 +12873,6 @@ namespace System.Runtime.CompilerServices
     public static partial class IsUdtReturn
     {
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public static partial class IsVolatile
     {
     }
@@ -12959,7 +12950,7 @@ namespace System.Runtime.CompilerServices
     {
         public ReferenceAssemblyAttribute() { }
         public ReferenceAssemblyAttribute(string description) { }
-        public string Description { get { throw null; } }
+        public string Description { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1052), AllowMultiple=true, Inherited=false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -12974,7 +12965,7 @@ namespace System.Runtime.CompilerServices
     public sealed partial class RuntimeCompatibilityAttribute : System.Attribute
     {
         public RuntimeCompatibilityAttribute() { }
-        public bool WrapNonExceptionThrows { get { throw null; } set { } }
+        public bool WrapNonExceptionThrows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public static partial class RuntimeFeature
     {
@@ -13023,7 +13014,6 @@ namespace System.Runtime.CompilerServices
     {
         public RuntimeWrappedException(object thrownObject) { }
         public object WrappedException { get { throw null; } }
-        [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(16))]
@@ -13088,13 +13078,13 @@ namespace System.Runtime.CompilerServices
     public sealed partial class TypeForwardedFromAttribute : System.Attribute
     {
         public TypeForwardedFromAttribute(string assemblyFullName) { }
-        public string AssemblyFullName { get { throw null; } }
+        public string AssemblyFullName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true, Inherited=false)]
     public sealed partial class TypeForwardedToAttribute : System.Attribute
     {
         public TypeForwardedToAttribute(System.Type destination) { }
-        public System.Type Destination { get { throw null; } }
+        public System.Type Destination { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(8))]
     [System.SerializableAttribute]

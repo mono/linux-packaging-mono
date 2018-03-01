@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Field)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class FixedAddressValueTypeAttribute : Attribute
     {
         public FixedAddressValueTypeAttribute() { }

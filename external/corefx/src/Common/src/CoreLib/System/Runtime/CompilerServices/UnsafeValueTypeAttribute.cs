@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Struct)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     sealed public class UnsafeValueTypeAttribute : Attribute
     {
     }

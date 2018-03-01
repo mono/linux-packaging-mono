@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class CompilerGeneratedAttribute : Attribute
     {
         public CompilerGeneratedAttribute() { }

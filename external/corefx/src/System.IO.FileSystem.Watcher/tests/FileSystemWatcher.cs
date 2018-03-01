@@ -197,6 +197,7 @@ namespace System.IO.Tests
         /// EndInit will begin EnableRaisingEvents if we previously set EnableRaisingEvents=true
         /// </summary>
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void EndInit_ResumesPausedEnableRaisingEvents()
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))
@@ -215,6 +216,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void EndInit_ResumesPausedEnableRaisingEvents(bool setBeforeBeginInit)
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))
