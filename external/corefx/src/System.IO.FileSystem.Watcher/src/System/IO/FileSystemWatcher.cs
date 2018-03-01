@@ -8,7 +8,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if MONO
+
+using System;
+using System.IO;
+namespace System.IO.CoreFX
+#else
+
 namespace System.IO
+#endif
 {
     /// <devdoc>
     ///    Listens to the system directory change notifications and
@@ -599,9 +607,15 @@ namespace System.IO
             }
 
             // Return the results.
+#if MONO
+            return tcs.Task.Status == TaskStatus.RanToCompletion ?
+                tcs.Task.Result :
+                WaitForChangedResult.TimedOutResult;
+#else
             return tcs.Task.IsCompletedSuccessfully ?
                 tcs.Task.Result :
                 WaitForChangedResult.TimedOutResult;
+#endif
         }
 
         /// <devdoc>

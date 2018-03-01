@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter, Inherited = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class DateTimeConstantAttribute : CustomConstantAttribute
     {
         private DateTime _date;

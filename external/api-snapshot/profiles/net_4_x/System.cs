@@ -7671,10 +7671,10 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
-        public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
-        public string Name { get { throw null; } set { } }
-        public string OldName { get { throw null; } set { } }
-        public bool TimedOut { get { throw null; } set { } }
+        public System.IO.WatcherChangeTypes ChangeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string OldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TimedOut { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     [System.FlagsAttribute]
     public enum WatcherChangeTypes
@@ -7754,6 +7754,38 @@ namespace System.IO.Compression
         public override void Write(System.ReadOnlySpan<byte> source) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] array, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.Task WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+    }
+}
+namespace System.IO.CoreFX
+{
+    public partial class FileSystemWatcher : System.ComponentModel.Component, System.ComponentModel.ISupportInitialize
+    {
+        public FileSystemWatcher() { }
+        public FileSystemWatcher(string path) { }
+        public FileSystemWatcher(string path, string filter) { }
+        public bool EnableRaisingEvents { get { throw null; } set { } }
+        public string Filter { get { throw null; } set { } }
+        public bool IncludeSubdirectories { get { throw null; } set { } }
+        public int InternalBufferSize { get { throw null; } set { } }
+        public System.IO.NotifyFilters NotifyFilter { get { throw null; } set { } }
+        public string Path { get { throw null; } set { } }
+        public override System.ComponentModel.ISite Site { get { throw null; } set { } }
+        public System.ComponentModel.ISynchronizeInvoke SynchronizingObject { get { throw null; } set { } }
+        public event System.IO.FileSystemEventHandler Changed { add { } remove { } }
+        public event System.IO.FileSystemEventHandler Created { add { } remove { } }
+        public event System.IO.FileSystemEventHandler Deleted { add { } remove { } }
+        public event System.IO.ErrorEventHandler Error { add { } remove { } }
+        public event System.IO.RenamedEventHandler Renamed { add { } remove { } }
+        public void BeginInit() { }
+        protected override void Dispose(bool disposing) { }
+        public void EndInit() { }
+        protected void OnChanged(System.IO.FileSystemEventArgs e) { }
+        protected void OnCreated(System.IO.FileSystemEventArgs e) { }
+        protected void OnDeleted(System.IO.FileSystemEventArgs e) { }
+        protected void OnError(System.IO.ErrorEventArgs e) { }
+        protected void OnRenamed(System.IO.RenamedEventArgs e) { }
+        public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType) { throw null; }
+        public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType, int timeout) { throw null; }
     }
 }
 namespace System.IO.Ports

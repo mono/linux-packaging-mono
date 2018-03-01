@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class IndexerNameAttribute : Attribute
     {
         public IndexerNameAttribute(String indexerName)
