@@ -233,6 +233,91 @@ target_triplet = @target@
 @ENABLE_COOP_TRUE@	bug-58782-plain-throw.exe \
 @ENABLE_COOP_TRUE@	bug-58782-capture-and-throw.exe
 
+
+# bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
+# bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
+@ARM_TRUE@am__append_22 = \
+@ARM_TRUE@	appdomain-unload-callback.exe \
+@ARM_TRUE@	appdomain-unload.exe \
+@ARM_TRUE@	assemblyresolve_event6.exe \
+@ARM_TRUE@	async-with-cb-throws.exe \
+@ARM_TRUE@	block_guard_restore_aligment_on_exit.exe \
+@ARM_TRUE@	bug-323114.exe \
+@ARM_TRUE@	bug-335131.2.exe \
+@ARM_TRUE@	bug-415577.exe \
+@ARM_TRUE@	bug-45841-fpstack-exceptions.exe \
+@ARM_TRUE@	bug-48015.exe \
+@ARM_TRUE@	bug-60862.exe \
+@ARM_TRUE@	bug-80307.exe \
+@ARM_TRUE@	bug-80392.2.exe \
+@ARM_TRUE@	bug445361.exe \
+@ARM_TRUE@	calliGenericTest.exe \
+@ARM_TRUE@	cominterop.exe \
+@ARM_TRUE@	context-static.exe \
+@ARM_TRUE@	delegate-async-exit.exe \
+@ARM_TRUE@	delegate-delegate-exit.exe \
+@ARM_TRUE@	delegate-exit.exe \
+@ARM_TRUE@	delegate-with-null-target.exe \
+@ARM_TRUE@	delegate1.exe \
+@ARM_TRUE@	delegate3.exe \
+@ARM_TRUE@	delegate5.exe \
+@ARM_TRUE@	delegate8.exe \
+@ARM_TRUE@	delegate9.exe \
+@ARM_TRUE@	dim-diamondshape.exe \
+@ARM_TRUE@	dynamic-method-stack-traces.exe \
+@ARM_TRUE@	even-odd.exe \
+@ARM_TRUE@	exception18.exe \
+@ARM_TRUE@	field-access.exe \
+@ARM_TRUE@	finalizer-exception.exe \
+@ARM_TRUE@	handleref.exe \
+@ARM_TRUE@	itail1.exe \
+@ARM_TRUE@	monitor-abort.exe \
+@ARM_TRUE@	nullable_boxing.2.exe \
+@ARM_TRUE@	pinvoke.exe \
+@ARM_TRUE@	pinvoke2.exe \
+@ARM_TRUE@	pinvoke3.exe \
+@ARM_TRUE@	remoting2.exe \
+@ARM_TRUE@	remoting3.exe \
+@ARM_TRUE@	safehandle.2.exe \
+@ARM_TRUE@	sitail1.exe \
+@ARM_TRUE@	stackframes-async.2.exe \
+@ARM_TRUE@	static-constructor.exe \
+@ARM_TRUE@	threadpool-exceptions2.exe \
+@ARM_TRUE@	threadpool-exceptions3.exe \
+@ARM_TRUE@	threadpool-exceptions4.exe \
+@ARM_TRUE@	threadpool-exceptions5.exe \
+@ARM_TRUE@	threadpool-exceptions6.exe \
+@ARM_TRUE@	thunks.exe \
+@ARM_TRUE@	typeload-unaligned.exe \
+@ARM_TRUE@	vararg.exe \
+@ARM_TRUE@	vararg2.exe \
+@ARM_TRUE@	vararg3.exe
+
+@ARM64_TRUE@am__append_23 = \
+@ARM64_TRUE@	bug-48015.exe \
+@ARM64_TRUE@	bug-80307.exe \
+@ARM64_TRUE@	calliGenericTest.exe \
+@ARM64_TRUE@	delegate-with-null-target.exe \
+@ARM64_TRUE@	dim-diamondshape.exe \
+@ARM64_TRUE@	itail1.exe \
+@ARM64_TRUE@	pinvoke2.exe \
+@ARM64_TRUE@	pinvoke3.exe \
+@ARM64_TRUE@	sitail1.exe
+
+@AMD64_TRUE@am__append_24 = \
+@AMD64_TRUE@	assemblyresolve_event6.exe \
+@AMD64_TRUE@	bug-48015.exe \
+@AMD64_TRUE@	bug-60862.exe \
+@AMD64_TRUE@	calliGenericTest.exe \
+@AMD64_TRUE@	cominterop.exe \
+@AMD64_TRUE@	delegate-with-null-target.exe \
+@AMD64_TRUE@	dim-diamondshape.exe \
+@AMD64_TRUE@	itail1.exe \
+@AMD64_TRUE@	pinvoke.exe \
+@AMD64_TRUE@	pinvoke2.exe \
+@AMD64_TRUE@	pinvoke3.exe \
+@AMD64_TRUE@	sitail1.exe
+
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/tests-config.in \
@@ -939,30 +1024,6 @@ PLATFORM_DISABLED_TESTS = $(am__append_9) $(am__append_10) \
 	$(am__append_11) $(am__append_12) $(am__append_13) \
 	$(am__append_14) $(am__append_15) $(am__append_16) \
 	$(am__append_17) $(am__append_18)
-@ARM64_TRUE@INTERP_PLATFORM_DISABLED_TESTS = \
-@ARM64_TRUE@	assemblyresolve_event6.exe \
-@ARM64_TRUE@	finalizer-exception.exe
-
-@ARM_TRUE@INTERP_PLATFORM_DISABLED_TESTS = \
-@ARM_TRUE@	assemblyresolve_event6.exe \
-@ARM_TRUE@	delegate-async-exit.exe \
-@ARM_TRUE@	delegate-delegate-exit.exe \
-@ARM_TRUE@	delegate-exit.exe \
-@ARM_TRUE@	delegate1.exe \
-@ARM_TRUE@	delegate3.exe \
-@ARM_TRUE@	thunks.exe \
-@ARM_TRUE@	finalizer-exception.exe \
-@ARM_TRUE@	delegate5.exe \
-@ARM_TRUE@	delegate8.exe \
-@ARM_TRUE@	bug-323114.exe \
-@ARM_TRUE@	threadpool-exceptions3.exe \
-@ARM_TRUE@	threadpool-exceptions6.exe \
-@ARM_TRUE@	bug-80392.2.exe \
-@ARM_TRUE@	remoting3.exe \
-@ARM_TRUE@	remoting2.exe \
-@ARM_TRUE@	appdomain-unload-callback.exe \
-@ARM_TRUE@	monitor-abort.exe
-
 PROFILE_DISABLED_TESTS = $(am__append_19) $(am__append_20)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
@@ -1009,86 +1070,28 @@ KNOWN_FAILING_TESTS = \
 	appdomain-marshalbyref-assemblyload.exe	\
 	abort-try-holes.exe \
 	threads-init.exe \
-	dim-constrainedcall.exe
+	dim-constrainedcall.exe \
+	gptail1.exe \
+	itaili1.exe \
+	ivtail1.exe \
+	sirtail1.exe \
+	srtail1.exe \
+	stail1.exe \
+	tail1.exe \
+	taili1.exe \
+	vtail1.exe
 
 DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
 	$(PLATFORM_DISABLED_TESTS) \
-	$(EXTRA_DISABLED_TESTS) \
-	$(COOP_DISABLED_TESTS) \
 	$(PROFILE_DISABLED_TESTS) \
 	$(if $(AOT),$(AOT_DISABLED_TESTS)) \
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
-	$(if $(LLVM),$(LLVM_DISABLED_TESTS)) \
-	gptail1.exe		\
-	itaili1.exe		\
-	ivtail1.exe		\
-	sirtail1.exe		\
-	srtail1.exe		\
-	stail1.exe		\
-	tail1.exe		\
-	taili1.exe		\
-	vtail1.exe
+	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
 
-
-# bug-48015.exe: be careful when re-enabling, it happens that it returns with
-#                exit code 0, but doesn't actually execute the test.
-# block_guard_restore_aligment_on_exit.exe: flaky (10% of the time it hangs and thus times out)
-# weak-fields.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-# bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
-INTERP_DISABLED_TESTS = \
-	$(KNOWN_FAILING_TESTS) \
-	$(INTERP_PLATFORM_DISABLED_TESTS) \
-	$(COOP_DISABLED_TESTS) \
-	$(if $(CI),$(CI_DISABLED_TESTS)) \
-	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
-	appdomain-unload.exe \
-	async-with-cb-throws.exe \
-	block_guard_restore_aligment_on_exit.exe \
-	bug-335131.2.exe \
-	bug-415577.exe \
-	bug-45841-fpstack-exceptions.exe \
-	bug-48015.exe \
-	bug445361.exe \
-	bug-60862.exe \
-	calliGenericTest.exe \
-	cominterop.exe \
-	context-static.exe \
-	delegate-with-null-target.exe \
-	delegate9.exe \
-	dynamic-method-stack-traces.exe \
-	even-odd.exe \
-	exception18.exe \
-	field-access.exe \
-	handleref.exe \
-	nullable_boxing.2.exe \
-	pinvoke.exe \
-	pinvoke2.exe \
-	pinvoke3.exe \
-	safehandle.2.exe \
-	stackframes-async.2.exe \
-	static-constructor.exe \
-	threadpool-exceptions2.exe \
-	threadpool-exceptions4.exe \
-	threadpool-exceptions5.exe \
-	typeload-unaligned.exe \
-	vararg.exe \
-	vararg2.exe \
-	vararg3.exe	\
-	dim-diamondshape.exe \
-	gptail1.exe		\
-	itaili1.exe		\
-	ivtail1.exe		\
-	sirtail1.exe		\
-	srtail1.exe		\
-	stail1.exe		\
-	tail1.exe		\
-	taili1.exe		\
-	vtail1.exe		\
-	itail1.exe 		\
-	sitail1.exe
-
+INTERP_DISABLED_TESTS = $(DISABLED_TESTS) $(am__append_22) \
+	$(am__append_23) $(am__append_24)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))

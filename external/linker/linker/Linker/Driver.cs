@@ -106,12 +106,18 @@ namespace Mono.Linker {
 							Usage ("Option is too short");
 
 						if (token == "--skip-unresolved") {
-							context.IgnoreUnresolved = bool.Parse (GetParam ());
+							bool ignoreUnresolved = bool.Parse (GetParam ());
+							context.IgnoreUnresolved = ignoreUnresolved;
+							context.Resolver.IgnoreUnresolved = ignoreUnresolved;
 							continue;
 						}
 
-						if (token == "--dependencies-file")
-						{
+						if (token == "--verbose") {
+							context.LogMessages = true;
+							continue;
+						}
+
+						if (token == "--dependencies-file") {
 							context.Tracer.DependenciesFileName = GetParam ();
 							continue;
 						}
@@ -128,6 +134,12 @@ namespace Mono.Linker {
 
 						if (token == "--used-attrs-only") {
 							context.KeepUsedAttributeTypesOnly = bool.Parse (GetParam ());
+							continue;
+						}
+						
+						if (token == "--strip-security") {
+							if (bool.Parse (GetParam ()))
+								p.AddStepBefore (typeof (MarkStep), new RemoveSecurityStep ());
 							continue;
 						}
 
@@ -343,11 +355,13 @@ namespace Mono.Linker {
 
 			Console.WriteLine ("   --about             About the {0}", _linker);
 			Console.WriteLine ("   --version           Print the version number of the {0}", _linker);
-			Console.WriteLine ("   --skip-unresolved   Ignore unresolved types and methods (true or false)");
+			Console.WriteLine ("   --skip-unresolved   Ignore unresolved types, methods, and assemblies (true or false)");
+			Console.WriteLine ("   --verbose           Log messages indicating progress and warnings");
 			Console.WriteLine ("   --dependencies-file Specify the dependencies file path, if unset the default path is used: <output directory>/linker-dependencies.xml.gz");
 			Console.WriteLine ("   --dump-dependencies Dump dependencies for the linker analyzer tool");
 			Console.WriteLine ("   --reduced-tracing   Reduces dependency output related to assemblies that will not be modified");
 			Console.WriteLine ("   --used-attrs-only   Attributes on types, methods, etc will be removed if the attribute type is not used");
+			Console.WriteLine ("   --strip-security    In linked assemblies, attributes on assemblies, types, and methods related to security will be removed");
 			Console.WriteLine ("   -out                Specify the output directory, default to `output'");
 			Console.WriteLine ("   -c                  Action on the core assemblies, skip, copy, copyused, addbypassngen, addbypassngenused or link, default to skip");
 			Console.WriteLine ("   -u                  Action on the user assemblies, skip, copy, copyused, addbypassngen, addbypassngenused or link, default to link");
