@@ -1365,6 +1365,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_runtime_delegate_invoke@Base 4.1.0.1738
  mono_runtime_exec_main@Base 4.1.0.1738
  mono_runtime_exec_managed_code@Base 4.1.0.1738
+ mono_runtime_get_aotid@Base 5.13.0.308
  mono_runtime_get_main_args@Base 4.1.0.1738
  mono_runtime_init@Base 4.1.0.1738
  mono_runtime_invoke@Base 4.1.0.1738
