@@ -91,28 +91,6 @@ namespace System.Globalization
             return Invariant.GetCaseInsensitiveHashCode(s);
         }
 
-        // Currently we don't have native functions to do this, so we do it the hard way
-        internal static int IndexOfStringOrdinalIgnoreCase(string source, string value, int startIndex, int count)
-        {
-            if (count > source.Length || count < 0 || startIndex < 0 || startIndex > source.Length - count)
-            {
-                return -1;
-            }
-
-            return CultureInfo.InvariantCulture.CompareInfo.IndexOfOrdinal(source, value, startIndex, count, ignoreCase: true);
-        }
-
-        // Currently we don't have native functions to do this, so we do it the hard way
-        internal static int LastIndexOfStringOrdinalIgnoreCase(string source, string value, int startIndex, int count)
-        {
-            if (count > source.Length || count < 0 || startIndex < 0 || startIndex > source.Length - 1 || (startIndex - count + 1 < 0))
-            {
-                return -1;
-            }
-
-            return CultureInfo.InvariantCulture.CompareInfo.LastIndexOfOrdinal(source, value, startIndex, count, ignoreCase: true);
-        }
-
         public virtual int ANSICodePage => _cultureData.IDEFAULTANSICODEPAGE;
 
         public virtual int OEMCodePage => _cultureData.IDEFAULTOEMCODEPAGE;
@@ -280,6 +258,16 @@ namespace System.Globalization
             }
         }
 
+        internal void ToLowerAsciiInvariant(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(destination.Length >= source.Length);
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                destination[i] = ToLowerAsciiInvariant(source[i]);
+            }
+        }
+
         private unsafe string ToUpperAsciiInvariant(string s)
         {
             if (s.Length == 0)
@@ -323,6 +311,16 @@ namespace System.Globalization
                 }
 
                 return result;
+            }
+        }
+
+        internal void ToUpperAsciiInvariant(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(destination.Length >= source.Length);
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                destination[i] = ToUpperAsciiInvariant(source[i]);
             }
         }
 

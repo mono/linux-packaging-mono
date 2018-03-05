@@ -19,6 +19,7 @@ namespace System.Runtime.InteropServices
     ///     in order to be accessible from System.Private.Interop.dll.
     /// </summary>
     [CLSCompliant(false)]
+    [ReflectionBlocked]
     public static class InteropExtensions
     {
         // Converts a managed DateTime to native OLE datetime
@@ -183,8 +184,7 @@ namespace System.Runtime.InteropServices
 
         public static bool IsDelegate(this RuntimeTypeHandle handle)
         {
-            return InteropExtensions.AreTypesAssignable(handle, typeof(MulticastDelegate).TypeHandle) ||
-                InteropExtensions.AreTypesAssignable(handle, typeof(Delegate).TypeHandle);
+            return InteropExtensions.AreTypesAssignable(handle, typeof(Delegate).TypeHandle);
         }
 
         public static bool AreTypesAssignable(RuntimeTypeHandle sourceType, RuntimeTypeHandle targetType)
