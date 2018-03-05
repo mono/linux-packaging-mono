@@ -484,20 +484,44 @@ namespace Internal.IL
     }
 
     /// <summary>
+    /// Represents the result of a ldftn or ldvirtftn
+    /// </summary>
+    internal class FunctionPointerEntry : ExpressionEntry
+    {
+        /// <summary>
+        /// True if the function pointer was loaded as a virtual function pointer
+        /// </summary>
+        public bool IsVirtual { get; }
+
+        public MethodDesc Method { get; }
+
+        public FunctionPointerEntry(string name, MethodDesc method, LLVMValueRef llvmValue, TypeDesc type, bool isVirtual) : base(StackValueKind.NativeInt, name, llvmValue, type)
+        {
+            Method = method;
+            IsVirtual = isVirtual;
+        }
+
+        public override StackEntry Duplicate()
+        {
+            return new FunctionPointerEntry(Name, Method, RawLLVMValue, Type, IsVirtual);
+        }
+    }
+
+    /// <summary>
     /// Entry representing some token (either of TypeDesc, MethodDesc or FieldDesc) along with its string representation
     /// </summary>
     internal class LdTokenEntry<T> : ExpressionEntry
     {
         public T LdToken { get; }
 
-        public LdTokenEntry(StackValueKind kind, string name, T token, TypeDesc type = null) : base(kind, name, default(LLVMValueRef), type)
+        public LdTokenEntry(StackValueKind kind, string name, T token, LLVMValueRef llvmValue, TypeDesc type = null) : base(kind, name, llvmValue, type)
         {
             LdToken = token;
         }
 
         public override StackEntry Duplicate()
         {
-            return new LdTokenEntry<T>(Kind, Name, LdToken, Type);
+            return new LdTokenEntry<T>(Kind, Name, LdToken, RawLLVMValue, Type);
         }
 
         protected override LLVMValueRef ValueAsTypeInternal(LLVMTypeRef type, LLVMBuilderRef builder, bool signExtend)
@@ -546,7 +570,10 @@ namespace Internal.IL
 
         protected override LLVMValueRef ValueAsTypeInternal(LLVMTypeRef type, LLVMBuilderRef builder, bool signExtend)
         {
-            return _importer.LoadTemp(LocalIndex, type);
+            LLVMTypeRef origLLVMType = ILImporter.GetLLVMTypeForTypeDesc(Type);
+            LLVMValueRef value = _importer.LoadTemp(LocalIndex, origLLVMType);
+
+            return ILImporter.CastIfNecessary(builder, value, type);
         }
 
         public override StackEntry Duplicate()

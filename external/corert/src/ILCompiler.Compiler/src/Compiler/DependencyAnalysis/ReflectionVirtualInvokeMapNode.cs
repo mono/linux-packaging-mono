@@ -39,7 +39,6 @@ namespace ILCompiler.DependencyAnalysis
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
-        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory) => !factory.MetadataManager.SupportsReflection;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public static bool NeedsVirtualInvokeInfo(MethodDesc method)
@@ -115,7 +114,7 @@ namespace ILCompiler.DependencyAnalysis
 
                 if (!method.HasInstantiation)
                 {
-                    MethodDesc slotDefiningMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method).Normalize();
+                    MethodDesc slotDefiningMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method);
                     if (!factory.VTable(slotDefiningMethod.OwningType).HasFixedSlots)
                     {
                         dependencies.Add(factory.VirtualMethodUse(slotDefiningMethod), "Reflection virtual invoke method");

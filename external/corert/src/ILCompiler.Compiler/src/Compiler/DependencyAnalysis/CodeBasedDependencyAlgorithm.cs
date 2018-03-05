@@ -23,7 +23,9 @@ namespace ILCompiler.DependencyAnalysis
                 if (dependencies == null)
                     dependencies = new DependencyList();
 
-                dependencies.Add(factory.MaximallyConstructableType(method.OwningType), "Reflection invoke");
+                // The fact we need to exclude Project N is likely a bug in Project N metadata manager
+                if (factory.Target.Abi != TargetAbi.ProjectN)
+                    dependencies.Add(factory.MaximallyConstructableType(method.OwningType), "Reflection invoke");
 
                 if (factory.MetadataManager.HasReflectionInvokeStubForInvokableMethod(method)
                     && ((factory.Target.Abi != TargetAbi.ProjectN) || ProjectNDependencyBehavior.EnableFullAnalysis || !method.IsCanonicalMethod(CanonicalFormKind.Any)))
@@ -98,7 +100,7 @@ namespace ILCompiler.DependencyAnalysis
 
             factory.InteropStubManager.AddDependeciesDueToPInvoke(ref dependencies, factory, method);
 
-            if (method.IsIntrinsic && factory.Target.Abi != TargetAbi.ProjectN)
+            if (method.IsIntrinsic && factory.Target.Abi != TargetAbi.ProjectN && factory.MetadataManager.SupportsReflection)
             {
                 if (method.OwningType is MetadataType owningType)
                 {

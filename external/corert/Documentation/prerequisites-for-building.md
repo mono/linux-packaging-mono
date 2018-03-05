@@ -20,13 +20,30 @@ sudo apt-get update
 ```
 
 ```sh
-sudo apt-get install cmake clang-3.9 libicu52 libunwind8 uuid-dev
+sudo apt-get install cmake clang-3.9 libicu52 libunwind8 uuid-dev libcurl4-openssl-dev zlib1g-dev
 ```
 
 # macOS (10.12+)
 
 1. Install [Command Line Tools for XCode 8](https://developer.apple.com/xcode/download/) or higher. 
 2. Install [CMake](https://cmake.org/download/) 3.8.0 or later. Launch `/Applications/CMake.app/Contents/MacOS/CMake` GUI. Goto "OSX App Menu -> Tools -> Install For Command Line Use" and follow the steps.
+
+# openSUSE Leap 42.3
+
+First install llvm-3.9. This is a bit cumbersome because the LLVM that comes from the `zypper` feeds is too old.
+
+```sh
+wget http://releases.llvm.org/3.9.0/clang+llvm-3.9.0-x86_64-opensuse13.2.tar.xz
+tar xf clang+llvm-3.9.0-x86_64-opensuse13.2.tar.xz
+cd clang+llvm-3.9.0-x86_64-opensuse13.2
+sudo cp -R * /usr/local/
+```
+
+Next install the rest of the dependencies:
+
+```sh
+sudo zypper install cmake libuuid-devel icu libcurl-devel zlib-devel
+```
 
 # Bash on Ubuntu on Windows (Windows 10 Creators Update or later)
 
