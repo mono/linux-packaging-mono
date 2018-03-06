@@ -7094,7 +7094,6 @@ namespace System.Windows.Forms
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.DisplayNameAttribute("FlowBreak")]
         public bool GetFlowBreak(System.Windows.Forms.Control control) { throw null; }
-        protected override void OnLayout(System.Windows.Forms.LayoutEventArgs levent) { }
         [System.ComponentModel.DisplayNameAttribute("FlowBreak")]
         public void SetFlowBreak(System.Windows.Forms.Control control, bool value) { }
         bool System.ComponentModel.IExtenderProvider.CanExtend(object obj) { throw null; }
@@ -18367,7 +18366,6 @@ namespace System.Windows.Forms
         protected virtual void OnLoad(System.EventArgs e) { }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
         protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e) { }
-        protected override void OnResize(System.EventArgs e) { }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
         public override bool ValidateChildren() { throw null; }
@@ -18767,6 +18765,7 @@ namespace System.Windows.Forms
         protected override void OnVisibleChanged(System.EventArgs e) { }
         public override bool PreProcessMessage(ref System.Windows.Forms.Message msg) { throw null; }
         protected override bool ProcessMnemonic(char charCode) { throw null; }
+        protected override void SetBoundsCore(int x, int y, int width, int height, System.Windows.Forms.BoundsSpecified specified) { }
         protected override void WndProc(ref System.Windows.Forms.Message m) { }
     }
     public partial class WebBrowserDocumentCompletedEventArgs : System.EventArgs
