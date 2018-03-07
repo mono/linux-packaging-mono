@@ -1715,9 +1715,9 @@ mini_patch_jump_sites (MonoDomain *domain, MonoMethod *method, gpointer addr)
 		// FIXME: This won't work since it ends up calling mono_create_jump_trampoline () which returns a trampoline
 		// for gshared methods
 		for (tmp = jlist->list; tmp; tmp = tmp->next) {
+			ERROR_DECL (error);
 			mono_arch_patch_code (NULL, NULL, domain, tmp->data, &patch_info, TRUE, error);
-			if (!is_ok (error))
-				break;
+			mono_error_assert_ok (error);
 		}
 #endif
 	}
@@ -3575,8 +3575,7 @@ mini_create_ftnptr (MonoDomain *domain, gpointer addr)
 
 	if ((desc = g_hash_table_lookup (domain->ftnptrs_hash, addr)))
 		return desc;
-#	if defined(__ppc64__) || defined(__powerpc64__) || defined(_ARCH_PPC64)
-
+#if defined(__mono_ppc64__)
 	desc = mono_domain_alloc0 (domain, 3 * sizeof (gpointer));
 
 	desc [0] = addr;
@@ -3593,7 +3592,7 @@ mini_create_ftnptr (MonoDomain *domain, gpointer addr)
 static gpointer
 mini_get_addr_from_ftnptr (gpointer descr)
 {
-#if ((defined(__ppc64__) || defined(__powerpc64__) || defined(_ARCH_PPC64)) && _CALL_ELF != 2)
+#if defined(PPC_USES_FUNCTION_DESCRIPTOR)
 	return *(gpointer*)descr;
 #else
 	return descr;
