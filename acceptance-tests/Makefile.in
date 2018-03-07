@@ -4113,6 +4113,8 @@ CORECLR_TESTLIBRARY_CS_SRC = \
 
 # Depends on small array behavior of .net. Mono supports objects > 2Gb on 64bits and the following tests verify for that
 
+# https://github.com/mono/mono/issues/7432
+
 # FIXME: these tests are baselined, i.e. we don't have time to investigate
 # them right now but want to make sure we don't introduce new regressions
 # in the rest of the tests
@@ -4315,6 +4317,7 @@ CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/poly
 	$(CORECLR_PATH)/tests/src/JIT/Directed/lifetime/lifetime2.cs \
 	$(CORECLR_PATH)/tests/src/JIT/Directed/newarr/newarr.cs \
 	$(CORECLR_PATH)/tests/src/baseservices/exceptions/sharedexceptions/emptystacktrace/oomexception01.cs \
+	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcsuppressfinalize.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/eventhandler_generic/eventhandlerbegininvoke.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/action/actioninvoke.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/comparison/comparisonendinvoke.cs \
