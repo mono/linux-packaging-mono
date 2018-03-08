@@ -4,6 +4,9 @@
 
 namespace System.Text.RegularExpressions
 {
+#if MONO
+    [System.Serializable]
+#endif
     public class RegexCompilationInfo
     {
         private string _pattern;
