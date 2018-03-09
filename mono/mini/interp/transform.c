@@ -864,8 +864,6 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 	if (target_method == NULL) {
 		if (calli) {
 			CHECK_STACK(td, 1);
-			native = (method->wrapper_type != MONO_WRAPPER_DELEGATE_INVOKE && td->sp [-1].type == STACK_TYPE_I);
-			--td->sp;
 			if (method->wrapper_type != MONO_WRAPPER_NONE)
 				csignature = (MonoMethodSignature *)mono_method_get_wrapper_data (method, token);
 			else {
@@ -877,6 +875,13 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 				csignature = mono_inflate_generic_signature (csignature, generic_context, error);
 				return_if_nok (error);
 			}
+
+			/*
+			 * The compiled interp entry wrapper is passed to runtime_invoke instead of
+			 * the InterpMethod pointer. FIXME
+			 */
+			native = csignature->pinvoke || method->wrapper_type == MONO_WRAPPER_RUNTIME_INVOKE;
+			--td->sp;
 
 			target_method = NULL;
 		} else {
@@ -1224,7 +1229,7 @@ no_intrinsic:
 		PUSH_VT (td, vararg_stack);
 	}
 
-	g_assert (csignature->call_convention != MONO_CALL_THISCALL && csignature->call_convention != MONO_CALL_FASTCALL);
+	g_assert (csignature->call_convention != MONO_CALL_FASTCALL);
 	td->sp -= csignature->param_count + !!csignature->hasthis;
 	for (i = 0; i < csignature->param_count; ++i) {
 		if (td->sp [i + !!csignature->hasthis].type == STACK_TYPE_VT) {

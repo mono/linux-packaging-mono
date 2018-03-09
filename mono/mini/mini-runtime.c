@@ -1364,6 +1364,10 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		break;
 	}
 	case MONO_PATCH_INFO_METHOD_JUMP:
+		// When a function is calling itself (recursively), skip creating the trampoline.
+		// Trampoline would be shortly patched out and never executed.
+		if (method == patch_info->data.method)
+			return code;
 		target = mono_create_jump_trampoline (domain, patch_info->data.method, FALSE, error);
 		if (!mono_error_ok (error))
 			return NULL;
@@ -2059,11 +2063,6 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, gboolean jit_
 
 	error_init (error);
 
-	if (mono_class_is_open_constructed_type (&method->klass->byval_arg)) {
-		mono_error_set_invalid_operation (error, "Could not execute the method because the containing type is not fully instantiated.");
-		return NULL;
-	}
-
 	if (mono_use_interpreter && !jit_only) {
 		code = mini_get_interp_callbacks ()->create_method_pointer (method, error);
 		if (code)
@@ -2192,6 +2191,10 @@ lookup_start:
 	}
 
 	if (!code) {
+		if (mono_class_is_open_constructed_type (&method->klass->byval_arg)) {
+			mono_error_set_invalid_operation (error, "Could not execute the method because the containing type is not fully instantiated.");
+			return NULL;
+		}
 		if (wait_or_register_method_to_compile (method, target_domain))
 			goto lookup_start;
 		code = mono_jit_compile_method_inner (method, target_domain, opt, error);
