@@ -4,7 +4,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -1123,7 +1123,11 @@ namespace System
                 throw new OutOfMemoryException();
             string dst = FastAllocateString((int)dstLength);
 
+#if FEATURE_PORTABLE_SPAN
+            Span<char> dstSpan = new Span<char>(Unsafe.As<Pinnable<char>>(dst), MemoryExtensions.StringAdjustment, dst.Length);
+#else
             Span<char> dstSpan = new Span<char>(ref dst.GetRawStringData(), dst.Length);
+#endif
 
             int thisIdx = 0;
             int dstIdx = 0;
@@ -1155,12 +1159,24 @@ namespace System
 
         public string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
         {
-            return SplitInternal(new ReadOnlySpan<char>(ref separator, 1), int.MaxValue, options);
+#if FEATURE_PORTABLE_SPAN
+            var srcSpan = new ReadOnlySpan<char>(Unsafe.As<Pinnable<char>>(separator), IntPtr.Zero, 1);
+#else
+            var srcSpan = new ReadOnlySpan<char>(ref separator, 1)
+#endif
+
+            return SplitInternal(srcSpan, int.MaxValue, options);
         }
 
         public string[] Split(char separator, int count, StringSplitOptions options = StringSplitOptions.None)
         {
-            return SplitInternal(new ReadOnlySpan<char>(ref separator, 1), count, options);
+#if FEATURE_PORTABLE_SPAN
+            var srcSpan = new ReadOnlySpan<char>(Unsafe.As<Pinnable<char>>(separator), IntPtr.Zero, 1);
+#else
+            var srcSpan = new ReadOnlySpan<char>(ref separator, 1)
+#endif
+
+            return SplitInternal(srcSpan, count, options);
         }
 
         // Creates an array of strings by splitting this string at each

@@ -89,12 +89,16 @@ target_triplet = @target@
 @X86_TRUE@am__append_7 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
 # requires working altstack
 @HOST_WIN32_FALSE@@X86_TRUE@am__append_8 = bug-60862.cs
-@HOST_WIN32_TRUE@am__append_9 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
+
+# tailcall-virt only currently implemented on AMD64 (JIT, AOT, LLVM).
+# Not ARM, not interpreter, etc.
+@AMD64_FALSE@am__append_9 = tailcall-virt.exe
+@HOST_WIN32_TRUE@am__append_10 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
 
 # #651684
-@AMD64_TRUE@am__append_10 = finally_guard.exe
-@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_11 = w32message.exe
-@HOST_WIN32_TRUE@@X86_TRUE@am__append_12 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@AMD64_TRUE@am__append_11 = finally_guard.exe
+@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_12 = w32message.exe
+@HOST_WIN32_TRUE@@X86_TRUE@am__append_13 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe \
@@ -102,22 +106,22 @@ target_triplet = @target@
 
 
 # bug #71274
-@POWERPC_TRUE@am__append_13 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+@POWERPC_TRUE@am__append_14 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_14 = monitor.exe threadpool-exceptions5.exe appdomain-unload.exe \
+@POWERPC64_TRUE@am__append_15 = monitor.exe threadpool-exceptions5.exe appdomain-unload.exe \
 @POWERPC64_TRUE@	pinvoke2.exe pinvoke3.exe pinvoke11.exe threadpool-exceptions7.exe winx64structs.exe bug-10127.exe pinvoke_ppcc.exe \
 @POWERPC64_TRUE@	pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe abort-cctor.exe load-exceptions.exe \
 @POWERPC64_TRUE@	sgen-domain-unload-2.exe sgen-weakref-stress.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw.exe \
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe sgen-new-threads-collect.exe sgen-bridge.exe
 
-@ARM_TRUE@am__append_15 = filter-stack.exe weak-fields.exe
-@ARM64_TRUE@am__append_16 = weak-fields.exe
+@ARM_TRUE@am__append_16 = filter-stack.exe weak-fields.exe
+@ARM64_TRUE@am__append_17 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_17 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_18 = filter-stack.exe monitor.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_18 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_19 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe
@@ -154,7 +158,7 @@ target_triplet = @target@
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-@FULL_AOT_TESTS_TRUE@am__append_19 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_20 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -224,11 +228,11 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
 @FULL_AOT_TESTS_TRUE@	weak-fields.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_20 = \
+@HYBRID_AOT_TESTS_TRUE@am__append_21 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
-@ENABLE_COOP_TRUE@am__append_21 = \
+@ENABLE_COOP_TRUE@am__append_22 = \
 @ENABLE_COOP_TRUE@	abort-cctor.exe \
 @ENABLE_COOP_TRUE@	bug-58782-plain-throw.exe \
 @ENABLE_COOP_TRUE@	bug-58782-capture-and-throw.exe
@@ -236,7 +240,7 @@ target_triplet = @target@
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
-@ARM_TRUE@am__append_22 = \
+@ARM_TRUE@am__append_23 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -270,7 +274,6 @@ target_triplet = @target@
 @ARM_TRUE@	field-access.exe \
 @ARM_TRUE@	finalizer-exception.exe \
 @ARM_TRUE@	handleref.exe \
-@ARM_TRUE@	itail1.exe \
 @ARM_TRUE@	monitor-abort.exe \
 @ARM_TRUE@	nullable_boxing.2.exe \
 @ARM_TRUE@	pinvoke.exe \
@@ -279,7 +282,6 @@ target_triplet = @target@
 @ARM_TRUE@	remoting2.exe \
 @ARM_TRUE@	remoting3.exe \
 @ARM_TRUE@	safehandle.2.exe \
-@ARM_TRUE@	sitail1.exe \
 @ARM_TRUE@	stackframes-async.2.exe \
 @ARM_TRUE@	static-constructor.exe \
 @ARM_TRUE@	threadpool-exceptions2.exe \
@@ -293,18 +295,16 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_23 = \
+@ARM64_TRUE@am__append_24 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	calliGenericTest.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
-@ARM64_TRUE@	itail1.exe \
 @ARM64_TRUE@	pinvoke2.exe \
-@ARM64_TRUE@	pinvoke3.exe \
-@ARM64_TRUE@	sitail1.exe
+@ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_24 = \
+@AMD64_TRUE@am__append_25 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -312,11 +312,9 @@ target_triplet = @target@
 @AMD64_TRUE@	cominterop.exe \
 @AMD64_TRUE@	delegate-with-null-target.exe \
 @AMD64_TRUE@	dim-diamondshape.exe \
-@AMD64_TRUE@	itail1.exe \
 @AMD64_TRUE@	pinvoke.exe \
 @AMD64_TRUE@	pinvoke2.exe \
-@AMD64_TRUE@	pinvoke3.exe \
-@AMD64_TRUE@	sitail1.exe
+@AMD64_TRUE@	pinvoke3.exe
 
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -888,6 +886,10 @@ TESTS_IL_SRC = \
 	tail1.il		\
 	taili1.il		\
 	vtail1.il		\
+	tailcall-virt.il 	\
+	tailcall-rgctxa.il 	\
+	tailcall-rgctxb.il 	\
+	tailcall-mrgctx.il 	\
 	field-access.il		\
 	method-access.il	\
 	ldftn-access.il		\
@@ -1020,11 +1022,13 @@ TESTS_GSHARED_SRC = \
 	bug-1147.cs	\
 	generic-type-builder.2.cs
 
-PLATFORM_DISABLED_TESTS = $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16) \
-	$(am__append_17) $(am__append_18)
-PROFILE_DISABLED_TESTS = $(am__append_19) $(am__append_20)
+PLATFORM_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_18) \
+	$(am__append_19)
+PROFILE_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_20) \
+	$(am__append_21)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1041,7 +1045,7 @@ CI_DISABLED_TESTS = \
 # so they don't interfere with other people's work
 CI_PR_DISABLED_TESTS = appdomain-threadpool-unload.exe \
 	monitor-abort.exe monitor-wait-abort.exe process-stress-3.exe \
-	sleep.exe $(am__append_21)
+	sleep.exe $(am__append_22)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1061,6 +1065,7 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # appdomain-marshalbyref-assemblyload.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=49308
 # threads-init.exe: runs out of system threads
 # dim-constrainedcall.exe: fails on dontnet as well (https://github.com/dotnet/coreclr/issues/15353)
+# tailcall-rgctxb.exe seems like it would but it does not, needs debugging
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
@@ -1079,7 +1084,8 @@ KNOWN_FAILING_TESTS = \
 	stail1.exe \
 	tail1.exe \
 	taili1.exe \
-	vtail1.exe
+	vtail1.exe \
+	tailcall-rgctxb.exe
 
 DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
@@ -1090,8 +1096,12 @@ DISABLED_TESTS = \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
 	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
 
-INTERP_DISABLED_TESTS = $(DISABLED_TESTS) $(am__append_22) \
-	$(am__append_23) $(am__append_24)
+
+# Interpreter does not currently implement tailcall.
+# Disable all tailcall tests that are not otherwise disabled.
+INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
+	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
+	$(am__append_23) $(am__append_24) $(am__append_25)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1776,7 +1786,10 @@ test-env-options:
 
 # Precompile the test assemblies in parallel
 compile-tests:
-	$(MAKE) -j4 $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTS_GSHARED) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) $(TESTSAOT_GSHARED) compile-gac-loading
+	$(MAKE) -j4 compile-tests-parallel
+
+# Use the parallelism specified on the command line instead -- more or less than 4.
+compile-tests-parallel: $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTS_GSHARED) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) $(TESTSAOT_GSHARED) compile-gac-loading
 
 # Remove empty .stdout and .stderr files for wrench
 rm-empty-logs:

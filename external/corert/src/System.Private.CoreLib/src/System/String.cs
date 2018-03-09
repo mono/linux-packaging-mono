@@ -12,7 +12,7 @@
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Globalization;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -264,7 +264,7 @@ namespace System
             if (numBytes == 0)
                 return string.Empty;
 
-#if PLATFORM_UNIX
+#if PLATFORM_UNIX || MONO
             return Encoding.UTF8.GetString(pb, numBytes);
 #else
             int numCharsRequired = Interop.Kernel32.MultiByteToWideChar(Interop.Kernel32.CP_ACP, Interop.Kernel32.MB_PRECOMPOSED, pb, numBytes, (char*)null, 0);
@@ -386,6 +386,7 @@ namespace System
             return result;
         }
 
+#if !MONO // TODO: Undo
         public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
         {
             if (action == null)
@@ -410,6 +411,7 @@ namespace System
 
         public static implicit operator ReadOnlySpan<char>(string value) =>
             value != null ? new ReadOnlySpan<char>(ref value.GetRawStringData(), value.Length) : default;
+#endif
 
         public object Clone()
         {
