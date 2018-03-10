@@ -150,6 +150,25 @@ libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_icall_table_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
 @DISABLE_ICALL_TABLES_TRUE@	$(libdir)
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_DEPENDENCIES =  \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../utils/libmonoutils.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../sgen/libmonosgen.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	libmonoruntimesgen.la
+am__libmono_ilgen_la_SOURCES_DIST = method-builder-ilgen.c \
+	method-builder-ilgen.h method-builder-ilgen-internals.h \
+	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
+	sgen-mono-ilgen.h
+@ENABLE_ILGEN_FALSE@am_libmono_ilgen_la_OBJECTS =  \
+@ENABLE_ILGEN_FALSE@	libmono_ilgen_la-method-builder-ilgen.lo \
+@ENABLE_ILGEN_FALSE@	libmono_ilgen_la-marshal-ilgen.lo \
+@ENABLE_ILGEN_FALSE@	libmono_ilgen_la-sgen-mono-ilgen.lo
+libmono_ilgen_la_OBJECTS = $(am_libmono_ilgen_la_OBJECTS)
+libmono_ilgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmono_ilgen_la_CFLAGS) $(CFLAGS) \
+	$(libmono_ilgen_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_ILGEN_FALSE@am_libmono_ilgen_la_rpath = -rpath $(libdir)
 libmonoruntime_config_la_LIBADD =
 am_libmonoruntime_config_la_OBJECTS =  \
 	libmonoruntime_config_la-mono-config-dirs.lo
@@ -187,13 +206,14 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
 	marshal.c marshal.h marshal-internals.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
-	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	metadata-internals.h method-builder.h \
+	method-builder-internals.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
 	object-forward.h object-internals.h opcodes.c property-bag.h \
 	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
@@ -215,8 +235,11 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	callspec.h callspec.c icall-table.c gc-stats.c gc.c monitor.c \
-	null-gc.c null-gc-handles.h null-gc-handles.c boehm-gc.c
+	callspec.h callspec.c icall-table.c method-builder-ilgen.c \
+	method-builder-ilgen.h method-builder-ilgen-internals.h \
+	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
+	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c null-gc.c \
+	null-gc-handles.h null-gc-handles.c boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoruntime_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -304,13 +327,18 @@ am__objects_7 = $(am__objects_6) libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-fdhandle.lo libmonoruntime_la-callspec.lo
 @DISABLE_ICALL_TABLES_FALSE@am__objects_8 =  \
 @DISABLE_ICALL_TABLES_FALSE@	libmonoruntime_la-icall-table.lo
-am__objects_9 = libmonoruntime_la-gc-stats.lo libmonoruntime_la-gc.lo \
+@ENABLE_ILGEN_TRUE@am__objects_9 =  \
+@ENABLE_ILGEN_TRUE@	libmonoruntime_la-method-builder-ilgen.lo \
+@ENABLE_ILGEN_TRUE@	libmonoruntime_la-marshal-ilgen.lo \
+@ENABLE_ILGEN_TRUE@	libmonoruntime_la-sgen-mono-ilgen.lo
+am__objects_10 = libmonoruntime_la-gc-stats.lo libmonoruntime_la-gc.lo \
 	libmonoruntime_la-monitor.lo
-am__objects_10 = libmonoruntime_la-null-gc.lo \
+am__objects_11 = libmonoruntime_la-null-gc.lo \
 	libmonoruntime_la-null-gc-handles.lo
-am__objects_11 = libmonoruntime_la-boehm-gc.lo
+am__objects_12 = libmonoruntime_la-boehm-gc.lo
 am_libmonoruntime_la_OBJECTS = $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11)
+	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
+	$(am__objects_12)
 libmonoruntime_la_OBJECTS = $(am_libmonoruntime_la_OBJECTS)
 libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -350,13 +378,14 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
 	marshal.c marshal.h marshal-internals.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
-	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	metadata-internals.h method-builder.h \
+	method-builder-internals.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object.c \
 	object-forward.h object-internals.h opcodes.c property-bag.h \
 	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
@@ -378,12 +407,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	callspec.h callspec.c icall-table.c gc-stats.c gc.c monitor.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
+	callspec.h callspec.c icall-table.c method-builder-ilgen.c \
+	method-builder-ilgen.h method-builder-ilgen-internals.h \
+	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
+	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c sgen-bridge.c \
+	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-mono.h \
 	sgen-client-mono.h
-@HOST_WIN32_FALSE@am__objects_12 =  \
+@HOST_WIN32_FALSE@am__objects_13 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
@@ -397,10 +429,10 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32error-unix.lo
-@HOST_ANDROID_TRUE@am__objects_13 = ../../support/libm/libmonoruntimesgen_la-complex.lo
-@HOST_WASM_TRUE@am__objects_14 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
-@HOST_WASM_FALSE@am__objects_15 = libmonoruntimesgen_la-threadpool-worker-default.lo
-@HOST_WIN32_TRUE@am__objects_16 =  \
+@HOST_ANDROID_TRUE@am__objects_14 = ../../support/libm/libmonoruntimesgen_la-complex.lo
+@HOST_WASM_TRUE@am__objects_15 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
+@HOST_WASM_FALSE@am__objects_16 = libmonoruntimesgen_la-threadpool-worker-default.lo
+@HOST_WIN32_TRUE@am__objects_17 =  \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32file-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-icall-windows.lo \
@@ -412,11 +444,11 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32process-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32socket-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32error-win32.lo
-@HOST_WIN32_FALSE@am__objects_17 = $(am__objects_12) $(am__objects_13) \
-@HOST_WIN32_FALSE@	$(am__objects_14) $(am__objects_15)
-@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16) $(am__objects_13) \
-@HOST_WIN32_TRUE@	$(am__objects_14) $(am__objects_15)
-am__objects_18 = $(am__objects_17) libmonoruntimesgen_la-appdomain.lo \
+@HOST_WIN32_FALSE@am__objects_18 = $(am__objects_13) $(am__objects_14) \
+@HOST_WIN32_FALSE@	$(am__objects_15) $(am__objects_16)
+@HOST_WIN32_TRUE@am__objects_18 = $(am__objects_17) $(am__objects_14) \
+@HOST_WIN32_TRUE@	$(am__objects_15) $(am__objects_16)
+am__objects_19 = $(am__objects_18) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-domain.lo \
 	libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-attach.lo libmonoruntimesgen_la-class.lo \
@@ -486,18 +518,21 @@ am__objects_18 = $(am__objects_17) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-custom-attrs.lo \
 	libmonoruntimesgen_la-fdhandle.lo \
 	libmonoruntimesgen_la-callspec.lo
-@DISABLE_ICALL_TABLES_FALSE@am__objects_19 = libmonoruntimesgen_la-icall-table.lo
-am__objects_20 = libmonoruntimesgen_la-gc-stats.lo \
+@DISABLE_ICALL_TABLES_FALSE@am__objects_20 = libmonoruntimesgen_la-icall-table.lo
+@ENABLE_ILGEN_TRUE@am__objects_21 = libmonoruntimesgen_la-method-builder-ilgen.lo \
+@ENABLE_ILGEN_TRUE@	libmonoruntimesgen_la-marshal-ilgen.lo \
+@ENABLE_ILGEN_TRUE@	libmonoruntimesgen_la-sgen-mono-ilgen.lo
+am__objects_22 = libmonoruntimesgen_la-gc-stats.lo \
 	libmonoruntimesgen_la-gc.lo libmonoruntimesgen_la-monitor.lo
-am__objects_21 = libmonoruntimesgen_la-sgen-bridge.lo \
+am__objects_23 = libmonoruntimesgen_la-sgen-bridge.lo \
 	libmonoruntimesgen_la-sgen-old-bridge.lo \
 	libmonoruntimesgen_la-sgen-new-bridge.lo \
 	libmonoruntimesgen_la-sgen-tarjan-bridge.lo \
 	libmonoruntimesgen_la-sgen-toggleref.lo \
 	libmonoruntimesgen_la-sgen-stw.lo \
 	libmonoruntimesgen_la-sgen-mono.lo
-am_libmonoruntimesgen_la_OBJECTS = $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21)
+am_libmonoruntimesgen_la_OBJECTS = $(am__objects_19) $(am__objects_20) \
+	$(am__objects_21) $(am__objects_22) $(am__objects_23)
 libmonoruntimesgen_la_OBJECTS = $(am_libmonoruntimesgen_la_OBJECTS)
 libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -535,9 +570,11 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmono_icall_table_la_SOURCES) \
+	$(libmono_ilgen_la_SOURCES) \
 	$(libmonoruntime_config_la_SOURCES) \
 	$(libmonoruntime_la_SOURCES) $(libmonoruntimesgen_la_SOURCES)
 DIST_SOURCES = $(am__libmono_icall_table_la_SOURCES_DIST) \
+	$(am__libmono_ilgen_la_SOURCES_DIST) \
 	$(libmonoruntime_config_la_SOURCES) \
 	$(am__libmonoruntime_la_SOURCES_DIST) \
 	$(am__libmonoruntimesgen_la_SOURCES_DIST)
@@ -867,8 +904,9 @@ top_srcdir = @top_srcdir@
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
 @DISABLE_ICALL_TABLES_TRUE@icall_table_libraries = libmono-icall-table.la
+@ENABLE_ILGEN_FALSE@ilgen_libraries = libmono-ilgen.la
 noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
-lib_LTLIBRARIES = $(icall_table_libraries)
+lib_LTLIBRARIES = $(icall_table_libraries) $(ilgen_libraries)
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
@@ -891,6 +929,22 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+
+#
+# This library contains code to generate IL at runtime
+#
+@ENABLE_ILGEN_FALSE@libmono_ilgen_la_SOURCES = \
+@ENABLE_ILGEN_FALSE@	method-builder-ilgen.c \
+@ENABLE_ILGEN_FALSE@	method-builder-ilgen.h \
+@ENABLE_ILGEN_FALSE@	method-builder-ilgen-internals.h \
+@ENABLE_ILGEN_FALSE@	marshal-ilgen.c \
+@ENABLE_ILGEN_FALSE@	marshal-ilgen.h	\
+@ENABLE_ILGEN_FALSE@	sgen-mono-ilgen.c \
+@ENABLE_ILGEN_FALSE@	sgen-mono-ilgen.h
+
+@ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES)
+@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
@@ -902,6 +956,15 @@ null_gc_sources = \
 
 @DISABLE_ICALL_TABLES_FALSE@icall_tables_sources = \
 @DISABLE_ICALL_TABLES_FALSE@	icall-table.c
+
+@ENABLE_ILGEN_TRUE@ilgen_sources = \
+@ENABLE_ILGEN_TRUE@	method-builder-ilgen.c \
+@ENABLE_ILGEN_TRUE@	method-builder-ilgen.h \
+@ENABLE_ILGEN_TRUE@	method-builder-ilgen-internals.h \
+@ENABLE_ILGEN_TRUE@	marshal-ilgen.c \
+@ENABLE_ILGEN_TRUE@	marshal-ilgen.h	\
+@ENABLE_ILGEN_TRUE@	sgen-mono-ilgen.c \
+@ENABLE_ILGEN_TRUE@	sgen-mono-ilgen.h
 
 common_sources = \
 	$(platform_sources)	\
@@ -970,6 +1033,7 @@ common_sources = \
 	metadata-verify.c	\
 	metadata-internals.h	\
 	method-builder.h 	\
+	method-builder-internals.h 	\
 	method-builder.c 	\
 	mono-basic-block.c	\
 	mono-basic-block.h	\
@@ -1094,12 +1158,13 @@ sgen_sources = \
 	sgen-toggleref.h		\
 	sgen-stw.c				\
 	sgen-mono.c		\
+	sgen-mono.h		\
 	sgen-client-mono.h
 
-libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
+libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
 libmonoruntime_la_LIBADD = libmonoruntime-config.la
-libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(gc_dependent_sources) $(sgen_sources)
+libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
 libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
@@ -1220,6 +1285,9 @@ clean-noinstLTLIBRARIES:
 libmono-icall-table.la: $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_DEPENDENCIES) $(EXTRA_libmono_icall_table_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_icall_table_la_LINK) $(am_libmono_icall_table_la_rpath) $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_la_LIBADD) $(LIBS)
 
+libmono-ilgen.la: $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_DEPENDENCIES) $(EXTRA_libmono_ilgen_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_ilgen_la_LINK) $(am_libmono_ilgen_la_rpath) $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_LIBADD) $(LIBS)
+
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
 ../../support/libm/$(am__dirstamp):
@@ -1252,6 +1320,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntime_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntimesgen_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-sgen-mono-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-assembly.Plo@am__quote@
@@ -1290,12 +1361,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-locales.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-lock-tracer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-method-builder-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-basic-block.Plo@am__quote@
@@ -1323,6 +1396,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-seq-points-data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sgen-mono-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-encode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-save.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre.Plo@am__quote@
@@ -1394,12 +1468,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-locales.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-lock-tracer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-method-builder-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-basic-block.Plo@am__quote@
@@ -1426,6 +1502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-seq-points-data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-bridge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-mono-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-mono.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-new-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-old-bridge.Plo@am__quote@
@@ -1498,6 +1575,27 @@ libmono_icall_table_la-icall-table.lo: icall-table.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmono_icall_table_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_icall_table_la_CFLAGS) $(CFLAGS) -c -o libmono_icall_table_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+
+libmono_ilgen_la-method-builder-ilgen.lo: method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -MT libmono_ilgen_la-method-builder-ilgen.lo -MD -MP -MF $(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Tpo -c -o libmono_ilgen_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Tpo $(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='method-builder-ilgen.c' object='libmono_ilgen_la-method-builder-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -c -o libmono_ilgen_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+
+libmono_ilgen_la-marshal-ilgen.lo: marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -MT libmono_ilgen_la-marshal-ilgen.lo -MD -MP -MF $(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Tpo -c -o libmono_ilgen_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Tpo $(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal-ilgen.c' object='libmono_ilgen_la-marshal-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -c -o libmono_ilgen_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+
+libmono_ilgen_la-sgen-mono-ilgen.lo: sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -MT libmono_ilgen_la-sgen-mono-ilgen.lo -MD -MP -MF $(DEPDIR)/libmono_ilgen_la-sgen-mono-ilgen.Tpo -c -o libmono_ilgen_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ilgen_la-sgen-mono-ilgen.Tpo $(DEPDIR)/libmono_ilgen_la-sgen-mono-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-mono-ilgen.c' object='libmono_ilgen_la-sgen-mono-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -c -o libmono_ilgen_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
 
 libmonoruntime_config_la-mono-config-dirs.lo: mono-config-dirs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmonoruntime_config_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmonoruntime_config_la-mono-config-dirs.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Tpo -c -o libmonoruntime_config_la-mono-config-dirs.lo `test -f 'mono-config-dirs.c' || echo '$(srcdir)/'`mono-config-dirs.c
@@ -2205,6 +2303,27 @@ libmonoruntime_la-icall-table.lo: icall-table.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmonoruntime_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+
+libmonoruntime_la-method-builder-ilgen.lo: method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-method-builder-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-method-builder-ilgen.Tpo -c -o libmonoruntime_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-method-builder-ilgen.Tpo $(DEPDIR)/libmonoruntime_la-method-builder-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='method-builder-ilgen.c' object='libmonoruntime_la-method-builder-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+
+libmonoruntime_la-marshal-ilgen.lo: marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-marshal-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-marshal-ilgen.Tpo -c -o libmonoruntime_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-marshal-ilgen.Tpo $(DEPDIR)/libmonoruntime_la-marshal-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal-ilgen.c' object='libmonoruntime_la-marshal-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+
+libmonoruntime_la-sgen-mono-ilgen.lo: sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-sgen-mono-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-sgen-mono-ilgen.Tpo -c -o libmonoruntime_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-sgen-mono-ilgen.Tpo $(DEPDIR)/libmonoruntime_la-sgen-mono-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-mono-ilgen.c' object='libmonoruntime_la-sgen-mono-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
 
 libmonoruntime_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-gc-stats.Tpo -c -o libmonoruntime_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
@@ -2947,6 +3066,27 @@ libmonoruntimesgen_la-icall-table.lo: icall-table.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icall-table.c' object='libmonoruntimesgen_la-icall-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-icall-table.lo `test -f 'icall-table.c' || echo '$(srcdir)/'`icall-table.c
+
+libmonoruntimesgen_la-method-builder-ilgen.lo: method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-method-builder-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-method-builder-ilgen.Tpo -c -o libmonoruntimesgen_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-method-builder-ilgen.Tpo $(DEPDIR)/libmonoruntimesgen_la-method-builder-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='method-builder-ilgen.c' object='libmonoruntimesgen_la-method-builder-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-method-builder-ilgen.lo `test -f 'method-builder-ilgen.c' || echo '$(srcdir)/'`method-builder-ilgen.c
+
+libmonoruntimesgen_la-marshal-ilgen.lo: marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-marshal-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Tpo -c -o libmonoruntimesgen_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Tpo $(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal-ilgen.c' object='libmonoruntimesgen_la-marshal-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-marshal-ilgen.lo `test -f 'marshal-ilgen.c' || echo '$(srcdir)/'`marshal-ilgen.c
+
+libmonoruntimesgen_la-sgen-mono-ilgen.lo: sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sgen-mono-ilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sgen-mono-ilgen.Tpo -c -o libmonoruntimesgen_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-sgen-mono-ilgen.Tpo $(DEPDIR)/libmonoruntimesgen_la-sgen-mono-ilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-mono-ilgen.c' object='libmonoruntimesgen_la-sgen-mono-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
 
 libmonoruntimesgen_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-gc-stats.Tpo -c -o libmonoruntimesgen_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c

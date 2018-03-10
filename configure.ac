@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.13.0.391],
+AC_INIT(mono, [5.13.0.408],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -40,7 +40,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This can be reset to 0 when Mono's version number is bumped
 # since it's part of the corlib version (the prefix '1' in the full
 # version number is to ensure the number isn't treated as octal in C)
-MONO_CORLIB_COUNTER=2
+MONO_CORLIB_COUNTER=3
 MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR 0 $MONO_CORLIB_COUNTER`
 
 AC_DEFINE_UNQUOTED(MONO_CORLIB_VERSION,$MONO_CORLIB_VERSION,[Version of the corlib-runtime interface])
@@ -1421,6 +1421,12 @@ if test "x$mono_feature_disable_interpreter" = "xyes"; then
 fi
 
 AM_CONDITIONAL(DISABLE_INTERPRETER, test x$mono_feature_disable_interpreter = xyes)
+
+if test "x$mono_feature_disable_interpreter" != "xyes" -o "x$mono_feature_disable_jit" != "xyes"; then
+	AC_DEFINE(ENABLE_ILGEN, 1, [Some VES is available at runtime])
+fi
+
+AM_CONDITIONAL(ENABLE_ILGEN, test x$mono_feature_disable_interpreter != xyes -o x$mono_feature_disable_jit != xyes)
 
 if test "x$mono_feature_disable_simd" = "xyes"; then
 	AC_DEFINE(DISABLE_SIMD, 1, [Disable SIMD intrinsics related optimizations.])
