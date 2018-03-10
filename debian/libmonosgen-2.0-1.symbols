@@ -546,6 +546,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_lookup_internal_call@Base 4.1.0.1738
  mono_lookup_pinvoke_call@Base 4.1.0.1738
  mono_main@Base 4.1.0.1738
+ mono_marshal_ilgen_init@Base 5.13.0.408
  mono_marshal_string_to_utf16@Base 4.1.0.1738
  mono_md5_final@Base 4.1.0.1738
  mono_md5_get_digest@Base 4.1.0.1738
@@ -629,6 +630,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_metadata_typedef_from_method@Base 4.1.0.1738
  mono_metadata_user_string@Base 4.1.0.1738
  mono_method_body_get_object@Base 4.1.0.1738
+ mono_method_builder_ilgen_init@Base 5.13.0.408
  mono_method_can_access_field@Base 4.1.0.1738
  mono_method_can_access_method@Base 4.1.0.1738
  mono_method_desc_free@Base 4.1.0.1738
