@@ -146,6 +146,9 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
+/* Some VES is available at runtime */
+#undef ENABLE_ILGEN
+
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
