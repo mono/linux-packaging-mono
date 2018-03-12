@@ -933,6 +933,9 @@ PROFILE_DISABLED_TESTS += \
 	assemblyresolve_event3.exe \
 	appdomain-serialize-exception.exe
 
+PROFILE_DISABLED_TESTS += \
+	delegate15.exe
+
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
 PROFILE_DISABLED_TESTS += \
 	weak-fields.exe
@@ -962,7 +965,8 @@ CI_PR_DISABLED_TESTS = \
 	monitor-abort.exe \
 	monitor-wait-abort.exe \
 	process-stress-3.exe \
-	sleep.exe
+	sleep.exe \
+	bug-80307.exe
 
 if ENABLE_COOP
 CI_PR_DISABLED_TESTS += \
