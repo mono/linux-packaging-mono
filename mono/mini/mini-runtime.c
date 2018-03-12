@@ -1364,10 +1364,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		break;
 	}
 	case MONO_PATCH_INFO_METHOD_JUMP:
-		// When a function is calling itself (recursively), skip creating the trampoline.
-		// Trampoline would be shortly patched out and never executed.
-		if (method == patch_info->data.method)
-			return code;
 		target = mono_create_jump_trampoline (domain, patch_info->data.method, FALSE, error);
 		if (!mono_error_ok (error))
 			return NULL;
@@ -2163,7 +2159,7 @@ lookup_start:
 			 * This is not a problem, since it will be initialized when the method is first
 			 * called by init_method ().
 			 */
-			if (!mono_llvm_only) {
+			if (!mono_llvm_only && !mono_class_is_open_constructed_type (&method->klass->byval_arg)) {
 				vtable = mono_class_vtable_checked (domain, method->klass, error);
 				mono_error_assert_ok (error);
 				if (!mono_runtime_class_init_full (vtable, error))

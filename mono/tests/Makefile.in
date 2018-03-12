@@ -227,7 +227,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@FULL_AOT_TESTS_TRUE@	weak-fields.exe
+@FULL_AOT_TESTS_TRUE@	delegate15.exe weak-fields.exe
 @HYBRID_AOT_TESTS_TRUE@am__append_21 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
@@ -1045,7 +1045,7 @@ CI_DISABLED_TESTS = \
 # so they don't interfere with other people's work
 CI_PR_DISABLED_TESTS = appdomain-threadpool-unload.exe \
 	monitor-abort.exe monitor-wait-abort.exe process-stress-3.exe \
-	sleep.exe $(am__append_22)
+	sleep.exe bug-80307.exe $(am__append_22)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
