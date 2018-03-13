@@ -218,7 +218,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@FULL_AOT_TESTS_TRUE@	weak-fields.exe
+@FULL_AOT_TESTS_TRUE@	delegate15.exe weak-fields.exe
 @HYBRID_AOT_TESTS_TRUE@am__append_18 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
