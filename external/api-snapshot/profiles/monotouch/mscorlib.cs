@@ -8269,6 +8269,10 @@ namespace System.Globalization
         public override System.DateTime ToDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) { throw null; }
         public override int ToFourDigitYear(int year) { throw null; }
     }
+    public static partial class GlobalizationExtensions
+    {
+        public static System.StringComparer GetStringComparer(this System.Globalization.CompareInfo compareInfo, System.Globalization.CompareOptions options) { throw null; }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class GregorianCalendar : System.Globalization.Calendar

@@ -24,6 +24,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.IExtensibleDataObject))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.IgnoreDataMemberAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.InvalidDataContractException))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.ISerializationSurrogateProvider))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.KnownTypeAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.OnDeserializedAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.OnDeserializingAttribute))]
@@ -41,12 +42,3 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Xml.IXmlBinaryWriterInitializer))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Xml.IXmlTextReaderInitializer))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Xml.IXmlTextWriterInitializer))]
-namespace System.Runtime.Serialization
-{
-    public partial interface ISerializationSurrogateProvider
-    {
-        object GetDeserializedObject(object obj, System.Type targetType);
-        object GetObjectToSerialize(object obj, System.Type targetType);
-        System.Type GetSurrogateType(System.Type type);
-    }
-}
