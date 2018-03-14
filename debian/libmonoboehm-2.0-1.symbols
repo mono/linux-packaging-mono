@@ -1396,7 +1396,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_set_is_debugger_attached@Base 4.1.0.1738
  mono_set_rootdir@Base 4.1.0.1738
  mono_set_signal_chaining@Base 4.1.0.1738
- mono_sgen_mono_ilgen_init@Base 5.13.0.417
  mono_sha1_final@Base 4.1.0.1738
  mono_sha1_get_digest@Base 4.1.0.1738
  mono_sha1_get_digest_from_file@Base 4.1.0.1738
