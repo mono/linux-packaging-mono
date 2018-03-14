@@ -15,10 +15,4 @@
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Xml.XPath.Extensions))]
-namespace System.Xml.XPath
-{
-    public static partial class XDocumentExtensions
-    {
-        public static System.Xml.XPath.IXPathNavigable ToXPathNavigable(this System.Xml.Linq.XNode node) { throw null; }
-    }
-}
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Xml.XPath.XDocumentExtensions))]

@@ -270,6 +270,13 @@ namespace System
     {
         public NewsStyleUriParser() { }
     }
+    public static partial class StringNormalizationExtensions
+    {
+        public static bool IsNormalized(this string strInput) { throw null; }
+        public static bool IsNormalized(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
+        public static string Normalize(this string strInput) { throw null; }
+        public static string Normalize(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
+    }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.UriTypeConverter))]
     [System.SerializableAttribute]
     public partial class Uri : System.Runtime.Serialization.ISerializable
@@ -7185,6 +7192,15 @@ namespace System.Diagnostics
         protected override void OnValueChanged() { }
         public bool ShouldTrace(System.Diagnostics.TraceEventType eventType) { throw null; }
     }
+    public static partial class StackFrameExtensions
+    {
+        public static System.IntPtr GetNativeImageBase(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static System.IntPtr GetNativeIP(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasILOffset(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasMethod(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasNativeImage(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasSource(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+    }
     public partial class Stopwatch
     {
         public static readonly long Frequency;
@@ -12219,6 +12235,16 @@ namespace System.Runtime.Versioning
         public static bool operator ==(System.Runtime.Versioning.FrameworkName left, System.Runtime.Versioning.FrameworkName right) { throw null; }
         public static bool operator !=(System.Runtime.Versioning.FrameworkName left, System.Runtime.Versioning.FrameworkName right) { throw null; }
         public override string ToString() { throw null; }
+    }
+}
+namespace System.Security
+{
+    public static partial class SecureStringMarshal
+    {
+        public static System.IntPtr SecureStringToCoTaskMemAnsi(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToCoTaskMemUnicode(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToGlobalAllocAnsi(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToGlobalAllocUnicode(System.Security.SecureString s) { throw null; }
     }
 }
 namespace System.Security.AccessControl

@@ -36,7 +36,14 @@
 using System.Threading;
 using System.Text;
 
+#if MONO
+// in MONO we still use reference-sources for the following types which want StringBuilderCache to be under System.Text:
+// Version, ApplicationId, BinaryReader.cs, BinaryObjectWriter.cs, DateTimeFormat.cs, String.cs, TimeZoneInfo.cs, TimeSpanFormat.cs, KeyValuePair.cs
+// once we move them to corefx we can safely remove this condition and move StringBuilderCache back to System.IO.
+namespace System.Text
+#else
 namespace System.IO
+#endif
 {
     internal static class StringBuilderCache
     {
