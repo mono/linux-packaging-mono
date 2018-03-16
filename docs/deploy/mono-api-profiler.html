@@ -677,7 +677,7 @@ mono_profiler_set_call_instrumentation_filter_callback (MonoProfilerHandle handl
  filter functions from all installed profilers. If any of them return flags
  other than <code>MONO_PROFILER_CALL_INSTRUMENTATION_NONE</code>, then the given method
  will be instrumented as requested. All filters are guaranteed to be called
- exactly once per method, even if earlier filters have already specified all
+ at least once per method, even if earlier filters have already specified all
  flags.
 <p />
  Note that filter functions must be installed before a method is compiled in
