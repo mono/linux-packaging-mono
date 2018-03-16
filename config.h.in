@@ -167,6 +167,9 @@
 /* Define to 1 if you have the `accept4' function. */
 #undef HAVE_ACCEPT4
 
+/* Have access */
+#undef HAVE_ACCESS
+
 /* Has the 'aintl' function */
 #undef HAVE_AINTL
 
@@ -221,6 +224,12 @@
 
 /* Use classic Windows API support */
 #undef HAVE_CLASSIC_WINAPI_SUPPORT
+
+/* CLOCK_MONOTONIC */
+#undef HAVE_CLOCK_MONOTONIC
+
+/* CLOCK_MONOTONIC_COARSE */
+#undef HAVE_CLOCK_MONOTONIC_COARSE
 
 /* Define to 1 if you have the `clock_nanosleep' function. */
 #undef HAVE_CLOCK_NANOSLEEP
@@ -386,6 +395,9 @@
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
 
+/* gethrtime */
+#undef HAVE_GETHRTIME
+
 /* Have getifaddrs */
 #undef HAVE_GETIFADDRS
 
@@ -536,6 +548,9 @@
 /* Define to 1 if you have the <machine/endian.h> header file. */
 #undef HAVE_MACHINE_ENDIAN_H
 
+/* mach_absolute_time */
+#undef HAVE_MACH_ABSOLUTE_TIME
+
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
 
@@ -659,6 +674,9 @@
 
 /* Define to 1 if you have the `readv' function. */
 #undef HAVE_READV
+
+/* read_real_time */
+#undef HAVE_READ_REAL_TIME
 
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES

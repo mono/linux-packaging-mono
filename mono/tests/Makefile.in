@@ -298,23 +298,18 @@ target_triplet = @target@
 @ARM64_TRUE@am__append_24 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
-@ARM64_TRUE@	calliGenericTest.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
-@ARM64_TRUE@	pinvoke2.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
 @AMD64_TRUE@am__append_25 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
-@AMD64_TRUE@	calliGenericTest.exe \
 @AMD64_TRUE@	cominterop.exe \
 @AMD64_TRUE@	delegate-with-null-target.exe \
 @AMD64_TRUE@	dim-diamondshape.exe \
-@AMD64_TRUE@	pinvoke.exe \
-@AMD64_TRUE@	pinvoke2.exe \
-@AMD64_TRUE@	pinvoke3.exe
+@AMD64_TRUE@	pinvoke.exe
 
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -1066,6 +1061,8 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # threads-init.exe: runs out of system threads
 # dim-constrainedcall.exe: fails on dontnet as well (https://github.com/dotnet/coreclr/issues/15353)
 # tailcall-rgctxb.exe seems like it would but it does not, needs debugging
+# tailcall-mrgctx.exe   temporarily disabled
+# tailcall-rgctxa.exe   temporarily disabled
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
@@ -1085,6 +1082,8 @@ KNOWN_FAILING_TESTS = \
 	tail1.exe \
 	taili1.exe \
 	vtail1.exe \
+	tailcall-mrgctx.exe \
+	tailcall-rgctxa.exe \
 	tailcall-rgctxb.exe
 
 DISABLED_TESTS = \
