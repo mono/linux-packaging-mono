@@ -16784,11 +16784,9 @@ namespace System.Windows.Forms
         public ToolStripOverflow(System.Windows.Forms.ToolStripItem parentItem) { }
         protected internal override System.Windows.Forms.ToolStripItemCollection DisplayedItems { get { throw null; } }
         public override System.Windows.Forms.ToolStripItemCollection Items { get { throw null; } }
-        public override System.Windows.Forms.Layout.LayoutEngine LayoutEngine { get { throw null; } }
         protected override System.Windows.Forms.AccessibleObject CreateAccessibilityInstance() { throw null; }
+        protected override System.Windows.Forms.LayoutSettings CreateLayoutSettings(System.Windows.Forms.ToolStripLayoutStyle style) { throw null; }
         public override System.Drawing.Size GetPreferredSize(System.Drawing.Size constrainingSize) { throw null; }
-        [System.MonoInternalNoteAttribute("This should stack in rows of ~3, but for now 1 column will work.")]
-        protected override void OnLayout(System.Windows.Forms.LayoutEventArgs e) { }
         protected override void SetDisplayedItems() { }
     }
     [System.Windows.Forms.Design.ToolStripItemDesignerAvailabilityAttribute((System.Windows.Forms.Design.ToolStripItemDesignerAvailability)(0))]
