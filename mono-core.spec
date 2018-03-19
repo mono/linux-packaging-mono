@@ -16,14 +16,16 @@
 # Please submit bugfixes or comments via http://bugzilla.xamarin.com/
 #
 
-
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 %define ext_man .gz
 %else
 %{!?ext_man: %define ext_man .gz}
 %endif
 %define llvm no
-%global debug_package %{nil} 
+%global debug_package %{nil}
+%global _enable_debug_package %{nil}
+%global __debug_install_post %{nil}
+%global __debug_package %{nil}
 %define sgen yes
 
 Name:           mono-core
@@ -44,6 +46,9 @@ BuildRequires:  cmake
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
+%if 0%{?rhel} < 7
+BuildRequires:  devtoolset-2-gcc-c++
+%endif
 BuildRequires:  libgdiplus-devel
 BuildRequires:  libtool
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
@@ -133,6 +138,7 @@ technologies that have been submitted to the ECMA for standardization.
 %setup -q -n mono-%{version}
 
 %build
+%{?scl:scl enable %{scl} - << \EOF}
 ./autogen.sh
 # These are only needed if there are patches to the runtime
 #rm -f libgc/libtool.m4
@@ -164,6 +170,7 @@ export PATH=/opt/novell/llvm-mono/bin:$PATH
   --with-ikvm=yes \
   --with-moonlight=no
 make
+%{?scl:EOF}
 
 %install
 %make_install
@@ -265,9 +272,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/setreg
 %{_bindir}/sn
 %{_libdir}/libMonoPosixHelper.so*
-%if 0%{?rhel} >= 7
 %{_libdir}/libmono-btls-shared.so*
-%endif
 %{_libdir}/libikvm-native.so
 %{_mandir}/man1/cert-sync.1%ext_man
 %{_mandir}/man1/certmgr.1%ext_man
@@ -323,9 +328,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
-%if 0%{?rhel} >= 7
 %{_prefix}/lib/mono/4.5/Mono.Btls.Interface.dll
-%endif
 %{_prefix}/lib/mono/4.5/Mono.CSharp.dll
 %{_prefix}/lib/mono/4.5/Mono.Cairo.dll
 %{_prefix}/lib/mono/4.5/Mono.CompilerServices.SymbolWriter.dll
@@ -378,9 +381,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/ICSharpCode.SharpZipLib
 %{_prefix}/lib/mono/gac/Microsoft.CSharp
 %{_prefix}/lib/mono/gac/Microsoft.VisualC
-%if 0%{?rhel} >= 7
 %{_prefix}/lib/mono/gac/Mono.Btls.Interface
-%endif
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
