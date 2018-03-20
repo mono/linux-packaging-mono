@@ -47,7 +47,7 @@ BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 %if 0%{?rhel} < 7
-BuildRequires:  devtoolset-2-gcc-c++
+BuildRequires:  devtoolset-2-toolchain
 %endif
 BuildRequires:  libgdiplus-devel
 BuildRequires:  libtool
