@@ -170,6 +170,7 @@ libMonoPosixHelper_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libMonoPosixHelper_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
+@BUILD_SUPPORT_TRUE@am_libMonoPosixHelper_la_rpath = -rpath $(libdir)
 libMonoSupportW_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libMonoSupportW_la_OBJECTS = supportw.lo support-heap.lo
@@ -178,7 +179,8 @@ libMonoSupportW_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libMonoSupportW_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@HOST_WIN32_FALSE@am_libMonoSupportW_la_rpath = -rpath $(libdir)
+@BUILD_SUPPORT_TRUE@@HOST_WIN32_FALSE@am_libMonoSupportW_la_rpath =  \
+@BUILD_SUPPORT_TRUE@@HOST_WIN32_FALSE@	-rpath $(libdir)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -482,9 +484,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@SUPPORT = libMonoSupportW.la
 @HOST_WIN32_TRUE@SUPPORT = 
-lib_LTLIBRARIES = \
-	libMonoPosixHelper.la			\
-	$(SUPPORT)
+@BUILD_SUPPORT_TRUE@lib_LTLIBRARIES = \
+@BUILD_SUPPORT_TRUE@	libMonoPosixHelper.la			\
+@BUILD_SUPPORT_TRUE@	$(SUPPORT)
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)				\
@@ -680,7 +682,7 @@ minizip/zip.lo: minizip/$(am__dirstamp) \
 	minizip/$(DEPDIR)/$(am__dirstamp)
 
 libMonoPosixHelper.la: $(libMonoPosixHelper_la_OBJECTS) $(libMonoPosixHelper_la_DEPENDENCIES) $(EXTRA_libMonoPosixHelper_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libMonoPosixHelper_la_LINK) -rpath $(libdir) $(libMonoPosixHelper_la_OBJECTS) $(libMonoPosixHelper_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libMonoPosixHelper_la_LINK) $(am_libMonoPosixHelper_la_rpath) $(libMonoPosixHelper_la_OBJECTS) $(libMonoPosixHelper_la_LIBADD) $(LIBS)
 
 libMonoSupportW.la: $(libMonoSupportW_la_OBJECTS) $(libMonoSupportW_la_DEPENDENCIES) $(EXTRA_libMonoSupportW_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libMonoSupportW_la_LINK) $(am_libMonoSupportW_la_rpath) $(libMonoSupportW_la_OBJECTS) $(libMonoSupportW_la_LIBADD) $(LIBS)

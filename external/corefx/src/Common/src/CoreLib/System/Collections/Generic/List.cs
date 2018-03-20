@@ -1177,6 +1177,9 @@ namespace System.Collections.Generic
             }
         }
 
+#if MONO
+        [System.Serializable]
+#endif
         public struct Enumerator : IEnumerator<T>, System.Collections.IEnumerator
         {
             private List<T> _list;
