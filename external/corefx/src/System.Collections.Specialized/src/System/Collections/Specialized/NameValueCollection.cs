@@ -18,7 +18,7 @@ namespace System.Collections.Specialized
     ///    can be accessed either with the hash code of the key or with the index.</para>
     /// </devdoc>
     [Serializable]
-    public class NameValueCollection : NameObjectCollectionBase
+    public partial class NameValueCollection : NameObjectCollectionBase
     {
         private String[] _all; // Do not rename (binary serialization)
         private String[] _allKeys; // Do not rename (binary serialization)

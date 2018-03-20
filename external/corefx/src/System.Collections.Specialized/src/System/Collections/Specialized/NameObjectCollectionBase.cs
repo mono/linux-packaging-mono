@@ -22,7 +22,7 @@ namespace System.Collections.Specialized
     ///    the key or with the index.</para>
     /// </devdoc>
     [Serializable]
-    public abstract class NameObjectCollectionBase : ICollection, ISerializable, IDeserializationCallback
+    public abstract partial class NameObjectCollectionBase : ICollection, ISerializable, IDeserializationCallback
     {
         private bool _readOnly = false;
         private ArrayList _entriesArray;
