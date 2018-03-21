@@ -731,8 +731,7 @@ if HOST_WIN32
 PLATFORM_DISABLED_TESTS += async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
-	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe \
-	finalizer-abort.exe
+	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
 endif
 
 endif
@@ -969,7 +968,6 @@ CI_PR_DISABLED_TESTS = \
 
 if ENABLE_COOP
 CI_PR_DISABLED_TESTS += \
-	abort-cctor.exe \
 	bug-58782-plain-throw.exe \
 	bug-58782-capture-and-throw.exe
 endif
