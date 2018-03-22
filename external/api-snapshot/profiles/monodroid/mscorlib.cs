@@ -3502,6 +3502,7 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
         public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.Span<T> span) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] array) { throw null; }
+        public static System.ReadOnlySpan<char> AsSpan(this string text) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.ReadOnlySpan<T> span, System.IComparable<T> comparable) { throw null; }
@@ -4241,32 +4242,23 @@ namespace System
     {
         public STAThreadAttribute() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class String : System.Collections.Generic.IEnumerable<char>, System.Collections.IEnumerable, System.ICloneable, System.IComparable, System.IComparable<string>, System.IConvertible, System.IEquatable<string>
     {
         public static readonly string Empty;
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe String(char* value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe String(char* value, int startIndex, int length) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public String(char c, int count) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public String(char[] value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public String(char[] value, int startIndex, int length) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public String(char c, int count) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public String(char[] value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public String(char[] value, int startIndex, int length) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public String(System.ReadOnlySpan<char> value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe String(sbyte* value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe String(sbyte* value, int startIndex, int length) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe String(sbyte* value, int startIndex, int length, System.Text.Encoding enc) { }
         [System.Runtime.CompilerServices.IndexerName("Chars")]
         public char this[int index] { get { throw null; } }
@@ -4276,54 +4268,40 @@ namespace System
         public static int Compare(System.String strA, int indexA, System.String strB, int indexB, int length, bool ignoreCase) { throw null; }
         public static int Compare(System.String strA, int indexA, System.String strB, int indexB, int length, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
         public static int Compare(System.String strA, int indexA, System.String strB, int indexB, int length, System.Globalization.CultureInfo culture, System.Globalization.CompareOptions options) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static int Compare(System.String strA, int indexA, System.String strB, int indexB, int length, System.StringComparison comparisonType) { throw null; }
         public static int Compare(System.String strA, System.String strB) { throw null; }
         public static int Compare(System.String strA, System.String strB, bool ignoreCase) { throw null; }
         public static int Compare(System.String strA, System.String strB, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
         public static int Compare(System.String strA, System.String strB, System.Globalization.CultureInfo culture, System.Globalization.CompareOptions options) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static int Compare(System.String strA, System.String strB, System.StringComparison comparisonType) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static int CompareOrdinal(System.String strA, int indexA, System.String strB, int indexB, int length) { throw null; }
         public static int CompareOrdinal(System.String strA, System.String strB) { throw null; }
         public int CompareTo(object value) { throw null; }
         public int CompareTo(System.String strB) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public static System.String Concat(System.Collections.Generic.IEnumerable<string> values) { throw null; }
         public static System.String Concat(object arg0) { throw null; }
         public static System.String Concat(object arg0, object arg1) { throw null; }
         public static System.String Concat(object arg0, object arg1, object arg2) { throw null; }
-        [System.CLSCompliantAttribute(false)]
-        public static System.String Concat(object arg0, object arg1, object arg2, object arg3, __arglist) { throw null; }
         public static System.String Concat(params object[] args) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String Concat(System.String str0, System.String str1) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String Concat(System.String str0, System.String str1, System.String str2) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String Concat(System.String str0, System.String str1, System.String str2, System.String str3) { throw null; }
         public static System.String Concat(params string[] values) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public static System.String Concat<T>(System.Collections.Generic.IEnumerable<T> values) { throw null; }
+        public bool Contains(char value) { throw null; }
+        public bool Contains(char value, System.StringComparison comparisonType) { throw null; }
         public bool Contains(System.String value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public bool Contains(System.String value, System.StringComparison comparisonType) { throw null; }
         public static System.String Copy(System.String str) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count) { }
+        public bool EndsWith(char value) { throw null; }
         public bool EndsWith(System.String value) { throw null; }
         public bool EndsWith(System.String value, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public bool EndsWith(System.String value, System.StringComparison comparisonType) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public override bool Equals(object obj) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public bool Equals(System.String value) { throw null; }
         public static bool Equals(System.String a, System.String b) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static bool Equals(System.String a, System.String b, System.StringComparison comparisonType) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public bool Equals(System.String value, System.StringComparison comparisonType) { throw null; }
         public static System.String Format(System.IFormatProvider provider, System.String format, object arg0) { throw null; }
         public static System.String Format(System.IFormatProvider provider, System.String format, object arg0, object arg1) { throw null; }
@@ -4334,42 +4312,37 @@ namespace System
         public static System.String Format(System.String format, object arg0, object arg1, object arg2) { throw null; }
         public static System.String Format(System.String format, params object[] args) { throw null; }
         public System.CharEnumerator GetEnumerator() { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
-        [System.Security.SecuritySafeCriticalAttribute]
         public override int GetHashCode() { throw null; }
+        public int GetHashCode(System.StringComparison comparisonType) { throw null; }
         public System.TypeCode GetTypeCode() { throw null; }
         public int IndexOf(char value) { throw null; }
         public int IndexOf(char value, int startIndex) { throw null; }
         public int IndexOf(char value, int startIndex, int count) { throw null; }
+        public int IndexOf(char value, System.StringComparison comparisonType) { throw null; }
         public int IndexOf(System.String value) { throw null; }
         public int IndexOf(System.String value, int startIndex) { throw null; }
         public int IndexOf(System.String value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public int IndexOf(System.String value, int startIndex, int count, System.StringComparison comparisonType) { throw null; }
         public int IndexOf(System.String value, int startIndex, System.StringComparison comparisonType) { throw null; }
         public int IndexOf(System.String value, System.StringComparison comparisonType) { throw null; }
         public int IndexOfAny(char[] anyOf) { throw null; }
         public int IndexOfAny(char[] anyOf, int startIndex) { throw null; }
         public int IndexOfAny(char[] anyOf, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public System.String Insert(int startIndex, System.String value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String Intern(System.String str) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String IsInterned(System.String str) { throw null; }
         public bool IsNormalized() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public bool IsNormalized(System.Text.NormalizationForm normalizationForm) { throw null; }
         public static bool IsNullOrEmpty(System.String value) { throw null; }
         public static bool IsNullOrWhiteSpace(System.String value) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+        public static System.String Join(char separator, params object[] values) { throw null; }
+        public static System.String Join(char separator, params string[] value) { throw null; }
+        public static System.String Join(char separator, string[] value, int startIndex, int count) { throw null; }
         public static System.String Join(System.String separator, System.Collections.Generic.IEnumerable<string> values) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public static System.String Join(System.String separator, params object[] values) { throw null; }
         public static System.String Join(System.String separator, params string[] value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.String Join(System.String separator, string[] value, int startIndex, int count) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+        public static System.String Join<T>(char separator, System.Collections.Generic.IEnumerable<T> values) { throw null; }
         public static System.String Join<T>(System.String separator, System.Collections.Generic.IEnumerable<T> values) { throw null; }
         public int LastIndexOf(char value) { throw null; }
         public int LastIndexOf(char value, int startIndex) { throw null; }
@@ -4377,7 +4350,6 @@ namespace System
         public int LastIndexOf(System.String value) { throw null; }
         public int LastIndexOf(System.String value, int startIndex) { throw null; }
         public int LastIndexOf(System.String value, int startIndex, int count) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public int LastIndexOf(System.String value, int startIndex, int count, System.StringComparison comparisonType) { throw null; }
         public int LastIndexOf(System.String value, int startIndex, System.StringComparison comparisonType) { throw null; }
         public int LastIndexOf(System.String value, System.StringComparison comparisonType) { throw null; }
@@ -4385,7 +4357,6 @@ namespace System
         public int LastIndexOfAny(char[] anyOf, int startIndex) { throw null; }
         public int LastIndexOfAny(char[] anyOf, int startIndex, int count) { throw null; }
         public System.String Normalize() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public System.String Normalize(System.Text.NormalizationForm normalizationForm) { throw null; }
         public static bool operator ==(System.String a, System.String b) { throw null; }
         public static implicit operator System.ReadOnlySpan<char> (System.String value) { throw null; }
@@ -4395,27 +4366,26 @@ namespace System
         public System.String PadRight(int totalWidth) { throw null; }
         public System.String PadRight(int totalWidth, char paddingChar) { throw null; }
         public System.String Remove(int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public System.String Remove(int startIndex, int count) { throw null; }
         public System.String Replace(char oldChar, char newChar) { throw null; }
         public System.String Replace(System.String oldValue, System.String newValue) { throw null; }
+        public System.String Replace(System.String oldValue, System.String newValue, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
+        public System.String Replace(System.String oldValue, System.String newValue, System.StringComparison comparisonType) { throw null; }
+        public string[] Split(char separator, int count, System.StringSplitOptions options=(System.StringSplitOptions)(0)) { throw null; }
+        public string[] Split(char separator, System.StringSplitOptions options=(System.StringSplitOptions)(0)) { throw null; }
         public string[] Split(params char[] separator) { throw null; }
         public string[] Split(char[] separator, int count) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public string[] Split(char[] separator, int count, System.StringSplitOptions options) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public string[] Split(char[] separator, System.StringSplitOptions options) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+        public string[] Split(System.String separator, int count, System.StringSplitOptions options=(System.StringSplitOptions)(0)) { throw null; }
+        public string[] Split(System.String separator, System.StringSplitOptions options=(System.StringSplitOptions)(0)) { throw null; }
         public string[] Split(string[] separator, int count, System.StringSplitOptions options) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public string[] Split(string[] separator, System.StringSplitOptions options) { throw null; }
+        public bool StartsWith(char value) { throw null; }
         public bool StartsWith(System.String value) { throw null; }
         public bool StartsWith(System.String value, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public bool StartsWith(System.String value, System.StringComparison comparisonType) { throw null; }
         public System.String Substring(int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public System.String Substring(int startIndex, int length) { throw null; }
         System.Collections.Generic.IEnumerator<char> System.Collections.Generic.IEnumerable<System.Char>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
@@ -4434,9 +4404,7 @@ namespace System
         ushort System.IConvertible.ToUInt16(System.IFormatProvider provider) { throw null; }
         uint System.IConvertible.ToUInt32(System.IFormatProvider provider) { throw null; }
         ulong System.IConvertible.ToUInt64(System.IFormatProvider provider) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public char[] ToCharArray() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public char[] ToCharArray(int startIndex, int length) { throw null; }
         public System.String ToLower() { throw null; }
         public System.String ToLower(System.Globalization.CultureInfo culture) { throw null; }
@@ -4447,8 +4415,13 @@ namespace System
         public System.String ToUpper(System.Globalization.CultureInfo culture) { throw null; }
         public System.String ToUpperInvariant() { throw null; }
         public System.String Trim() { throw null; }
+        public System.String Trim(char trimChar) { throw null; }
         public System.String Trim(params char[] trimChars) { throw null; }
+        public System.String TrimEnd() { throw null; }
+        public System.String TrimEnd(char trimChar) { throw null; }
         public System.String TrimEnd(params char[] trimChars) { throw null; }
+        public System.String TrimStart() { throw null; }
+        public System.String TrimStart(char trimChar) { throw null; }
         public System.String TrimStart(params char[] trimChars) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -4467,6 +4440,7 @@ namespace System
         public static System.StringComparer Create(System.Globalization.CultureInfo culture, bool ignoreCase) { throw null; }
         public new bool Equals(object x, object y) { throw null; }
         public abstract bool Equals(string x, string y);
+        public static System.StringComparer FromComparison(System.StringComparison comparisonType) { throw null; }
         public int GetHashCode(object obj) { throw null; }
         public abstract int GetHashCode(string obj);
     }
@@ -4482,7 +4456,6 @@ namespace System
         OrdinalIgnoreCase = 5,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public enum StringSplitOptions
     {
         None = 0,

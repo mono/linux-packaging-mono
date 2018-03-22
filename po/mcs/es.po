@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-03-21 09:33+0000\n"
+"POT-Creation-Date: 2018-03-22 08:50+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -3926,7 +3926,7 @@ msgstr ""
 msgid "A goto case is only valid inside a switch statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1813 mcs/mcs/statement.cs:7008
+#: mcs/mcs/statement.cs:1813 mcs/mcs/statement.cs:7016
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
@@ -4069,50 +4069,50 @@ msgstr ""
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6597
+#: mcs/mcs/statement.cs:6605
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6677
+#: mcs/mcs/statement.cs:6685
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6682
+#: mcs/mcs/statement.cs:6690
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6868
+#: mcs/mcs/statement.cs:6876
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7483
+#: mcs/mcs/statement.cs:7491
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7720
+#: mcs/mcs/statement.cs:7728
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8136
+#: mcs/mcs/statement.cs:8144
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8180
+#: mcs/mcs/statement.cs:8188
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4120,23 +4120,23 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8201
+#: mcs/mcs/statement.cs:8209
 #, fuzzy
 msgid "Use of default literal is not valid in this context"
 msgstr "El tipo predefinido `{0}.{1}' no está definido o no ha sido importado"
 
-#: mcs/mcs/statement.cs:8204
+#: mcs/mcs/statement.cs:8212
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8442
+#: mcs/mcs/statement.cs:8450
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8454
+#: mcs/mcs/statement.cs:8462
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "El mandato `foreach' no puede operar en un `{0}'"

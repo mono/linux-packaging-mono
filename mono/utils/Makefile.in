@@ -144,8 +144,8 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-error.c mono-error-internals.h monobitset.h \
 	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
 	mono-machine.h mono-math.h mono-membar.h mono-path.h \
-	mono-poll.h mono-uri.h mono-stdlib.h valgrind.h mach-support.c \
-	mach-support.h memcheck.h mono-context.c mono-context.h \
+	mono-poll.h mono-uri.h mono-stdlib.h valgrind.h mach-support.h \
+	memcheck.h mono-context.c mono-context.h \
 	mono-stack-unwinding.h hazard-pointer.c hazard-pointer.h \
 	lock-free-queue.c lock-free-queue.h lock-free-alloc.c \
 	lock-free-alloc.h lock-free-array-queue.c \
@@ -209,8 +209,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-stdlib.lo \
 	libmonoutils_la-mono-property-hash.lo \
 	libmonoutils_la-mono-value-hash.lo \
-	libmonoutils_la-mono-error.lo libmonoutils_la-mach-support.lo \
-	libmonoutils_la-mono-context.lo \
+	libmonoutils_la-mono-error.lo libmonoutils_la-mono-context.lo \
 	libmonoutils_la-hazard-pointer.lo \
 	libmonoutils_la-lock-free-queue.lo \
 	libmonoutils_la-lock-free-alloc.lo \
@@ -750,7 +749,6 @@ monoutils_sources = \
 	mono-uri.h	\
 	mono-stdlib.h	\
 	valgrind.h	\
-	mach-support.c	\
 	mach-support.h  \
 	memcheck.h	\
 	mono-context.c	\
@@ -917,7 +915,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support-unknown.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support-x86.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-memfuncs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-codeman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-conc-hashtable.Plo@am__quote@
@@ -1317,13 +1314,6 @@ libmonoutils_la-mono-error.lo: mono-error.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-error.c' object='libmonoutils_la-mono-error.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-error.lo `test -f 'mono-error.c' || echo '$(srcdir)/'`mono-error.c
-
-libmonoutils_la-mach-support.lo: mach-support.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mach-support.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mach-support.Tpo -c -o libmonoutils_la-mach-support.lo `test -f 'mach-support.c' || echo '$(srcdir)/'`mach-support.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mach-support.Tpo $(DEPDIR)/libmonoutils_la-mach-support.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mach-support.c' object='libmonoutils_la-mach-support.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mach-support.lo `test -f 'mach-support.c' || echo '$(srcdir)/'`mach-support.c
 
 libmonoutils_la-mono-context.lo: mono-context.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-context.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-context.Tpo -c -o libmonoutils_la-mono-context.lo `test -f 'mono-context.c' || echo '$(srcdir)/'`mono-context.c
