@@ -1761,6 +1761,7 @@ namespace System.Windows.Forms
             public ObjectCollection(System.Windows.Forms.CheckedListBox owner) : base (default(System.Windows.Forms.ListBox)) { }
             public int Add(object item, bool isChecked) { throw null; }
             public int Add(object item, System.Windows.Forms.CheckState check) { throw null; }
+            public override void Clear() { }
         }
     }
     public enum CheckState

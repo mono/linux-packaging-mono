@@ -297,6 +297,14 @@ namespace System
             if (startIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndex);
 
+            if (value == null)
+            {
+                if (length == 0)
+                    return Empty;
+
+                throw new ArgumentNullException(nameof(value));
+            }
+
             byte* pStart = (byte*)(value + startIndex);
             if (pStart < value)
             {
