@@ -249,9 +249,9 @@ namespace System.Collections.Generic
                 buffer = GetBuffer(++row);
                 copied =
 #if __MonoCS__
-                CopyToCore(buffer, column, array, arrayIndex, count);
+                CopyToCore(buffer, 0, array, arrayIndex, count);
 #else
-                CopyToCore(buffer, column);
+                CopyToCore(buffer, 0);
 #endif
             } while (count > 0);
 
