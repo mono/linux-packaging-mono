@@ -1275,19 +1275,14 @@ namespace System
         public static bool KeyAvailable { get { throw null; } }
         public static int LargestWindowHeight { get { throw null; } }
         public static int LargestWindowWidth { get { throw null; } }
-        [System.MonoLimitationAttribute("Only works on windows")]
         public static bool NumberLock { get { throw null; } }
         public static System.IO.TextWriter Out { get { throw null; } }
         public static System.Text.Encoding OutputEncoding { get { throw null; } set { } }
         public static string Title { get { throw null; } set { } }
         public static bool TreatControlCAsInput { get { throw null; } set { } }
-        [System.MonoLimitationAttribute("Only works on windows")]
         public static int WindowHeight { get { throw null; } set { } }
-        [System.MonoLimitationAttribute("Only works on windows")]
         public static int WindowLeft { get { throw null; } set { } }
-        [System.MonoLimitationAttribute("Only works on windows")]
         public static int WindowTop { get { throw null; } set { } }
-        [System.MonoLimitationAttribute("Only works on windows")]
         public static int WindowWidth { get { throw null; } set { } }
         public static event System.ConsoleCancelEventHandler CancelKeyPress { add { } remove { } }
         public static void Beep() { }

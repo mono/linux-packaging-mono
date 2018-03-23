@@ -92,7 +92,7 @@ target_triplet = @target@
 
 # tailcall-virt only currently implemented on AMD64 (JIT, AOT, LLVM).
 # Not ARM, not interpreter, etc.
-@AMD64_FALSE@am__append_9 = tailcall-virt.exe
+@AMD64_FALSE@am__append_9 = tailcall-virt.exe tailcall/fsharp.exe
 @HOST_WIN32_TRUE@am__append_10 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
 
 # #651684
@@ -247,11 +247,11 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@FULL_AOT_TESTS_TRUE@	delegate15.exe weak-fields.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_21 = \
-@HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
-@HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
-
+@FULL_AOT_TESTS_TRUE@	delegate15.exe weak-fields.exe \
+@FULL_AOT_TESTS_TRUE@	tailcall/fsharp.exe
+@HYBRID_AOT_TESTS_TRUE@am__append_21 = bug-80307.exe \
+@HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe \
+@HYBRID_AOT_TESTS_TRUE@	tailcall/fsharp.exe
 @ENABLE_COOP_TRUE@am__append_22 = \
 @ENABLE_COOP_TRUE@	bug-58782-plain-throw.exe \
 @ENABLE_COOP_TRUE@	bug-58782-capture-and-throw.exe
@@ -892,6 +892,7 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	sizeof-empty-structs.cs bug-60843.cs $(am__append_5) \
 	$(am__append_6) $(am__append_7) $(am__append_8)
 TESTS_IL_SRC = \
+	tailcall/fsharp.il	\
 	gptail1.il		\
 	itail1.il		\
 	itaili1.il		\
@@ -1050,9 +1051,10 @@ PLATFORM_DISABLED_TESTS = tailcall-interface-conservestack.exe \
 	$(am__append_17) $(am__append_18) $(am__append_19)
 PROFILE_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_20) \
 	$(am__append_21)
-AOT_DISABLED_TESTS = \
-	constraints-load.exe
 
+# tailcall/fsharp.exe AOT hangs
+# tailcall/fsharp.exe FullAOT stack overflow in CI but not locally.
+AOT_DISABLED_TESTS = constraints-load.exe tailcall/fsharp.exe
 CI_DISABLED_TESTS = \
 	main-returns-background-resetabort.exe \
 	main-returns-background-abort-resetabort.exe	\
@@ -1122,8 +1124,9 @@ DISABLED_TESTS = \
 # Disable all tailcall tests that are not otherwise disabled.
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
 	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
-	tailcall-generic-cast-conservestack-il.exe bug-60843.exe \
-	$(am__append_23) $(am__append_24) $(am__append_25)
+	tailcall-generic-cast-conservestack-il.exe tailcall/fsharp.exe \
+	bug-60843.exe $(am__append_23) $(am__append_24) \
+	$(am__append_25)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))

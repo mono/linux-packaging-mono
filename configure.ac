@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.13.0.530],
+AC_INIT(mono, [5.13.0.537],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3565,6 +3565,8 @@ case "$host" in
 		TARGET=S390X;
 		arch_target=s390x;
 		ACCESS_UNALIGNED="yes"
+		BTLS_SUPPORTED=yes
+		BTLS_PLATFORM=s390x
 		CFLAGS="$CFLAGS -mbackchain -D__USE_STRING_INLINES"
 		;;
 esac
@@ -4590,6 +4592,9 @@ if test "x$enable_btls" = "xyes"; then
 		;;
 	aarch64)
 		btls_arch=aarch64
+		;;
+	s390x)
+		btls_arch=s390x
 		;;
 	powerpc)
 		btls_arch=powerpc
