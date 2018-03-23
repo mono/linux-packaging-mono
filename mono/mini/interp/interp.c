@@ -702,6 +702,11 @@ interp_throw (ThreadContext *context, MonoException *ex, InterpFrame *frame, gco
 	 * pushed above, which points to our frames.
 	 */
 	mono_handle_exception (&ctx, (MonoObject*)ex);
+	if (MONO_CONTEXT_GET_IP (&ctx) != 0) {
+		/* We need to unwind into non-interpreter code */
+		mono_restore_context (&ctx);
+		g_assert_not_reached ();
+	}
 
 	interp_pop_lmf (&ext);
 
@@ -1593,9 +1598,8 @@ interp_entry (InterpEntryData *data)
 	if (context == NULL) {
 		context = g_new0 (ThreadContext, 1);
 		set_context (context);
-	} else {
-		old_frame = context->current_frame;
 	}
+	old_frame = context->current_frame;
 
 	args = alloca (sizeof (stackval) * (sig->param_count + (sig->hasthis ? 1 : 0)));
 	if (sig->hasthis)
@@ -1629,6 +1633,7 @@ interp_entry (InterpEntryData *data)
 		}
 	}
 
+	memset (&result, 0, sizeof (result));
 	init_frame (&frame, NULL, data->rmethod, args, &result);
 
 	type = rmethod->rtype;
@@ -3684,7 +3689,6 @@ array_constructed:
 			MINT_IN_BREAK;
 
 		MINT_IN_CASE(MINT_LDRMFLD) {
-			gpointer tmp;
 			MonoClassField *field;
 			char *addr;
 
@@ -3695,6 +3699,7 @@ array_constructed:
 			ip += 2;
 #ifndef DISABLE_REMOTING
 			if (mono_object_is_transparent_proxy (o)) {
+				gpointer tmp;
 				MonoClass *klass = ((MonoTransparentProxy*)o)->remote_class->proxy_class;
 
 				addr = mono_load_remote_field_checked (o, klass, field, &tmp, error);
@@ -3710,7 +3715,6 @@ array_constructed:
 		MINT_IN_CASE(MINT_LDRMFLD_VT) {
 			MonoClassField *field;
 			char *addr;
-			gpointer tmp;
 
 			o = sp [-1].data.p;
 			if (!o)
@@ -3723,6 +3727,7 @@ array_constructed:
 			ip += 2;
 #ifndef DISABLE_REMOTING
 			if (mono_object_is_transparent_proxy (o)) {
+				gpointer tmp;
 				MonoClass *klass = ((MonoTransparentProxy*)o)->remote_class->proxy_class;
 				addr = mono_load_remote_field_checked (o, klass, field, &tmp, error);
 				mono_error_cleanup (error); /* FIXME: don't swallow the error */
@@ -5189,6 +5194,8 @@ interp_parse_options (const char *options)
 
 		if (strncmp (arg, "jit=", 4) == 0)
 			mono_interp_jit_classes = g_slist_prepend (mono_interp_jit_classes, arg + 4);
+		if (strncmp (arg, "interp-only=", 4) == 0)
+			mono_interp_only_classes = g_slist_prepend (mono_interp_only_classes, arg + strlen ("interp-only="));
 	}
 }
 
