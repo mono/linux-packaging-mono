@@ -105,25 +105,46 @@ target_triplet = @target@
 
 
 # bug #71274
-@POWERPC_TRUE@am__append_14 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+@POWERPC_TRUE@am__append_14 = finalizer-abort.exe \
+@POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
+@POWERPC_TRUE@	tailcall-generic-cast-conservestack-il.exe \
+@POWERPC_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe # \
+@POWERPC_TRUE@	MONO_ARCH_HAVE_VOLATILE_NON_PARAM_REGISTER 0
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_15 = monitor.exe threadpool-exceptions5.exe appdomain-unload.exe \
-@POWERPC64_TRUE@	pinvoke2.exe pinvoke3.exe pinvoke11.exe threadpool-exceptions7.exe winx64structs.exe bug-10127.exe pinvoke_ppcc.exe \
-@POWERPC64_TRUE@	pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe abort-cctor.exe load-exceptions.exe \
-@POWERPC64_TRUE@	sgen-domain-unload-2.exe sgen-weakref-stress.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw.exe \
-@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe sgen-new-threads-collect.exe sgen-bridge.exe
-
-@ARM_TRUE@am__append_16 = filter-stack.exe weak-fields.exe
+@POWERPC64_TRUE@am__append_15 = monitor.exe threadpool-exceptions5.exe \
+@POWERPC64_TRUE@	appdomain-unload.exe pinvoke2.exe pinvoke3.exe \
+@POWERPC64_TRUE@	pinvoke11.exe threadpool-exceptions7.exe \
+@POWERPC64_TRUE@	winx64structs.exe bug-10127.exe \
+@POWERPC64_TRUE@	pinvoke_ppcc.exe pinvoke_ppcs.exe \
+@POWERPC64_TRUE@	pinvoke_ppci.exe pinvoke_ppcf.exe \
+@POWERPC64_TRUE@	pinvoke_ppcd.exe abort-cctor.exe \
+@POWERPC64_TRUE@	load-exceptions.exe sgen-domain-unload-2.exe \
+@POWERPC64_TRUE@	sgen-weakref-stress.exe \
+@POWERPC64_TRUE@	sgen-cementing-stress.exe \
+@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw.exe \
+@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe \
+@POWERPC64_TRUE@	sgen-new-threads-collect.exe sgen-bridge.exe \
+@POWERPC64_TRUE@	tailcall-generic-cast-conservestack-il.exe
+@ARM_TRUE@am__append_16 = filter-stack.exe weak-fields.exe \
+@ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
+@ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe # \
+@ARM_TRUE@	MONO_ARCH_HAVE_VOLATILE_NON_PARAM_REGISTER 0
 @ARM64_TRUE@am__append_17 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_18 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_18 = filter-stack.exe monitor.exe \
+@MIPS_TRUE@	tailcall-generic-cast-conservestack-il.exe \
+@MIPS_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe # \
+@MIPS_TRUE@	MONO_ARCH_HAVE_VOLATILE_NON_PARAM_REGISTER 0
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
 @S390X_TRUE@am__append_19 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
-@S390X_TRUE@	sgen-bridge-xref.exe
+@S390X_TRUE@	sgen-bridge-xref.exe \
+@S390X_TRUE@	tailcall-generic-cast-conservestack-il.exe \
+@S390X_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe # \
+@S390X_TRUE@	MONO_ARCH_HAVE_VOLATILE_NON_PARAM_REGISTER 0
 
 # Tests which rely on TypeLoadExceptions
 # In full-aot mode, these cause the relevant methods to be not AOTed.
@@ -867,9 +888,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	struct-explicit-layout.cs bug-59281.cs \
 	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
 	threads-init.cs bug-60848.cs bug-59400.cs \
-	tailcall-interface.cs sizeof-empty-structs.cs bug-60843.cs \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8)
+	tailcall-generic-cast-cs.cs tailcall-interface.cs \
+	sizeof-empty-structs.cs bug-60843.cs $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8)
 TESTS_IL_SRC = \
 	gptail1.il		\
 	itail1.il		\
@@ -962,7 +983,9 @@ TESTS_IL_SRC = \
 	dim-methodimpl.il	\
 	dim-sharedgenerics.il	\
 	dim-simple.il	\
-	dim-valuetypes.il
+	dim-valuetypes.il \
+	tailcall-generic-cast-conservestack-il.il \
+	tailcall-generic-cast-nocrash-il.il
 
 TESTS_GSHARED_SRC = \
 	generics-sharing.2.cs	\
@@ -1064,8 +1087,6 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # threads-init.exe: runs out of system threads
 # dim-constrainedcall.exe: fails on dontnet as well (https://github.com/dotnet/coreclr/issues/15353)
 # tailcall-rgctxb.exe seems like it would but it does not, needs debugging
-# tailcall-mrgctx.exe   temporarily disabled
-# tailcall-rgctxa.exe   temporarily disabled
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
@@ -1085,8 +1106,6 @@ KNOWN_FAILING_TESTS = \
 	tail1.exe \
 	taili1.exe \
 	vtail1.exe \
-	tailcall-mrgctx.exe \
-	tailcall-rgctxa.exe \
 	tailcall-rgctxb.exe
 
 DISABLED_TESTS = \
@@ -1103,8 +1122,8 @@ DISABLED_TESTS = \
 # Disable all tailcall tests that are not otherwise disabled.
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
 	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
-	bug-60843.exe $(am__append_23) $(am__append_24) \
-	$(am__append_25)
+	tailcall-generic-cast-conservestack-il.exe bug-60843.exe \
+	$(am__append_23) $(am__append_24) $(am__append_25)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
