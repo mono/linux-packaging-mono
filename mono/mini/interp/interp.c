@@ -2208,7 +2208,9 @@ interp_create_method_pointer (MonoMethod *method, MonoError *error)
 	wrapper = mini_get_interp_in_wrapper (sig);
 
 	gpointer jit_wrapper = mono_jit_compile_method_jit_only (wrapper, error);
-	mono_error_assertf_ok (error, "couldn't compile wrapper \"%s\" for \"%s\"", mono_method_get_full_name (wrapper), mono_method_get_full_name (method));
+	mono_error_assertf_ok (error, "couldn't compile wrapper \"%s\" for \"%s\"",
+			mono_method_get_name_full (wrapper, TRUE, TRUE, MONO_TYPE_NAME_FORMAT_IL),
+			mono_method_get_name_full (method,  TRUE, TRUE, MONO_TYPE_NAME_FORMAT_IL));
 
 	gpointer entry_func;
 	if (sig->param_count > MAX_INTERP_ENTRY_ARGS) {
@@ -3163,6 +3165,10 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 			++sp [-1].data.i;
 			++ip;
 			MINT_IN_BREAK;
+		MINT_IN_CASE(MINT_ADD1_I8)
+			++sp [-1].data.l;
+			++ip;
+			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_SUB_I4)
 			BINOP(i, -);
 			MINT_IN_BREAK;
@@ -3174,6 +3180,10 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_SUB1_I4)
 			--sp [-1].data.i;
+			++ip;
+			MINT_IN_BREAK;
+		MINT_IN_CASE(MINT_SUB1_I8)
+			--sp [-1].data.l;
 			++ip;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_MUL_I4)
