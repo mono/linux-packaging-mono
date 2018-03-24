@@ -5864,7 +5864,6 @@ namespace System.Collections
 {
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.ArrayList.ArrayListDebugView")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class ArrayList : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList, System.ICloneable
     {
@@ -5915,16 +5914,12 @@ namespace System.Collections
         public virtual void Sort() { }
         public virtual void Sort(System.Collections.IComparer comparer) { }
         public virtual void Sort(int index, int count, System.Collections.IComparer comparer) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.ArrayList Synchronized(System.Collections.ArrayList list) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.IList Synchronized(System.Collections.IList list) { throw null; }
         public virtual object[] ToArray() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public virtual System.Array ToArray(System.Type type) { throw null; }
         public virtual void TrimToSize() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class BitArray : System.Collections.ICollection, System.Collections.IEnumerable, System.ICloneable
     {
@@ -5945,13 +5940,14 @@ namespace System.Collections
         public void CopyTo(System.Array array, int index) { }
         public bool Get(int index) { throw null; }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
+        public System.Collections.BitArray LeftShift(int count) { throw null; }
         public System.Collections.BitArray Not() { throw null; }
         public System.Collections.BitArray Or(System.Collections.BitArray value) { throw null; }
+        public System.Collections.BitArray RightShift(int count) { throw null; }
         public void Set(int index, bool value) { }
         public void SetAll(bool value) { }
         public System.Collections.BitArray Xor(System.Collections.BitArray value) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CaseInsensitiveComparer : System.Collections.IComparer
     {
@@ -5962,7 +5958,6 @@ namespace System.Collections
         public int Compare(object a, object b) { throw null; }
     }
     [System.ObsoleteAttribute("Please use StringComparer instead.")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CaseInsensitiveHashCodeProvider : System.Collections.IHashCodeProvider
     {
@@ -5972,13 +5967,11 @@ namespace System.Collections
         public static System.Collections.CaseInsensitiveHashCodeProvider DefaultInvariant { get { throw null; } }
         public int GetHashCode(object obj) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class CollectionBase : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         protected CollectionBase() { }
         protected CollectionBase(int capacity) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public int Capacity { get { throw null; } set { } }
         public int Count { get { throw null; } }
         protected System.Collections.ArrayList InnerList { get { throw null; } }
@@ -6007,7 +6000,6 @@ namespace System.Collections
         void System.Collections.IList.Insert(int index, object value) { }
         void System.Collections.IList.Remove(object value) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class Comparer : System.Collections.IComparer, System.Runtime.Serialization.ISerializable
     {
@@ -6015,10 +6007,8 @@ namespace System.Collections
         public static readonly System.Collections.Comparer DefaultInvariant;
         public Comparer(System.Globalization.CultureInfo culture) { }
         public int Compare(object a, object b) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class DictionaryBase : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable
     {
@@ -6062,7 +6052,6 @@ namespace System.Collections
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Hashtable.HashtableDebugView")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class Hashtable : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable, System.ICloneable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
     {
@@ -6101,7 +6090,6 @@ namespace System.Collections
         public virtual object SyncRoot { get { throw null; } }
         public virtual System.Collections.ICollection Values { get { throw null; } }
         public virtual void Add(object key, object value) { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public virtual void Clear() { }
         public virtual object Clone() { throw null; }
         public virtual bool Contains(object key) { throw null; }
@@ -6110,17 +6098,13 @@ namespace System.Collections
         public virtual void CopyTo(System.Array array, int arrayIndex) { }
         public virtual System.Collections.IDictionaryEnumerator GetEnumerator() { throw null; }
         protected virtual int GetHash(object key) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         protected virtual bool KeyEquals(object item, object key) { throw null; }
         public virtual void OnDeserialization(object sender) { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public virtual void Remove(object key) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.Hashtable Synchronized(System.Collections.Hashtable table) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICollection : System.Collections.IEnumerable
     {
         int Count { get; }
@@ -6128,12 +6112,10 @@ namespace System.Collections
         object SyncRoot { get; }
         void CopyTo(System.Array array, int index);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IComparer
     {
         int Compare(object x, object y);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDictionary : System.Collections.ICollection, System.Collections.IEnumerable
     {
         bool IsFixedSize { get; }
@@ -6147,41 +6129,32 @@ namespace System.Collections
         new System.Collections.IDictionaryEnumerator GetEnumerator();
         void Remove(object key);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDictionaryEnumerator : System.Collections.IEnumerator
     {
         System.Collections.DictionaryEntry Entry { get; }
         object Key { get; }
         object Value { get; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Runtime.InteropServices.GuidAttribute("496B0ABE-CDEE-11d3-88E8-00902754C43A")]
     public partial interface IEnumerable
     {
-        [System.Runtime.InteropServices.DispIdAttribute(-4)]
         System.Collections.IEnumerator GetEnumerator();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Runtime.InteropServices.GuidAttribute("496B0ABF-CDEE-11d3-88E8-00902754C43A")]
     public partial interface IEnumerator
     {
         object Current { get; }
         bool MoveNext();
         void Reset();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IEqualityComparer
     {
         bool Equals(object x, object y);
         int GetHashCode(object obj);
     }
     [System.ObsoleteAttribute("Please use IEqualityComparer instead.")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IHashCodeProvider
     {
         int GetHashCode(object obj);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IList : System.Collections.ICollection, System.Collections.IEnumerable
     {
         bool IsFixedSize { get; }
@@ -6206,7 +6179,6 @@ namespace System.Collections
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Queue.QueueDebugView")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class Queue : System.Collections.ICollection, System.Collections.IEnumerable, System.ICloneable
     {
@@ -6225,12 +6197,10 @@ namespace System.Collections
         public virtual void Enqueue(object obj) { }
         public virtual System.Collections.IEnumerator GetEnumerator() { throw null; }
         public virtual object Peek() { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.Queue Synchronized(System.Collections.Queue queue) { throw null; }
         public virtual object[] ToArray() { throw null; }
         public virtual void TrimToSize() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class ReadOnlyCollectionBase : System.Collections.ICollection, System.Collections.IEnumerable
     {
@@ -6244,7 +6214,6 @@ namespace System.Collections
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.SortedList.SortedListDebugView")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class SortedList : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable, System.ICloneable
     {
@@ -6280,14 +6249,12 @@ namespace System.Collections
         public virtual void Remove(object key) { }
         public virtual void RemoveAt(int index) { }
         public virtual void SetByIndex(int index, object value) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.SortedList Synchronized(System.Collections.SortedList list) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         public virtual void TrimToSize() { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Stack.StackDebugView")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class Stack : System.Collections.ICollection, System.Collections.IEnumerable, System.ICloneable
     {
@@ -6305,7 +6272,6 @@ namespace System.Collections
         public virtual object Peek() { throw null; }
         public virtual object Pop() { throw null; }
         public virtual void Push(object obj) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public static System.Collections.Stack Synchronized(System.Collections.Stack stack) { throw null; }
         public virtual object[] ToArray() { throw null; }
     }
@@ -6680,9 +6646,8 @@ namespace System.Collections.Generic
     {
         T this[int index] { get; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public partial class KeyNotFoundException : System.SystemException, System.Runtime.Serialization.ISerializable
+    public partial class KeyNotFoundException : System.SystemException
     {
         public KeyNotFoundException() { }
         protected KeyNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -6705,7 +6670,7 @@ namespace System.Collections.Generic
         public override string ToString() { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_CollectionDebugView<T>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.ICollectionDebugView<T>")]
     [System.SerializableAttribute]
     public partial class List<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.Generic.IReadOnlyList<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -6714,20 +6679,20 @@ namespace System.Collections.Generic
         public List(int capacity) { }
         public int Capacity { get { throw null; } set { } }
         public int Count { get { throw null; } }
-        public T this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } set { } }
+        public T this[int index] { get { throw null; } set { } }
         bool System.Collections.Generic.ICollection<T>.IsReadOnly { get { throw null; } }
         bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
         object System.Collections.ICollection.SyncRoot { get { throw null; } }
         bool System.Collections.IList.IsFixedSize { get { throw null; } }
         bool System.Collections.IList.IsReadOnly { get { throw null; } }
         object System.Collections.IList.this[int index] { get { throw null; } set { } }
-        public void Add(T item) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Add(T item) { }
         public void AddRange(System.Collections.Generic.IEnumerable<T> collection) { }
         public System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly() { throw null; }
         public int BinarySearch(int index, int count, T item, System.Collections.Generic.IComparer<T> comparer) { throw null; }
         public int BinarySearch(T item) { throw null; }
         public int BinarySearch(T item, System.Collections.Generic.IComparer<T> comparer) { throw null; }
-        public void Clear() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Clear() { }
         public bool Contains(T item) { throw null; }
         public System.Collections.Generic.List<TOutput> ConvertAll<TOutput>(System.Converter<T, TOutput> converter) { throw null; }
         public void CopyTo(int index, T[] array, int arrayIndex, int count) { }
@@ -6790,8 +6755,7 @@ namespace System.Collections.Generic
 namespace System.Collections.ObjectModel
 {
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_CollectionDebugView<T>")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.ICollectionDebugView<T>")]
     [System.SerializableAttribute]
     public partial class Collection<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.Generic.IReadOnlyList<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -6828,8 +6792,7 @@ namespace System.Collections.ObjectModel
         void System.Collections.IList.Remove(object value) { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_KeyedCollectionDebugView<K, T>")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.CollectionDebugView<T>")]
     [System.SerializableAttribute]
     public abstract partial class KeyedCollection<TKey, TItem> : System.Collections.ObjectModel.Collection<TItem>
     {
@@ -6847,10 +6810,10 @@ namespace System.Collections.ObjectModel
         public bool Remove(TKey key) { throw null; }
         protected override void RemoveItem(int index) { }
         protected override void SetItem(int index, TItem item) { }
+        public bool TryGetValue(TKey key, out TItem item) { item = default(TItem); throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_CollectionDebugView<T>")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.ICollectionDebugView<T>")]
     [System.SerializableAttribute]
     public partial class ReadOnlyCollection<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.Generic.IReadOnlyList<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -6885,7 +6848,7 @@ namespace System.Collections.ObjectModel
         void System.Collections.IList.RemoveAt(int index) { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_DictionaryDebugView<K, V>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.DictionaryDebugView<K, V>")]
     [System.SerializableAttribute]
     public partial class ReadOnlyDictionary<TKey, TValue> : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.Generic.IDictionary<TKey, TValue>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.Generic.IReadOnlyCollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable
     {
@@ -6926,7 +6889,7 @@ namespace System.Collections.ObjectModel
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         public bool TryGetValue(TKey key, out TValue value) { value = default(TValue); throw null; }
         [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-        [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_CollectionDebugView<T>")]
+        [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.CollectionDebugView<T>")]
         [System.SerializableAttribute]
         public sealed partial class KeyCollection : System.Collections.Generic.ICollection<TKey>, System.Collections.Generic.IEnumerable<TKey>, System.Collections.Generic.IReadOnlyCollection<TKey>, System.Collections.ICollection, System.Collections.IEnumerable
         {
@@ -6945,7 +6908,7 @@ namespace System.Collections.ObjectModel
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         }
         [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-        [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.Mscorlib_CollectionDebugView<T>")]
+        [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.CollectionDebugView<T>")]
         [System.SerializableAttribute]
         public sealed partial class ValueCollection : System.Collections.Generic.ICollection<TValue>, System.Collections.Generic.IEnumerable<TValue>, System.Collections.Generic.IReadOnlyCollection<TValue>, System.Collections.ICollection, System.Collections.IEnumerable
         {
@@ -23341,6 +23304,7 @@ namespace System.Threading
         public static T EnsureInitialized<T>(ref T target, ref bool initialized, ref object syncLock) { throw null; }
         public static T EnsureInitialized<T>(ref T target, ref bool initialized, ref object syncLock, System.Func<T> valueFactory) { throw null; }
         public static T EnsureInitialized<T>(ref T target, System.Func<T> valueFactory) where T : class { throw null; }
+        public static T EnsureInitialized<T>(ref T target, ref object syncLock, System.Func<T> valueFactory) where T : class { throw null; }
     }
     public enum LazyThreadSafetyMode
     {
