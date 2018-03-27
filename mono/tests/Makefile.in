@@ -252,15 +252,11 @@ target_triplet = @target@
 @HYBRID_AOT_TESTS_TRUE@am__append_21 = bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe \
 @HYBRID_AOT_TESTS_TRUE@	tailcall/fsharp.exe
-@ENABLE_COOP_TRUE@am__append_22 = \
-@ENABLE_COOP_TRUE@	bug-58782-plain-throw.exe \
-@ENABLE_COOP_TRUE@	bug-58782-capture-and-throw.exe
-
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_23 = \
+@ARM_TRUE@am__append_22 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -315,14 +311,14 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_24 = \
+@ARM64_TRUE@am__append_23 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_25 = \
+@AMD64_TRUE@am__append_24 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -808,11 +804,11 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	main-returns-background-resetabort.cs \
 	main-returns-background.cs main-returns-background-change.cs \
 	main-returns.cs subthread-exit.cs desweak.cs exists.cs \
-	handleref.cs dbnull-missing.cs test-type-ctor.cs \
-	soft-float-tests.cs thread-exit.cs finalize-parent.cs \
-	interlocked-2.2.cs pinvoke-2.2.cs bug-78431.2.cs \
-	bug-79684.2.cs catch-generics.2.cs event-get.2.cs \
-	safehandle.2.cs module-cctor-loader.2.cs \
+	handleref.cs install_eh_callback.cs dbnull-missing.cs \
+	test-type-ctor.cs soft-float-tests.cs thread-exit.cs \
+	finalize-parent.cs interlocked-2.2.cs pinvoke-2.2.cs \
+	bug-78431.2.cs bug-79684.2.cs catch-generics.2.cs \
+	event-get.2.cs safehandle.2.cs module-cctor-loader.2.cs \
 	generics-invoke-byref.2.cs generic-signature-compare.2.cs \
 	generics-sharing.2.cs shared-generic-methods.2.cs \
 	shared-generic-synchronized.2.cs generic-inlining.2.cs \
@@ -1066,9 +1062,13 @@ CI_DISABLED_TESTS = \
 
 # failing tests which we temporarily disable for PRs
 # so they don't interfere with other people's work
-CI_PR_DISABLED_TESTS = appdomain-threadpool-unload.exe \
-	monitor-abort.exe monitor-wait-abort.exe process-stress-3.exe \
-	bug-80307.exe $(am__append_22)
+CI_PR_DISABLED_TESTS = \
+	appdomain-threadpool-unload.exe \
+	monitor-abort.exe \
+	monitor-wait-abort.exe \
+	process-stress-3.exe \
+	bug-80307.exe
+
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1125,8 +1125,8 @@ DISABLED_TESTS = \
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
 	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
 	tailcall-generic-cast-conservestack-il.exe tailcall/fsharp.exe \
-	bug-60843.exe $(am__append_23) $(am__append_24) \
-	$(am__append_25)
+	bug-60843.exe $(am__append_22) $(am__append_23) \
+	$(am__append_24)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -2219,7 +2219,7 @@ test-unhandled-exception: unhandled-exception-test-runner.2.exe
 safehandle.2.exe winx64structs.exe thunks.exe pinvoke3.exe pinvoke2.exe pinvoke-2.2.exe pinvoke17.exe pinvoke13.exe \
 	pinvoke11.exe pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe pinvoke_ppcc.exe pinvoke.exe \
 	marshalbool.exe marshal9.exe marshal5.exe marshal.exe handleref.exe cominterop.exe bug-Xamarin-5278.exe \
-	bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe: libtest.la
+	bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe install_eh_callback.exe: libtest.la
 
 event-get.2.exe$(PLATFORM_AOT_SUFFIX): event-il.exe$(PLATFORM_AOT_SUFFIX)
 event-get.2.exe: event-il.exe
