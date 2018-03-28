@@ -104,12 +104,11 @@ monograph_SOURCES = monograph.c
 monograph_OBJECTS = monograph.$(OBJEXT)
 am__DEPENDENCIES_1 =
 @DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntimesgen.la \
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la \
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
 @DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
-@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
 @DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1)
-@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
-@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_2)
+@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 @DISABLE_EXECUTABLES_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
 @DISABLE_EXECUTABLES_TRUE@	$(am__DEPENDENCIES_2)
 monograph_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
@@ -420,13 +419,13 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@DISABLE_EXECUTABLES_FALSE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
+@DISABLE_EXECUTABLES_FALSE@runtime_lib = $(static_libs)
 @DISABLE_EXECUTABLES_TRUE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_FALSE@static_libs = \
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen.la	\
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la	\
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@DISABLE_EXECUTABLES_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
-@DISABLE_EXECUTABLES_FALSE@	$(LIBGC_STATIC_LIBS)
+@DISABLE_EXECUTABLES_FALSE@	$(GLIB_LIBS) $(LIBICONV)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)			\
@@ -439,7 +438,7 @@ monograph_LDADD = \
 	$(LIBICONV)			\
 	-lm
 
-@HOST_DARWIN_TRUE@monograph_LDFLAGS = -framework CoreFoundation
+@HOST_DARWIN_TRUE@monograph_LDFLAGS = -framework CoreFoundation -framework Foundation
 GRAPHS = System.Object System.Enum System.Attribute System.ValueType System.Reflection.MemberInfo
 OUT = $(GRAPHS:=.jpeg)
 all: all-am

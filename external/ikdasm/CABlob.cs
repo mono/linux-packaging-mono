@@ -99,7 +99,7 @@ namespace Ildasm
             }
             else if (typerefs.Contains(type))
             {
-                sb.Append('[').Append(QuoteIdentifier(referencedAssemblies[type.Assembly])).Append(']');
+                sb.Append('[').Append(QuoteIdentifier(FindReferencedAssembly(type.Assembly))).Append(']');
                 AppendTypeName(sb, type);
             }
             else
