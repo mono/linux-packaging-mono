@@ -85,8 +85,6 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -99,8 +97,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = eglib-config.h
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-@HOST_WIN32_TRUE@libeglib_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libeglib_la_DEPENDENCIES =
 am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	garray.c gbytearray.c gerror.c ghashtable.c giconv.c gmem.c \
 	gmodule.h goutput.c gqsort.c gstr.c gslist.c gstring.c \
@@ -292,7 +289,6 @@ LIBC = @LIBC@
 LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
 LIBGC_LIBS = @LIBGC_LIBS@
 LIBGC_STATIC_LIBS = @LIBGC_STATIC_LIBS@
-LIBICONV = @LIBICONV@
 LIBMONO_LA = @LIBMONO_LA@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -306,7 +302,6 @@ LLVM_LIBS = @LLVM_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
-LTLIBICONV = @LTLIBICONV@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -485,8 +480,9 @@ libeglib_la_SOURCES = \
 
 libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
 AM_CPPFLAGS = -I$(srcdir)
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libeglib_la_LIBADD = -llog
-@HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm $(LIBICONV) -lpsapi
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libeglib_la_LIBADD = $(LTLIBICONV)
+@HOST_ANDROID_FALSE@@HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm -lpsapi $(LTLIBICONV)
+@HOST_ANDROID_TRUE@libeglib_la_LIBADD = -llog
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = eglib-config.h.in $(win_files) $(unix_files)
 all: all-am

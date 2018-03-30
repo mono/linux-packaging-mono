@@ -290,7 +290,7 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.SecuritySafeCriticalAttribute]
         public static System.Runtime.Remoting.ObjectHandle CreateInstance(string assemblyName, string typeName, object[] activationAttributes) { throw null; }
         public static object CreateInstance(System.Type type) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static object CreateInstance(System.Type type, bool nonPublic) { throw null; }
+        public static object CreateInstance(System.Type type, bool nonPublic) { throw null; }
         public static object CreateInstance(System.Type type, params object[] args) { throw null; }
         public static object CreateInstance(System.Type type, object[] args, object[] activationAttributes) { throw null; }
         public static object CreateInstance(System.Type type, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, object[] args, System.Globalization.CultureInfo culture) { throw null; }
@@ -10512,13 +10512,12 @@ namespace System.Reflection
         public abstract System.Reflection.PropertyInfo SelectProperty(System.Reflection.BindingFlags bindingAttr, System.Reflection.PropertyInfo[] match, System.Type returnType, System.Type[] indexes, System.Reflection.ParameterModifier[] modifiers);
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum BindingFlags
     {
         CreateInstance = 512,
         DeclaredOnly = 2,
         Default = 0,
+        DoNotWrapExceptions = 33554432,
         ExactBinding = 65536,
         FlattenHierarchy = 64,
         GetField = 1024,

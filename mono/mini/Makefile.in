@@ -110,8 +110,6 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(libmonoinclude_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -290,7 +288,7 @@ am__DEPENDENCIES_1 =
 @SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc.la
 am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2)
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__DEPENDENCIES_4 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_3)
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
@@ -325,8 +323,7 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
 am__DEPENDENCIES_7 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
 	$(monodir)/mono/sgen/libmonosgen.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1)
 libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(interp_libs_with_mini) \
 	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_6)
@@ -358,8 +355,7 @@ mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
 @STATIC_MONO_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_8)
 @DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_10 = mono-dtrace.$(OBJEXT)
 mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_9) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_10)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
@@ -371,8 +367,7 @@ mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
 @STATIC_MONO_FALSE@am__DEPENDENCIES_12 = libmonosgen-2.0.la
 @STATIC_MONO_TRUE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_11)
 mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_10)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
@@ -385,11 +380,9 @@ am__objects_20 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_20)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_13 = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_10)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
 am__DEPENDENCIES_14 = $(am__DEPENDENCIES_9) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_10)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_13)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
@@ -572,7 +565,6 @@ LIBC = @LIBC@
 LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
 LIBGC_LIBS = @LIBGC_LIBS@
 LIBGC_STATIC_LIBS = @LIBGC_STATIC_LIBS@
-LIBICONV = @LIBICONV@
 LIBMONO_LA = @LIBMONO_LA@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -586,7 +578,6 @@ LLVM_LIBS = @LLVM_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
-LTLIBICONV = @LTLIBICONV@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -734,14 +725,14 @@ mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 boehm_libs = \
 	$(monodir)/mono/metadata/libmonoruntime.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) $(LIBICONV) \
+	$(GLIB_LIBS) \
 	$(libgc_libs)
 
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) $(LIBICONV)
+	$(GLIB_LIBS)
 
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
@@ -832,7 +823,6 @@ mono_boehm_LDADD = \
 	$(MONO_LIB)		\
 	$(GLIB_LIBS)		\
 	$(LLVMMONOF)		\
-	$(LIBICONV)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
@@ -843,7 +833,6 @@ mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
 	$(GLIB_LIBS)		\
 	$(LLVMMONOF)		\
-	$(LIBICONV)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
