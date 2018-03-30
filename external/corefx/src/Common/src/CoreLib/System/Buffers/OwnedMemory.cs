@@ -10,7 +10,7 @@ namespace System.Buffers
     /// <summary>
     /// Owner of Memory<typeparamref name="T"/> that provides appropriate lifetime management mechanisms for it.
     /// </summary>
-    public abstract class OwnedMemory<T> : IDisposable, IRetainable
+    abstract class OwnedMemory<T> : IDisposable, IRetainable
     {
         /// <summary>
         /// The number of items in the Memory<typeparamref name="T"/>.

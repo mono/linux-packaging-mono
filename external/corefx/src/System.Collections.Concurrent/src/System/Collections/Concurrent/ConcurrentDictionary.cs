@@ -19,6 +19,9 @@ using System.Diagnostics.Private;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+#if MONO
+using System.Runtime.Serialization;
+#endif
 
 namespace System.Collections.Concurrent
 {
@@ -56,10 +59,19 @@ namespace System.Collections.Concurrent
             }
         }
 
+        [NonSerialized]
         private volatile Tables _tables; // Internal tables of the dictionary
         private IEqualityComparer<TKey> _comparer; // Key equality comparer
+        [NonSerialized]
         private readonly bool _growLockArray; // Whether to dynamically increase the size of the striped lock
+        [NonSerialized]
         private int _budget; // The maximum number of elements per lock before a resize operation is triggered
+
+#if MONO
+        private KeyValuePair<TKey, TValue>[] _serializationArray; // Used for custom serialization
+        private int _serializationConcurrencyLevel; // used to save the concurrency level in serialization
+        private int _serializationCapacity; // used to save the capacity in serialization
+#endif
 
         // The default capacity, i.e. the initial # of buckets. When choosing this value, we are making
         // a trade-off between the size of a very small dictionary, and the number of resizes when
@@ -2053,6 +2065,46 @@ namespace System.Collections.Concurrent
                 _enumerator.Reset();
             }
         }
+
+#if MONO
+        /// <summary>Get the data array to be serialized.</summary>
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
+        {
+            Tables tables = _tables;
+
+            // save the data into the serialization array to be saved
+            _serializationArray = ToArray();
+            _serializationConcurrencyLevel = tables._locks.Length;
+            _serializationCapacity = tables._buckets.Length;
+        }
+
+        /// <summary>Clear the serialized state.</summary>
+        [OnSerialized]
+        private void OnSerialized(StreamingContext context)
+        {
+            _serializationArray = null;
+        }
+
+        /// <summary>Construct the dictionary from a previously serialized one</summary>
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            KeyValuePair<TKey, TValue>[] array = _serializationArray;
+
+            var buckets = new Node[_serializationCapacity];
+            var countPerLock = new int[_serializationConcurrencyLevel];
+            var locks = new object[_serializationConcurrencyLevel];
+            for (int i = 0; i < locks.Length; i++)
+            {
+                locks[i] = new object();
+            }
+            _tables = new Tables(buckets, locks, countPerLock);
+
+            InitializeFromCollection(array);
+            _serializationArray = null;
+        }
+#endif
     }
 
     internal sealed class IDictionaryDebugView<K, V>

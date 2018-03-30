@@ -10,7 +10,7 @@ namespace System.Buffers
     /// <summary>
     /// Provides a mechanism for manual lifetime management.
     /// </summary>
-    public interface IRetainable
+    interface IRetainable
     {
         /// <summary>
         /// Call this method to indicate that the IRetainable object is in use.

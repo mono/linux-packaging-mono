@@ -180,7 +180,7 @@ namespace System.IO.Compression
             return _deflateStream.WriteAsync(array, offset, count, cancellationToken);
         }
 
-        public override Task WriteAsync(ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default(CancellationToken))
+        internal override Task WriteAsync(ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (GetType() != typeof(GZipStream))
             {

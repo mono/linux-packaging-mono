@@ -14,7 +14,7 @@ namespace System.Runtime.InteropServices
     /// Provides a collection of methods for interoperating with <see cref="Memory{T}"/>, <see cref="ReadOnlyMemory{T}"/>,
     /// <see cref="Span{T}"/>, and <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
-    public static class MemoryMarshal
+    static class MemoryMarshal
     {
         /// <summary>Creates a <see cref="Memory{T}"/> from a <see cref="ReadOnlyMemory{T}"/>.</summary>
         /// <param name="readOnlyMemory">The <see cref="ReadOnlyMemory{T}"/>.</param>
