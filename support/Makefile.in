@@ -84,8 +84,6 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -127,10 +125,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-@HOST_WIN32_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
-@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_1)
-@HOST_WIN32_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
-@HOST_WIN32_TRUE@	$(am__DEPENDENCIES_1)
+@HOST_WIN32_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+@HOST_WIN32_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 libMonoPosixHelper_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
@@ -171,8 +167,7 @@ libMonoPosixHelper_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(libMonoPosixHelper_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @BUILD_SUPPORT_TRUE@am_libMonoPosixHelper_la_rpath = -rpath $(libdir)
-libMonoSupportW_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+libMonoSupportW_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libMonoSupportW_la_OBJECTS = supportw.lo support-heap.lo
 libMonoSupportW_la_OBJECTS = $(am_libMonoSupportW_la_OBJECTS)
 libMonoSupportW_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -335,7 +330,6 @@ LIBC = @LIBC@
 LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
 LIBGC_LIBS = @LIBGC_LIBS@
 LIBGC_STATIC_LIBS = @LIBGC_STATIC_LIBS@
-LIBICONV = @LIBICONV@
 LIBMONO_LA = @LIBMONO_LA@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -349,7 +343,6 @@ LLVM_LIBS = @LLVM_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
-LTLIBICONV = @LTLIBICONV@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -539,8 +532,8 @@ MPH_UNIX_SOURCE = \
 
 @HOST_WIN32_FALSE@MPH_SOURCE = $(MPH_C_SOURCE) $(MPH_UNIX_SOURCE)
 @HOST_WIN32_TRUE@MPH_SOURCE = $(MPH_C_SOURCE)
-@HOST_WIN32_FALSE@MPH_LIBS = $(GLIB_LIBS) $(LIBICONV)
-@HOST_WIN32_TRUE@MPH_LIBS = $(GLIB_LIBS) $(LIBICONV)
+@HOST_WIN32_FALSE@MPH_LIBS = $(GLIB_LIBS)
+@HOST_WIN32_TRUE@MPH_LIBS = $(GLIB_LIBS)
 MINIZIP_SOURCE = \
 	minizip/crypt.h \
 	minizip/ioapi.c	\
@@ -597,7 +590,7 @@ libMonoSupportW_la_SOURCES = \
 		supportw.h
 
 libMonoSupportW_la_LIBADD = \
-		$(GLIB_LIBS) $(LIBICONV)
+		$(GLIB_LIBS)
 
 all: all-am
 

@@ -267,6 +267,7 @@ System.Reflection.Emit/CustomAttributeBuilder.cs
 System.Reflection.Emit/DerivedTypes.cs
 System.Reflection.Emit/DynamicILInfo.cs
 System.Reflection.Emit/DynamicMethod.cs
+System.Reflection.Emit/DynamicMethod.notsupported.cs
 System.Reflection.Emit/EnumBuilder.cs
 System.Reflection.Emit/EventBuilder.cs
 System.Reflection.Emit/EventOnTypeBuilderInst.cs
@@ -1170,7 +1171,7 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/reflection/assemblynameflags.cs
 ../referencesource/mscorlib/system/reflection/assemblynameproxy.cs
 ../referencesource/mscorlib/system/reflection/binder.cs
-../referencesource/mscorlib/system/reflection/bindingflags.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/BindingFlags.cs
 ../referencesource/mscorlib/system/reflection/callingconventions.cs
 ../referencesource/mscorlib/system/reflection/CustomAttributeExtensions.cs
 ../referencesource/mscorlib/system/reflection/defaultmemberattribute.cs

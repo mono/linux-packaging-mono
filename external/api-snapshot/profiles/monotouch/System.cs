@@ -5211,7 +5211,7 @@ namespace System.IO
         public string Name { get { throw null; } }
     }
     public delegate void FileSystemEventHandler(object sender, System.IO.FileSystemEventArgs e);
-    public partial class FileSystemWatcher : System.ComponentModel.Component, System.ComponentModel.ISupportInitialize, System.IDisposable
+    public partial class FileSystemWatcher : System.ComponentModel.Component, System.ComponentModel.ISupportInitialize
     {
         public FileSystemWatcher() { }
         public FileSystemWatcher(string path) { }

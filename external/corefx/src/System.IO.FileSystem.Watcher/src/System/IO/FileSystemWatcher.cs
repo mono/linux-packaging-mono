@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if MONO
+#if MONO && !MOBILE
 
 using System;
 using System.IO;
