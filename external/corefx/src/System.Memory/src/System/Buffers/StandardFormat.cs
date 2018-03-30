@@ -10,7 +10,7 @@ namespace System.Buffers
     /// Represents a standard formatting string without using an actual String. A StandardFormat consists of a character (such as 'G', 'D' or 'X')
     /// and an optional precision ranging from 0..99, or the special value NoPrecision.
     /// </summary>
-    public readonly struct StandardFormat : IEquatable<StandardFormat>
+    readonly struct StandardFormat : IEquatable<StandardFormat>
     {
         /// <summary>
         /// Precision values for format that don't use a precision, or for when the precision is to be unspecified.

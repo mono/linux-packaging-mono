@@ -15,7 +15,7 @@ namespace System
     /// <summary>
     /// Extension methods for Span{T}, Memory{T}, and friends.
     /// </summary>
-    public static partial class MemoryExtensions
+    static partial class MemoryExtensions
     {
         /// <summary>
         /// Searches for the specified value and returns the index of its first occurrence. If not found, returns -1. Values are compared using IEquatable{T}.Equals(T). 

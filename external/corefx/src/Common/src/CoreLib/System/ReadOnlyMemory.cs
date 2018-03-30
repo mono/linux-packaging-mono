@@ -217,7 +217,7 @@ namespace System
         /// If pin is true, the GC will not move the array until the returned <see cref="MemoryHandle"/>
         /// is disposed, enabling the memory's address can be taken and used.
         /// </param>
-        public unsafe MemoryHandle Retain(bool pin = false)
+        unsafe MemoryHandle Retain(bool pin = false)
         {
             MemoryHandle memoryHandle = default;
             if (pin)

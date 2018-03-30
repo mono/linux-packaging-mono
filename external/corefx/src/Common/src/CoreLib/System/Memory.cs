@@ -239,7 +239,7 @@ namespace System
         /// Returns a handle for the array.
         /// <param name="pin">If pin is true, the GC will not move the array and hence its address can be taken</param>
         /// </summary>
-        public unsafe MemoryHandle Retain(bool pin = false)
+        unsafe MemoryHandle Retain(bool pin = false)
         {
             MemoryHandle memoryHandle = default;
             if (pin)
