@@ -115,7 +115,6 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Regression/VS-ia64-JIT/V1.2-M02/b102844/tailcallcalli.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/CodeGenBringUpTests/RecursiveTailCall.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Directed/IL/Tailcall/JitTailcall1.exe \
-@FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Directed/IL/Tailcall/Jittailcall2.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/Boxing/boxunbox/tailcall.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/Boxing/misc/tailjump.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/Invoke/SEH/catchfault_tail.exe \
@@ -142,7 +141,6 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_3b.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall_v4/delegateParamCallTarget.exe \
-@FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall_v4/hijacking.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/ETW/TailCallCases.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/FastTailCall/FastTailCallCandidates.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/FastTailCall/FastTailCallInlining.exe \
@@ -184,7 +182,6 @@ target_triplet = @target@
 @X86_TRUE@am__append_16 = \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
-@X86_TRUE@	tailcall/coreclr/JIT/Directed/IL/Tailcall/Jittailcall2.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/recurse_ep_void.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_2b.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_2a.exe \
@@ -223,7 +220,6 @@ target_triplet = @target@
 @ARM_TRUE@am__append_20 = filter-stack.exe weak-fields.exe \
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@ARM_TRUE@	tailcall/coreclr/JIT/Directed/IL/Tailcall/Jittailcall2.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/recurse_ep_void.exe \
@@ -231,9 +227,7 @@ target_triplet = @target@
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_2b.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_2c.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe \
-@ARM_TRUE@	tailcall/coreclr/JIT/Directed/IL/Tailcall/Jittailcall2.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
-@ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall_v4/hijacking.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe
 @ARM64_TRUE@am__append_21 = weak-fields.exe \
 @ARM64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/compat_r4_r8.exe \
@@ -822,6 +816,7 @@ TAILCALL_DISABLED_TESTS_COMPILE = tailcall/coreclr/JIT/opt/Tailcall/TailcallVeri
 TAILCALL_DISABLED_TESTS_RUN =  \
 	tailcall/coreclr/JIT/Directed/IL/PInvokeTail/PInvokeTail.exe \
 	tailcall/coreclr/JIT/Directed/IL/PInvokeTail/tailwinapi.exe \
+	tailcall/coreclr/JIT/Directed/IL/Tailcall/Jittailcall2.exe \
 	tailcall/coreclr/JIT/Directed/IL/mutualrecur-tailcall/MutualRecur-TailCall.exe \
 	tailcall/coreclr/JIT/Directed/coverage/importer/Desktop/badtailcall.exe \
 	tailcall/coreclr/JIT/Directed/coverage/importer/badtailcall.exe \
@@ -848,6 +843,7 @@ TAILCALL_DISABLED_TESTS_RUN =  \
 	tailcall/coreclr/JIT/Methodical/tailcall/test_switch.exe \
 	tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe \
 	tailcall/coreclr/JIT/Methodical/tailcall_v4/delegateTail.exe \
+	tailcall/coreclr/JIT/Methodical/tailcall_v4/hijacking.exe \
 	tailcall/coreclr/JIT/Methodical/tailcall_v4/smallFrame.exe \
 	tailcall/coreclr/JIT/Methodical/tailcall_v4/tailcall_AV.exe \
 	tailcall/coreclr/JIT/Regression/VS-ia64-JIT/V1.2-M02/b102844/tailcallcalli.exe \
@@ -1040,8 +1036,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
 	threads-init.cs bug-60848.cs bug-59400.cs \
 	tailcall-generic-cast-cs.cs tailcall-interface.cs \
-	sizeof-empty-structs.cs bug-60843.cs $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10)
+	sizeof-empty-structs.cs bug-60843.cs roslyn-bug-19038.cs \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10)
 TESTS_IL_SRC = \
 	tailcall/fsharp.il	\
 	gptail1.il		\
