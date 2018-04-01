@@ -1037,8 +1037,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	threads-init.cs bug-60848.cs bug-59400.cs \
 	tailcall-generic-cast-cs.cs tailcall-interface.cs \
 	sizeof-empty-structs.cs bug-60843.cs roslyn-bug-19038.cs \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10)
+	nested_type_visibility.cs $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10)
 TESTS_IL_SRC = \
 	tailcall/fsharp.il	\
 	gptail1.il		\
