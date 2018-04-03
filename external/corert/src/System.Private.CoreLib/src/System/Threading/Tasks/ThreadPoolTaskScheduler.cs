@@ -48,7 +48,7 @@ namespace System.Threading.Tasks
                                                  task.Id, creatingTask == null ? 0 : creatingTask.Id,
                                                  (int)task.Options);
             }
-
+#if !WASM
             if ((task.Options & TaskCreationOptions.LongRunning) != 0)
             {
                 // Run LongRunning tasks on their own dedicated thread.
@@ -57,6 +57,8 @@ namespace System.Threading.Tasks
                 thread.Start(task);
             }
             else
+#endif
+
             {
                 // Normal handling for non-LongRunning tasks.
                 bool forceToGlobalQueue = ((task.Options & TaskCreationOptions.PreferFairness) != 0);
