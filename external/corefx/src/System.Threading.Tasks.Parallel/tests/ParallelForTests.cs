@@ -993,6 +993,7 @@ namespace System.Threading.Tasks.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "https://github.com/mono/mono/issues/7992")]
         public static void TestInvokeDOPAndCancel()
         {
             ParallelOptions parallelOptions = null;
