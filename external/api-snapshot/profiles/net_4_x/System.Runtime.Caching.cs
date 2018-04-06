@@ -96,9 +96,9 @@ namespace System.Runtime.Caching
         public CacheItem(string key) { }
         public CacheItem(string key, object value) { }
         public CacheItem(string key, object value, string regionName) { }
-        public string Key { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string RegionName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Key { get { throw null; } set { } }
+        public string RegionName { get { throw null; } set { } }
+        public object Value { get { throw null; } set { } }
     }
     public partial class CacheItemPolicy
     {

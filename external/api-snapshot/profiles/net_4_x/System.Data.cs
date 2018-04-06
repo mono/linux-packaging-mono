@@ -579,8 +579,8 @@ namespace System.Data
     {
         public DataColumnChangeEventArgs(System.Data.DataRow row, System.Data.DataColumn column, object value) { }
         public System.Data.DataColumn Column { get { throw null; } }
-        public object ProposedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Data.DataRow Row { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object ProposedValue { get { throw null; } set { } }
+        public System.Data.DataRow Row { get { throw null; } }
     }
     public delegate void DataColumnChangeEventHandler(object sender, System.Data.DataColumnChangeEventArgs e);
     [System.ComponentModel.DefaultEventAttribute("CollectionChanged")]
@@ -751,8 +751,8 @@ namespace System.Data
     public partial class DataRowChangeEventArgs : System.EventArgs
     {
         public DataRowChangeEventArgs(System.Data.DataRow row, System.Data.DataRowAction action) { }
-        public System.Data.DataRowAction Action { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.DataRow Row { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.DataRowAction Action { get { throw null; } }
+        public System.Data.DataRow Row { get { throw null; } }
     }
     public delegate void DataRowChangeEventHandler(object sender, System.Data.DataRowChangeEventArgs e);
     public sealed partial class DataRowCollection : System.Data.InternalDataCollectionBase
@@ -1125,7 +1125,7 @@ namespace System.Data
     public sealed partial class DataTableClearEventArgs : System.EventArgs
     {
         public DataTableClearEventArgs(System.Data.DataTable dataTable) { }
-        public System.Data.DataTable Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.DataTable Table { get { throw null; } }
         public string TableName { get { throw null; } }
         public string TableNamespace { get { throw null; } }
     }
@@ -1162,7 +1162,7 @@ namespace System.Data
     public sealed partial class DataTableNewRowEventArgs : System.EventArgs
     {
         public DataTableNewRowEventArgs(System.Data.DataRow dataRow) { }
-        public System.Data.DataRow Row { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.DataRow Row { get { throw null; } }
     }
     public delegate void DataTableNewRowEventHandler(object sender, System.Data.DataTableNewRowEventArgs e);
     public sealed partial class DataTableReader : System.Data.Common.DbDataReader
@@ -1711,8 +1711,8 @@ namespace System.Data
     public partial class MergeFailedEventArgs : System.EventArgs
     {
         public MergeFailedEventArgs(System.Data.DataTable table, string conflict) { }
-        public string Conflict { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.DataTable Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Conflict { get { throw null; } }
+        public System.Data.DataTable Table { get { throw null; } }
     }
     public delegate void MergeFailedEventHandler(object sender, System.Data.MergeFailedEventArgs e);
     public enum MissingMappingAction
@@ -1856,7 +1856,7 @@ namespace System.Data
     public sealed partial class StatementCompletedEventArgs : System.EventArgs
     {
         public StatementCompletedEventArgs(int recordCount) { }
-        public int RecordCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int RecordCount { get { throw null; } }
     }
     public delegate void StatementCompletedEventHandler(object sender, System.Data.StatementCompletedEventArgs e);
     public enum StatementType
@@ -2146,30 +2146,30 @@ namespace System.Data.Common
     public abstract partial class DbColumn
     {
         protected DbColumn() { }
-        public System.Nullable<bool> AllowDBNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string BaseCatalogName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string BaseColumnName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string BaseSchemaName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string BaseServerName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string BaseTableName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string ColumnName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<int> ColumnOrdinal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<int> ColumnSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Type DataType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string DataTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsAliased { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsAutoIncrement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsHidden { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsIdentity { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsLong { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<bool> IsUnique { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Nullable<bool> AllowDBNull { get { throw null; } protected set { } }
+        public string BaseCatalogName { get { throw null; } protected set { } }
+        public string BaseColumnName { get { throw null; } protected set { } }
+        public string BaseSchemaName { get { throw null; } protected set { } }
+        public string BaseServerName { get { throw null; } protected set { } }
+        public string BaseTableName { get { throw null; } protected set { } }
+        public string ColumnName { get { throw null; } protected set { } }
+        public System.Nullable<int> ColumnOrdinal { get { throw null; } protected set { } }
+        public System.Nullable<int> ColumnSize { get { throw null; } protected set { } }
+        public System.Type DataType { get { throw null; } protected set { } }
+        public string DataTypeName { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsAliased { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsAutoIncrement { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsExpression { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsHidden { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsIdentity { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsKey { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsLong { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsReadOnly { get { throw null; } protected set { } }
+        public System.Nullable<bool> IsUnique { get { throw null; } protected set { } }
         public virtual object this[string property] { get { throw null; } }
-        public System.Nullable<int> NumericPrecision { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Nullable<int> NumericScale { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string UdtAssemblyQualifiedName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Nullable<int> NumericPrecision { get { throw null; } protected set { } }
+        public System.Nullable<int> NumericScale { get { throw null; } protected set { } }
+        public string UdtAssemblyQualifiedName { get { throw null; } protected set { } }
     }
     public abstract partial class DbCommand : System.ComponentModel.Component, System.Data.IDbCommand, System.IDisposable
     {
@@ -2759,7 +2759,7 @@ namespace System.Data.Common
     public sealed partial class DbProviderSpecificTypePropertyAttribute : System.Attribute
     {
         public DbProviderSpecificTypePropertyAttribute(bool isProviderSpecificTypeProperty) { }
-        public bool IsProviderSpecificTypeProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsProviderSpecificTypeProperty { get { throw null; } }
     }
     public abstract partial class DbTransaction : System.MarshalByRefObject, System.Data.IDbTransaction, System.IDisposable
     {
@@ -4077,14 +4077,14 @@ namespace System.Data.SqlClient
         public System.Data.SqlClient.ApplicationIntent ApplicationIntent { get { throw null; } set { } }
         public string ApplicationName { get { throw null; } set { } }
         [System.ObsoleteAttribute("This property is ignored beginning in .NET Framework 4.5.For more information about SqlClient support for asynchronous programming, seehttps://docs.microsoft.com/en-us/dotnet/framework/data/adonet/asynchronous-programming")]
-        public bool AsynchronousProcessing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AsynchronousProcessing { get { throw null; } set { } }
         public string AttachDBFilename { get { throw null; } set { } }
         [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
         public System.Data.SqlClient.SqlAuthenticationMethod Authentication { get { throw null; } set { } }
         [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
         public System.Data.SqlClient.SqlConnectionColumnEncryptionSetting ColumnEncryptionSetting { get { throw null; } set { } }
         [System.ObsoleteAttribute("ConnectionReset has been deprecated.  SqlConnection will ignore the 'connection reset'keyword and always reset the connection")]
-        public bool ConnectionReset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ConnectionReset { get { throw null; } set { } }
         public int ConnectRetryCount { get { throw null; } set { } }
         public int ConnectRetryInterval { get { throw null; } set { } }
         public int ConnectTimeout { get { throw null; } set { } }

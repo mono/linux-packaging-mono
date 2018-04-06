@@ -99,7 +99,7 @@ namespace System.ServiceProcess
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public virtual System.Diagnostics.EventLog EventLog { get { throw null; } }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        public int ExitCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int ExitCode { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
         [System.MonoTODOAttribute]
         protected System.IntPtr ServiceHandle { get { throw null; } }

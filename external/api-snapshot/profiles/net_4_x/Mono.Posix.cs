@@ -1921,8 +1921,8 @@ namespace Mono.Unix.Native
     {
         public SockaddrStorage() { }
         public SockaddrStorage(int size) { }
-        public byte[] data { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public long data_len { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] data { get { throw null; } set { } }
+        public long data_len { get { throw null; } set { } }
         public void CopyTo(Mono.Unix.Native.Sockaddr address) { }
         public bool Equals(Mono.Unix.Native.SockaddrStorage value) { throw null; }
         public override bool Equals(object obj) { throw null; }
@@ -1939,8 +1939,8 @@ namespace Mono.Unix.Native
         public bool IsLinuxAbstractNamespace { get { throw null; } }
         public string Path { get { throw null; } }
         public Mono.Unix.Native.UnixAddressFamily sun_family { get { throw null; } set { } }
-        public byte[] sun_path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public long sun_path_len { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] sun_path { get { throw null; } set { } }
+        public long sun_path_len { get { throw null; } set { } }
         public bool Equals(Mono.Unix.Native.SockaddrUn value) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public static new Mono.Unix.Native.SockaddrUn FromSockaddrStorage(Mono.Unix.Native.SockaddrStorage storage) { throw null; }

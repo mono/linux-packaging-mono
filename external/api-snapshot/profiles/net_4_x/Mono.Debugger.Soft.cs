@@ -92,7 +92,7 @@ namespace Mono.Debugger.Soft
     public partial class CommandException : System.Exception
     {
         internal CommandException() { }
-        public Mono.Debugger.Soft.ErrorCode ErrorCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Debugger.Soft.ErrorCode ErrorCode { get { throw null; } set { } }
     }
     public abstract partial class Connection
     {
@@ -154,7 +154,7 @@ namespace Mono.Debugger.Soft
     public partial class ErrorHandlerEventArgs : System.EventArgs
     {
         public ErrorHandlerEventArgs() { }
-        public Mono.Debugger.Soft.ErrorCode ErrorCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Debugger.Soft.ErrorCode ErrorCode { get { throw null; } set { } }
     }
     public abstract partial class Event
     {
@@ -260,13 +260,13 @@ namespace Mono.Debugger.Soft
     public partial class ILExceptionHandler
     {
         internal ILExceptionHandler() { }
-        public Mono.Debugger.Soft.TypeMirror CatchType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int FilterOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int HandlerLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int HandlerOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public Mono.Debugger.Soft.ILExceptionHandlerType HandlerType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TryLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TryOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Mono.Debugger.Soft.TypeMirror CatchType { get { throw null; } }
+        public int FilterOffset { get { throw null; } }
+        public int HandlerLength { get { throw null; } }
+        public int HandlerOffset { get { throw null; } }
+        public Mono.Debugger.Soft.ILExceptionHandlerType HandlerType { get { throw null; } }
+        public int TryLength { get { throw null; } }
+        public int TryOffset { get { throw null; } }
     }
     public enum ILExceptionHandlerType
     {
@@ -318,9 +318,9 @@ namespace Mono.Debugger.Soft
     public partial class InvokeResult
     {
         public InvokeResult() { }
-        public Mono.Debugger.Soft.Value[] OutArgs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Debugger.Soft.Value OutThis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Debugger.Soft.Value Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Debugger.Soft.Value[] OutArgs { get { throw null; } set { } }
+        public Mono.Debugger.Soft.Value OutThis { get { throw null; } set { } }
+        public Mono.Debugger.Soft.Value Result { get { throw null; } set { } }
     }
     public partial interface ITargetProcess
     {
@@ -335,10 +335,10 @@ namespace Mono.Debugger.Soft
     public partial class LaunchOptions
     {
         public LaunchOptions() { }
-        public string AgentArgs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Debugger.Soft.LaunchOptions.ProcessLauncher CustomProcessLauncher { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Debugger.Soft.LaunchOptions.TargetProcessLauncher CustomTargetProcessLauncher { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Valgrind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string AgentArgs { get { throw null; } set { } }
+        public Mono.Debugger.Soft.LaunchOptions.ProcessLauncher CustomProcessLauncher { get { throw null; } set { } }
+        public Mono.Debugger.Soft.LaunchOptions.TargetProcessLauncher CustomTargetProcessLauncher { get { throw null; } set { } }
+        public bool Valgrind { get { throw null; } set { } }
         public delegate System.Diagnostics.Process ProcessLauncher(System.Diagnostics.ProcessStartInfo info);
         public delegate Mono.Debugger.Soft.ITargetProcess TargetProcessLauncher(System.Diagnostics.ProcessStartInfo info);
     }
@@ -637,7 +637,7 @@ namespace Mono.Debugger.Soft
         public long Id { get { throw null; } }
         public bool IsThreadPoolThread { get { throw null; } }
         public string Name { get { throw null; } }
-        public static bool NativeTransitions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static bool NativeTransitions { get { throw null; } set { } }
         public long ThreadId { get { throw null; } }
         public System.Threading.ThreadState ThreadState { get { throw null; } }
         public long TID { get { throw null; } }
@@ -779,9 +779,9 @@ namespace Mono.Debugger.Soft
     public partial class VersionInfo
     {
         public VersionInfo() { }
-        public int MajorVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MinorVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string VMVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MajorVersion { get { throw null; } set { } }
+        public int MinorVersion { get { throw null; } set { } }
+        public string VMVersion { get { throw null; } set { } }
         public bool AtLeast(int major, int minor) { throw null; }
     }
     public partial class VirtualMachine : Mono.Debugger.Soft.Mirror
@@ -790,8 +790,8 @@ namespace Mono.Debugger.Soft
         public System.Net.EndPoint EndPoint { get { throw null; } }
         public System.Diagnostics.Process Process { get { throw null; } }
         public Mono.Debugger.Soft.AppDomainMirror RootDomain { get { throw null; } }
-        public System.IO.StreamReader StandardError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IO.StreamReader StandardOutput { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IO.StreamReader StandardError { get { throw null; } set { } }
+        public System.IO.StreamReader StandardOutput { get { throw null; } set { } }
         public Mono.Debugger.Soft.ITargetProcess TargetProcess { get { throw null; } }
         public Mono.Debugger.Soft.VersionInfo Version { get { throw null; } }
         public void ClearAllBreakpoints() { }

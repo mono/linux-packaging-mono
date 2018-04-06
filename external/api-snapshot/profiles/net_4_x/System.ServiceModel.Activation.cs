@@ -59,7 +59,7 @@ namespace System.ServiceModel
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public static partial class ServiceHostingEnvironment
     {
-        public static bool AspNetCompatibilityEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static bool AspNetCompatibilityEnabled { get { throw null; } }
         public static void EnsureServiceAvailable(string virtualPath) { }
     }
 }

@@ -24,11 +24,11 @@ namespace Mono.Options
     public partial class Command
     {
         public Command(string name, string help=null) { }
-        public Mono.Options.CommandSet CommandSet { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Help { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public Mono.Options.OptionSet Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Action<System.Collections.Generic.IEnumerable<string>> Run { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Options.CommandSet CommandSet { get { throw null; } }
+        public string Help { get { throw null; } }
+        public string Name { get { throw null; } }
+        public Mono.Options.OptionSet Options { get { throw null; } set { } }
+        public System.Action<System.Collections.Generic.IEnumerable<string>> Run { get { throw null; } set { } }
         public virtual int Invoke(System.Collections.Generic.IEnumerable<string> arguments) { throw null; }
     }
     public partial class CommandSet : System.Collections.ObjectModel.KeyedCollection<string, Mono.Options.Command>

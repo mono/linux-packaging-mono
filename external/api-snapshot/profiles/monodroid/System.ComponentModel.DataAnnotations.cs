@@ -42,14 +42,14 @@ namespace System.ComponentModel.DataAnnotations
     public sealed partial class BindableTypeAttribute : System.Attribute
     {
         public BindableTypeAttribute() { }
-        public bool IsBindable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsBindable { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(128), AllowMultiple=false)]
     public partial class CompareAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public CompareAttribute(string otherProperty) { }
-        public string OtherProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string OtherPropertyDisplayName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string OtherProperty { get { throw null; } }
+        public string OtherPropertyDisplayName { get { throw null; } }
         public override bool RequiresValidationContext { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         protected override System.ComponentModel.DataAnnotations.ValidationResult IsValid(object value, System.ComponentModel.DataAnnotations.ValidationContext validationContext) { throw null; }
@@ -100,9 +100,9 @@ namespace System.ComponentModel.DataAnnotations
     {
         public DataTypeAttribute(System.ComponentModel.DataAnnotations.DataType dataType) { }
         public DataTypeAttribute(string customDataType) { }
-        public string CustomDataType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ComponentModel.DataAnnotations.DataType DataType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ComponentModel.DataAnnotations.DisplayFormatAttribute DisplayFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public string CustomDataType { get { throw null; } }
+        public System.ComponentModel.DataAnnotations.DataType DataType { get { throw null; } }
+        public System.ComponentModel.DataAnnotations.DisplayFormatAttribute DisplayFormat { get { throw null; } protected set { } }
         public virtual string GetDataTypeName() { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -134,26 +134,26 @@ namespace System.ComponentModel.DataAnnotations
         public DisplayColumnAttribute(string displayColumn) { }
         public DisplayColumnAttribute(string displayColumn, string sortColumn) { }
         public DisplayColumnAttribute(string displayColumn, string sortColumn, bool sortDescending) { }
-        public string DisplayColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string SortColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool SortDescending { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string DisplayColumn { get { throw null; } }
+        public string SortColumn { get { throw null; } }
+        public bool SortDescending { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false)]
     public partial class DisplayFormatAttribute : System.Attribute
     {
         public DisplayFormatAttribute() { }
-        public bool ApplyFormatInEditMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ConvertEmptyStringToNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DataFormatString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HtmlEncode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string NullDisplayText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ApplyFormatInEditMode { get { throw null; } set { } }
+        public bool ConvertEmptyStringToNull { get { throw null; } set { } }
+        public string DataFormatString { get { throw null; } set { } }
+        public bool HtmlEncode { get { throw null; } set { } }
+        public string NullDisplayText { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false, Inherited=true)]
     public sealed partial class EditableAttribute : System.Attribute
     {
         public EditableAttribute(bool allowEdit) { }
-        public bool AllowEdit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool AllowInitialValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowEdit { get { throw null; } }
+        public bool AllowInitialValue { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
     public sealed partial class EmailAddressAttribute : System.ComponentModel.DataAnnotations.DataTypeAttribute
@@ -165,7 +165,7 @@ namespace System.ComponentModel.DataAnnotations
     public sealed partial class EnumDataTypeAttribute : System.ComponentModel.DataAnnotations.DataTypeAttribute
     {
         public EnumDataTypeAttribute(System.Type enumType) : base (default(System.ComponentModel.DataAnnotations.DataType)) { }
-        public System.Type EnumType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type EnumType { get { throw null; } }
         public override bool IsValid(object value) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
@@ -203,7 +203,7 @@ namespace System.ComponentModel.DataAnnotations
     {
         public MaxLengthAttribute() { }
         public MaxLengthAttribute(int length) { }
-        public int Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Length { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -217,7 +217,7 @@ namespace System.ComponentModel.DataAnnotations
     public partial class MinLengthAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public MinLengthAttribute(int length) { }
-        public int Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Length { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -233,9 +233,9 @@ namespace System.ComponentModel.DataAnnotations
         public RangeAttribute(double minimum, double maximum) { }
         public RangeAttribute(int minimum, int maximum) { }
         public RangeAttribute(System.Type type, string minimum, string maximum) { }
-        public object Maximum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Minimum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type OperandType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Maximum { get { throw null; } }
+        public object Minimum { get { throw null; } }
+        public System.Type OperandType { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -244,7 +244,7 @@ namespace System.ComponentModel.DataAnnotations
     {
         public RegularExpressionAttribute(string pattern) { }
         public int MatchTimeoutInMilliseconds { get { throw null; } set { } }
-        public string Pattern { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Pattern { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -252,27 +252,27 @@ namespace System.ComponentModel.DataAnnotations
     public partial class RequiredAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public RequiredAttribute() { }
-        public bool AllowEmptyStrings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowEmptyStrings { get { throw null; } set { } }
         public override bool IsValid(object value) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false)]
     public partial class ScaffoldColumnAttribute : System.Attribute
     {
         public ScaffoldColumnAttribute(bool scaffold) { }
-        public bool Scaffold { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Scaffold { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
     public partial class ScaffoldTableAttribute : System.Attribute
     {
         public ScaffoldTableAttribute(bool scaffold) { }
-        public bool Scaffold { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Scaffold { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
     public partial class StringLengthAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public StringLengthAttribute(int maximumLength) { }
-        public int MaximumLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int MinimumLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaximumLength { get { throw null; } }
+        public int MinimumLength { get { throw null; } set { } }
         public override string FormatErrorMessage(string name) { throw null; }
         public override bool IsValid(object value) { throw null; }
     }
@@ -340,9 +340,9 @@ namespace System.ComponentModel.DataAnnotations
         public ValidationException(string message) { }
         public ValidationException(string errorMessage, System.ComponentModel.DataAnnotations.ValidationAttribute validatingAttribute, object value) { }
         public ValidationException(string message, System.Exception innerException) { }
-        public System.ComponentModel.DataAnnotations.ValidationAttribute ValidationAttribute { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ComponentModel.DataAnnotations.ValidationAttribute ValidationAttribute { get { throw null; } }
         public System.ComponentModel.DataAnnotations.ValidationResult ValidationResult { get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Value { get { throw null; } }
     }
     public partial class ValidationResult
     {
@@ -386,7 +386,7 @@ namespace System.ComponentModel.DataAnnotations.Schema
     public partial class DatabaseGeneratedAttribute : System.Attribute
     {
         public DatabaseGeneratedAttribute(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption databaseGeneratedOption) { }
-        public System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption DatabaseGeneratedOption { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption DatabaseGeneratedOption { get { throw null; } }
     }
     public enum DatabaseGeneratedOption
     {

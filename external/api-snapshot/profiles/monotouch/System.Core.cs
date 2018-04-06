@@ -191,7 +191,7 @@ namespace System.Dynamic
     public abstract partial class BinaryOperationBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected BinaryOperationBinder(System.Linq.Expressions.ExpressionType operation) { }
-        public System.Linq.Expressions.ExpressionType Operation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.ExpressionType Operation { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackBinaryOperation(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject arg) { throw null; }
@@ -214,17 +214,17 @@ namespace System.Dynamic
     {
         public CallInfo(int argCount, System.Collections.Generic.IEnumerable<string> argNames) { }
         public CallInfo(int argCount, params string[] argNames) { }
-        public int ArgumentCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<string> ArgumentNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int ArgumentCount { get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<string> ArgumentNames { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
     public abstract partial class ConvertBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected ConvertBinder(System.Type type, bool @explicit) { }
-        public bool Explicit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Explicit { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
-        public System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type Type { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackConvert(System.Dynamic.DynamicMetaObject target) { throw null; }
         public abstract System.Dynamic.DynamicMetaObject FallbackConvert(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject errorSuggestion);
@@ -232,7 +232,7 @@ namespace System.Dynamic
     public abstract partial class CreateInstanceBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected CreateInstanceBinder(System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackCreateInstance(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
@@ -241,7 +241,7 @@ namespace System.Dynamic
     public abstract partial class DeleteIndexBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected DeleteIndexBinder(System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackDeleteIndex(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] indexes) { throw null; }
@@ -250,8 +250,8 @@ namespace System.Dynamic
     public abstract partial class DeleteMemberBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected DeleteMemberBinder(string name, bool ignoreCase) { }
-        public bool IgnoreCase { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IgnoreCase { get { throw null; } }
+        public string Name { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackDeleteMember(System.Dynamic.DynamicMetaObject target) { throw null; }
@@ -262,12 +262,12 @@ namespace System.Dynamic
         public static readonly System.Dynamic.DynamicMetaObject[] EmptyMetaObjects;
         public DynamicMetaObject(System.Linq.Expressions.Expression expression, System.Dynamic.BindingRestrictions restrictions) { }
         public DynamicMetaObject(System.Linq.Expressions.Expression expression, System.Dynamic.BindingRestrictions restrictions, object value) { }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool HasValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
+        public bool HasValue { get { throw null; } }
         public System.Type LimitType { get { throw null; } }
-        public System.Dynamic.BindingRestrictions Restrictions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.BindingRestrictions Restrictions { get { throw null; } }
         public System.Type RuntimeType { get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Value { get { throw null; } }
         public virtual System.Dynamic.DynamicMetaObject BindBinaryOperation(System.Dynamic.BinaryOperationBinder binder, System.Dynamic.DynamicMetaObject arg) { throw null; }
         public virtual System.Dynamic.DynamicMetaObject BindConvert(System.Dynamic.ConvertBinder binder) { throw null; }
         public virtual System.Dynamic.DynamicMetaObject BindCreateInstance(System.Dynamic.CreateInstanceBinder binder, System.Dynamic.DynamicMetaObject[] args) { throw null; }
@@ -337,7 +337,7 @@ namespace System.Dynamic
     public abstract partial class GetIndexBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected GetIndexBinder(System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackGetIndex(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] indexes) { throw null; }
@@ -346,8 +346,8 @@ namespace System.Dynamic
     public abstract partial class GetMemberBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected GetMemberBinder(string name, bool ignoreCase) { }
-        public bool IgnoreCase { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IgnoreCase { get { throw null; } }
+        public string Name { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackGetMember(System.Dynamic.DynamicMetaObject target) { throw null; }
@@ -364,7 +364,7 @@ namespace System.Dynamic
     public abstract partial class InvokeBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected InvokeBinder(System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackInvoke(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
@@ -373,9 +373,9 @@ namespace System.Dynamic
     public abstract partial class InvokeMemberBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected InvokeMemberBinder(string name, bool ignoreCase, System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IgnoreCase { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
+        public bool IgnoreCase { get { throw null; } }
+        public string Name { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public abstract System.Dynamic.DynamicMetaObject FallbackInvoke(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args, System.Dynamic.DynamicMetaObject errorSuggestion);
@@ -385,7 +385,7 @@ namespace System.Dynamic
     public abstract partial class SetIndexBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected SetIndexBinder(System.Dynamic.CallInfo callInfo) { }
-        public System.Dynamic.CallInfo CallInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Dynamic.CallInfo CallInfo { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackSetIndex(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] indexes, System.Dynamic.DynamicMetaObject value) { throw null; }
@@ -394,8 +394,8 @@ namespace System.Dynamic
     public abstract partial class SetMemberBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected SetMemberBinder(string name, bool ignoreCase) { }
-        public bool IgnoreCase { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IgnoreCase { get { throw null; } }
+        public string Name { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackSetMember(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject value) { throw null; }
@@ -404,7 +404,7 @@ namespace System.Dynamic
     public abstract partial class UnaryOperationBinder : System.Dynamic.DynamicMetaObjectBinder
     {
         protected UnaryOperationBinder(System.Linq.Expressions.ExpressionType operation) { }
-        public System.Linq.Expressions.ExpressionType Operation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.ExpressionType Operation { get { throw null; } }
         public sealed override System.Type ReturnType { get { throw null; } }
         public sealed override System.Dynamic.DynamicMetaObject Bind(System.Dynamic.DynamicMetaObject target, System.Dynamic.DynamicMetaObject[] args) { throw null; }
         public System.Dynamic.DynamicMetaObject FallbackUnaryOperation(System.Dynamic.DynamicMetaObject target) { throw null; }
@@ -554,7 +554,7 @@ namespace System.IO.Pipes
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, System.IO.HandleInheritability inheritability, int bufferSize) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, System.IO.HandleInheritability inheritability, int bufferSize, System.IO.Pipes.PipeSecurity pipeSecurity) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         [System.MonoTODOAttribute]
-        public Microsoft.Win32.SafeHandles.SafePipeHandle ClientSafePipeHandle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Microsoft.Win32.SafeHandles.SafePipeHandle ClientSafePipeHandle { get { throw null; } }
         public override System.IO.Pipes.PipeTransmissionMode ReadMode { set { } }
         public override System.IO.Pipes.PipeTransmissionMode TransmissionMode { get { throw null; } }
         [System.MonoTODOAttribute]
@@ -699,11 +699,11 @@ namespace System.IO.Pipes
         public override bool CanSeek { get { throw null; } }
         public override bool CanWrite { get { throw null; } }
         public virtual int InBufferSize { get { throw null; } }
-        public bool IsAsync { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsConnected { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        protected bool IsHandleExposed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsAsync { get { throw null; } }
+        public bool IsConnected { get { throw null; } protected set { } }
+        protected bool IsHandleExposed { get { throw null; } }
         [System.MonoTODOAttribute]
-        public bool IsMessageComplete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsMessageComplete { get { throw null; } }
         public override long Length { get { throw null; } }
         [System.MonoTODOAttribute]
         public virtual int OutBufferSize { get { throw null; } }
@@ -1398,9 +1398,9 @@ namespace System.Linq.Expressions
         public System.Linq.Expressions.LambdaExpression Conversion { get { throw null; } }
         public bool IsLifted { get { throw null; } }
         public bool IsLiftedToNull { get { throw null; } }
-        public System.Linq.Expressions.Expression Left { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Left { get { throw null; } }
         public System.Reflection.MethodInfo Method { get { throw null; } }
-        public System.Linq.Expressions.Expression Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Right { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public override System.Linq.Expressions.Expression Reduce() { throw null; }
         public System.Linq.Expressions.BinaryExpression Update(System.Linq.Expressions.Expression left, System.Linq.Expressions.LambdaExpression conversion, System.Linq.Expressions.Expression right) { throw null; }
@@ -1421,10 +1421,10 @@ namespace System.Linq.Expressions
     public sealed partial class CatchBlock
     {
         internal CatchBlock() { }
-        public System.Linq.Expressions.Expression Body { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression Filter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type Test { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.ParameterExpression Variable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Body { get { throw null; } }
+        public System.Linq.Expressions.Expression Filter { get { throw null; } }
+        public System.Type Test { get { throw null; } }
+        public System.Linq.Expressions.ParameterExpression Variable { get { throw null; } }
         public override string ToString() { throw null; }
         public System.Linq.Expressions.CatchBlock Update(System.Linq.Expressions.ParameterExpression variable, System.Linq.Expressions.Expression filter, System.Linq.Expressions.Expression body) { throw null; }
     }
@@ -1433,9 +1433,9 @@ namespace System.Linq.Expressions
     {
         internal ConditionalExpression() { }
         public System.Linq.Expressions.Expression IfFalse { get { throw null; } }
-        public System.Linq.Expressions.Expression IfTrue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression IfTrue { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public System.Linq.Expressions.Expression Test { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Test { get { throw null; } }
         public override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.ConditionalExpression Update(System.Linq.Expressions.Expression test, System.Linq.Expressions.Expression ifTrue, System.Linq.Expressions.Expression ifFalse) { throw null; }
@@ -1446,14 +1446,14 @@ namespace System.Linq.Expressions
         internal ConstantExpression() { }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public override System.Type Type { get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Value { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
     }
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Linq.Expressions.Expression.DebugInfoExpressionProxy")]
     public partial class DebugInfoExpression : System.Linq.Expressions.Expression
     {
         internal DebugInfoExpression() { }
-        public System.Linq.Expressions.SymbolDocumentInfo Document { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.SymbolDocumentInfo Document { get { throw null; } }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
         public virtual int EndColumn { get { throw null; } }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
@@ -1473,16 +1473,16 @@ namespace System.Linq.Expressions
     {
         internal DefaultExpression() { }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
     }
     public partial class DynamicExpression : System.Linq.Expressions.Expression, System.Linq.Expressions.IArgumentProvider, System.Linq.Expressions.IDynamicExpression
     {
         internal DynamicExpression() { }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
-        public System.Runtime.CompilerServices.CallSiteBinder Binder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.CompilerServices.CallSiteBinder Binder { get { throw null; } }
         public override bool CanReduce { get { throw null; } }
-        public System.Type DelegateType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type DelegateType { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
         int System.Linq.Expressions.IArgumentProvider.ArgumentCount { get { throw null; } }
@@ -1515,9 +1515,9 @@ namespace System.Linq.Expressions
     public sealed partial class ElementInit : System.Linq.Expressions.IArgumentProvider
     {
         internal ElementInit() { }
-        public System.Reflection.MethodInfo AddMethod { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.MethodInfo AddMethod { get { throw null; } }
         public int ArgumentCount { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
         public System.Linq.Expressions.Expression GetArgument(int index) { throw null; }
         public override string ToString() { throw null; }
         public System.Linq.Expressions.ElementInit Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.Expression> arguments) { throw null; }
@@ -1990,11 +1990,11 @@ namespace System.Linq.Expressions
     public sealed partial class GotoExpression : System.Linq.Expressions.Expression
     {
         internal GotoExpression() { }
-        public System.Linq.Expressions.GotoExpressionKind Kind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.GotoExpressionKind Kind { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public System.Linq.Expressions.LabelTarget Target { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.LabelTarget Target { get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
+        public System.Linq.Expressions.Expression Value { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.GotoExpression Update(System.Linq.Expressions.LabelTarget target, System.Linq.Expressions.Expression value) { throw null; }
     }
@@ -2022,9 +2022,9 @@ namespace System.Linq.Expressions
         internal IndexExpression() { }
         public int ArgumentCount { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
-        public System.Reflection.PropertyInfo Indexer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.PropertyInfo Indexer { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public System.Linq.Expressions.Expression Object { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Object { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.Expression GetArgument(int index) { throw null; }
@@ -2037,9 +2037,9 @@ namespace System.Linq.Expressions
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
         public virtual int ArgumentCount { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
         public virtual System.Linq.Expressions.Expression GetArgument(int index) { throw null; }
@@ -2049,9 +2049,9 @@ namespace System.Linq.Expressions
     public sealed partial class LabelExpression : System.Linq.Expressions.Expression
     {
         internal LabelExpression() { }
-        public System.Linq.Expressions.Expression DefaultValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression DefaultValue { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public System.Linq.Expressions.LabelTarget Target { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.LabelTarget Target { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.LabelExpression Update(System.Linq.Expressions.LabelTarget target, System.Linq.Expressions.Expression defaultValue) { throw null; }
@@ -2059,8 +2059,8 @@ namespace System.Linq.Expressions
     public sealed partial class LabelTarget
     {
         internal LabelTarget() { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Type Type { get { throw null; } }
         public override string ToString() { throw null; }
     }
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Linq.Expressions.Expression.LambdaExpressionProxy")]
@@ -2083,8 +2083,8 @@ namespace System.Linq.Expressions
     {
         internal ListInitExpression() { }
         public override bool CanReduce { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ElementInit> Initializers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.NewExpression NewExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ElementInit> Initializers { get { throw null; } }
+        public System.Linq.Expressions.NewExpression NewExpression { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2095,9 +2095,9 @@ namespace System.Linq.Expressions
     public sealed partial class LoopExpression : System.Linq.Expressions.Expression
     {
         internal LoopExpression() { }
-        public System.Linq.Expressions.Expression Body { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.LabelTarget BreakLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.LabelTarget ContinueLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Body { get { throw null; } }
+        public System.Linq.Expressions.LabelTarget BreakLabel { get { throw null; } }
+        public System.Linq.Expressions.LabelTarget ContinueLabel { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2113,8 +2113,8 @@ namespace System.Linq.Expressions
     {
         [System.ObsoleteAttribute("Do not use this constructor. It will be removed in future releases.")]
         protected MemberBinding(System.Linq.Expressions.MemberBindingType type, System.Reflection.MemberInfo member) { }
-        public System.Linq.Expressions.MemberBindingType BindingType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Reflection.MemberInfo Member { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.MemberBindingType BindingType { get { throw null; } }
+        public System.Reflection.MemberInfo Member { get { throw null; } }
         public override string ToString() { throw null; }
     }
     public enum MemberBindingType
@@ -2127,7 +2127,7 @@ namespace System.Linq.Expressions
     public partial class MemberExpression : System.Linq.Expressions.Expression
     {
         internal MemberExpression() { }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
         public System.Reflection.MemberInfo Member { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2137,9 +2137,9 @@ namespace System.Linq.Expressions
     public sealed partial class MemberInitExpression : System.Linq.Expressions.Expression
     {
         internal MemberInitExpression() { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.MemberBinding> Bindings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.MemberBinding> Bindings { get { throw null; } }
         public override bool CanReduce { get { throw null; } }
-        public System.Linq.Expressions.NewExpression NewExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.NewExpression NewExpression { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2149,13 +2149,13 @@ namespace System.Linq.Expressions
     public sealed partial class MemberListBinding : System.Linq.Expressions.MemberBinding
     {
         internal MemberListBinding() : base (default(System.Linq.Expressions.MemberBindingType), default(System.Reflection.MemberInfo)) { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ElementInit> Initializers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ElementInit> Initializers { get { throw null; } }
         public System.Linq.Expressions.MemberListBinding Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.ElementInit> initializers) { throw null; }
     }
     public sealed partial class MemberMemberBinding : System.Linq.Expressions.MemberBinding
     {
         internal MemberMemberBinding() : base (default(System.Linq.Expressions.MemberBindingType), default(System.Reflection.MemberInfo)) { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.MemberBinding> Bindings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.MemberBinding> Bindings { get { throw null; } }
         public System.Linq.Expressions.MemberMemberBinding Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.MemberBinding> bindings) { throw null; }
     }
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Linq.Expressions.Expression.MethodCallExpressionProxy")]
@@ -2165,7 +2165,7 @@ namespace System.Linq.Expressions
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
         public virtual int ArgumentCount { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
-        public System.Reflection.MethodInfo Method { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.MethodInfo Method { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public System.Linq.Expressions.Expression Object { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
@@ -2178,8 +2178,8 @@ namespace System.Linq.Expressions
     public partial class NewArrayExpression : System.Linq.Expressions.Expression
     {
         internal NewArrayExpression() { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Expressions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Expressions { get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.NewArrayExpression Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.Expression> expressions) { throw null; }
     }
@@ -2189,8 +2189,8 @@ namespace System.Linq.Expressions
         internal NewExpression() { }
         public int ArgumentCount { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> Arguments { get { throw null; } }
-        public System.Reflection.ConstructorInfo Constructor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Reflection.MemberInfo> Members { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.ConstructorInfo Constructor { get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Reflection.MemberInfo> Members { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2202,7 +2202,7 @@ namespace System.Linq.Expressions
     {
         internal ParameterExpression() { }
         public bool IsByRef { get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
@@ -2213,7 +2213,7 @@ namespace System.Linq.Expressions
         internal RuntimeVariablesExpression() { }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ParameterExpression> Variables { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ParameterExpression> Variables { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.RuntimeVariablesExpression Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.ParameterExpression> variables) { throw null; }
     }
@@ -2221,8 +2221,8 @@ namespace System.Linq.Expressions
     public sealed partial class SwitchCase
     {
         internal SwitchCase() { }
-        public System.Linq.Expressions.Expression Body { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> TestValues { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Body { get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> TestValues { get { throw null; } }
         public override string ToString() { throw null; }
         public System.Linq.Expressions.SwitchCase Update(System.Collections.Generic.IEnumerable<System.Linq.Expressions.Expression> testValues, System.Linq.Expressions.Expression body) { throw null; }
     }
@@ -2230,12 +2230,12 @@ namespace System.Linq.Expressions
     public sealed partial class SwitchExpression : System.Linq.Expressions.Expression
     {
         internal SwitchExpression() { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.SwitchCase> Cases { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Reflection.MethodInfo Comparison { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression DefaultBody { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.SwitchCase> Cases { get { throw null; } }
+        public System.Reflection.MethodInfo Comparison { get { throw null; } }
+        public System.Linq.Expressions.Expression DefaultBody { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public System.Linq.Expressions.Expression SwitchValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression SwitchValue { get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.SwitchExpression Update(System.Linq.Expressions.Expression switchValue, System.Collections.Generic.IEnumerable<System.Linq.Expressions.SwitchCase> cases, System.Linq.Expressions.Expression defaultBody) { throw null; }
     }
@@ -2243,7 +2243,7 @@ namespace System.Linq.Expressions
     {
         internal SymbolDocumentInfo() { }
         public virtual System.Guid DocumentType { get { throw null; } }
-        public string FileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string FileName { get { throw null; } }
         public virtual System.Guid Language { get { throw null; } }
         public virtual System.Guid LanguageVendor { get { throw null; } }
     }
@@ -2251,12 +2251,12 @@ namespace System.Linq.Expressions
     public sealed partial class TryExpression : System.Linq.Expressions.Expression
     {
         internal TryExpression() { }
-        public System.Linq.Expressions.Expression Body { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression Fault { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression Finally { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.CatchBlock> Handlers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Body { get { throw null; } }
+        public System.Linq.Expressions.Expression Fault { get { throw null; } }
+        public System.Linq.Expressions.Expression Finally { get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.CatchBlock> Handlers { get { throw null; } }
         public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.TryExpression Update(System.Linq.Expressions.Expression body, System.Collections.Generic.IEnumerable<System.Linq.Expressions.CatchBlock> handlers, System.Linq.Expressions.Expression @finally, System.Linq.Expressions.Expression fault) { throw null; }
     }
@@ -2264,10 +2264,10 @@ namespace System.Linq.Expressions
     public sealed partial class TypeBinaryExpression : System.Linq.Expressions.Expression
     {
         internal TypeBinaryExpression() { }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Linq.Expressions.ExpressionType NodeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
+        public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
         public sealed override System.Type Type { get { throw null; } }
-        public System.Type TypeOperand { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type TypeOperand { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public System.Linq.Expressions.TypeBinaryExpression Update(System.Linq.Expressions.Expression expression) { throw null; }
     }
@@ -2278,10 +2278,10 @@ namespace System.Linq.Expressions
         public override bool CanReduce { get { throw null; } }
         public bool IsLifted { get { throw null; } }
         public bool IsLiftedToNull { get { throw null; } }
-        public System.Reflection.MethodInfo Method { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Linq.Expressions.ExpressionType NodeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Linq.Expressions.Expression Operand { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public sealed override System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.MethodInfo Method { get { throw null; } }
+        public sealed override System.Linq.Expressions.ExpressionType NodeType { get { throw null; } }
+        public System.Linq.Expressions.Expression Operand { get { throw null; } }
+        public sealed override System.Type Type { get { throw null; } }
         protected internal override System.Linq.Expressions.Expression Accept(System.Linq.Expressions.ExpressionVisitor visitor) { throw null; }
         public override System.Linq.Expressions.Expression Reduce() { throw null; }
         public System.Linq.Expressions.UnaryExpression Update(System.Linq.Expressions.Expression operand) { throw null; }
@@ -2298,7 +2298,7 @@ namespace System.Runtime.CompilerServices
     public abstract partial class CallSiteBinder
     {
         protected CallSiteBinder() { }
-        public static System.Linq.Expressions.LabelTarget UpdateLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Linq.Expressions.LabelTarget UpdateLabel { get { throw null; } }
         public abstract System.Linq.Expressions.Expression Bind(object[] args, System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.ParameterExpression> parameters, System.Linq.Expressions.LabelTarget returnLabel);
         public virtual T BindDelegate<T>(System.Runtime.CompilerServices.CallSite<T> site, object[] args) where T : class { throw null; }
         protected void CacheTarget<T>(T target) where T : class { }
@@ -2864,7 +2864,7 @@ namespace System.Security.Cryptography
         [System.Security.SecuritySafeCriticalAttribute]
         public ECDsaCng(System.Security.Cryptography.CngKey key) { }
         public ECDsaCng(System.Security.Cryptography.ECCurve curve) { }
-        public System.Security.Cryptography.CngAlgorithm HashAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Security.Cryptography.CngAlgorithm HashAlgorithm { get { throw null; } set { } }
         public System.Security.Cryptography.CngKey Key { get { throw null; } }
         public void FromXmlString(string xml, System.Security.Cryptography.ECKeyXmlFormat format) { }
         public byte[] SignData(byte[] data) { throw null; }

@@ -125,8 +125,8 @@ namespace System.ComponentModel.Composition
         public ExportAttribute(string contractName) { }
         public ExportAttribute(string contractName, System.Type contractType) { }
         public ExportAttribute(System.Type contractType) { }
-        public string ContractName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type ContractType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ContractName { get { throw null; } }
+        public System.Type ContractType { get { throw null; } }
     }
     public partial class ExportFactory<T>
     {
@@ -149,9 +149,9 @@ namespace System.ComponentModel.Composition
     public sealed partial class ExportMetadataAttribute : System.Attribute
     {
         public ExportMetadataAttribute(string name, object value) { }
-        public bool IsMultiple { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsMultiple { get { throw null; } set { } }
+        public string Name { get { throw null; } }
+        public object Value { get { throw null; } }
     }
     public partial interface ICompositionService
     {
@@ -164,12 +164,12 @@ namespace System.ComponentModel.Composition
         public ImportAttribute(string contractName) { }
         public ImportAttribute(string contractName, System.Type contractType) { }
         public ImportAttribute(System.Type contractType) { }
-        public bool AllowDefault { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool AllowRecomposition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContractName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type ContractType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ComponentModel.Composition.CreationPolicy RequiredCreationPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ComponentModel.Composition.ImportSource Source { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowDefault { get { throw null; } set { } }
+        public bool AllowRecomposition { get { throw null; } set { } }
+        public string ContractName { get { throw null; } }
+        public System.Type ContractType { get { throw null; } }
+        public System.ComponentModel.Composition.CreationPolicy RequiredCreationPolicy { get { throw null; } set { } }
+        public System.ComponentModel.Composition.ImportSource Source { get { throw null; } set { } }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("{Message}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.ComponentModel.Composition.ImportCardinalityMismatchExceptionDebuggerProxy")]
@@ -194,11 +194,11 @@ namespace System.ComponentModel.Composition
         public ImportManyAttribute(string contractName) { }
         public ImportManyAttribute(string contractName, System.Type contractType) { }
         public ImportManyAttribute(System.Type contractType) { }
-        public bool AllowRecomposition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContractName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type ContractType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ComponentModel.Composition.CreationPolicy RequiredCreationPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ComponentModel.Composition.ImportSource Source { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowRecomposition { get { throw null; } set { } }
+        public string ContractName { get { throw null; } }
+        public System.Type ContractType { get { throw null; } }
+        public System.ComponentModel.Composition.CreationPolicy RequiredCreationPolicy { get { throw null; } set { } }
+        public System.ComponentModel.Composition.ImportSource Source { get { throw null; } set { } }
     }
     public enum ImportSource
     {
@@ -227,20 +227,20 @@ namespace System.ComponentModel.Composition
     public sealed partial class MetadataViewImplementationAttribute : System.Attribute
     {
         public MetadataViewImplementationAttribute(System.Type implementationType) { }
-        public System.Type ImplementationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type ImplementationType { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
     public sealed partial class PartCreationPolicyAttribute : System.Attribute
     {
         public PartCreationPolicyAttribute(System.ComponentModel.Composition.CreationPolicy creationPolicy) { }
-        public System.ComponentModel.Composition.CreationPolicy CreationPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ComponentModel.Composition.CreationPolicy CreationPolicy { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true, Inherited=false)]
     public sealed partial class PartMetadataAttribute : System.Attribute
     {
         public PartMetadataAttribute(string name, object value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public object Value { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
     public sealed partial class PartNotDiscoverableAttribute : System.Attribute
@@ -337,7 +337,7 @@ namespace System.ComponentModel.Composition.Hosting
     {
         public ComposablePartCatalogChangeEventArgs(System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ComposablePartDefinition> addedDefinitions, System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ComposablePartDefinition> removedDefinitions, System.ComponentModel.Composition.Hosting.AtomicComposition atomicComposition) { }
         public System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ComposablePartDefinition> AddedDefinitions { get { throw null; } }
-        public System.ComponentModel.Composition.Hosting.AtomicComposition AtomicComposition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ComponentModel.Composition.Hosting.AtomicComposition AtomicComposition { get { throw null; } }
         public System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ComposablePartDefinition> RemovedDefinitions { get { throw null; } }
     }
     public partial class ComposablePartExportProvider : System.ComponentModel.Composition.Hosting.ExportProvider, System.IDisposable
@@ -479,7 +479,7 @@ namespace System.ComponentModel.Composition.Hosting
     {
         public ExportsChangeEventArgs(System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ExportDefinition> addedExports, System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ExportDefinition> removedExports, System.ComponentModel.Composition.Hosting.AtomicComposition atomicComposition) { }
         public System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ExportDefinition> AddedExports { get { throw null; } }
-        public System.ComponentModel.Composition.Hosting.AtomicComposition AtomicComposition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ComponentModel.Composition.Hosting.AtomicComposition AtomicComposition { get { throw null; } }
         public System.Collections.Generic.IEnumerable<string> ChangedContractNames { get { throw null; } }
         public System.Collections.Generic.IEnumerable<System.ComponentModel.Composition.Primitives.ExportDefinition> RemovedExports { get { throw null; } }
     }
