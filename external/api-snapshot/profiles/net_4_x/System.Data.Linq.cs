@@ -160,9 +160,9 @@ namespace System.Data.Linq
     public sealed partial class ChangeSet
     {
         internal ChangeSet() { }
-        public System.Collections.Generic.IList<object> Deletes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IList<object> Inserts { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IList<object> Updates { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IList<object> Deletes { get { throw null; } }
+        public System.Collections.Generic.IList<object> Inserts { get { throw null; } }
+        public System.Collections.Generic.IList<object> Updates { get { throw null; } }
         public override string ToString() { throw null; }
     }
     public sealed partial class CompiledQuery
@@ -195,8 +195,8 @@ namespace System.Data.Linq
         public System.Data.Common.DbConnection Connection { get { throw null; } }
         public bool DeferredLoadingEnabled { get { throw null; } set { } }
         public System.Data.Linq.DataLoadOptions LoadOptions { get { throw null; } set { } }
-        public System.IO.TextWriter Log { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Data.Linq.Mapping.MetaModel Mapping { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IO.TextWriter Log { get { throw null; } set { } }
+        public System.Data.Linq.Mapping.MetaModel Mapping { get { throw null; } }
         public bool ObjectTrackingEnabled { get { throw null; } set { } }
         public bool QueryCacheEnabled { get { throw null; } set { } }
         public System.Data.Common.DbTransaction Transaction { get { throw null; } set { } }
@@ -415,7 +415,7 @@ namespace System.Data.Linq
     public sealed partial class Table<TEntity> : System.Collections.Generic.IEnumerable<TEntity>, System.Collections.IEnumerable, System.ComponentModel.IListSource, System.Data.Linq.ITable, System.Linq.IQueryable, System.Linq.IQueryable<TEntity>, System.Linq.IQueryProvider where TEntity : class
     {
         internal Table() { }
-        public System.Data.Linq.DataContext Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.Linq.DataContext Context { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }
         bool System.ComponentModel.IListSource.ContainsListCollection { get { throw null; } }
         System.Type System.Linq.IQueryable.ElementType { get { throw null; } }
@@ -463,12 +463,12 @@ namespace System.Data.Linq.Mapping
     public sealed partial class AssociationAttribute : System.Data.Linq.Mapping.DataAttribute
     {
         public AssociationAttribute() { }
-        public bool DeleteOnNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DeleteRule { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsForeignKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsUnique { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string OtherKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ThisKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DeleteOnNull { get { throw null; } set { } }
+        public string DeleteRule { get { throw null; } set { } }
+        public bool IsForeignKey { get { throw null; } set { } }
+        public bool IsUnique { get { throw null; } set { } }
+        public string OtherKey { get { throw null; } set { } }
+        public string ThisKey { get { throw null; } set { } }
     }
     public sealed partial class AttributeMappingSource : System.Data.Linq.Mapping.MappingSource
     {
@@ -487,42 +487,42 @@ namespace System.Data.Linq.Mapping
     public sealed partial class ColumnAttribute : System.Data.Linq.Mapping.DataAttribute
     {
         public ColumnAttribute() { }
-        public System.Data.Linq.Mapping.AutoSync AutoSync { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool CanBeNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DbType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsDbGenerated { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsDiscriminator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsPrimaryKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Data.Linq.Mapping.UpdateCheck UpdateCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Data.Linq.Mapping.AutoSync AutoSync { get { throw null; } set { } }
+        public bool CanBeNull { get { throw null; } set { } }
+        public string DbType { get { throw null; } set { } }
+        public string Expression { get { throw null; } set { } }
+        public bool IsDbGenerated { get { throw null; } set { } }
+        public bool IsDiscriminator { get { throw null; } set { } }
+        public bool IsPrimaryKey { get { throw null; } set { } }
+        public bool IsVersion { get { throw null; } set { } }
+        public System.Data.Linq.Mapping.UpdateCheck UpdateCheck { get { throw null; } set { } }
     }
     public abstract partial class DataAttribute : System.Attribute
     {
         protected DataAttribute() { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Storage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } set { } }
+        public string Storage { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
     public sealed partial class DatabaseAttribute : System.Attribute
     {
         public DatabaseAttribute() { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false)]
     public sealed partial class FunctionAttribute : System.Attribute
     {
         public FunctionAttribute() { }
-        public bool IsComposable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsComposable { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true, Inherited=false)]
     public sealed partial class InheritanceMappingAttribute : System.Attribute
     {
         public InheritanceMappingAttribute() { }
-        public object Code { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsDefault { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object Code { get { throw null; } set { } }
+        public bool IsDefault { get { throw null; } set { } }
+        public System.Type Type { get { throw null; } set { } }
     }
     public abstract partial class MappingSource
     {
@@ -682,8 +682,8 @@ namespace System.Data.Linq.Mapping
     public sealed partial class ParameterAttribute : System.Attribute
     {
         public ParameterAttribute() { }
-        public string DbType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DbType { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
     public sealed partial class ProviderAttribute : System.Attribute
@@ -702,7 +702,7 @@ namespace System.Data.Linq.Mapping
     public sealed partial class TableAttribute : System.Attribute
     {
         public TableAttribute() { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } set { } }
     }
     public enum UpdateCheck
     {

@@ -22,7 +22,7 @@ namespace System.Reactive.Joins
     public abstract partial class QueryablePattern
     {
         protected QueryablePattern(System.Linq.Expressions.Expression expression) { }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
     }
     public partial class QueryablePattern<TSource1, TSource2, TSource3, TSource4, TSource5, TSource6, TSource7, TSource8, TSource9, TSource10> : System.Reactive.Joins.QueryablePattern
     {
@@ -116,7 +116,7 @@ namespace System.Reactive.Joins
     public partial class QueryablePlan<TResult>
     {
         internal QueryablePlan() { }
-        public System.Linq.Expressions.Expression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Expression { get { throw null; } }
     }
 }
 namespace System.Reactive.Linq

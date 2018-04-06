@@ -221,7 +221,7 @@ namespace System.Web
     public partial class DefaultHttpHandler : System.Web.IHttpAsyncHandler, System.Web.IHttpHandler
     {
         public DefaultHttpHandler() { }
-        protected System.Web.HttpContext Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected System.Web.HttpContext Context { get { throw null; } }
         protected System.Collections.Specialized.NameValueCollection ExecuteUrlHeaders { get { throw null; } }
         public virtual bool IsReusable { get { throw null; } }
         public virtual System.IAsyncResult BeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback callback, object state) { throw null; }
@@ -1371,10 +1371,10 @@ namespace System.Web
         public string Status { get { throw null; } set { } }
         public int StatusCode { get { throw null; } set { } }
         public string StatusDescription { get { throw null; } set { } }
-        public int SubStatusCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int SubStatusCode { get { throw null; } set { } }
         public bool SuppressContent { get { throw null; } set { } }
-        public bool SuppressFormsAuthenticationRedirect { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TrySkipIisCustomErrors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool SuppressFormsAuthenticationRedirect { get { throw null; } set { } }
+        public bool TrySkipIisCustomErrors { get { throw null; } set { } }
         [System.MonoTODOAttribute("Not implemented")]
         public void AddCacheDependency(params System.Web.Caching.CacheDependency[] dependencies) { }
         [System.MonoTODOAttribute("Currently does nothing")]
@@ -2425,16 +2425,16 @@ namespace System.Web
     public sealed partial class UnvalidatedRequestValues
     {
         public UnvalidatedRequestValues() { }
-        public System.Web.HttpCookieCollection Cookies { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.HttpFileCollection Files { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Specialized.NameValueCollection Form { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Specialized.NameValueCollection Headers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.HttpCookieCollection Cookies { get { throw null; } }
+        public System.Web.HttpFileCollection Files { get { throw null; } }
+        public System.Collections.Specialized.NameValueCollection Form { get { throw null; } }
+        public System.Collections.Specialized.NameValueCollection Headers { get { throw null; } }
         public string this[string field] { get { throw null; } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string PathInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Specialized.NameValueCollection QueryString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string RawUrl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Path { get { throw null; } }
+        public string PathInfo { get { throw null; } }
+        public System.Collections.Specialized.NameValueCollection QueryString { get { throw null; } }
+        public string RawUrl { get { throw null; } }
+        public System.Uri Url { get { throw null; } }
     }
     public abstract partial class UnvalidatedRequestValuesBase
     {
@@ -2601,16 +2601,16 @@ namespace System.Web.Caching
     public partial class FileResponseElement : System.Web.Caching.ResponseElement
     {
         public FileResponseElement(string path, long offset, long length) { }
-        public long Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long Offset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long Length { get { throw null; } }
+        public long Offset { get { throw null; } }
+        public string Path { get { throw null; } }
     }
     [System.SerializableAttribute]
     public sealed partial class HeaderElement
     {
         public HeaderElement(string name, string value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public string Value { get { throw null; } }
     }
     public partial interface IOutputCacheEntry
     {
@@ -2622,8 +2622,8 @@ namespace System.Web.Caching
     public partial class MemoryResponseElement : System.Web.Caching.ResponseElement
     {
         public MemoryResponseElement(byte[] buffer, long length) { }
-        public byte[] Buffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public byte[] Buffer { get { throw null; } }
+        public long Length { get { throw null; } }
     }
     public static partial class OutputCache
     {
@@ -2682,7 +2682,7 @@ namespace System.Web.Caching
     public partial class SubstitutionResponseElement : System.Web.Caching.ResponseElement
     {
         public SubstitutionResponseElement(System.Web.HttpResponseSubstitutionCallback callback) { }
-        public System.Web.HttpResponseSubstitutionCallback Callback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.HttpResponseSubstitutionCallback Callback { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.SerializableAttribute]
@@ -3821,9 +3821,9 @@ namespace System.Web.Configuration
     {
         public HttpCapabilitiesDefaultProvider() { }
         public HttpCapabilitiesDefaultProvider(System.Web.Configuration.HttpCapabilitiesDefaultProvider parent) { }
-        public System.TimeSpan CacheTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type ResultType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int UserAgentCacheKeyLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan CacheTime { get { throw null; } set { } }
+        public System.Type ResultType { get { throw null; } set { } }
+        public int UserAgentCacheKeyLength { get { throw null; } set { } }
         public void AddDependency(string variable) { }
         public virtual void AddRuleList(System.Collections.ArrayList ruleList) { }
         public override System.Web.HttpBrowserCapabilities GetBrowserCapabilities(System.Web.HttpRequest request) { throw null; }
@@ -4054,7 +4054,7 @@ namespace System.Web.Configuration
     {
         public MachineKeySection() { }
         [System.MonoTODOAttribute]
-        public System.Web.Configuration.MachineKeyCompatibilityMode CompatibilityMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Configuration.MachineKeyCompatibilityMode CompatibilityMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.WhiteSpaceTrimStringConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("decryption", DefaultValue="Auto")]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
@@ -5754,7 +5754,7 @@ namespace System.Web.ModelBinding
     public partial class BindingBehaviorAttribute : System.Attribute
     {
         public BindingBehaviorAttribute(System.Web.ModelBinding.BindingBehavior behavior) { }
-        public System.Web.ModelBinding.BindingBehavior Behavior { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.ModelBinding.BindingBehavior Behavior { get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
@@ -5771,8 +5771,8 @@ namespace System.Web.ModelBinding
     public sealed partial class ExtensibleModelBinderAttribute : System.Attribute
     {
         public ExtensibleModelBinderAttribute(System.Type binderType) { }
-        public System.Type BinderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool SuppressPrefixCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Type BinderType { get { throw null; } }
+        public bool SuppressPrefixCheck { get { throw null; } set { } }
     }
     public partial interface IModelNameProvider
     {
@@ -5795,7 +5795,7 @@ namespace System.Web.ModelBinding
     public sealed partial class ModelBinderProviderOptionsAttribute : System.Attribute
     {
         public ModelBinderProviderOptionsAttribute() { }
-        public bool FrontOfList { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool FrontOfList { get { throw null; } set { } }
     }
     public partial class ModelBindingExecutionContext
     {
@@ -5812,8 +5812,8 @@ namespace System.Web.ModelBinding
         public ModelError(System.Exception exception) { }
         public ModelError(System.Exception exception, string errorMessage) { }
         public ModelError(string errorMessage) { }
-        public string ErrorMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ErrorMessage { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class ModelErrorCollection : System.Collections.ObjectModel.Collection<System.Web.ModelBinding.ModelError>
@@ -5827,7 +5827,7 @@ namespace System.Web.ModelBinding
     {
         public ModelState() { }
         public System.Web.ModelBinding.ModelErrorCollection Errors { get { throw null; } }
-        public System.Web.ModelBinding.ValueProviderResult Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.ModelBinding.ValueProviderResult Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class ModelStateDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Web.ModelBinding.ModelState>>, System.Collections.Generic.IDictionary<string, System.Web.ModelBinding.ModelState>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Web.ModelBinding.ModelState>>, System.Collections.IEnumerable
@@ -5862,9 +5862,9 @@ namespace System.Web.ModelBinding
     {
         protected ValueProviderResult() { }
         public ValueProviderResult(object rawValue, string attemptedValue, System.Globalization.CultureInfo culture) { }
-        public string AttemptedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public string AttemptedValue { get { throw null; } protected set { } }
         public System.Globalization.CultureInfo Culture { get { throw null; } protected set { } }
-        public object RawValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public object RawValue { get { throw null; } protected set { } }
         public object ConvertTo(System.Type type) { throw null; }
         public virtual object ConvertTo(System.Type type, System.Globalization.CultureInfo culture) { throw null; }
     }
@@ -6050,7 +6050,7 @@ namespace System.Web.Routing
     public partial class HttpMethodConstraint : System.Web.Routing.IRouteConstraint
     {
         public HttpMethodConstraint(params string[] allowedMethods) { }
-        public System.Collections.Generic.ICollection<string> AllowedMethods { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.ICollection<string> AllowedMethods { get { throw null; } }
         protected virtual bool Match(System.Web.HttpContextBase httpContext, System.Web.Routing.Route route, string parameterName, System.Web.Routing.RouteValueDictionary values, System.Web.Routing.RouteDirection routeDirection) { throw null; }
         bool System.Web.Routing.IRouteConstraint.Match(System.Web.HttpContextBase httpContext, System.Web.Routing.Route route, string parameterName, System.Web.Routing.RouteValueDictionary values, System.Web.Routing.RouteDirection routeDirection) { throw null; }
     }
@@ -6068,8 +6068,8 @@ namespace System.Web.Routing
     {
         public PageRouteHandler(string virtualPath) { }
         public PageRouteHandler(string virtualPath, bool checkPhysicalUrlAccess) { }
-        public bool CheckPhysicalUrlAccess { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool CheckPhysicalUrlAccess { get { throw null; } }
+        public string VirtualPath { get { throw null; } }
         public virtual System.Web.IHttpHandler GetHttpHandler(System.Web.Routing.RequestContext requestContext) { throw null; }
         public string GetSubstitutedVirtualPath(System.Web.Routing.RequestContext requestContext) { throw null; }
     }
@@ -6078,8 +6078,8 @@ namespace System.Web.Routing
     {
         public RequestContext() { }
         public RequestContext(System.Web.HttpContextBase httpContext, System.Web.Routing.RouteData routeData) { }
-        public virtual System.Web.HttpContextBase HttpContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Web.Routing.RouteData RouteData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.HttpContextBase HttpContext { get { throw null; } set { } }
+        public virtual System.Web.Routing.RouteData RouteData { get { throw null; } set { } }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Routing, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
     public partial class Route : System.Web.Routing.RouteBase
@@ -6088,10 +6088,10 @@ namespace System.Web.Routing
         public Route(string url, System.Web.Routing.RouteValueDictionary defaults, System.Web.Routing.IRouteHandler routeHandler) { }
         public Route(string url, System.Web.Routing.RouteValueDictionary defaults, System.Web.Routing.RouteValueDictionary constraints, System.Web.Routing.IRouteHandler routeHandler) { }
         public Route(string url, System.Web.Routing.RouteValueDictionary defaults, System.Web.Routing.RouteValueDictionary constraints, System.Web.Routing.RouteValueDictionary dataTokens, System.Web.Routing.IRouteHandler routeHandler) { }
-        public System.Web.Routing.RouteValueDictionary Constraints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Routing.RouteValueDictionary DataTokens { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Routing.RouteValueDictionary Defaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Routing.IRouteHandler RouteHandler { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Routing.RouteValueDictionary Constraints { get { throw null; } set { } }
+        public System.Web.Routing.RouteValueDictionary DataTokens { get { throw null; } set { } }
+        public System.Web.Routing.RouteValueDictionary Defaults { get { throw null; } set { } }
+        public System.Web.Routing.IRouteHandler RouteHandler { get { throw null; } set { } }
         public string Url { get { throw null; } set { } }
         public override System.Web.Routing.RouteData GetRouteData(System.Web.HttpContextBase httpContext) { throw null; }
         public override System.Web.Routing.VirtualPathData GetVirtualPath(System.Web.Routing.RequestContext requestContext, System.Web.Routing.RouteValueDictionary values) { throw null; }
@@ -6110,10 +6110,10 @@ namespace System.Web.Routing
     {
         public RouteCollection() { }
         public RouteCollection(System.Web.Hosting.VirtualPathProvider virtualPathProvider) { }
-        public bool AppendTrailingSlash { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AppendTrailingSlash { get { throw null; } set { } }
         public System.Web.Routing.RouteBase this[string name] { get { throw null; } }
-        public bool LowercaseUrls { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool RouteExistingFiles { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool LowercaseUrls { get { throw null; } set { } }
+        public bool RouteExistingFiles { get { throw null; } set { } }
         public void Add(string name, System.Web.Routing.RouteBase item) { }
         protected override void ClearItems() { }
         public System.IDisposable GetReadLock() { throw null; }
@@ -6138,7 +6138,7 @@ namespace System.Web.Routing
         public RouteData() { }
         public RouteData(System.Web.Routing.RouteBase route, System.Web.Routing.IRouteHandler routeHandler) { }
         public System.Web.Routing.RouteValueDictionary DataTokens { get { throw null; } }
-        public System.Web.Routing.RouteBase Route { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Routing.RouteBase Route { get { throw null; } set { } }
         public System.Web.Routing.IRouteHandler RouteHandler { get { throw null; } set { } }
         public System.Web.Routing.RouteValueDictionary Values { get { throw null; } }
         public string GetRequiredString(string valueName) { throw null; }
@@ -6219,7 +6219,7 @@ namespace System.Web.Routing
     {
         public VirtualPathData(System.Web.Routing.RouteBase route, string virtualPath) { }
         public System.Web.Routing.RouteValueDictionary DataTokens { get { throw null; } }
-        public System.Web.Routing.RouteBase Route { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Routing.RouteBase Route { get { throw null; } set { } }
         public string VirtualPath { get { throw null; } set { } }
     }
 }
@@ -6366,7 +6366,7 @@ namespace System.Web.Security
         public static string LoginUrl { get { throw null; } }
         public static bool RequireSSL { get { throw null; } }
         public static bool SlidingExpiration { get { throw null; } }
-        public static System.TimeSpan Timeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.TimeSpan Timeout { get { throw null; } }
         public static bool Authenticate(string name, string password) { throw null; }
         public static System.Web.Security.FormsAuthenticationTicket Decrypt(string encryptedTicket) { throw null; }
         public static void EnableFormsAuthentication(System.Collections.Specialized.NameValueCollection configurationData) { }
@@ -6485,13 +6485,13 @@ namespace System.Web.Security
     public partial class MembershipPasswordAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public MembershipPasswordAttribute() { }
-        public string MinNonAlphanumericCharactersError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string MinPasswordLengthError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MinRequiredNonAlphanumericCharacters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MinRequiredPasswordLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string PasswordStrengthError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string PasswordStrengthRegularExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type ResourceType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string MinNonAlphanumericCharactersError { get { throw null; } set { } }
+        public string MinPasswordLengthError { get { throw null; } set { } }
+        public int MinRequiredNonAlphanumericCharacters { get { throw null; } set { } }
+        public int MinRequiredPasswordLength { get { throw null; } set { } }
+        public string PasswordStrengthError { get { throw null; } set { } }
+        public string PasswordStrengthRegularExpression { get { throw null; } set { } }
+        public System.Type ResourceType { get { throw null; } set { } }
         protected override System.ComponentModel.DataAnnotations.ValidationResult IsValid(object value, System.ComponentModel.DataAnnotations.ValidationContext validationContext) { throw null; }
     }
     [System.ObsoleteAttribute("This type is obsolete. The Passport authentication product is no longer supported and has been superseded by Live ID.")]
@@ -7226,23 +7226,23 @@ namespace System.Web.UI
     public partial class BoundPropertyEntry : System.Web.UI.PropertyEntry
     {
         internal BoundPropertyEntry() { }
-        public string ControlID { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type ControlType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Compilation.ExpressionBuilder ExpressionBuilder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ExpressionPrefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string FieldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string FormatString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Generated { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ParsedExpressionData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ReadOnlyProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TwoWayBound { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool UseSetAttribute { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ControlID { get { throw null; } set { } }
+        public System.Type ControlType { get { throw null; } set { } }
+        public string Expression { get { throw null; } set { } }
+        public System.Web.Compilation.ExpressionBuilder ExpressionBuilder { get { throw null; } set { } }
+        public string ExpressionPrefix { get { throw null; } set { } }
+        public string FieldName { get { throw null; } set { } }
+        public string FormatString { get { throw null; } set { } }
+        public bool Generated { get { throw null; } set { } }
+        public object ParsedExpressionData { get { throw null; } set { } }
+        public bool ReadOnlyProperty { get { throw null; } set { } }
+        public bool TwoWayBound { get { throw null; } set { } }
+        public bool UseSetAttribute { get { throw null; } set { } }
     }
     public abstract partial class BuilderPropertyEntry : System.Web.UI.PropertyEntry
     {
         protected BuilderPropertyEntry() { }
-        public System.Web.UI.ControlBuilder Builder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.UI.ControlBuilder Builder { get { throw null; } set { } }
     }
     public delegate System.Web.UI.Control BuildMethod();
     public delegate void BuildTemplateMethod(System.Web.UI.Control control);
@@ -7336,8 +7336,8 @@ namespace System.Web.UI
     public partial class ComplexPropertyEntry : System.Web.UI.BuilderPropertyEntry
     {
         internal ComplexPropertyEntry() { }
-        public bool IsCollectionItem { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsCollectionItem { get { throw null; } }
+        public bool ReadOnly { get { throw null; } set { } }
     }
     public enum ConflictOptions
     {
@@ -9146,7 +9146,7 @@ namespace System.Web.UI
         public PartialCachingAttribute(int duration, string varyByParams, string varyByControls, string varyByCustom, bool shared) { }
         public PartialCachingAttribute(int duration, string varyByParams, string varyByControls, string varyByCustom, string sqlDependency, bool shared) { }
         public int Duration { get { throw null; } }
-        public string ProviderName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ProviderName { get { throw null; } set { } }
         public bool Shared { get { throw null; } }
         public string SqlDependency { get { throw null; } }
         public string VaryByControls { get { throw null; } }
@@ -11322,8 +11322,8 @@ namespace System.Web.UI.WebControls
     public partial class CallingDataMethodsEventArgs : System.EventArgs
     {
         public CallingDataMethodsEventArgs() { }
-        public object DataMethodsObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type DataMethodsType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object DataMethodsObject { get { throw null; } set { } }
+        public System.Type DataMethodsType { get { throw null; } set { } }
     }
     public delegate void CallingDataMethodsEventHandler(object sender, System.Web.UI.WebControls.CallingDataMethodsEventArgs e);
     [System.ComponentModel.BindableAttribute(true)]
@@ -13012,7 +13012,7 @@ namespace System.Web.UI.WebControls
         public virtual string EmptyDataText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.MonoTODOAttribute("Make use of it in the code")]
-        public virtual bool EnableModelValidation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool EnableModelValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnablePagingCallbacks { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -13091,7 +13091,7 @@ namespace System.Web.UI.WebControls
         public virtual System.Web.UI.WebControls.DetailsViewRowCollection Rows { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.UI.IAutoFieldGenerator RowsGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.UI.IAutoFieldGenerator RowsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -13179,7 +13179,7 @@ namespace System.Web.UI.WebControls
     {
         public DetailsViewCommandEventArgs(object commandSource, System.Web.UI.WebControls.CommandEventArgs originalArgs) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
         public object CommandSource { get { throw null; } }
-        public bool Handled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Handled { get { throw null; } set { } }
     }
     public delegate void DetailsViewCommandEventHandler(object sender, System.Web.UI.WebControls.DetailsViewCommandEventArgs e);
     public partial class DetailsViewDeletedEventArgs : System.EventArgs
@@ -13339,12 +13339,12 @@ namespace System.Web.UI.WebControls
         public EmbeddedMailObject(string name, string path) { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.MailFileEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.Web.UI.UrlPropertyAttribute]
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Path { get { throw null; } set { } }
     }
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.EmbeddedMailObjectCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     public sealed partial class EmbeddedMailObjectsCollection : System.Collections.CollectionBase
@@ -13607,7 +13607,7 @@ namespace System.Web.UI.WebControls
         public virtual string EmptyDataText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.MonoTODOAttribute("Make use of it in the code")]
-        public virtual bool EnableModelValidation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool EnableModelValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public virtual System.Web.UI.WebControls.FormViewRow FooterRow { get { throw null; } }
@@ -13901,7 +13901,7 @@ namespace System.Web.UI.WebControls
         public virtual int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
-        public virtual string[] ClientIDRowSuffix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string[] ClientIDRowSuffix { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public System.Web.UI.WebControls.DataKeyArray ClientIDRowSuffixDataKeys { get { throw null; } }
@@ -13912,7 +13912,7 @@ namespace System.Web.UI.WebControls
         public virtual System.Web.UI.WebControls.DataControlFieldCollection Columns { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.UI.IAutoFieldGenerator ColumnsGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.UI.IAutoFieldGenerator ColumnsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
@@ -13940,7 +13940,7 @@ namespace System.Web.UI.WebControls
         public virtual string EmptyDataText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.MonoTODOAttribute("Make use of it in the code")]
-        public virtual bool EnableModelValidation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool EnableModelValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnablePersistedSelection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -14005,7 +14005,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         [System.MonoTODOAttribute]
-        public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public virtual System.Web.UI.WebControls.GridViewRow SelectedRow { get { throw null; } }
@@ -14138,7 +14138,7 @@ namespace System.Web.UI.WebControls
         public GridViewCommandEventArgs(object commandSource, System.Web.UI.WebControls.CommandEventArgs originalArgs) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
         public GridViewCommandEventArgs(System.Web.UI.WebControls.GridViewRow row, object commandSource, System.Web.UI.WebControls.CommandEventArgs originalArgs) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
         public object CommandSource { get { throw null; } }
-        public bool Handled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Handled { get { throw null; } set { } }
     }
     public delegate void GridViewCommandEventHandler(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e);
     public partial class GridViewDeletedEventArgs : System.EventArgs
@@ -16529,7 +16529,7 @@ namespace System.Web.UI.WebControls
     {
         public PlaceHolder() { }
         [System.ComponentModel.BrowsableAttribute(true)]
-        public override bool EnableTheming { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override bool EnableTheming { get { throw null; } set { } }
     }
     public partial class PlaceHolderControlBuilder : System.Web.UI.ControlBuilder
     {
@@ -18546,7 +18546,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.CssClassPropertyAttribute]
         public virtual string CssClass { get { throw null; } set { } }
-        public static string DisabledCssClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static string DisabledCssClass { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -18714,7 +18714,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
-        public virtual System.Web.UI.ITemplate LayoutTemplate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.UI.ITemplate LayoutTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -19560,7 +19560,7 @@ namespace System.Web.WebSockets
     public sealed partial class AspNetWebSocketOptions
     {
         public AspNetWebSocketOptions() { }
-        public bool RequireSameOrigin { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool RequireSameOrigin { get { throw null; } set { } }
         public string SubProtocol { get { throw null; } set { } }
     }
 }

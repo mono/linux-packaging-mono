@@ -73,12 +73,12 @@ namespace Microsoft.Build.Framework
         public BuildEventContext(int nodeId, int targetId, int projectContextId, int taskId) { }
         public BuildEventContext(int nodeId, int projectInstanceId, int projectContextId, int targetId, int taskId) { }
         public BuildEventContext(int submissionId, int nodeId, int projectInstanceId, int projectContextId, int targetId, int taskId) { }
-        public int NodeId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int ProjectContextId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int ProjectInstanceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int SubmissionId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TargetId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TaskId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int NodeId { get { throw null; } }
+        public int ProjectContextId { get { throw null; } }
+        public int ProjectInstanceId { get { throw null; } }
+        public int SubmissionId { get { throw null; } }
+        public int TargetId { get { throw null; } }
+        public int TaskId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(Microsoft.Build.Framework.BuildEventContext left, Microsoft.Build.Framework.BuildEventContext right) { throw null; }
@@ -407,10 +407,10 @@ namespace Microsoft.Build.Framework
     public partial class TaskPropertyInfo
     {
         public TaskPropertyInfo(string name, System.Type typeOfParameter, bool output, bool required) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Output { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type PropertyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Required { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public bool Output { get { throw null; } }
+        public System.Type PropertyType { get { throw null; } }
+        public bool Required { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class TaskStartedEventArgs : Microsoft.Build.Framework.BuildStatusEventArgs

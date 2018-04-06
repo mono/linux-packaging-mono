@@ -114,9 +114,9 @@ namespace System.ServiceModel.Routing
     {
         public RoutingConfiguration() { }
         public RoutingConfiguration(System.ServiceModel.Dispatcher.MessageFilterTable<System.Collections.Generic.IEnumerable<System.ServiceModel.Description.ServiceEndpoint>> filterTable, bool routeOnHeadersOnly) { }
-        public System.ServiceModel.Dispatcher.MessageFilterTable<System.Collections.Generic.IEnumerable<System.ServiceModel.Description.ServiceEndpoint>> FilterTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool RouteOnHeadersOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SoapProcessingEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Dispatcher.MessageFilterTable<System.Collections.Generic.IEnumerable<System.ServiceModel.Description.ServiceEndpoint>> FilterTable { get { throw null; } }
+        public bool RouteOnHeadersOnly { get { throw null; } set { } }
+        public bool SoapProcessingEnabled { get { throw null; } set { } }
     }
     public sealed partial class RoutingExtension : System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>
     {
@@ -141,7 +141,7 @@ namespace System.ServiceModel.Routing
     public partial class SoapProcessingBehavior : System.ServiceModel.Description.IEndpointBehavior
     {
         public SoapProcessingBehavior() { }
-        public bool ProcessMessages { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ProcessMessages { get { throw null; } set { } }
         public void AddBindingParameters(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection bindingParameters) { }
         public void ApplyClientBehavior(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.ClientRuntime clientRuntime) { }
         public void ApplyDispatchBehavior(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.EndpointDispatcher endpointDispatcher) { }

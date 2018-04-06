@@ -36,25 +36,25 @@ namespace System.Web.Razor
     public partial class DocumentParseCompleteEventArgs : System.EventArgs
     {
         public DocumentParseCompleteEventArgs() { }
-        public System.Web.Razor.GeneratorResults GeneratorResults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.Text.TextChange SourceChange { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TreeStructureChanged { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Razor.GeneratorResults GeneratorResults { get { throw null; } set { } }
+        public System.Web.Razor.Text.TextChange SourceChange { get { throw null; } set { } }
+        public bool TreeStructureChanged { get { throw null; } set { } }
     }
     public partial class GeneratorResults : System.Web.Razor.ParserResults
     {
         protected GeneratorResults(bool success, System.Web.Razor.Parser.SyntaxTree.Block document, System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> parserErrors, System.CodeDom.CodeCompileUnit generatedCode, System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> designTimeLineMappings) : base (default(System.Web.Razor.Parser.SyntaxTree.Block), default(System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public GeneratorResults(System.Web.Razor.Parser.SyntaxTree.Block document, System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> parserErrors, System.CodeDom.CodeCompileUnit generatedCode, System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> designTimeLineMappings) : base (default(System.Web.Razor.Parser.SyntaxTree.Block), default(System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public GeneratorResults(System.Web.Razor.ParserResults parserResults, System.CodeDom.CodeCompileUnit generatedCode, System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> designTimeLineMappings) : base (default(System.Web.Razor.Parser.SyntaxTree.Block), default(System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
-        public System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> DesignTimeLineMappings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeCompileUnit GeneratedCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> DesignTimeLineMappings { get { throw null; } }
+        public System.CodeDom.CodeCompileUnit GeneratedCode { get { throw null; } }
     }
     public partial class ParserResults
     {
         protected ParserResults(bool success, System.Web.Razor.Parser.SyntaxTree.Block document, System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) { }
         public ParserResults(System.Web.Razor.Parser.SyntaxTree.Block document, System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> parserErrors) { }
-        public System.Web.Razor.Parser.SyntaxTree.Block Document { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> ParserErrors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Success { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Parser.SyntaxTree.Block Document { get { throw null; } }
+        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> ParserErrors { get { throw null; } }
+        public bool Success { get { throw null; } }
     }
     [System.FlagsAttribute]
     public enum PartialParseResult
@@ -79,19 +79,19 @@ namespace System.Web.Razor
     public sealed partial class RazorDirectiveAttribute : System.Attribute
     {
         public RazorDirectiveAttribute(string name, string value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public override object TypeId { get { throw null; } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
     public partial class RazorEditorParser : System.IDisposable
     {
         public RazorEditorParser(System.Web.Razor.RazorEngineHost host, string sourceFileName) { }
-        public System.Web.Razor.Parser.SyntaxTree.Block CurrentParseTree { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string FileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.RazorEngineHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool LastResultProvisional { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Parser.SyntaxTree.Block CurrentParseTree { get { throw null; } }
+        public string FileName { get { throw null; } }
+        public System.Web.Razor.RazorEngineHost Host { get { throw null; } }
+        public bool LastResultProvisional { get { throw null; } }
         public event System.EventHandler<System.Web.Razor.DocumentParseCompleteEventArgs> DocumentParseComplete { add { } remove { } }
         public virtual System.Web.Razor.PartialParseResult CheckForStructureChanges(System.Web.Razor.Text.TextChange change) { throw null; }
         public void Dispose() { }
@@ -103,16 +103,16 @@ namespace System.Web.Razor
         protected RazorEngineHost() { }
         public RazorEngineHost(System.Web.Razor.RazorCodeLanguage codeLanguage) { }
         public RazorEngineHost(System.Web.Razor.RazorCodeLanguage codeLanguage, System.Func<System.Web.Razor.Parser.ParserBase> markupParserFactory) { }
-        public virtual System.Web.Razor.RazorCodeLanguage CodeLanguage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public virtual string DefaultBaseClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string DefaultClassName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string DefaultNamespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool DesignTimeMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Razor.RazorCodeLanguage CodeLanguage { get { throw null; } protected set { } }
+        public virtual string DefaultBaseClass { get { throw null; } set { } }
+        public virtual string DefaultClassName { get { throw null; } set { } }
+        public virtual string DefaultNamespace { get { throw null; } set { } }
+        public virtual bool DesignTimeMode { get { throw null; } set { } }
         public virtual bool EnableInstrumentation { get { throw null; } set { } }
-        public virtual System.Web.Razor.Generator.GeneratedClassContext GeneratedClassContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string InstrumentedSourceFilePath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Collections.Generic.ISet<string> NamespaceImports { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual bool StaticHelpers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Razor.Generator.GeneratedClassContext GeneratedClassContext { get { throw null; } set { } }
+        public virtual string InstrumentedSourceFilePath { get { throw null; } set { } }
+        public virtual System.Collections.Generic.ISet<string> NamespaceImports { get { throw null; } }
+        public virtual bool StaticHelpers { get { throw null; } set { } }
         public virtual System.Web.Razor.Parser.ParserBase CreateMarkupParser() { throw null; }
         public virtual System.Web.Razor.Generator.RazorCodeGenerator DecorateCodeGenerator(System.Web.Razor.Generator.RazorCodeGenerator incomingCodeGenerator) { throw null; }
         public virtual System.Web.Razor.Parser.ParserBase DecorateCodeParser(System.Web.Razor.Parser.ParserBase incomingCodeParser) { throw null; }
@@ -126,7 +126,7 @@ namespace System.Web.Razor
         public static readonly string DefaultClassName;
         public static readonly string DefaultNamespace;
         public RazorTemplateEngine(System.Web.Razor.RazorEngineHost host) { }
-        public System.Web.Razor.RazorEngineHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.RazorEngineHost Host { get { throw null; } }
         protected internal virtual System.Web.Razor.Generator.RazorCodeGenerator CreateCodeGenerator(string className, string rootNamespace, string sourceFileName) { throw null; }
         protected internal virtual System.Web.Razor.Parser.RazorParser CreateParser() { throw null; }
         public System.Web.Razor.GeneratorResults GenerateCode(System.IO.TextReader input) { throw null; }
@@ -147,7 +147,7 @@ namespace System.Web.Razor
     public abstract partial class StateMachine<TReturn>
     {
         protected StateMachine() { }
-        protected System.Web.Razor.StateMachine<TReturn>.State CurrentState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected System.Web.Razor.StateMachine<TReturn>.State CurrentState { get { throw null; } set { } }
         protected abstract System.Web.Razor.StateMachine<TReturn>.State StartState { get; }
         protected System.Web.Razor.StateMachine<TReturn>.StateResult Stay() { throw null; }
         protected System.Web.Razor.StateMachine<TReturn>.StateResult Stay(TReturn output) { throw null; }
@@ -160,9 +160,9 @@ namespace System.Web.Razor
         {
             public StateResult(System.Web.Razor.StateMachine<TReturn>.State next) { }
             public StateResult(TReturn output, System.Web.Razor.StateMachine<TReturn>.State next) { }
-            public bool HasOutput { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-            public System.Web.Razor.StateMachine<TReturn>.State Next { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-            public TReturn Output { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+            public bool HasOutput { get { throw null; } set { } }
+            public System.Web.Razor.StateMachine<TReturn>.State Next { get { throw null; } set { } }
+            public TReturn Output { get { throw null; } set { } }
         }
     }
     public partial class VBRazorCodeLanguage : System.Web.Razor.RazorCodeLanguage
@@ -186,14 +186,14 @@ namespace System.Web.Razor.Editor
     public partial class EditResult
     {
         public EditResult(System.Web.Razor.PartialParseResult result, System.Web.Razor.Parser.SyntaxTree.SpanBuilder editedSpan) { }
-        public System.Web.Razor.Parser.SyntaxTree.SpanBuilder EditedSpan { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.PartialParseResult Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Razor.Parser.SyntaxTree.SpanBuilder EditedSpan { get { throw null; } set { } }
+        public System.Web.Razor.PartialParseResult Result { get { throw null; } set { } }
     }
     public partial class ImplicitExpressionEditHandler : System.Web.Razor.Editor.SpanEditHandler
     {
         public ImplicitExpressionEditHandler(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> tokenizer, System.Collections.Generic.ISet<string> keywords, bool acceptTrailingDot) : base (default(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>>)) { }
-        public bool AcceptTrailingDot { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.ISet<string> Keywords { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool AcceptTrailingDot { get { throw null; } }
+        public System.Collections.Generic.ISet<string> Keywords { get { throw null; } }
         protected override System.Web.Razor.PartialParseResult CanAcceptChange(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Text.TextChange normalizedChange) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -208,9 +208,9 @@ namespace System.Web.Razor.Editor
     {
         public SpanEditHandler(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> tokenizer) { }
         public SpanEditHandler(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> tokenizer, System.Web.Razor.Parser.SyntaxTree.AcceptedCharacters accepted) { }
-        public System.Web.Razor.Parser.SyntaxTree.AcceptedCharacters AcceptedCharacters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.Editor.EditorHints EditorHints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> Tokenizer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Razor.Parser.SyntaxTree.AcceptedCharacters AcceptedCharacters { get { throw null; } set { } }
+        public System.Web.Razor.Editor.EditorHints EditorHints { get { throw null; } set { } }
+        public System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> Tokenizer { get { throw null; } set { } }
         public virtual System.Web.Razor.Editor.EditResult ApplyChange(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Text.TextChange change) { throw null; }
         public virtual System.Web.Razor.Editor.EditResult ApplyChange(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Text.TextChange change, bool force) { throw null; }
         protected virtual System.Web.Razor.PartialParseResult CanAcceptChange(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Text.TextChange normalizedChange) { throw null; }
@@ -234,8 +234,8 @@ namespace System.Web.Razor.Generator
     public partial class AddImportCodeGenerator : System.Web.Razor.Generator.SpanCodeGenerator
     {
         public AddImportCodeGenerator(string ns, int namespaceKeywordLength) { }
-        public string Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int NamespaceKeywordLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Namespace { get { throw null; } }
+        public int NamespaceKeywordLength { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override int GetHashCode() { throw null; }
@@ -244,9 +244,9 @@ namespace System.Web.Razor.Generator
     public partial class AttributeBlockCodeGenerator : System.Web.Razor.Generator.BlockCodeGenerator
     {
         public AttributeBlockCodeGenerator(string name, System.Web.Razor.Text.LocationTagged<string> prefix, System.Web.Razor.Text.LocationTagged<string> suffix) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.LocationTagged<string> Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.LocationTagged<string> Suffix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Prefix { get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Suffix { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateEndBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override void GenerateStartBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
@@ -265,9 +265,9 @@ namespace System.Web.Razor.Generator
     public partial class CodeGenerationCompleteEventArgs : System.EventArgs
     {
         public CodeGenerationCompleteEventArgs(string virtualPath, string physicalPath, System.CodeDom.CodeCompileUnit generatedCode) { }
-        public System.CodeDom.CodeCompileUnit GeneratedCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string PhysicalPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeCompileUnit GeneratedCode { get { throw null; } }
+        public string PhysicalPath { get { throw null; } }
+        public string VirtualPath { get { throw null; } }
     }
     public abstract partial class CodeGeneratorBase
     {
@@ -280,15 +280,15 @@ namespace System.Web.Razor.Generator
     public partial class CodeGeneratorContext
     {
         internal CodeGeneratorContext() { }
-        public System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> CodeMappings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeCompileUnit CompileUnit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<int, System.Web.Razor.Generator.GeneratedCodeMapping> CodeMappings { get { throw null; } }
+        public System.CodeDom.CodeCompileUnit CompileUnit { get { throw null; } }
         public string CurrentBufferedStatement { get { throw null; } }
-        public System.CodeDom.CodeTypeDeclaration GeneratedClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.RazorEngineHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeNamespace Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string SourceFile { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeMemberMethod TargetMethod { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string TargetWriterName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeTypeDeclaration GeneratedClass { get { throw null; } }
+        public System.Web.Razor.RazorEngineHost Host { get { throw null; } }
+        public System.CodeDom.CodeNamespace Namespace { get { throw null; } }
+        public string SourceFile { get { throw null; } }
+        public System.CodeDom.CodeMemberMethod TargetMethod { get { throw null; } set { } }
+        public string TargetWriterName { get { throw null; } set { } }
         public int AddCodeMapping(System.Web.Razor.Text.SourceLocation sourceLocation, int generatedCodeStart, int generatedCodeLength) { throw null; }
         public void AddContextCall(System.Web.Razor.Parser.SyntaxTree.Span contentSpan, string methodName, bool isLiteral) { }
         public void AddDesignTimeHelperStatement(System.CodeDom.CodeSnippetStatement statement) { }
@@ -317,8 +317,8 @@ namespace System.Web.Razor.Generator
     {
         public DynamicAttributeBlockCodeGenerator(System.Web.Razor.Text.LocationTagged<string> prefix, int offset, int line, int col) { }
         public DynamicAttributeBlockCodeGenerator(System.Web.Razor.Text.LocationTagged<string> prefix, System.Web.Razor.Text.SourceLocation valueStart) { }
-        public System.Web.Razor.Text.LocationTagged<string> Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.SourceLocation ValueStart { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Prefix { get { throw null; } }
+        public System.Web.Razor.Text.SourceLocation ValueStart { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateEndBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override void GenerateStartBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
@@ -356,20 +356,20 @@ namespace System.Web.Razor.Generator
         public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName, string defineSectionMethodName, string beginContextMethodName, string endContextMethodName) { throw null;}
         public bool AllowSections { get { throw null; } }
         public bool AllowTemplates { get { throw null; } }
-        public string BeginContextMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DefineSectionMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string EndContextMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ExecuteMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string LayoutPropertyName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ResolveUrlMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string BeginContextMethodName { get { throw null; } set { } }
+        public string DefineSectionMethodName { get { throw null; } set { } }
+        public string EndContextMethodName { get { throw null; } set { } }
+        public string ExecuteMethodName { get { throw null; } }
+        public string LayoutPropertyName { get { throw null; } set { } }
+        public string ResolveUrlMethodName { get { throw null; } set { } }
         public bool SupportsInstrumentation { get { throw null; } }
-        public string TemplateTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string WriteAttributeMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string WriteAttributeToMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string WriteLiteralMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string WriteLiteralToMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string WriteMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string WriteToMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string TemplateTypeName { get { throw null; } set { } }
+        public string WriteAttributeMethodName { get { throw null; } set { } }
+        public string WriteAttributeToMethodName { get { throw null; } set { } }
+        public string WriteLiteralMethodName { get { throw null; } }
+        public string WriteLiteralToMethodName { get { throw null; } }
+        public string WriteMethodName { get { throw null; } }
+        public string WriteToMethodName { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Web.Razor.Generator.GeneratedClassContext left, System.Web.Razor.Generator.GeneratedClassContext right) { throw null; }
@@ -380,11 +380,11 @@ namespace System.Web.Razor.Generator
     {
         public GeneratedCodeMapping(int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null;}
         public GeneratedCodeMapping(int startOffset, int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null;}
-        public int CodeLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int StartColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int StartGeneratedColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int StartLine { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> StartOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int CodeLength { get { throw null; } set { } }
+        public int StartColumn { get { throw null; } set { } }
+        public int StartGeneratedColumn { get { throw null; } set { } }
+        public int StartLine { get { throw null; } set { } }
+        public System.Nullable<int> StartOffset { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Web.Razor.Generator.GeneratedCodeMapping left, System.Web.Razor.Generator.GeneratedCodeMapping right) { throw null; }
@@ -394,9 +394,9 @@ namespace System.Web.Razor.Generator
     public partial class HelperCodeGenerator : System.Web.Razor.Generator.BlockCodeGenerator
     {
         public HelperCodeGenerator(System.Web.Razor.Text.LocationTagged<string> signature, bool headerComplete) { }
-        public System.Web.Razor.Text.LocationTagged<string> Footer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HeaderComplete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.LocationTagged<string> Signature { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Footer { get { throw null; } set { } }
+        public bool HeaderComplete { get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Signature { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateEndBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override void GenerateStartBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
@@ -423,9 +423,9 @@ namespace System.Web.Razor.Generator
     {
         public LiteralAttributeCodeGenerator(System.Web.Razor.Text.LocationTagged<string> prefix, System.Web.Razor.Text.LocationTagged<string> value) { }
         public LiteralAttributeCodeGenerator(System.Web.Razor.Text.LocationTagged<string> prefix, System.Web.Razor.Text.LocationTagged<System.Web.Razor.Generator.SpanCodeGenerator> valueGenerator) { }
-        public System.Web.Razor.Text.LocationTagged<string> Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.LocationTagged<string> Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.LocationTagged<System.Web.Razor.Generator.SpanCodeGenerator> ValueGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Prefix { get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<string> Value { get { throw null; } }
+        public System.Web.Razor.Text.LocationTagged<System.Web.Razor.Generator.SpanCodeGenerator> ValueGenerator { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override int GetHashCode() { throw null; }
@@ -442,13 +442,13 @@ namespace System.Web.Razor.Generator
     public abstract partial class RazorCodeGenerator : System.Web.Razor.Parser.ParserVisitor
     {
         protected RazorCodeGenerator(string className, string rootNamespaceName, string sourceFileName, System.Web.Razor.RazorEngineHost host) { }
-        public string ClassName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ClassName { get { throw null; } }
         public System.Web.Razor.Generator.CodeGeneratorContext Context { get { throw null; } }
-        public bool DesignTimeMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool GenerateLinePragmas { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.RazorEngineHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string RootNamespaceName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string SourceFileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool DesignTimeMode { get { throw null; } set { } }
+        public bool GenerateLinePragmas { get { throw null; } set { } }
+        public System.Web.Razor.RazorEngineHost Host { get { throw null; } }
+        public string RootNamespaceName { get { throw null; } }
+        public string SourceFileName { get { throw null; } }
         protected virtual void Initialize(System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override void OnComplete() { }
         public override void VisitEndBlock(System.Web.Razor.Parser.SyntaxTree.Block block) { }
@@ -463,8 +463,8 @@ namespace System.Web.Razor.Generator
     public partial class RazorDirectiveAttributeCodeGenerator : System.Web.Razor.Generator.SpanCodeGenerator
     {
         public RazorDirectiveAttributeCodeGenerator(string name, string value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public string Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override int GetHashCode() { throw null; }
@@ -481,7 +481,7 @@ namespace System.Web.Razor.Generator
     public partial class SectionCodeGenerator : System.Web.Razor.Generator.BlockCodeGenerator
     {
         public SectionCodeGenerator(string sectionName) { }
-        public string SectionName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string SectionName { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateEndBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override void GenerateStartBlockCode(System.Web.Razor.Parser.SyntaxTree.Block target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
@@ -491,7 +491,7 @@ namespace System.Web.Razor.Generator
     public partial class SetBaseTypeCodeGenerator : System.Web.Razor.Generator.SpanCodeGenerator
     {
         public SetBaseTypeCodeGenerator(string baseType) { }
-        public string BaseType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string BaseType { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override int GetHashCode() { throw null; }
@@ -501,7 +501,7 @@ namespace System.Web.Razor.Generator
     public partial class SetLayoutCodeGenerator : System.Web.Razor.Generator.SpanCodeGenerator
     {
         public SetLayoutCodeGenerator(string layoutPath) { }
-        public string LayoutPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string LayoutPath { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public override int GetHashCode() { throw null; }
@@ -512,8 +512,8 @@ namespace System.Web.Razor.Generator
         public static readonly string ExplicitCodeDomOptionName;
         public static readonly string StrictCodeDomOptionName;
         public SetVBOptionCodeGenerator(string optionName, bool value) { }
-        public string OptionName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string OptionName { get { throw null; } }
+        public bool Value { get { throw null; } }
         public static System.Web.Razor.Generator.SetVBOptionCodeGenerator Explicit(bool onOffValue) { throw null; }
         public override void GenerateCode(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Generator.CodeGeneratorContext context) { }
         public static System.Web.Razor.Generator.SetVBOptionCodeGenerator Strict(bool onOffValue) { throw null; }
@@ -571,7 +571,7 @@ namespace System.Web.Razor.Parser
         public CallbackVisitor(System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback) { }
         public CallbackVisitor(System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.BlockType> startBlockCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.BlockType> endBlockCallback) { }
         public CallbackVisitor(System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.BlockType> startBlockCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.BlockType> endBlockCallback, System.Action completeCallback) { }
-        public System.Threading.SynchronizationContext SynchronizationContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } set { } }
         public override void OnComplete() { }
         public override void VisitEndBlock(System.Web.Razor.Parser.SyntaxTree.Block block) { }
         public override void VisitError(System.Web.Razor.Parser.SyntaxTree.RazorError err) { }
@@ -581,8 +581,8 @@ namespace System.Web.Razor.Parser
     public partial class CSharpCodeParser : System.Web.Razor.Parser.TokenizerBackedParser<System.Web.Razor.Tokenizer.CSharpTokenizer, System.Web.Razor.Tokenizer.Symbols.CSharpSymbol, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType>
     {
         public CSharpCodeParser() { }
-        public bool IsNested { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        protected internal System.Collections.Generic.ISet<string> Keywords { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsNested { get { throw null; } set { } }
+        protected internal System.Collections.Generic.ISet<string> Keywords { get { throw null; } }
         protected override System.Web.Razor.Parser.LanguageCharacteristics<System.Web.Razor.Tokenizer.CSharpTokenizer, System.Web.Razor.Tokenizer.Symbols.CSharpSymbol, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType> Language { get { throw null; } }
         protected override System.Web.Razor.Parser.ParserBase OtherParser { get { throw null; } }
         protected internal bool AcceptIf(System.Web.Razor.Tokenizer.Symbols.CSharpKeyword keyword) { throw null; }
@@ -612,8 +612,8 @@ namespace System.Web.Razor.Parser
         {
             public Block(string name, System.Web.Razor.Text.SourceLocation start) { }
             public Block(System.Web.Razor.Tokenizer.Symbols.CSharpSymbol symbol) { }
-            public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-            public System.Web.Razor.Text.SourceLocation Start { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+            public string Name { get { throw null; } set { } }
+            public System.Web.Razor.Text.SourceLocation Start { get { throw null; } set { } }
         }
     }
     public partial class CSharpLanguageCharacteristics : System.Web.Razor.Parser.LanguageCharacteristics<System.Web.Razor.Tokenizer.CSharpTokenizer, System.Web.Razor.Tokenizer.Symbols.CSharpSymbol, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType>
@@ -693,18 +693,18 @@ namespace System.Web.Razor.Parser
     public partial class ParserContext
     {
         public ParserContext(System.Web.Razor.Text.ITextDocument source, System.Web.Razor.Parser.ParserBase codeParser, System.Web.Razor.Parser.ParserBase markupParser, System.Web.Razor.Parser.ParserBase activeParser) { }
-        public System.Web.Razor.Parser.ParserBase ActiveParser { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Parser.ParserBase CodeParser { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Parser.ParserBase ActiveParser { get { throw null; } }
+        public System.Web.Razor.Parser.ParserBase CodeParser { get { throw null; } }
         public System.Web.Razor.Parser.SyntaxTree.BlockBuilder CurrentBlock { get { throw null; } }
         public char CurrentCharacter { get { throw null; } }
-        public bool DesignTimeMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DesignTimeMode { get { throw null; } set { } }
         public bool EndOfFile { get { throw null; } }
-        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> Errors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> Errors { get { throw null; } }
         public System.Web.Razor.Parser.SyntaxTree.AcceptedCharacters LastAcceptedCharacters { get { throw null; } }
-        public System.Web.Razor.Parser.SyntaxTree.Span LastSpan { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Parser.ParserBase MarkupParser { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.TextDocumentReader Source { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool WhiteSpaceIsSignificantToAncestorBlock { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Razor.Parser.SyntaxTree.Span LastSpan { get { throw null; } }
+        public System.Web.Razor.Parser.ParserBase MarkupParser { get { throw null; } }
+        public System.Web.Razor.Text.TextDocumentReader Source { get { throw null; } set { } }
+        public bool WhiteSpaceIsSignificantToAncestorBlock { get { throw null; } set { } }
         public void AddSpan(System.Web.Razor.Parser.SyntaxTree.Span span) { }
         public System.Web.Razor.ParserResults CompleteParse() { throw null; }
         public void EndBlock() { }
@@ -740,7 +740,7 @@ namespace System.Web.Razor.Parser
     public abstract partial class ParserVisitor
     {
         protected ParserVisitor() { }
-        public System.Nullable<System.Threading.CancellationToken> CancelToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.Threading.CancellationToken> CancelToken { get { throw null; } set { } }
         public virtual void OnComplete() { }
         public virtual void ThrowIfCanceled() { }
         public virtual void VisitBlock(System.Web.Razor.Parser.SyntaxTree.Block block) { }
@@ -756,7 +756,7 @@ namespace System.Web.Razor.Parser
     public partial class RazorParser
     {
         public RazorParser(System.Web.Razor.Parser.ParserBase codeParser, System.Web.Razor.Parser.ParserBase markupParser) { }
-        public bool DesignTimeMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DesignTimeMode { get { throw null; } set { } }
         public virtual System.Threading.Tasks.Task CreateParseTask(System.IO.TextReader input, System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback) { throw null; }
         public virtual System.Threading.Tasks.Task CreateParseTask(System.IO.TextReader input, System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback, System.Threading.CancellationToken cancelToken) { throw null; }
         public virtual System.Threading.Tasks.Task CreateParseTask(System.IO.TextReader input, System.Action<System.Web.Razor.Parser.SyntaxTree.Span> spanCallback, System.Action<System.Web.Razor.Parser.SyntaxTree.RazorError> errorCallback, System.Threading.SynchronizationContext context) { throw null; }
@@ -817,9 +817,9 @@ namespace System.Web.Razor.Parser
         protected TSymbol CurrentSymbol { get { throw null; } }
         protected bool EndOfFile { get { throw null; } }
         protected abstract System.Web.Razor.Parser.LanguageCharacteristics<TTokenizer, TSymbol, TSymbolType> Language { get; }
-        protected TSymbol PreviousSymbol { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        protected System.Web.Razor.Parser.SyntaxTree.SpanBuilder Span { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        protected System.Action<System.Web.Razor.Parser.SyntaxTree.SpanBuilder> SpanConfig { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected TSymbol PreviousSymbol { get { throw null; } }
+        protected System.Web.Razor.Parser.SyntaxTree.SpanBuilder Span { get { throw null; } set { } }
+        protected System.Action<System.Web.Razor.Parser.SyntaxTree.SpanBuilder> SpanConfig { get { throw null; } set { } }
         protected System.Web.Razor.Tokenizer.TokenizerView<TTokenizer, TSymbol, TSymbolType> Tokenizer { get { throw null; } }
         protected internal void Accept(System.Collections.Generic.IEnumerable<TSymbol> symbols) { }
         protected internal void Accept(TSymbol symbol) { }
@@ -875,7 +875,7 @@ namespace System.Web.Razor.Parser
     public partial class VBCodeParser : System.Web.Razor.Parser.TokenizerBackedParser<System.Web.Razor.Tokenizer.VBTokenizer, System.Web.Razor.Tokenizer.Symbols.VBSymbol, System.Web.Razor.Tokenizer.Symbols.VBSymbolType>
     {
         public VBCodeParser() { }
-        protected internal System.Collections.Generic.ISet<string> Keywords { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.Collections.Generic.ISet<string> Keywords { get { throw null; } }
         protected override System.Web.Razor.Parser.LanguageCharacteristics<System.Web.Razor.Tokenizer.VBTokenizer, System.Web.Razor.Tokenizer.Symbols.VBSymbol, System.Web.Razor.Tokenizer.Symbols.VBSymbolType> Language { get { throw null; } }
         protected override System.Web.Razor.Parser.ParserBase OtherParser { get { throw null; } }
         protected void AcceptVBSpaces() { }
@@ -944,8 +944,8 @@ namespace System.Web.Razor.Parser.SyntaxTree
     {
         public AutoCompleteEditHandler(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> tokenizer) : base (default(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>>)) { }
         public AutoCompleteEditHandler(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>> tokenizer, System.Web.Razor.Parser.SyntaxTree.AcceptedCharacters accepted) : base (default(System.Func<string, System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol>>)) { }
-        public bool AutoCompleteAtEndOfSpan { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string AutoCompleteString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoCompleteAtEndOfSpan { get { throw null; } set { } }
+        public string AutoCompleteString { get { throw null; } set { } }
         protected override System.Web.Razor.PartialParseResult CanAcceptChange(System.Web.Razor.Parser.SyntaxTree.Span target, System.Web.Razor.Text.TextChange normalizedChange) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -954,13 +954,13 @@ namespace System.Web.Razor.Parser.SyntaxTree
     public partial class Block : System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode
     {
         public Block(System.Web.Razor.Parser.SyntaxTree.BlockBuilder source) { }
-        public System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode> Children { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Generator.IBlockCodeGenerator CodeGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode> Children { get { throw null; } }
+        public System.Web.Razor.Generator.IBlockCodeGenerator CodeGenerator { get { throw null; } }
         public override bool IsBlock { get { throw null; } }
         public override int Length { get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public override System.Web.Razor.Text.SourceLocation Start { get { throw null; } }
-        public System.Web.Razor.Parser.SyntaxTree.BlockType Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Parser.SyntaxTree.BlockType Type { get { throw null; } }
         public override void Accept(System.Web.Razor.Parser.ParserVisitor visitor) { }
         public override bool Equals(object obj) { throw null; }
         public override bool EquivalentTo(System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode node) { throw null; }
@@ -975,10 +975,10 @@ namespace System.Web.Razor.Parser.SyntaxTree
     {
         public BlockBuilder() { }
         public BlockBuilder(System.Web.Razor.Parser.SyntaxTree.Block original) { }
-        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode> Children { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Generator.IBlockCodeGenerator CodeGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.Web.Razor.Parser.SyntaxTree.BlockType> Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode> Children { get { throw null; } }
+        public System.Web.Razor.Generator.IBlockCodeGenerator CodeGenerator { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public System.Nullable<System.Web.Razor.Parser.SyntaxTree.BlockType> Type { get { throw null; } set { } }
         public System.Web.Razor.Parser.SyntaxTree.Block Build() { throw null; }
         public void Reset() { }
     }
@@ -1000,9 +1000,9 @@ namespace System.Web.Razor.Parser.SyntaxTree
         public RazorError(string message, int absoluteIndex, int lineIndex, int columnIndex, int length) { }
         public RazorError(string message, System.Web.Razor.Text.SourceLocation location) { }
         public RazorError(string message, System.Web.Razor.Text.SourceLocation location, int length) { }
-        public int Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.SourceLocation Location { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Message { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Length { get { throw null; } }
+        public System.Web.Razor.Text.SourceLocation Location { get { throw null; } }
+        public string Message { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Web.Razor.Parser.SyntaxTree.RazorError other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -1011,16 +1011,16 @@ namespace System.Web.Razor.Parser.SyntaxTree
     public partial class Span : System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode
     {
         public Span(System.Web.Razor.Parser.SyntaxTree.SpanBuilder builder) { }
-        public System.Web.Razor.Generator.ISpanCodeGenerator CodeGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public string Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Editor.SpanEditHandler EditHandler { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Web.Razor.Generator.ISpanCodeGenerator CodeGenerator { get { throw null; } protected set { } }
+        public string Content { get { throw null; } }
+        public System.Web.Razor.Editor.SpanEditHandler EditHandler { get { throw null; } protected set { } }
         public override bool IsBlock { get { throw null; } }
-        public System.Web.Razor.Parser.SyntaxTree.SpanKind Kind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Web.Razor.Parser.SyntaxTree.SpanKind Kind { get { throw null; } protected set { } }
         public override int Length { get { throw null; } }
-        public System.Web.Razor.Parser.SyntaxTree.Span Next { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected internal set { } }
-        public System.Web.Razor.Parser.SyntaxTree.Span Previous { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected internal set { } }
+        public System.Web.Razor.Parser.SyntaxTree.Span Next { get { throw null; } protected internal set { } }
+        public System.Web.Razor.Parser.SyntaxTree.Span Previous { get { throw null; } protected internal set { } }
         public override System.Web.Razor.Text.SourceLocation Start { get { throw null; } }
-        public System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol> Symbols { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Collections.Generic.IEnumerable<System.Web.Razor.Tokenizer.Symbols.ISymbol> Symbols { get { throw null; } protected set { } }
         public override void Accept(System.Web.Razor.Parser.ParserVisitor visitor) { }
         public void Change(System.Action<System.Web.Razor.Parser.SyntaxTree.SpanBuilder> changes) { }
         public void ChangeStart(System.Web.Razor.Text.SourceLocation newStart) { }
@@ -1034,10 +1034,10 @@ namespace System.Web.Razor.Parser.SyntaxTree
     {
         public SpanBuilder() { }
         public SpanBuilder(System.Web.Razor.Parser.SyntaxTree.Span original) { }
-        public System.Web.Razor.Generator.ISpanCodeGenerator CodeGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.Editor.SpanEditHandler EditHandler { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.Parser.SyntaxTree.SpanKind Kind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Razor.Text.SourceLocation Start { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Razor.Generator.ISpanCodeGenerator CodeGenerator { get { throw null; } set { } }
+        public System.Web.Razor.Editor.SpanEditHandler EditHandler { get { throw null; } set { } }
+        public System.Web.Razor.Parser.SyntaxTree.SpanKind Kind { get { throw null; } set { } }
+        public System.Web.Razor.Text.SourceLocation Start { get { throw null; } set { } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.Razor.Tokenizer.Symbols.ISymbol> Symbols { get { throw null; } }
         public void Accept(System.Web.Razor.Tokenizer.Symbols.ISymbol symbol) { }
         public System.Web.Razor.Parser.SyntaxTree.Span Build() { throw null; }
@@ -1057,7 +1057,7 @@ namespace System.Web.Razor.Parser.SyntaxTree
         protected SyntaxTreeNode() { }
         public abstract bool IsBlock { get; }
         public abstract int Length { get; }
-        public System.Web.Razor.Parser.SyntaxTree.Block Parent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Parser.SyntaxTree.Block Parent { get { throw null; } }
         public abstract System.Web.Razor.Text.SourceLocation Start { get; }
         public abstract void Accept(System.Web.Razor.Parser.ParserVisitor visitor);
         public abstract bool EquivalentTo(System.Web.Razor.Parser.SyntaxTree.SyntaxTreeNode node);
@@ -1094,8 +1094,8 @@ namespace System.Web.Razor.Text
     {
         public LocationTagged(T value, int offset, int line, int col) { }
         public LocationTagged(T value, System.Web.Razor.Text.SourceLocation location) { }
-        public System.Web.Razor.Text.SourceLocation Location { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public T Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.SourceLocation Location { get { throw null; } }
+        public T Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Web.Razor.Text.LocationTagged<T> left, System.Web.Razor.Text.LocationTagged<T> right) { throw null; }
@@ -1180,13 +1180,13 @@ namespace System.Web.Razor.Text
         public bool IsDelete { get { throw null; } }
         public bool IsInsert { get { throw null; } }
         public bool IsReplace { get { throw null; } }
-        public System.Web.Razor.Text.ITextBuffer NewBuffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int NewLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int NewPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.ITextBuffer NewBuffer { get { throw null; } }
+        public int NewLength { get { throw null; } }
+        public int NewPosition { get { throw null; } }
         public string NewText { get { throw null; } }
-        public System.Web.Razor.Text.ITextBuffer OldBuffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int OldLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int OldPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.ITextBuffer OldBuffer { get { throw null; } }
+        public int OldLength { get { throw null; } }
+        public int OldPosition { get { throw null; } }
         public string OldText { get { throw null; } }
         public string ApplyChange(string content, int changeOffset) { throw null; }
         public string ApplyChange(System.Web.Razor.Parser.SyntaxTree.Span span) { throw null; }
@@ -1245,27 +1245,27 @@ namespace System.Web.Razor.Tokenizer
     public partial class TokenizerView<TTokenizer, TSymbol, TSymbolType> where TTokenizer : System.Web.Razor.Tokenizer.Tokenizer<TSymbol, TSymbolType> where TSymbol : System.Web.Razor.Tokenizer.Symbols.SymbolBase<TSymbolType>
     {
         public TokenizerView(TTokenizer tokenizer) { }
-        public TSymbol Current { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool EndOfFile { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public TSymbol Current { get { throw null; } }
+        public bool EndOfFile { get { throw null; } }
         public System.Web.Razor.Text.ITextDocument Source { get { throw null; } }
-        public TTokenizer Tokenizer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public TTokenizer Tokenizer { get { throw null; } }
         public bool Next() { throw null; }
         public void PutBack(TSymbol symbol) { }
     }
     public abstract partial class Tokenizer<TSymbol, TSymbolType> : System.Web.Razor.StateMachine<TSymbol>, System.Web.Razor.Tokenizer.ITokenizer where TSymbol : System.Web.Razor.Tokenizer.Symbols.SymbolBase<TSymbolType>
     {
         protected Tokenizer(System.Web.Razor.Text.ITextDocument source) { }
-        protected System.Text.StringBuilder Buffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected System.Text.StringBuilder Buffer { get { throw null; } }
         protected char CurrentCharacter { get { throw null; } }
-        protected System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> CurrentErrors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected System.Collections.Generic.IList<System.Web.Razor.Parser.SyntaxTree.RazorError> CurrentErrors { get { throw null; } }
         protected System.Web.Razor.Text.SourceLocation CurrentLocation { get { throw null; } }
-        protected System.Web.Razor.Text.SourceLocation CurrentStart { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected System.Web.Razor.Text.SourceLocation CurrentStart { get { throw null; } }
         protected bool EndOfFile { get { throw null; } }
         protected bool HaveContent { get { throw null; } }
         public abstract TSymbolType RazorCommentStarType { get; }
         public abstract TSymbolType RazorCommentTransitionType { get; }
         public abstract TSymbolType RazorCommentType { get; }
-        public System.Web.Razor.Text.TextDocumentReader Source { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Razor.Text.TextDocumentReader Source { get { throw null; } }
         protected System.Web.Razor.StateMachine<TSymbol>.StateResult AfterRazorCommentTransition() { throw null; }
         protected bool At(string expected, bool caseSensitive) { throw null; }
         protected System.Func<char, bool> CharOrWhiteSpace(char character) { throw null; }
@@ -1390,8 +1390,8 @@ namespace System.Web.Razor.Tokenizer.Symbols
         public CSharpSymbol(int offset, int line, int column, string content, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType type, System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public CSharpSymbol(System.Web.Razor.Text.SourceLocation start, string content, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType type) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public CSharpSymbol(System.Web.Razor.Text.SourceLocation start, string content, System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType type, System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.CSharpSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
-        public System.Nullable<bool> EscapedIdentifier { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.Web.Razor.Tokenizer.Symbols.CSharpKeyword> Keyword { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<bool> EscapedIdentifier { get { throw null; } set { } }
+        public System.Nullable<System.Web.Razor.Tokenizer.Symbols.CSharpKeyword> Keyword { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
@@ -1512,10 +1512,10 @@ namespace System.Web.Razor.Tokenizer.Symbols
     public abstract partial class SymbolBase<TType> : System.Web.Razor.Tokenizer.Symbols.ISymbol
     {
         protected SymbolBase(System.Web.Razor.Text.SourceLocation start, string content, TType type, System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) { }
-        public string Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> Errors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Razor.Text.SourceLocation Start { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public TType Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Content { get { throw null; } }
+        public System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> Errors { get { throw null; } }
+        public System.Web.Razor.Text.SourceLocation Start { get { throw null; } }
+        public TType Type { get { throw null; } }
         public void ChangeStart(System.Web.Razor.Text.SourceLocation newStart) { }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -1690,7 +1690,7 @@ namespace System.Web.Razor.Tokenizer.Symbols
         public VBSymbol(int offset, int line, int column, string content, System.Web.Razor.Tokenizer.Symbols.VBSymbolType type, System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.VBSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public VBSymbol(System.Web.Razor.Text.SourceLocation start, string content, System.Web.Razor.Tokenizer.Symbols.VBSymbolType type) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.VBSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
         public VBSymbol(System.Web.Razor.Text.SourceLocation start, string content, System.Web.Razor.Tokenizer.Symbols.VBSymbolType type, System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError> errors) : base (default(System.Web.Razor.Text.SourceLocation), default(string), default(System.Web.Razor.Tokenizer.Symbols.VBSymbolType), default(System.Collections.Generic.IEnumerable<System.Web.Razor.Parser.SyntaxTree.RazorError>)) { }
-        public System.Nullable<System.Web.Razor.Tokenizer.Symbols.VBKeyword> Keyword { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.Web.Razor.Tokenizer.Symbols.VBKeyword> Keyword { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static string GetSample(System.Web.Razor.Tokenizer.Symbols.VBSymbolType type) { throw null; }

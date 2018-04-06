@@ -11,7 +11,7 @@ namespace WebMatrix.Data
     public partial class ConnectionEventArgs : System.EventArgs
     {
         public ConnectionEventArgs(System.Data.Common.DbConnection connection) { }
-        public System.Data.Common.DbConnection Connection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.Common.DbConnection Connection { get { throw null; } }
     }
     public partial class Database : System.IDisposable
     {
@@ -33,7 +33,7 @@ namespace WebMatrix.Data
     public sealed partial class DynamicRecord : System.Dynamic.DynamicObject, System.ComponentModel.ICustomTypeDescriptor
     {
         internal DynamicRecord() { }
-        public System.Collections.Generic.IList<string> Columns { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IList<string> Columns { get { throw null; } }
         public object this[int index] { get { throw null; } }
         public object this[string name] { get { throw null; } }
         public override System.Collections.Generic.IEnumerable<string> GetDynamicMemberNames() { throw null; }

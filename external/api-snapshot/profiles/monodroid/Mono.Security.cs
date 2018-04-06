@@ -1052,13 +1052,13 @@ namespace Mono.Security.Interface
     public partial class MonoTlsConnectionInfo
     {
         public MonoTlsConnectionInfo() { }
-        public Mono.Security.Interface.CipherAlgorithmType CipherAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherAlgorithmType CipherAlgorithmType { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
-        public Mono.Security.Interface.CipherSuiteCode CipherSuiteCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.ExchangeAlgorithmType ExchangeAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.HashAlgorithmType HashAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string PeerDomainName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.TlsProtocols ProtocolVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherSuiteCode CipherSuiteCode { get { throw null; } set { } }
+        public Mono.Security.Interface.ExchangeAlgorithmType ExchangeAlgorithmType { get { throw null; } set { } }
+        public Mono.Security.Interface.HashAlgorithmType HashAlgorithmType { get { throw null; } set { } }
+        public string PeerDomainName { get { throw null; } set { } }
+        public Mono.Security.Interface.TlsProtocols ProtocolVersion { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     public abstract partial class MonoTlsProvider
@@ -1089,20 +1089,20 @@ namespace Mono.Security.Interface
     {
         public MonoTlsSettings() { }
         public bool CallbackNeedsCertificateChain { get { throw null; } set { } }
-        public System.Nullable<System.DateTime> CertificateValidationTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.DateTime> CertificateValidationTime { get { throw null; } set { } }
         [System.ObsoleteAttribute("Do not use outside System.dll!")]
         public Mono.Security.Interface.ICertificateValidator CertificateValidator { get { throw null; } }
         public bool CheckCertificateName { get { throw null; } set { } }
         public bool CheckCertificateRevocationStatus { get { throw null; } set { } }
-        public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { get { throw null; } set { } }
         public static Mono.Security.Interface.MonoTlsSettings DefaultSettings { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
-        public Mono.Security.Interface.CipherSuiteCode[] EnabledCiphers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Mono.Security.Interface.TlsProtocols> EnabledProtocols { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.MonoRemoteCertificateValidationCallback RemoteCertificateValidationCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherSuiteCode[] EnabledCiphers { get { throw null; } set { } }
+        public System.Nullable<Mono.Security.Interface.TlsProtocols> EnabledProtocols { get { throw null; } set { } }
+        public Mono.Security.Interface.MonoRemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
         public bool SkipSystemValidators { get { throw null; } set { } }
-        public System.Security.Cryptography.X509Certificates.X509CertificateCollection TrustAnchors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object UserSettings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Security.Cryptography.X509Certificates.X509CertificateCollection TrustAnchors { get { throw null; } set { } }
+        public object UserSettings { get { throw null; } set { } }
         public System.Nullable<bool> UseServicePointManagerCallback { get { throw null; } set { } }
         public Mono.Security.Interface.MonoTlsSettings Clone() { throw null; }
         [System.ObsoleteAttribute("Do not use outside System.dll!")]
@@ -1816,9 +1816,9 @@ namespace Mono.Security.X509.Extensions
         {
             public DistributionPoint(Mono.Security.ASN1 dp) { }
             public DistributionPoint(string dp, Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags reasons, string issuer) { }
-            public string CRLIssuer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-            public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-            public Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags Reasons { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+            public string CRLIssuer { get { throw null; } }
+            public string Name { get { throw null; } }
+            public Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags Reasons { get { throw null; } }
         }
         [System.FlagsAttribute]
         public enum ReasonFlags

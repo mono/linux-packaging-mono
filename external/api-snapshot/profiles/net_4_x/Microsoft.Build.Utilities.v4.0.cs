@@ -199,17 +199,17 @@ namespace Microsoft.Build.Utilities
         protected ToolTask(System.Resources.ResourceManager taskResources) { }
         protected ToolTask(System.Resources.ResourceManager taskResources, string helpKeywordPrefix) { }
         protected virtual System.Collections.Specialized.StringDictionary EnvironmentOverride { get { throw null; } }
-        public string[] EnvironmentVariables { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string[] EnvironmentVariables { get { throw null; } set { } }
         [Microsoft.Build.Framework.OutputAttribute]
         public int ExitCode { get { throw null; } }
         protected virtual bool HasLoggedErrors { get { throw null; } }
-        public bool LogStandardErrorAsError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool LogStandardErrorAsError { get { throw null; } set { } }
         protected virtual System.Text.Encoding ResponseFileEncoding { get { throw null; } }
         protected virtual System.Text.Encoding StandardErrorEncoding { get { throw null; } }
         protected Microsoft.Build.Framework.MessageImportance StandardErrorImportanceToUse { get { throw null; } }
         protected virtual Microsoft.Build.Framework.MessageImportance StandardErrorLoggingImportance { get { throw null; } }
         protected virtual System.Text.Encoding StandardOutputEncoding { get { throw null; } }
-        public string StandardOutputImportance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string StandardOutputImportance { get { throw null; } set { } }
         protected Microsoft.Build.Framework.MessageImportance StandardOutputImportanceToUse { get { throw null; } }
         protected virtual Microsoft.Build.Framework.MessageImportance StandardOutputLoggingImportance { get { throw null; } }
         public virtual int Timeout { get { throw null; } set { } }
@@ -217,7 +217,7 @@ namespace Microsoft.Build.Utilities
         public virtual string ToolExe { get { throw null; } set { } }
         protected abstract string ToolName { get; }
         public string ToolPath { get { throw null; } set { } }
-        public bool YieldDuringToolExecution { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool YieldDuringToolExecution { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected virtual bool CallHostObjectToExecute() { throw null; }
         public virtual void Cancel() { }

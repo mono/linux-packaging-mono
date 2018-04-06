@@ -2248,15 +2248,15 @@ namespace System.Drawing.Drawing2D
     {
         public Blend() { }
         public Blend(int count) { }
-        public float[] Factors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float[] Factors { get { throw null; } set { } }
+        public float[] Positions { get { throw null; } set { } }
     }
     public sealed partial class ColorBlend
     {
         public ColorBlend() { }
         public ColorBlend(int count) { }
-        public System.Drawing.Color[] Colors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Color[] Colors { get { throw null; } set { } }
+        public float[] Positions { get { throw null; } set { } }
     }
     public enum CombineMode
     {
@@ -2648,8 +2648,8 @@ namespace System.Drawing.Drawing2D
     public sealed partial class PathData
     {
         public PathData() { }
-        public System.Drawing.PointF[] Points { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public byte[] Types { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.PointF[] Points { get { throw null; } set { } }
+        public byte[] Types { get { throw null; } set { } }
     }
     [System.MonoTODOAttribute("libgdiplus/cairo doesn't support path gradients - unless it can be mapped to a radial gradient")]
     public sealed partial class PathGradientBrush : System.Drawing.Brush
@@ -2729,7 +2729,7 @@ namespace System.Drawing.Drawing2D
     public sealed partial class RegionData
     {
         internal RegionData() { }
-        public byte[] Data { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] Data { get { throw null; } set { } }
     }
     public enum SmoothingMode
     {

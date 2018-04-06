@@ -21,7 +21,7 @@ namespace Mono.Simd
     public sealed partial class AccelerationAttribute : System.Attribute
     {
         public AccelerationAttribute(Mono.Simd.AccelMode mode) { }
-        public Mono.Simd.AccelMode Mode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Simd.AccelMode Mode { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
     public enum AccelMode

@@ -65,10 +65,10 @@ namespace System.Data.Services
     public sealed partial class DataServiceBehavior
     {
         public DataServiceBehavior() { }
-        public bool AcceptCountRequests { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool AcceptProjectionRequests { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool InvokeInterceptorsOnLinkDelete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Data.Services.Common.DataServiceProtocolVersion MaxProtocolVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AcceptCountRequests { get { throw null; } set { } }
+        public bool AcceptProjectionRequests { get { throw null; } set { } }
+        public bool InvokeInterceptorsOnLinkDelete { get { throw null; } set { } }
+        public System.Data.Services.Common.DataServiceProtocolVersion MaxProtocolVersion { get { throw null; } set { } }
     }
     public sealed partial class DataServiceConfiguration : System.Data.Services.IDataServiceConfiguration
     {
@@ -98,9 +98,9 @@ namespace System.Data.Services
         protected DataServiceException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public DataServiceException(string message) { }
         public DataServiceException(string message, System.Exception innerException) { }
-        public string ErrorCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string MessageLanguage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int StatusCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ErrorCode { get { throw null; } }
+        public string MessageLanguage { get { throw null; } }
+        public int StatusCode { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -143,7 +143,7 @@ namespace System.Data.Services
     public partial class DataService<T> : System.Data.Services.IRequestHandler
     {
         public DataService() { }
-        protected T CurrentDataSource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected T CurrentDataSource { get { throw null; } }
         public System.Data.Services.DataServiceProcessingPipeline ProcessingPipeline { get { throw null; } }
         public void AttachHost(System.Data.Services.IDataServiceHost host) { }
         protected virtual T CreateDataSource() { throw null; }
@@ -178,10 +178,10 @@ namespace System.Data.Services
     {
         public ExpandSegment(string name, System.Linq.Expressions.Expression filter) { }
         public System.Data.Services.Providers.ResourceProperty ExpandedProperty { get { throw null; } }
-        public System.Linq.Expressions.Expression Filter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Linq.Expressions.Expression Filter { get { throw null; } }
         public bool HasFilter { get { throw null; } }
         public int MaxResultsExpected { get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public static bool PathHasFilter(System.Collections.Generic.IEnumerable<System.Data.Services.ExpandSegment> path) { throw null; }
     }
     public partial class ExpandSegmentCollection : System.Collections.Generic.List<System.Data.Services.ExpandSegment>
@@ -193,11 +193,11 @@ namespace System.Data.Services
     public partial class HandleExceptionArgs
     {
         public HandleExceptionArgs() { }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ResponseContentType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int ResponseStatusCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ResponseWritten { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool UseVerboseErrors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Exception Exception { get { throw null; } set { } }
+        public string ResponseContentType { get { throw null; } }
+        public int ResponseStatusCode { get { throw null; } }
+        public bool ResponseWritten { get { throw null; } }
+        public bool UseVerboseErrors { get { throw null; } set { } }
     }
     public partial interface IDataServiceConfiguration
     {
@@ -282,15 +282,15 @@ namespace System.Data.Services
     public sealed partial class MimeTypeAttribute : System.Attribute
     {
         public MimeTypeAttribute(string memberName, string mimeType) { }
-        public string MemberName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string MimeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string MemberName { get { throw null; } }
+        public string MimeType { get { throw null; } }
     }
     public sealed partial class ProcessRequestArgs
     {
         public ProcessRequestArgs() { }
-        public bool IsBatchOperation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.Services.DataServiceOperationContext OperationContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri RequestUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsBatchOperation { get { throw null; } }
+        public System.Data.Services.DataServiceOperationContext OperationContext { get { throw null; } }
+        public System.Uri RequestUri { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=true, Inherited=true)]
     public sealed partial class QueryInterceptorAttribute : System.Attribute
@@ -338,150 +338,150 @@ namespace System.Data.Services.Internal
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty7 ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty8 ProjectedProperty8 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
+        public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
+        public TProperty8 ProjectedProperty8 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty7 ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty8 ProjectedProperty8 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty9 ProjectedProperty9 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
+        public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
+        public TProperty8 ProjectedProperty8 { get { throw null; } set { } }
+        public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9, TProperty10> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty10 ProjectedProperty10 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty7 ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty8 ProjectedProperty8 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty9 ProjectedProperty9 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty10 ProjectedProperty10 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
+        public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
+        public TProperty8 ProjectedProperty8 { get { throw null; } set { } }
+        public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9, TProperty10, TProperty11> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty10 ProjectedProperty10 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty11 ProjectedProperty11 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty7 ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty8 ProjectedProperty8 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty9 ProjectedProperty9 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty10 ProjectedProperty10 { get { throw null; } set { } }
+        public TProperty11 ProjectedProperty11 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
+        public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
+        public TProperty8 ProjectedProperty8 { get { throw null; } set { } }
+        public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
-        public TProperty0 ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty1 ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty2 ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty3 ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty4 ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty5 ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty6 ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public TProperty7 ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
+        public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
+        public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
+        public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
+        public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
+        public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
+        public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
+        public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
@@ -504,99 +504,99 @@ namespace System.Data.Services.Internal
     public sealed partial class ProjectedWrapper1 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper1() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper2 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper2() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper3 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper3() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper4 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper4() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper5 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper5() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
+        public object ProjectedProperty4 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper6 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper6() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
+        public object ProjectedProperty4 { get { throw null; } set { } }
+        public object ProjectedProperty5 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper7 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper7() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
+        public object ProjectedProperty4 { get { throw null; } set { } }
+        public object ProjectedProperty5 { get { throw null; } set { } }
+        public object ProjectedProperty6 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class ProjectedWrapper8 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper8() { }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
+        public object ProjectedProperty4 { get { throw null; } set { } }
+        public object ProjectedProperty5 { get { throw null; } set { } }
+        public object ProjectedProperty6 { get { throw null; } set { } }
+        public object ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public partial class ProjectedWrapperMany : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapperMany() { }
-        public System.Data.Services.Internal.ProjectedWrapperMany Next { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty0 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty1 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty3 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty4 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty5 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty6 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object ProjectedProperty7 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Data.Services.Internal.ProjectedWrapperMany Next { get { throw null; } set { } }
+        public object ProjectedProperty0 { get { throw null; } set { } }
+        public object ProjectedProperty1 { get { throw null; } set { } }
+        public object ProjectedProperty2 { get { throw null; } set { } }
+        public object ProjectedProperty3 { get { throw null; } set { } }
+        public object ProjectedProperty4 { get { throw null; } set { } }
+        public object ProjectedProperty5 { get { throw null; } set { } }
+        public object ProjectedProperty6 { get { throw null; } set { } }
+        public object ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
@@ -729,11 +729,11 @@ namespace System.Data.Services.Providers
         public ResourceProperty(string name, System.Data.Services.Providers.ResourcePropertyKind kind, System.Data.Services.Providers.ResourceType propertyResourceType) { }
         public bool CanReflectOnInstanceTypeProperty { get { throw null; } set { } }
         public object CustomState { get { throw null; } set { } }
-        public bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.Services.Providers.ResourcePropertyKind Kind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsReadOnly { get { throw null; } }
+        public System.Data.Services.Providers.ResourcePropertyKind Kind { get { throw null; } }
         public string MimeType { get { throw null; } set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.Services.Providers.ResourceType ResourceType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Data.Services.Providers.ResourceType ResourceType { get { throw null; } }
         public void SetReadOnly() { }
     }
     [System.FlagsAttribute]
@@ -750,32 +750,32 @@ namespace System.Data.Services.Providers
     public partial class ResourceSet
     {
         public ResourceSet(string name, System.Data.Services.Providers.ResourceType elementType) { }
-        public object CustomState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.Services.Providers.ResourceType ResourceType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object CustomState { get { throw null; } set { } }
+        public bool IsReadOnly { get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Data.Services.Providers.ResourceType ResourceType { get { throw null; } }
         public void SetReadOnly() { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("{Name}: {InstanceType}, {ResourceTypeKind}")]
     public partial class ResourceType
     {
         public ResourceType(System.Type instanceType, System.Data.Services.Providers.ResourceTypeKind resourceTypeKind, System.Data.Services.Providers.ResourceType baseType, string namespaceName, string name, bool isAbstract) { }
-        public System.Data.Services.Providers.ResourceType BaseType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool CanReflectOnInstanceType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Data.Services.Providers.ResourceType BaseType { get { throw null; } }
+        public bool CanReflectOnInstanceType { get { throw null; } set { } }
         public object CustomState { get { throw null; } set { } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Services.Providers.ResourceProperty> ETagProperties { get { throw null; } }
-        public string FullName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type InstanceType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsAbstract { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string FullName { get { throw null; } }
+        public System.Type InstanceType { get { throw null; } }
+        public bool IsAbstract { get { throw null; } }
         public bool IsMediaLinkEntry { get { throw null; } set { } }
         public bool IsOpenType { get { throw null; } set { } }
-        public bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsReadOnly { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Services.Providers.ResourceProperty> KeyProperties { get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public string Namespace { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Services.Providers.ResourceProperty> Properties { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Services.Providers.ResourceProperty> PropertiesDeclaredOnThisType { get { throw null; } }
-        public System.Data.Services.Providers.ResourceTypeKind ResourceTypeKind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Data.Services.Providers.ResourceTypeKind ResourceTypeKind { get { throw null; } }
         public void AddEntityPropertyMappingAttribute(System.Data.Services.Common.EntityPropertyMappingAttribute attribute) { }
         public void AddProperty(System.Data.Services.Providers.ResourceProperty property) { }
         public static System.Data.Services.Providers.ResourceType GetPrimitiveResourceType(System.Type type) { throw null; }
@@ -792,7 +792,7 @@ namespace System.Data.Services.Providers
     public partial class ServiceOperation
     {
         public ServiceOperation(string name, System.Data.Services.Providers.ServiceOperationResultKind resultKind, System.Data.Services.Providers.ResourceType resultType, System.Data.Services.Providers.ResourceSet resultSet, string method, System.Collections.Generic.IEnumerable<System.Data.Services.Providers.ServiceOperationParameter> parameters) { }
-        public object CustomState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object CustomState { get { throw null; } set { } }
         public bool IsReadOnly { get { throw null; } }
         public string Method { get { throw null; } }
         public string MimeType { get { throw null; } set { } }
@@ -807,10 +807,10 @@ namespace System.Data.Services.Providers
     public partial class ServiceOperationParameter
     {
         public ServiceOperationParameter(string name, System.Data.Services.Providers.ResourceType parameterType) { }
-        public object CustomState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Data.Services.Providers.ResourceType ParameterType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object CustomState { get { throw null; } set { } }
+        public bool IsReadOnly { get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Data.Services.Providers.ResourceType ParameterType { get { throw null; } }
         public void SetReadOnly() { }
     }
     public enum ServiceOperationResultKind

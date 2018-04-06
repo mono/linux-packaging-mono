@@ -5279,10 +5279,10 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
-        public System.IO.WatcherChangeTypes ChangeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string OldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TimedOut { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public string OldName { get { throw null; } set { } }
+        public bool TimedOut { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
     public enum WatcherChangeTypes
@@ -5548,8 +5548,8 @@ namespace System.Net
     public partial class DownloadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal DownloadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long BytesReceived { get { throw null; } }
+        public long TotalBytesToReceive { get { throw null; } }
     }
     public delegate void DownloadProgressChangedEventHandler(object sender, System.Net.DownloadProgressChangedEventArgs e);
     public partial class DownloadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -6300,7 +6300,7 @@ namespace System.Net
         [System.MonoTODOAttribute("CRL checks not implemented")]
         public static bool CheckCertificateRevocationList { get { throw null; } set { } }
         [System.ObsoleteAttribute("This API is no longer supported.", true)]
-        public static System.Net.CipherSuitesCallback ClientCipherSuitesCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static System.Net.CipherSuitesCallback ClientCipherSuitesCallback { get { throw null; } set { } }
         public static int DefaultConnectionLimit { get { throw null; } set { } }
         public static int DnsRefreshTimeout { get { throw null; } set { } }
         [System.MonoTODOAttribute]
@@ -6315,7 +6315,7 @@ namespace System.Net
         public static System.Net.SecurityProtocolType SecurityProtocol { get { throw null; } set { } }
         public static System.Net.Security.RemoteCertificateValidationCallback ServerCertificateValidationCallback { get { throw null; } set { } }
         [System.ObsoleteAttribute("This API is no longer supported.", true)]
-        public static System.Net.CipherSuitesCallback ServerCipherSuitesCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static System.Net.CipherSuitesCallback ServerCipherSuitesCallback { get { throw null; } set { } }
         public static bool UseNagleAlgorithm { get { throw null; } set { } }
         public static System.Net.ServicePoint FindServicePoint(string uriString, System.Net.IWebProxy proxy) { throw null; }
         public static System.Net.ServicePoint FindServicePoint(System.Uri address) { throw null; }
@@ -6390,10 +6390,10 @@ namespace System.Net
     public partial class UploadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal UploadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long BytesSent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToSend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long BytesReceived { get { throw null; } }
+        public long BytesSent { get { throw null; } }
+        public long TotalBytesToReceive { get { throw null; } }
+        public long TotalBytesToSend { get { throw null; } }
     }
     public delegate void UploadProgressChangedEventHandler(object sender, System.Net.UploadProgressChangedEventArgs e);
     public partial class UploadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -6413,12 +6413,12 @@ namespace System.Net
         public WebClient() { }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
-        public bool AllowReadStreamBuffering { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowReadStreamBuffering { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
-        public bool AllowWriteStreamBuffering { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowWriteStreamBuffering { get { throw null; } set { } }
         public string BaseAddress { get { throw null; } set { } }
-        public System.Net.Cache.RequestCachePolicy CachePolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Cache.RequestCachePolicy CachePolicy { get { throw null; } set { } }
         public System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.Text.Encoding Encoding { get { throw null; } set { } }
         public System.Net.WebHeaderCollection Headers { get { throw null; } set { } }
@@ -7041,7 +7041,7 @@ namespace System.Net.Mail
         public int Port { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Net.ServicePoint ServicePoint { get { throw null; } }
-        public string TargetName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TargetName { get { throw null; } set { } }
         public int Timeout { get { throw null; } set { } }
         public bool UseDefaultCredentials { get { throw null; } [System.MonoNotSupportedAttribute("no DefaultCredential support in Mono")]set { } }
         public event System.Net.Mail.SendCompletedEventHandler SendCompleted { add { } remove { } }
@@ -8391,25 +8391,25 @@ namespace System.Net.Sockets
     public partial class SocketAsyncEventArgs : System.EventArgs, System.IDisposable
     {
         public SocketAsyncEventArgs() { }
-        public System.Net.Sockets.Socket AcceptSocket { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public byte[] Buffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Sockets.Socket AcceptSocket { get { throw null; } set { } }
+        public byte[] Buffer { get { throw null; } }
         public System.Collections.Generic.IList<System.ArraySegment<byte>> BufferList { get { throw null; } set { } }
-        public int BytesTransferred { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception ConnectByNameError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int BytesTransferred { get { throw null; } }
+        public System.Exception ConnectByNameError { get { throw null; } }
         public System.Net.Sockets.Socket ConnectSocket { get { throw null; } }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool DisconnectReuseSocket { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketAsyncOperation LastOperation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Offset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Sockets.IPPacketInformation ReceiveMessageFromPacketInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Count { get { throw null; } }
+        public bool DisconnectReuseSocket { get { throw null; } set { } }
+        public System.Net.Sockets.SocketAsyncOperation LastOperation { get { throw null; } }
+        public int Offset { get { throw null; } }
+        public System.Net.Sockets.IPPacketInformation ReceiveMessageFromPacketInfo { get { throw null; } }
         public System.Net.EndPoint RemoteEndPoint { get { throw null; } set { } }
-        public System.Net.Sockets.SendPacketsElement[] SendPacketsElements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.TransmitFileOptions SendPacketsFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Sockets.SendPacketsElement[] SendPacketsElements { get { throw null; } set { } }
+        public System.Net.Sockets.TransmitFileOptions SendPacketsFlags { get { throw null; } set { } }
         [System.MonoTODOAttribute("unused property")]
-        public int SendPacketsSendSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketError SocketError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketFlags SocketFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object UserToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int SendPacketsSendSize { get { throw null; } set { } }
+        public System.Net.Sockets.SocketError SocketError { get { throw null; } set { } }
+        public System.Net.Sockets.SocketFlags SocketFlags { get { throw null; } set { } }
+        public object UserToken { get { throw null; } set { } }
         public event System.EventHandler<System.Net.Sockets.SocketAsyncEventArgs> Completed { add { } remove { } }
         public void Dispose() { }
         ~SocketAsyncEventArgs() { }
@@ -8933,11 +8933,11 @@ namespace System.Net.WebSockets
     {
         public WebSocketReceiveResult(int count, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage) { }
         public WebSocketReceiveResult(int count, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> closeStatus, string closeStatusDescription) { }
-        public System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> CloseStatus { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string CloseStatusDescription { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool EndOfMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.WebSockets.WebSocketMessageType MessageType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> CloseStatus { get { throw null; } }
+        public string CloseStatusDescription { get { throw null; } }
+        public int Count { get { throw null; } }
+        public bool EndOfMessage { get { throw null; } }
+        public System.Net.WebSockets.WebSocketMessageType MessageType { get { throw null; } }
     }
     public enum WebSocketState
     {
@@ -9281,7 +9281,7 @@ namespace System.Security.Authentication.ExtendedProtection
     public partial class TokenBinding
     {
         internal TokenBinding() { }
-        public System.Security.Authentication.ExtendedProtection.TokenBindingType BindingType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Security.Authentication.ExtendedProtection.TokenBindingType BindingType { get { throw null; } }
         public byte[] GetRawTokenBindingId() { throw null; }
     }
     public enum TokenBindingType
@@ -10075,11 +10075,11 @@ namespace System.Text.RegularExpressions
     {
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic) { }
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic, System.TimeSpan matchTimeout) { }
-        public bool IsPublic { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsPublic { get { throw null; } set { } }
         public System.TimeSpan MatchTimeout { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
-        public System.Text.RegularExpressions.RegexOptions Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Text.RegularExpressions.RegexOptions Options { get { throw null; } set { } }
         public string Pattern { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -10090,9 +10090,9 @@ namespace System.Text.RegularExpressions
         public RegexMatchTimeoutException(string message) { }
         public RegexMatchTimeoutException(string message, System.Exception inner) { }
         public RegexMatchTimeoutException(string regexInput, string regexPattern, System.TimeSpan matchTimeout) { }
-        public string Input { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TimeSpan MatchTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Pattern { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Input { get { throw null; } }
+        public System.TimeSpan MatchTimeout { get { throw null; } }
+        public string Pattern { get { throw null; } }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]

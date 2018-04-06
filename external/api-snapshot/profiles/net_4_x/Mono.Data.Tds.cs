@@ -353,31 +353,31 @@ namespace Mono.Data.Tds.Protocol
     public partial class TdsDataColumn
     {
         public TdsDataColumn() { }
-        public System.Nullable<bool> AllowDBNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BaseCatalogName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BaseColumnName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BaseSchemaName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BaseServerName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BaseTableName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ColumnName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> ColumnOrdinal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> ColumnSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Mono.Data.Tds.Protocol.TdsColumnType> ColumnType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DataTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsAliased { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsAutoIncrement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsHidden { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsIdentity { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsRowVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsUnique { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<bool> AllowDBNull { get { throw null; } set { } }
+        public string BaseCatalogName { get { throw null; } set { } }
+        public string BaseColumnName { get { throw null; } set { } }
+        public string BaseSchemaName { get { throw null; } set { } }
+        public string BaseServerName { get { throw null; } set { } }
+        public string BaseTableName { get { throw null; } set { } }
+        public string ColumnName { get { throw null; } set { } }
+        public System.Nullable<int> ColumnOrdinal { get { throw null; } set { } }
+        public System.Nullable<int> ColumnSize { get { throw null; } set { } }
+        public System.Nullable<Mono.Data.Tds.Protocol.TdsColumnType> ColumnType { get { throw null; } set { } }
+        public string DataTypeName { get { throw null; } set { } }
+        public System.Nullable<bool> IsAliased { get { throw null; } set { } }
+        public System.Nullable<bool> IsAutoIncrement { get { throw null; } set { } }
+        public System.Nullable<bool> IsExpression { get { throw null; } set { } }
+        public System.Nullable<bool> IsHidden { get { throw null; } set { } }
+        public System.Nullable<bool> IsIdentity { get { throw null; } set { } }
+        public System.Nullable<bool> IsKey { get { throw null; } set { } }
+        public System.Nullable<bool> IsReadOnly { get { throw null; } set { } }
+        public System.Nullable<bool> IsRowVersion { get { throw null; } set { } }
+        public System.Nullable<bool> IsUnique { get { throw null; } set { } }
         public object this[string key] { get { throw null; } set { } }
-        public System.Nullable<int> LCID { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<short> NumericPrecision { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<short> NumericScale { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> SortOrder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<int> LCID { get { throw null; } set { } }
+        public System.Nullable<short> NumericPrecision { get { throw null; } set { } }
+        public System.Nullable<short> NumericScale { get { throw null; } set { } }
+        public System.Nullable<int> SortOrder { get { throw null; } set { } }
     }
     public partial class TdsDataColumnCollection : System.Collections.IEnumerable
     {

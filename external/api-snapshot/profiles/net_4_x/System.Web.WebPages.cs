@@ -46,11 +46,11 @@ namespace System.Web.Helpers
     }
     public static partial class AntiForgeryConfig
     {
-        public static System.Web.Helpers.IAntiForgeryAdditionalDataProvider AdditionalDataProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static System.Web.Helpers.IAntiForgeryAdditionalDataProvider AdditionalDataProvider { get { throw null; } set { } }
         public static string CookieName { get { throw null; } set { } }
-        public static bool RequireSsl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static bool RequireSsl { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-        public static bool SuppressIdentityHeuristicChecks { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static bool SuppressIdentityHeuristicChecks { get { throw null; } set { } }
         public static string UniqueClaimTypeIdentifier { get { throw null; } set { } }
     }
     public partial interface IAntiForgeryAdditionalDataProvider
@@ -112,7 +112,7 @@ namespace System.Web.Mvc
     public partial class ModelClientValidationRule
     {
         public ModelClientValidationRule() { }
-        public string ErrorMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ErrorMessage { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<string, object> ValidationParameters { get { throw null; } }
         public string ValidationType { get { throw null; } set { } }
     }
@@ -125,10 +125,10 @@ namespace System.Web.Mvc
     public partial class TagBuilder
     {
         public TagBuilder(string tagName) { }
-        public System.Collections.Generic.IDictionary<string, string> Attributes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, string> Attributes { get { throw null; } }
         public string IdAttributeDotReplacement { get { throw null; } set { } }
         public string InnerHtml { get { throw null; } set { } }
-        public string TagName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string TagName { get { throw null; } }
         public void AddCssClass(string value) { }
         public static string CreateSanitizedId(string originalId) { throw null; }
         public static string CreateSanitizedId(string originalId, string invalidCharReplacement) { throw null; }
@@ -167,10 +167,10 @@ namespace System.Web.WebPages
         public static readonly string CacheKeyPrefix;
         public static readonly string StartPageVirtualPath;
         protected ApplicationStartPage() { }
-        public System.Web.HttpApplication Application { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.HttpApplication Application { get { throw null; } }
         public override System.Web.HttpContextBase Context { get { throw null; } }
-        public static System.Web.HtmlString Markup { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IO.TextWriter Output { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Web.HtmlString Markup { get { throw null; } }
+        public System.IO.TextWriter Output { get { throw null; } }
         public override string VirtualPath { get { throw null; } set { } }
         protected internal override System.IO.TextWriter GetOutputWriter() { throw null; }
         public override void Write(object value) { }
@@ -180,9 +180,9 @@ namespace System.Web.WebPages
     public partial class AttributeValue
     {
         public AttributeValue(System.Web.WebPages.Instrumentation.PositionTagged<string> prefix, System.Web.WebPages.Instrumentation.PositionTagged<object> value, bool literal) { }
-        public bool Literal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.WebPages.Instrumentation.PositionTagged<string> Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.WebPages.Instrumentation.PositionTagged<object> Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Literal { get { throw null; } }
+        public System.Web.WebPages.Instrumentation.PositionTagged<string> Prefix { get { throw null; } }
+        public System.Web.WebPages.Instrumentation.PositionTagged<object> Value { get { throw null; } }
         public static System.Web.WebPages.AttributeValue FromTuple(System.Tuple<System.Tuple<string, int>, System.Tuple<object, int>, bool> value) { throw null; }
         public static System.Web.WebPages.AttributeValue FromTuple(System.Tuple<System.Tuple<string, int>, System.Tuple<string, int>, bool> value) { throw null; }
         public static implicit operator System.Web.WebPages.AttributeValue (System.Tuple<System.Tuple<string, int>, System.Tuple<object, int>, bool> value) { throw null; }
@@ -225,7 +225,7 @@ namespace System.Web.WebPages
     {
         public DefaultDisplayMode() { }
         public DefaultDisplayMode(string suffix) { }
-        public System.Func<System.Web.HttpContextBase, bool> ContextCondition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Func<System.Web.HttpContextBase, bool> ContextCondition { get { throw null; } set { } }
         public virtual string DisplayModeId { get { throw null; } }
         public bool CanHandleContext(System.Web.HttpContextBase httpContext) { throw null; }
         public virtual System.Web.WebPages.DisplayInfo GetDisplayInfo(System.Web.HttpContextBase httpContext, string virtualPath, System.Func<string, bool> virtualPathExists) { throw null; }
@@ -234,8 +234,8 @@ namespace System.Web.WebPages
     public partial class DisplayInfo
     {
         public DisplayInfo(string filePath, System.Web.WebPages.IDisplayMode displayMode) { }
-        public System.Web.WebPages.IDisplayMode DisplayMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string FilePath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.WebPages.IDisplayMode DisplayMode { get { throw null; } }
+        public string FilePath { get { throw null; } }
     }
     public sealed partial class DisplayModeProvider
     {
@@ -244,7 +244,7 @@ namespace System.Web.WebPages
         public static readonly string MobileDisplayModeId;
         public static System.Web.WebPages.DisplayModeProvider Instance { get { throw null; } }
         public System.Collections.Generic.IList<System.Web.WebPages.IDisplayMode> Modes { get { throw null; } }
-        public bool RequireConsistentDisplayMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool RequireConsistentDisplayMode { get { throw null; } set { } }
         public System.Collections.Generic.IEnumerable<System.Web.WebPages.IDisplayMode> GetAvailableDisplayModesForContext(System.Web.HttpContextBase httpContext, System.Web.WebPages.IDisplayMode currentDisplayMode) { throw null; }
         public System.Web.WebPages.DisplayInfo GetDisplayInfoForVirtualPath(string virtualPath, System.Web.HttpContextBase httpContext, System.Func<string, bool> virtualPathExists, System.Web.WebPages.IDisplayMode currentDisplayMode) { throw null; }
     }
@@ -256,7 +256,7 @@ namespace System.Web.WebPages
         public static System.Web.Caching.Cache Cache { get { throw null; } }
         public static System.Web.HttpContextBase Context { get { throw null; } }
         public static System.Web.WebPages.WebPageRenderingBase CurrentPage { get { throw null; } }
-        protected static string HelperVirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected static string HelperVirtualPath { get { throw null; } set { } }
         public static System.Web.WebPages.Html.HtmlHelper Html { get { throw null; } }
         public static bool IsAjax { get { throw null; } }
         public static bool IsPost { get { throw null; } }
@@ -323,7 +323,7 @@ namespace System.Web.WebPages
     public sealed partial class PageVirtualPathAttribute : System.Attribute
     {
         public PageVirtualPathAttribute(string virtualPath) { }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string VirtualPath { get { throw null; } }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public static partial class PreApplicationStartCode
@@ -356,7 +356,7 @@ namespace System.Web.WebPages
     public abstract partial class StartPage : System.Web.WebPages.WebPageRenderingBase
     {
         protected StartPage() { }
-        public System.Web.WebPages.WebPageRenderingBase ChildPage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.WebPages.WebPageRenderingBase ChildPage { get { throw null; } set { } }
         public override System.Web.HttpContextBase Context { get { throw null; } set { } }
         public override string Layout { get { throw null; } set { } }
         public override dynamic Page { get { throw null; } }
@@ -447,7 +447,7 @@ namespace System.Web.WebPages
     {
         protected WebPage() { }
         public override System.Web.HttpContextBase Context { get { throw null; } set { } }
-        public System.Web.WebPages.Html.HtmlHelper Html { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.WebPages.Html.HtmlHelper Html { get { throw null; } }
         public dynamic Model { get { throw null; } }
         public System.Web.WebPages.Html.ModelStateDictionary ModelState { get { throw null; } }
         public System.Web.WebPages.ValidationHelper Validation { get { throw null; } }
@@ -459,7 +459,7 @@ namespace System.Web.WebPages
     public abstract partial class WebPageBase : System.Web.WebPages.WebPageRenderingBase
     {
         protected WebPageBase() { }
-        public override string Layout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override string Layout { get { throw null; } set { } }
         public System.IO.TextWriter Output { get { throw null; } }
         public System.Collections.Generic.Stack<System.IO.TextWriter> OutputStack { get { throw null; } }
         public override dynamic Page { get { throw null; } }
@@ -488,8 +488,8 @@ namespace System.Web.WebPages
         public WebPageContext() { }
         public WebPageContext(System.Web.HttpContextBase context, System.Web.WebPages.WebPageRenderingBase page, object model) { }
         public static System.Web.WebPages.WebPageContext Current { get { throw null; } }
-        public object Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.WebPages.WebPageRenderingBase Page { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Model { get { throw null; } }
+        public System.Web.WebPages.WebPageRenderingBase Page { get { throw null; } }
         public System.Collections.Generic.IDictionary<object,dynamic> PageData { get { throw null; } }
     }
     public abstract partial class WebPageExecutingBase
@@ -497,8 +497,8 @@ namespace System.Web.WebPages
         protected WebPageExecutingBase() { }
         public virtual dynamic App { get { throw null; } }
         public virtual System.Web.HttpApplicationStateBase AppState { get { throw null; } }
-        public virtual System.Web.HttpContextBase Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.HttpContextBase Context { get { throw null; } set { } }
+        public virtual string VirtualPath { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public virtual System.Web.WebPages.IVirtualPathFactory VirtualPathFactory { get { throw null; } set { } }
         protected internal void BeginContext(int startPosition, int length, bool isLiteral) { }
@@ -528,7 +528,7 @@ namespace System.Web.WebPages
     {
         public static readonly string WebPagesVersionHeaderName;
         public WebPageHttpHandler(System.Web.WebPages.WebPage webPage) { }
-        public static bool DisableWebPagesResponseHeader { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static bool DisableWebPagesResponseHeader { get { throw null; } set { } }
         public virtual bool IsReusable { get { throw null; } }
         public static System.Web.IHttpHandler CreateFromVirtualPath(string virtualPath) { throw null; }
         public static System.Collections.ObjectModel.ReadOnlyCollection<string> GetRegisteredExtensions() { throw null; }
@@ -545,7 +545,7 @@ namespace System.Web.WebPages
         public virtual bool IsPost { get { throw null; } }
         public abstract string Layout { get; set; }
         public abstract dynamic Page { get; }
-        public System.Web.WebPages.WebPageContext PageContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.WebPages.WebPageContext PageContext { get { throw null; } }
         public abstract System.Collections.Generic.IDictionary<object,dynamic> PageData { get; }
         public System.Web.Profile.ProfileBase Profile { get { throw null; } }
         public virtual System.Web.HttpRequestBase Request { get { throw null; } }
@@ -656,7 +656,7 @@ namespace System.Web.WebPages.Html
     {
         public ModelState() { }
         public System.Collections.Generic.IList<string> Errors { get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object Value { get { throw null; } set { } }
     }
     public partial class ModelStateDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Web.WebPages.Html.ModelState>>, System.Collections.Generic.IDictionary<string, System.Web.WebPages.Html.ModelState>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Web.WebPages.Html.ModelState>>, System.Collections.IEnumerable
     {
@@ -689,9 +689,9 @@ namespace System.Web.WebPages.Html
     {
         public SelectListItem() { }
         public SelectListItem(System.Web.WebPages.Html.SelectListItem item) { }
-        public bool Selected { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Selected { get { throw null; } set { } }
+        public string Text { get { throw null; } set { } }
+        public string Value { get { throw null; } set { } }
     }
 }
 namespace System.Web.WebPages.Instrumentation
@@ -707,8 +707,8 @@ namespace System.Web.WebPages.Instrumentation
     public partial class PositionTagged<T>
     {
         public PositionTagged(T value, int offset) { }
-        public int Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public T Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Position { get { throw null; } }
+        public T Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Web.WebPages.Instrumentation.PositionTagged<T> left, System.Web.WebPages.Instrumentation.PositionTagged<T> right) { throw null; }
@@ -723,7 +723,7 @@ namespace System.Web.WebPages.Scope
     public partial class AspNetRequestScopeStorageProvider : System.Web.WebPages.Scope.IScopeStorageProvider
     {
         public AspNetRequestScopeStorageProvider() { }
-        public System.Collections.Generic.IDictionary<object, object> ApplicationScope { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<object, object> ApplicationScope { get { throw null; } }
         public System.Collections.Generic.IDictionary<object, object> CurrentScope { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<object, object> GlobalScope { get { throw null; } }
         public System.Collections.Generic.IDictionary<object, object> RequestScope { get { throw null; } }

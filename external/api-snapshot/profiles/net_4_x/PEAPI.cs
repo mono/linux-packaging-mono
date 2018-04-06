@@ -23,7 +23,7 @@ namespace PEAPI
     public partial class ArrayConstant : PEAPI.DataConstant
     {
         public ArrayConstant(PEAPI.DataConstant[] dVals) { }
-        public System.Nullable<int> ExplicitSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<int> ExplicitSize { get { throw null; } set { } }
     }
     public enum AssemAttr
     {
