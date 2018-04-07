@@ -7,6 +7,9 @@ using System.IO;
 using System.Runtime;
 using System.Runtime.Serialization;
 using System.Text;
+#if MONO
+using Fx = System.Runtime.Fx;
+#endif
 
 
 namespace System.Xml

@@ -603,13 +603,11 @@ typedef enum {
 
 typedef enum {
 	SelfSuspendResumed,
-	SelfSuspendWait,
 	SelfSuspendNotifyAndWait,
 } MonoSelfSupendResult;
 
 typedef enum {
 	AsyncSuspendAlreadySuspended,
-	AsyncSuspendWait,
 	AsyncSuspendInitSuspend,
 	AsyncSuspendBlocking,
 } MonoRequestAsyncSuspendResult;
