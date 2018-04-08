@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-04-07 09:13+0000\n"
+"POT-Creation-Date: 2018-04-08 09:08+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -513,57 +513,56 @@ msgstr ""
 "`partial' 修飾子は `class'、`struct'、`interface'、`void' キーワードの直前で"
 "のみ使用できます"
 
-#: mcs/mcs/cs-tokenizer.cs:1728 mcs/mcs/cs-tokenizer.cs:1791
-#: mcs/mcs/cs-tokenizer.cs:1818
-msgid "Invalid number"
-msgstr "無効な数値です"
-
-#: mcs/mcs/cs-tokenizer.cs:2045
+#: mcs/mcs/cs-tokenizer.cs:2136
 #, csharp-format
 msgid "Unrecognized escape sequence `\\{0}'"
 msgstr "認識できないエスケープシーケンス `\\{0}' です"
 
-#: mcs/mcs/cs-tokenizer.cs:2064
+#: mcs/mcs/cs-tokenizer.cs:2155
 msgid "Unrecognized escape sequence"
 msgstr "認識できないエスケープシーケンスです"
 
-#: mcs/mcs/cs-tokenizer.cs:2329
+#: mcs/mcs/cs-tokenizer.cs:2420
 #, fuzzy
 msgid "Filename, single-line comment or end-of-line expected"
 msgstr "1行コメントまたは行末が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:2377
+#: mcs/mcs/cs-tokenizer.cs:2468
 #, fuzzy
 msgid "Missing identifier to pre-processor directive"
 msgstr "プリプロセッサ指令の識別子がありません"
 
-#: mcs/mcs/cs-tokenizer.cs:2387 mcs/mcs/cs-tokenizer.cs:2391
+#: mcs/mcs/cs-tokenizer.cs:2478 mcs/mcs/cs-tokenizer.cs:2482
 #, csharp-format
 msgid "Identifier expected: {0}"
 msgstr "識別子が必要です: {0}"
 
-#: mcs/mcs/cs-tokenizer.cs:2991
+#: mcs/mcs/cs-tokenizer.cs:3082
 #, fuzzy
 msgid "Integral constant is too large"
 msgstr "数値定数が長すぎます"
 
-#: mcs/mcs/cs-tokenizer.cs:2996
+#: mcs/mcs/cs-tokenizer.cs:3087
+msgid "Invalid number"
+msgstr "無効な数値です"
+
+#: mcs/mcs/cs-tokenizer.cs:3092
 msgid "Invalid preprocessor directive"
 msgstr "無効なプリプロセッサ指令です"
 
-#: mcs/mcs/cs-tokenizer.cs:3003
+#: mcs/mcs/cs-tokenizer.cs:3099
 #, csharp-format
 msgid "Unexpected processor directive ({0})"
 msgstr "予期しないプリプロセッサ指令です（{0}）"
 
-#: mcs/mcs/cs-tokenizer.cs:3009
+#: mcs/mcs/cs-tokenizer.cs:3105
 msgid ""
 "Cannot define or undefine preprocessor symbols after first token in file"
 msgstr ""
 "ファイル中の最初のトークンの出現後は、プリプロセッサシンボルを定義または定義"
 "解除することはできません"
 
-#: mcs/mcs/cs-tokenizer.cs:3015
+#: mcs/mcs/cs-tokenizer.cs:3111
 msgid ""
 "Preprocessor directives must appear as the first non-whitespace character on "
 "a line"
@@ -571,90 +570,90 @@ msgstr ""
 "プリプロセッサ指令は、1行の中で、最初の空白でない文字として出現しなければなり"
 "ません"
 
-#: mcs/mcs/cs-tokenizer.cs:3020
+#: mcs/mcs/cs-tokenizer.cs:3116
 msgid "Single-line comment or end-of-line expected"
 msgstr "1行コメントまたは行末が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3065 mcs/mcs/cs-tokenizer.cs:4303
+#: mcs/mcs/cs-tokenizer.cs:3161 mcs/mcs/cs-tokenizer.cs:4399
 msgid "Expected `#endif' directive"
 msgstr "`#endif' 指令が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3098 mcs/mcs/cs-tokenizer.cs:3119
-#: mcs/mcs/cs-tokenizer.cs:3150 mcs/mcs/cs-tokenizer.cs:4301
+#: mcs/mcs/cs-tokenizer.cs:3194 mcs/mcs/cs-tokenizer.cs:3215
+#: mcs/mcs/cs-tokenizer.cs:3246 mcs/mcs/cs-tokenizer.cs:4397
 msgid "#endregion directive expected"
 msgstr "#endregion指令が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3199
+#: mcs/mcs/cs-tokenizer.cs:3295
 msgid "Wrong preprocessor directive"
 msgstr "正しくないプリプロセッサ指令です"
 
-#: mcs/mcs/cs-tokenizer.cs:3211
+#: mcs/mcs/cs-tokenizer.cs:3307
 #, csharp-format
 msgid "#error: '{0}'"
 msgstr "#error: `{0}'"
 
-#: mcs/mcs/cs-tokenizer.cs:3229
+#: mcs/mcs/cs-tokenizer.cs:3325
 msgid "The line number specified for #line directive is missing or invalid"
 msgstr "#line指令で指定される行番号が無いか、または無効です"
 
-#: mcs/mcs/cs-tokenizer.cs:3283 mcs/mcs/cs-tokenizer.cs:4003
+#: mcs/mcs/cs-tokenizer.cs:3379 mcs/mcs/cs-tokenizer.cs:4099
 msgid "Newline in constant"
 msgstr "定数の中に改行文字が含まれています"
 
-#: mcs/mcs/cs-tokenizer.cs:3310
+#: mcs/mcs/cs-tokenizer.cs:3406
 msgid "Unterminated string literal"
 msgstr "文字列に終端がありません"
 
-#: mcs/mcs/cs-tokenizer.cs:3354 mcs/mcs/cs-tokenizer.cs:3385
+#: mcs/mcs/cs-tokenizer.cs:3450 mcs/mcs/cs-tokenizer.cs:3481
 #, fuzzy, csharp-format
 msgid "Unexpected character `\\{0}'"
 msgstr "`{0}' が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3401
+#: mcs/mcs/cs-tokenizer.cs:3497
 msgid "Identifier too long (limit is 512 chars)"
 msgstr "識別子が長すぎます（最大512文字）"
 
-#: mcs/mcs/cs-tokenizer.cs:3748
+#: mcs/mcs/cs-tokenizer.cs:3844
 msgid "A single-line comment may not be used in an interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:3818
+#: mcs/mcs/cs-tokenizer.cs:3914
 msgid "End-of-file found, '*/' expected"
 msgstr "ファイルの終端に到達しましたが、 '*/' が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3915
+#: mcs/mcs/cs-tokenizer.cs:4011
 msgid "Missing close delimiter `}' for interpolated expression"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:3936
+#: mcs/mcs/cs-tokenizer.cs:4032
 msgid "Keyword, identifier, or string expected after verbatim specifier: @"
 msgstr "厳密指定子@の直後には、キーワード、識別子または文字列が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3973
+#: mcs/mcs/cs-tokenizer.cs:4069
 #, fuzzy, csharp-format
 msgid "Unexpected character `{0}'"
 msgstr "`{0}' が必要です"
 
-#: mcs/mcs/cs-tokenizer.cs:3998
+#: mcs/mcs/cs-tokenizer.cs:4094
 msgid "Empty character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4019
+#: mcs/mcs/cs-tokenizer.cs:4115
 msgid "Too many characters in character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4129 mcs/mcs/cs-tokenizer.cs:4192
+#: mcs/mcs/cs-tokenizer.cs:4225 mcs/mcs/cs-tokenizer.cs:4288
 #, csharp-format
 msgid ""
 "A `{0}' character may only be escaped by doubling `{0}{0}' in an "
 "interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4170
+#: mcs/mcs/cs-tokenizer.cs:4266
 msgid "Empty interpolated expression format specifier"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4172
+#: mcs/mcs/cs-tokenizer.cs:4268
 #, fuzzy
 msgid ""
 "A interpolated expression format specifier may not contain trailing "

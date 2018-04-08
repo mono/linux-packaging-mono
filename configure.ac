@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.60],
+AC_INIT(mono, [5.15.0.72],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3219,6 +3219,9 @@ if test "x$enable_llvm" = "xyes"; then
    case "$target" in
    arm*)
 		llvm_codegen="armcodegen"
+		;;
+   aarch64*)
+		llvm_codegen="aarch64codegen"
 		;;
    esac
 
