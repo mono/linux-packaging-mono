@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-04-09 09:44+0000\n"
+"POT-Creation-Date: 2018-04-10 09:12+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -3400,7 +3400,7 @@ msgstr ""
 msgid "One of the parameters of a binary operator must be the containing type"
 msgstr ""
 
-#: mcs/mcs/modifiers.cs:280
+#: mcs/mcs/modifiers.cs:300
 #, csharp-format
 msgid "The modifier `{0}' is not valid for this item"
 msgstr ""

@@ -80,6 +80,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @DISABLE_INTERPRETER_FALSE@am__append_1 = $(monodir)/mono/mini/libmono-ee-interp.la
+@DISABLE_DEBUGGER_AGENT_FALSE@am__append_2 = $(monodir)/mono/mini/libmono-dbg.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@check_PROGRAMS = test-sgen-qsort$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-memfuncs$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
@@ -731,7 +732,8 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS)
 
-mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1)
+mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
+	$(am__append_2)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@noinst_LTLIBRARIES = libtestlib.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_SOURCES = 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la

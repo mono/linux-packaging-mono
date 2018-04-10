@@ -253,7 +253,7 @@ target_triplet = @target@
 @S390X_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @S390X_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe
 
-# Tests which rely on TypeLoadExceptions
+# Tests which rely on TypeLoadExceptions or MemberAccessExceptions
 # In full-aot mode, these cause the relevant methods to be not AOTed.
 
 # Tests which rely on remoting
@@ -299,8 +299,9 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	resolve_method_bug.2.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_field_bug.2.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe bug-81691.exe \
-@FULL_AOT_TESTS_TRUE@	bug-327438.2.exe context-static.exe \
-@FULL_AOT_TESTS_TRUE@	bug-415577.exe generic-marshalbyref.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-327438.2.exe newobj-abstract.exe \
+@FULL_AOT_TESTS_TRUE@	context-static.exe bug-415577.exe \
+@FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	unhandled-exception-7.exe marshal.exe \
 @FULL_AOT_TESTS_TRUE@	marshal2.exe marshal6.exe marshal7.exe \
 @FULL_AOT_TESTS_TRUE@	marshal8.exe pinvoke-2.2.exe pinvoke3.exe \
@@ -341,6 +342,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	bug-322722_dyn_method_throw.2.exe \
 @FULL_AOT_TESTS_TRUE@	bug-389886-2.exe bug-349190.2.exe \
 @FULL_AOT_TESTS_TRUE@	bug-389886-sre-generic-interface-instances.exe \
+@FULL_AOT_TESTS_TRUE@	custom-modifiers-inheritance.exe \
 @FULL_AOT_TESTS_TRUE@	bug-462592.exe bug-575941.exe \
 @FULL_AOT_TESTS_TRUE@	bug-389886-3.exe constant-division.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
@@ -981,19 +983,20 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	generic_type_definition_encoding.2.cs bug-333798.2.cs \
 	bug-348522.2.cs bug-340662_bug.cs bug-325283.2.cs thunks.cs \
 	winx64structs.cs nullable_boxing.2.cs valuetype-equals.cs \
-	custom-modifiers.2.cs bug-382986.cs test-inline-call-stack.cs \
-	bug-324535.cs modules.cs bug-81673.cs bug-81691.cs \
-	bug-415577.cs filter-stack.cs vararg.cs vararg2.cs \
-	bug-461867.cs bug-461941.cs bug-461261.cs bug-400716.cs \
-	bug-459094.cs bug-467456.cs bug-508538.cs bug-472692.2.cs \
-	gchandles.cs interlocked-3.cs interlocked-4.2.cs w32message.cs \
+	custom-modifiers.2.cs custom-modifiers-inheritance.cs \
+	bug-382986.cs test-inline-call-stack.cs bug-324535.cs \
+	modules.cs bug-81673.cs bug-81691.cs bug-415577.cs \
+	filter-stack.cs vararg.cs vararg2.cs bug-461867.cs \
+	bug-461941.cs bug-461261.cs bug-400716.cs bug-459094.cs \
+	bug-467456.cs bug-508538.cs bug-472692.2.cs gchandles.cs \
+	interlocked-3.cs interlocked-4.2.cs w32message.cs \
 	gc-altstack.cs large-gc-bitmap.cs bug-561239.cs bug-562150.cs \
 	bug-599469.cs monitor-resurrection.cs monitor-wait-abort.cs \
 	monitor-abort.cs bug-666008.cs bug-685908.cs \
-	sgen-long-vtype.cs delegate-invoke.cs bug-696593.cs \
-	bug-705140.cs bug-1147.cs mono-path.cs bug-bxc-795.cs \
-	bug-3903.cs async-with-cb-throws.cs bug-6148.cs bug-10127.cs \
-	bug-18026.cs allow-synchronous-major.cs \
+	sgen-long-vtype.cs delegate-invoke.cs delegate-prop.cs \
+	bug-696593.cs bug-705140.cs bug-1147.cs mono-path.cs \
+	bug-bxc-795.cs bug-3903.cs async-with-cb-throws.cs bug-6148.cs \
+	bug-10127.cs bug-18026.cs allow-synchronous-major.cs \
 	block_guard_restore_aligment_on_exit.cs \
 	thread_static_gc_layout.cs sleep.cs bug-27147.cs bug-30085.cs \
 	bug-17537.cs pinvoke_ppcc.cs pinvoke_ppcs.cs pinvoke_ppci.cs \
@@ -1134,7 +1137,8 @@ TESTS_IL_SRC = \
 	dim-simple.il	\
 	dim-valuetypes.il \
 	tailcall-generic-cast-conservestack-il.il \
-	tailcall-generic-cast-nocrash-il.il
+	tailcall-generic-cast-nocrash-il.il \
+	newobj-abstract.il
 
 TESTS_GSHARED_SRC = \
 	generics-sharing.2.cs	\
