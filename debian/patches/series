@@ -1,1 +1,2 @@
+disable_asm_in_btls_on_arm.patch
 0001-Harden-JIT-job-control-against-cctors-deadlocking.-7.patch

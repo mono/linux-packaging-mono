@@ -1,0 +1,12 @@
+Index: xamarin-pkg-mono/configure.ac
+===================================================================
+--- xamarin-pkg-mono.orig/configure.ac
++++ xamarin-pkg-mono/configure.ac
+@@ -4391,6 +4391,7 @@ if test "x$enable_btls" = "xyes"; then
+ 		;;
+ 	arm)
+ 		btls_arch=arm
++		btls_cflags="-DOPENSSL_NO_ASM=1"
+ 		;;
+ 	armsoft)
+ 		btls_arch=arm
