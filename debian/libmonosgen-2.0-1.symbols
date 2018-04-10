@@ -237,7 +237,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_symfile_lookup_locals@Base 4.1.0.1738
  mono_debug_symfile_lookup_location@Base 4.1.0.1738
  mono_debug_symfile_lookup_method@Base 4.1.0.1738
- mono_debugger_agent_parse_options@Base 4.1.0.1738
+ mono_debugger_agent_init@Base 5.15.0.101
  mono_debugger_agent_register_transport@Base 4.1.0.1738
  mono_debugger_agent_transport_handshake@Base 4.1.0.1738
  mono_debugger_insert_breakpoint@Base 4.1.0.1738
