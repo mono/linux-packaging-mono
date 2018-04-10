@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@INSTALL_4_x_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
+@INSTALL_4_x_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
 @INSTALL_4_x_TRUE@am__append_2 = binary_reference_assemblies net_4_x xbuild_12 xbuild_14
 @INSTALL_MONODROID_TRUE@am__append_3 = monodroid monodroid_tools
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
@@ -382,9 +382,12 @@ top_srcdir = @top_srcdir@
 tmpinst = _tmpinst
 noinst_SCRIPTS = mono-wrapper monodis-wrapper
 etctmp = etc
+
+# This is needed at least to build configure -with-runtime_preset=fullaot.
 symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 	etc/mono/2.0/web.config etc/mono/browscap.ini \
-	etc/mono/2.0/Browsers/Compat.browser $(am__append_1)
+	etc/mono/2.0/Browsers/Compat.browser $(am__append_1) \
+	etc/mono/4.5/machine.config
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \

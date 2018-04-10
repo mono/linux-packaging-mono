@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-04-09 09:44+0000\n"
+"POT-Creation-Date: 2018-04-10 09:12+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -3446,7 +3446,7 @@ msgstr ""
 msgid "One of the parameters of a binary operator must be the containing type"
 msgstr ""
 
-#: mcs/mcs/modifiers.cs:280
+#: mcs/mcs/modifiers.cs:300
 #, fuzzy, csharp-format
 msgid "The modifier `{0}' is not valid for this item"
 msgstr "El tipo predefinido `{0}.{1}' no está definido o no ha sido importado"

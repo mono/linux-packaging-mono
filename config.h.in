@@ -27,6 +27,9 @@
 /* Disable runtime debugging support */
 #undef DISABLE_DEBUG
 
+/* Disable Soft Debugger Agent. */
+#undef DISABLE_DEBUGGER_AGENT
+
 /* Disable System.Decimal support */
 #undef DISABLE_DECIMAL
 
@@ -109,9 +112,6 @@
 
 /* Disable SIMD intrinsics related optimizations. */
 #undef DISABLE_SIMD
-
-/* Disable Soft Debugger Agent. */
-#undef DISABLE_SOFT_DEBUG
 
 /* Disable advanced SSA JIT optimizations */
 #undef DISABLE_SSA

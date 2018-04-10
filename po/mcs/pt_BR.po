@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-04-09 09:44+0000\n"
+"POT-Creation-Date: 2018-04-10 09:12+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3860,7 +3860,7 @@ msgstr "O tipo de retorno do operador True ou False deve ser bool"
 msgid "One of the parameters of a binary operator must be the containing type"
 msgstr "Um dos parâmetros de um operador binário deve ser do próprio tipo"
 
-#: mcs/mcs/modifiers.cs:280
+#: mcs/mcs/modifiers.cs:300
 #, fuzzy, csharp-format
 msgid "The modifier `{0}' is not valid for this item"
 msgstr "Código de página \"{0}\" é inválido ou não está instalado"
