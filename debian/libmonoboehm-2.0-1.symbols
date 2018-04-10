@@ -1247,6 +1247,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_create@Base 5.5.0.527
  mono_profiler_enable_allocations@Base 5.5.0.357
  mono_profiler_enable_call_context_introspection@Base 5.7.0.181
+ mono_profiler_enable_clauses@Base 5.15.0.73
  mono_profiler_enable_coverage@Base 5.7.0.181
  mono_profiler_enable_sampling@Base 5.5.0.357
  mono_profiler_get_coverage_data@Base 5.5.0.357
@@ -1280,7 +1281,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_set_exception_clause_callback@Base 5.5.0.357
  mono_profiler_set_exception_throw_callback@Base 5.5.0.357
  mono_profiler_set_gc_allocation_callback@Base 5.5.0.357
- mono_profiler_set_gc_event2_callback@Base 5.11.0.133
  mono_profiler_set_gc_event_callback@Base 5.5.0.357
  mono_profiler_set_gc_finalized_callback@Base 5.5.0.357
  mono_profiler_set_gc_finalized_object_callback@Base 5.5.0.357
@@ -1298,7 +1298,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_set_image_loading_callback@Base 5.5.0.357
  mono_profiler_set_image_unloaded_callback@Base 5.5.0.357
  mono_profiler_set_image_unloading_callback@Base 5.5.0.357
- mono_profiler_set_iomap_report_callback@Base 5.5.0.357
  mono_profiler_set_jit_begin_callback@Base 5.5.0.357
  mono_profiler_set_jit_chunk_created_callback@Base 5.5.0.357
  mono_profiler_set_jit_chunk_destroyed_callback@Base 5.5.0.357
