@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionPrefix>0.1.4-preview</VersionPrefix>
+    <VersionPrefix>0.1.5-preview</VersionPrefix>
     <TargetFrameworks>netcoreapp2.0;net46</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netcoreapp2.0</TargetFrameworks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -101,11 +101,12 @@
     <Compile Include="LinkTask.cs" />
     <Compile Include="CompareSizes.cs" />
     <Compile Include="ComputeManagedAssemblies.cs" />
-    <Compile Include="ComputeReadyToRunAssemblies.cs" />
+    <Compile Include="ComputeCrossgenedAssemblies.cs" />
     <Compile Include="GetRuntimeLibraries.cs" />
     <Compile Include="CreateRootDescriptorFile.cs" />
     <Compile Include="CreateRuntimeRootDescriptorFile.cs" />
     <Compile Include="FilterByMetadata.cs" />
+    <Compile Include="FindDuplicatesByMetadata.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Microsoft.NET.Build.Tasks/LockFileCache.cs" />
     <Compile Include="Microsoft.NET.Build.Tasks/BuildErrorException.cs" />

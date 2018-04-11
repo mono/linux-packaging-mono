@@ -177,6 +177,7 @@ namespace Mono.Cecil
         public Mono.Cecil.IMetadataScope Scope { get { throw null; } }
         public override string ToString() { throw null; }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{AttributeType}")]
     public sealed partial class CustomAttribute : Mono.Cecil.ICustomAttribute
     {
         public CustomAttribute(Mono.Cecil.MethodReference constructor) { }
@@ -895,6 +896,7 @@ namespace Mono.Cecil
     [System.FlagsAttribute]
     public enum ModuleAttributes
     {
+        ILLibrary = 4,
         ILOnly = 1,
         Preferred32Bit = 131072,
         Required32Bit = 2,
@@ -1312,6 +1314,7 @@ namespace Mono.Cecil
         RequestOptional = (ushort)9,
         RequestRefuse = (ushort)10,
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{AttributeType}")]
     public sealed partial class SecurityAttribute : Mono.Cecil.ICustomAttribute
     {
         public SecurityAttribute(Mono.Cecil.TypeReference attributeType) { }

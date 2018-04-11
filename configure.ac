@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.101],
+AC_INIT(mono, [5.15.0.115],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -5048,18 +5048,16 @@ fi
 
     if test x$host_darwin = xyes; then
       echo "BUILD_PLATFORM = darwin" >> $mcs_topdir/build/config.make
+      echo "HOST_PLATFORM ?= darwin" >> $mcs_topdir/build/config.make
+      echo "XTEST_PLATFORM ?= osx" >> $mcs_topdir/build/config.make
     elif test x$host_win32 = xyes; then
       echo "BUILD_PLATFORM = win32" >> $mcs_topdir/build/config.make
+      echo "HOST_PLATFORM ?= win32" >> $mcs_topdir/build/config.make
+      echo "XTEST_PLATFORM ?= windows" >> $mcs_topdir/build/config.make
     else
       echo "BUILD_PLATFORM = linux" >> $mcs_topdir/build/config.make
-    fi
-
-    if test x$host_darwin = xyes; then
-      echo "HOST_PLATFORM ?= darwin" >> $mcs_topdir/build/config.make
-    elif test x$host_win32 = xyes; then
-      echo "HOST_PLATFORM ?= win32" >> $mcs_topdir/build/config.make
-    else
       echo "HOST_PLATFORM ?= linux" >> $mcs_topdir/build/config.make
+      echo "XTEST_PLATFORM ?= linux" >> $mcs_topdir/build/config.make
     fi
 
     if test "x$PLATFORM_AOT_SUFFIX" != "x"; then

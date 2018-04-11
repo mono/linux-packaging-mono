@@ -4,7 +4,7 @@ using Microsoft.Build.Utilities;
 
 namespace ILLink.Tasks
 {
-	public class ComputeReadyToRunAssemblies : Task
+	public class ComputeCrossgenedAssemblies : Task
 	{
 		/// <summary>
 		///   Paths to assemblies.
@@ -13,17 +13,17 @@ namespace ILLink.Tasks
 		public ITaskItem[] Assemblies { get; set; }
 
 		/// <summary>
-		///   This will contain the output list of
-		///   ready-to-run assemblies. Metadata from the input
-		///   parameter Assemblies is preserved.
+		///   This will contain the output list of crossgen-ed
+		///   assemblies. Metadata from the input parameter
+		///   Assemblies is preserved.
 		/// </summary>
 		[Output]
-		public ITaskItem[] ReadyToRunAssemblies { get; set; }
+		public ITaskItem[] CrossgenedAssemblies { get; set; }
 
 		public override bool Execute()
 		{
-			ReadyToRunAssemblies = Assemblies
-				.Where(f => Utils.IsReadyToRunAssembly(f.ItemSpec))
+			CrossgenedAssemblies = Assemblies
+				.Where(f => Utils.IsCrossgenedAssembly(f.ItemSpec))
 				.ToArray();
 			return true;
 		}
