@@ -1314,6 +1314,9 @@
 /* ... */
 #undef USE_GCC_ATOMIC_OPS
 
+/* Enable hybrid cooperative suspend for GC stop-the-world */
+#undef USE_HYBRID_SUSPEND
+
 /* Use kqueue for the threadpool */
 #undef USE_KQUEUE_FOR_THREADPOOL
 
