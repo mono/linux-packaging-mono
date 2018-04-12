@@ -1,3 +1,14 @@
+mono (5.10.1.44-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [bb0c158] Merge branch 'master' of github.com:mono/linux-packaging-
+    mono [69dbf10] Disable assembly optimizations on 32-bit ARM BTLS
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 12 Apr 2018 14:05:26 +0000
+
 mono (5.10.1.44-0xamarin1) preview; urgency=medium
 
   * New release - mono-5.10.1.44.tar.bz2
