@@ -117,11 +117,9 @@ am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 =  \
 @SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
-	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(am__DEPENDENCIES_1)
+	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
 monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(glib_libs)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -272,7 +270,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -457,6 +454,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
 @SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
 @SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
@@ -465,7 +463,7 @@ runtime_lib = \
 	$(metadata_lib) \
 	$(gc_lib)	\
 	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 noinst_LIBRARIES = libmonodis.a
 libmonodis_a_SOURCES = \
@@ -489,7 +487,7 @@ monodis_LDADD = \
 	$(runtime_lib)			\
 	$(LLVM_LIBS)			\
 	$(LLVM_LDFLAGS)			\
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 @HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
 man_MANS = monodis.1

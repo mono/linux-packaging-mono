@@ -154,6 +154,7 @@ namespace System.Collections.Generic
         public void CopyTo(T[] array, int arrayIndex) { }
         public void CopyTo(T[] array, int arrayIndex, int count) { }
         public static System.Collections.Generic.IEqualityComparer<System.Collections.Generic.HashSet<T>> CreateSetComparer() { throw null; }
+        public int EnsureCapacity(int capacity) { throw null; }
         public void ExceptWith(System.Collections.Generic.IEnumerable<T> other) { }
         public System.Collections.Generic.HashSet<T>.Enumerator GetEnumerator() { throw null; }
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }

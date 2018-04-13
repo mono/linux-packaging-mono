@@ -146,9 +146,8 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HOST_ANDROID_FALSE@@HOST_IOS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 @HOST_ANDROID_TRUE@am__DEPENDENCIES_1 =  \
 @HOST_ANDROID_TRUE@	$(top_builddir)/mono/mini/$(LIBMONO_LA)
-am__DEPENDENCIES_2 =
 libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2)
+	$(glib_libs)
 am_libmono_profiler_aot_la_OBJECTS = aot.lo
 libmono_profiler_aot_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_la_OBJECTS)
@@ -170,7 +169,7 @@ libmono_profiler_coverage_static_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_coverage_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2)
+	$(glib_libs)
 am_libmono_profiler_coverage_la_OBJECTS = coverage.lo
 libmono_profiler_coverage_la_OBJECTS =  \
 	$(am_libmono_profiler_coverage_la_OBJECTS)
@@ -190,8 +189,9 @@ libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_profiler_log_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+am__DEPENDENCIES_2 =
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+	$(glib_libs) $(am__DEPENDENCIES_2)
 am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
@@ -216,7 +216,7 @@ libmono_profiler_vtune_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_DEPENDENCIES =  \
 @HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2)
+@HAVE_VTUNE_TRUE@	$(glib_libs)
 am__libmono_profiler_vtune_la_SOURCES_DIST = vtune.c
 @HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_la_OBJECTS =  \
 @HAVE_VTUNE_TRUE@	libmono_profiler_vtune_la-vtune.lo
@@ -231,8 +231,7 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
-mprof_report_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -362,7 +361,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -551,6 +549,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	$(GLIB_CFLAGS)
 
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune-static.la
@@ -611,30 +610,30 @@ AM_CPPFLAGS = \
 # the shared version on those targets since it's useful for e.g. simulator
 # builds.
 libmono_profiler_aot_la_SOURCES = aot.c
-libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(GLIB_LIBS)
+libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(glib_libs)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_aot_static_la_SOURCES = aot.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
 libmono_profiler_log_la_SOURCES = log.c log-args.c
-libmono_profiler_log_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(zlib_dep)
+libmono_profiler_log_la_LIBADD = $(libmono_dep) $(glib_libs) $(zlib_dep)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_log_static_la_SOURCES = log.c log-args.c
 libmono_profiler_log_static_la_LDFLAGS = -static
 libmono_profiler_coverage_la_SOURCES = coverage.c
-libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(GLIB_LIBS)
+libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(glib_libs)
 libmono_profiler_coverage_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_coverage_static_la_SOURCES = coverage.c
 libmono_profiler_coverage_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(GLIB_LIBS)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(glib_libs)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_CFLAGS = $(VTUNE_CFLAGS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
 mprof_report_SOURCES = mprof-report.c
-mprof_report_LDADD = $(GLIB_LIBS) $(zlib_dep)
+mprof_report_LDADD = $(glib_libs) $(zlib_dep)
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \

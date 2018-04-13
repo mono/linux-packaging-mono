@@ -2968,6 +2968,9 @@ namespace System.Data.Odbc
         public new System.Data.Odbc.OdbcCommand CreateCommand() { throw null; }
         protected override System.Data.Common.DbCommand CreateDbCommand() { throw null; }
         protected override void Dispose(bool disposing) { }
+        public override System.Data.DataTable GetSchema() { throw null; }
+        public override System.Data.DataTable GetSchema(string collectionName) { throw null; }
+        public override System.Data.DataTable GetSchema(string collectionName, string[] restrictionValues) { throw null; }
         public override void Open() { }
         public static void ReleaseObjectPool() { }
         object System.ICloneable.Clone() { throw null; }
@@ -3954,7 +3957,6 @@ namespace System.Data.SqlClient
         public System.IAsyncResult BeginExecuteReader(System.AsyncCallback callback, object stateObject, System.Data.CommandBehavior behavior) { throw null; }
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginExecuteReader(System.Data.CommandBehavior behavior) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public System.IAsyncResult BeginExecuteXmlReader() { throw null; }
         public System.IAsyncResult BeginExecuteXmlReader(System.AsyncCallback callback, object stateObject) { throw null; }
         public override void Cancel() { }
@@ -4026,6 +4028,7 @@ namespace System.Data.SqlClient
         public System.Guid ClientConnectionId { get { throw null; } }
         public override string ConnectionString { get { throw null; } set { } }
         public override int ConnectionTimeout { get { throw null; } }
+        public System.Data.SqlClient.SqlCredential Credential { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Data.SqlClient.SqlCredential Credentials { get { throw null; } set { } }
         public override string Database { get { throw null; } }
@@ -4044,7 +4047,7 @@ namespace System.Data.SqlClient
         public System.Data.SqlClient.SqlTransaction BeginTransaction(System.Data.IsolationLevel iso, string transactionName) { throw null; }
         public System.Data.SqlClient.SqlTransaction BeginTransaction(string transactionName) { throw null; }
         public override void ChangeDatabase(string database) { }
-        [System.MonoTODOAttribute]
+        public static void ChangePassword(string connectionString, System.Data.SqlClient.SqlCredential credential, System.Security.SecureString newSecurePassword) { }
         public static void ChangePassword(string connectionString, string newPassword) { }
         public static void ClearAllPools() { }
         public static void ClearPool(System.Data.SqlClient.SqlConnection connection) { }
@@ -4406,6 +4409,8 @@ namespace System.Data.SqlClient
     {
         internal SqlParameterCollection() { }
         public override int Count { get { throw null; } }
+        public override bool IsFixedSize { get { throw null; } }
+        public override bool IsReadOnly { get { throw null; } }
         public new System.Data.SqlClient.SqlParameter this[int index] { get { throw null; } set { } }
         public new System.Data.SqlClient.SqlParameter this[string parameterName] { get { throw null; } set { } }
         public override object SyncRoot { get { throw null; } }

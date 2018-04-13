@@ -135,7 +135,7 @@ namespace System.Text
 
         public virtual unsafe int GetCharCount(ReadOnlySpan<byte> bytes, bool flush)
         {
-            fixed (byte* bytesPtr = &MemoryMarshal.GetReference(bytes))
+            fixed (byte* bytesPtr = &MemoryMarshal.GetNonNullPinnableReference(bytes))
             {
                 return GetCharCount(bytesPtr, bytes.Length, flush);
             }
@@ -228,8 +228,8 @@ namespace System.Text
 
         public virtual unsafe int GetChars(ReadOnlySpan<byte> bytes, Span<char> chars, bool flush)
         {
-            fixed (byte* bytesPtr = &MemoryMarshal.GetReference(bytes))
-            fixed (char* charsPtr = &MemoryMarshal.GetReference(chars))
+            fixed (byte* bytesPtr = &MemoryMarshal.GetNonNullPinnableReference(bytes))
+            fixed (char* charsPtr = &MemoryMarshal.GetNonNullPinnableReference(chars))
             {
                 return GetChars(bytesPtr, bytes.Length, charsPtr, chars.Length, flush);
             }
@@ -342,8 +342,8 @@ namespace System.Text
 
         public virtual unsafe void Convert(ReadOnlySpan<byte> bytes, Span<char> chars, bool flush, out int bytesUsed, out int charsUsed, out bool completed)
         {
-            fixed (byte* bytesPtr = &MemoryMarshal.GetReference(bytes))
-            fixed (char* charsPtr = &MemoryMarshal.GetReference(chars))
+            fixed (byte* bytesPtr = &MemoryMarshal.GetNonNullPinnableReference(bytes))
+            fixed (char* charsPtr = &MemoryMarshal.GetNonNullPinnableReference(chars))
             {
                 Convert(bytesPtr, bytes.Length, charsPtr, chars.Length, flush, out bytesUsed, out charsUsed, out completed);
             }

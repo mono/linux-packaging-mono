@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using System.Text;
 
 namespace System
 {
@@ -175,7 +176,7 @@ namespace System
 
         public static void Validate<T>(Span<byte> span, T value) where T : struct
         {
-            T read = ReadMachineEndian<T>(span);
+            T read = MemoryMarshal.Read<T>(span);
             Assert.Equal(value, read);
             span.Clear();
         }
@@ -238,6 +239,17 @@ namespace System
             return spanLE;
         }
 
+        public static string BuildString(int length, int seed)
+        {
+            Random rnd = new Random(seed);
+            var builder = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                builder.Append((char)rnd.Next(65, 91));
+            }
+            return builder.ToString();
+        }
+
         [StructLayout(LayoutKind.Explicit)]
         public struct TestStructExplicit
         {
@@ -284,6 +296,20 @@ namespace System
             public int I;
             public string S;
         }
+
+#pragma warning disable 0649 //Field 'SpanTests.InnerStruct.J' is never assigned to, and will always have its default value 0
+        internal struct StructWithReferences
+        {
+            public int I;
+            public InnerStruct Inner;
+        }
+
+        internal struct InnerStruct
+        {
+            public int J;
+            public object O;
+        }
+#pragma warning restore 0649 //Field 'SpanTests.InnerStruct.J' is never assigned to, and will always have its default value 0
 
         public enum TestEnum
         {
@@ -366,6 +392,12 @@ namespace System
                 }
             }
         }
+
+        // @todo: https://github.com/dotnet/corefx/issues/26894 - these emulate MemoryExtension apis that we removed. Clean up the callsites and remove this class.
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this Span<T> span) => span;
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] array) => new ReadOnlySpan<T>(array);
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this ArraySegment<T> segment) => new ReadOnlySpan<T>(segment.Array, segment.Offset, segment.Count);
+        public static ReadOnlyMemory<T> AsReadOnlyMemory<T>(this Memory<T> memory) => memory;
     }
 }
 

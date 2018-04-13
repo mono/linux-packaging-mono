@@ -19,6 +19,9 @@
 [assembly:System.Runtime.CompilerServices.DefaultDependencyAttribute((System.Runtime.CompilerServices.LoadHint)(1))]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Core, PublicKey=00000000000000000400000000000000")]
+[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Data, PublicKey=00000000000000000400000000000000")]
+[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.IO.Compression.FileSystem, PublicKey=00000000000000000400000000000000")]
+[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Numerics, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime.UI.Xaml, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
@@ -3590,31 +3593,39 @@ namespace System
     }
     public static partial class MemoryExtensions
     {
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<byte> AsBytes<T>(this System.ReadOnlySpan<T> source) where T : struct { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<byte> AsBytes<T>(this System.Span<T> source) where T : struct { throw null; }
-        public static System.ReadOnlyMemory<char> AsReadOnlyMemory(this string text) { throw null; }
-        public static System.ReadOnlyMemory<char> AsReadOnlyMemory(this string text, int start) { throw null; }
-        public static System.ReadOnlyMemory<char> AsReadOnlyMemory(this string text, int start, int length) { throw null; }
-        public static System.ReadOnlyMemory<T> AsReadOnlyMemory<T>(this System.Memory<T> memory) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsReadOnlySpan(this string text) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsReadOnlySpan(this string text, int start) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsReadOnlySpan(this string text, int start, int length) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
-        public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this System.Span<T> span) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> AsReadOnlySpan<T>(this T[] array) { throw null; }
-        public static System.ReadOnlySpan<char> AsSpan(this string text) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> arraySegment) { throw null; }
+        public static System.ReadOnlyMemory<char> AsMemory(this string text) { throw null; }
+        public static System.ReadOnlyMemory<char> AsMemory(this string text, int start) { throw null; }
+        public static System.ReadOnlyMemory<char> AsMemory(this string text, int start, int length) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment, int start) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment, int start, int length) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this T[] array) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this T[] array, int start) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this T[] array, int start, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text, int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text, int start, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start, int length) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array) { throw null; }
+        public static System.Span<T> AsSpan<T>(this T[] array, int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, int start, int length) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.ReadOnlySpan<T> span, System.IComparable<T> comparable) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.Span<T> span, System.IComparable<T> comparable) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparer>(this System.ReadOnlySpan<T> span, T value, TComparer comparer) where TComparer : System.Collections.Generic.IComparer<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparable>(this System.ReadOnlySpan<T> span, TComparable comparable) where TComparable : System.IComparable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparer>(this System.Span<T> span, T value, TComparer comparer) where TComparer : System.Collections.Generic.IComparer<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparable>(this System.Span<T> span, TComparable comparable) where TComparable : System.IComparable<T> { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] array, System.Memory<T> destination) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] array, System.Span<T> destination) { }
+        public static int CompareTo(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> other, System.StringComparison comparisonType) { throw null; }
+        public static bool Contains(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> value, System.StringComparison comparisonType) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] source, System.Memory<T> destination) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void CopyTo<T>(this T[] source, System.Span<T> destination) { }
+        public static bool EndsWith(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> value, System.StringComparison comparisonType) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EndsWith<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EndsWith<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
+        public static bool Equals(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> other, System.StringComparison comparisonType) { throw null; }
+        public static int IndexOf(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> value, System.StringComparison comparisonType) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> values) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1, T value2) where T : System.IEquatable<T> { throw null; }
@@ -3625,6 +3636,7 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.ReadOnlySpan<T> span, T value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int IndexOf<T>(this System.Span<T> span, T value) where T : System.IEquatable<T> { throw null; }
+        public static bool IsWhiteSpace(this System.ReadOnlySpan<char> span) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> values) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOfAny<T>(this System.ReadOnlySpan<T> span, T value0, T value1, T value2) where T : System.IEquatable<T> { throw null; }
@@ -3635,27 +3647,39 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.ReadOnlySpan<T> span, T value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int LastIndexOf<T>(this System.Span<T> span, T value) where T : System.IEquatable<T> { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<TTo> NonPortableCast<TFrom, TTo>(this System.ReadOnlySpan<TFrom> source) where TFrom : struct where TTo : struct { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<TTo> NonPortableCast<TFrom, TTo>(this System.Span<TFrom> source) where TFrom : struct where TTo : struct { throw null; }
-        public static bool Overlaps<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second) { throw null; }
-        public static bool Overlaps<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second, out int elementOffset) { elementOffset = default(int); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> first, System.ReadOnlySpan<T> second) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> first, System.ReadOnlySpan<T> second, out int elementOffset) { elementOffset = default(int); throw null; }
+        public static bool Overlaps<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> other) { throw null; }
+        public static bool Overlaps<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> other, out int elementOffset) { elementOffset = default(int); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> span, System.ReadOnlySpan<T> other) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool Overlaps<T>(this System.Span<T> span, System.ReadOnlySpan<T> other, out int elementOffset) { elementOffset = default(int); throw null; }
         public static void Reverse<T>(this System.Span<T> span) { }
-        public static int SequenceCompareTo<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second) where T : System.IComparable<T> { throw null; }
-        public static int SequenceCompareTo<T>(this System.Span<T> first, System.ReadOnlySpan<T> second) where T : System.IComparable<T> { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.ReadOnlySpan<T> first, System.ReadOnlySpan<T> second) where T : System.IEquatable<T> { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.Span<T> first, System.ReadOnlySpan<T> second) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int SequenceCompareTo<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> other) where T : System.IComparable<T> { throw null; }
+        public static int SequenceCompareTo<T>(this System.Span<T> span, System.ReadOnlySpan<T> other) where T : System.IComparable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> other) where T : System.IEquatable<T> { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool SequenceEqual<T>(this System.Span<T> span, System.ReadOnlySpan<T> other) where T : System.IEquatable<T> { throw null; }
+        public static bool StartsWith(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> value, System.StringComparison comparisonType) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool StartsWith<T>(this System.ReadOnlySpan<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool StartsWith<T>(this System.Span<T> span, System.ReadOnlySpan<T> value) where T : System.IEquatable<T> { throw null; }
-        public static bool TryGetString(this System.ReadOnlyMemory<char> readOnlyMemory, out string text, out int start, out int length) { text = default(string); start = default(int); length = default(int); throw null; }
+        public static int ToLower(this System.ReadOnlySpan<char> source, System.Span<char> destination, System.Globalization.CultureInfo culture) { throw null; }
+        public static int ToLowerInvariant(this System.ReadOnlySpan<char> source, System.Span<char> destination) { throw null; }
+        public static int ToUpper(this System.ReadOnlySpan<char> source, System.Span<char> destination, System.Globalization.CultureInfo culture) { throw null; }
+        public static int ToUpperInvariant(this System.ReadOnlySpan<char> source, System.Span<char> destination) { throw null; }
+        public static System.ReadOnlySpan<char> Trim(this System.ReadOnlySpan<char> span) { throw null; }
+        public static System.ReadOnlySpan<char> Trim(this System.ReadOnlySpan<char> span, char trimChar) { throw null; }
+        public static System.ReadOnlySpan<char> Trim(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> trimChars) { throw null; }
+        public static System.ReadOnlySpan<char> TrimEnd(this System.ReadOnlySpan<char> span) { throw null; }
+        public static System.ReadOnlySpan<char> TrimEnd(this System.ReadOnlySpan<char> span, char trimChar) { throw null; }
+        public static System.ReadOnlySpan<char> TrimEnd(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> trimChars) { throw null; }
+        public static System.ReadOnlySpan<char> TrimStart(this System.ReadOnlySpan<char> span) { throw null; }
+        public static System.ReadOnlySpan<char> TrimStart(this System.ReadOnlySpan<char> span, char trimChar) { throw null; }
+        public static System.ReadOnlySpan<char> TrimStart(this System.ReadOnlySpan<char> span, System.ReadOnlySpan<char> trimChars) { throw null; }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Memory<T>
     {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(System.Buffers.MemoryManager<T> manager, int start, int length) { throw null;}
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array) { throw null;}
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array, int start, int length) { throw null;}
         public static System.Memory<T> Empty { get { throw null; } }
@@ -3663,18 +3687,19 @@ namespace System
         public int Length { get { throw null; } }
         public System.Span<T> Span { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public void CopyTo(System.Memory<T> destination) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Memory<T> CreateFromPinnedArray(T[] array, int start, int length) { throw null; }
         public bool Equals(System.Memory<T> other) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        public static implicit operator System.Memory<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        public static implicit operator System.Memory<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlyMemory<T> (System.Memory<T> memory) { throw null; }
         public static implicit operator System.Memory<T> (T[] array) { throw null; }
-        public System.Buffers.MemoryHandle Retain(bool pin=false) { throw null; }
+        public System.Buffers.MemoryHandle Pin() { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Memory<T> Slice(int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Memory<T> Slice(int start, int length) { throw null; }
         public T[] ToArray() { throw null; }
+        public override string ToString() { throw null; }
         public bool TryCopyTo(System.Memory<T> destination) { throw null; }
-        public bool TryGetArray(out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -4031,7 +4056,7 @@ namespace System
         public RankException(string message) { }
         public RankException(string message, System.Exception innerException) { }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -4047,15 +4072,16 @@ namespace System
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.ReadOnlyMemory<T> other) { throw null; }
         public override int GetHashCode() { throw null; }
-        public static implicit operator System.ReadOnlyMemory<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        public static implicit operator System.ReadOnlyMemory<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlyMemory<T> (T[] array) { throw null; }
-        public System.Buffers.MemoryHandle Retain(bool pin=false) { throw null; }
+        public System.Buffers.MemoryHandle Pin() { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlyMemory<T> Slice(int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlyMemory<T> Slice(int start, int length) { throw null; }
         public T[] ToArray() { throw null; }
+        public override string ToString() { throw null; }
         public bool TryCopyTo(System.Memory<T> destination) { throw null; }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.SpanDebugView<T>")]
     [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
     [System.Runtime.CompilerServices.IsByRefLikeAttribute]
@@ -4073,19 +4099,19 @@ namespace System
         public ref T this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public int Length { get { throw null; } }
         public void CopyTo(System.Span<T> destination) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> DangerousCreate(object obj, ref T objectData, int length) { throw null; }
         [System.ObsoleteAttribute("Equals() on ReadOnlySpan will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public System.ReadOnlySpan<T>.Enumerator GetEnumerator() { throw null; }
         [System.ObsoleteAttribute("GetHashCode() on ReadOnlySpan will always throw an exception.")]
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.ReadOnlySpan<T> left, System.ReadOnlySpan<T> right) { throw null; }
-        public static implicit operator System.ReadOnlySpan<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        public static implicit operator System.ReadOnlySpan<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (T[] array) { throw null; }
         public static bool operator !=(System.ReadOnlySpan<T> left, System.ReadOnlySpan<T> right) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlySpan<T> Slice(int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlySpan<T> Slice(int start, int length) { throw null; }
         public T[] ToArray() { throw null; }
+        public override string ToString() { throw null; }
         public bool TryCopyTo(System.Span<T> destination) { throw null; }
         [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
         [System.Runtime.CompilerServices.IsByRefLikeAttribute]
@@ -4284,7 +4310,7 @@ namespace System
         public static bool TryParse(string s, System.Globalization.NumberStyles style, System.IFormatProvider provider, out System.Single result) { result = default(float); throw null; }
         public static bool TryParse(string s, out System.Single result) { result = default(float); throw null; }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.SpanDebugView<T>")]
     [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
     [System.Runtime.CompilerServices.IsByRefLikeAttribute]
@@ -4302,7 +4328,6 @@ namespace System
         public int Length { get { throw null; } }
         public void Clear() { }
         public void CopyTo(System.Span<T> destination) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> DangerousCreate(object obj, ref T objectData, int length) { throw null; }
         [System.ObsoleteAttribute("Equals() on Span will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public void Fill(T value) { }
@@ -4310,13 +4335,14 @@ namespace System
         [System.ObsoleteAttribute("GetHashCode() on Span will always throw an exception.")]
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Span<T> left, System.Span<T> right) { throw null; }
-        public static implicit operator System.Span<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        public static implicit operator System.Span<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (System.Span<T> span) { throw null; }
         public static implicit operator System.Span<T> (T[] array) { throw null; }
         public static bool operator !=(System.Span<T> left, System.Span<T> right) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Span<T> Slice(int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Span<T> Slice(int start, int length) { throw null; }
         public T[] ToArray() { throw null; }
+        public override string ToString() { throw null; }
         public bool TryCopyTo(System.Span<T> destination) { throw null; }
         [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
         [System.Runtime.CompilerServices.IsByRefLikeAttribute]
@@ -5824,88 +5850,59 @@ namespace System
 }
 namespace System.Buffers
 {
-    public partial interface IRetainable
+    public partial interface IMemoryOwner<T> : System.IDisposable
     {
-        bool Release();
-        void Retain();
+        System.Memory<T> Memory { get; }
+    }
+    public partial interface IPinnable
+    {
+        System.Buffers.MemoryHandle Pin(int elementIndex);
+        void Unpin();
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct MemoryHandle : System.IDisposable
     {
         [System.CLSCompliantAttribute(false)]
-        public unsafe MemoryHandle(System.Buffers.IRetainable retainable, void* pointer=null, System.Runtime.InteropServices.GCHandle handle=default(System.Runtime.InteropServices.GCHandle)) { throw null;}
-        public bool HasPointer { get { throw null; } }
+        public unsafe MemoryHandle(void* pointer, System.Runtime.InteropServices.GCHandle handle=default(System.Runtime.InteropServices.GCHandle), System.Buffers.IPinnable pinnable=null) { throw null;}
         [System.CLSCompliantAttribute(false)]
         public unsafe void* Pointer { get { throw null; } }
         public void Dispose() { }
     }
-    public enum OperationStatus
+    public abstract partial class MemoryManager<T> : System.Buffers.IMemoryOwner<T>, System.Buffers.IPinnable, System.IDisposable
     {
-        DestinationTooSmall = 1,
-        Done = 0,
-        InvalidData = 3,
-        NeedMoreData = 2,
-    }
-    public abstract partial class OwnedMemory<T> : System.Buffers.IRetainable, System.IDisposable
-    {
-        protected OwnedMemory() { }
-        public abstract bool IsDisposed { get; }
-        protected abstract bool IsRetained { get; }
-        public abstract int Length { get; }
-        public System.Memory<T> Memory { get { throw null; } }
-        public abstract System.Span<T> Span { get; }
-        public void Dispose() { }
+        protected MemoryManager() { }
+        public virtual int Length { get { throw null; } }
+        public virtual System.Memory<T> Memory { get { throw null; } }
         protected abstract void Dispose(bool disposing);
-        public abstract System.Buffers.MemoryHandle Pin(int offset=0);
-        public abstract bool Release();
-        public abstract void Retain();
-        protected internal abstract bool TryGetArray(out System.ArraySegment<T> arraySegment);
-    }
-    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct StandardFormat : System.IEquatable<System.Buffers.StandardFormat>
-    {
-        public const byte MaxPrecision = (byte)99;
-        public const byte NoPrecision = (byte)255;
-        public StandardFormat(char symbol, byte precision=(byte)255) { throw null;}
-        public bool HasPrecision { get { throw null; } }
-        public bool IsDefault { get { throw null; } }
-        public byte Precision { get { throw null; } }
-        public char Symbol { get { throw null; } }
-        public bool Equals(System.Buffers.StandardFormat other) { throw null; }
-        public override bool Equals(object obj) { throw null; }
-        public override int GetHashCode() { throw null; }
-        public static bool operator ==(System.Buffers.StandardFormat left, System.Buffers.StandardFormat right) { throw null; }
-        public static implicit operator System.Buffers.StandardFormat (char symbol) { throw null; }
-        public static bool operator !=(System.Buffers.StandardFormat left, System.Buffers.StandardFormat right) { throw null; }
-        public static System.Buffers.StandardFormat Parse(System.ReadOnlySpan<char> format) { throw null; }
-        public static System.Buffers.StandardFormat Parse(string format) { throw null; }
-        public override string ToString() { throw null; }
+        public abstract System.Span<T> GetSpan();
+        public abstract System.Buffers.MemoryHandle Pin(int elementIndex=0);
+        void System.IDisposable.Dispose() { }
+        protected internal virtual bool TryGetArray(out System.ArraySegment<T> segment) { segment = default(System.ArraySegment<T>); throw null; }
+        public abstract void Unpin();
     }
 }
 namespace System.Buffers.Binary
 {
     public static partial class BinaryPrimitives
     {
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short ReadInt16BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short ReadInt16LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int ReadInt32BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int ReadInt32LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long ReadInt64BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long ReadInt64LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static T ReadMachineEndian<T>(System.ReadOnlySpan<byte> buffer) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short ReadInt16BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short ReadInt16LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int ReadInt32BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int ReadInt32LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long ReadInt64BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long ReadInt64LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static ushort ReadUInt16BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static ushort ReadUInt16BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static ushort ReadUInt16LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static ushort ReadUInt16LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static uint ReadUInt32BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static uint ReadUInt32BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static uint ReadUInt32LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static uint ReadUInt32LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static ulong ReadUInt64BigEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static ulong ReadUInt64BigEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static ulong ReadUInt64LittleEndian(System.ReadOnlySpan<byte> buffer) { throw null; }
+        public static ulong ReadUInt64LittleEndian(System.ReadOnlySpan<byte> source) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static byte ReverseEndianness(byte value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short ReverseEndianness(short value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int ReverseEndianness(int value) { throw null; }
@@ -5918,63 +5915,60 @@ namespace System.Buffers.Binary
         public static uint ReverseEndianness(uint value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
         public static ulong ReverseEndianness(ulong value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt16BigEndian(System.ReadOnlySpan<byte> buffer, out short value) { value = default(short); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt16LittleEndian(System.ReadOnlySpan<byte> buffer, out short value) { value = default(short); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt32BigEndian(System.ReadOnlySpan<byte> buffer, out int value) { value = default(int); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt32LittleEndian(System.ReadOnlySpan<byte> buffer, out int value) { value = default(int); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt64BigEndian(System.ReadOnlySpan<byte> buffer, out long value) { value = default(long); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt64LittleEndian(System.ReadOnlySpan<byte> buffer, out long value) { value = default(long); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadMachineEndian<T>(System.ReadOnlySpan<byte> buffer, out T value) where T : struct { value = default(T); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt16BigEndian(System.ReadOnlySpan<byte> source, out short value) { value = default(short); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt16LittleEndian(System.ReadOnlySpan<byte> source, out short value) { value = default(short); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt32BigEndian(System.ReadOnlySpan<byte> source, out int value) { value = default(int); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt32LittleEndian(System.ReadOnlySpan<byte> source, out int value) { value = default(int); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt64BigEndian(System.ReadOnlySpan<byte> source, out long value) { value = default(long); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryReadInt64LittleEndian(System.ReadOnlySpan<byte> source, out long value) { value = default(long); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt16BigEndian(System.ReadOnlySpan<byte> buffer, out ushort value) { value = default(ushort); throw null; }
+        public static bool TryReadUInt16BigEndian(System.ReadOnlySpan<byte> source, out ushort value) { value = default(ushort); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt16LittleEndian(System.ReadOnlySpan<byte> buffer, out ushort value) { value = default(ushort); throw null; }
+        public static bool TryReadUInt16LittleEndian(System.ReadOnlySpan<byte> source, out ushort value) { value = default(ushort); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt32BigEndian(System.ReadOnlySpan<byte> buffer, out uint value) { value = default(uint); throw null; }
+        public static bool TryReadUInt32BigEndian(System.ReadOnlySpan<byte> source, out uint value) { value = default(uint); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt32LittleEndian(System.ReadOnlySpan<byte> buffer, out uint value) { value = default(uint); throw null; }
+        public static bool TryReadUInt32LittleEndian(System.ReadOnlySpan<byte> source, out uint value) { value = default(uint); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt64BigEndian(System.ReadOnlySpan<byte> buffer, out ulong value) { value = default(ulong); throw null; }
+        public static bool TryReadUInt64BigEndian(System.ReadOnlySpan<byte> source, out ulong value) { value = default(ulong); throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryReadUInt64LittleEndian(System.ReadOnlySpan<byte> buffer, out ulong value) { value = default(ulong); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt16BigEndian(System.Span<byte> buffer, short value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt16LittleEndian(System.Span<byte> buffer, short value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt32BigEndian(System.Span<byte> buffer, int value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt32LittleEndian(System.Span<byte> buffer, int value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt64BigEndian(System.Span<byte> buffer, long value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt64LittleEndian(System.Span<byte> buffer, long value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteMachineEndian<T>(System.Span<byte> buffer, ref T value) where T : struct { throw null; }
+        public static bool TryReadUInt64LittleEndian(System.ReadOnlySpan<byte> source, out ulong value) { value = default(ulong); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt16BigEndian(System.Span<byte> destination, short value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt16LittleEndian(System.Span<byte> destination, short value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt32BigEndian(System.Span<byte> destination, int value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt32LittleEndian(System.Span<byte> destination, int value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt64BigEndian(System.Span<byte> destination, long value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWriteInt64LittleEndian(System.Span<byte> destination, long value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt16BigEndian(System.Span<byte> buffer, ushort value) { throw null; }
+        public static bool TryWriteUInt16BigEndian(System.Span<byte> destination, ushort value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt16LittleEndian(System.Span<byte> buffer, ushort value) { throw null; }
+        public static bool TryWriteUInt16LittleEndian(System.Span<byte> destination, ushort value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt32BigEndian(System.Span<byte> buffer, uint value) { throw null; }
+        public static bool TryWriteUInt32BigEndian(System.Span<byte> destination, uint value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt32LittleEndian(System.Span<byte> buffer, uint value) { throw null; }
+        public static bool TryWriteUInt32LittleEndian(System.Span<byte> destination, uint value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt64BigEndian(System.Span<byte> buffer, ulong value) { throw null; }
+        public static bool TryWriteUInt64BigEndian(System.Span<byte> destination, ulong value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static bool TryWriteUInt64LittleEndian(System.Span<byte> buffer, ulong value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt16BigEndian(System.Span<byte> buffer, short value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt16LittleEndian(System.Span<byte> buffer, short value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt32BigEndian(System.Span<byte> buffer, int value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt32LittleEndian(System.Span<byte> buffer, int value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt64BigEndian(System.Span<byte> buffer, long value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt64LittleEndian(System.Span<byte> buffer, long value) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteMachineEndian<T>(System.Span<byte> buffer, ref T value) where T : struct { }
+        public static bool TryWriteUInt64LittleEndian(System.Span<byte> destination, ulong value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt16BigEndian(System.Span<byte> destination, short value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt16LittleEndian(System.Span<byte> destination, short value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt32BigEndian(System.Span<byte> destination, int value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt32LittleEndian(System.Span<byte> destination, int value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt64BigEndian(System.Span<byte> destination, long value) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteInt64LittleEndian(System.Span<byte> destination, long value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt16BigEndian(System.Span<byte> buffer, ushort value) { }
+        public static void WriteUInt16BigEndian(System.Span<byte> destination, ushort value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt16LittleEndian(System.Span<byte> buffer, ushort value) { }
+        public static void WriteUInt16LittleEndian(System.Span<byte> destination, ushort value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt32BigEndian(System.Span<byte> buffer, uint value) { }
+        public static void WriteUInt32BigEndian(System.Span<byte> destination, uint value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt32LittleEndian(System.Span<byte> buffer, uint value) { }
+        public static void WriteUInt32LittleEndian(System.Span<byte> destination, uint value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt64BigEndian(System.Span<byte> buffer, ulong value) { }
+        public static void WriteUInt64BigEndian(System.Span<byte> destination, ulong value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
-        public static void WriteUInt64LittleEndian(System.Span<byte> buffer, ulong value) { }
+        public static void WriteUInt64LittleEndian(System.Span<byte> destination, ulong value) { }
     }
 }
 namespace System.Collections
@@ -6617,6 +6611,8 @@ namespace System.Collections.Generic
         System.Collections.IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator() { throw null; }
         void System.Collections.IDictionary.Remove(object key) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
+        public void TrimExcess() { }
+        public void TrimExcess(int capacity) { }
         public bool TryAdd(TKey key, TValue value) { throw null; }
         public bool TryGetValue(TKey key, out TValue value) { value = default(TValue); throw null; }
         [System.SerializableAttribute]
@@ -9560,6 +9556,7 @@ namespace System.IO
         public static string Combine(params string[] paths) { throw null; }
         public static string GetDirectoryName(string path) { throw null; }
         public static string GetExtension(string path) { throw null; }
+        public static System.ReadOnlySpan<char> GetFileName(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetFileName(string path) { throw null; }
         public static string GetFileNameWithoutExtension(string path) { throw null; }
         public static string GetFullPath(string path) { throw null; }
@@ -9668,7 +9665,7 @@ namespace System.IO
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public virtual System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public virtual System.Threading.Tasks.Task WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public virtual System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public virtual void WriteByte(byte value) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -10261,6 +10258,162 @@ namespace System.IO.IsolatedStorage
         public long Quota { get { throw null; } set { } }
         public long UsedSize { get { throw null; } }
         public override void EnsureState() { }
+    }
+}
+namespace System.Numerics
+{
+    public static partial class Vector
+    {
+        public static bool IsHardwareAccelerated { get { throw null; } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Abs<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Add<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> AndNot<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Byte> AsVectorByte<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Double> AsVectorDouble<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int16> AsVectorInt16<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> AsVectorInt32<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> AsVectorInt64<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.SByte> AsVectorSByte<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Single> AsVectorSingle<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt16> AsVectorUInt16<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt32> AsVectorUInt32<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt64> AsVectorUInt64<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> BitwiseAnd<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> BitwiseOr<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Single> ConditionalSelect(System.Numerics.Vector<System.Int32> condition, System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Double> ConditionalSelect(System.Numerics.Vector<System.Int64> condition, System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> ConditionalSelect<T>(System.Numerics.Vector<T> condition, System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        public static System.Numerics.Vector<System.Double> ConvertToDouble(System.Numerics.Vector<System.Int64> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.Double> ConvertToDouble(System.Numerics.Vector<System.UInt64> value) { throw null; }
+        public static System.Numerics.Vector<System.Int32> ConvertToInt32(System.Numerics.Vector<System.Single> value) { throw null; }
+        public static System.Numerics.Vector<System.Int64> ConvertToInt64(System.Numerics.Vector<System.Double> value) { throw null; }
+        public static System.Numerics.Vector<System.Single> ConvertToSingle(System.Numerics.Vector<System.Int32> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.Single> ConvertToSingle(System.Numerics.Vector<System.UInt32> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt32> ConvertToUInt32(System.Numerics.Vector<System.Single> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt64> ConvertToUInt64(System.Numerics.Vector<System.Double> value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Divide<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static T Dot<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> Equals(System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> Equals(System.Numerics.Vector<System.Int32> left, System.Numerics.Vector<System.Int32> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> Equals(System.Numerics.Vector<System.Int64> left, System.Numerics.Vector<System.Int64> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> Equals(System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EqualsAll<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool EqualsAny<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Equals<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> GreaterThan(System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> GreaterThan(System.Numerics.Vector<System.Int32> left, System.Numerics.Vector<System.Int32> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> GreaterThan(System.Numerics.Vector<System.Int64> left, System.Numerics.Vector<System.Int64> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> GreaterThan(System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool GreaterThanAll<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool GreaterThanAny<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> GreaterThanOrEqual(System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> GreaterThanOrEqual(System.Numerics.Vector<System.Int32> left, System.Numerics.Vector<System.Int32> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> GreaterThanOrEqual(System.Numerics.Vector<System.Int64> left, System.Numerics.Vector<System.Int64> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> GreaterThanOrEqual(System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool GreaterThanOrEqualAll<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool GreaterThanOrEqualAny<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> GreaterThanOrEqual<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> GreaterThan<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> LessThan(System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> LessThan(System.Numerics.Vector<System.Int32> left, System.Numerics.Vector<System.Int32> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> LessThan(System.Numerics.Vector<System.Int64> left, System.Numerics.Vector<System.Int64> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> LessThan(System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool LessThanAll<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool LessThanAny<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> LessThanOrEqual(System.Numerics.Vector<System.Double> left, System.Numerics.Vector<System.Double> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> LessThanOrEqual(System.Numerics.Vector<System.Int32> left, System.Numerics.Vector<System.Int32> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int64> LessThanOrEqual(System.Numerics.Vector<System.Int64> left, System.Numerics.Vector<System.Int64> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<System.Int32> LessThanOrEqual(System.Numerics.Vector<System.Single> left, System.Numerics.Vector<System.Single> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool LessThanOrEqualAll<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool LessThanOrEqualAny<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> LessThanOrEqual<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> LessThan<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Max<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Min<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Multiply<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Multiply<T>(System.Numerics.Vector<T> left, T right) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Multiply<T>(T left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        public static System.Numerics.Vector<System.Single> Narrow(System.Numerics.Vector<System.Double> low, System.Numerics.Vector<System.Double> high) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.SByte> Narrow(System.Numerics.Vector<System.Int16> low, System.Numerics.Vector<System.Int16> high) { throw null; }
+        public static System.Numerics.Vector<System.Int16> Narrow(System.Numerics.Vector<System.Int32> low, System.Numerics.Vector<System.Int32> high) { throw null; }
+        public static System.Numerics.Vector<System.Int32> Narrow(System.Numerics.Vector<System.Int64> low, System.Numerics.Vector<System.Int64> high) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.Byte> Narrow(System.Numerics.Vector<System.UInt16> low, System.Numerics.Vector<System.UInt16> high) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt16> Narrow(System.Numerics.Vector<System.UInt32> low, System.Numerics.Vector<System.UInt32> high) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.Numerics.Vector<System.UInt32> Narrow(System.Numerics.Vector<System.UInt64> low, System.Numerics.Vector<System.UInt64> high) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Negate<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> OnesComplement<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> SquareRoot<T>(System.Numerics.Vector<T> value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Subtract<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static void Widen(System.Numerics.Vector<System.Byte> source, out System.Numerics.Vector<System.UInt16> low, out System.Numerics.Vector<System.UInt16> high) { low = default(System.Numerics.Vector<ushort>); high = default(System.Numerics.Vector<ushort>); }
+        public static void Widen(System.Numerics.Vector<System.Int16> source, out System.Numerics.Vector<System.Int32> low, out System.Numerics.Vector<System.Int32> high) { low = default(System.Numerics.Vector<int>); high = default(System.Numerics.Vector<int>); }
+        public static void Widen(System.Numerics.Vector<System.Int32> source, out System.Numerics.Vector<System.Int64> low, out System.Numerics.Vector<System.Int64> high) { low = default(System.Numerics.Vector<long>); high = default(System.Numerics.Vector<long>); }
+        [System.CLSCompliantAttribute(false)]
+        public static void Widen(System.Numerics.Vector<System.SByte> source, out System.Numerics.Vector<System.Int16> low, out System.Numerics.Vector<System.Int16> high) { low = default(System.Numerics.Vector<short>); high = default(System.Numerics.Vector<short>); }
+        public static void Widen(System.Numerics.Vector<System.Single> source, out System.Numerics.Vector<System.Double> low, out System.Numerics.Vector<System.Double> high) { low = default(System.Numerics.Vector<double>); high = default(System.Numerics.Vector<double>); }
+        [System.CLSCompliantAttribute(false)]
+        public static void Widen(System.Numerics.Vector<System.UInt16> source, out System.Numerics.Vector<System.UInt32> low, out System.Numerics.Vector<System.UInt32> high) { low = default(System.Numerics.Vector<uint>); high = default(System.Numerics.Vector<uint>); }
+        [System.CLSCompliantAttribute(false)]
+        public static void Widen(System.Numerics.Vector<System.UInt32> source, out System.Numerics.Vector<System.UInt64> low, out System.Numerics.Vector<System.UInt64> high) { low = default(System.Numerics.Vector<ulong>); high = default(System.Numerics.Vector<ulong>); }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> Xor<T>(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) where T : struct { throw null; }
+    }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct Vector<T> : System.IEquatable<System.Numerics.Vector<T>>, System.IFormattable where T : struct
+    {
+        public Vector(T value) { throw null;}
+        public Vector(T[] values) { throw null;}
+        public Vector(T[] values, int index) { throw null;}
+        public static int Count { get { throw null; } }
+        public T this[int index] { get { throw null; } }
+        public static System.Numerics.Vector<T> One { get { throw null; } }
+        public static System.Numerics.Vector<T> Zero { get { throw null; } }
+        public void CopyTo(T[] destination) { }
+        public void CopyTo(T[] destination, int startIndex) { }
+        public bool Equals(System.Numerics.Vector<T> other) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public override bool Equals(object obj) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static System.Numerics.Vector<T> operator +(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator &(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator |(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator /(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool operator ==(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator ^(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Byte> (System.Numerics.Vector<T> value) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Double> (System.Numerics.Vector<T> value) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Int16> (System.Numerics.Vector<T> value) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Int32> (System.Numerics.Vector<T> value) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Int64> (System.Numerics.Vector<T> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static explicit operator System.Numerics.Vector<System.SByte> (System.Numerics.Vector<T> value) { throw null; }
+        public static explicit operator System.Numerics.Vector<System.Single> (System.Numerics.Vector<T> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static explicit operator System.Numerics.Vector<System.UInt16> (System.Numerics.Vector<T> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static explicit operator System.Numerics.Vector<System.UInt32> (System.Numerics.Vector<T> value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static explicit operator System.Numerics.Vector<System.UInt64> (System.Numerics.Vector<T> value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool operator !=(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator *(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator *(System.Numerics.Vector<T> value, T factor) { throw null; }
+        public static System.Numerics.Vector<T> operator *(T factor, System.Numerics.Vector<T> value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Numerics.Vector<T> operator ~(System.Numerics.Vector<T> value) { throw null; }
+        public static System.Numerics.Vector<T> operator -(System.Numerics.Vector<T> left, System.Numerics.Vector<T> right) { throw null; }
+        public static System.Numerics.Vector<T> operator -(System.Numerics.Vector<T> value) { throw null; }
+        public override string ToString() { throw null; }
+        public string ToString(string format) { throw null; }
+        public string ToString(string format, System.IFormatProvider formatProvider) { throw null; }
     }
 }
 namespace System.Reflection
@@ -13369,16 +13522,29 @@ namespace System.Runtime.CompilerServices
         [System.Security.SecuritySafeCriticalAttribute]
         public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
     }
+    public partial struct AsyncValueTaskMethodBuilder
+    {
+        public System.Threading.Tasks.ValueTask Task { get { throw null; } }
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.INotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        [System.Security.SecuritySafeCriticalAttribute]
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        public static System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder Create() { throw null; }
+        public void SetException(System.Exception exception) { }
+        public void SetResult() { }
+        public void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine stateMachine) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+    }
     public partial struct AsyncValueTaskMethodBuilder<TResult>
     {
         public System.Threading.Tasks.ValueTask<TResult> Task { get { throw null; } }
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.INotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        [System.Security.SecuritySafeCriticalAttribute]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
         public static System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult> Create() { throw null; }
         public void SetException(System.Exception exception) { }
         public void SetResult(TResult result) { }
         public void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine stateMachine) { }
-        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -13505,14 +13671,27 @@ namespace System.Runtime.CompilerServices
         }
     }
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
-    public partial struct ConfiguredValueTaskAwaitable<TResult>
+    public partial struct ConfiguredValueTaskAwaitable
     {
-        public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult>.ConfiguredValueTaskAwaiter GetAwaiter() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable.ConfiguredValueTaskAwaiter GetAwaiter() { throw null; }
         [System.Runtime.CompilerServices.IsReadOnlyAttribute]
         public partial struct ConfiguredValueTaskAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
         {
-            public bool IsCompleted { get { throw null; } }
-            public TResult GetResult() { throw null; }
+            public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void GetResult() { }
+            public void OnCompleted(System.Action continuation) { }
+            public void UnsafeOnCompleted(System.Action continuation) { }
+        }
+    }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    public partial struct ConfiguredValueTaskAwaitable<TResult>
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult>.ConfiguredValueTaskAwaiter GetAwaiter() { throw null; }
+        [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+        public partial struct ConfiguredValueTaskAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
+        {
+            public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public TResult GetResult() { throw null; }
             public void OnCompleted(System.Action continuation) { }
             public void UnsafeOnCompleted(System.Action continuation) { }
         }
@@ -13896,10 +14075,19 @@ namespace System.Runtime.CompilerServices
     }
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct ValueTaskAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
+    {
+        public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void GetResult() { }
+        public void OnCompleted(System.Action continuation) { }
+        public void UnsafeOnCompleted(System.Action continuation) { }
+    }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ValueTaskAwaiter<TResult> : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
     {
-        public bool IsCompleted { get { throw null; } }
-        public TResult GetResult() { throw null; }
+        public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public TResult GetResult() { throw null; }
         public void OnCompleted(System.Action continuation) { }
         public void UnsafeOnCompleted(System.Action continuation) { }
     }
@@ -15071,10 +15259,22 @@ namespace System.Runtime.InteropServices
     }
     public static partial class MemoryMarshal
     {
-        public static System.Memory<T> AsMemory<T>(System.ReadOnlyMemory<T> readOnlyMemory) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<byte> AsBytes<T>(System.ReadOnlySpan<T> span) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<byte> AsBytes<T>(System.Span<T> span) where T : struct { throw null; }
+        public static System.Memory<T> AsMemory<T>(System.ReadOnlyMemory<T> memory) { throw null; }
+        public static System.ReadOnlySpan<TTo> Cast<TFrom, TTo>(System.ReadOnlySpan<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
+        public static System.Span<TTo> Cast<TFrom, TTo>(System.Span<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
         public static ref T GetReference<T>(System.ReadOnlySpan<T> span) { throw null; }
         public static ref T GetReference<T>(System.Span<T> span) { throw null; }
-        public static bool TryGetArray<T>(System.ReadOnlyMemory<T> readOnlyMemory, out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static T Read<T>(System.ReadOnlySpan<byte> source) where T : struct { throw null; }
+        public static System.Collections.Generic.IEnumerable<T> ToEnumerable<T>(System.ReadOnlyMemory<T> memory) { throw null; }
+        public static bool TryGetArray<T>(System.ReadOnlyMemory<T> memory, out System.ArraySegment<T> segment) { segment = default(System.ArraySegment<T>); throw null; }
+        public static bool TryGetMemoryManager<T, TManager>(System.ReadOnlyMemory<T> memory, out TManager manager) where TManager : System.Buffers.MemoryManager<T> { manager = default(TManager); throw null; }
+        public static bool TryGetMemoryManager<T, TManager>(System.ReadOnlyMemory<T> memory, out TManager manager, out int start, out int length) where TManager : System.Buffers.MemoryManager<T> { manager = default(TManager); start = default(int); length = default(int); throw null; }
+        public static bool TryGetString(System.ReadOnlyMemory<char> memory, out string text, out int start, out int length) { text = default(string); start = default(int); length = default(int); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryRead<T>(System.ReadOnlySpan<byte> source, out T value) where T : struct { value = default(T); throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static bool TryWrite<T>(System.Span<byte> destination, ref T value) where T : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void Write<T>(System.Span<byte> destination, ref T value) where T : struct { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate System.IntPtr ObjectCreationDelegate(System.IntPtr aggregator);
@@ -24127,6 +24327,7 @@ namespace System.Text
         public virtual char[] GetChars(byte[] bytes) { throw null; }
         public virtual char[] GetChars(byte[] bytes, int index, int count) { throw null; }
         public abstract int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex);
+        public virtual int GetChars(System.ReadOnlySpan<byte> bytes, System.Span<char> chars) { throw null; }
         public virtual System.Text.Decoder GetDecoder() { throw null; }
         public virtual System.Text.Encoder GetEncoder() { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
@@ -24215,6 +24416,7 @@ namespace System.Text
         public System.Text.StringBuilder Append(int value) { throw null; }
         public System.Text.StringBuilder Append(long value) { throw null; }
         public System.Text.StringBuilder Append(object value) { throw null; }
+        public System.Text.StringBuilder Append(System.ReadOnlySpan<char> value) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public System.Text.StringBuilder Append(sbyte value) { throw null; }
         public System.Text.StringBuilder Append(float value) { throw null; }
@@ -25682,6 +25884,7 @@ namespace System.Threading.Tasks
         protected TaskCanceledException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TaskCanceledException(string message) { }
         public TaskCanceledException(string message, System.Exception innerException) { }
+        public TaskCanceledException(string message, System.Exception innerException, System.Threading.CancellationToken token) { }
         public TaskCanceledException(System.Threading.Tasks.Task task) { }
         public System.Threading.Tasks.Task Task { get { throw null; } }
     }
@@ -25943,26 +26146,76 @@ namespace System.Threading.Tasks
         public bool Observed { get { throw null; } }
         public void SetObserved() { }
     }
+    [System.Runtime.CompilerServices.AsyncMethodBuilderAttribute(typeof(System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder))]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    public partial struct ValueTask : System.IEquatable<System.Threading.Tasks.ValueTask>
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ValueTask(System.Threading.Tasks.Sources.IValueTaskSource source, short token) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ValueTask(System.Threading.Tasks.Task task) { throw null;}
+        public bool IsCanceled { get { throw null; } }
+        public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        public bool IsCompletedSuccessfully { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        public bool IsFaulted { get { throw null; } }
+        public System.Threading.Tasks.Task AsTask() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable ConfigureAwait(bool continueOnCapturedContext) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public bool Equals(System.Threading.Tasks.ValueTask other) { throw null; }
+        public System.Runtime.CompilerServices.ValueTaskAwaiter GetAwaiter() { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static bool operator ==(System.Threading.Tasks.ValueTask left, System.Threading.Tasks.ValueTask right) { throw null; }
+        public static bool operator !=(System.Threading.Tasks.ValueTask left, System.Threading.Tasks.ValueTask right) { throw null; }
+        public System.Threading.Tasks.ValueTask Preserve() { throw null; }
+    }
     [System.Runtime.CompilerServices.AsyncMethodBuilderAttribute(typeof(System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult>))]
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     public partial struct ValueTask<TResult> : System.IEquatable<System.Threading.Tasks.ValueTask<TResult>>
     {
-        public ValueTask(System.Threading.Tasks.Task<TResult> task) { throw null;}
-        public ValueTask(TResult result) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ValueTask(System.Threading.Tasks.Sources.IValueTaskSource<TResult> source, short token) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ValueTask(System.Threading.Tasks.Task<TResult> task) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ValueTask(TResult result) { throw null;}
         public bool IsCanceled { get { throw null; } }
-        public bool IsCompleted { get { throw null; } }
-        public bool IsCompletedSuccessfully { get { throw null; } }
+        public bool IsCompleted { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        public bool IsCompletedSuccessfully { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public bool IsFaulted { get { throw null; } }
-        public TResult Result { get { throw null; } }
+        public TResult Result { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public System.Threading.Tasks.Task<TResult> AsTask() { throw null; }
-        public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext) { throw null; }
-        public static System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult> CreateAsyncMethodBuilder() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Threading.Tasks.ValueTask<TResult> other) { throw null; }
-        public System.Runtime.CompilerServices.ValueTaskAwaiter<TResult> GetAwaiter() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Runtime.CompilerServices.ValueTaskAwaiter<TResult> GetAwaiter() { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Threading.Tasks.ValueTask<TResult> left, System.Threading.Tasks.ValueTask<TResult> right) { throw null; }
         public static bool operator !=(System.Threading.Tasks.ValueTask<TResult> left, System.Threading.Tasks.ValueTask<TResult> right) { throw null; }
+        public System.Threading.Tasks.ValueTask<TResult> Preserve() { throw null; }
         public override string ToString() { throw null; }
+    }
+}
+namespace System.Threading.Tasks.Sources
+{
+    public partial interface IValueTaskSource
+    {
+        void GetResult(short token);
+        System.Threading.Tasks.Sources.ValueTaskSourceStatus GetStatus(short token);
+        void OnCompleted(System.Action<object> continuation, object state, short token, System.Threading.Tasks.Sources.ValueTaskSourceOnCompletedFlags flags);
+    }
+    public partial interface IValueTaskSource<out TResult>
+    {
+        TResult GetResult(short token);
+        System.Threading.Tasks.Sources.ValueTaskSourceStatus GetStatus(short token);
+        void OnCompleted(System.Action<object> continuation, object state, short token, System.Threading.Tasks.Sources.ValueTaskSourceOnCompletedFlags flags);
+    }
+    [System.FlagsAttribute]
+    public enum ValueTaskSourceOnCompletedFlags
+    {
+        FlowExecutionContext = 2,
+        None = 0,
+        UseSchedulingContext = 1,
+    }
+    public enum ValueTaskSourceStatus
+    {
+        Canceled = 3,
+        Faulted = 2,
+        Pending = 0,
+        Succeeded = 1,
     }
 }
