@@ -305,6 +305,7 @@ TESTS_CS_SRC=		\
 	exception16.cs		\
 	exception17.cs		\
 	exception18.cs		\
+	exception19.cs		\
 	typeload-unaligned.cs	\
 	struct.cs		\
 	valuetype-gettype.cs	\
@@ -2421,7 +2422,7 @@ else
 libtest_la_LDFLAGS = -rpath `pwd`
 endif
 libtest_la_SOURCES = libtest.c
-libtest_la_LIBADD = $(GLIB_LIBS)
+libtest_la_LIBADD = $(top_builddir)/mono/eglib/libeglib.la
 
 INTERNALSVISIBLETO_TEST_SRC = \
 	internalsvisibleto-runtimetest.cs \

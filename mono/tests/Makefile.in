@@ -455,8 +455,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = tests-config
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-libtest_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libtest_la_DEPENDENCIES = $(top_builddir)/mono/eglib/libeglib.la
 am_libtest_la_OBJECTS = libtest_la-libtest.lo
 libtest_la_OBJECTS = $(am_libtest_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -621,7 +620,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -908,11 +906,12 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception6.cs exception7.cs exception8.cs exception10.cs \
 	exception11.cs exception12.cs exception13.cs exception14.cs \
 	exception15.cs exception16.cs exception17.cs exception18.cs \
-	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
-	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
-	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
-	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
-	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	exception19.cs typeload-unaligned.cs struct.cs \
+	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
+	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
+	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
+	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
+	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1548,7 +1547,7 @@ AM_CPPFLAGS = $(GLIB_CFLAGS)
 # can't find them. So we use --kill-at to remove the @ suffix as well.
 @HOST_WIN32_TRUE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
 libtest_la_SOURCES = libtest.c
-libtest_la_LIBADD = $(GLIB_LIBS)
+libtest_la_LIBADD = $(top_builddir)/mono/eglib/libeglib.la
 INTERNALSVISIBLETO_TEST_SRC = \
 	internalsvisibleto-runtimetest.cs \
 	internalsvisibleto-compilertest.cs

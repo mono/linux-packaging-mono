@@ -44,6 +44,10 @@ inline static bool add_s(T a, T b, T* result)
 
 #else // __cplusplus
 
+#ifndef __has_builtin
+#define __has_builtin(_) 0
+#endif
+
 // Multiplies a and b into result.
 // Returns true if safe, false if overflows.
 inline static bool multiply_s(size_t a, size_t b, size_t* result)

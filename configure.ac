@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.139],
+AC_INIT(mono, [5.15.0.162],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -834,10 +834,8 @@ AC_SUBST([WERROR_CFLAGS])
 AC_SUBST([SHARED_CFLAGS])
 
 GLIB_CFLAGS='-I$(top_srcdir)/mono/eglib -I$(top_builddir)/mono/eglib'
-GLIB_LIBS='$(top_builddir)/mono/eglib/libeglib.la -lm'
   
 AC_SUBST(GLIB_CFLAGS)
-AC_SUBST(GLIB_LIBS)
 
 # Enable support for fast thread-local storage
 # Some systems have broken support, so we allow to disable it.

@@ -125,10 +125,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-@HOST_WIN32_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-@HOST_WIN32_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-libMonoPosixHelper_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+libMonoPosixHelper_la_DEPENDENCIES = $(MPH_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
 	grp.c macros.c nl.c nl.h old-map.c old-map.h pwd.c serial.c \
@@ -167,7 +165,7 @@ libMonoPosixHelper_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(libMonoPosixHelper_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @BUILD_SUPPORT_TRUE@am_libMonoPosixHelper_la_rpath = -rpath $(libdir)
-libMonoSupportW_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libMonoSupportW_la_DEPENDENCIES = $(glib_libs)
 am_libMonoSupportW_la_OBJECTS = supportw.lo support-heap.lo
 libMonoSupportW_la_OBJECTS = $(am_libMonoSupportW_la_OBJECTS)
 libMonoSupportW_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -291,7 +289,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -485,6 +482,7 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)				\
 	-I$(top_srcdir)
 
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 
 # Source code which helps implement the ANSI C standards, and thus *should* be
 # portable to any platform having a C compiler.
@@ -532,8 +530,8 @@ MPH_UNIX_SOURCE = \
 
 @HOST_WIN32_FALSE@MPH_SOURCE = $(MPH_C_SOURCE) $(MPH_UNIX_SOURCE)
 @HOST_WIN32_TRUE@MPH_SOURCE = $(MPH_C_SOURCE)
-@HOST_WIN32_FALSE@MPH_LIBS = $(GLIB_LIBS)
-@HOST_WIN32_TRUE@MPH_LIBS = $(GLIB_LIBS)
+@HOST_WIN32_FALSE@MPH_LIBS = $(glib_libs)
+@HOST_WIN32_TRUE@MPH_LIBS = $(glib_libs)
 MINIZIP_SOURCE = \
 	minizip/crypt.h \
 	minizip/ioapi.c	\
@@ -590,7 +588,7 @@ libMonoSupportW_la_SOURCES = \
 		supportw.h
 
 libMonoSupportW_la_LIBADD = \
-		$(GLIB_LIBS)
+		$(glib_libs)
 
 all: all-am
 

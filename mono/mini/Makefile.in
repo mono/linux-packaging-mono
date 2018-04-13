@@ -299,13 +299,13 @@ am__DEPENDENCIES_1 =
 @SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 =  \
 @SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc.la
 am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
+	$(monodir)/mono/utils/libmonoutils.la $(glib_libs) \
 	$(am__DEPENDENCIES_2)
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__DEPENDENCIES_4 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
 @HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_3)
-@LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
+@LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES = $(glib_libs) \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4)
+@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_4)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
@@ -333,12 +333,9 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath =  \
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
-am__DEPENDENCIES_7 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
-	$(monodir)/mono/sgen/libmonosgen.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1)
 libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(interp_libs_with_mini) \
-	$(dbg_libs_with_mini) $(am__DEPENDENCIES_7) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_6)
+	$(dbg_libs_with_mini) $(sgen_libs) $(am__DEPENDENCIES_5) \
+	$(am__DEPENDENCIES_6)
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -360,27 +357,22 @@ mono_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_boehm_OBJECTS = mono_boehm-main.$(OBJEXT)
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
-@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_8 = libmini.la \
+@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_7 = libmini.la \
 @SUPPORT_BOEHM_TRUE@	$(interp_libs_with_mini) \
 @SUPPORT_BOEHM_TRUE@	$(dbg_libs_with_mini) \
 @SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_3)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_9 = libmonoboehm-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_8)
-@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_10 = mono-dtrace.$(OBJEXT)
-mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_9) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_8 = libmonoboehm-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_8 = $(am__DEPENDENCIES_7)
+@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_9 = mono-dtrace.$(OBJEXT)
+mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_8) $(glib_libs) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_9)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_sgen_OBJECTS = mono_sgen-main-sgen.$(OBJEXT)
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_11 = libmini.la \
-@SUPPORT_SGEN_TRUE@	$(interp_libs_with_mini) \
-@SUPPORT_SGEN_TRUE@	$(dbg_libs_with_mini) $(am__DEPENDENCIES_7)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_12 = libmonosgen-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_11)
-mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
+mono_sgen_DEPENDENCIES = $(MONO_SGEN_LIB) $(glib_libs) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_9)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
@@ -392,14 +384,14 @@ am__objects_20 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_20)
 monow_OBJECTS = $(am_monow_OBJECTS)
-am__DEPENDENCIES_13 = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
-am__DEPENDENCIES_14 = $(am__DEPENDENCIES_9) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_10)
+am__DEPENDENCIES_10 = $(MONO_SGEN_LIB) $(glib_libs) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_9)
+am__DEPENDENCIES_11 = $(am__DEPENDENCIES_8) $(glib_libs) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_9)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_13)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_10)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_14)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_11)
 monow_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(monow_LDFLAGS) $(LDFLAGS) -o $@
@@ -540,7 +532,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -736,17 +727,18 @@ mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @SUPPORT_NULLGC_TRUE@libgc_libs = 
 @SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
 @SUPPORT_NULLGC_TRUE@libgc_static_libs = 
+glib_libs = $(monodir)/mono/eglib/libeglib.la
 boehm_libs = \
 	$(monodir)/mono/metadata/libmonoruntime.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) \
+	$(glib_libs) \
 	$(libgc_libs)
 
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
@@ -804,7 +796,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_2) \
 @SHARED_MONO_TRUE@mini_common_lib = libmini.la
 noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_9)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
-@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) \
+@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) \
 @LOADED_LLVM_TRUE@	$(LLVM_LDFLAGS) $(am__append_3)
 @HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 mono_boehm_SOURCES = \
@@ -836,7 +828,7 @@ mono_sgen_CFLAGS = $(AM_CFLAGS)
 @LOADED_LLVM_TRUE@LLVMMONOF = 
 mono_boehm_LDADD = \
 	$(MONO_LIB)		\
-	$(GLIB_LIBS)		\
+	$(glib_libs)		\
 	$(LLVMMONOF)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
@@ -846,7 +838,7 @@ mono_boehm_LDFLAGS = \
 
 mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
-	$(GLIB_LIBS)		\
+	$(glib_libs)		\
 	$(LLVMMONOF)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)

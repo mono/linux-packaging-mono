@@ -5352,16 +5352,25 @@ namespace System.IO.Compression
         public override void Flush() { }
         public override System.Threading.Tasks.Task FlushAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         public override int Read(byte[] array, int offset, int count) { throw null; }
-        public override int Read(System.Span<byte> destination) { throw null; }
+        public override int Read(System.Span<byte> buffer) { throw null; }
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] array, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> destination, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
         public override void SetLength(long value) { }
         public override void Write(byte[] array, int offset, int count) { }
-        public override void Write(System.ReadOnlySpan<byte> source) { }
+        public override void Write(System.ReadOnlySpan<byte> buffer) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] array, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.Task WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+    }
+}
+namespace System.IO.Enumeration
+{
+    public static partial class FileSystemName
+    {
+        public static bool MatchesSimpleExpression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase=true) { throw null; }
+        public static bool MatchesWin32Expression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase=true) { throw null; }
+        public static string TranslateWin32Expression(string expression) { throw null; }
     }
 }
 namespace System.Net
@@ -8790,7 +8799,7 @@ namespace System.Net.WebSockets
         public override System.Threading.Tasks.Task<System.Net.WebSockets.WebSocketReceiveResult> ReceiveAsync(System.ArraySegment<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.ValueTask<System.Net.WebSockets.ValueWebSocketReceiveResult> ReceiveAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.ValueTask SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public sealed partial class ClientWebSocketOptions
     {
@@ -8800,6 +8809,7 @@ namespace System.Net.WebSockets
         public System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.TimeSpan KeepAliveInterval { get { throw null; } set { } }
         public System.Net.IWebProxy Proxy { get { throw null; } set { } }
+        public System.Net.Security.RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
         public bool UseDefaultCredentials { get { throw null; } set { } }
         public void AddSubProtocol(string subProtocol) { }
         public void SetBuffer(int receiveBufferSize, int sendBufferSize) { }
@@ -8845,7 +8855,7 @@ namespace System.Net.WebSockets
         public static System.ArraySegment<byte> CreateClientBuffer(int receiveBufferSize, int sendBufferSize) { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static System.Net.WebSockets.WebSocket CreateClientWebSocket(System.IO.Stream innerStream, string subProtocol, int receiveBufferSize, int sendBufferSize, System.TimeSpan keepAliveInterval, bool useZeroMaskingKey, System.ArraySegment<byte> internalBuffer) { throw null; }
-        public static System.Net.WebSockets.WebSocket CreateFromStream(System.IO.Stream stream, bool isServer, string subProtocol, System.TimeSpan keepAliveInterval, System.Memory<byte> buffer=default(System.Memory<byte>)) { throw null; }
+        public static System.Net.WebSockets.WebSocket CreateFromStream(System.IO.Stream stream, bool isServer, string subProtocol, System.TimeSpan keepAliveInterval) { throw null; }
         public static System.ArraySegment<byte> CreateServerBuffer(int receiveBufferSize) { throw null; }
         public abstract void Dispose();
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
@@ -8857,7 +8867,7 @@ namespace System.Net.WebSockets
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static void RegisterPrefixes() { }
         public abstract System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken);
-        public virtual System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public virtual System.Threading.Tasks.ValueTask SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
         protected static void ThrowOnInvalidState(System.Net.WebSockets.WebSocketState state, params System.Net.WebSockets.WebSocketState[] validStates) { }
     }
     public enum WebSocketCloseStatus
@@ -9866,7 +9876,6 @@ namespace System.Security.Permissions
 }
 namespace System.Text.RegularExpressions
 {
-    [System.SerializableAttribute]
     public partial class Capture
     {
         internal Capture() { }
@@ -9876,8 +9885,7 @@ namespace System.Text.RegularExpressions
         public override string ToString() { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Capture>")]
-    [System.SerializableAttribute]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Capture>")]
     public partial class CaptureCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Capture>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         internal CaptureCollection() { }
@@ -9918,7 +9926,7 @@ namespace System.Text.RegularExpressions
         public static System.Text.RegularExpressions.Group Synchronized(System.Text.RegularExpressions.Group inner) { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Group>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Group>")]
     [System.SerializableAttribute]
     public partial class GroupCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Group>, System.Collections.Generic.IList<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Group>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -9962,7 +9970,7 @@ namespace System.Text.RegularExpressions
         public static System.Text.RegularExpressions.Match Synchronized(System.Text.RegularExpressions.Match inner) { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Match>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Match>")]
     [System.SerializableAttribute]
     public partial class MatchCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Match>, System.Collections.Generic.IList<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Match>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -9995,7 +10003,6 @@ namespace System.Text.RegularExpressions
         void System.Collections.IList.RemoveAt(int index) { }
     }
     public delegate string MatchEvaluator(System.Text.RegularExpressions.Match match);
-    [System.SerializableAttribute]
     public partial class Regex : System.Runtime.Serialization.ISerializable
     {
         protected internal System.Collections.Hashtable capnames;

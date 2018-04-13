@@ -131,7 +131,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libmonoruntimeincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	$(glib_libs) \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../sgen/libmonosgen.la \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	libmonoruntimesgen.la
@@ -149,7 +149,7 @@ libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
 @DISABLE_ICALL_TABLES_TRUE@	$(libdir)
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	$(glib_libs) \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../sgen/libmonosgen.la \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	libmonoruntimesgen.la
@@ -658,7 +658,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -866,6 +865,7 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@	$(am__append_2) $(am__append_3)
 @HOST_WIN32_TRUE@platform_sources = $(win32_sources) $(am__append_1) \
 @HOST_WIN32_TRUE@	$(am__append_2) $(am__append_3)
+@HOST_WIN32_TRUE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@assembliesdir = `cygpath -m "${libdir}"`
 
 # Use -m here. This will use / as directory separator (C:/WINNT).
@@ -924,7 +924,7 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 
 #
 # This library contains code to generate IL at runtime
@@ -940,7 +940,7 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES)
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c

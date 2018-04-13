@@ -729,7 +729,7 @@ namespace Microsoft.SqlServer.Server
             }
         }
 
-        IDataReader System.Data.IDataRecord.GetData (int ordinal)
+        IDataReader System.Data.IDataRecord.GetData(int ordinal)
         {
             throw ADP.NotSupported();
         }

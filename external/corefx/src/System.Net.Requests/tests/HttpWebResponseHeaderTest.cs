@@ -31,13 +31,7 @@ namespace System.Net.Tests
                 request.ContinueDelegate = continueDelegate;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
                 Assert.Equal(continueDelegate, request.ContinueDelegate);
             });
         }
@@ -52,13 +46,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
 
                 using (WebResponse response = await getResponse)
                 {
@@ -85,13 +73,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
                 WebResponse response = await getResponse;
                 HttpWebResponse httpResponse = (HttpWebResponse)response;
                 httpResponse.Close();
@@ -120,11 +102,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Length: 0\r\n" +
-                        "\r\n");
+                await server.AcceptConnectionSendResponseAndCloseAsync();
 
                 using (WebResponse response = await getResponse)
                 {

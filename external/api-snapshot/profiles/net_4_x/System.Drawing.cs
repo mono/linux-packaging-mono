@@ -2296,7 +2296,7 @@ namespace System.Drawing.Drawing2D
         public float BaseInset { get { throw null; } set { } }
         public System.Drawing.Drawing2D.LineJoin StrokeJoin { get { throw null; } set { } }
         public float WidthScale { get { throw null; } set { } }
-        public virtual object Clone() { throw null; }
+        public object Clone() { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         ~CustomLineCap() { }
@@ -3952,7 +3952,7 @@ namespace System.Drawing.Printing
         public PrintingPermission(System.Security.Permissions.PermissionState state) { }
         public System.Drawing.Printing.PrintingPermissionLevel Level { get { throw null; } set { } }
         public override System.Security.IPermission Copy() { throw null; }
-        public override void FromXml(System.Security.SecurityElement esd) { }
+        public override void FromXml(System.Security.SecurityElement element) { }
         public override System.Security.IPermission Intersect(System.Security.IPermission target) { throw null; }
         public override bool IsSubsetOf(System.Security.IPermission target) { throw null; }
         public bool IsUnrestricted() { throw null; }
@@ -3960,13 +3960,13 @@ namespace System.Drawing.Printing
         public override System.Security.IPermission Union(System.Security.IPermission target) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.SerializableAttribute]
     public sealed partial class PrintingPermissionAttribute : System.Security.Permissions.CodeAccessSecurityAttribute
     {
         public PrintingPermissionAttribute(System.Security.Permissions.SecurityAction action) : base (default(System.Security.Permissions.SecurityAction)) { }
         public System.Drawing.Printing.PrintingPermissionLevel Level { get { throw null; } set { } }
         public override System.Security.IPermission CreatePermission() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PrintingPermissionLevel
     {
         AllPrinting = 3,

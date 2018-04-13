@@ -3,7 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Globalization;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Internal.Runtime.CompilerServices;
 
 namespace System
 {
@@ -32,10 +35,7 @@ namespace System
         // Returns the index of the first occurrence of a specified character in the current instance.
         // The search starts at startIndex and runs thorough the next count characters.
         //
-        public int IndexOf(char value)
-        {
-            return IndexOf(value, 0, this.Length);
-        }
+        public int IndexOf(char value) => SpanHelpers.IndexOf(ref _firstChar, value, Length);
 
         public int IndexOf(char value, int startIndex)
         {
@@ -63,52 +63,25 @@ namespace System
 
                 case StringComparison.OrdinalIgnoreCase:
                     return CompareInfo.Invariant.IndexOf(this, value, CompareOptions.OrdinalIgnoreCase);
-                    
+
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
         }
-        
+
         public unsafe int IndexOf(char value, int startIndex, int count)
         {
-            if (startIndex < 0 || startIndex > Length)
+            // These bounds checks are redundant since AsSpan does them already, but are required
+            // so that the correct parameter name is thrown as part of the exception.
+            if ((uint)startIndex > (uint)Length)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
 
-            if (count < 0 || count > Length - startIndex)
+            if ((uint)count > (uint)(Length - startIndex))
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
 
-            fixed (char* pChars = &_firstChar)
-            {
-                char* pCh = pChars + startIndex;
+            int result = SpanHelpers.IndexOf(ref Unsafe.Add(ref _firstChar, startIndex), value, count);
 
-                while (count >= 4)
-                {
-                    if (*pCh == value) goto ReturnIndex;
-                    if (*(pCh + 1) == value) goto ReturnIndex1;
-                    if (*(pCh + 2) == value) goto ReturnIndex2;
-                    if (*(pCh + 3) == value) goto ReturnIndex3;
-
-                    count -= 4;
-                    pCh += 4;
-                }
-
-                while (count > 0)
-                {
-                    if (*pCh == value)
-                        goto ReturnIndex;
-
-                    count--;
-                    pCh++;
-                }
-
-                return -1;
-
-            ReturnIndex3: pCh++;
-            ReturnIndex2: pCh++;
-            ReturnIndex1: pCh++;
-            ReturnIndex:
-                return (int)(pCh - pChars);
-            }
+            return result == -1 ? result : result + startIndex;
         }
 
         // Returns the index of the first occurrence of any specified character in the current instance.
@@ -295,27 +268,27 @@ namespace System
             return false;
         }
 
-        private unsafe static bool IsCharBitSet(uint* charMap, byte value)
+        private static unsafe bool IsCharBitSet(uint* charMap, byte value)
         {
             return (charMap[value & PROBABILISTICMAP_BLOCK_INDEX_MASK] & (1u << (value >> PROBABILISTICMAP_BLOCK_INDEX_SHIFT))) != 0;
         }
 
-        private unsafe static void SetCharBit(uint* charMap, byte value)
+        private static unsafe void SetCharBit(uint* charMap, byte value)
         {
             charMap[value & PROBABILISTICMAP_BLOCK_INDEX_MASK] |= 1u << (value >> PROBABILISTICMAP_BLOCK_INDEX_SHIFT);
         }
 
-        public int IndexOf(String value)
+        public int IndexOf(string value)
         {
             return IndexOf(value, StringComparison.CurrentCulture);
         }
 
-        public int IndexOf(String value, int startIndex)
+        public int IndexOf(string value, int startIndex)
         {
             return IndexOf(value, startIndex, StringComparison.CurrentCulture);
         }
 
-        public int IndexOf(String value, int startIndex, int count)
+        public int IndexOf(string value, int startIndex, int count)
         {
             if (startIndex < 0 || startIndex > this.Length)
             {
@@ -330,17 +303,17 @@ namespace System
             return IndexOf(value, startIndex, count, StringComparison.CurrentCulture);
         }
 
-        public int IndexOf(String value, StringComparison comparisonType)
+        public int IndexOf(string value, StringComparison comparisonType)
         {
             return IndexOf(value, 0, this.Length, comparisonType);
         }
 
-        public int IndexOf(String value, int startIndex, StringComparison comparisonType)
+        public int IndexOf(string value, int startIndex, StringComparison comparisonType)
         {
             return IndexOf(value, startIndex, this.Length - startIndex, comparisonType);
         }
 
-        public int IndexOf(String value, int startIndex, int count, StringComparison comparisonType)
+        public int IndexOf(string value, int startIndex, int count, StringComparison comparisonType)
         {
             // Validate inputs
             if (value == null)
@@ -397,17 +370,27 @@ namespace System
             if (Length == 0)
                 return -1;
 
-            if (startIndex < 0 || startIndex >= Length)
+            if ((uint)startIndex >= (uint)Length)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
 
-            if (count < 0 || count - 1 > startIndex)
+            if ((uint)count > (uint)startIndex + 1)
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
 
             fixed (char* pChars = &_firstChar)
             {
                 char* pCh = pChars + startIndex;
+                char* pEndCh = pCh - count;
 
                 //We search [startIndex..EndIndex]
+                if (Vector.IsHardwareAccelerated && count >= Vector<ushort>.Count * 2)
+                {
+                    unchecked
+                    {
+                        const int elementsPerByte = sizeof(ushort) / sizeof(byte);
+                        count = (((int)pCh & (Vector<byte>.Count - 1)) / elementsPerByte) + 1;
+                    }
+                }
+            SequentialScan:
                 while (count >= 4)
                 {
                     if (*pCh == value) goto ReturnIndex;
@@ -428,6 +411,35 @@ namespace System
                     pCh--;
                 }
 
+                if (pCh > pEndCh)
+                {
+                    count = (int)((pCh - pEndCh) & ~(Vector<ushort>.Count - 1));
+
+                    // Get comparison Vector
+                    Vector<ushort> vComparison = new Vector<ushort>(value);
+                    while (count > 0)
+                    {
+                        char* pStart = pCh - Vector<ushort>.Count + 1;
+                        var vMatches = Vector.Equals(vComparison, Unsafe.ReadUnaligned<Vector<ushort>>(pStart));
+                        if (Vector<ushort>.Zero.Equals(vMatches))
+                        {
+                            pCh -= Vector<ushort>.Count;
+                            count -= Vector<ushort>.Count;
+                            continue;
+                        }
+                        // Find offset of last match
+                        return (int)(pStart - pChars) + LocateLastFoundChar(vMatches);
+                    }
+
+                    if (pCh > pEndCh)
+                    {
+                        unchecked
+                        {
+                            count = (int)(pCh - pEndCh);
+                        }
+                        goto SequentialScan;
+                    }
+                }
                 return -1;
 
             ReturnIndex3: pCh--;
@@ -436,6 +448,40 @@ namespace System
             ReturnIndex:
                 return (int)(pCh - pChars);
             }
+        }
+
+        // Vector sub-search adapted from https://github.com/aspnet/KestrelHttpServer/pull/1138
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int LocateLastFoundChar(Vector<ushort> match)
+        {
+            var vector64 = Vector.AsVectorUInt64(match);
+            ulong candidate = 0;
+            int i = Vector<ulong>.Count - 1;
+            // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
+            for (; i >= 0; i--)
+            {
+                candidate = vector64[i];
+                if (candidate != 0)
+                {
+                    break;
+                }
+            }
+
+            // Single LEA instruction with jitted const (using function result)
+            return i * 4 + LocateLastFoundChar(candidate);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int LocateLastFoundChar(ulong match)
+        {
+            // Find the most significant char that has its highest bit set
+            int index = 3;
+            while ((long)match > 0)
+            {
+                match = match << 16;
+                index--;
+            }
+            return index;
         }
 
         // Returns the index of the last occurrence of any specified character in the current instance.
@@ -521,17 +567,17 @@ namespace System
         // The character at position startIndex is included in the search.  startIndex is the larger
         // index within the string.
         //
-        public int LastIndexOf(String value)
+        public int LastIndexOf(string value)
         {
             return LastIndexOf(value, this.Length - 1, this.Length, StringComparison.CurrentCulture);
         }
 
-        public int LastIndexOf(String value, int startIndex)
+        public int LastIndexOf(string value, int startIndex)
         {
             return LastIndexOf(value, startIndex, startIndex + 1, StringComparison.CurrentCulture);
         }
 
-        public int LastIndexOf(String value, int startIndex, int count)
+        public int LastIndexOf(string value, int startIndex, int count)
         {
             if (count < 0)
             {
@@ -541,17 +587,17 @@ namespace System
             return LastIndexOf(value, startIndex, count, StringComparison.CurrentCulture);
         }
 
-        public int LastIndexOf(String value, StringComparison comparisonType)
+        public int LastIndexOf(string value, StringComparison comparisonType)
         {
             return LastIndexOf(value, this.Length - 1, this.Length, comparisonType);
         }
 
-        public int LastIndexOf(String value, int startIndex, StringComparison comparisonType)
+        public int LastIndexOf(string value, int startIndex, StringComparison comparisonType)
         {
             return LastIndexOf(value, startIndex, startIndex + 1, comparisonType);
         }
 
-        public int LastIndexOf(String value, int startIndex, int count, StringComparison comparisonType)
+        public int LastIndexOf(string value, int startIndex, int count, StringComparison comparisonType)
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));

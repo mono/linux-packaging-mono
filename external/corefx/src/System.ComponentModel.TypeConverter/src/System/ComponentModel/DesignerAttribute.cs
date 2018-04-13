@@ -15,6 +15,7 @@ namespace System.ComponentModel
     ///    <para>Specifies the class to use to implement design-time services.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
+    [Conditional("MONO_DESIGNER_ATTRIBUTE")]
     public sealed class DesignerAttribute : Attribute
     {
         private string _typeId;

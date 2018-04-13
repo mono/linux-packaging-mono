@@ -5,6 +5,7 @@
     <AssemblyName>System.Net.Security</AssemblyName>
     <ProjectGuid>{89F37791-6254-4D60-AB96-ACD3CCA0E771}</ProjectGuid>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ILLinkClearInitLocals>true</ILLinkClearInitLocals>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetsOSX)' == 'true' ">
     <DefineConstants>$(DefineConstants);SYSNETSECURITY_NO_OPENSSL</DefineConstants>
@@ -22,6 +23,7 @@
     <Compile Include="System\Net\FixedSizeReader.cs" />
     <Compile Include="System\Net\HelperAsyncResults.cs" />
     <Compile Include="System\Net\Logging\NetEventSource.cs" />
+    <Compile Include="System\Net\Security\SniHelper.cs" />
     <Compile Include="System\Net\Security\SslApplicationProtocol.cs" />
     <Compile Include="System\Net\Security\SslAuthenticationOptions.cs" />
     <Compile Include="System\Net\Security\SslClientAuthenticationOptions.cs" />

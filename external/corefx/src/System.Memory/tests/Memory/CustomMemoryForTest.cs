@@ -9,52 +9,72 @@ using System.Threading;
 
 namespace System.MemoryTests
 {
-    public class CustomMemoryForTest<T> : OwnedMemory<T>
+    public class CustomMemoryForTest<T> : MemoryManager<T>
     {
         private bool _disposed;
         private int _referenceCount;
         private int _noReferencesCalledCount;
         private T[] _array;
+        private readonly int _offset;
+        private readonly int _length;
 
-        public CustomMemoryForTest(T[] array)
+        public CustomMemoryForTest(T[] array) : this(array, 0, array.Length)
+        {
+        }
+
+        public CustomMemoryForTest(T[] array, int offset, int length)
         {
             _array = array;
+            _offset = offset;
+            _length = length;
         }
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
 
-        public override int Length => _array.Length;
+        public override int Length => _length;
 
-        public override bool IsDisposed => _disposed;
+        public bool IsDisposed => _disposed;
 
-        protected override bool IsRetained => _referenceCount > 0;
+        protected bool IsRetained => _referenceCount > 0;
 
-        public override Span<T> Span
-        {
-            get
-            {
-                if (IsDisposed)
-                    throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-                return new Span<T>(_array, 0, _array.Length);
-            }
-        }
-
-        public override MemoryHandle Pin(int offset = 0)
-        {
-            unsafe
-            {
-                Retain();
-                if (offset < 0 || offset > _array.Length) throw new ArgumentOutOfRangeException(nameof(offset));
-                var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new MemoryHandle(this, Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), offset), handle);
-            }
-        }
-
-        protected override bool TryGetArray(out ArraySegment<T> arraySegment)
+        public override Span<T> GetSpan()
         {
             if (IsDisposed)
                 throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-            arraySegment = new ArraySegment<T>(_array);
+            return new Span<T>(_array, _offset, _length);
+        }
+
+        public override MemoryHandle Pin(int elementIndex = 0)
+        {
+            unsafe
+            {
+                if (IsDisposed)
+                    throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
+                Interlocked.Increment(ref _referenceCount);
+
+                try
+                {
+                    if ((uint)elementIndex > (uint)(_array.Length - _offset))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(elementIndex));
+                    }
+
+                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    return new MemoryHandle(Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), _offset + elementIndex), handle, this);
+                }
+                catch
+                {
+                    Unpin();
+                    throw;
+                }
+            }
+        }
+
+        protected override bool TryGetArray(out ArraySegment<T> segment)
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
+            segment = new ArraySegment<T>(_array, _offset, _length);
             return true;
         }
 
@@ -72,14 +92,7 @@ namespace System.MemoryTests
 
         }
 
-        public override void Retain()
-        {
-            if (IsDisposed)
-                throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-            Interlocked.Increment(ref _referenceCount);
-        }
-
-        public override bool Release()
+        public override void Unpin()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
 
@@ -89,9 +102,7 @@ namespace System.MemoryTests
             if (newRefCount == 0)
             {
                 _noReferencesCalledCount++;
-                return false;
             }
-            return true;
         }
     }
 }

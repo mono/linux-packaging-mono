@@ -105,8 +105,7 @@ pedump_DEPENDENCIES =  \
 	$(top_builddir)/mono/metadata/libmonoruntimesgen.la \
 	$(top_builddir)/mono/sgen/libmonosgen.la \
 	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(glib_libs)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -227,7 +226,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -412,6 +410,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 pedump_SOURCES = \
 	pedump.c
 
@@ -421,7 +420,7 @@ pedump_LDADD = \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(LLVM_LIBS)			\
 	$(LLVM_LDFLAGS)			\
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 @HOST_DARWIN_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 all: all-am

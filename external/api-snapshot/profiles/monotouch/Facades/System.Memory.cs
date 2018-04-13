@@ -16,8 +16,6 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Buffers.Binary.BinaryPrimitives))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Buffers.MemoryHandle))]
-[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Buffers.OperationStatus))]
-[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Buffers.StandardFormat))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Memory<>))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.MemoryExtensions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ReadOnlyMemory<>))]

@@ -129,8 +129,8 @@ test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
 am__DEPENDENCIES_1 =
 @LOADED_LLVM_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
 @LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_1)
-am__DEPENDENCIES_3 = libtestlib.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+am__DEPENDENCIES_3 = libtestlib.la $(am__DEPENDENCIES_1) $(glib_libs) \
+	$(am__DEPENDENCIES_2)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_DEPENDENCIES =  \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
 test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -148,9 +148,6 @@ test_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 am__test_mono_callspec_SOURCES_DIST = test-mono-callspec.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_callspec_OBJECTS = test_mono_callspec-test-mono-callspec.$(OBJEXT)
 test_mono_callspec_OBJECTS = $(am_test_mono_callspec_OBJECTS)
-am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
-	$(monodir)/mono/sgen/libmonosgen.la \
-	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1)
 test_mono_callspec_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_callspec_CFLAGS) $(CFLAGS) \
@@ -181,7 +178,7 @@ test_mono_string_OBJECTS = $(am_test_mono_string_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_DEPENDENCIES =  \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(mini_libs) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_4)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(sgen_libs)
 test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_string_CFLAGS) $(CFLAGS) \
@@ -523,7 +520,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -720,9 +716,10 @@ MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
 @LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
 @LOADED_LLVM_TRUE@LLVMMONOF = 
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 test_cflags = $(AM_CFLAGS) $(SGEN_DEFINES)
 test_ldadd = libtestlib.la \
-	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LLVMMONOF)
+	$(LIBGC_LIBS) $(glib_libs) $(LLVMMONOF)
 
 @HOST_DARWIN_TRUE@test_ldflags = -framework CoreFoundation -framework Foundation
 monodir = $(top_builddir)
@@ -730,7 +727,7 @@ sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
 	$(am__append_2)
