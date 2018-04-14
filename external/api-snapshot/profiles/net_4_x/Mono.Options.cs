@@ -41,6 +41,7 @@ namespace Mono.Options
         public string Suite { get { throw null; } }
         public Mono.Options.CommandSet Add(Mono.Options.ArgumentSource source) { throw null; }
         public new Mono.Options.CommandSet Add(Mono.Options.Command value) { throw null; }
+        public Mono.Options.CommandSet Add(Mono.Options.CommandSet nestedCommands) { throw null; }
         public Mono.Options.CommandSet Add(Mono.Options.Option option) { throw null; }
         public Mono.Options.CommandSet Add(string header) { throw null; }
         public Mono.Options.CommandSet Add(string prototype, Mono.Options.OptionAction<string, string> action) { throw null; }
