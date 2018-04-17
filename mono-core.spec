@@ -64,7 +64,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  valgrind-devel
 %endif
 %if %llvm == yes
-BuildRequires:  mono-llvm-devel
+BuildRequires:  llvm-mono-devel
 %endif
 Provides:       mono = %{version}
 Provides:       mono-cairo = %{version}
@@ -74,6 +74,13 @@ Provides:       mono-posix = %{version}
 Provides:       mono-xml-relaxng = %{version}
 Provides:       mono-ziplib = %{version}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+%if %llvm == yes
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
+Requires:       libmono-llvm0 = %{version}
+%else
+Recommends:     libmono-llvm0 = %{version}
+%endif
+%endif
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 Requires:       libgdiplus0
 %else
@@ -147,10 +154,14 @@ export MONO_CPU_ARCH="armv7l-thumb"
 export MONO_CPU_ARCH="armv5el"
 %endif
 # distro specific configure options
+%if %llvm == yes
+export PATH=/opt/novell/llvm-mono/bin:$PATH
+%endif
 %configure \
   --with-sgen=%{sgen} \
 %if %llvm == yes
-  --with-llvm=/usr/lib/mono/llvm/ \
+  --enable-loadedllvm \
+  --disable-system-aot \
 %endif
 %ifarch ppc
  --with-sigaltstack=no \
@@ -557,6 +568,30 @@ Development files for libmonosgen.
 %{_bindir}/mono-sgen-gdb.py
 %{_libdir}/libmonosgen-2.0.so
 %{_libdir}/pkgconfig/monosgen-2.pc
+%endif
+
+%if %llvm == yes
+%package -n libmono-llvm0
+Summary:        Loadable LLVM libary for mono
+License:        LGPL-2.1
+Group:          Development/Libraries/C and C++
+
+%description -n libmono-llvm0
+The Mono Project is an open development initiative that is working to
+develop an open source, Unix version of the .NET development platform.
+Its objective is to enable Unix developers to build and deploy
+cross-platform .NET applications. The project will implement various
+technologies that have been submitted to the ECMA for standardization.
+
+Loadable LLVM libary for mono.
+
+%files -n libmono-llvm0
+%defattr(-, root, root)
+%{_libdir}/libmono-llvm.so*
+
+%post -n libmono-llvm0 -p /sbin/ldconfig
+
+%postun -n libmono-llvm0 -p /sbin/ldconfig
 %endif
 
 %package -n mono-locale-extras
@@ -1400,6 +1435,9 @@ Requires:       ibm-data-db2 = %{version}
 Requires:       libmono-2_0-1 = %{version}
 Requires:       libmono-2_0-devel = %{version}
 Requires:       mono-core = %{version}
+%if %llvm == yes
+Requires:       libmono-llvm0 = %{version}
+%endif
 %if %sgen == yes
 Requires:       libmonosgen-2_0-1 = %{version}
 Requires:       libmonosgen-2_0-devel = %{version}
