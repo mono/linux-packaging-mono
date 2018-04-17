@@ -64,7 +64,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  valgrind-devel
 %endif
 %if %llvm == yes
-BuildRequires:  llvm-mono-devel
+BuildRequires:  mono-llvm-devel
 %endif
 Provides:       mono = %{version}
 Provides:       mono-cairo = %{version}
@@ -80,6 +80,7 @@ Requires:       libmono-llvm0 = %{version}
 %else
 Recommends:     libmono-llvm0 = %{version}
 %endif
+Requires:	mono-llvm-tools
 %endif
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 Requires:       libgdiplus0
@@ -155,13 +156,12 @@ export MONO_CPU_ARCH="armv5el"
 %endif
 # distro specific configure options
 %if %llvm == yes
-export PATH=/opt/novell/llvm-mono/bin:$PATH
+export PATH=/usr/lib/mono/llvm/bin:$PATH
 %endif
 %configure \
   --with-sgen=%{sgen} \
 %if %llvm == yes
   --enable-loadedllvm \
-  --disable-system-aot \
 %endif
 %ifarch ppc
  --with-sigaltstack=no \
