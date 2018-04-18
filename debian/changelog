@@ -1,3 +1,15 @@
+mono (5.15.0.183-0nightly2) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [b06243e] Change default AOT LLVM path from $PATH to
+    /usr/lib/mono/llvm/bin [1e217fb] Remove patch for Ubuntu 12.04
+    (discontinued)
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 18 Apr 2018 09:41:52 +0000
+
 mono (5.15.0.183-0nightly1) nightly; urgency=medium
 
   * New release - mono-5.15.0.183.tar.bz2
