@@ -134,11 +134,17 @@
 /* Enable thread checked build */
 #undef ENABLE_CHECKED_BUILD_THREAD
 
+/* Enable cooperative stop-the-world garbage collection. */
+#undef ENABLE_COOP_SUSPEND
+
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
 
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
+
+/* Enable hybrid suspend for GC stop-the-world */
+#undef ENABLE_HYBRID_SUSPEND
 
 /* Icall export enabled */
 #undef ENABLE_ICALL_EXPORT
@@ -1308,14 +1314,8 @@
 /* ... */
 #undef TARGET_XBOX360
 
-/* Enable cooperative stop-the-world garbage collection. */
-#undef USE_COOP_GC
-
 /* ... */
 #undef USE_GCC_ATOMIC_OPS
-
-/* Enable hybrid cooperative suspend for GC stop-the-world */
-#undef USE_HYBRID_SUSPEND
 
 /* Use kqueue for the threadpool */
 #undef USE_KQUEUE_FOR_THREADPOOL
