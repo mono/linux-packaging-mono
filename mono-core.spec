@@ -21,7 +21,7 @@
 %else
 %{!?ext_man: %define ext_man .gz}
 %endif
-%define llvm no
+%define llvm yes
 %global debug_package %{nil}
 %global _enable_debug_package %{nil}
 %global __debug_install_post %{nil}
@@ -80,7 +80,6 @@ Requires:       libmono-llvm0 = %{version}
 %else
 Recommends:     libmono-llvm0 = %{version}
 %endif
-Requires:	mono-llvm-tools
 %endif
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 Requires:       libgdiplus0
@@ -574,6 +573,7 @@ Development files for libmonosgen.
 %package -n libmono-llvm0
 Summary:        Loadable LLVM libary for mono
 License:        LGPL-2.1
+Requires:	mono-llvm-tools
 Group:          Development/Libraries/C and C++
 
 %description -n libmono-llvm0
@@ -587,7 +587,7 @@ Loadable LLVM libary for mono.
 
 %files -n libmono-llvm0
 %defattr(-, root, root)
-%{_libdir}/libmono-llvm.so*
+%{_libdir}/libmono-llvm.so.0*
 
 %post -n libmono-llvm0 -p /sbin/ldconfig
 
