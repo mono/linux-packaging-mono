@@ -52,23 +52,28 @@ ifeq ($(DEB_HOST_ARCH), arm64)
 	MONO_BOEHM_TEST = true
 	CONF_FLAGS += --disable-boehm
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 	SKIP_LIBGC = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), i386)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), armhf)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), amd64)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), ppc64el)
 	CONF_FLAGS += --with-csc=mcs
+	BTLS_ARCH = true
 endif
 
 ifneq (,$(wildcard /usr/bin/gcc-4.7))
@@ -79,10 +84,15 @@ ifneq (,$(wildcard /usr/lib/gcc-mozilla/bin/gcc))
         GCC := CC=/usr/lib/gcc-mozilla/bin/gcc CXX=/usr/lib/gcc-mozilla/bin/g++
 endif
 
+ifdef LLVM_ARCH
+	CONF_FLAGS += --enable-loadedllvm
+endif
+
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 CONFIGURE =	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"   \
+		PATH="/usr/lib/mono/llvm/bin:$PATH" \
 		$(GCC) ./configure $(CONF_FLAGS) --prefix=/usr \
 		  --mandir=\$${prefix}/share/man \
 		  --infodir=\$${prefix}/share/info --sysconfdir=/etc \
@@ -324,6 +334,10 @@ ifndef SKIP_LIBGC
 endif
 ifdef BTLS_ARCH
 	install -D -m 644 debian/tmp/usr/lib/libmono-btls-shared.so debian/mono-runtime-common/usr/lib/
+endif
+ifdef LLVM_ARCH
+	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.so debian/mono-runtime-common/usr/lib/
+	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.a debian/mono-runtime-common/usr/lib/
 endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
