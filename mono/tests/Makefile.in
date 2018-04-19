@@ -153,17 +153,20 @@ target_triplet = @target@
 @HOST_WIN32_FALSE@am__append_4 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$(top_builddir)/runtime/mono-wrapper)"
 @FULL_AOT_TESTS_TRUE@am__append_5 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 @HYBRID_AOT_TESTS_TRUE@am__append_6 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
-@AMD64_TRUE@am__append_7 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
+
+# some tests fail to compile on mcs
+@CSC_IS_ROSLYN_TRUE@am__append_7 = roslyn-bug-19038.cs sizeof-empty-structs.cs
+@AMD64_TRUE@am__append_8 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
 # requires working altstack
-@AMD64_TRUE@@HOST_WIN32_FALSE@am__append_8 = bug-60862.cs
-@X86_TRUE@am__append_9 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
+@AMD64_TRUE@@HOST_WIN32_FALSE@am__append_9 = bug-60862.cs
+@X86_TRUE@am__append_10 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
 # requires working altstack
-@HOST_WIN32_FALSE@@X86_TRUE@am__append_10 = bug-60862.cs
-@HOST_WIN32_TRUE@am__append_11 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
+@HOST_WIN32_FALSE@@X86_TRUE@am__append_11 = bug-60862.cs
+@HOST_WIN32_TRUE@am__append_12 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
 
 # #651684
-@AMD64_TRUE@am__append_12 = finally_guard.exe
-@AMD64_TRUE@@HOST_LINUX_TRUE@am__append_13 = \
+@AMD64_TRUE@am__append_13 = finally_guard.exe
+@AMD64_TRUE@@HOST_LINUX_TRUE@am__append_14 = \
 @AMD64_TRUE@@HOST_LINUX_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/compat_r4_r8.exe \
 @AMD64_TRUE@@HOST_LINUX_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/compat_r8_r4.exe \
 @AMD64_TRUE@@HOST_LINUX_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
@@ -174,8 +177,8 @@ target_triplet = @target@
 @AMD64_TRUE@@HOST_LINUX_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_2c.exe \
 @AMD64_TRUE@@HOST_LINUX_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe
 
-@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_14 = w32message.exe
-@X86_TRUE@am__append_15 = \
+@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_15 = w32message.exe
+@X86_TRUE@am__append_16 = \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/recurse_ep_void.exe \
@@ -185,15 +188,15 @@ target_triplet = @target@
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_3b.exe \
 @X86_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe
 
-@HOST_WIN32_TRUE@@X86_TRUE@am__append_16 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@am__append_17 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
 
-@X86_TRUE@am__append_17 = tailcall-interface-conservestack.exe
+@X86_TRUE@am__append_18 = tailcall-interface-conservestack.exe
 
 # bug #71274
-@POWERPC_TRUE@am__append_18 = finalizer-abort.exe \
+@POWERPC_TRUE@am__append_19 = finalizer-abort.exe \
 @POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
 @POWERPC_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @POWERPC_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
@@ -201,7 +204,7 @@ target_triplet = @target@
 @POWERPC_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_19 = monitor.exe threadpool-exceptions5.exe \
+@POWERPC64_TRUE@am__append_20 = monitor.exe threadpool-exceptions5.exe \
 @POWERPC64_TRUE@	appdomain-unload.exe pinvoke2.exe pinvoke3.exe \
 @POWERPC64_TRUE@	pinvoke11.exe threadpool-exceptions7.exe \
 @POWERPC64_TRUE@	winx64structs.exe bug-10127.exe \
@@ -215,10 +218,15 @@ target_triplet = @target@
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe \
 @POWERPC64_TRUE@	sgen-new-threads-collect.exe sgen-bridge.exe \
 @POWERPC64_TRUE@	tailcall-generic-cast-conservestack-il.exe \
+@POWERPC64_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @POWERPC64_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
 @POWERPC64_TRUE@	tailcall-interface-conservestack.exe \
-@POWERPC64_TRUE@	ivtail1.exe
-@ARM_TRUE@am__append_20 = filter-stack.exe weak-fields.exe \
+@POWERPC64_TRUE@	ivtail1.exe appdomain-threadpool-unload.exe \
+@POWERPC64_TRUE@	bug-60848.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_3b.exe
+@ARM_TRUE@am__append_21 = filter-stack.exe weak-fields.exe \
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @ARM_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
@@ -232,7 +240,7 @@ target_triplet = @target@
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe
-@ARM64_TRUE@am__append_21 = weak-fields.exe \
+@ARM64_TRUE@am__append_22 = weak-fields.exe \
 @ARM64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/compat_r4_r8.exe \
 @ARM64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/compat_r8_r4.exe \
 @ARM64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
@@ -245,13 +253,13 @@ target_triplet = @target@
 @ARM64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_22 = filter-stack.exe monitor.exe \
+@MIPS_TRUE@am__append_23 = filter-stack.exe monitor.exe \
 @MIPS_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @MIPS_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @MIPS_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
 @MIPS_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_23 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_24 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe \
@@ -292,7 +300,7 @@ target_triplet = @target@
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-@FULL_AOT_TESTS_TRUE@am__append_24 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_25 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -366,14 +374,14 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	delegate15.exe weak-fields.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/fsharp-deeptail.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall-interface-conservestack.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_25 = bug-80307.exe \
+@HYBRID_AOT_TESTS_TRUE@am__append_26 = bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe \
 @HYBRID_AOT_TESTS_TRUE@	tailcall/fsharp-deeptail.exe
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_26 = \
+@ARM_TRUE@am__append_27 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -428,14 +436,14 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_27 = \
+@ARM64_TRUE@am__append_28 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_28 = \
+@AMD64_TRUE@am__append_29 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1042,10 +1050,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	struct-explicit-layout.cs bug-59281.cs \
 	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
 	threads-init.cs bug-60848.cs bug-59400.cs \
-	tailcall-generic-cast-cs.cs tailcall-interface.cs \
-	sizeof-empty-structs.cs bug-60843.cs roslyn-bug-19038.cs \
+	tailcall-generic-cast-cs.cs tailcall-interface.cs bug-60843.cs \
 	nested_type_visibility.cs $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10)
+	$(am__append_9) $(am__append_10) $(am__append_11)
 TESTS_IL_SRC = \
 	tailcall/fsharp-deeptail.il	     \
 	tailcall/fsharp-shallowtail.il	 \
@@ -1202,13 +1209,13 @@ TESTS_GSHARED_SRC = \
 	bug-1147.cs	\
 	generic-type-builder.2.cs
 
-PLATFORM_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_11) \
-	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15) $(am__append_16) $(am__append_17) \
-	$(am__append_18) $(am__append_19) $(am__append_20) \
-	$(am__append_21) $(am__append_22) $(am__append_23)
-PROFILE_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_24) \
-	$(am__append_25)
+PLATFORM_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_18) \
+	$(am__append_19) $(am__append_20) $(am__append_21) \
+	$(am__append_22) $(am__append_23) $(am__append_24)
+PROFILE_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_25) \
+	$(am__append_26)
 
 # tailcall/fsharp AOT hangs
 # tailcall/fsharp FullAOT stack overflow in CI but not locally.
@@ -1286,8 +1293,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
 	ivtail1.exe tailcall-interface-conservestack.exe \
 	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
 	tailcall-generic-cast-conservestack-il.exe \
-	tailcall/fsharp-deeptail.exe bug-60843.exe $(am__append_26) \
-	$(am__append_27) $(am__append_28)
+	tailcall/fsharp-deeptail.exe bug-60843.exe $(am__append_27) \
+	$(am__append_28) $(am__append_29)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
