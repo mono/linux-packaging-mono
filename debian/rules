@@ -93,7 +93,7 @@ DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 CONFIGURE =	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"   \
-		PATH="/usr/lib/mono/llvm/bin:$PATH" \
+		PATH="/usr/lib/mono/llvm/bin:$(PATH)" \
 		$(GCC) ./configure $(CONF_FLAGS) --prefix=/usr \
 		  --mandir=\$${prefix}/share/man \
 		  --infodir=\$${prefix}/share/info --sysconfdir=/etc \
