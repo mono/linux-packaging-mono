@@ -475,6 +475,7 @@ Development files for libmono.
 %{_bindir}/mono-gdb.py
 %{_includedir}/mono-2.0
 %{_libdir}/libmono-2.0.so
+%{_libdir}/libmono-llvm.so
 %{_libdir}/pkgconfig/mono-2.pc
 
 %package -n libmonoboehm-2_0-1
