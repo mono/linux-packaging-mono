@@ -21,7 +21,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <glib.h>
-#include <signal.h>
 #include <math.h>
 #include <locale.h>
 
@@ -3574,8 +3573,6 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 					child_frame.retval = &retval;
 				}
 			}
-
-			g_assert (csig->call_convention == MONO_CALL_DEFAULT);
 
 			interp_exec_method (&child_frame, context);
 
