@@ -337,7 +337,6 @@ ifdef BTLS_ARCH
 	install -D -m 644 debian/tmp/usr/lib/libmono-btls-shared.so debian/mono-runtime-common/usr/lib/
 endif
 ifdef LLVM_ARCH
-	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.so debian/mono-runtime-common/usr/lib/
 	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.a debian/mono-runtime-common/usr/lib/
 endif
 	dh_link -s
