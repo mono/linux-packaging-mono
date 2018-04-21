@@ -2608,14 +2608,12 @@ namespace System.Collections.Specialized
 }
 namespace System.ComponentModel
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class AddingNewEventArgs : System.EventArgs
     {
         public AddingNewEventArgs() { }
         public AddingNewEventArgs(object newObject) { }
         public object NewObject { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void AddingNewEventHandler(object sender, System.ComponentModel.AddingNewEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
     public sealed partial class AmbientValueAttribute : System.Attribute
@@ -2635,7 +2633,6 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ArrayConverter : System.ComponentModel.CollectionConverter
     {
         public ArrayConverter() { }
@@ -2657,7 +2654,6 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void AsyncCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public sealed partial class AsyncOperation
     {
         internal AsyncOperation() { }
@@ -2668,15 +2664,12 @@ namespace System.ComponentModel
         public void Post(System.Threading.SendOrPostCallback d, object arg) { }
         public void PostOperationCompleted(System.Threading.SendOrPostCallback d, object arg) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public static partial class AsyncOperationManager
     {
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
-        public static System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]set { } }
+        public static System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } set { } }
         public static System.ComponentModel.AsyncOperation CreateOperation(object userSuppliedState) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class AttributeCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public static readonly System.ComponentModel.AttributeCollection Empty;
@@ -2708,23 +2701,18 @@ namespace System.ComponentModel
         public string PropertyName { get { throw null; } }
         public string TypeName { get { throw null; } }
     }
-    [System.ComponentModel.DefaultEventAttribute("DoWork")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class BackgroundWorker : System.ComponentModel.Component
     {
         public BackgroundWorker() { }
-        [System.ComponentModel.BrowsableAttribute(false)]
         public bool CancellationPending { get { throw null; } }
-        [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsBusy { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool WorkerReportsProgress { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool WorkerSupportsCancellation { get { throw null; } set { } }
         public event System.ComponentModel.DoWorkEventHandler DoWork { add { } remove { } }
         public event System.ComponentModel.ProgressChangedEventHandler ProgressChanged { add { } remove { } }
         public event System.ComponentModel.RunWorkerCompletedEventHandler RunWorkerCompleted { add { } remove { } }
         public void CancelAsync() { }
+        protected override void Dispose(bool disposing) { }
         protected virtual void OnDoWork(System.ComponentModel.DoWorkEventArgs e) { }
         protected virtual void OnProgressChanged(System.ComponentModel.ProgressChangedEventArgs e) { }
         protected virtual void OnRunWorkerCompleted(System.ComponentModel.RunWorkerCompletedEventArgs e) { }
@@ -2733,12 +2721,11 @@ namespace System.ComponentModel
         public void RunWorkerAsync() { }
         public void RunWorkerAsync(object argument) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class BaseNumberConverter : System.ComponentModel.TypeConverter
     {
         protected BaseNumberConverter() { }
         public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
-        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type t) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
@@ -2769,7 +2756,6 @@ namespace System.ComponentModel
         OneWay = 0,
         TwoWay = 1,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class BindingList<T> : System.Collections.ObjectModel.Collection<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList, System.ComponentModel.IBindingList, System.ComponentModel.ICancelAddNew, System.ComponentModel.IRaiseItemChangedEvents
     {
@@ -2819,7 +2805,6 @@ namespace System.ComponentModel
         void System.ComponentModel.IBindingList.RemoveIndex(System.ComponentModel.PropertyDescriptor prop) { }
         void System.ComponentModel.IBindingList.RemoveSort() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class BooleanConverter : System.ComponentModel.TypeConverter
     {
         public BooleanConverter() { }
@@ -2841,19 +2826,16 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ByteConverter : System.ComponentModel.BaseNumberConverter
     {
         public ByteConverter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CancelEventArgs : System.EventArgs
     {
         public CancelEventArgs() { }
         public CancelEventArgs(bool cancel) { }
         public bool Cancel { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void CancelEventHandler(object sender, System.ComponentModel.CancelEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
     public partial class CategoryAttribute : System.Attribute
@@ -2880,7 +2862,6 @@ namespace System.ComponentModel
         protected virtual string GetLocalizedString(string value) { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CharConverter : System.ComponentModel.TypeConverter
     {
         public CharConverter() { }
@@ -2894,14 +2875,12 @@ namespace System.ComponentModel
         Refresh = 3,
         Remove = 2,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CollectionChangeEventArgs : System.EventArgs
     {
         public CollectionChangeEventArgs(System.ComponentModel.CollectionChangeAction action, object element) { }
         public virtual System.ComponentModel.CollectionChangeAction Action { get { throw null; } }
         public virtual object Element { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void CollectionChangeEventHandler(object sender, System.ComponentModel.CollectionChangeEventArgs e);
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CollectionConverter : System.ComponentModel.TypeConverter
@@ -2949,8 +2928,6 @@ namespace System.ComponentModel
         protected virtual object GetService(System.Type service) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class ComponentCollection : System.Collections.ReadOnlyCollectionBase
     {
         public ComponentCollection(System.ComponentModel.IComponent[] components) { }
@@ -2965,14 +2942,12 @@ namespace System.ComponentModel
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
         public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ComponentEditor
     {
         protected ComponentEditor() { }
         public abstract bool EditComponent(System.ComponentModel.ITypeDescriptorContext context, object component);
         public bool EditComponent(object component) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ComponentResourceManager : System.Resources.ResourceManager
     {
         public ComponentResourceManager() { }
@@ -2996,13 +2971,11 @@ namespace System.ComponentModel
         protected void RemoveWithoutUnsiting(System.ComponentModel.IComponent component) { }
         protected virtual void ValidateName(System.ComponentModel.IComponent component, string name) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ContainerFilterService
     {
         protected ContainerFilterService() { }
         public virtual System.ComponentModel.ComponentCollection FilterComponents(System.ComponentModel.ComponentCollection components) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CultureInfoConverter : System.ComponentModel.TypeConverter
     {
         public CultureInfoConverter() { }
@@ -3015,7 +2988,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class CustomTypeDescriptor : System.ComponentModel.ICustomTypeDescriptor
     {
         protected CustomTypeDescriptor() { }
@@ -3033,7 +3005,6 @@ namespace System.ComponentModel
         public virtual System.ComponentModel.PropertyDescriptorCollection GetProperties(System.Attribute[] attributes) { throw null; }
         public virtual object GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DataErrorsChangedEventArgs : System.EventArgs
     {
         public DataErrorsChangedEventArgs(string propertyName) { }
@@ -3085,7 +3056,6 @@ namespace System.ComponentModel
         Select = 1,
         Update = 2,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DateTimeConverter : System.ComponentModel.TypeConverter
     {
         public DateTimeConverter() { }
@@ -3103,7 +3073,6 @@ namespace System.ComponentModel
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DecimalConverter : System.ComponentModel.BaseNumberConverter
     {
         public DecimalConverter() { }
@@ -3149,9 +3118,17 @@ namespace System.ComponentModel
         public DefaultValueAttribute(int value) { }
         public DefaultValueAttribute(long value) { }
         public DefaultValueAttribute(object value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(sbyte value) { }
         public DefaultValueAttribute(float value) { }
         public DefaultValueAttribute(string value) { }
         public DefaultValueAttribute(System.Type type, string value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(ushort value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(uint value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(ulong value) { }
         public virtual object Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3198,7 +3175,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum DesignerSerializationVisibility
     {
         Content = 2,
@@ -3255,7 +3231,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DoubleConverter : System.ComponentModel.BaseNumberConverter
     {
         public DoubleConverter() { }
@@ -3313,8 +3288,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool IsValid(System.ComponentModel.ITypeDescriptorContext context, object value) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class EventDescriptor : System.ComponentModel.MemberDescriptor
     {
         protected EventDescriptor(System.ComponentModel.MemberDescriptor descr) : base (default(string)) { }
@@ -3326,8 +3299,6 @@ namespace System.ComponentModel
         public abstract void AddEventHandler(object component, System.Delegate value);
         public abstract void RemoveEventHandler(object component, System.Delegate value);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class EventDescriptorCollection : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         public static readonly System.ComponentModel.EventDescriptorCollection Empty;
@@ -3367,7 +3338,6 @@ namespace System.ComponentModel
         void System.Collections.IList.Remove(object value) { }
         void System.Collections.IList.RemoveAt(int index) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public sealed partial class EventHandlerList : System.IDisposable
     {
         public EventHandlerList() { }
@@ -3394,7 +3364,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class GuidConverter : System.ComponentModel.TypeConverter
     {
         public GuidConverter() { }
@@ -3403,14 +3372,12 @@ namespace System.ComponentModel
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class HandledEventArgs : System.EventArgs
     {
         public HandledEventArgs() { }
         public HandledEventArgs(bool defaultHandledValue) { }
         public bool Handled { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void HandledEventHandler(object sender, System.ComponentModel.HandledEventArgs e);
     public partial interface IBindingList : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -3476,7 +3443,6 @@ namespace System.ComponentModel
         System.ComponentModel.ISite Site { get; set; }
         event System.EventHandler Disposed;
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IContainer : System.IDisposable
     {
         System.ComponentModel.ComponentCollection Components { get; }
@@ -3519,9 +3485,7 @@ namespace System.ComponentModel
         string Name { get; }
         bool Show(string language, string value, ref string newValue);
     }
-    [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataSourceListEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.ComponentModel.MergablePropertyAttribute(false)]
-    [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     public partial interface IListSource
     {
         bool ContainsListCollection { get; }
@@ -3597,29 +3561,24 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class InstanceCreationEditor
     {
         protected InstanceCreationEditor() { }
         public virtual string Text { get { throw null; } }
         public abstract object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Type instanceType);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int16Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int16Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int32Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int32Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int64Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int64Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class InvalidAsynchronousStateException : System.ArgumentException
     {
@@ -3645,7 +3604,6 @@ namespace System.ComponentModel
     {
         void RejectChanges();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISite : System.IServiceProvider
     {
         System.ComponentModel.IComponent Component { get; }
@@ -3666,12 +3624,10 @@ namespace System.ComponentModel
     public partial interface ISynchronizeInvoke
     {
         bool InvokeRequired { get; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         System.IAsyncResult BeginInvoke(System.Delegate method, object[] args);
         object EndInvoke(System.IAsyncResult result);
         object Invoke(System.Delegate method, object[] args);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ITypeDescriptorContext : System.IServiceProvider
     {
         System.ComponentModel.IContainer Container { get; }
@@ -3685,14 +3641,12 @@ namespace System.ComponentModel
         System.ComponentModel.PropertyDescriptorCollection GetItemProperties(System.ComponentModel.PropertyDescriptor[] listAccessors);
         string GetListName(System.ComponentModel.PropertyDescriptor[] listAccessors);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class License : System.IDisposable
     {
         protected License() { }
         public abstract string LicenseKey { get; }
         public abstract void Dispose();
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class LicenseContext : System.IServiceProvider
     {
         public LicenseContext() { }
@@ -3714,7 +3668,6 @@ namespace System.ComponentModel
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalProcessMgmt=true)]
     public sealed partial class LicenseManager
     {
         internal LicenseManager() { }
@@ -3730,7 +3683,6 @@ namespace System.ComponentModel
         public static void Validate(System.Type type) { }
         public static System.ComponentModel.License Validate(System.Type type, object instance) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class LicenseProvider
     {
         protected LicenseProvider() { }
@@ -3753,7 +3705,6 @@ namespace System.ComponentModel
         Designtime = 1,
         Runtime = 0,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class LicFileLicenseProvider : System.ComponentModel.LicenseProvider
     {
         public LicFileLicenseProvider() { }
@@ -3774,7 +3725,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListChangedEventArgs : System.EventArgs
     {
         public ListChangedEventArgs(System.ComponentModel.ListChangedType listChangedType, System.ComponentModel.PropertyDescriptor propDesc) { }
@@ -3786,7 +3736,6 @@ namespace System.ComponentModel
         public int OldIndex { get { throw null; } }
         public System.ComponentModel.PropertyDescriptor PropertyDescriptor { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ListChangedEventHandler(object sender, System.ComponentModel.ListChangedEventArgs e);
     public enum ListChangedType
     {
@@ -3799,14 +3748,12 @@ namespace System.ComponentModel
         PropertyDescriptorDeleted = 6,
         Reset = 0,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListSortDescription
     {
         public ListSortDescription(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction) { }
         public System.ComponentModel.PropertyDescriptor PropertyDescriptor { get { throw null; } set { } }
         public System.ComponentModel.ListSortDirection SortDirection { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListSortDescriptionCollection : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         public ListSortDescriptionCollection() { }
@@ -3861,7 +3808,6 @@ namespace System.ComponentModel
     [System.ComponentModel.DesignerAttribute("System.Windows.Forms.Design.ComponentDocumentDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.ComponentModel.Design.IRootDesigner))]
     [System.ComponentModel.DesignerCategoryAttribute("Component")]
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ComponentConverter))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class MarshalByValueComponent : System.ComponentModel.IComponent, System.IDisposable, System.IServiceProvider
     {
         public MarshalByValueComponent() { }
@@ -3882,7 +3828,6 @@ namespace System.ComponentModel
         public virtual object GetService(System.Type service) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class MaskedTextProvider : System.ICloneable
     {
         public MaskedTextProvider(string mask) { }
@@ -4024,7 +3969,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class MultilineStringConverter : System.ComponentModel.TypeConverter
     {
         public MultilineStringConverter() { }
@@ -4032,7 +3976,6 @@ namespace System.ComponentModel
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
         public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class NestedContainer : System.ComponentModel.Container, System.ComponentModel.IContainer, System.ComponentModel.INestedContainer, System.IDisposable
     {
         public NestedContainer(System.ComponentModel.IComponent owner) { }
@@ -4054,7 +3997,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class NullableConverter : System.ComponentModel.TypeConverter
     {
         public NullableConverter(System.Type type) { }
@@ -4107,24 +4049,18 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ProgressChangedEventHandler(object sender, System.ComponentModel.ProgressChangedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class PropertyChangedEventArgs : System.EventArgs
     {
         public PropertyChangedEventArgs(string propertyName) { }
         public virtual string PropertyName { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void PropertyChangedEventHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class PropertyChangingEventArgs : System.EventArgs
     {
         public PropertyChangingEventArgs(string propertyName) { }
         public virtual string PropertyName { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void PropertyChangingEventHandler(object sender, System.ComponentModel.PropertyChangingEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class PropertyDescriptor : System.ComponentModel.MemberDescriptor
     {
         protected PropertyDescriptor(System.ComponentModel.MemberDescriptor descr) : base (default(string)) { }
@@ -4158,7 +4094,6 @@ namespace System.ComponentModel
         public abstract void SetValue(object component, object value);
         public abstract bool ShouldSerializeValue(object component);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class PropertyDescriptorCollection : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable, System.Collections.IList
     {
         public static readonly System.ComponentModel.PropertyDescriptorCollection Empty;
@@ -4268,7 +4203,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ReferenceConverter : System.ComponentModel.TypeConverter
     {
         public ReferenceConverter(System.Type type) { }
@@ -4280,7 +4214,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         protected virtual bool IsValueAllowed(System.ComponentModel.ITypeDescriptorContext context, object value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class RefreshEventArgs : System.EventArgs
     {
         public RefreshEventArgs(object componentChanged) { }
@@ -4288,7 +4221,6 @@ namespace System.ComponentModel
         public object ComponentChanged { get { throw null; } }
         public System.Type TypeChanged { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void RefreshEventHandler(System.ComponentModel.RefreshEventArgs e);
     public enum RefreshProperties
     {
@@ -4331,7 +4263,6 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void RunWorkerCompletedEventHandler(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class SByteConverter : System.ComponentModel.BaseNumberConverter
     {
         public SByteConverter() { }
@@ -4346,26 +4277,22 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class SingleConverter : System.ComponentModel.BaseNumberConverter
     {
         public SingleConverter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class StringConverter : System.ComponentModel.TypeConverter
     {
         public StringConverter() { }
         public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public static partial class SyntaxCheck
     {
         public static bool CheckMachineName(string value) { throw null; }
         public static bool CheckPath(string value) { throw null; }
         public static bool CheckRootedPath(string value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class TimeSpanConverter : System.ComponentModel.TypeConverter
     {
         public TimeSpanConverter() { }
@@ -4488,7 +4415,6 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class TypeDescriptionProvider
     {
         protected TypeDescriptionProvider() { }
@@ -4631,7 +4557,6 @@ namespace System.ComponentModel
         public static void RemoveProviderTransparent(System.ComponentModel.TypeDescriptionProvider provider, System.Type type) { }
         public static void SortDescriptorArray(System.Collections.IList infos) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class TypeListConverter : System.ComponentModel.TypeConverter
     {
         protected TypeListConverter(System.Type[] types) { }
@@ -4643,22 +4568,18 @@ namespace System.ComponentModel
         public override bool GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt16Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt16Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt32Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt32Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt64Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt64Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class WarningException : System.SystemException
     {
@@ -4670,7 +4591,6 @@ namespace System.ComponentModel
         public WarningException(string message, string helpUrl, string helpTopic) { }
         public string HelpTopic { get { throw null; } }
         public string HelpUrl { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.Security.SuppressUnmanagedCodeSecurityAttribute]
@@ -4696,20 +4616,13 @@ namespace System.ComponentModel
 }
 namespace System.ComponentModel.Design
 {
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ActiveDesignerEventArgs : System.EventArgs
     {
         public ActiveDesignerEventArgs(System.ComponentModel.Design.IDesignerHost oldDesigner, System.ComponentModel.Design.IDesignerHost newDesigner) { }
         public System.ComponentModel.Design.IDesignerHost NewDesigner { get { throw null; } }
         public System.ComponentModel.Design.IDesignerHost OldDesigner { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ActiveDesignerEventHandler(object sender, System.ComponentModel.Design.ActiveDesignerEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     [System.SerializableAttribute]
     public partial class CheckoutException : System.Runtime.InteropServices.ExternalException
     {
@@ -4720,10 +4633,6 @@ namespace System.ComponentModel.Design
         public CheckoutException(string message, System.Exception innerException) { }
         public CheckoutException(string message, int errorCode) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class CommandID
     {
         public CommandID(System.Guid menuGroup, int commandID) { }
@@ -4733,9 +4642,6 @@ namespace System.ComponentModel.Design
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ComponentChangedEventArgs : System.EventArgs
     {
         public ComponentChangedEventArgs(object component, System.ComponentModel.MemberDescriptor member, object oldValue, object newValue) { }
@@ -4744,37 +4650,20 @@ namespace System.ComponentModel.Design
         public object NewValue { get { throw null; } }
         public object OldValue { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentChangedEventHandler(object sender, System.ComponentModel.Design.ComponentChangedEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ComponentChangingEventArgs : System.EventArgs
     {
         public ComponentChangingEventArgs(object component, System.ComponentModel.MemberDescriptor member) { }
         public object Component { get { throw null; } }
         public System.ComponentModel.MemberDescriptor Member { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentChangingEventHandler(object sender, System.ComponentModel.Design.ComponentChangingEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ComponentEventArgs : System.EventArgs
     {
         public ComponentEventArgs(System.ComponentModel.IComponent component) { }
         public virtual System.ComponentModel.IComponent Component { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentEventHandler(object sender, System.ComponentModel.Design.ComponentEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ComponentRenameEventArgs : System.EventArgs
     {
         public ComponentRenameEventArgs(object component, string oldName, string newName) { }
@@ -4782,12 +4671,7 @@ namespace System.ComponentModel.Design
         public virtual string NewName { get { throw null; } }
         public virtual string OldName { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentRenameEventHandler(object sender, System.ComponentModel.Design.ComponentRenameEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DesignerCollection(System.Collections.IList designers) { }
@@ -4801,15 +4685,11 @@ namespace System.ComponentModel.Design
         void System.Collections.ICollection.CopyTo(System.Array array, int index) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerEventArgs : System.EventArgs
     {
         public DesignerEventArgs(System.ComponentModel.Design.IDesignerHost host) { }
         public System.ComponentModel.Design.IDesignerHost Designer { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void DesignerEventHandler(object sender, System.ComponentModel.Design.DesignerEventArgs e);
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerOptionService : System.ComponentModel.Design.IDesignerOptionService
@@ -4850,8 +4730,6 @@ namespace System.ComponentModel.Design
             void System.Collections.IList.RemoveAt(int index) { }
         }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerTransaction : System.IDisposable
     {
         protected DesignerTransaction() { }
@@ -4867,10 +4745,6 @@ namespace System.ComponentModel.Design
         protected abstract void OnCommit();
         void System.IDisposable.Dispose() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerTransactionCloseEventArgs : System.EventArgs
     {
         [System.ObsoleteAttribute("This constructor is obsolete. Use DesignerTransactionCloseEventArgs(bool, bool) instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -4879,13 +4753,7 @@ namespace System.ComponentModel.Design
         public bool LastTransaction { get { throw null; } }
         public bool TransactionCommitted { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void DesignerTransactionCloseEventHandler(object sender, System.ComponentModel.Design.DesignerTransactionCloseEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerVerb : System.ComponentModel.Design.MenuCommand
     {
         public DesignerVerb(string text, System.EventHandler handler) : base (default(System.EventHandler), default(System.ComponentModel.Design.CommandID)) { }
@@ -4894,10 +4762,6 @@ namespace System.ComponentModel.Design
         public string Text { get { throw null; } }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerVerbCollection : System.Collections.CollectionBase
     {
         public DesignerVerbCollection() { }
@@ -4917,9 +4781,6 @@ namespace System.ComponentModel.Design
         protected override void OnValidate(object value) { }
         public void Remove(System.ComponentModel.Design.DesignerVerb value) { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesigntimeLicenseContext : System.ComponentModel.LicenseContext
     {
         public DesigntimeLicenseContext() { }
@@ -4927,9 +4788,6 @@ namespace System.ComponentModel.Design
         public override string GetSavedLicenseKey(System.Type type, System.Reflection.Assembly resourceAssembly) { throw null; }
         public override void SetSavedLicenseKey(System.Type type, string key) { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesigntimeLicenseContextSerializer
     {
         internal DesigntimeLicenseContextSerializer() { }
@@ -4961,7 +4819,6 @@ namespace System.ComponentModel.Design
         FilterKeyword = 2,
         GeneralKeyword = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IComponentChangeService
     {
         event System.ComponentModel.Design.ComponentEventHandler ComponentAdded;
@@ -4983,7 +4840,6 @@ namespace System.ComponentModel.Design
         void InitializeExistingComponent(System.Collections.IDictionary defaultValues);
         void InitializeNewComponent(System.Collections.IDictionary defaultValues);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDesigner : System.IDisposable
     {
         System.ComponentModel.IComponent Component { get; }
@@ -5009,7 +4865,6 @@ namespace System.ComponentModel.Design
         void PreFilterEvents(System.Collections.IDictionary events);
         void PreFilterProperties(System.Collections.IDictionary properties);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDesignerHost : System.ComponentModel.Design.IServiceContainer, System.IServiceProvider
     {
         System.ComponentModel.IContainer Container { get; }
@@ -5049,7 +4904,6 @@ namespace System.ComponentModel.Design
         object GetValue(object key);
         void SetValue(object key, object value);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IEventBindingService
     {
         string CreateUniqueMethodName(System.ComponentModel.IComponent component, System.ComponentModel.EventDescriptor e);
@@ -5085,7 +4939,6 @@ namespace System.ComponentModel.Design
         void AddInheritedComponents(System.ComponentModel.IComponent component, System.ComponentModel.IContainer container);
         System.ComponentModel.InheritanceAttribute GetInheritanceAttribute(System.ComponentModel.IComponent component);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IMenuCommandService
     {
         System.ComponentModel.Design.DesignerVerbCollection Verbs { get; }
@@ -5110,13 +4963,11 @@ namespace System.ComponentModel.Design
         System.Resources.IResourceReader GetResourceReader(System.Globalization.CultureInfo info);
         System.Resources.IResourceWriter GetResourceWriter(System.Globalization.CultureInfo info);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IRootDesigner : System.ComponentModel.Design.IDesigner, System.IDisposable
     {
         System.ComponentModel.Design.ViewTechnology[] SupportedTechnologies { get; }
         object GetView(System.ComponentModel.Design.ViewTechnology technology);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISelectionService
     {
         object PrimarySelection { get; }
@@ -5128,7 +4979,6 @@ namespace System.ComponentModel.Design
         void SetSelectedComponents(System.Collections.ICollection components);
         void SetSelectedComponents(System.Collections.ICollection components, System.ComponentModel.Design.SelectionTypes selectionType);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IServiceContainer : System.IServiceProvider
     {
         void AddService(System.Type serviceType, System.ComponentModel.Design.ServiceCreatorCallback callback);
@@ -5163,10 +5013,6 @@ namespace System.ComponentModel.Design
         System.Type GetType(string name, bool throwOnError, bool ignoreCase);
         void ReferenceAssembly(System.Reflection.AssemblyName name);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class MenuCommand
     {
         public MenuCommand(System.EventHandler handler, System.ComponentModel.Design.CommandID command) { }
@@ -5184,7 +5030,6 @@ namespace System.ComponentModel.Design
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum SelectionTypes
     {
         Add = 64,
@@ -5204,7 +5049,6 @@ namespace System.ComponentModel.Design
         [System.ObsoleteAttribute("This value has been deprecated. Use Enum class methods to determine valid values, or use a type converter. http://go.microsoft.com/fwlink/?linkid=14202")]
         Valid = 31,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ServiceContainer : System.ComponentModel.Design.IServiceContainer, System.IDisposable, System.IServiceProvider
     {
         public ServiceContainer() { }
@@ -5220,12 +5064,7 @@ namespace System.ComponentModel.Design
         public void RemoveService(System.Type serviceType) { }
         public virtual void RemoveService(System.Type serviceType, bool promote) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate object ServiceCreatorCallback(System.ComponentModel.Design.IServiceContainer container, System.Type serviceType);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class StandardCommands
     {
         public static readonly System.ComponentModel.Design.CommandID AlignBottom;
@@ -5285,9 +5124,6 @@ namespace System.ComponentModel.Design
         public static readonly System.ComponentModel.Design.CommandID ViewGrid;
         public StandardCommands() { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class StandardToolWindows
     {
         public static readonly System.Guid ObjectBrowser;
@@ -5306,7 +5142,6 @@ namespace System.ComponentModel.Design
         public abstract System.ComponentModel.TypeDescriptionProvider GetProvider(object instance);
         public abstract System.ComponentModel.TypeDescriptionProvider GetProvider(System.Type type);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum ViewTechnology
     {
         Default = 2,
@@ -5318,7 +5153,6 @@ namespace System.ComponentModel.Design
 }
 namespace System.ComponentModel.Design.Serialization
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ComponentSerializationService
     {
         protected ComponentSerializationService() { }
@@ -5334,8 +5168,6 @@ namespace System.ComponentModel.Design.Serialization
         public abstract void SerializeMember(System.ComponentModel.Design.Serialization.SerializationStore store, object owningObject, System.ComponentModel.MemberDescriptor member);
         public abstract void SerializeMemberAbsolute(System.ComponentModel.Design.Serialization.SerializationStore store, object owningObject, System.ComponentModel.MemberDescriptor member);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ContextStack
     {
         public ContextStack() { }
@@ -5353,9 +5185,6 @@ namespace System.ComponentModel.Design.Serialization
         public DefaultSerializationProviderAttribute(System.Type providerType) { }
         public string ProviderTypeName { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerLoader
     {
         protected DesignerLoader() { }
@@ -5430,6 +5259,7 @@ namespace System.ComponentModel.Design.Serialization
         public System.Reflection.MemberInfo MemberInfo { get { throw null; } }
         public object Invoke() { throw null; }
     }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct MemberRelationship
     {
@@ -5443,7 +5273,6 @@ namespace System.ComponentModel.Design.Serialization
         public static bool operator ==(System.ComponentModel.Design.Serialization.MemberRelationship left, System.ComponentModel.Design.Serialization.MemberRelationship right) { throw null; }
         public static bool operator !=(System.ComponentModel.Design.Serialization.MemberRelationship left, System.ComponentModel.Design.Serialization.MemberRelationship right) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class MemberRelationshipService
     {
         protected MemberRelationshipService() { }
@@ -5453,16 +5282,12 @@ namespace System.ComponentModel.Design.Serialization
         protected virtual void SetRelationship(System.ComponentModel.Design.Serialization.MemberRelationship source, System.ComponentModel.Design.Serialization.MemberRelationship relationship) { }
         public abstract bool SupportsRelationship(System.ComponentModel.Design.Serialization.MemberRelationship source, System.ComponentModel.Design.Serialization.MemberRelationship relationship);
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ResolveNameEventArgs : System.EventArgs
     {
         public ResolveNameEventArgs(string name) { }
         public string Name { get { throw null; } }
         public object Value { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ResolveNameEventHandler(object sender, System.ComponentModel.Design.Serialization.ResolveNameEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=true, Inherited=true)]
     [System.ObsoleteAttribute("This attribute has been deprecated. Use DesignerSerializerAttribute instead.  For example, to specify a root designer for CodeDom, use DesignerSerializerAttribute(...,typeof(TypeCodeDomSerializer)).  http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -5476,7 +5301,6 @@ namespace System.ComponentModel.Design.Serialization
         public string SerializerTypeName { get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class SerializationStore : System.IDisposable
     {
         protected SerializationStore() { }
@@ -10317,10 +10141,12 @@ namespace System.Net.Mime
     {
         public static partial class Application
         {
+            public const string Json = "application/json";
             public const string Octet = "application/octet-stream";
             public const string Pdf = "application/pdf";
             public const string Rtf = "application/rtf";
             public const string Soap = "application/soap+xml";
+            public const string Xml = "application/xml";
             public const string Zip = "application/zip";
         }
         public static partial class Image
