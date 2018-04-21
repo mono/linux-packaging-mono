@@ -22949,6 +22949,7 @@ namespace System.Text
         public virtual int GetByteCount(char[] chars) { throw null; }
         public abstract int GetByteCount(char[] chars, int index, int count);
         public virtual int GetByteCount(string s) { throw null; }
+        public int GetByteCount(string str, int index, int count) { throw null; }
         [System.CLSCompliantAttribute(false)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         [System.Security.SecurityCriticalAttribute]

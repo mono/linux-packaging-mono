@@ -193,14 +193,16 @@ target_triplet = @target@
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
 
-@X86_TRUE@am__append_18 = tailcall-interface-conservestack.exe
+@X86_TRUE@am__append_18 = tailcall-interface-conservestack.exe \
+@X86_TRUE@	tailcall/2.exe tailcall/3.exe tailcall/4.exe
 
 # bug #71274
 @POWERPC_TRUE@am__append_19 = finalizer-abort.exe \
 @POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
 @POWERPC_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @POWERPC_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@POWERPC_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
+@POWERPC_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
+@POWERPC_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
 @POWERPC_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 
 # FIXME: These tests hang/fail for unknown reasons
@@ -219,7 +221,9 @@ target_triplet = @target@
 @POWERPC64_TRUE@	sgen-new-threads-collect.exe sgen-bridge.exe \
 @POWERPC64_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @POWERPC64_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@POWERPC64_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
+@POWERPC64_TRUE@	tailcall-virt.exe tailcall/2.exe \
+@POWERPC64_TRUE@	tailcall/3.exe tailcall/4.exe \
+@POWERPC64_TRUE@	tailcall/fsharp-deeptail.exe \
 @POWERPC64_TRUE@	tailcall-interface-conservestack.exe \
 @POWERPC64_TRUE@	ivtail1.exe appdomain-threadpool-unload.exe \
 @POWERPC64_TRUE@	bug-60848.exe \
@@ -229,7 +233,8 @@ target_triplet = @target@
 @ARM_TRUE@am__append_21 = filter-stack.exe weak-fields.exe \
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@ARM_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
+@ARM_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
+@ARM_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
 @ARM_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
@@ -256,7 +261,8 @@ target_triplet = @target@
 @MIPS_TRUE@am__append_23 = filter-stack.exe monitor.exe \
 @MIPS_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @MIPS_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@MIPS_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
+@MIPS_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
+@MIPS_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
 @MIPS_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
 @S390X_TRUE@am__append_24 = dynamic-method-resurrection.exe \
@@ -265,7 +271,8 @@ target_triplet = @target@
 @S390X_TRUE@	sgen-bridge-xref.exe \
 @S390X_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @S390X_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
-@S390X_TRUE@	tailcall-virt.exe tailcall/fsharp-deeptail.exe \
+@S390X_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
+@S390X_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
 @S390X_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 
 # Tests which rely on TypeLoadExceptions or MemberAccessExceptions
@@ -1054,6 +1061,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	nested_type_visibility.cs $(am__append_7) $(am__append_8) \
 	$(am__append_9) $(am__append_10) $(am__append_11)
 TESTS_IL_SRC = \
+	tailcall/2.il	     \
+	tailcall/3.il	     \
+	tailcall/4.il	     \
 	tailcall/fsharp-deeptail.il	     \
 	tailcall/fsharp-shallowtail.il	 \
 	tailcall/fsharp-shallownotail.il \
@@ -1288,13 +1298,16 @@ DISABLED_TESTS = \
 
 
 # Interpreter does not currently implement tailcall.
-# Disable all tailcall tests that are not otherwise disabled.
-INTERP_DISABLED_TESTS = $(DISABLED_TESTS) itail1.exe sitail1.exe \
-	ivtail1.exe tailcall-interface-conservestack.exe \
-	tailcall-mrgctx.exe tailcall-virt.exe tailcall-rgctxa.exe \
+# Disable all tailcall tests.
+INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
+	itaili1.exe ivtail1.exe sitail1.exe sirtail1.exe srtail1.exe \
+	stail1.exe tail1.exe taili1.exe vtail1.exe \
 	tailcall-generic-cast-conservestack-il.exe \
-	tailcall/fsharp-deeptail.exe bug-60843.exe $(am__append_27) \
-	$(am__append_28) $(am__append_29)
+	tailcall-interface-conservestack.exe tailcall-mrgctx.exe \
+	tailcall-rgctxa.exe tailcall-rgctxb.exe tailcall-virt.exe \
+	tailcall/fsharp-deeptail.exe tailcall/2.exe tailcall/3.exe \
+	tailcall/4.exe bug-60843.exe $(am__append_27) $(am__append_28) \
+	$(am__append_29)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
