@@ -40,6 +40,7 @@ endif
 ifeq ($(DEB_HOST_ARCH), armel)
 	CONF_FLAGS += --with-fpu=NONE
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifneq (,$(findstring $(DEB_HOST_ARCH),$(DEB_MONO_SGEN_ARCHS)))

@@ -37,7 +37,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_aot_patch_info_dup@Base 5.15.0.231
  mono_aot_register_module@Base 4.1.0.1738
  mono_arch_create_vars@Base 5.15.0.231
- mono_arch_get_llvm_call_info@Base 5.15.0.231
  mono_array_addr_with_size@Base 4.1.0.1738
  mono_array_class_get@Base 4.1.0.1738
  mono_array_clone@Base 4.1.0.1738

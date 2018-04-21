@@ -1,1 +1,2 @@
 #include "libmonosgen-2.0-1.symbols"
+ mono_arch_get_llvm_call_info@Base 5.15.0.231
