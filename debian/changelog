@@ -1,3 +1,14 @@
+mono (5.15.0.231-0nightly4) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [2d62bcc] Fix install dir for libllvm-mono.so [f47ece4] Add LLVM-
+    enabled symbols
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 21 Apr 2018 00:45:11 +0000
+
 mono (5.15.0.231-0nightly3) nightly; urgency=medium
 
   * Packaging bugfix:
