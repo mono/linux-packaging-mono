@@ -1401,34 +1401,35 @@ process_add_sigchld_handler (void)
 void
 mono_w32process_signal_finished (void)
 {
-	int status;
-	int pid;
-	Process *process;
+	mono_coop_mutex_lock (&processes_mutex);
 
-	do {
+	for (Process* process = processes; process; process = process->next) {
+		int status = -1;
+		int pid;
+
 		do {
-			pid = waitpid (-1, &status, WNOHANG);
+			pid = waitpid (process->pid, &status, WNOHANG);
 		} while (pid == -1 && errno == EINTR);
 
+		// possible values of 'pid':
+		//  process->pid : the status changed for this child
+		//  0            : status unchanged for this PID
+		//  ECHILD       : process has been reaped elsewhere (or never existed)
+		//  EINVAL       : invalid PID or other argument
+
+		// Therefore, we ignore status unchanged (nothing to do) and error
+		// events (process is cleaned up later).
 		if (pid <= 0)
-			break;
+			continue;
+		if (process->signalled)
+			continue;
 
-		mono_coop_mutex_lock (&processes_mutex);
+		process->signalled = TRUE;
+		process->status = status;
+		mono_coop_sem_post (&process->exit_sem);
+	}
 
-		for (process = processes; process; process = process->next) {
-			if (process->pid != pid)
-				continue;
-			if (process->signalled)
-				continue;
-
-			process->signalled = TRUE;
-			process->status = status;
-			mono_coop_sem_post (&process->exit_sem);
-			break;
-		}
-
-		mono_coop_mutex_unlock (&processes_mutex);
-	} while (1);
+	mono_coop_mutex_unlock (&processes_mutex);
 }
 
 static gboolean
@@ -2321,7 +2322,7 @@ ves_icall_System_Diagnostics_Process_CreateProcess_internal (MonoW32ProcessStart
 MonoArray *
 ves_icall_System_Diagnostics_Process_GetProcesses_internal (void)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoArray *procs;
 	gpointer *pidarray;
 	int i, count;
@@ -2331,8 +2332,8 @@ ves_icall_System_Diagnostics_Process_GetProcesses_internal (void)
 		mono_set_pending_exception (mono_get_exception_not_supported ("This system does not support EnumProcesses"));
 		return NULL;
 	}
-	procs = mono_array_new_checked (mono_domain_get (), mono_get_int32_class (), count, &error);
-	if (mono_error_set_pending_exception (&error)) {
+	procs = mono_array_new_checked (mono_domain_get (), mono_get_int32_class (), count, error);
+	if (mono_error_set_pending_exception (error)) {
 		g_free (pidarray);
 		return NULL;
 	}

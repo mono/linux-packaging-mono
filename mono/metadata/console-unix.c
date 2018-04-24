@@ -219,47 +219,19 @@ tty_teardown (void)
 static void
 do_console_cancel_event (void)
 {
-	static MonoClassField *cancel_handler_field;
-	MonoError error;
-	MonoDomain *domain = mono_domain_get ();
-	MonoClass *klass;
-	MonoDelegate *load_value;
-	MonoMethod *method;
-	MonoVTable *vtable;
+	static MonoMethod *System_Console_DoConsoleCancelEventBackground_method = ((gpointer)-1);
+	ERROR_DECL (error);
 
-	/* FIXME: this should likely iterate all the domains, instead */
-	if (!domain->domain)
+	if (mono_defaults.console_class == NULL)
 		return;
 
-	klass = mono_class_try_load_from_name (mono_defaults.corlib, "System", "Console");
-	if (klass == NULL)
+	if (System_Console_DoConsoleCancelEventBackground_method == ((gpointer)-1))
+		System_Console_DoConsoleCancelEventBackground_method = mono_class_get_method_from_name (mono_defaults.console_class, "DoConsoleCancelEventInBackground", 0);
+	if (System_Console_DoConsoleCancelEventBackground_method == NULL)
 		return;
 
-	if (cancel_handler_field == NULL) {
-		cancel_handler_field = mono_class_get_field_from_name (klass, "cancel_handler");
-		g_assert (cancel_handler_field);
-	}
-
-	vtable = mono_class_vtable_full (domain, klass, &error);
-	if (vtable == NULL || !is_ok (&error)) {
-		mono_error_cleanup (&error);
-		return;
-	}
-	mono_field_static_get_value_checked (vtable, cancel_handler_field, &load_value, &error);
-	if (load_value == NULL || !is_ok (&error)) {
-		mono_error_cleanup (&error);
-		return;
-	}
-
-	klass = load_value->object.vtable->klass;
-	method = mono_class_get_method_from_name (klass, "BeginInvoke", -1);
-	g_assert (method != NULL);
-
-	mono_threadpool_begin_invoke (domain, (MonoObject*) load_value, method, NULL, &error);
-	if (!is_ok (&error)) {
-		g_warning ("Couldn't invoke System.Console cancel handler due to %s", mono_error_get_message (&error));
-		mono_error_cleanup (&error);
-	}
+	mono_runtime_invoke_checked (System_Console_DoConsoleCancelEventBackground_method, NULL, NULL, error);
+	mono_error_assert_ok (error);
 }
 
 static int need_cancel = FALSE;
@@ -445,7 +417,7 @@ set_control_chars (MonoArray *control_chars, const guchar *cc)
 MonoBoolean
 ves_icall_System_ConsoleDriver_TtySetup (MonoString *keypad, MonoString *teardown, MonoArray **control_chars, int **size)
 {
-	MonoError error;
+	ERROR_DECL (error);
 
 	int dims;
 
@@ -476,8 +448,8 @@ ves_icall_System_ConsoleDriver_TtySetup (MonoString *keypad, MonoString *teardow
 
 	/* 17 is the number of entries set in set_control_chars() above.
 	 * NCCS is the total size, but, by now, we only care about those 17 values*/
-	MonoArray *control_chars_arr = mono_array_new_checked (mono_domain_get (), mono_defaults.byte_class, 17, &error);
-	if (mono_error_set_pending_exception (&error))
+	MonoArray *control_chars_arr = mono_array_new_checked (mono_domain_get (), mono_defaults.byte_class, 17, error);
+	if (mono_error_set_pending_exception (error))
 		return FALSE;
 	mono_gc_wbarrier_generic_store (control_chars, (MonoObject*) control_chars_arr);
 	if (tcgetattr (STDIN_FILENO, &initial_attr) == -1)
@@ -502,8 +474,8 @@ ves_icall_System_ConsoleDriver_TtySetup (MonoString *keypad, MonoString *teardow
 
 	keypad_xmit_str = NULL;
 	if (keypad != NULL) {
-		keypad_xmit_str = mono_string_to_utf8_checked (keypad, &error);
-		if (mono_error_set_pending_exception (&error))
+		keypad_xmit_str = mono_string_to_utf8_checked (keypad, error);
+		if (mono_error_set_pending_exception (error))
 			return FALSE;
 	}
 	
@@ -511,8 +483,8 @@ ves_icall_System_ConsoleDriver_TtySetup (MonoString *keypad, MonoString *teardow
 	setup_finished = TRUE;
 	if (!atexit_called) {
 		if (teardown != NULL) {
-			teardown_str = mono_string_to_utf8_checked (teardown, &error);
-			if (mono_error_set_pending_exception (&error))
+			teardown_str = mono_string_to_utf8_checked (teardown, error);
+			if (mono_error_set_pending_exception (error))
 				return FALSE;
 		}
 

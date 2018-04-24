@@ -4079,7 +4079,7 @@ namespace System.Data.SqlClient
         [System.ObsoleteAttribute("This property is ignored beginning in .NET Framework 4.5.For more information about SqlClient support for asynchronous programming, seehttps://docs.microsoft.com/en-us/dotnet/framework/data/adonet/asynchronous-programming")]
         public bool AsynchronousProcessing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string AttachDBFilename { get { throw null; } set { } }
-        [System.MonoTODOAttribute("Not implemented in corefx: dotnet/corefx/issues/22474")]
+        [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
         public System.Data.SqlClient.SqlAuthenticationMethod Authentication { get { throw null; } set { } }
         [System.MonoTODOAttribute("Not implemented in corefx: https://github.com/dotnet/corefx/issues/22474")]
         public System.Data.SqlClient.SqlConnectionColumnEncryptionSetting ColumnEncryptionSetting { get { throw null; } set { } }

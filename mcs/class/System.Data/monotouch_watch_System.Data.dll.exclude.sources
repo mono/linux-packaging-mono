@@ -1,6 +1,5 @@
 corefx/SqlCommand.cs
 corefx/SqlException.cs
-corefx/SqlParameter.cs
 ../../../external/corefx/src/System.Data.SqlClient/src/System/Data/SqlClient/SqlBulkCopy.cs
 ../../../external/corefx/src/System.Data.SqlClient/src/System/Data/SqlClient/SqlCommand.cs
 ../../../external/corefx/src/System.Data.SqlClient/src/System/Data/SqlClient/SqlCommandBuilder.cs

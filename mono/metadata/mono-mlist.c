@@ -45,9 +45,9 @@ static MonoVTable *monolist_item_vtable = NULL;
 MonoMList*
 mono_mlist_alloc (MonoObject *data)
 {
-	MonoError error;
-	MonoMList *result = mono_mlist_alloc_checked (data, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoMList *result = mono_mlist_alloc_checked (data, error);
+	mono_error_cleanup (error);
 	return result;
 }
 
@@ -69,8 +69,8 @@ mono_mlist_alloc_checked (MonoObject *data, MonoError *error)
 	MonoMList* res;
 	if (!monolist_item_vtable) {
 		MonoClass *klass = mono_class_load_from_name (mono_defaults.corlib, "System", "MonoListItem");
-		monolist_item_vtable = mono_class_vtable (mono_get_root_domain (), klass);
-		g_assert (monolist_item_vtable);
+		monolist_item_vtable = mono_class_vtable_checked (mono_get_root_domain (), klass, error);
+		mono_error_assert_ok  (error);
 	}
 	res = (MonoMList*)mono_object_new_specific_checked (monolist_item_vtable, error);
 	return_val_if_nok (error, NULL);
@@ -171,9 +171,9 @@ mono_mlist_last (MonoMList* list)
 MonoMList*
 mono_mlist_prepend (MonoMList* list, MonoObject *data)
 {
-	MonoError error;
-	MonoMList *result = mono_mlist_prepend_checked (list, data, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoMList *result = mono_mlist_prepend_checked (list, data, error);
+	mono_error_cleanup (error);
 	return result;
 }
 
@@ -209,9 +209,9 @@ mono_mlist_prepend_checked (MonoMList* list, MonoObject *data, MonoError *error)
 MonoMList*
 mono_mlist_append (MonoMList* list, MonoObject *data)
 {
-	MonoError error;
-	MonoMList *result = mono_mlist_append_checked (list, data, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoMList *result = mono_mlist_append_checked (list, data, error);
+	mono_error_cleanup (error);
 	return result;
 }
 

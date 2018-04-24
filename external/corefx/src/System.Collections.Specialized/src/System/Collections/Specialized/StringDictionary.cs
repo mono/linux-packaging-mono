@@ -15,13 +15,18 @@ namespace System.Collections.Specialized
 #if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
-    public class StringDictionary : IEnumerable
+    public partial class StringDictionary : IEnumerable
     {
         // For compatibility, we want the Keys property to return values in lower-case.
         // That means using ToLower in each property on this type.  Also for backwards
         // compatibility, we will be converting strings to lower-case, which has a
         // problem for some Georgian alphabets.
-        private readonly Hashtable contents = new Hashtable(); // Do not rename (binary serialization)
+#if MONO
+        internal
+#else
+        private readonly
+#endif
+        Hashtable contents = new Hashtable(); // Do not rename (binary serialization)
 
 
         /// <devdoc>

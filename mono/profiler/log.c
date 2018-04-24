@@ -36,6 +36,7 @@
 #include <mono/utils/mono-os-semaphore.h>
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-threads-api.h>
+#include <mono/utils/mono-error-internals.h>
 #include "log.h"
 
 #ifdef HAVE_DLFCN_H
@@ -85,7 +86,7 @@ static gint32 sync_points_ctr,
               assembly_loads_ctr,
               assembly_unloads_ctr,
               class_loads_ctr,
-              class_unloads_ctr,
+              vtable_loads_ctr,
               method_entries_ctr,
               method_exits_ctr,
               method_exception_exits_ctr,
@@ -123,6 +124,7 @@ struct _LogBuffer {
 
 	uint64_t time_base;
 	uint64_t last_time;
+	gboolean has_ptr_base;
 	uintptr_t ptr_base;
 	uintptr_t method_base;
 	uintptr_t last_method;
@@ -829,8 +831,10 @@ emit_uvalue (LogBuffer *logbuffer, uint64_t value)
 static void
 emit_ptr (LogBuffer *logbuffer, const void *ptr)
 {
-	if (!logbuffer->ptr_base)
+	if (!logbuffer->has_ptr_base) {
 		logbuffer->ptr_base = (uintptr_t) ptr;
+		logbuffer->has_ptr_base = TRUE;
+	}
 
 	emit_svalue (logbuffer, (intptr_t) ptr - logbuffer->ptr_base);
 
@@ -1180,7 +1184,7 @@ gc_reference (MonoObject *obj, MonoClass *klass, uintptr_t size, uintptr_t num, 
 	ENTER_LOG (&heap_objects_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
 		LEB128_SIZE /* obj */ +
-		LEB128_SIZE /* klass */ +
+		LEB128_SIZE /* vtable */ +
 		LEB128_SIZE /* size */ +
 		LEB128_SIZE /* num */ +
 		num * (
@@ -1191,7 +1195,7 @@ gc_reference (MonoObject *obj, MonoClass *klass, uintptr_t size, uintptr_t num, 
 
 	emit_event (logbuffer, TYPE_HEAP_OBJECT | TYPE_HEAP);
 	emit_obj (logbuffer, obj);
-	emit_ptr (logbuffer, klass);
+	emit_ptr (logbuffer, mono_object_get_vtable (obj));
 	emit_value (logbuffer, size);
 	emit_value (logbuffer, num);
 
@@ -1209,28 +1213,75 @@ gc_reference (MonoObject *obj, MonoClass *klass, uintptr_t size, uintptr_t num, 
 }
 
 static void
-gc_roots (MonoProfiler *prof, MonoObject *const *objects, const MonoProfilerGCRootType *root_types, const uintptr_t *extra_info, uint64_t num)
+gc_roots (MonoProfiler *prof, uint64_t num, const mono_byte *const *addresses, MonoObject *const *objects)
 {
 	ENTER_LOG (&heap_roots_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
 		LEB128_SIZE /* num */ +
-		LEB128_SIZE /* collections */ +
 		num * (
-			LEB128_SIZE /* object */ +
-			LEB128_SIZE /* root type */ +
-			LEB128_SIZE /* extra info */
+			LEB128_SIZE /* address */ +
+			LEB128_SIZE /* object */
 		)
 	);
 
 	emit_event (logbuffer, TYPE_HEAP_ROOT | TYPE_HEAP);
 	emit_value (logbuffer, num);
-	emit_value (logbuffer, mono_gc_collection_count (mono_gc_max_generation ()));
 
 	for (int i = 0; i < num; ++i) {
+		emit_ptr (logbuffer, addresses [i]);
 		emit_obj (logbuffer, objects [i]);
-		emit_value (logbuffer, root_types [i]);
-		emit_value (logbuffer, extra_info [i]);
 	}
+
+	EXIT_LOG;
+}
+
+static void
+gc_root_register (MonoProfiler *prof, const mono_byte *start, size_t size, MonoGCRootSource source, const void *key, const char *name)
+{
+	// We don't write raw domain/context pointers in metadata events.
+	switch (source) {
+	case MONO_ROOT_SOURCE_DOMAIN:
+		if (key)
+			key = (void *)(uintptr_t) mono_domain_get_id ((MonoDomain *) key);
+		break;
+	case MONO_ROOT_SOURCE_CONTEXT_STATIC:
+		key = (void *)(uintptr_t) mono_context_get_id ((MonoAppContext *) key);
+		break;
+	default:
+		break;
+	}
+
+	int name_len = name ? strlen (name) + 1 : 0;
+
+	ENTER_LOG (&heap_roots_ctr, logbuffer,
+		EVENT_SIZE /* event */ +
+		LEB128_SIZE /* start */ +
+		LEB128_SIZE /* size */ +
+		BYTE_SIZE /* source */ +
+		LEB128_SIZE /* key */ +
+		name_len /* name */
+	);
+
+	emit_event (logbuffer, TYPE_HEAP_ROOT_REGISTER | TYPE_HEAP);
+	emit_ptr (logbuffer, start);
+	emit_uvalue (logbuffer, size);
+	emit_byte (logbuffer, source);
+	emit_ptr (logbuffer, key);
+	emit_string (logbuffer, name, name_len);
+
+	EXIT_LOG;
+}
+
+static void
+gc_root_deregister (MonoProfiler *prof, const mono_byte *start)
+{
+	ENTER_LOG (&heap_roots_ctr, logbuffer,
+		EVENT_SIZE /* event */ +
+		LEB128_SIZE /* start */
+	);
+
+	emit_event (logbuffer, TYPE_HEAP_ROOT_UNREGISTER | TYPE_HEAP);
+	emit_ptr (logbuffer, start);
 
 	EXIT_LOG;
 }
@@ -1253,8 +1304,10 @@ process_heapshot (void)
 #define ALL_GC_EVENTS_MASK (PROFLOG_GC_EVENTS | PROFLOG_GC_MOVE_EVENTS | PROFLOG_GC_ROOT_EVENTS)
 
 static void
-gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
+gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation, gboolean is_serial)
 {
+	gboolean is_major = generation == mono_gc_max_generation ();
+
 	if (ENABLED (PROFLOG_GC_EVENTS)) {
 		ENTER_LOG (&gc_events_ctr, logbuffer,
 			EVENT_SIZE /* event */ +
@@ -1276,7 +1329,7 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 			log_profiler.do_heap_walk = FALSE;
 			break;
 		case MONO_PROFILER_HEAPSHOT_MAJOR:
-			log_profiler.do_heap_walk = generation == mono_gc_max_generation ();
+			log_profiler.do_heap_walk = is_major;
 			break;
 		case MONO_PROFILER_HEAPSHOT_ON_DEMAND:
 			// Handled below.
@@ -1297,8 +1350,13 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 		 * a shutdown heapshot. Either way, a manually triggered heapshot
 		 * overrides any decision we made in the switch above.
 		 */
-		if (mono_atomic_load_i32 (&log_profiler.heapshot_requested))
+		if (is_major && is_serial && mono_atomic_load_i32 (&log_profiler.heapshot_requested)) {
 			log_profiler.do_heap_walk = TRUE;
+		} else if (log_profiler.do_heap_walk && (!is_major || !is_serial)) {
+			/* Do a heap walk later, when we get invoked from the finalizer in serial mode */
+			trigger_heapshot ();
+			log_profiler.do_heap_walk = FALSE;
+		}
 
 		if (ENABLED (PROFLOG_GC_ROOT_EVENTS) &&
 		    (log_config.always_do_root_report || log_profiler.do_heap_walk))
@@ -1335,7 +1393,7 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 
 		break;
 	case MONO_GC_EVENT_START:
-		if (generation == mono_gc_max_generation ())
+		if (is_major)
 			log_profiler.gc_count++;
 
 		break;
@@ -1343,6 +1401,7 @@ gc_event (MonoProfiler *profiler, MonoProfilerGCEvent ev, uint32_t generation)
 		mono_profiler_set_gc_roots_callback (log_profiler.handle, NULL);
 
 		if (log_profiler.do_heap_walk) {
+			g_assert (is_major && is_serial);
 			mono_gc_walk_heap (0, gc_reference, NULL);
 
 			ENTER_LOG (&heap_ends_ctr, logbuffer,
@@ -1391,7 +1450,7 @@ gc_resize (MonoProfiler *profiler, uintptr_t new_size)
 	);
 
 	emit_event (logbuffer, TYPE_GC_RESIZE | TYPE_GC);
-	emit_value (logbuffer, new_size);
+	emit_uvalue (logbuffer, new_size);
 
 	EXIT_LOG;
 }
@@ -1451,7 +1510,7 @@ gc_alloc (MonoProfiler *prof, MonoObject *obj)
 
 	ENTER_LOG (&gc_allocs_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
-		LEB128_SIZE /* klass */ +
+		LEB128_SIZE /* vtable */ +
 		LEB128_SIZE /* obj */ +
 		LEB128_SIZE /* size */ +
 		(do_bt ? (
@@ -1463,7 +1522,7 @@ gc_alloc (MonoProfiler *prof, MonoObject *obj)
 	);
 
 	emit_event (logbuffer, do_bt | TYPE_ALLOC);
-	emit_ptr (logbuffer, mono_object_get_class (obj));
+	emit_ptr (logbuffer, mono_object_get_vtable (obj));
 	emit_obj (logbuffer, obj);
 	emit_value (logbuffer, len);
 
@@ -1774,6 +1833,30 @@ class_loaded (MonoProfiler *prof, MonoClass *klass)
 		mono_free (name);
 	else
 		g_free (name);
+}
+
+static void
+vtable_loaded (MonoProfiler *prof, MonoVTable *vtable)
+{
+	MonoClass *klass = mono_vtable_class (vtable);
+	MonoDomain *domain = mono_vtable_domain (vtable);
+	uint32_t domain_id = domain ? mono_domain_get_id (domain) : 0;
+
+	ENTER_LOG (&vtable_loads_ctr, logbuffer,
+		EVENT_SIZE /* event */ +
+		BYTE_SIZE /* type */ +
+		LEB128_SIZE /* vtable */ +
+		LEB128_SIZE /* domain id */ +
+		LEB128_SIZE /* klass */
+	);
+
+	emit_event (logbuffer, TYPE_END_LOAD | TYPE_METADATA);
+	emit_byte (logbuffer, TYPE_VTABLE);
+	emit_ptr (logbuffer, vtable);
+	emit_ptr (logbuffer, (void *)(uintptr_t) domain_id);
+	emit_ptr (logbuffer, klass);
+
+	EXIT_LOG;
 }
 
 static void
@@ -2657,9 +2740,9 @@ counters_emit (void)
 		name = mono_counter_get_name (agent->counter);
 		emit_value (logbuffer, mono_counter_get_section (agent->counter));
 		emit_string (logbuffer, name, strlen (name) + 1);
-		emit_byte (logbuffer, mono_counter_get_type (agent->counter));
-		emit_byte (logbuffer, mono_counter_get_unit (agent->counter));
-		emit_byte (logbuffer, mono_counter_get_variance (agent->counter));
+		emit_value (logbuffer, mono_counter_get_type (agent->counter));
+		emit_value (logbuffer, mono_counter_get_unit (agent->counter));
+		emit_value (logbuffer, mono_counter_get_variance (agent->counter));
 		emit_value (logbuffer, agent->index);
 
 		agent->emitted = TRUE;
@@ -2746,7 +2829,7 @@ counters_sample (uint64_t timestamp)
 		}
 
 		emit_uvalue (logbuffer, agent->index);
-		emit_byte (logbuffer, type);
+		emit_value (logbuffer, type);
 		switch (type) {
 		case MONO_COUNTER_INT:
 #if SIZEOF_VOID_P == 4
@@ -3264,7 +3347,7 @@ create_method_node (MonoMethod *method)
 static gboolean
 coverage_filter (MonoProfiler *prof, MonoMethod *method)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoClass *klass;
 	MonoImage *image;
 	MonoAssembly *assembly;
@@ -3350,8 +3433,8 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 		g_free (classname);
 	}
 
-	header = mono_method_get_header_checked (method, &error);
-	mono_error_cleanup (&error);
+	header = mono_method_get_header_checked (method, error);
+	mono_error_cleanup (error);
 
 	mono_method_header_get_code (header, &code_size, NULL);
 
@@ -4502,7 +4585,7 @@ runtime_initialized (MonoProfiler *profiler)
 	register_counter ("Event: Assembly loads", &assembly_loads_ctr);
 	register_counter ("Event: Assembly unloads", &assembly_unloads_ctr);
 	register_counter ("Event: Class loads", &class_loads_ctr);
-	register_counter ("Event: Class unloads", &class_unloads_ctr);
+	register_counter ("Event: VTable loads", &vtable_loads_ctr);
 	register_counter ("Event: Method entries", &method_entries_ctr);
 	register_counter ("Event: Method exits", &method_exits_ctr);
 	register_counter ("Event: Method exception leaves", &method_exception_exits_ctr);
@@ -4715,7 +4798,7 @@ mono_profiler_init_log (const char *desc)
 	mono_profiler_set_runtime_shutdown_end_callback (handle, log_shutdown);
 	mono_profiler_set_runtime_initialized_callback (handle, runtime_initialized);
 
-	mono_profiler_set_gc_event_callback (handle, gc_event);
+	mono_profiler_set_gc_event2_callback (handle, gc_event);
 
 	mono_profiler_set_thread_started_callback (handle, thread_start);
 	mono_profiler_set_thread_exited_callback (handle, thread_end);
@@ -4736,7 +4819,12 @@ mono_profiler_init_log (const char *desc)
 
 	mono_profiler_set_class_loaded_callback (handle, class_loaded);
 
+	mono_profiler_set_vtable_loaded_callback (handle, vtable_loaded);
+
 	mono_profiler_set_jit_done_callback (handle, method_jitted);
+
+	mono_profiler_set_gc_root_register_callback (handle, gc_root_register);
+	mono_profiler_set_gc_root_unregister_callback (handle, gc_root_deregister);
 
 	if (ENABLED (PROFLOG_EXCEPTION_EVENTS)) {
 		mono_profiler_set_exception_throw_callback (handle, throw_exc);

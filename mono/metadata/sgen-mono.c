@@ -24,6 +24,8 @@
 #include "metadata/mono-gc.h"
 #include "metadata/runtime.h"
 #include "metadata/sgen-bridge-internals.h"
+#include "metadata/sgen-mono.h"
+#include "metadata/sgen-mono-ilgen.h"
 #include "metadata/gc-internals.h"
 #include "metadata/handle.h"
 #include "utils/mono-memory-model.h"
@@ -51,16 +53,6 @@ gboolean sgen_mono_xdomain_checks = FALSE;
 static MonoGCCallbacks gc_callbacks;
 
 #define ALIGN_TO(val,align) ((((guint64)val) + ((align) - 1)) & ~((align) - 1))
-
-#define OPDEF(a,b,c,d,e,f,g,h,i,j) \
-	a = i,
-
-enum {
-#include "mono/cil/opcode.def"
-	CEE_LAST
-};
-
-#undef OPDEF
 
 /*
  * Write barriers
@@ -225,45 +217,50 @@ mono_gc_is_critical_method (MonoMethod *method)
 	return sgen_is_critical_method (method);
 }
 
-#ifdef ENABLE_ILGEN
+static void
+emit_nursery_check_noilgen (MonoMethodBuilder *mb, gboolean is_concurrent)
+{
+}
+
+static MonoSgenMonoCallbacks sgenmono_cb;
+static gboolean cb_inited = FALSE;
+
+void
+mono_install_sgen_mono_callbacks (MonoSgenMonoCallbacks *cb)
+{
+	g_assert (!cb_inited);
+	g_assert (cb->version == MONO_SGEN_MONO_CALLBACKS_VERSION);
+	memcpy (&sgenmono_cb, cb, sizeof (MonoSgenMonoCallbacks));
+	cb_inited = TRUE;
+}
 
 static void
-emit_nursery_check (MonoMethodBuilder *mb, int *nursery_check_return_labels, gboolean is_concurrent)
+emit_managed_allocater_noilgen (MonoMethodBuilder *mb, gboolean slowpath, gboolean profiler, int atype)
 {
-	int shifted_nursery_start = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-
-	memset (nursery_check_return_labels, 0, sizeof (int) * 2);
-	// if (ptr_in_nursery (ptr)) return;
-	/*
-	 * Masking out the bits might be faster, but we would have to use 64 bit
-	 * immediates, which might be slower.
-	 */
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_LDPTR_NURSERY_START);
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_LDPTR_NURSERY_BITS);
-	mono_mb_emit_byte (mb, CEE_SHR_UN);
-	mono_mb_emit_stloc (mb, shifted_nursery_start);
-
-	mono_mb_emit_ldarg (mb, 0);
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_LDPTR_NURSERY_BITS);
-	mono_mb_emit_byte (mb, CEE_SHR_UN);
-	mono_mb_emit_ldloc (mb, shifted_nursery_start);
-	nursery_check_return_labels [0] = mono_mb_emit_branch (mb, CEE_BEQ);
-
-	if (!is_concurrent) {
-		// if (!ptr_in_nursery (*ptr)) return;
-		mono_mb_emit_ldarg (mb, 0);
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_LDPTR_NURSERY_BITS);
-		mono_mb_emit_byte (mb, CEE_SHR_UN);
-		mono_mb_emit_ldloc (mb, shifted_nursery_start);
-		nursery_check_return_labels [1] = mono_mb_emit_branch (mb, CEE_BNE_UN);
-	}
 }
+
+static void
+install_noilgen (void)
+{
+	MonoSgenMonoCallbacks cb;
+	cb.version = MONO_SGEN_MONO_CALLBACKS_VERSION;
+	cb.emit_nursery_check = emit_nursery_check_noilgen;
+	cb.emit_managed_allocater = emit_managed_allocater_noilgen;
+	mono_install_sgen_mono_callbacks (&cb);
+}
+
+static MonoSgenMonoCallbacks *
+get_sgen_mono_cb (void)
+{
+	if (G_UNLIKELY (!cb_inited)) {
+#ifdef ENABLE_ILGEN
+		mono_sgen_mono_ilgen_init ();
+#else
+		install_noilgen ();
 #endif
+	}
+	return &sgenmono_cb;
+}
 
 MonoMethod*
 mono_gc_get_specific_write_barrier (gboolean is_concurrent)
@@ -273,10 +270,6 @@ mono_gc_get_specific_write_barrier (gboolean is_concurrent)
 	MonoMethodSignature *sig;
 	MonoMethod **write_barrier_method_addr;
 	WrapperInfo *info;
-#ifdef MANAGED_WBARRIER
-	int i, nursery_check_labels [2];
-#endif
-
 	// FIXME: Maybe create a separate version for ctors (the branch would be
 	// correctly predicted more times)
 	if (is_concurrent)
@@ -297,59 +290,8 @@ mono_gc_get_specific_write_barrier (gboolean is_concurrent)
 	else
 		mb = mono_mb_new (mono_defaults.object_class, "wbarrier_noconc", MONO_WRAPPER_WRITE_BARRIER);
 
-#ifdef ENABLE_ILGEN
-#ifdef MANAGED_WBARRIER
-	emit_nursery_check (mb, nursery_check_labels, is_concurrent);
-	/*
-	addr = sgen_cardtable + ((address >> CARD_BITS) & CARD_MASK)
-	*addr = 1;
+	get_sgen_mono_cb ()->emit_nursery_check (mb, is_concurrent);
 
-	sgen_cardtable:
-		LDC_PTR sgen_cardtable
-
-	address >> CARD_BITS
-		LDARG_0
-		LDC_I4 CARD_BITS
-		SHR_UN
-	if (SGEN_HAVE_OVERLAPPING_CARDS) {
-		LDC_PTR card_table_mask
-		AND
-	}
-	AND
-	ldc_i4_1
-	stind_i1
-	*/
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_LDPTR_CARD_TABLE);
-	mono_mb_emit_ldarg (mb, 0);
-	mono_mb_emit_icon (mb, CARD_BITS);
-	mono_mb_emit_byte (mb, CEE_SHR_UN);
-	mono_mb_emit_byte (mb, CEE_CONV_I);
-#ifdef SGEN_HAVE_OVERLAPPING_CARDS
-#if SIZEOF_VOID_P == 8
-	mono_mb_emit_icon8 (mb, CARD_MASK);
-#else
-	mono_mb_emit_icon (mb, CARD_MASK);
-#endif
-	mono_mb_emit_byte (mb, CEE_CONV_I);
-	mono_mb_emit_byte (mb, CEE_AND);
-#endif
-	mono_mb_emit_byte (mb, CEE_ADD);
-	mono_mb_emit_icon (mb, 1);
-	mono_mb_emit_byte (mb, CEE_STIND_I1);
-
-	// return;
-	for (i = 0; i < 2; ++i) {
-		if (nursery_check_labels [i])
-			mono_mb_patch_branch (mb, nursery_check_labels [i]);
-	}
-	mono_mb_emit_byte (mb, CEE_RET);
-#else
-	mono_mb_emit_ldarg (mb, 0);
-	mono_mb_emit_icall (mb, mono_gc_wbarrier_generic_nostore);
-	mono_mb_emit_byte (mb, CEE_RET);
-#endif
-#endif
 	res = mono_mb_create_method (mb, sig, 16);
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_NONE);
 	mono_marshal_set_wrapper_info (res, info);
@@ -441,6 +383,13 @@ sgen_client_zero_array_fill_header (void *p, size_t size)
 
 		SGEN_ASSERT (0, !memcmp (p, zeros, size), "TLAB segment must be zeroed out.");
 	}
+}
+
+MonoVTable *
+mono_gc_get_vtable (MonoObject *obj)
+{
+	// See sgen/sgen-tagged-pointer.h.
+	return SGEN_LOAD_VTABLE (obj);
 }
 
 /*
@@ -862,7 +811,7 @@ mono_gc_clear_domain (MonoDomain * domain)
 
 	binary_protocol_domain_unload_begin (domain);
 
-	sgen_stop_world (0);
+	sgen_stop_world (0, FALSE);
 
 	if (sgen_concurrent_collection_in_progress ())
 		sgen_perform_collection (0, GENERATION_OLD, "clear domain", TRUE, FALSE);
@@ -930,7 +879,7 @@ mono_gc_clear_domain (MonoDomain * domain)
 		sgen_object_layout_dump (stdout);
 	}
 
-	sgen_restart_world (0);
+	sgen_restart_world (0, FALSE);
 
 	binary_protocol_domain_unload_end (domain);
 	binary_protocol_flush_buffers (FALSE);
@@ -979,13 +928,13 @@ mono_gc_alloc_mature (MonoVTable *vtable, size_t size)
  * mono_gc_alloc_fixed:
  */
 void*
-mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
+mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg)
 {
 	/* FIXME: do a single allocation */
 	void *res = g_calloc (1, size);
 	if (!res)
 		return NULL;
-	if (!mono_gc_register_root ((char *)res, size, descr, source, msg)) {
+	if (!mono_gc_register_root ((char *)res, size, descr, source, key, msg)) {
 		g_free (res);
 		res = NULL;
 	}
@@ -1006,41 +955,11 @@ mono_gc_free_fixed (void* addr)
  * Managed allocator
  */
 
+#ifdef MANAGED_ALLOCATION
 static MonoMethod* alloc_method_cache [ATYPE_NUM];
 static MonoMethod* slowpath_alloc_method_cache [ATYPE_NUM];
 static MonoMethod* profiler_alloc_method_cache [ATYPE_NUM];
 static gboolean use_managed_allocator = TRUE;
-
-#ifdef MANAGED_ALLOCATION
-// Cache the SgenThreadInfo pointer in a local 'var'.
-#define EMIT_TLS_ACCESS_VAR(mb, var) \
-	do { \
-		var = mono_mb_add_local ((mb), &mono_defaults.int_class->byval_arg); \
-		mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX); \
-		mono_mb_emit_byte ((mb), CEE_MONO_TLS); \
-		mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_THREAD_INFO); \
-		mono_mb_emit_stloc ((mb), (var)); \
-	} while (0)
-
-#define EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR(mb, var) \
-	do { \
-		mono_mb_emit_ldloc ((mb), (var)); \
-		mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenClientThreadInfo, in_critical_region)); \
-		mono_mb_emit_byte ((mb), CEE_ADD); \
-	} while (0)
-
-#define EMIT_TLS_ACCESS_NEXT_ADDR(mb, var)	do {	\
-	mono_mb_emit_ldloc ((mb), (var));		\
-	mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenThreadInfo, tlab_next));	\
-	mono_mb_emit_byte ((mb), CEE_ADD);		\
-	} while (0)
-
-#define EMIT_TLS_ACCESS_TEMP_END(mb, var)	do {	\
-	mono_mb_emit_ldloc ((mb), (var));		\
-	mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenThreadInfo, tlab_temp_end));	\
-	mono_mb_emit_byte ((mb), CEE_ADD);		\
-	mono_mb_emit_byte ((mb), CEE_LDIND_I);		\
-	} while (0)
 
 /* FIXME: Do this in the JIT, where specialized allocation sequences can be created
  * for each class. This is currently not easy to do, as it is hard to generate basic 
@@ -1053,15 +972,12 @@ static gboolean use_managed_allocator = TRUE;
 static MonoMethod*
 create_allocator (int atype, ManagedAllocatorVariant variant)
 {
-	int p_var, size_var, real_size_var, thread_var G_GNUC_UNUSED;
 	gboolean slowpath = variant == MANAGED_ALLOCATOR_SLOW_PATH;
 	gboolean profiler = variant == MANAGED_ALLOCATOR_PROFILER;
-	guint32 fastpath_branch, max_size_branch, no_oom_branch;
 	MonoMethodBuilder *mb;
 	MonoMethod *res;
 	MonoMethodSignature *csig;
 	static gboolean registered = FALSE;
-	int tlab_next_addr_var, new_next_var;
 	const char *name = NULL;
 	WrapperInfo *info;
 	int num_params, i;
@@ -1104,374 +1020,14 @@ create_allocator (int atype, ManagedAllocatorVariant variant)
 
 	mb = mono_mb_new (mono_defaults.object_class, name, MONO_WRAPPER_ALLOC);
 
-#ifdef ENABLE_ILGEN
-	if (slowpath) {
-		switch (atype) {
-		case ATYPE_NORMAL:
-		case ATYPE_SMALL:
-			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_icall (mb, ves_icall_object_new_specific);
-			break;
-		case ATYPE_VECTOR:
-			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, ves_icall_array_new_specific);
-			break;
-		case ATYPE_STRING:
-			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, ves_icall_string_alloc);
-			break;
-		default:
-			g_assert_not_reached ();
-		}
-
-		goto done;
-	}
-
-	/*
-	 * Tls access might call foreign code or code without jinfo. This can
-	 * only happen if we are outside of the critical region.
-	 */
-	EMIT_TLS_ACCESS_VAR (mb, thread_var);
-
-	size_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-	if (atype == ATYPE_SMALL) {
-		/* size_var = size_arg */
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_stloc (mb, size_var);
-	} else if (atype == ATYPE_NORMAL) {
-		/* size = vtable->klass->instance_size; */
-		mono_mb_emit_ldarg (mb, 0);
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoVTable, klass));
-		mono_mb_emit_byte (mb, CEE_ADD);
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoClass, instance_size));
-		mono_mb_emit_byte (mb, CEE_ADD);
-		/* FIXME: assert instance_size stays a 4 byte integer */
-		mono_mb_emit_byte (mb, CEE_LDIND_U4);
-		mono_mb_emit_byte (mb, CEE_CONV_I);
-		mono_mb_emit_stloc (mb, size_var);
-	} else if (atype == ATYPE_VECTOR) {
-		MonoExceptionClause *clause;
-		int pos, pos_leave, pos_error;
-		MonoClass *oom_exc_class;
-		MonoMethod *ctor;
-
-		/*
-		 * n > MONO_ARRAY_MAX_INDEX => OutOfMemoryException
-		 * n < 0                    => OverflowException
-		 *
-		 * We can do an unsigned comparison to catch both cases, then in the error
-		 * case compare signed to distinguish between them.
-		 */
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icon (mb, MONO_ARRAY_MAX_INDEX);
-		mono_mb_emit_byte (mb, CEE_CONV_U);
-		pos = mono_mb_emit_short_branch (mb, CEE_BLE_UN_S);
-
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icon (mb, 0);
-		pos_error = mono_mb_emit_short_branch (mb, CEE_BLT_S);
-		mono_mb_emit_exception (mb, "OutOfMemoryException", NULL);
-		mono_mb_patch_short_branch (mb, pos_error);
-		mono_mb_emit_exception (mb, "OverflowException", NULL);
-
-		mono_mb_patch_short_branch (mb, pos);
-
-		clause = (MonoExceptionClause *)mono_image_alloc0 (mono_defaults.corlib, sizeof (MonoExceptionClause));
-		clause->try_offset = mono_mb_get_label (mb);
-
-		/* vtable->klass->sizes.element_size */
-		mono_mb_emit_ldarg (mb, 0);
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoVTable, klass));
-		mono_mb_emit_byte (mb, CEE_ADD);
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoClass, sizes));
-		mono_mb_emit_byte (mb, CEE_ADD);
-		mono_mb_emit_byte (mb, CEE_LDIND_U4);
-		mono_mb_emit_byte (mb, CEE_CONV_I);
-
-		/* * n */
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_byte (mb, CEE_MUL_OVF_UN);
-		/* + sizeof (MonoArray) */
-		mono_mb_emit_icon (mb, MONO_SIZEOF_MONO_ARRAY);
-		mono_mb_emit_byte (mb, CEE_ADD_OVF_UN);
-		mono_mb_emit_stloc (mb, size_var);
-
-		pos_leave = mono_mb_emit_branch (mb, CEE_LEAVE);
-
-		/* catch */
-		clause->flags = MONO_EXCEPTION_CLAUSE_NONE;
-		clause->try_len = mono_mb_get_pos (mb) - clause->try_offset;
-		clause->data.catch_class = mono_class_load_from_name (mono_defaults.corlib,
-				"System", "OverflowException");
-		clause->handler_offset = mono_mb_get_label (mb);
-
-		oom_exc_class = mono_class_load_from_name (mono_defaults.corlib,
-				"System", "OutOfMemoryException");
-		ctor = mono_class_get_method_from_name (oom_exc_class, ".ctor", 0);
-		g_assert (ctor);
-
-		mono_mb_emit_byte (mb, CEE_POP);
-		mono_mb_emit_op (mb, CEE_NEWOBJ, ctor);
-		mono_mb_emit_byte (mb, CEE_THROW);
-
-		clause->handler_len = mono_mb_get_pos (mb) - clause->handler_offset;
-		mono_mb_set_clauses (mb, 1, clause);
-		mono_mb_patch_branch (mb, pos_leave);
-		/* end catch */
-	} else if (atype == ATYPE_STRING) {
-		int pos;
-
-		/*
-		 * a string allocator method takes the args: (vtable, len)
-		 *
-		 * bytes = offsetof (MonoString, chars) + ((len + 1) * 2)
-		 *
-		 * condition:
-		 *
-		 * bytes <= INT32_MAX - (SGEN_ALLOC_ALIGN - 1)
-		 *
-		 * therefore:
-		 *
-		 * offsetof (MonoString, chars) + ((len + 1) * 2) <= INT32_MAX - (SGEN_ALLOC_ALIGN - 1)
-		 * len <= (INT32_MAX - (SGEN_ALLOC_ALIGN - 1) - offsetof (MonoString, chars)) / 2 - 1
-		 */
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icon (mb, (INT32_MAX - (SGEN_ALLOC_ALIGN - 1) - MONO_STRUCT_OFFSET (MonoString, chars)) / 2 - 1);
-		pos = mono_mb_emit_short_branch (mb, MONO_CEE_BLE_UN_S);
-
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
-		mono_mb_emit_exception (mb, "OutOfMemoryException", NULL);
-		mono_mb_patch_short_branch (mb, pos);
-
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icon (mb, 1);
-		mono_mb_emit_byte (mb, MONO_CEE_SHL);
-		//WE manually fold the above + 2 here
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoString, chars) + 2);
-		mono_mb_emit_byte (mb, CEE_ADD);
-		mono_mb_emit_stloc (mb, size_var);
-	} else {
-		g_assert_not_reached ();
-	}
-
-#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
-	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
-	mono_mb_emit_byte (mb, CEE_LDC_I4_1);
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
-	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_NONE);
-#endif
-
-	if (nursery_canaries_enabled ()) {
-		real_size_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_stloc(mb, real_size_var);
-	}
-	else
-		real_size_var = size_var;
-
-	/* size += ALLOC_ALIGN - 1; */
-	mono_mb_emit_ldloc (mb, size_var);
-	mono_mb_emit_icon (mb, SGEN_ALLOC_ALIGN - 1);
-	mono_mb_emit_byte (mb, CEE_ADD);
-	/* size &= ~(ALLOC_ALIGN - 1); */
-	mono_mb_emit_icon (mb, ~(SGEN_ALLOC_ALIGN - 1));
-	mono_mb_emit_byte (mb, CEE_AND);
-	mono_mb_emit_stloc (mb, size_var);
-
-	/* if (size > MAX_SMALL_OBJ_SIZE) goto slowpath */
-	if (atype != ATYPE_SMALL) {
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_icon (mb, SGEN_MAX_SMALL_OBJ_SIZE);
-		max_size_branch = mono_mb_emit_short_branch (mb, MONO_CEE_BGT_UN_S);
-	}
-
-	/*
-	 * We need to modify tlab_next, but the JIT only supports reading, so we read
-	 * another tls var holding its address instead.
-	 */
-
-	/* tlab_next_addr (local) = tlab_next_addr (TLS var) */
-	tlab_next_addr_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-	EMIT_TLS_ACCESS_NEXT_ADDR (mb, thread_var);
-	mono_mb_emit_stloc (mb, tlab_next_addr_var);
-
-	/* p = (void**)tlab_next; */
-	p_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-	mono_mb_emit_ldloc (mb, tlab_next_addr_var);
-	mono_mb_emit_byte (mb, CEE_LDIND_I);
-	mono_mb_emit_stloc (mb, p_var);
-	
-	/* new_next = (char*)p + size; */
-	new_next_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-	mono_mb_emit_ldloc (mb, p_var);
-	mono_mb_emit_ldloc (mb, size_var);
-	mono_mb_emit_byte (mb, CEE_CONV_I);
-	mono_mb_emit_byte (mb, CEE_ADD);
-
-	if (nursery_canaries_enabled ()) {
-			mono_mb_emit_icon (mb, CANARY_SIZE);
-			mono_mb_emit_byte (mb, CEE_ADD);
-	}
-	mono_mb_emit_stloc (mb, new_next_var);
-
-	/* if (G_LIKELY (new_next < tlab_temp_end)) */
-	mono_mb_emit_ldloc (mb, new_next_var);
-	EMIT_TLS_ACCESS_TEMP_END (mb, thread_var);
-	fastpath_branch = mono_mb_emit_short_branch (mb, MONO_CEE_BLT_UN_S);
-
-	/* Slowpath */
-	if (atype != ATYPE_SMALL)
-		mono_mb_patch_short_branch (mb, max_size_branch);
-
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
-	/*
-	 * We are no longer in a critical section. We need to do this before calling
-	 * to unmanaged land in order to avoid stw deadlocks since unmanaged code
-	 * might take locks.
-	 */
-#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
-	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
-	mono_mb_emit_byte (mb, CEE_LDC_I4_0);
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
-	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_NONE);
-#endif
-
-	/* FIXME: mono_gc_alloc_obj takes a 'size_t' as an argument, not an int32 */
-	mono_mb_emit_ldarg (mb, 0);
-	mono_mb_emit_ldloc (mb, real_size_var);
-	if (atype == ATYPE_NORMAL || atype == ATYPE_SMALL) {
-		mono_mb_emit_icall (mb, mono_gc_alloc_obj);
-	} else if (atype == ATYPE_VECTOR) {
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icall (mb, mono_gc_alloc_vector);
-	} else if (atype == ATYPE_STRING) {
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_icall (mb, mono_gc_alloc_string);
-	} else {
-		g_assert_not_reached ();
-	}
-
-	/* if (ret == NULL) throw OOM; */
-	mono_mb_emit_byte (mb, CEE_DUP);
-	no_oom_branch = mono_mb_emit_branch (mb, CEE_BRTRUE);
-	mono_mb_emit_exception (mb, "OutOfMemoryException", NULL);
-
-	mono_mb_patch_branch (mb, no_oom_branch);
-	mono_mb_emit_byte (mb, CEE_RET);
-
-	/* Fastpath */
-	mono_mb_patch_short_branch (mb, fastpath_branch);
-
-	/* FIXME: Memory barrier */
-
-	/* tlab_next = new_next */
-	mono_mb_emit_ldloc (mb, tlab_next_addr_var);
-	mono_mb_emit_ldloc (mb, new_next_var);
-	mono_mb_emit_byte (mb, CEE_STIND_I);
-
-	/* *p = vtable; */
-	mono_mb_emit_ldloc (mb, p_var);
-	mono_mb_emit_ldarg (mb, 0);
-	mono_mb_emit_byte (mb, CEE_STIND_I);
-
-	/* mark object end with nursery word */
-	if (nursery_canaries_enabled ()) {
-			mono_mb_emit_ldloc (mb, p_var);
-			mono_mb_emit_ldloc (mb, real_size_var);
-			mono_mb_emit_byte (mb, MONO_CEE_ADD);
-			mono_mb_emit_icon8 (mb, (mword) CANARY_STRING);
-			mono_mb_emit_icon (mb, CANARY_SIZE);
-			mono_mb_emit_byte (mb, MONO_CEE_PREFIX1);
-			mono_mb_emit_byte (mb, CEE_CPBLK);
-	}
-
-	if (atype == ATYPE_VECTOR) {
-		/* arr->max_length = max_length; */
-		mono_mb_emit_ldloc (mb, p_var);
-		mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoArray, max_length));
-		mono_mb_emit_ldarg (mb, 1);
-#ifdef MONO_BIG_ARRAYS
-		mono_mb_emit_byte (mb, CEE_STIND_I);
-#else
-		mono_mb_emit_byte (mb, CEE_STIND_I4);
-#endif
-	} else 	if (atype == ATYPE_STRING) {
-		/* need to set length and clear the last char */
-		/* s->length = len; */
-		mono_mb_emit_ldloc (mb, p_var);
-		mono_mb_emit_icon (mb, MONO_STRUCT_OFFSET (MonoString, length));
-		mono_mb_emit_byte (mb, MONO_CEE_ADD);
-		mono_mb_emit_ldarg (mb, 1);
-		mono_mb_emit_byte (mb, MONO_CEE_STIND_I4);
-	}
-
-#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
-	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
-	mono_mb_emit_byte (mb, CEE_LDC_I4_0);
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
-#else
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_MEMORY_BARRIER);
-#endif
-	/*
-	We must make sure both vtable and max_length are globaly visible before returning to managed land.
-	*/
-	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_REL);
-
-	/* return p */
-	mono_mb_emit_ldloc (mb, p_var);
-
- done:
-
-	/*
-	 * It's important that we do this outside of the critical region as we
-	 * will be invoking arbitrary code.
-	 */
-	if (profiler) {
-		/*
-		 * if (G_UNLIKELY (*&mono_profiler_state.gc_allocation_count)) {
-		 * 	mono_profiler_raise_gc_allocation (p);
-		 * }
-		 */
-
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_LDPTR_PROFILER_ALLOCATION_COUNT);
-		mono_mb_emit_byte (mb, CEE_LDIND_U4);
-
-		int prof_br = mono_mb_emit_short_branch (mb, CEE_BRFALSE_S);
-
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
-		mono_mb_emit_byte (mb, CEE_DUP);
-		mono_mb_emit_icall (mb, mono_profiler_raise_gc_allocation);
-
-		mono_mb_patch_short_branch (mb, prof_br);
-	}
-
-	mono_mb_emit_byte (mb, CEE_RET);
-#endif
+	get_sgen_mono_cb ()->emit_managed_allocater (mb, slowpath, profiler, atype);
 
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_NONE);
 	info->d.alloc.gc_name = "sgen";
 	info->d.alloc.alloc_type = atype;
 
-#ifdef ENABLE_ILGEN
-	mb->init_locals = FALSE;
-#endif
-
 	res = mono_mb_create (mb, csig, 8, info);
 	mono_mb_free (mb);
-
 
 	return res;
 }
@@ -1875,11 +1431,14 @@ mono_gc_set_string_length (MonoString *str, gint32 new_length)
  */
 
 #define GC_ROOT_NUM 32
+#define SPECIAL_ADDRESS_FIN_QUEUE ((void*)1)
+#define SPECIAL_ADDRESS_CRIT_FIN_QUEUE ((void*)2)
+#define SPECIAL_ADDRESS_EPHEMERON ((void*)3)
+
 typedef struct {
 	int count;		/* must be the first field */
+	void *addresses [GC_ROOT_NUM];
 	void *objects [GC_ROOT_NUM];
-	int root_types [GC_ROOT_NUM];
-	uintptr_t extra_info [GC_ROOT_NUM];
 } GCRootReport;
 
 static void
@@ -1887,63 +1446,34 @@ notify_gc_roots (GCRootReport *report)
 {
 	if (!report->count)
 		return;
-	MONO_PROFILER_RAISE (gc_roots, ((MonoObject **) report->objects, (MonoProfilerGCRootType *) report->root_types, report->extra_info, report->count));
+	MONO_PROFILER_RAISE (gc_roots, (report->count, (const mono_byte *const *)report->addresses, (MonoObject *const *) report->objects));
 	report->count = 0;
 }
 
 static void
-add_profile_gc_root (GCRootReport *report, void *object, int rtype, uintptr_t extra_info)
+report_gc_root (GCRootReport *report, void *address, void *object)
 {
 	if (report->count == GC_ROOT_NUM)
 		notify_gc_roots (report);
+	report->addresses [report->count] = address;
 	report->objects [report->count] = object;
-	report->root_types [report->count] = rtype;
-	report->extra_info [report->count++] = (uintptr_t)SGEN_LOAD_VTABLE (object)->klass;
+	report->count++;
 }
-
-void
-sgen_client_nursery_objects_pinned (void **definitely_pinned, int count)
-{
-	if (MONO_PROFILER_ENABLED (gc_roots)) {
-		GCRootReport report;
-		int idx;
-		report.count = 0;
-		for (idx = 0; idx < count; ++idx)
-			add_profile_gc_root (&report, definitely_pinned [idx], MONO_PROFILER_GC_ROOT_PINNING | MONO_PROFILER_GC_ROOT_MISC, 0);
-		notify_gc_roots (&report);
-	}
-}
-
-static void
-report_finalizer_roots_from_queue (SgenPointerQueue *queue)
-{
-	GCRootReport report;
-	size_t i;
-
-	report.count = 0;
-	for (i = 0; i < queue->next_slot; ++i) {
-		void *obj = queue->data [i];
-		if (!obj)
-			continue;
-		add_profile_gc_root (&report, obj, MONO_PROFILER_GC_ROOT_FINALIZER, 0);
-	}
-	notify_gc_roots (&report);
-}
-
-static void
-report_finalizer_roots (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
-{
-	report_finalizer_roots_from_queue (fin_ready_queue);
-	report_finalizer_roots_from_queue (critical_fin_queue);
-}
-
-static GCRootReport *root_report;
 
 static void
 single_arg_report_root (MonoObject **obj, void *gc_data)
 {
+	GCRootReport *report = gc_data;
 	if (*obj)
-		add_profile_gc_root (root_report, *obj, MONO_PROFILER_GC_ROOT_OTHER, 0);
+		report_gc_root (report, obj, *obj);
+}
+
+static void
+two_args_report_root (void *address, MonoObject *obj, void *gc_data)
+{
+	GCRootReport *report = gc_data;
+	if (obj)
+		report_gc_root (report, address, obj);
 }
 
 static void
@@ -1953,9 +1483,8 @@ precisely_report_roots_from (GCRootReport *report, void** start_root, void** end
 	case ROOT_DESC_BITMAP:
 		desc >>= ROOT_DESC_TYPE_SHIFT;
 		while (desc) {
-			if ((desc & 1) && *start_root) {
-				add_profile_gc_root (report, *start_root, MONO_PROFILER_GC_ROOT_OTHER, 0);
-			}
+			if ((desc & 1) && *start_root)
+				report_gc_root (report, start_root, *start_root);
 			desc >>= 1;
 			start_root++;
 		}
@@ -1969,9 +1498,8 @@ precisely_report_roots_from (GCRootReport *report, void** start_root, void** end
 			gsize bmap = *bitmap_data++;
 			void **objptr = start_run;
 			while (bmap) {
-				if ((bmap & 1) && *objptr) {
-					add_profile_gc_root (report, *objptr, MONO_PROFILER_GC_ROOT_OTHER, 0);
-				}
+				if ((bmap & 1) && *objptr)
+					report_gc_root (report, objptr, *objptr);
 				bmap >>= 1;
 				++objptr;
 			}
@@ -1984,14 +1512,17 @@ precisely_report_roots_from (GCRootReport *report, void** start_root, void** end
 
 		for (p = start_root; p < end_root; p++) {
 			if (*p)
-				add_profile_gc_root (report, *p, MONO_PROFILER_GC_ROOT_OTHER, 0);
+				report_gc_root (report, p, *p);
 		}
 		break;
 	}
 	case ROOT_DESC_USER: {
 		MonoGCRootMarkFunc marker = (MonoGCRootMarkFunc)sgen_get_user_descriptor_func (desc);
-		root_report = report;
-		marker ((MonoObject**)start_root, single_arg_report_root, NULL);
+
+		if ((void*)marker == (void*)sgen_mark_normal_gc_handles)
+			sgen_gc_handles_report_roots (two_args_report_root, report);
+		else
+			marker ((MonoObject**)start_root, single_arg_report_root, report);
 		break;
 	}
 	case ROOT_DESC_RUN_LEN:
@@ -2002,15 +1533,194 @@ precisely_report_roots_from (GCRootReport *report, void** start_root, void** end
 }
 
 static void
-report_registered_roots_by_type (int root_type)
+report_pinning_roots (GCRootReport *report, void **start, void **end)
+{
+	while (start < end) {
+		mword addr = (mword)*start;
+		addr &= ~(SGEN_ALLOC_ALIGN - 1);
+		if (addr)
+			report_gc_root (report, start, (void*)addr);
+
+		start++;
+	}
+}
+
+static SgenPointerQueue pinned_objects = SGEN_POINTER_QUEUE_INIT (INTERNAL_MEM_MOVED_OBJECT);
+static mword lower_bound, upper_bound;
+
+static GCObject*
+find_pinned_obj (char *addr)
+{
+	size_t idx = sgen_pointer_queue_search (&pinned_objects, addr);
+
+	if (idx != pinned_objects.next_slot) {
+		if (pinned_objects.data [idx] == addr)
+			return pinned_objects.data [idx];
+		if (idx == 0)
+			return NULL;
+	}
+
+	GCObject *obj = pinned_objects.data [idx - 1];
+	if (addr > (char*)obj && addr < ((char*)obj + sgen_safe_object_get_size (obj)))
+		return obj;
+	return NULL;
+}
+
+
+/*
+ * We pass @root_report_address so register are properly accounted towards their thread
+*/
+static void
+report_conservative_roots (GCRootReport *report, char *root_report_address, void **start, void **end)
+{
+	while (start < end) {
+		mword addr = (mword)*start;
+		addr &= ~(SGEN_ALLOC_ALIGN - 1);
+
+		if (addr < lower_bound || addr > upper_bound) {
+			++start;
+			continue;
+		}
+
+		GCObject *obj = find_pinned_obj ((char*)addr);
+		if (obj)
+			report_gc_root (report, root_report_address, obj);
+		start++;
+	}
+}
+
+typedef struct {
+	gboolean precise;
+	GCRootReport *report;
+	SgenThreadInfo *info;
+} ReportHandleStackRoot;
+
+static void
+report_handle_stack_root (gpointer *ptr, gpointer user_data)
+{
+	ReportHandleStackRoot *ud = user_data;
+	GCRootReport *report = ud->report;
+	gpointer addr = ud->info->client_info.info.handle_stack;
+
+	// Note: We know that *ptr != NULL.
+	if (ud->precise)
+		report_gc_root (report, addr, *ptr);
+	else
+		report_conservative_roots (report, addr, ptr, ptr + 1);
+}
+
+static void
+report_handle_stack_roots (GCRootReport *report, SgenThreadInfo *info, gboolean precise)
+{
+	ReportHandleStackRoot ud = {
+		.precise = precise,
+		.report = report,
+		.info = info,
+	};
+
+	mono_handle_stack_scan ((HandleStack *) info->client_info.info.handle_stack, report_handle_stack_root, &ud, ud.precise, FALSE);
+}
+
+static void
+report_stack_roots (void)
+{
+	GCRootReport report = {0};
+	FOREACH_THREAD (info) {
+		void *aligned_stack_start;
+
+		if (info->client_info.skip) {
+			continue;
+		} else if (info->client_info.gc_disabled) {
+			continue;
+		} else if (!mono_thread_info_is_live (info)) {
+			continue;
+		} else if (!info->client_info.stack_start) {
+			continue;
+		}
+
+		g_assert (info->client_info.stack_start);
+		g_assert (info->client_info.info.stack_end);
+
+		aligned_stack_start = (void*)(mword) ALIGN_TO ((mword)info->client_info.stack_start, SIZEOF_VOID_P);
+#ifdef HOST_WIN32
+		/* Windows uses a guard page before the committed stack memory pages to detect when the
+		   stack needs to be grown. If we suspend a thread just after a function prolog has
+		   decremented the stack pointer to point into the guard page but before the thread has
+		   been able to read or write to that page, starting the stack scan at aligned_stack_start
+		   will raise a STATUS_GUARD_PAGE_VIOLATION and the process will crash. This code uses
+		   VirtualQuery() to determine whether stack_start points into the guard page and then
+		   updates aligned_stack_start to point at the next non-guard page. */
+		MEMORY_BASIC_INFORMATION mem_info;
+		SIZE_T result = VirtualQuery (info->client_info.stack_start, &mem_info, sizeof(mem_info));
+		g_assert (result != 0);
+		if (mem_info.Protect & PAGE_GUARD) {
+			aligned_stack_start = ((char*) mem_info.BaseAddress) + mem_info.RegionSize;
+		}
+#endif
+
+		g_assert (info->client_info.suspend_done);
+
+		report_conservative_roots (&report, aligned_stack_start, (void **)aligned_stack_start, (void **)info->client_info.info.stack_end);
+		report_conservative_roots (&report, aligned_stack_start, (void**)&info->client_info.ctx, (void**)(&info->client_info.ctx + 1));
+
+		report_handle_stack_roots (&report, info, FALSE);
+		report_handle_stack_roots (&report, info, TRUE);
+	} FOREACH_THREAD_END
+
+	notify_gc_roots (&report);
+}
+
+static void
+report_pin_queue (void)
+{
+	lower_bound = SIZE_MAX;
+	upper_bound = 0;
+
+	//sort the addresses
+	sgen_pointer_queue_sort_uniq (&pinned_objects);
+
+	for (int i = 0; i < pinned_objects.next_slot; ++i) {
+		GCObject *obj = pinned_objects.data [i];
+		ssize_t size = sgen_safe_object_get_size (obj);
+
+		ssize_t addr = (ssize_t)obj;
+		lower_bound = MIN (lower_bound, addr);
+		upper_bound = MAX (upper_bound, addr + size);
+	}
+
+	report_stack_roots ();
+	sgen_pointer_queue_clear (&pinned_objects);
+}
+
+static void
+report_finalizer_roots_from_queue (SgenPointerQueue *queue, void* queue_address)
 {
 	GCRootReport report;
+	size_t i;
+
+	report.count = 0;
+	for (i = 0; i < queue->next_slot; ++i) {
+		void *obj = queue->data [i];
+		if (!obj)
+			continue;
+		report_gc_root (&report, queue_address, obj);
+	}
+	notify_gc_roots (&report);
+}
+
+static void
+report_registered_roots_by_type (int root_type)
+{
+	GCRootReport report = { 0 };
 	void **start_root;
 	RootRecord *root;
 	report.count = 0;
 	SGEN_HASH_TABLE_FOREACH (&roots_hash [root_type], void **, start_root, RootRecord *, root) {
-		SGEN_LOG (6, "Precise root scan %p-%p (desc: %p)", start_root, root->end_root, (void*)root->root_desc);
-		precisely_report_roots_from (&report, start_root, (void**)root->end_root, root->root_desc);
+		SGEN_LOG (6, "Profiler root scan %p-%p (desc: %p)", start_root, root->end_root, (void*)root->root_desc);
+		if (root_type == ROOT_TYPE_PINNED)
+			report_pinning_roots (&report, start_root, (void**)root->end_root);
+		else
+			precisely_report_roots_from (&report, start_root, (void**)root->end_root, root->root_desc);
 	} SGEN_HASH_TABLE_FOREACH_END;
 	notify_gc_roots (&report);
 }
@@ -2018,52 +1728,118 @@ report_registered_roots_by_type (int root_type)
 static void
 report_registered_roots (void)
 {
-	report_registered_roots_by_type (ROOT_TYPE_NORMAL);
-	report_registered_roots_by_type (ROOT_TYPE_WBARRIER);
+	for (int i = 0; i < ROOT_TYPE_NUM; ++i)
+		report_registered_roots_by_type (i);
+}
+
+static void
+report_ephemeron_roots (void)
+{
+        EphemeronLinkNode *current = ephemeron_list;
+        Ephemeron *cur, *array_end;
+        GCObject *tombstone;
+        GCRootReport report = { 0 };
+
+        for (current = ephemeron_list; current; current = current->next) {
+                MonoArray *array = current->array;
+
+                if (!sgen_is_object_alive_for_current_gen ((GCObject*)array))
+                        continue;
+
+                cur = mono_array_addr (array, Ephemeron, 0);
+                array_end = cur + mono_array_length_fast (array);
+                tombstone = SGEN_LOAD_VTABLE ((GCObject*)array)->domain->ephemeron_tombstone;
+
+                for (; cur < array_end; ++cur) {
+                        GCObject *key = cur->key;
+
+                        if (!key || key == tombstone)
+                                continue;
+
+                        if (cur->value && sgen_is_object_alive_for_current_gen (key))
+				report_gc_root (&report, SPECIAL_ADDRESS_EPHEMERON, cur->value);
+		}
+	}
+
+	notify_gc_roots (&report);
+}
+
+static void
+sgen_report_all_roots (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
+{
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
+
+	report_registered_roots ();
+	report_ephemeron_roots ();
+	report_pin_queue ();
+	report_finalizer_roots_from_queue (fin_ready_queue, SPECIAL_ADDRESS_FIN_QUEUE);
+	report_finalizer_roots_from_queue (critical_fin_queue, SPECIAL_ADDRESS_CRIT_FIN_QUEUE);
 }
 
 void
-sgen_client_collecting_minor (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
+sgen_client_pinning_start (void)
 {
-	if (MONO_PROFILER_ENABLED (gc_roots))
-		report_registered_roots ();
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
 
-	if (MONO_PROFILER_ENABLED (gc_roots))
-		report_finalizer_roots (fin_ready_queue, critical_fin_queue);
+	sgen_pointer_queue_clear (&pinned_objects);
 }
 
-static GCRootReport major_root_report;
-static gboolean profile_roots;
+void
+sgen_client_pinning_end (void)
+{
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
+}
 
 void
-sgen_client_collecting_major_1 (void)
+sgen_client_nursery_objects_pinned (void **definitely_pinned, int count)
 {
-	profile_roots = MONO_PROFILER_ENABLED (gc_roots);
-	memset (&major_root_report, 0, sizeof (GCRootReport));
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
+
+	for (int i = 0; i < count; ++i)
+		sgen_pointer_queue_add (&pinned_objects, definitely_pinned [i]);
 }
 
 void
 sgen_client_pinned_los_object (GCObject *obj)
 {
-	if (profile_roots)
-		add_profile_gc_root (&major_root_report, (char*)obj, MONO_PROFILER_GC_ROOT_PINNING | MONO_PROFILER_GC_ROOT_MISC, 0);
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
+
+	sgen_pointer_queue_add (&pinned_objects, obj);
 }
 
 void
-sgen_client_collecting_major_2 (void)
+sgen_client_pinned_cemented_object (GCObject *obj)
 {
-	if (profile_roots)
-		notify_gc_roots (&major_root_report);
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
 
-	if (MONO_PROFILER_ENABLED (gc_roots))
-		report_registered_roots ();
+	// TODO: How do we report this in a way that makes sense?
 }
 
 void
-sgen_client_collecting_major_3 (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
+sgen_client_pinned_major_heap_object (GCObject *obj)
 {
-	if (MONO_PROFILER_ENABLED (gc_roots))
-		report_finalizer_roots (fin_ready_queue, critical_fin_queue);
+	if (!MONO_PROFILER_ENABLED (gc_roots))
+		return;
+
+	sgen_pointer_queue_add (&pinned_objects, obj);
+}
+
+void
+sgen_client_collecting_minor_report_roots (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
+{
+	sgen_report_all_roots (fin_ready_queue, critical_fin_queue);
+}
+
+void
+sgen_client_collecting_major_report_roots (SgenPointerQueue *fin_ready_queue, SgenPointerQueue *critical_fin_queue)
+{
+	sgen_report_all_roots (fin_ready_queue, critical_fin_queue);
 }
 
 #define MOVED_OBJECTS_NUM 64
@@ -2454,12 +2230,12 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 			  beginning of the object.
 			*/
 			if (precise)
-				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, (GcScanFunc)ctx.ops->copy_or_mark_object, ctx.queue, precise);
+				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, (GcScanFunc)ctx.ops->copy_or_mark_object, ctx.queue, precise, TRUE);
 			else {
 				PinHandleStackInteriorPtrData ud = { .start_nursery = start_nursery,
 								     .end_nursery = end_nursery,
 				};
-				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, pin_handle_stack_interior_ptrs, &ud, precise);
+				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, pin_handle_stack_interior_ptrs, &ud, precise, FALSE);
 			}
 		}
 	} FOREACH_THREAD_END
@@ -2490,15 +2266,15 @@ mono_gc_set_stack_end (void *stack_end)
  */
 
 int
-mono_gc_register_root (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
+mono_gc_register_root (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg)
 {
-	return sgen_register_root (start, size, descr, descr ? ROOT_TYPE_NORMAL : ROOT_TYPE_PINNED, source, msg);
+	return sgen_register_root (start, size, descr, descr ? ROOT_TYPE_NORMAL : ROOT_TYPE_PINNED, source, key, msg);
 }
 
 int
-mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
+mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg)
 {
-	return sgen_register_root (start, size, descr, ROOT_TYPE_WBARRIER, source, msg);
+	return sgen_register_root (start, size, descr, ROOT_TYPE_WBARRIER, source, key, msg);
 }
 
 void
@@ -2529,10 +2305,30 @@ mono_gc_pthread_create (pthread_t *new_thread, const pthread_attr_t *attr, void 
  * Miscellaneous
  */
 
+static size_t last_heap_size = -1;
+static size_t worker_heap_size;
+
 void
 sgen_client_total_allocated_heap_changed (size_t allocated_heap)
 {
 	mono_runtime_resource_check_limit (MONO_RESOURCE_GC_HEAP, allocated_heap);
+
+	/*
+	 * This function can be called from SGen's worker threads. We want to try
+	 * and avoid exposing those threads to the profiler API, so save the heap
+	 * size value and report it later when the main GC thread calls
+	 * mono_sgen_gc_event_resize ().
+	 */
+	worker_heap_size = allocated_heap;
+}
+
+void
+mono_sgen_gc_event_resize (void)
+{
+	if (worker_heap_size != last_heap_size) {
+		last_heap_size = worker_heap_size;
+		MONO_PROFILER_RAISE (gc_resize, (last_heap_size));
+	}
 }
 
 gboolean
@@ -3108,5 +2904,48 @@ sgen_client_get_weak_bitmap (MonoVTable *vt, int *nbits)
 
 	return mono_class_get_weak_bitmap (klass, nbits);
 }
+
+void
+sgen_client_binary_protocol_collection_begin (int minor_gc_count, int generation)
+{
+	static gboolean pseudo_roots_registered;
+
+	MONO_GC_BEGIN (generation);
+
+	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_START, generation));
+	MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_START, generation, generation == GENERATION_OLD && concurrent_collection_in_progress));
+
+	if (!pseudo_roots_registered) {
+		pseudo_roots_registered = TRUE;
+		MONO_PROFILER_RAISE (gc_root_register, (SPECIAL_ADDRESS_FIN_QUEUE, 1, MONO_ROOT_SOURCE_FINALIZER_QUEUE, NULL, "Finalizer Queue"));
+		MONO_PROFILER_RAISE (gc_root_register, (SPECIAL_ADDRESS_CRIT_FIN_QUEUE, 1, MONO_ROOT_SOURCE_FINALIZER_QUEUE, NULL, "Finalizer Queue (Critical)"));
+		MONO_PROFILER_RAISE (gc_root_register, (SPECIAL_ADDRESS_EPHEMERON, 1, MONO_ROOT_SOURCE_EPHEMERON, NULL, "Ephemerons"));
+	}
+
+#ifndef DISABLE_PERFCOUNTERS
+	if (generation == GENERATION_NURSERY)
+		mono_atomic_inc_i32 (&mono_perfcounters->gc_collections0);
+	else
+		mono_atomic_inc_i32 (&mono_perfcounters->gc_collections1);
+#endif
+}
+
+void
+sgen_client_binary_protocol_collection_end (int minor_gc_count, int generation, long long num_objects_scanned, long long num_unique_objects_scanned)
+{
+	MONO_GC_END (generation);
+
+	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_END, generation));
+	MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_END, generation, generation == GENERATION_OLD && concurrent_collection_in_progress));
+}
+
+#ifdef HOST_WASM
+void
+sgen_client_schedule_background_job (void (*cb)(void))
+{
+	mono_threads_schedule_background_job (cb);
+}
+
+#endif
 
 #endif

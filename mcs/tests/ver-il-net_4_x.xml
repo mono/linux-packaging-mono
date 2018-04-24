@@ -11064,7 +11064,7 @@
     </type>
     <type name="X">
       <method name="Int32 Beer(System.Nullable`1[IrishPub])" attrs="145">
-        <size>72</size>
+        <size>60</size>
       </method>
       <method name="Int32 Test(System.Nullable`1[System.Int32])" attrs="145">
         <size>62</size>
@@ -19508,7 +19508,7 @@
     </type>
     <type name="C">
       <method name="Int32 Main()" attrs="150">
-        <size>267</size>
+        <size>255</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -20144,6 +20144,21 @@
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-647.cs">
+    <type name="Program">
+      <method name="Int32 Main()" attrs="150">
+        <size>99</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Program+MyStruct">
+      <method name="Int32 op_Implicit(System.Nullable`1[Program+MyStruct])" attrs="2198">
+        <size>22</size>
       </method>
     </type>
   </test>
@@ -52814,7 +52829,7 @@
   <test name="test-948.cs">
     <type name="X">
       <method name="Void Main()" attrs="150">
-        <size>16</size>
+        <size>103</size>
       </method>
       <method name="Void Foo()" attrs="129">
         <size>2</size>
@@ -52831,6 +52846,16 @@
       </method>
       <method name="Void .ctor()" attrs="6273">
         <size>23</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-950.cs">
+    <type name="B">
+      <method name="Void Main()" attrs="150">
+        <size>26</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -52855,6 +52880,34 @@
       </method>
       <method name="Void EndInvoke(System.IAsyncResult)" attrs="454">
         <size>0</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-960.cs">
+    <type name="B">
+      <method name="Int32 get_Index()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_Index(Int32)" attrs="2178">
+        <size>8</size>
+      </method>
+      <method name="System.String get_S1()" attrs="2179">
+        <size>14</size>
+      </method>
+      <method name="Void set_S1(System.String)" attrs="2178">
+        <size>8</size>
+      </method>
+      <method name="System.String get_S2()" attrs="2180">
+        <size>14</size>
+      </method>
+      <method name="Void set_S2(System.String)" attrs="2178">
+        <size>8</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -68654,6 +68707,22 @@
       </method>
     </type>
   </test>
+  <test name="test-decl-expr-06.cs">
+    <type name="C">
+      <method name="Boolean Foo(Int32 ByRef)" attrs="145">
+        <size>13</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>8</size>
+      </method>
+      <method name="Boolean &lt;f&gt;m__0()" attrs="145">
+        <size>15</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>42</size>
+      </method>
+    </type>
+  </test>
   <test name="test-default-01.cs">
     <type name="X">
       <method name="Void Main()" attrs="150">
@@ -68673,6 +68742,9 @@
       </method>
       <method name="Int32 &lt;M4&gt;m__0()" attrs="145">
         <size>9</size>
+      </method>
+      <method name="Void Foo(II, II, II)" attrs="145">
+        <size>2</size>
       </method>
     </type>
   </test>
@@ -72564,7 +72636,7 @@
     </type>
     <type name="X+&lt;Test&gt;c__Iterator0">
       <method name="Boolean MoveNext()" attrs="486">
-        <size>184</size>
+        <size>206</size>
       </method>
       <method name="Int32 System.Collections.Generic.IEnumerator&lt;int&gt;.get_Current()" attrs="2529">
         <size>14</size>
@@ -72744,6 +72816,21 @@
       </method>
       <method name="System.Collections.Generic.IEnumerator`1[System.Object] System.Collections.Generic.IEnumerable&lt;object&gt;.GetEnumerator()" attrs="481">
         <size>40</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-pattern-13.cs">
+    <type name="C">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Void Main()" attrs="150">
+        <size>35</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -73237,6 +73324,16 @@
     <type name="X">
       <method name="Int32 Main()" attrs="150">
         <size>47</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-ref-11.cs">
+    <type name="Program">
+      <method name="Int32 Main()" attrs="150">
+        <size>34</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>

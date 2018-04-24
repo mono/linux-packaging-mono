@@ -329,7 +329,7 @@ ves_icall_System_Security_Principal_WindowsIdentity_GetUserToken (MonoStringHand
 MonoArray*
 ves_icall_System_Security_Principal_WindowsIdentity_GetRoles (gpointer token)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoArray *array = NULL;
 	MonoDomain *domain = mono_domain_get ();
 
@@ -338,8 +338,8 @@ ves_icall_System_Security_Principal_WindowsIdentity_GetRoles (gpointer token)
 
 	if (!array) {
 		/* return empty array of string, i.e. string [0] */
-		array = mono_array_new_checked (domain, mono_get_string_class (), 0, &error);
-		mono_error_set_pending_exception (&error);
+		array = mono_array_new_checked (domain, mono_get_string_class (), 0, error);
+		mono_error_set_pending_exception (error);
 	}
 	return array;
 }
@@ -609,16 +609,16 @@ static MonoImage *system_security_assembly = NULL;
 void
 ves_icall_System_Security_SecureString_DecryptInternal (MonoArray *data, MonoObject *scope)
 {
-	MonoError error;
-	invoke_protected_memory_method (data, scope, FALSE, &error);
-	mono_error_set_pending_exception (&error);
+	ERROR_DECL (error);
+	invoke_protected_memory_method (data, scope, FALSE, error);
+	mono_error_set_pending_exception (error);
 }
 void
 ves_icall_System_Security_SecureString_EncryptInternal (MonoArray* data, MonoObject *scope)
 {
-	MonoError error;
-	invoke_protected_memory_method (data, scope, TRUE, &error);
-	mono_error_set_pending_exception (&error);
+	ERROR_DECL (error);
+	invoke_protected_memory_method (data, scope, TRUE, error);
+	mono_error_set_pending_exception (error);
 }
 
 void invoke_protected_memory_method (MonoArray *data, MonoObject *scope, gboolean encrypt, MonoError *error)

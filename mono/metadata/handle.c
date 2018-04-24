@@ -35,14 +35,13 @@ Add counters for:
 Actually do something in mono_handle_verify
 
 Shrink the handles stack in mono_handle_stack_scan
-Properly report it to the profiler.
 Add a boehm implementation
 
 TODO (things to explore):
 
 There's no convenient way to wrap the object allocation function.
 Right now we do this:
-	MonoCultureInfoHandle culture = MONO_HANDLE_NEW (MonoCultureInfo, mono_object_new_checked (domain, klass, &error));
+	MonoCultureInfoHandle culture = MONO_HANDLE_NEW (MonoCultureInfo, mono_object_new_checked (domain, klass, error));
 
 Maybe what we need is a round of cleanup around all exposed types in the runtime to unify all helpers under the same hoof.
 Combine: MonoDefaults, GENERATE_GET_CLASS_WITH_CACHE, TYPED_HANDLE_DECL and friends.
@@ -69,7 +68,7 @@ Combine: MonoDefaults, GENERATE_GET_CLASS_WITH_CACHE, TYPED_HANDLE_DECL and frie
  * Note that the handle stack is scanned PRECISELY (see
  * sgen_client_scan_thread_data ()).  That means there should not be
  * stale objects scanned.  So when we manipulate the size of a chunk,
- * wemust ensure that the newly scannable slot is either null or
+ * we must ensure that the newly scannable slot is either null or
  * points to a valid value.
  */
 
@@ -382,10 +381,11 @@ check_handle_stack_monotonic (HandleStack *stack)
 }
 
 void
-mono_handle_stack_scan (HandleStack *stack, GcScanFunc func, gpointer gc_data, gboolean precise)
+mono_handle_stack_scan (HandleStack *stack, GcScanFunc func, gpointer gc_data, gboolean precise, gboolean check)
 {
-	if (precise) /* run just once (per handle stack) per GC */
+	if (check) /* run just once (per handle stack) per GC */
 		check_handle_stack_monotonic (stack);
+
 	/*
 	  We're called twice - on the imprecise pass we call func to pin the
 	  objects where the handle points to its interior.  On the precise

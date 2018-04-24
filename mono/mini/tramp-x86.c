@@ -395,7 +395,7 @@ mono_arch_create_generic_trampoline (MonoTrampolineType tramp_type, MonoTrampInf
 	for (i = X86_EAX; i <= X86_EDI; ++i) {
 		if (i == X86_ESP || i == X86_EBP)
 			continue;
-		if (i == X86_EAX && !((tramp_type == MONO_TRAMPOLINE_RESTORE_STACK_PROT) || (tramp_type == MONO_TRAMPOLINE_AOT_PLT)))
+		if (i == X86_EAX && tramp_type != MONO_TRAMPOLINE_AOT_PLT)
 			continue;
 		x86_mov_reg_membase (code, i, X86_EBP, regarray_offset + (i * 4), 4);
 	}
@@ -752,7 +752,7 @@ mono_arch_create_sdb_trampoline (gboolean single_step, MonoTrampInfo **info, gbo
 }
 
 gpointer
-mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
+mono_arch_get_interp_to_native_trampoline (MonoTrampInfo **info)
 {
 	g_assert_not_reached ();
 	return NULL;

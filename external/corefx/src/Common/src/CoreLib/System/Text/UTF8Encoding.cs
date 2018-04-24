@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Globalization;
 using System.Runtime.InteropServices;
 

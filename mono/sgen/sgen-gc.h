@@ -394,7 +394,7 @@ enum {
 
 extern SgenHashTable roots_hash [ROOT_TYPE_NUM];
 
-int sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type, int source, const char *msg)
+int sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type, int source, void *key, const char *msg)
 	MONO_PERMIT (need (sgen_lock_gc));
 void sgen_deregister_root (char* addr)
 	MONO_PERMIT (need (sgen_lock_gc));
@@ -868,9 +868,9 @@ size_t sgen_gc_get_total_heap_allocation (void);
 
 /* STW */
 
-void sgen_stop_world (int generation)
+void sgen_stop_world (int generation, gboolean serial_collection)
 	MONO_PERMIT (need (sgen_gc_locked), use (sgen_stop_world), grant (sgen_world_stopped), revoke (sgen_stop_world));
-void sgen_restart_world (int generation)
+void sgen_restart_world (int generation, gboolean serial_collection)
 	MONO_PERMIT (need (sgen_gc_locked), use (sgen_world_stopped), revoke (sgen_world_stopped), grant (sgen_stop_world));
 gboolean sgen_is_world_stopped (void);
 
@@ -1015,6 +1015,8 @@ void sgen_gchandle_iterate (GCHandleType handle_type, int max_generation, SgenGC
 	MONO_PERMIT (need (sgen_world_stopped));
 void sgen_gchandle_set_target (guint32 gchandle, GCObject *obj);
 void sgen_mark_normal_gc_handles (void *addr, SgenUserMarkFunc mark_func, void *gc_data)
+	MONO_PERMIT (need (sgen_world_stopped));
+void sgen_gc_handles_report_roots (SgenUserReportRootFunc mark_func, void *gc_data)
 	MONO_PERMIT (need (sgen_world_stopped));
 gpointer sgen_gchandle_get_metadata (guint32 gchandle);
 GCObject *sgen_gchandle_get_target (guint32 gchandle);

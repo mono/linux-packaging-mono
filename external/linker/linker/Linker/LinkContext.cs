@@ -109,6 +109,8 @@ namespace Mono.Linker {
 
 		public bool EnableReducedTracing { get; set; }
 
+		public bool KeepUsedAttributeTypesOnly { get; set; }
+
 		public System.Collections.IDictionary Actions {
 			get { return _actions; }
 		}
@@ -131,7 +133,7 @@ namespace Mono.Linker {
 			set { _symbolWriterProvider = value; }
 		}
 
-		public bool LogInternalExceptions { get; set; } = false;
+		public bool LogMessages { get; set; } = false;
 
 		public ILogger Logger { get; set; } = new ConsoleLogger ();
 
@@ -156,9 +158,12 @@ namespace Mono.Linker {
 		{
 			_pipeline = pipeline;
 			_resolver = resolver;
+			_resolver.Context = this;
 			_actions = new Dictionary<string, AssemblyAction> ();
 			_parameters = new Dictionary<string, string> ();
 			_readerParameters = readerParameters;
+			
+			SymbolReaderProvider = new DefaultSymbolReaderProvider (false);
 
 			if (factory == null)
 				throw new ArgumentNullException (nameof (factory));
@@ -204,7 +209,7 @@ namespace Mono.Linker {
 			try {
 				AssemblyDefinition assembly = _resolver.Resolve (reference, _readerParameters);
 
-				if (SeenFirstTime (assembly)) {
+				if (assembly != null && SeenFirstTime (assembly)) {
 					SafeReadSymbols (assembly);
 					SetAction (assembly);
 				}
@@ -223,34 +228,32 @@ namespace Mono.Linker {
 
 		public virtual void SafeReadSymbols (AssemblyDefinition assembly)
 		{
-			if (!_linkSymbols)
-				return;
-
 			if (assembly.MainModule.HasSymbols)
 				return;
 
-			try {
-				if (_symbolReaderProvider != null) {
-					var symbolReader = _symbolReaderProvider.GetSymbolReader (
-						assembly.MainModule,
-						assembly.MainModule.FileName);
+			if (_symbolReaderProvider == null)
+				throw new ArgumentNullException (nameof (_symbolReaderProvider));
 
-					_annotations.AddSymbolReader (assembly, symbolReader);
-					assembly.MainModule.ReadSymbols (symbolReader);
-				} else
-					assembly.MainModule.ReadSymbols ();
-			} catch {}
+			try {
+				var symbolReader = _symbolReaderProvider.GetSymbolReader (
+					assembly.MainModule,
+					assembly.MainModule.FileName);
+
+				if (symbolReader == null)
+					return;
+
+				_annotations.AddSymbolReader (assembly, symbolReader);
+				assembly.MainModule.ReadSymbols (symbolReader);
+			} catch { }
 		}
 
 		public virtual ICollection<AssemblyDefinition> ResolveReferences (AssemblyDefinition assembly)
 		{
 			List<AssemblyDefinition> references = new List<AssemblyDefinition> ();
 			foreach (AssemblyNameReference reference in assembly.MainModule.AssemblyReferences) {
-				try {
-					references.Add (Resolve (reference));
-				}
-				catch (AssemblyResolutionException) {
-				}
+				AssemblyDefinition definition = Resolve (reference);
+				if (definition != null)
+					references.Add (definition);
 			}
 			return references;
 		}
@@ -341,7 +344,7 @@ namespace Mono.Linker {
 
 		public void LogMessage (MessageImportance importance, string message, params object [] values)
 		{
-			if (LogInternalExceptions && Logger != null)
+			if (LogMessages && Logger != null)
 				Logger.LogMessage (importance, message, values);
 		}
 	}

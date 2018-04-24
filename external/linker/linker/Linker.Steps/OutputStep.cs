@@ -93,7 +93,12 @@ namespace Mono.Linker.Steps {
 				(module.Attributes & (ModuleAttributes) 0x04) != 0;
 		}
 
-		void WriteAssembly (AssemblyDefinition assembly, string directory)
+		protected void WriteAssembly (AssemblyDefinition assembly, string directory)
+		{
+			WriteAssembly (assembly, directory, SaveSymbols (assembly));
+		}
+
+		protected virtual void WriteAssembly (AssemblyDefinition assembly, string directory, WriterParameters writerParameters)
 		{
 			foreach (var module in assembly.Modules) {
 				// Write back pure IL even for R2R assemblies
@@ -104,7 +109,7 @@ namespace Mono.Linker.Steps {
 				}
 			}
 
-			assembly.Write (GetAssemblyFileName (assembly, directory), SaveSymbols (assembly));
+			assembly.Write (GetAssemblyFileName (assembly, directory), writerParameters);
 		}
 
 		void OutputAssembly (AssemblyDefinition assembly)
@@ -126,21 +131,26 @@ namespace Mono.Linker.Steps {
 			case AssemblyAction.Copy:
 				Context.Tracer.AddDependency (assembly);
 				CloseSymbols (assembly);
-				CopyAssembly (GetOriginalAssemblyFileInfo (assembly), directory, Context.LinkSymbols);
+				CopyAssembly (assembly, directory);
 				break;
 			case AssemblyAction.Delete:
 				CloseSymbols (assembly);
-				var target = GetAssemblyFileName (assembly, directory);
-				if (File.Exists (target)) {
-					File.Delete (target);
-					File.Delete (target + ".mdb");
-					File.Delete (Path.ChangeExtension (target, "pdb"));
-					File.Delete (GetConfigFile (target));
-				}
+				DeleteAssembly (assembly, directory);
 				break;
 			default:
 				CloseSymbols (assembly);
 				break;
+			}
+		}
+
+		protected virtual void DeleteAssembly(AssemblyDefinition assembly, string directory)
+		{
+			var target = GetAssemblyFileName (assembly, directory);
+			if (File.Exists (target)) {
+				File.Delete (target);
+				File.Delete (target + ".mdb");
+				File.Delete (Path.ChangeExtension (target, "pdb"));
+				File.Delete (GetConfigFile (target));
 			}
 		}
 
@@ -158,6 +168,12 @@ namespace Mono.Linker.Steps {
 			if (!assembly.MainModule.HasSymbols)
 				return parameters;
 
+#if NATIVE_READER_SUPPORT
+			// NativePdb's can't be written on non-windows platforms
+			if (Environment.OSVersion.Platform != PlatformID.Win32NT && assembly.MainModule.SymbolReader is Mono.Cecil.Pdb.NativePdbReader)
+				return parameters;
+#endif
+
 			if (Context.SymbolWriterProvider != null)
 				parameters.SymbolWriterProvider = Context.SymbolWriterProvider;
 			else
@@ -165,7 +181,7 @@ namespace Mono.Linker.Steps {
 			return parameters;
 		}
 
-		static void CopyConfigFileIfNeeded (AssemblyDefinition assembly, string directory)
+		void CopyConfigFileIfNeeded (AssemblyDefinition assembly, string directory)
 		{
 			string config = GetConfigFile (GetOriginalAssemblyFileInfo (assembly).FullName);
 			if (!File.Exists (config))
@@ -189,8 +205,17 @@ namespace Mono.Linker.Steps {
 			return new FileInfo (assembly.MainModule.FileName);
 		}
 
-		static void CopyAssembly (FileInfo fi, string directory, bool symbols)
+		protected virtual void CopyAssembly (AssemblyDefinition assembly, string directory)
 		{
+			// Special case.  When an assembly has embedded pdbs, link symbols is not enabled, and the assembly's action is copy,
+			// we want to match the behavior of assemblies with the other symbol types and end up with an assembly that does not have symbols.
+			// In order to do that, we can't simply copy files.  We need to write the assembly without symbols
+			if (assembly.MainModule.HasSymbols && !Context.LinkSymbols && assembly.MainModule.SymbolReader is EmbeddedPortablePdbReader) {
+				WriteAssembly (assembly, directory, new WriterParameters ());
+				return;
+			}
+
+			FileInfo fi = GetOriginalAssemblyFileInfo (assembly);
 			string target = Path.GetFullPath (Path.Combine (directory, fi.Name));
 			string source = fi.FullName;
 			if (source == target)
@@ -198,7 +223,7 @@ namespace Mono.Linker.Steps {
 
 			File.Copy (source, target, true);
 
-			if (!symbols)
+			if (!Context.LinkSymbols)
 				return;
 
 			var mdb = source + ".mdb";
@@ -210,7 +235,7 @@ namespace Mono.Linker.Steps {
 				File.Copy (pdb, Path.ChangeExtension (target, "pdb"), true);
 		}
 
-		static string GetAssemblyFileName (AssemblyDefinition assembly, string directory)
+		protected virtual string GetAssemblyFileName (AssemblyDefinition assembly, string directory)
 		{
 			string file = GetOriginalAssemblyFileInfo (assembly).Name;
 			return Path.Combine (directory, file);

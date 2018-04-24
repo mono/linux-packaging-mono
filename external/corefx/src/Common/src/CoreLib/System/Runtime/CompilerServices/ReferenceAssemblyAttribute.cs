@@ -16,6 +16,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class ReferenceAssemblyAttribute : Attribute
     {
         public ReferenceAssemblyAttribute()

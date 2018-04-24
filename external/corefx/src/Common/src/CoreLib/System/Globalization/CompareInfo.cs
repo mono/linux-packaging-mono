@@ -13,7 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 using System.Reflection;
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
@@ -34,7 +34,9 @@ namespace System.Globalization
     }
 
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public partial class CompareInfo : IDeserializationCallback
     {
         // Mask used to check if IndexOf()/LastIndexOf()/IsPrefix()/IsPostfix() has the right flags.
@@ -344,7 +346,11 @@ namespace System.Globalization
                 return String.CompareOrdinal(string1, string2);
             }
 
+#if MONO
+            return internal_compare_switch(string1, 0, string1.Length, string2, 0, string2.Length, options);
+#else
             return CompareString(string1.AsReadOnlySpan(), string2.AsReadOnlySpan(), options);
+#endif
         }
 
         // TODO https://github.com/dotnet/coreclr/issues/13827:
@@ -525,10 +531,14 @@ namespace System.Globalization
                 return CompareOrdinal(string1, offset1, length1, string2, offset2, length2);
             }
 
+#if MONO
+            return internal_compare_switch(string1, offset1, length1, string2, offset2, length2, options);
+#else
             return CompareString(
                 string1.AsReadOnlySpan().Slice(offset1, length1),
                 string2.AsReadOnlySpan().Slice(offset2, length2),
                 options);
+#endif
         }
 
         private static int CompareOrdinal(string string1, int offset1, int length1, string string2, int offset2, int length2)

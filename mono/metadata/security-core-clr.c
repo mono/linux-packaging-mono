@@ -515,13 +515,13 @@ check_field_access (MonoMethod *caller, MonoClassField *field)
 {
 	/* if get_reflection_caller returns NULL then we assume the caller has NO privilege */
 	if (caller) {
-		MonoError error;
+		ERROR_DECL (error);
 		MonoClass *klass;
 
 		/* this check can occur before the field's type is resolved (and that can fail) */
-		mono_field_get_type_checked (field, &error);
-		if (!mono_error_ok (&error)) {
-			mono_error_cleanup (&error);
+		mono_field_get_type_checked (field, error);
+		if (!mono_error_ok (error)) {
+			mono_error_cleanup (error);
 			return FALSE;
 		}
 
@@ -935,10 +935,10 @@ mono_security_core_clr_level_from_cinfo (MonoCustomAttrInfo *cinfo, MonoImage *i
 static MonoSecurityCoreCLRLevel
 mono_security_core_clr_class_level_no_platform_check (MonoClass *klass)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoSecurityCoreCLRLevel level = MONO_SECURITY_CORE_CLR_TRANSPARENT;
-	MonoCustomAttrInfo *cinfo = mono_custom_attrs_from_class_checked (klass, &error);
-	mono_error_cleanup (&error);
+	MonoCustomAttrInfo *cinfo = mono_custom_attrs_from_class_checked (klass, error);
+	mono_error_cleanup (error);
 	if (cinfo) {
 		level = mono_security_core_clr_level_from_cinfo (cinfo, klass->image);
 		mono_custom_attrs_free (cinfo);
@@ -976,7 +976,7 @@ mono_security_core_clr_class_level (MonoClass *klass)
 MonoSecurityCoreCLRLevel
 mono_security_core_clr_field_level (MonoClassField *field, gboolean with_class_level)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoCustomAttrInfo *cinfo;
 	MonoSecurityCoreCLRLevel level = MONO_SECURITY_CORE_CLR_TRANSPARENT;
 
@@ -988,8 +988,8 @@ mono_security_core_clr_field_level (MonoClassField *field, gboolean with_class_l
 	if (!mono_security_core_clr_test && !mono_security_core_clr_is_platform_image (field->parent->image))
 		return level;
 
-	cinfo = mono_custom_attrs_from_field_checked (field->parent, field, &error);
-	mono_error_cleanup (&error);
+	cinfo = mono_custom_attrs_from_field_checked (field->parent, field, error);
+	mono_error_cleanup (error);
 	if (cinfo) {
 		level = mono_security_core_clr_level_from_cinfo (cinfo, field->parent->image);
 		mono_custom_attrs_free (cinfo);
@@ -1012,7 +1012,7 @@ mono_security_core_clr_field_level (MonoClassField *field, gboolean with_class_l
 MonoSecurityCoreCLRLevel
 mono_security_core_clr_method_level (MonoMethod *method, gboolean with_class_level)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoCustomAttrInfo *cinfo;
 	MonoSecurityCoreCLRLevel level = MONO_SECURITY_CORE_CLR_TRANSPARENT;
 
@@ -1024,8 +1024,8 @@ mono_security_core_clr_method_level (MonoMethod *method, gboolean with_class_lev
 	if (!mono_security_core_clr_test && !mono_security_core_clr_is_platform_image (method->klass->image))
 		return level;
 
-	cinfo = mono_custom_attrs_from_method_checked (method, &error);
-	mono_error_cleanup (&error);
+	cinfo = mono_custom_attrs_from_method_checked (method, error);
+	mono_error_cleanup (error);
 	if (cinfo) {
 		level = mono_security_core_clr_level_from_cinfo (cinfo, method->klass->image);
 		mono_custom_attrs_free (cinfo);

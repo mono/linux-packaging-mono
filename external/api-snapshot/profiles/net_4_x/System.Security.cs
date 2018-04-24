@@ -716,7 +716,6 @@ namespace System.Security.Cryptography.Xml
         public void AddCertificate(System.Security.Cryptography.X509Certificates.X509Certificate certificate) { }
         public void AddIssuerSerial(string issuerName, string serialNumber) { }
         public void AddSubjectKeyId(byte[] subjectKeyId) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public void AddSubjectKeyId(string subjectKeyId) { }
         public void AddSubjectName(string subjectName) { }
         public override System.Xml.XmlElement GetXml() { throw null; }
@@ -789,8 +788,6 @@ namespace System.Security.Cryptography.Xml
     {
         public SignedInfo() { }
         public string CanonicalizationMethod { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Security.Cryptography.Xml.Transform CanonicalizationMethodObject { get { throw null; } }
         public int Count { get { throw null; } }
         public string Id { get { throw null; } set { } }
@@ -837,11 +834,12 @@ namespace System.Security.Cryptography.Xml
         public SignedXml() { }
         public SignedXml(System.Xml.XmlDocument document) { }
         public SignedXml(System.Xml.XmlElement elem) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Security.Cryptography.Xml.EncryptedXml EncryptedXml { get { throw null; } set { } }
         public System.Security.Cryptography.Xml.KeyInfo KeyInfo { get { throw null; } set { } }
         public System.Xml.XmlResolver Resolver { set { } }
+        public System.Collections.ObjectModel.Collection<string> SafeCanonicalizationMethods { get { throw null; } }
         public System.Security.Cryptography.Xml.Signature Signature { get { throw null; } }
+        public System.Func<System.Security.Cryptography.Xml.SignedXml, bool> SignatureFormatValidator { get { throw null; } set { } }
         public string SignatureLength { get { throw null; } }
         public string SignatureMethod { get { throw null; } }
         public byte[] SignatureValue { get { throw null; } }
@@ -853,8 +851,6 @@ namespace System.Security.Cryptography.Xml
         public bool CheckSignature() { throw null; }
         public bool CheckSignature(System.Security.Cryptography.AsymmetricAlgorithm key) { throw null; }
         public bool CheckSignature(System.Security.Cryptography.KeyedHashAlgorithm macAlg) { throw null; }
-        [System.MonoTODOAttribute]
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public bool CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, bool verifySignatureOnly) { throw null; }
         public bool CheckSignatureReturningKey(out System.Security.Cryptography.AsymmetricAlgorithm signingKey) { signingKey = default(System.Security.Cryptography.AsymmetricAlgorithm); throw null; }
         public void ComputeSignature() { }

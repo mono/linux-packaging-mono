@@ -42,7 +42,8 @@ typedef struct _MonoDynamicMethod MonoDynamicMethod;
 #define ICALL_EXPORT MONO_API
 #else
 #define ICALL_DECL_EXPORT
-#define ICALL_EXPORT static
+/* Can't be static as icall.c defines icalls referenced by icall-tables.c */
+#define ICALL_EXPORT
 #endif
 
 typedef enum {
@@ -867,9 +868,9 @@ typedef struct {
 	gint32 security_depth;
 	gint32 unused;
 	/* Threadpool */
+	gint32 threadpool_threads;
 	gint64 threadpool_workitems;
 	gint64 threadpool_ioworkitems;
-	gint32 threadpool_threads;
 	gint32 threadpool_iothreads;
 } MonoPerfCounters;
 
@@ -942,7 +943,7 @@ MonoMethod*
 mono_class_get_method_by_index (MonoClass *klass, int index);
 
 MonoMethod*
-mono_class_get_inflated_method (MonoClass *klass, MonoMethod *method);
+mono_class_get_inflated_method (MonoClass *klass, MonoMethod *method, MonoError *error);
 
 MonoMethod*
 mono_class_get_vtable_entry (MonoClass *klass, int offset);
@@ -956,9 +957,8 @@ mono_class_get_vtable_size (MonoClass *klass);
 gboolean
 mono_class_is_open_constructed_type (MonoType *t);
 
-gboolean
-mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod ***overrides, gint32 *num_overrides,
-			       MonoGenericContext *generic_context);
+void
+mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod ***overrides, gint32 *num_overrides, MonoGenericContext *generic_context, MonoError *error);
 
 MonoMethod*
 mono_class_get_cctor (MonoClass *klass) MONO_LLVM_INTERNAL;
@@ -1026,9 +1026,6 @@ mono_generic_class_get_class (MonoGenericClass *gclass);
 
 void
 mono_method_set_generic_container (MonoMethod *method, MonoGenericContainer* container);
-
-MonoMethod*
-mono_class_inflate_generic_method_full (MonoMethod *method, MonoClass *klass_hint, MonoGenericContext *context);
 
 MonoMethod*
 mono_class_inflate_generic_method_full_checked (MonoMethod *method, MonoClass *klass_hint, MonoGenericContext *context, MonoError *error);
@@ -1119,6 +1116,7 @@ typedef struct {
 	MonoClass *generic_ienumerator_class;
 	MonoClass *threadpool_wait_callback_class;
 	MonoMethod *threadpool_perform_wait_callback_method;
+	MonoClass *console_class;
 } MonoDefaults;
 
 #ifdef DISABLE_REMOTING
@@ -1310,9 +1308,6 @@ mono_type_get_checked        (MonoImage *image, guint32 type_token, MonoGenericC
 gboolean
 mono_generic_class_is_generic_type_definition (MonoGenericClass *gklass);
 
-MonoMethod*
-mono_class_get_method_generic (MonoClass *klass, MonoMethod *method);
-
 MonoType*
 mono_type_get_basic_type_from_generic (MonoType *type);
 
@@ -1362,7 +1357,7 @@ MonoClassField*
 mono_class_get_field_from_name_full (MonoClass *klass, const char *name, MonoType *type);
 
 MonoVTable*
-mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, MonoError *error);
+mono_class_vtable_checked (MonoDomain *domain, MonoClass *klass, MonoError *error);
 
 gboolean
 mono_class_is_assignable_from_slow (MonoClass *target, MonoClass *candidate);
@@ -1399,7 +1394,7 @@ mono_class_full_name (MonoClass *klass);
 MonoClass*
 mono_class_inflate_generic_class_checked (MonoClass *gklass, MonoGenericContext *context, MonoError *error);
 
-MonoClass *
+MONO_PROFILER_API MonoClass *
 mono_class_get_checked (MonoImage *image, guint32 type_token, MonoError *error);
 
 MonoClass *
@@ -1537,6 +1532,21 @@ mono_class_set_weak_bitmap (MonoClass *klass, int nbits, gsize *bits);
 
 gsize*
 mono_class_get_weak_bitmap (MonoClass *klass, int *nbits);
+
+MonoMethod *
+mono_class_get_method_from_name_checked (MonoClass *klass, const char *name, int param_count, int flags, MonoError *error);
+
+gboolean
+mono_method_has_no_body (MonoMethod *method);
+
+// FIXME Replace all internal callers of mono_method_get_header_checked with
+// mono_method_get_header_internal; the difference is in error initialization.
+//
+// And then mark mono_method_get_header_checked as MONO_RT_EXTERNAL_ONLY MONO_API.
+//
+// Internal callers expected to use ERROR_DECL. External callers are not.
+MonoMethodHeader*
+mono_method_get_header_internal (MonoMethod *method, MonoError *error);
 
 /*Now that everything has been defined, let's include the inline functions */
 #include <mono/metadata/class-inlines.h>

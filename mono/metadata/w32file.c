@@ -35,7 +35,7 @@
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/marshal.h>
 #include <mono/utils/strenc.h>
-#include <utils/mono-io-portability.h>
+#include <mono/utils/mono-io-portability.h>
 #include <mono/metadata/w32handle.h>
 #include <mono/utils/w32api.h>
 
@@ -847,11 +847,11 @@ void ves_icall_System_IO_MonoIO_Unlock (HANDLE handle, gint64 position,
 gint64
 mono_filesize_from_path (MonoString *string)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	struct stat buf;
 	gint64 res;
-	char *path = mono_string_to_utf8_checked (string, &error);
-	mono_error_raise_exception_deprecated (&error); /* OK to throw, external only without a good alternative */
+	char *path = mono_string_to_utf8_checked (string, error);
+	mono_error_raise_exception_deprecated (error); /* OK to throw, external only without a good alternative */
 
 	gint stat_res;
 	MONO_ENTER_GC_SAFE;

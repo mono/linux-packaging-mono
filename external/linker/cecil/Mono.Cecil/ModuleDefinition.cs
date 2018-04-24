@@ -276,6 +276,7 @@ namespace Mono.Cecil {
 		TargetArchitecture architecture;
 		ModuleAttributes attributes;
 		ModuleCharacteristics characteristics;
+		internal ushort linker_version = 8;
 		Guid mvid;
 		internal uint timestamp;
 
@@ -350,7 +351,7 @@ namespace Mono.Cecil {
 			set { characteristics = value; }
 		}
 
-		[Obsolete("Use FileName")]
+		[Obsolete ("Use FileName")]
 		public string FullyQualifiedName {
 			get { return file_name; }
 		}
@@ -607,6 +608,7 @@ namespace Mono.Cecil {
 			this.architecture = image.Architecture;
 			this.attributes = image.Attributes;
 			this.characteristics = image.Characteristics;
+			this.linker_version = image.LinkerVersion;
 			this.file_name = image.FileName;
 			this.timestamp = image.Timestamp;
 

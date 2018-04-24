@@ -30,7 +30,7 @@ namespace ILLink.Tests
 		protected int Dotnet(string args, string workingDir, string additionalPath = null)
 		{
 			return RunCommand(Path.GetFullPath(context.DotnetToolPath), args,
-							  workingDir, additionalPath, out string commandOutput);
+				workingDir, additionalPath, out string commandOutput);
 		}
 
 		protected int RunCommand(string command, string args, int timeout = Int32.MaxValue)
@@ -43,71 +43,16 @@ namespace ILLink.Tests
 			return RunCommand(command, args, workingDir, null, out string commandOutput);
 		}
 
-		protected int RunCommand(string command, string args, string workingDir, string additionalPath, out string commandOutput, int timeout = Int32.MaxValue)
+		protected int RunCommand(string command, string args, string workingDir, string additionalPath,
+			out string commandOutput, int timeout = Int32.MaxValue, string terminatingOutput = null)
 		{
-			output.WriteLine($"{command} {args}");
-			if (workingDir != null)
-				output.WriteLine($"working directory: {workingDir}");
-			var psi = new ProcessStartInfo
-			{
-				FileName = command,
-				Arguments = args,
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				WorkingDirectory = workingDir,
-			};
-
-			if (additionalPath != null) {
-				string path = psi.Environment["PATH"];
-				psi.Environment["PATH"] = path + ";" + additionalPath;
-			}
-			var process = new Process();
-			process.StartInfo = psi;
-
-			// dotnet sets some environment variables that
-			// may cause problems in the child process.
-			psi.Environment.Remove("MSBuildExtensionsPath");
-			psi.Environment.Remove("MSBuildLoadMicrosoftTargetsReadOnly");
-			psi.Environment.Remove("MSBuildSDKsPath");
-			psi.Environment.Remove("VbcToolExe");
-			psi.Environment.Remove("CscToolExe");
-			psi.Environment.Remove("MSBUILD_EXE_PATH");
-
-			StringBuilder processOutput = new StringBuilder();
-			DataReceivedEventHandler handler = (sender, e) => {
-				processOutput.Append(e.Data);
-				processOutput.AppendLine();
-			};
-			StringBuilder processError = new StringBuilder();
-			DataReceivedEventHandler ehandler = (sender, e) => {
-				processError.Append(e.Data);
-				processError.AppendLine();
-			};
-			process.OutputDataReceived += handler;
-			process.ErrorDataReceived += ehandler;
-			output.WriteLine("environment:");
-			foreach (var item in psi.Environment) {
-				output.WriteLine($"\t{item.Key}={item.Value}");
-			}
-			process.Start();
-			process.BeginOutputReadLine();
-			process.BeginErrorReadLine();
-			if (!process.WaitForExit(timeout)) {
-				output.WriteLine($"killing process after {timeout} ms");
-				process.Kill();
-			}
-			// WaitForExit with timeout doesn't guarantee
-			// that the async output handlers have been
-			// called, so WaitForExit needs to be called
-			// afterwards.
-			process.WaitForExit();
-			string processOutputStr = processOutput.ToString();
-			string processErrorStr = processError.ToString();
-			output.WriteLine(processOutputStr);
-			output.WriteLine(processErrorStr);
-			commandOutput = processOutputStr;
-			return process.ExitCode;
+			return (new CommandRunner(command, output))
+				.WithArguments(args)
+				.WithWorkingDir(workingDir)
+				.WithAdditionalPath(additionalPath)
+				.WithTimeout(timeout)
+				.WithTerminatingOutput(terminatingOutput)
+				.Run(out commandOutput);
 		}
 
 		/// <summary>
@@ -115,14 +60,18 @@ namespace ILLink.Tests
 		///   that the project already contains a reference to the
 		///   linker task package.
 		///   Optionally takes a list of root descriptor files.
+		///   Returns the path to the built app, either the renamed
+		///   host for self-contained publish, or the dll containing
+		///   the entry point.
 		/// </summary>
-		public void BuildAndLink(string csproj, List<string> rootFiles = null, Dictionary<string, string> extraPublishArgs = null)
+		public string BuildAndLink(string csproj, List<string> rootFiles = null, Dictionary<string, string> extraPublishArgs = null, bool selfContained = false)
 		{
-			string rid = context.RuntimeIdentifier;
-			string config = context.Configuration;
 			string demoRoot = Path.GetDirectoryName(csproj);
 
-			string publishArgs = $"publish -r {rid} -c {config} /v:n /p:ShowLinkerSizeComparison=true";
+			string publishArgs = $"publish -c {context.Configuration} /v:n /p:ShowLinkerSizeComparison=true";
+			if (selfContained) {
+				publishArgs += $" -r {context.RuntimeIdentifier}";
+			}
 			string rootFilesStr;
 			if (rootFiles != null && rootFiles.Any()) {
 				rootFilesStr = String.Join(";", rootFiles);
@@ -138,28 +87,45 @@ namespace ILLink.Tests
 			if (ret != 0) {
 				output.WriteLine("publish failed, returning " + ret);
 				Assert.True(false);
-				return;
 			}
-		}
 
-		public int RunApp(string csproj, out string processOutput, int timeout = Int32.MaxValue)
-		{
-			string demoRoot = Path.GetDirectoryName(csproj);
 			// detect the target framework for which the app was published
 			string tfmDir = Path.Combine(demoRoot, "bin", context.Configuration);
 			string tfm = Directory.GetDirectories(tfmDir).Select(p => Path.GetFileName(p)).Single();
-			string executablePath = Path.Combine(tfmDir, tfm,
-				context.RuntimeIdentifier, "publish",
-				Path.GetFileNameWithoutExtension(csproj)
-			);
-			if (context.RuntimeIdentifier.Contains("win")) {
-				executablePath += ".exe";
+			string builtApp = Path.Combine(tfmDir, tfm);
+			if (selfContained) {
+				builtApp = Path.Combine(builtApp, context.RuntimeIdentifier);
 			}
-			Assert.True(File.Exists(executablePath));
+			builtApp = Path.Combine(builtApp, "publish",
+				Path.GetFileNameWithoutExtension(csproj));
+			if (selfContained) {
+				if (context.RuntimeIdentifier.Contains("win")) {
+					builtApp += ".exe";
+				}
+			} else {
+				builtApp += ".dll";
+			}
+			Assert.True(File.Exists(builtApp));
+			return builtApp;
+		}
 
-			int ret = RunCommand(executablePath, null,
-				Directory.GetParent(executablePath).FullName,
-				null, out processOutput, timeout);
+		public int RunApp(string target, out string processOutput, int timeout = Int32.MaxValue,
+			string terminatingOutput = null, bool selfContained = false)
+		{
+			Assert.True(File.Exists(target));
+			int ret;
+			if (selfContained) {
+				ret = RunCommand(
+					target, null,
+					Directory.GetParent(target).FullName,
+					null, out processOutput, timeout, terminatingOutput);
+			} else {
+				ret = RunCommand(
+					Path.GetFullPath(context.DotnetToolPath),
+					Path.GetFullPath(target),
+					Directory.GetParent(target).FullName,
+					null, out processOutput, timeout, terminatingOutput);
+			}
 			return ret;
 		}
 

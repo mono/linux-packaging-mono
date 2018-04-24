@@ -7,6 +7,9 @@ using System;
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public class StateMachineAttribute : Attribute
     {
         public StateMachineAttribute(Type stateMachineType)
