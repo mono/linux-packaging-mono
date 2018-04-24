@@ -12,6 +12,7 @@ debian/tmp/usr/bin/dtd2rng
 debian/tmp/usr/bin/genxs
 debian/tmp/usr/bin/ikdasm
 debian/tmp/usr/bin/ilasm
+debian/tmp/usr/bin/illinkanalyzer
 debian/tmp/usr/bin/installvst
 debian/tmp/usr/bin/lc
 debian/tmp/usr/bin/macpack
