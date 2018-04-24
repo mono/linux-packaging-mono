@@ -1,3 +1,17 @@
+mono (5.12.0.220-0xamarin3) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [be223a6] Add more symbols [2db0cb6] Refreshed symbols file
+    [50ade2a] Refresh symbols [12d69a5] Update symbols [04771b3]
+    Refreshed symbols [bdb511b] Refreshed symbols [5f4c067] Refreshed
+    symbols [9c31609] Add csc-dim [d49b8e1] Add actual illinkanalyzer
+    launcher [78dab91] Rename link analyzer with il prefix
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 24 Apr 2018 16:30:22 +0000
+
 mono (5.12.0.220-0xamarin2) preview; urgency=medium
 
   * Packaging bugfix:
