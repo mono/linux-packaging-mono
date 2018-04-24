@@ -1267,8 +1267,6 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/installvst.pdb
 %{_prefix}/lib/mono/4.5/lc.exe*
 %{_prefix}/lib/mono/4.5/lc.pdb
-%{_prefix}/lib/mono/4.5/linkeranalyzer.exe*
-%{_prefix}/lib/mono/4.5/linkeranalyzer.pdb
 %{_prefix}/lib/mono/4.5/macpack.exe*
 %{_prefix}/lib/mono/4.5/macpack.pdb
 %{_prefix}/lib/mono/4.5/makecert.exe*
