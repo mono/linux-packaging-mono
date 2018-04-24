@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.245],
+AC_INIT(mono, [5.15.0.253],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -4642,6 +4642,7 @@ if test "x$enable_btls" = "xyes"; then
 		;;
 	arm)
 		btls_arch=arm
+		btls_cflags="-DOPENSSL_NO_ASM=1"
 		;;
 	armsoft)
 		btls_arch=arm
