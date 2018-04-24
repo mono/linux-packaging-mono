@@ -286,7 +286,7 @@ try_invoke_perform_wait_callback (MonoObject** exc, MonoError *error)
 static void
 worker_callback (void)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	ThreadPoolDomain *tpdomain, *previous_tpdomain;
 	ThreadPoolCounter counter;
 	MonoInternalThread *thread;
@@ -350,25 +350,25 @@ worker_callback (void)
 
 		domains_unlock ();
 
-		MonoString *thread_name = mono_string_new_checked (mono_get_root_domain (), "Threadpool worker", &error);
-		mono_error_assert_ok (&error);
-		mono_thread_set_name_internal (thread, thread_name, FALSE, TRUE, &error);
-		mono_error_assert_ok (&error);
+		MonoString *thread_name = mono_string_new_checked (mono_get_root_domain (), "Thread Pool Worker", error);
+		mono_error_assert_ok (error);
+		mono_thread_set_name_internal (thread, thread_name, FALSE, TRUE, error);
+		mono_error_assert_ok (error);
 
-		mono_thread_clr_state (thread, (MonoThreadState)~ThreadState_Background);
-		if (!mono_thread_test_state (thread , ThreadState_Background))
-			ves_icall_System_Threading_Thread_SetState (thread, ThreadState_Background);
+		mono_thread_clear_and_set_state (thread,
+			(MonoThreadState)~ThreadState_Background,
+			ThreadState_Background);
 
 		mono_thread_push_appdomain_ref (tpdomain->domain);
 		if (mono_domain_set (tpdomain->domain, FALSE)) {
 			MonoObject *exc = NULL, *res;
 
-			res = try_invoke_perform_wait_callback (&exc, &error);
-			if (exc || !mono_error_ok(&error)) {
+			res = try_invoke_perform_wait_callback (&exc, error);
+			if (exc || !mono_error_ok(error)) {
 				if (exc == NULL)
-					exc = (MonoObject *) mono_error_convert_to_exception (&error);
+					exc = (MonoObject *) mono_error_convert_to_exception (error);
 				else
-					mono_error_cleanup (&error);
+					mono_error_cleanup (error);
 				mono_thread_internal_unhandled_exception (exc);
 			} else if (res && *(MonoBoolean*) mono_object_unbox (res) == FALSE) {
 				retire = TRUE;
@@ -737,12 +737,20 @@ ves_icall_System_Threading_ThreadPool_NotifyWorkItemProgressNative (void)
 }
 
 void
+ves_icall_System_Threading_ThreadPool_NotifyWorkItemQueued (void)
+{
+#ifndef DISABLE_PERFCOUNTERS
+	mono_atomic_inc_i64 (&mono_perfcounters->threadpool_workitems);
+#endif
+}
+
+void
 ves_icall_System_Threading_ThreadPool_ReportThreadStatus (MonoBoolean is_working)
 {
 	// TODO
-	MonoError error;
-	mono_error_set_not_implemented (&error, "");
-	mono_error_set_pending_exception (&error);
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "");
+	mono_error_set_pending_exception (error);
 }
 
 MonoBoolean
@@ -801,9 +809,9 @@ MonoBoolean G_GNUC_UNUSED
 ves_icall_System_Threading_ThreadPool_PostQueuedCompletionStatus (MonoNativeOverlapped *native_overlapped)
 {
 	/* This copy the behavior of the current Mono implementation */
-	MonoError error;
-	mono_error_set_not_implemented (&error, "");
-	mono_error_set_pending_exception (&error);
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "");
+	mono_error_set_pending_exception (error);
 	return FALSE;
 }
 

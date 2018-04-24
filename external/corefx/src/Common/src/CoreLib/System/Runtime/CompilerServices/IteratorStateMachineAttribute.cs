@@ -5,6 +5,9 @@
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+#if MONO
+    [System.SerializableAttribute]
+#endif
     public sealed class IteratorStateMachineAttribute : StateMachineAttribute
     {
         public IteratorStateMachineAttribute(Type stateMachineType)

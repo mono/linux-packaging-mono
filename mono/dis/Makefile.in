@@ -85,14 +85,14 @@ subdir = mono/dis
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -116,7 +116,8 @@ am_monodis_OBJECTS = dump.$(OBJEXT) main.$(OBJEXT) declsec.$(OBJEXT)
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/mono/sgen/libmonosgen-static.la
+@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 =  \
+@SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -301,6 +302,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
+JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
+JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
+JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
+JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -329,6 +334,9 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
+MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
+MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -453,10 +461,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime-static.la
-@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen-static.la
+@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
+@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
 @SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
-@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen-static.la
+@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen.la
 runtime_lib = \
 	$(metadata_lib) \
 	$(gc_lib)	\

@@ -4,6 +4,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
@@ -17,7 +18,9 @@ namespace System.Collections.Generic
     [DebuggerTypeProxy(typeof(ICollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class List<T> : IList<T>, System.Collections.IList, IReadOnlyList<T>
     {
         private const int DefaultCapacity = 4;
@@ -445,7 +448,11 @@ namespace System.Collections.Generic
                 int newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
                 // Allow the list to grow to maximum possible capacity (~2G elements) before encountering overflow.
                 // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
+#if MONO //in mono we don't want to add additional fields to Array
+                if ((uint)newCapacity > Array_ReferenceSources.MaxArrayLength) newCapacity = Array_ReferenceSources.MaxArrayLength;
+#else
                 if ((uint)newCapacity > Array.MaxArrayLength) newCapacity = Array.MaxArrayLength;
+#endif
                 if (newCapacity < min) newCapacity = min;
                 Capacity = newCapacity;
             }
@@ -1170,6 +1177,9 @@ namespace System.Collections.Generic
             }
         }
 
+#if MONO
+        [System.Serializable]
+#endif
         public struct Enumerator : IEnumerator<T>, System.Collections.IEnumerator
         {
             private List<T> _list;

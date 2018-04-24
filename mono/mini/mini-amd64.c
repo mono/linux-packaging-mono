@@ -39,6 +39,8 @@
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/unlocked.h>
 
+#include "interp/interp.h"
+
 #include "trace.h"
 #include "ir-emit.h"
 #include "mini-amd64.h"
@@ -1082,6 +1084,136 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 	return cinfo;
 }
 
+void
+mono_arch_set_native_call_context (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
+{
+	CallInfo *cinfo = get_call_info (NULL, sig);
+	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+
+	memset (ccontext, 0, sizeof (CallContext));
+
+	ccontext->stack_size = ALIGN_TO (cinfo->stack_usage, MONO_ARCH_FRAME_ALIGNMENT);
+	if (ccontext->stack_size)
+		ccontext->stack = malloc (ccontext->stack_size);
+
+	if (sig->ret->type != MONO_TYPE_VOID) {
+		if (cinfo->ret.storage == ArgValuetypeAddrInIReg) {
+			gpointer ret_storage = interp_cb->frame_arg_to_storage ((MonoInterpFrameHandle)frame, sig, -1);
+			ccontext->gregs [cinfo->ret.reg] = (mgreg_t)ret_storage;
+		}
+	}
+
+	for (int i = 0; i < sig->param_count + sig->hasthis; i++) {
+		ArgInfo *ainfo = &cinfo->args [i];
+		gpointer storage;
+		int storage_type = ainfo->storage;
+		int reg_storage = ainfo->reg;
+		switch (storage_type) {
+			case ArgInIReg: {
+				storage = &ccontext->gregs [reg_storage];
+				break;
+			}
+			case ArgInFloatSSEReg:
+			case ArgInDoubleSSEReg: {
+				storage = &ccontext->fregs [reg_storage];
+				break;
+			}
+			case ArgOnStack: {
+				storage = (char*)ccontext->stack + ainfo->offset;
+				break;
+			}
+			case ArgValuetypeInReg: {
+				storage = alloca (ainfo->nregs * sizeof (mgreg_t));
+				break;
+			}
+			default:
+				g_error ("Arg storage type not yet supported");
+		}
+		interp_cb->frame_arg_to_data ((MonoInterpFrameHandle)frame, sig, i, storage);
+		if (storage_type == ArgValuetypeInReg) {
+			/* Split up the value type into the reg pairs */
+			for (int k = 0; k < ainfo->nregs; k++) {
+				storage_type = ainfo->pair_storage [k];
+				reg_storage = ainfo->pair_regs [k];
+				switch (storage_type) {
+					case ArgInIReg:
+						ccontext->gregs [reg_storage] = *(mgreg_t*)storage;
+						break;
+					case ArgInFloatSSEReg:
+					case ArgInDoubleSSEReg:
+						ccontext->fregs [reg_storage] = *(double*)storage;
+						break;
+					default:
+						g_assert_not_reached ();
+				}
+				storage = (gpointer*)storage + 1;
+			}
+		}
+	}
+
+	g_free (cinfo);
+}
+
+void
+mono_arch_get_native_call_context (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
+{
+	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	CallInfo *cinfo;
+
+	/* No return value */
+	if (sig->ret->type == MONO_TYPE_VOID)
+		return;
+
+	cinfo = get_call_info (NULL, sig);
+
+	/* The return values were stored directly at address passed in reg */
+	if (cinfo->ret.storage == ArgValuetypeAddrInIReg)
+		goto done;
+
+	ArgInfo *ainfo = &cinfo->ret;
+	gpointer storage;
+	int storage_type = ainfo->storage;
+	int reg_storage = ainfo->reg;
+	switch (storage_type) {
+		case ArgInIReg: {
+			storage = &ccontext->gregs [reg_storage];
+			break;
+		}
+		case ArgInFloatSSEReg:
+		case ArgInDoubleSSEReg: {
+			storage = &ccontext->fregs [reg_storage];
+			break;
+		}
+		case ArgValuetypeInReg: {
+			storage = alloca (ainfo->nregs * sizeof (mgreg_t));
+			mgreg_t *storage_tmp = storage;
+			/* Reconstruct the value type */
+			for (int k = 0; k < ainfo->nregs; k++) {
+				storage_type = ainfo->pair_storage [k];
+				reg_storage = ainfo->pair_regs [k];
+				switch (storage_type) {
+					case ArgInIReg:
+						*storage_tmp = ccontext->gregs [reg_storage];
+						break;
+					case ArgInFloatSSEReg:
+					case ArgInDoubleSSEReg:
+						*(double*)storage_tmp = ccontext->fregs [reg_storage];
+						break;
+					default:
+						g_assert_not_reached ();
+				}
+				storage_tmp++;
+			}
+			break;
+		}
+		default:
+			g_error ("Arg storage type not yet supported");
+	}
+	interp_cb->data_to_frame_arg ((MonoInterpFrameHandle)frame, sig, -1, storage);
+done:
+	g_free (cinfo);
+}
+
 /*
  * mono_arch_get_argument_info:
  * @csig:  a method signature
@@ -1379,67 +1511,6 @@ mono_arch_get_global_int_regs (MonoCompile *cfg)
 #endif
 
 	return regs;
-}
- 
-GList*
-mono_arch_get_global_fp_regs (MonoCompile *cfg)
-{
-	GList *regs = NULL;
-	int i;
-
-	/* All XMM registers */
-	for (i = 0; i < 16; ++i)
-		regs = g_list_prepend (regs, GINT_TO_POINTER (i));
-
-	return regs;
-}
-
-GList*
-mono_arch_get_iregs_clobbered_by_call (MonoCallInst *call)
-{
-	static GList *r = NULL;
-
-	if (r == NULL) {
-		GList *regs = NULL;
-
-		regs = g_list_prepend (regs, (gpointer)AMD64_RBP);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RBX);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R12);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R13);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R14);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R15);
-
-		regs = g_list_prepend (regs, (gpointer)AMD64_R10);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R9);
-		regs = g_list_prepend (regs, (gpointer)AMD64_R8);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RDI);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RSI);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RDX);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RCX);
-		regs = g_list_prepend (regs, (gpointer)AMD64_RAX);
-
-		mono_atomic_cas_ptr ((gpointer*)&r, regs, NULL);
-	}
-
-	return r;
-}
-
-GList*
-mono_arch_get_fregs_clobbered_by_call (MonoCallInst *call)
-{
-	int i;
-	static GList *r = NULL;
-
-	if (r == NULL) {
-		GList *regs = NULL;
-
-		for (i = 0; i < AMD64_XMM_NREG; ++i)
-			regs = g_list_prepend (regs, GINT_TO_POINTER (MONO_MAX_IREGS + i));
-
-		mono_atomic_cas_ptr ((gpointer*)&r, regs, NULL);
-	}
-
-	return r;
 }
 
 /*
@@ -7154,23 +7225,6 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 	/* the code restoring the registers must be kept in sync with OP_TAILCALL */
 	
 	if (method->save_lmf) {
-		/* check if we need to restore protection of the stack after a stack overflow */
-		if (!cfg->compile_aot && mono_arch_have_fast_tls () && mono_tls_get_tls_offset (TLS_KEY_JIT_TLS) != -1) {
-			guint8 *patch;
-			code = mono_amd64_emit_tls_get (code, AMD64_RCX, mono_tls_get_tls_offset (TLS_KEY_JIT_TLS));
-			/* we load the value in a separate instruction: this mechanism may be
-			 * used later as a safer way to do thread interruption
-			 */
-			amd64_mov_reg_membase (code, AMD64_RCX, AMD64_RCX, MONO_STRUCT_OFFSET (MonoJitTlsData, restore_stack_prot), 8);
-			x86_alu_reg_imm (code, X86_CMP, X86_ECX, 0);
-			patch = code;
-			x86_branch8 (code, X86_CC_Z, 0, FALSE);
-			/* note that the call trampoline will preserve eax/edx */
-			x86_call_reg (code, X86_ECX);
-			x86_patch (patch, code);
-		} else {
-			/* FIXME: maybe save the jit tls in the prolog */
-		}
 		if (cfg->used_int_regs & (1 << AMD64_RBP))
 			amd64_mov_reg_membase (code, AMD64_RBP, cfg->frame_reg, lmf_offset + MONO_STRUCT_OFFSET (MonoLMF, rbp), 8);
 		if (cfg->arch.omit_fp)
@@ -7476,13 +7530,12 @@ enum {
 };
 
 void*
-mono_arch_instrument_epilog_full (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments, gboolean preserve_argument_registers)
+mono_arch_instrument_epilog (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments)
 {
 	guchar *code = (guchar *)p;
 	int save_mode = SAVE_NONE;
 	MonoMethod *method = cfg->method;
 	MonoType *ret_type = mini_get_underlying_type (mono_method_signature (method)->ret);
-	int i;
 	
 	switch (ret_type->type) {
 	case MONO_TYPE_VOID:
@@ -7550,19 +7603,9 @@ mono_arch_instrument_epilog_full (MonoCompile *cfg, void *func, void *p, gboolea
 	else
 		amd64_mov_reg_imm (code, AMD64_RAX, 0);
 
-	if (preserve_argument_registers) {
-		for (i = 0; i < PARAM_REGS; ++i)
-			amd64_push_reg (code, param_regs [i]);
-	}
-
 	mono_add_patch_info (cfg, code-cfg->native_code, MONO_PATCH_INFO_METHODCONST, method);
 	amd64_set_reg_template (code, AMD64_ARG_REG1);
 	code = emit_call (cfg, code, MONO_PATCH_INFO_ABS, (gpointer)func, TRUE);
-
-	if (preserve_argument_registers) {
-		for (i = PARAM_REGS - 1; i >= 0; --i)
-			amd64_pop_reg (code, param_regs [i]);
-	}
 
 	/* Restore result */
 	switch (save_mode) {

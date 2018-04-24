@@ -354,7 +354,7 @@ namespace System
 				throw new ArgumentOutOfRangeException("indexB", Environment.GetResourceString("ArgumentOutOfRange_Index"));
 
 			return CompareOrdinalUnchecked (strA, indexA, count, strB, indexB, count);
-        }
+		}
 
 		unsafe String ReplaceInternal (char oldChar, char newChar)
 		{
@@ -501,7 +501,7 @@ namespace System
 					while (p < end) {
 						*p++ = paddingChar;
 					}
-	 			} else {
+				} else {
 					char *p = dest;
 					char *end = p + totalWidth - m_stringLength;
 					while (p < end) {
@@ -767,6 +767,17 @@ namespace System
 				wstrcpy (dest, ptr, value.Length);
 
 			return result;
+		}
+
+		[IndexerName ("Chars")]
+		public char this [int index] {
+			[IntrinsicAttribute]
+			get {
+				if ((uint)index >= m_stringLength)
+					ThrowHelper.ThrowIndexOutOfRangeException ();
+
+				return Unsafe.Add (ref m_firstChar, index);
+			}
 		}
 	}
 }

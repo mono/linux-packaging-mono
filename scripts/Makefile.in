@@ -85,14 +85,14 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-find-provides.in \
 	$(srcdir)/mono-find-requires.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -233,6 +233,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
+JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
+JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
+JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
+JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -261,6 +265,9 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
+MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
+MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -409,7 +416,7 @@ COMPAT_4_0_SUFFIX = 4$(SCRIPT_SUFFIX)
 bin_SCRIPTS = $(scripts_4_0_umask) $(scripts_defaults) $(scripts_2_0) \
 	$(scripts_service) $(scripts_nunit) $(scripts_rpmhelpers) \
 	$(MDOC_SUBCOMMANDS) $(MDOC_COMPAT) mono-test-install peverify \
-	mcs csc vbc csi mono-package-runtime mono-heapviz \
+	mcs csc csc-dim vbc csi mono-package-runtime mono-heapviz \
 	$(scripts_mono_configuration_crypto) $(am__append_1)
 scripts_4_0_umask = \
 	makecert$(SCRIPT_SUFFIX)		\
@@ -444,6 +451,7 @@ scripts_4_0 = \
 	crlupdate$(SCRIPT_SUFFIX)		\
 	csharp$(SCRIPT_SUFFIX)			\
 	httpcfg$(SCRIPT_SUFFIX)			\
+	illinkanalyzer$(SCRIPT_SUFFIX)		\
 	lc$(SCRIPT_SUFFIX)			\
 	mconfig$(SCRIPT_SUFFIX)			\
 	mod$(SCRIPT_SUFFIX)			\
@@ -520,6 +528,7 @@ EXTRA_DIST = \
 	update_submodules.sh	\
 	mcs.in				\
 	csc.in				\
+	csc-dim.in				\
 	vbc.in				\
 	dmcs.in				\
 	csi.in			\
@@ -794,6 +803,10 @@ mcs: mcs.in Makefile
 
 csc: csc.in Makefile
 	$(REWRITE_COMMON) $(srcdir)/csc.in > $@.tmp
+	mv -f $@.tmp $@
+
+csc-dim: csc-dim.in Makefile
+	$(REWRITE_COMMON) $(srcdir)/csc-dim.in > $@.tmp
 	mv -f $@.tmp $@
 
 vbc: vbc.in Makefile

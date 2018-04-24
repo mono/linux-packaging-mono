@@ -8,7 +8,6 @@
 #include <mono/metadata/domain-internals.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/debug-internals.h>
-#include "config.h"
 #include "interp.h"
 
 #define MINT_TYPE_I1 0
@@ -137,8 +136,6 @@ struct _InterpFrame {
 typedef struct {
 	MonoDomain *original_domain;
 	InterpFrame *current_frame;
-	unsigned char search_for_handler;
-
 	/* Resume state for resuming execution in mixed mode */
 	gboolean       has_resume_state;
 	/* Frame to resume execution at */

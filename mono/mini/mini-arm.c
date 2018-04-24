@@ -24,6 +24,8 @@
 #include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/unlocked.h>
 
+#include "interp/interp.h"
+
 #include "mini-arm.h"
 #include "cpu-arm.h"
 #include "trace.h"
@@ -1603,12 +1605,120 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 		add_general (&gr, &stack_size, &cinfo->sig_cookie, TRUE);
 	}
 
-	/* align stack size to 8 */
 	DEBUG (g_print ("      stack size: %d (%d)\n", (stack_size + 15) & ~15, stack_size));
-	stack_size = (stack_size + 7) & ~7;
+	stack_size = (stack_size + MONO_ARCH_FRAME_ALIGNMENT) & ~MONO_ARCH_FRAME_ALIGNMENT;
 
 	cinfo->stack_usage = stack_size;
 	return cinfo;
+}
+
+void
+mono_arch_set_native_call_context (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
+{
+	CallInfo *cinfo = get_call_info (NULL, sig);
+	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+
+	memset (ccontext, 0, sizeof (CallContext));
+
+	ccontext->stack_size = ALIGN_TO (cinfo->stack_usage, MONO_ARCH_FRAME_ALIGNMENT);
+	if (ccontext->stack_size)
+		ccontext->stack = calloc (1, ccontext->stack_size);
+
+	if (sig->ret->type != MONO_TYPE_VOID) {
+		if (cinfo->ret.storage == RegTypeStructByAddr) {
+			gpointer ret_storage = interp_cb->frame_arg_to_storage ((MonoInterpFrameHandle)frame, sig, -1);
+			ccontext->gregs [cinfo->ret.reg] = (mgreg_t)ret_storage;
+		}
+	}
+
+	for (int i = 0; i < sig->param_count + sig->hasthis; i++) {
+		ArgInfo *ainfo = &cinfo->args [i];
+		gpointer storage;
+		int storage_type = ainfo->storage;
+		int reg_storage = ainfo->reg;
+		switch (storage_type) {
+			case RegTypeIRegPair:
+			case RegTypeGeneral: {
+				storage = &ccontext->gregs [reg_storage];
+				break;
+			}
+			case RegTypeHFA:
+			case RegTypeFP: {
+				storage = &ccontext->fregs [reg_storage];
+				break;
+			}
+			case RegTypeBase: {
+				storage = ccontext->stack + ainfo->offset;
+				break;
+			}
+			case RegTypeStructByVal: {
+				storage = alloca (ainfo->struct_size);
+				memset (storage, 0, ainfo->struct_size);
+				break;
+			}
+			default:
+				g_error ("Arg storage type not yet supported");
+		}
+		interp_cb->frame_arg_to_data ((MonoInterpFrameHandle)frame, sig, i, storage);
+		if (storage_type == RegTypeStructByVal) {
+			if (ainfo->vtsize) {
+				int reg_size = ainfo->size * sizeof (mgreg_t);
+				memcpy (&ccontext->gregs [ainfo->reg], storage, reg_size);
+				memcpy (ccontext->stack + ainfo->offset, (mgreg_t*)storage + ainfo->size, ainfo->struct_size - reg_size);
+			} else {
+				memcpy (&ccontext->gregs [ainfo->reg], storage, ainfo->struct_size);
+			}
+		}
+	}
+
+	g_free (cinfo);
+}
+
+void
+mono_arch_get_native_call_context (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
+{
+	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	CallInfo *cinfo;
+
+	/* No return value */
+	if (sig->ret->type == MONO_TYPE_VOID)
+		return;
+
+	cinfo = get_call_info (NULL, sig);
+
+	/* The return values were stored directly at address passed in reg */
+	if (cinfo->ret.storage == RegTypeStructByAddr)
+		goto done;
+
+	ArgInfo *ainfo = &cinfo->ret;
+	gpointer storage;
+	int storage_type = ainfo->storage;
+	int reg_storage = ainfo->reg;
+	switch (storage_type) {
+		case RegTypeIRegPair:
+		case RegTypeGeneral: {
+			storage = &ccontext->gregs [reg_storage];
+			break;
+		}
+		case RegTypeHFA:
+		case RegTypeFP: {
+			storage = &ccontext->fregs [reg_storage];
+			break;
+		}
+		case RegTypeStructByVal: {
+			storage = alloca (ainfo->struct_size);
+			g_assert (!ainfo->vtsize);
+			/* Reconstruct the value type */
+			memcpy (storage, &ccontext->gregs [reg_storage], ainfo->struct_size);
+			break;
+		}
+		default:
+			g_error ("Arg storage type not yet supported");
+	}
+	interp_cb->data_to_frame_arg ((MonoInterpFrameHandle)frame, sig, -1, storage);
+
+done:
+	g_free (cinfo);
 }
 
 
@@ -3002,7 +3112,7 @@ enum {
 };
 
 void*
-mono_arch_instrument_epilog_full (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments, gboolean preserve_argument_registers)
+mono_arch_instrument_epilog (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments)
 {
 	guchar *code = p;
 	int save_mode = SAVE_NONE;
@@ -4216,7 +4326,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 		switch (ins->opcode) {
 		case OP_MEMORY_BARRIER:
-			if (v6_supported) {
+			if (v7_supported) {
+				ARM_DMB (code, ARM_DMB_ISH);
+			} else if (v6_supported) {
 				ARM_MOV_REG_IMM8 (code, ARMREG_R0, 0);
 				ARM_MCR (code, 15, 0, ARMREG_R0, 7, 10, 5);
 			}
@@ -4250,7 +4362,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			switch (ins->opcode) {
 			case OP_ATOMIC_EXCHANGE_I4:
 				buf [0] = code;
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 				ARM_LDREX_REG (code, ARMREG_LR, ins->sreg1);
 				ARM_STREX_REG (code, tmpreg, ins->sreg2, ins->sreg1);
 				ARM_CMP_REG_IMM (code, tmpreg, 0, 0);
@@ -4259,7 +4371,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				arm_patch (buf [1], buf [0]);
 				break;
 			case OP_ATOMIC_CAS_I4:
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 				buf [0] = code;
 				ARM_LDREX_REG (code, ARMREG_LR, ins->sreg1);
 				ARM_CMP_REG_REG (code, ARMREG_LR, ins->sreg3);
@@ -4274,7 +4386,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				break;
 			case OP_ATOMIC_ADD_I4:
 				buf [0] = code;
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 				ARM_LDREX_REG (code, ARMREG_LR, ins->sreg1);
 				ARM_ADD_REG_REG (code, ARMREG_LR, ARMREG_LR, ins->sreg2);
 				ARM_STREX_REG (code, tmpreg, ARMREG_LR, ins->sreg1);
@@ -4287,7 +4399,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				g_assert_not_reached ();
 			}
 
-			ARM_DMB (code, ARM_DMB_SY);
+			ARM_DMB (code, ARM_DMB_ISH);
 			if (tmpreg != ins->dreg)
 				ARM_LDR_IMM (code, tmpreg, cfg->frame_reg, cfg->arch.atomic_tmp_offset);
 			ARM_MOV_REG_REG (code, ins->dreg, ARMREG_LR);
@@ -4302,7 +4414,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_ATOMIC_LOAD_R4:
 		case OP_ATOMIC_LOAD_R8: {
 			if (ins->backend.memory_barrier_kind == MONO_MEMORY_BARRIER_SEQ)
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 
 			code = mono_arm_emit_load_imm (code, ARMREG_LR, ins->inst_offset);
 
@@ -4342,7 +4454,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			}
 
 			if (ins->backend.memory_barrier_kind != MONO_MEMORY_BARRIER_NONE)
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 			break;
 		}
 		case OP_ATOMIC_STORE_I1:
@@ -4354,7 +4466,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_ATOMIC_STORE_R4:
 		case OP_ATOMIC_STORE_R8: {
 			if (ins->backend.memory_barrier_kind != MONO_MEMORY_BARRIER_NONE)
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 
 			code = mono_arm_emit_load_imm (code, ARMREG_LR, ins->inst_offset);
 
@@ -4390,7 +4502,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			}
 
 			if (ins->backend.memory_barrier_kind == MONO_MEMORY_BARRIER_SEQ)
-				ARM_DMB (code, ARM_DMB_SY);
+				ARM_DMB (code, ARM_DMB_ISH);
 			break;
 		}
 		case OP_BIGMUL:

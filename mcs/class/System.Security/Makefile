@@ -8,6 +8,7 @@ MONO_SECURITY=Mono.Security
 endif
 
 LIBRARY = System.Security.dll
+API_BIN_REFS := System.Numerics
 LIB_REFS = secxml/System bare/System.Xml $(MONO_SECURITY)
 KEYFILE = ../msfinal.pub
 LIB_MCS_FLAGS = \
@@ -27,10 +28,6 @@ EXTRA_DISTFILES = \
 	Test/System.Security.Cryptography.Pkcs/detached.p7
 
 RESX_RESOURCE_STRING = ../../../external/corefx/src/System.Security.Cryptography.Xml/src/Resources/Strings.resx
-
-ifdef MOBILE_PROFILE
-NO_TEST = yes
-endif
 
 include ../../build/library.make
 

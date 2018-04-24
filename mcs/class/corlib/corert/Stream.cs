@@ -23,7 +23,7 @@ namespace System.IO
 			throw new NotImplementedException ();
 		}
 
-		internal virtual Task WriteAsync (ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default(CancellationToken))
+		public virtual Task WriteAsync (ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			throw new NotImplementedException ();
 		}

@@ -1264,6 +1264,57 @@ namespace MonoTests.System.IO
 			}
 		}
 
+		/* regression test for https://github.com/mono/mono/issues/7646 */
+		[Test]
+		public void LastWriteTimeSubMs ()
+		{
+			string path = tmpFolder + Path.DirectorySeparatorChar + "lastWriteTimeSubMs";
+			if (File.Exists (path))
+				File.Delete (path);
+			try {
+				var fmt = "HH:mm:ss:fffffff";
+				for (var i = 0; i < 200; i++) {
+					File.WriteAllText (path, "");
+					var untouched = File.GetLastWriteTimeUtc (path);
+					File.SetLastWriteTimeUtc (path, DateTime.UtcNow);
+					var touched = File.GetLastWriteTimeUtc (path);
+
+					Assert.IsTrue (touched >= untouched, $"Iteration #{i} failed, untouched: {untouched.ToString (fmt)} touched: {touched.ToString (fmt)}");
+				}
+			} finally {
+				DeleteFile (path);
+			}
+		}
+
+		/* regression test from https://github.com/xamarin/xamarin-macios/issues/3929 */
+		[Test]
+		public void LastWriteTimeSubMsCopy ()
+		{
+			string path = tmpFolder + Path.DirectorySeparatorChar + "lastWriteTimeSubMs";
+			if (File.Exists (path))
+				File.Delete (path);
+
+			string path_copy = tmpFolder + Path.DirectorySeparatorChar + "LastWriteTimeSubMs_copy";
+			if (File.Exists (path_copy))
+				File.Delete (path_copy);
+
+			try {
+				var fmt = "HH:mm:ss:fffffff";
+				for (var i = 0; i < 200; i++) {
+					File.WriteAllText (path, "");
+					var untouched = File.GetLastWriteTimeUtc (path);
+					File.Copy (path, path_copy);
+					var copy_touched = File.GetLastWriteTimeUtc (path_copy);
+
+					Assert.IsTrue (copy_touched >= untouched, $"Iteration #{i} failed, untouched: {untouched.ToString (fmt)} copy_touched: {copy_touched.ToString (fmt)}");
+					File.Delete (path_copy);
+				}
+			} finally {
+				DeleteFile (path);
+				DeleteFile (path_copy);
+			}
+		}
+
 		[Test]
 		public void GetCreationTime_Path_Null ()
 		{

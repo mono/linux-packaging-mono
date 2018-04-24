@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Binary
 {
-    static partial class BinaryPrimitives
+    public static partial class BinaryPrimitives
     {
         /// <summary>
         /// Reads an Int16 out of a read-only span of bytes as big endian.

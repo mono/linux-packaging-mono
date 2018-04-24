@@ -20,14 +20,16 @@ RESX_RESOURCE_STRING = \
 	../../../external/corefx/src/System.Buffers/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Private.Uri/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.IO.Ports/src/Resources/Strings.resx \
-	../../../external/corefx/src/System.Net.HttpListener/src/Resources/Strings.resx
+	../../../external/corefx/src/System.Net.HttpListener/src/Resources/Strings.resx \
+	../../../external/corefx/src/System.Net.Requests/src/Resources/Strings.resx
 
 TEST_RESOURCES = \
 	Test/System/test-uri-props.txt \
 	Test/System/test-uri-props-manual.txt \
 	Test/System/test-uri-relative-props.txt
 
-XTEST_LIB_REFS = System System.Core Facades/System.Threading.Tasks Facades/System.Runtime.InteropServices.RuntimeInformation
+USE_XTEST_REMOTE_EXECUTOR = YES
+XTEST_LIB_REFS = System System.Core System.Net Facades/System.Threading.Tasks Facades/System.Runtime.InteropServices.RuntimeInformation System.Net.Http
 LIB_MCS_FLAGS = -d:CONFIGURATION_2_0 $(REFERENCE_SOURCES_FLAGS) -unsafe $(RESOURCE_FILES:%=-resource:%) -nowarn:436
 
 ifndef NO_MONO_SECURITY

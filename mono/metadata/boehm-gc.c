@@ -18,6 +18,8 @@
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/method-builder.h>
+#include <mono/metadata/method-builder-ilgen.h>
+#include <mono/metadata/method-builder-ilgen-internals.h>
 #include <mono/metadata/opcodes.h>
 #include <mono/metadata/domain-internals.h>
 #include <mono/metadata/metadata-internals.h>
@@ -500,6 +502,7 @@ on_gc_notification (GC_EventType event)
 		break;
 	default:
 		MONO_PROFILER_RAISE (gc_event, (e, 0));
+		MONO_PROFILER_RAISE (gc_event2, (e, 0, TRUE));
 		break;
 	}
 
@@ -507,10 +510,12 @@ on_gc_notification (GC_EventType event)
 	case GC_EVENT_PRE_STOP_WORLD:
 		mono_thread_info_suspend_lock ();
 		MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_PRE_STOP_WORLD_LOCKED, 0));
+		MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_PRE_STOP_WORLD_LOCKED, 0, TRUE));
 		break;
 	case GC_EVENT_POST_START_WORLD:
 		mono_thread_info_suspend_unlock ();
 		MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_POST_START_WORLD_UNLOCKED, 0));
+		MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_POST_START_WORLD_UNLOCKED, 0, TRUE));
 		break;
 	default:
 		break;
@@ -548,21 +553,21 @@ register_root (gpointer arg)
 }
 
 int
-mono_gc_register_root (char *start, size_t size, void *descr, MonoGCRootSource source, const char *msg)
+mono_gc_register_root (char *start, size_t size, void *descr, MonoGCRootSource source, void *key, const char *msg)
 {
 	RootData root_data;
 	root_data.start = start;
 	/* Boehm root processing requires one byte past end of region to be scanned */
 	root_data.end = start + size + 1;
 	GC_call_with_alloc_lock (register_root, &root_data);
-
+	MONO_PROFILER_RAISE (gc_root_register, ((const mono_byte *) start, size, source, key, msg));
 	return TRUE;
 }
 
 int
-mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
+mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg)
 {
-	return mono_gc_register_root (start, size, descr, source, msg);
+	return mono_gc_register_root (start, size, descr, source, key, msg);
 }
 
 static gpointer
@@ -577,6 +582,7 @@ void
 mono_gc_deregister_root (char* addr)
 {
 	GC_call_with_alloc_lock (deregister_root, addr);
+	MONO_PROFILER_RAISE (gc_root_unregister, ((const mono_byte *) addr));
 }
 
 static void
@@ -596,7 +602,7 @@ push_handle_stack (HandleStack* stack)
 
 	while (cur) {
 		if (cur->size > 0)
-			GC_push_all (cur->elems, (char*)(cur->elems + cur->size) + 1);
+			GC_push_all ((gpointer)&cur->elems[0], (char*)(cur->elems + cur->size) + 1);
 		if (cur == last)
 			break;
 		cur = cur->next;
@@ -695,14 +701,17 @@ mono_gc_make_root_descr_all_refs (int numbits)
 }
 
 void*
-mono_gc_alloc_fixed (size_t size, void *descr, MonoGCRootSource source, const char *msg)
+mono_gc_alloc_fixed (size_t size, void *descr, MonoGCRootSource source, void *key, const char *msg)
 {
-	return GC_MALLOC_UNCOLLECTABLE (size);
+	void *start = GC_MALLOC_UNCOLLECTABLE (size);
+	MONO_PROFILER_RAISE (gc_root_register, ((const mono_byte *) start, size, source, key, msg));
+	return start;
 }
 
 void
 mono_gc_free_fixed (void* addr)
 {
+	MONO_PROFILER_RAISE (gc_root_unregister, ((const mono_byte *) addr));
 	GC_FREE (addr);
 }
 
@@ -1505,6 +1514,13 @@ BOOL APIENTRY mono_gc_dllmain (HMODULE module_handle, DWORD reason, LPVOID reser
 }
 #endif
 
+MonoVTable *
+mono_gc_get_vtable (MonoObject *obj)
+{
+	// No pointer tagging.
+	return obj->vtable;
+}
+
 guint
 mono_gc_get_vtable_bits (MonoClass *klass)
 {
@@ -1658,7 +1674,7 @@ handle_data_alloc_entries (HandleData *handles)
 		handles->entries = (void **)g_malloc0 (sizeof (*handles->entries) * handles->size);
 		handles->domain_ids = (guint16 *)g_malloc0 (sizeof (*handles->domain_ids) * handles->size);
 	} else {
-		handles->entries = (void **)mono_gc_alloc_fixed (sizeof (*handles->entries) * handles->size, NULL, MONO_ROOT_SOURCE_GC_HANDLE, "gc handles table");
+		handles->entries = (void **)mono_gc_alloc_fixed (sizeof (*handles->entries) * handles->size, NULL, MONO_ROOT_SOURCE_GC_HANDLE, NULL, "GC Handle Table (Boehm)");
 	}
 	handles->bitmap = (guint32 *)g_malloc0 (handles->size / CHAR_BIT);
 }
@@ -1725,7 +1741,7 @@ handle_data_grow (HandleData *handles, gboolean track)
 		handles->domain_ids = domain_ids;
 	} else {
 		gpointer *entries;
-		entries = (void **)mono_gc_alloc_fixed (sizeof (*handles->entries) * new_size, NULL, MONO_ROOT_SOURCE_GC_HANDLE, "gc handles table");
+		entries = (void **)mono_gc_alloc_fixed (sizeof (*handles->entries) * new_size, NULL, MONO_ROOT_SOURCE_GC_HANDLE, NULL, "GC Handle Table (Boehm)");
 		mono_gc_memmove_aligned (entries, handles->entries, sizeof (*handles->entries) * handles->size);
 		mono_gc_free_fixed (handles->entries);
 		handles->entries = entries;

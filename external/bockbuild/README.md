@@ -1,6 +1,6 @@
 Note: This is the actively maintained version of Bockbuild, used to put together the Mono SDK package for macOS. The legacy versions (used for Banshee and older Mono versions) are available here: https://github.com/mono/bockbuild/tree/legacy
 
-Please file issues with the Mono SDK package for macOS on [Xamarin's Bugzilla](https://bugzilla.xamarin.com/enter_bug.cgi?product=Mono%20Installers).
+Please file issues with the Mono SDK package for macOS on the [Mono GitHub issues](https://github.com/mono/mono/issues) page.
 
 The Mono macOS SDK
 ------------------

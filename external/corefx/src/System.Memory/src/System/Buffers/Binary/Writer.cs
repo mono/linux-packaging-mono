@@ -11,7 +11,7 @@ using Internal.Runtime.CompilerServices;
 
 namespace System.Buffers.Binary
 {
-    static partial class BinaryPrimitives
+    public static partial class BinaryPrimitives
     {
         /// <summary>
         /// Writes a structure of type T into a span of bytes.

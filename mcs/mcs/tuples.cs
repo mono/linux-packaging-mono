@@ -594,6 +594,7 @@ namespace Mono.CSharp
 
 		public override void FlowAnalysis (FlowAnalysisContext fc)
 		{
+			source.FlowAnalysis (fc);
 			foreach (var expr in targetExprs)
 				expr.FlowAnalysis (fc);
 		}

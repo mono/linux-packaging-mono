@@ -825,13 +825,13 @@ cvtMonoType(MonoTypeEnum t)
 static void
 decodeParmString (MonoString *s)
 {
-	MonoError error;
-	char *str = mono_string_to_utf8_checked(s, &error);
-	if (is_ok (&error))  {
+	ERROR_DECL (error);
+	char *str = mono_string_to_utf8_checked(s, error);
+	if (is_ok (error))  {
 		fprintf (trFd, "[STRING:%p:%s], ", s, str);
 		g_free (str);
 	} else {
-		mono_error_cleanup (&error);
+		mono_error_cleanup (error);
 		fprintf (trFd, "[STRING:%p:], ", s);
 	}
 }
@@ -2609,12 +2609,12 @@ mono_arch_emit_outarg_vt (MonoCompile *cfg, MonoInst *ins, MonoInst *src)
 
 		mono_call_inst_add_outarg_reg (cfg, call, dreg, ainfo->reg, TRUE);
 	} else {
-		MonoError error;
+		ERROR_DECL (error);
 		MonoMethodHeader *header;
 		int srcReg;
 
-		header = mono_method_get_header_checked (cfg->method, &error);
-		mono_error_assert_ok (&error); /* FIXME don't swallow the error */
+		header = mono_method_get_header_checked (cfg->method, error);
+		mono_error_assert_ok (error); /* FIXME don't swallow the error */
 		if ((cfg->flags & MONO_CFG_HAS_ALLOCA) || header->num_clauses)
 			srcReg = s390_r11;
 		else
@@ -2655,26 +2655,6 @@ mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 	}
 			
 	MONO_EMIT_NEW_UNALU (cfg, OP_MOVE, cfg->ret->dreg, val->dreg);
-}
-
-/*========================= End of Function ========================*/
-
-/*------------------------------------------------------------------*/
-/*                                                                  */
-/* Name		- mono_arch_instrument_mem_needs                    */
-/*                                                                  */
-/* Function	- Allow tracing to work with this interface (with   */
-/*		  an optional argument).       			    */
-/*		                               			    */
-/*------------------------------------------------------------------*/
-
-void
-mono_arch_instrument_mem_needs (MonoMethod *method, int *stack, int *code)
-{
-	/* no stack room needed now (may be needed for FASTCALL-trace support) */
-	*stack = 0;
-	/* split prolog-epilog requirements? */
-	*code = 50; /* max bytes needed: check this number */
 }
 
 /*========================= End of Function ========================*/
@@ -2734,7 +2714,7 @@ mono_arch_instrument_prolog (MonoCompile *cfg, void *func, void *p,
 /*------------------------------------------------------------------*/
 
 void*
-mono_arch_instrument_epilog_full (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments, gboolean preserve_argument_registers)
+mono_arch_instrument_epilog (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments)
 {
 	guchar 	   *code = p;
 	int   	   save_mode = SAVE_NONE,

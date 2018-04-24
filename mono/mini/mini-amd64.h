@@ -126,8 +126,6 @@ struct sigcontext {
 #define MONO_ARCH_SIGNAL_STACK_SIZE (16 * 1024)
 #endif
 
-#define MONO_ARCH_HAVE_RESTORE_STACK_SUPPORT 1
-
 #define MONO_ARCH_CPU_SPEC mono_amd64_desc
 
 #define MONO_MAX_IREGS 16
@@ -233,6 +231,8 @@ static AMD64_XMM_Reg_No float_return_regs [] = { AMD64_XMM0 };
 #else
 #define PARAM_REGS 6
 #define FLOAT_PARAM_REGS 8
+#define RETURN_REGS 2
+#define FLOAT_RETURN_REGS 2
 
 static const AMD64_Reg_No param_regs [] = {AMD64_RDI, AMD64_RSI, AMD64_RDX,
 					   AMD64_RCX, AMD64_R8,  AMD64_R9};
@@ -326,6 +326,15 @@ typedef struct {
 	ArgInfo args [1];
 } CallInfo;
 
+typedef struct {
+	/* General registers */
+	mgreg_t gregs [AMD64_NREG];
+	/* Floating registers */
+	double fregs [AMD64_XMM_NREG];
+	/* Stack usage, used for passing params on stack */
+	size_t stack_size;
+	gpointer *stack;
+} CallContext;
 
 #define MONO_CONTEXT_SET_LLVM_EXC_REG(ctx, exc) do { (ctx)->gregs [AMD64_RAX] = (gsize)exc; } while (0)
 #define MONO_CONTEXT_SET_LLVM_EH_SELECTOR_REG(ctx, sel) do { (ctx)->gregs [AMD64_RDX] = (gsize)(sel); } while (0)
@@ -366,7 +375,7 @@ typedef struct {
  */
 #define MONO_ARCH_VARARG_ICALLS 1
 
-#if !defined( HOST_WIN32 ) && defined (HAVE_SIGACTION)
+#if !defined( HOST_WIN32 ) && !defined(__HAIKU__) && defined (HAVE_SIGACTION)
 
 #define MONO_ARCH_USE_SIGACTION 1
 
@@ -442,6 +451,8 @@ typedef struct {
 #define MONO_ARCH_HAVE_PATCH_CODE_NEW 1
 #define MONO_ARCH_HAVE_OP_GENERIC_CLASS_INIT 1
 #define MONO_ARCH_HAVE_GENERAL_RGCTX_LAZY_FETCH_TRAMPOLINE 1
+
+#define MONO_ARCH_HAVE_INTERP_PINVOKE_TRAMP
 
 #if defined(TARGET_OSX) || defined(__linux__)
 #define MONO_ARCH_HAVE_UNWIND_BACKTRACE 1

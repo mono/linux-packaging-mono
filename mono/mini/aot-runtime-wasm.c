@@ -121,19 +121,22 @@ get_long_arg (InterpMethodArguments *margs, int idx)
 #include "wasm_m2n_invoke.g.h"
 
 static void
-wasm_enter_icall_trampoline (void *target_func, InterpMethodArguments *margs)
+wasm_interp_to_native_trampoline (void *target_func, InterpMethodArguments *margs)
 {
-	static char cookie [8];
-	static int c_count;
+	char cookie [32];
+	int c_count;
 
 	MonoMethodSignature *sig = margs->sig;
 
 	c_count = sig->param_count + sig->hasthis + 1;
+	g_assert (c_count < sizeof (cookie)); //ensure we don't overflow the local
+
 	cookie [0] = type_to_c (sig->ret);
 	if (sig->hasthis)
 		cookie [1] = 'I';
-	for (int i = 0; i < sig->param_count; ++i)
-		cookie [1 + sig->hasthis + i ] = type_to_c (sig->params [i]);
+	for (int i = 0; i < sig->param_count; ++i) {
+		cookie [1 + sig->hasthis + i] = type_to_c (sig->params [i]);
+	}
 	cookie [c_count] = 0;
 
 	icall_trampoline_dispatch (cookie, target_func, margs);
@@ -154,8 +157,8 @@ mono_aot_get_trampoline_full (const char *name, MonoTrampInfo **out_tinfo)
 		code = wasm_rethrow_exception;
 	else if (!strcmp (name, "throw_corlib_exception"))
 		code = wasm_throw_corlib_exception;
-	else if (!strcmp (name, "enter_icall_trampoline"))
-		code = wasm_enter_icall_trampoline;
+	else if (!strcmp (name, "interp_to_native_trampoline"))
+		code = wasm_interp_to_native_trampoline;
 
 	g_assert (code);
 

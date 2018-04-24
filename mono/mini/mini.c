@@ -3077,7 +3077,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 {
 	MonoMethodHeader *header;
 	MonoMethodSignature *sig;
-	MonoError err;
+	ERROR_DECL_VALUE (err);
 	MonoCompile *cfg;
 	int i;
 	gboolean try_generic_shared, try_llvm = FALSE;
@@ -3092,7 +3092,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	gboolean llvm = (flags & JIT_FLAG_LLVM) ? 1 : 0;
 #endif
 	static gboolean verbose_method_inited;
-	static char *verbose_method_name;
+	static char **verbose_method_names;
 
 	mono_atomic_inc_i32 (&mono_jit_stats.methods_compiled);
 	MONO_PROFILER_RAISE (jit_begin, (method));
@@ -3362,23 +3362,30 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	}
 
 	if (!verbose_method_inited) {
-		verbose_method_name = g_getenv ("MONO_VERBOSE_METHOD");
+		char *env = g_getenv ("MONO_VERBOSE_METHOD");
+		if (env != NULL)
+			verbose_method_names = g_strsplit (env, ",", -1);
+		
 		verbose_method_inited = TRUE;
 	}
-	if (verbose_method_name) {
-		const char *name = verbose_method_name;
+	if (verbose_method_names) {
+		int i;
+		
+		for (i = 0; verbose_method_names [i] != NULL; i++){
+			const char *name = verbose_method_names [i];
 
-		if ((strchr (name, '.') > name) || strchr (name, ':')) {
-			MonoMethodDesc *desc;
-			
-			desc = mono_method_desc_new (name, TRUE);
-			if (mono_method_desc_full_match (desc, cfg->method)) {
-				cfg->verbose_level = 4;
+			if ((strchr (name, '.') > name) || strchr (name, ':')) {
+				MonoMethodDesc *desc;
+				
+				desc = mono_method_desc_new (name, TRUE);
+				if (mono_method_desc_full_match (desc, cfg->method)) {
+					cfg->verbose_level = 4;
+				}
+				mono_method_desc_free (desc);
+			} else {
+				if (strcmp (cfg->method->name, name) == 0)
+					cfg->verbose_level = 4;
 			}
-			mono_method_desc_free (desc);
-		} else {
-			if (strcmp (cfg->method->name, name) == 0)
-				cfg->verbose_level = 4;
 		}
 	}
 
@@ -3944,12 +3951,6 @@ mini_class_has_reference_variant_generic_argument (MonoCompile *cfg, MonoClass *
 	return FALSE;
 }
 
-void*
-mono_arch_instrument_epilog (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments)
-{
-	return mono_arch_instrument_epilog_full (cfg, func, p, enable_arguments, FALSE);
-}
-
 void
 mono_cfg_add_try_hole (MonoCompile *cfg, MonoExceptionClause *clause, guint8 *start, MonoBasicBlock *bb)
 {
@@ -4325,12 +4326,8 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 	if (!mono_error_ok (error))
 		return NULL;
 
-	vtable = mono_class_vtable (target_domain, method->klass);
-	if (!vtable) {
-		g_assert (mono_class_has_failure (method->klass));
-		mono_error_set_for_class_failure (error, method->klass);
-		return NULL;
-	}
+	vtable = mono_class_vtable_checked (target_domain, method->klass, error);
+	return_val_if_nok (error, NULL);
 
 	if (method->wrapper_type == MONO_WRAPPER_MANAGED_TO_NATIVE) {
 		if (mono_marshal_method_from_wrapper (method)) {

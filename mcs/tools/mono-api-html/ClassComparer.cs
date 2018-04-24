@@ -258,7 +258,10 @@ namespace Xamarin.ApiDiff {
 
 		public override void Removed (XElement source)
 		{
-			string name = State.Namespace + "." + GetTypeName (source);
+			if (source.Elements ("attributes").SelectMany (a => a.Elements ("attribute")).Any (c => c.Attribute ("name")?.Value == "System.ObsoleteAttribute"))
+				return;
+
+      string name = State.Namespace + "." + GetTypeName (source);
 
 			var memberDescription = $"{name}: Removed type";
 			State.LogDebugMessage ($"Possible -r value: {memberDescription}");

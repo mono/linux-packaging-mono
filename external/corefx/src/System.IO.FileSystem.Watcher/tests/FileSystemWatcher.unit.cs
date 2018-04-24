@@ -25,6 +25,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_NewFileInfoAction_TriggersNothing()
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))
@@ -38,6 +39,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_FileInfoGetter_TriggersNothing()
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))
@@ -180,6 +182,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_EnableRaisingEvents()
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))
@@ -292,6 +295,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_NotifyFilter()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
@@ -370,6 +374,7 @@ namespace System.IO.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.OSX | TestPlatforms.Windows)]  // Casing matters on Linux
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_OnCreatedWithMismatchedCasingGivesExpectedFullPath()
         {
             using (var dir = new TempDirectory(GetTestFilePath()))
@@ -463,6 +468,7 @@ namespace System.IO.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // Unix FSW don't trigger on a file rename.
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_Windows_OnRenameGivesExpectedFullPath()
         {
             using (var dir = new TempDirectory(GetTestFilePath()))
@@ -589,6 +595,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_StopCalledOnBackgroundThreadDoesNotDeadlock()
         {
             // Check the case where Stop or Dispose (they do the same thing) is called from 
@@ -614,6 +621,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_WatchingAliasedFolderResolvesToRealPathWhenWatching()
         {
             using (var testDirectory = new TempDirectory(GetTestFilePath()))

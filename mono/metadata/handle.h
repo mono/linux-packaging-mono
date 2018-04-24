@@ -132,7 +132,7 @@ MonoRawHandle mono_handle_new_full (gpointer rawptr, gboolean interior, const ch
 MonoRawHandle mono_handle_new_interior (gpointer rawptr, const char *owner);
 #endif
 
-void mono_handle_stack_scan (HandleStack *stack, GcScanFunc func, gpointer gc_data, gboolean precise);
+void mono_handle_stack_scan (HandleStack *stack, GcScanFunc func, gpointer gc_data, gboolean precise, gboolean check);
 gboolean mono_handle_stack_is_empty (HandleStack *stack);
 HandleStack* mono_handle_stack_alloc (void);
 void mono_handle_stack_free (HandleStack *handlestack);
@@ -180,12 +180,12 @@ Icall macros
 */
 #define SETUP_ICALL_COMMON	\
 	do { \
-		MonoError error;	\
+		ERROR_DECL (error);	\
 		MonoThreadInfo *__info = mono_thread_info_current ();	\
-		error_init (&error);	\
+		error_init (error);	\
 
 #define CLEAR_ICALL_COMMON	\
-	mono_error_set_pending_exception (&error);
+	mono_error_set_pending_exception (error);
 
 #define SETUP_ICALL_FRAME	\
 	HandleStackMark __mark;	\

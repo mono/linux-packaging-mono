@@ -8,6 +8,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 
 namespace System.Text

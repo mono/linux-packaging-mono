@@ -13,6 +13,7 @@ using System.Security;
 using System.Threading;
 using System.Globalization;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Collections.Generic;
 
 namespace System.Text
@@ -1029,6 +1030,12 @@ namespace System.Text
         [CLSCompliant(false)]
         public StringBuilder Append(ulong value) => AppendSpanFormattable(value);
 
+#if MONO
+        private StringBuilder AppendSpanFormattable<T>(T value) where T : IFormattable
+        {
+            return Append(value.ToString(null, CultureInfo.CurrentCulture));
+        }
+#else
         private StringBuilder AppendSpanFormattable<T>(T value) where T : ISpanFormattable
         {
             if (value.TryFormat(RemainingCurrentChunk, out int charsWritten, format: default, provider: null))
@@ -1039,6 +1046,7 @@ namespace System.Text
 
             return Append(value.ToString());
         }
+#endif
 
         public StringBuilder Append(object value) => (value == null) ? this : Append(value.ToString());
 

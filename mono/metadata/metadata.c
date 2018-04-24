@@ -1451,9 +1451,9 @@ mono_metadata_parse_array_internal (MonoImage *m, MonoGenericContainer *containe
 MonoArrayType *
 mono_metadata_parse_array (MonoImage *m, const char *ptr, const char **rptr)
 {
-	MonoError error;
-	MonoArrayType *ret = mono_metadata_parse_array_internal (m, NULL, FALSE, ptr, rptr, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoArrayType *ret = mono_metadata_parse_array_internal (m, NULL, FALSE, ptr, rptr, error);
+	mono_error_cleanup (error);
 
 	return ret;
 }
@@ -1856,9 +1856,9 @@ MonoType*
 mono_metadata_parse_type (MonoImage *m, MonoParseTypeMode mode, short opt_attrs,
 			  const char *ptr, const char **rptr)
 {
-	MonoError error;
-	MonoType * type = mono_metadata_parse_type_internal (m, NULL, opt_attrs, FALSE, ptr, rptr, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoType * type = mono_metadata_parse_type_internal (m, NULL, opt_attrs, FALSE, ptr, rptr, error);
+	mono_error_cleanup (error);
 	return type;
 }
 
@@ -1938,10 +1938,10 @@ mono_metadata_get_param_attrs (MonoImage *m, int def, int param_count)
 MonoMethodSignature*
 mono_metadata_parse_signature (MonoImage *image, guint32 token)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoMethodSignature *ret;
-	ret = mono_metadata_parse_signature_checked (image, token, &error);
-	mono_error_cleanup (&error);
+	ret = mono_metadata_parse_signature_checked (image, token, error);
+	mono_error_cleanup (error);
 	return ret;
 }
 
@@ -2112,20 +2112,23 @@ mono_metadata_signature_size (MonoMethodSignature *sig)
 	return MONO_SIZEOF_METHOD_SIGNATURE + sig->param_count * sizeof (MonoType *);
 }
 
-/*
- * mono_metadata_parse_method_signature:
- * @m: metadata context
- * @generic_container: generics container
- * @def: the MethodDef index or 0 for Ref signatures.
- * @ptr: pointer to the signature metadata representation
- * @rptr: pointer updated to match the end of the decoded stream
+/**
+ * mono_metadata_parse_method_signature_full:
+ * \param m metadata context
+ * \param generic_container: generics container
+ * \param def the \c MethodDef index or 0 for \c Ref signatures.
+ * \param ptr pointer to the signature metadata representation
+ * \param rptr pointer updated to match the end of the decoded stream
+ * \param error set on error
  *
- * Decode a method signature stored at @ptr.
+ *
+ * Decode a method signature stored at \p ptr.
  * This is a Mono runtime internal function.
  *
  * LOCKING: Assumes the loader lock is held.
  *
- * Returns: a MonoMethodSignature describing the signature.
+ * \returns a \c MonoMethodSignature describing the signature.  On error sets
+ * \p error and returns \c NULL.
  */
 MonoMethodSignature *
 mono_metadata_parse_method_signature_full (MonoImage *m, MonoGenericContainer *container,
@@ -2237,10 +2240,10 @@ mono_metadata_parse_method_signature (MonoImage *m, int def, const char *ptr, co
 	 * Use mono_metadata_parse_method_signature_full instead.
 	 * It's ok to asser on failure as we no longer use it.
 	 */
-	MonoError error;
+	ERROR_DECL (error);
 	MonoMethodSignature *ret;
-	ret = mono_metadata_parse_method_signature_full (m, NULL, def, ptr, rptr, &error);
-	g_assert (mono_error_ok (&error));
+	ret = mono_metadata_parse_method_signature_full (m, NULL, def, ptr, rptr, error);
+	mono_error_assert_ok (error);
 
 	return ret;
 }
@@ -2399,6 +2402,12 @@ retry:
 		/* At this point, we should've avoided all potential allocations in mono_class_from_mono_type () */
 		return image == mono_class_from_mono_type (type)->image;
 	}
+}
+
+gboolean
+mono_type_in_image (MonoType *type, MonoImage *image)
+{
+	return type_in_image (type, image);
 }
 
 static inline void
@@ -3895,8 +3904,11 @@ mono_method_get_header_summary (MonoMethod *method, MonoMethodHeaderSummary *sum
 	while (method->is_inflated)
 		method = ((MonoMethodInflated*)method)->declaring;
 
+	summary->code = NULL;
 	summary->code_size = 0;
+	summary->max_stack = 0;
 	summary->has_clauses = FALSE;
+	summary->has_locals = FALSE;
 
 	/*FIXME extract this into a MACRO and share it with mono_method_get_header*/
 	if ((method->flags & METHOD_ATTRIBUTE_ABSTRACT) || (method->iflags & METHOD_IMPL_ATTRIBUTE_RUNTIME) || (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) || (method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL))
@@ -3906,8 +3918,11 @@ mono_method_get_header_summary (MonoMethod *method, MonoMethodHeaderSummary *sum
 		MonoMethodHeader *header =  ((MonoMethodWrapper *)method)->header;
 		if (!header)
 			return FALSE;
+		summary->code = header->code;
 		summary->code_size = header->code_size;
+		summary->max_stack = header->max_stack;
 		summary->has_clauses = header->num_clauses > 0;
+		summary->has_locals = header->num_locals > 0;
 		return TRUE;
 	}
 
@@ -3930,14 +3945,22 @@ mono_method_get_header_summary (MonoMethod *method, MonoMethodHeaderSummary *sum
 	switch (format) {
 	case METHOD_HEADER_TINY_FORMAT:
 		ptr++;
+		summary->max_stack = 8;
+		summary->code = (unsigned char *) ptr;
 		summary->code_size = flags >> 2;
 		break;
 	case METHOD_HEADER_FAT_FORMAT:
 		fat_flags = read16 (ptr);
-		ptr += 4;
+		ptr += 2;
+		summary->max_stack = read16 (ptr);
+		ptr += 2;
 		summary->code_size = read32 (ptr);
+		ptr += 4;
+		summary->has_locals = !!read32 (ptr);
+		ptr += 4;
 		if (fat_flags & METHOD_HEADER_MORE_SECTS)
 			summary->has_clauses = TRUE;
+		summary->code = (unsigned char *) ptr;
 		break;
 	default:
 		return FALSE;
@@ -4089,9 +4112,9 @@ fail:
 MonoMethodHeader *
 mono_metadata_parse_mh (MonoImage *m, const char *ptr)
 {
-	MonoError error;
-	MonoMethodHeader *header = mono_metadata_parse_mh_full (m, NULL, ptr, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoMethodHeader *header = mono_metadata_parse_mh_full (m, NULL, ptr, error);
+	mono_error_cleanup (error);
 	return header;
 }
 
@@ -4227,9 +4250,9 @@ mono_method_header_get_clauses (MonoMethodHeader *header, MonoMethod *method, gp
 MonoType *
 mono_metadata_parse_field_type (MonoImage *m, short field_flags, const char *ptr, const char **rptr)
 {
-	MonoError error;
-	MonoType * type = mono_metadata_parse_type_internal (m, NULL, field_flags, FALSE, ptr, rptr, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoType * type = mono_metadata_parse_type_internal (m, NULL, field_flags, FALSE, ptr, rptr, error);
+	mono_error_cleanup (error);
 	return type;
 }
 
@@ -4246,9 +4269,9 @@ mono_metadata_parse_field_type (MonoImage *m, short field_flags, const char *ptr
 MonoType *
 mono_metadata_parse_param (MonoImage *m, const char *ptr, const char **rptr)
 {
-	MonoError error;
-	MonoType * type = mono_metadata_parse_type_internal (m, NULL, 0, FALSE, ptr, rptr, &error);
-	mono_error_cleanup (&error);
+	ERROR_DECL (error);
+	MonoType * type = mono_metadata_parse_type_internal (m, NULL, 0, FALSE, ptr, rptr, error);
+	mono_error_cleanup (error);
 	return type;
 }
 
@@ -4481,20 +4504,20 @@ mono_metadata_typedef_from_method (MonoImage *meta, guint32 index)
 	return loc.result + 1;
 }
 
-/*
+/**
  * mono_metadata_interfaces_from_typedef_full:
- * @meta: metadata context
- * @index: typedef token
- * @interfaces: Out parameter used to store the interface array
- * @count: Out parameter used to store the number of interfaces
- * @heap_alloc_result: if TRUE the result array will be g_malloc'd
- * @context: The generic context
+ * \param meta metadata context
+ * \param index typedef token
+ * \param interfaces Out parameter used to store the interface array
+ * \param count Out parameter used to store the number of interfaces
+ * \param heap_alloc_result if TRUE the result array will be \c g_malloc'd
+ * \param context The generic context
+ * \param error set on error
  * 
- * The array of interfaces that the @index typedef token implements is returned in
- * @interfaces. The number of elements in the array is returned in @count. 
+ * The array of interfaces that the \p index typedef token implements is returned in
+ * \p interfaces. The number of elements in the array is returned in \p count.
  *
-
- * Returns: TRUE on success, FALSE on failure.
+ * \returns \c TRUE on success, \c FALSE on failure and sets \p error.
  */
 gboolean
 mono_metadata_interfaces_from_typedef_full (MonoImage *meta, guint32 index, MonoClass ***interfaces, guint *count, gboolean heap_alloc_result, MonoGenericContext *context, MonoError *error)
@@ -4579,12 +4602,12 @@ mono_metadata_interfaces_from_typedef_full (MonoImage *meta, guint32 index, Mono
 MonoClass**
 mono_metadata_interfaces_from_typedef (MonoImage *meta, guint32 index, guint *count)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoClass **interfaces = NULL;
 	gboolean rv;
 
-	rv = mono_metadata_interfaces_from_typedef_full (meta, index, &interfaces, count, TRUE, NULL, &error);
-	g_assert (mono_error_ok (&error)); /* FIXME dont swallow the error */
+	rv = mono_metadata_interfaces_from_typedef_full (meta, index, &interfaces, count, TRUE, NULL, error);
+	mono_error_assert_ok (error);
 	if (rv)
 		return interfaces;
 	else
@@ -5844,10 +5867,10 @@ mono_metadata_implmap_from_method (MonoImage *meta, guint32 method_idx)
 MonoType *
 mono_type_create_from_typespec (MonoImage *image, guint32 type_spec)
 {
-	MonoError error;
-	MonoType *type = mono_type_create_from_typespec_checked (image, type_spec, &error);
+	ERROR_DECL (error);
+	MonoType *type = mono_type_create_from_typespec_checked (image, type_spec, error);
 	if (!type)
-		 g_error ("Could not create typespec %x due to %s", type_spec, mono_error_get_message (&error));
+		 g_error ("Could not create typespec %x due to %s", type_spec, mono_error_get_message (error));
 	return type;
 }
 
@@ -6262,37 +6285,34 @@ method_from_method_def_or_ref (MonoImage *m, guint32 tok, MonoGenericContext *co
 /*
  * mono_class_get_overrides_full:
  *
- *   Return the method overrides belonging to class @type_token in @overrides, and
- * the number of overrides in @num_overrides.
+ *  Compute the method overrides belonging to class @type_token in @overrides, and the number of overrides in @num_overrides.
  *
- * Returns: TRUE on success, FALSE on failure.
  */
-gboolean
-mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod ***overrides, gint32 *num_overrides,
-			       MonoGenericContext *generic_context)
+void
+mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod ***overrides, gint32 *num_overrides, MonoGenericContext *generic_context, MonoError *error)
 {
-	MonoError error;
 	locator_t loc;
 	MonoTableInfo *tdef  = &image->tables [MONO_TABLE_METHODIMPL];
 	guint32 start, end;
 	gint32 i, num;
 	guint32 cols [MONO_METHODIMPL_SIZE];
 	MonoMethod **result;
-	gint32 ok = TRUE;
 	
+	error_init (error);
+
 	*overrides = NULL;
 	if (num_overrides)
 		*num_overrides = 0;
 
 	if (!tdef->base)
-		return TRUE;
+		return;
 
 	loc.t = tdef;
 	loc.col_idx = MONO_METHODIMPL_CLASS;
 	loc.idx = mono_metadata_token_index (type_token);
 
 	if (!mono_binary_search (&loc, tdef->base, tdef->rows, tdef->row_size, table_locator))
-		return TRUE;
+		return;
 
 	start = loc.result;
 	end = start + 1;
@@ -6316,33 +6336,32 @@ mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod 
 	for (i = 0; i < num; ++i) {
 		MonoMethod *method;
 
-		if (!mono_verifier_verify_methodimpl_row (image, start + i, &error)) {
-			mono_error_cleanup (&error); /* FIXME don't swallow the error */
-			ok = FALSE;
+		if (!mono_verifier_verify_methodimpl_row (image, start + i, error))
 			break;
-		}
 
 		mono_metadata_decode_row (tdef, start + i, cols, MONO_METHODIMPL_SIZE);
-		method = method_from_method_def_or_ref (
-			image, cols [MONO_METHODIMPL_DECLARATION], generic_context, &error);
-		if (method == NULL) {
-			mono_error_cleanup (&error); /* FIXME don't swallow the error */
-			ok = FALSE;
-		}
+		method = method_from_method_def_or_ref (image, cols [MONO_METHODIMPL_DECLARATION], generic_context, error);
+		if (!method)
+			break;
+
 		result [i * 2] = method;
-		method = method_from_method_def_or_ref (
-			image, cols [MONO_METHODIMPL_BODY], generic_context, &error);
-		if (method == NULL) {
-			mono_error_cleanup (&error); /* FIXME don't swallow the error */
-			ok = FALSE;
-		}
+		method = method_from_method_def_or_ref (image, cols [MONO_METHODIMPL_BODY], generic_context, error);
+		if (!method)
+			break;
+
 		result [i * 2 + 1] = method;
 	}
 
-	*overrides = result;
-	if (num_overrides)
-		*num_overrides = num;
-	return ok;
+	if (!is_ok (error)) {
+		g_free (result);
+		*overrides = NULL;
+		if (num_overrides)
+			*num_overrides = 0;
+	} else {
+		*overrides = result;
+		if (num_overrides)
+			*num_overrides = num;
+	}
 }
 
 /**

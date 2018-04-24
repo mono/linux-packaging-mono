@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Binary
 {
-    static partial class BinaryPrimitives
+    public static partial class BinaryPrimitives
     {
         /// <summary>
         /// Writes an Int16 into a span of bytes as little endian.

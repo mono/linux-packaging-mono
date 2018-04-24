@@ -108,7 +108,7 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		protected void ProcessAssembly (AssemblyDefinition assembly, XPathNodeIterator iterator)
+		protected virtual void ProcessAssembly (AssemblyDefinition assembly, XPathNodeIterator iterator)
 		{
 			Tracer.Push (assembly);
 			if (GetTypePreserve (iterator.Current) == TypePreserve.All) {
@@ -213,12 +213,7 @@ namespace Mono.Linker.Steps {
 		{
 			if (regex.Match (exportedType.FullName).Success) {
 				MarkingHelpers.MarkExportedType (exportedType, module);
-				TypeDefinition type = null;
-				try {
-					type = exportedType.Resolve ();
-				}
-				catch (AssemblyResolutionException) {
-				}
+				TypeDefinition type = exportedType.Resolve ();
 				if (type != null) {
 					ProcessType (type, nav);
 				}
@@ -241,7 +236,7 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		void ProcessType (TypeDefinition type, XPathNavigator nav)
+		protected virtual void ProcessType (TypeDefinition type, XPathNavigator nav)
 		{
 			TypePreserve preserve = GetTypePreserve (nav);
 
@@ -323,15 +318,19 @@ namespace Mono.Linker.Steps {
 
 		void ProcessFields (TypeDefinition type, XPathNodeIterator iterator)
 		{
-			while (iterator.MoveNext ()) {
-				string value = GetSignature (iterator.Current);
-				if (!String.IsNullOrEmpty (value))
-					ProcessFieldSignature (type, value);
+			while (iterator.MoveNext ())
+				ProcessField (type, iterator);
+		}
 
-				value = GetAttribute (iterator.Current, "name");
-				if (!String.IsNullOrEmpty (value))
-					ProcessFieldName (type, value);
-			}
+		protected virtual void ProcessField (TypeDefinition type, XPathNodeIterator iterator)
+		{
+			string value = GetSignature (iterator.Current);
+			if (!String.IsNullOrEmpty (value))
+				ProcessFieldSignature (type, value);
+
+			value = GetAttribute (iterator.Current, "name");
+			if (!String.IsNullOrEmpty (value))
+				ProcessFieldName (type, value);
 		}
 
 		void ProcessFieldSignature (TypeDefinition type, string signature)
@@ -375,13 +374,13 @@ namespace Mono.Linker.Steps {
 			return field.FieldType.FullName + " " + field.Name;
 		}
 
-		protected virtual void ProcessMethods (TypeDefinition type, XPathNodeIterator iterator)
+		void ProcessMethods (TypeDefinition type, XPathNodeIterator iterator)
 		{
 			while (iterator.MoveNext ())
 				ProcessMethod (type, iterator);
 		}
 
-		protected void ProcessMethod(TypeDefinition type, XPathNodeIterator iterator)
+		protected virtual void ProcessMethod (TypeDefinition type, XPathNodeIterator iterator)
 		{
 			string value = GetSignature (iterator.Current);
 			if (!String.IsNullOrEmpty (value))
@@ -462,15 +461,19 @@ namespace Mono.Linker.Steps {
 
 		void ProcessEvents (TypeDefinition type, XPathNodeIterator iterator)
 		{
-			while (iterator.MoveNext ()) {
-				string value = GetSignature (iterator.Current);
-				if (!String.IsNullOrEmpty (value))
-					ProcessEventSignature (type, value);
+			while (iterator.MoveNext ())
+				ProcessEvent (type, iterator);
+		}
 
-				value = GetAttribute (iterator.Current, "name");
-				if (!String.IsNullOrEmpty (value))
-					ProcessEventName (type, value);
-			}
+		protected virtual void ProcessEvent (TypeDefinition type, XPathNodeIterator iterator)
+		{
+			string value = GetSignature (iterator.Current);
+			if (!String.IsNullOrEmpty (value))
+				ProcessEventSignature (type, value);
+
+			value = GetAttribute (iterator.Current, "name");
+			if (!String.IsNullOrEmpty (value))
+				ProcessEventName (type, value);
 		}
 
 		void ProcessEventSignature (TypeDefinition type, string signature)
@@ -520,15 +523,19 @@ namespace Mono.Linker.Steps {
 
 		void ProcessProperties (TypeDefinition type, XPathNodeIterator iterator)
 		{
-			while (iterator.MoveNext ()) {
-				string value = GetSignature (iterator.Current);
-				if (!String.IsNullOrEmpty (value))
-					ProcessPropertySignature (type, value, GetAccessors (iterator.Current));
+			while (iterator.MoveNext ())
+				ProcessProperty (type, iterator);
+		}
 
-				value = GetAttribute (iterator.Current, "name");
-				if (!String.IsNullOrEmpty (value))
-					ProcessPropertyName (type, value, _accessorsAll);
-			}
+		protected virtual void ProcessProperty (TypeDefinition type, XPathNodeIterator iterator)
+		{
+			string value = GetSignature (iterator.Current);
+			if (!String.IsNullOrEmpty (value))
+				ProcessPropertySignature (type, value, GetAccessors (iterator.Current));
+
+			value = GetAttribute (iterator.Current, "name");
+			if (!String.IsNullOrEmpty (value))
+				ProcessPropertyName (type, value, _accessorsAll);
 		}
 
 		void ProcessPropertySignature (TypeDefinition type, string signature, string[] accessors)

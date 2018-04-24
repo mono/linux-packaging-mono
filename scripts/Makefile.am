@@ -37,6 +37,7 @@ bin_SCRIPTS = \
 	peverify		\
 	mcs			\
 	csc			\
+	csc-dim		\
 	vbc			\
 	csi			\
 	mono-package-runtime	\
@@ -82,6 +83,7 @@ scripts_4_0 = \
 	crlupdate$(SCRIPT_SUFFIX)		\
 	csharp$(SCRIPT_SUFFIX)			\
 	httpcfg$(SCRIPT_SUFFIX)			\
+	illinkanalyzer$(SCRIPT_SUFFIX)		\
 	lc$(SCRIPT_SUFFIX)			\
 	mconfig$(SCRIPT_SUFFIX)			\
 	mod$(SCRIPT_SUFFIX)			\
@@ -159,6 +161,7 @@ EXTRA_DIST =			\
 	update_submodules.sh	\
 	mcs.in				\
 	csc.in				\
+	csc-dim.in				\
 	vbc.in				\
 	dmcs.in				\
 	csi.in			\
@@ -208,6 +211,10 @@ mcs: mcs.in Makefile
 
 csc: csc.in Makefile
 	$(REWRITE_COMMON) $(srcdir)/csc.in > $@.tmp
+	mv -f $@.tmp $@
+
+csc-dim: csc-dim.in Makefile
+	$(REWRITE_COMMON) $(srcdir)/csc-dim.in > $@.tmp
 	mv -f $@.tmp $@
 
 vbc: vbc.in Makefile

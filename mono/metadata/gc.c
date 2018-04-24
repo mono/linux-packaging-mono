@@ -92,6 +92,7 @@ static void object_register_finalizer (MonoObject *obj, void (*callback)(void *,
 static void reference_queue_proccess_all (void);
 static void mono_reference_queue_cleanup (void);
 static void reference_queue_clear_for_domain (MonoDomain *domain);
+static void mono_runtime_do_background_work (void);
 
 
 static MonoThreadInfoWaitRet
@@ -167,7 +168,7 @@ coop_cond_timedwait_alertable (MonoCoopCond *cond, MonoCoopMutex *mutex, guint32
 void
 mono_gc_run_finalize (void *obj, void *data)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoObject *exc = NULL;
 	MonoObject *o;
 #ifndef HAVE_SGEN_GC
@@ -176,7 +177,6 @@ mono_gc_run_finalize (void *obj, void *data)
 	MonoMethod* finalizer = NULL;
 	MonoDomain *caller_domain = mono_domain_get ();
 	MonoDomain *domain;
-	RuntimeInvokeFunction runtime_invoke;
 
 	// This function is called from the innards of the GC, so our best alternative for now is to do polling here
 	mono_threads_safepoint ();
@@ -287,17 +287,19 @@ mono_gc_run_finalize (void *obj, void *data)
 	if (log_finalizers)
 		g_log ("mono-gc-finalizers", G_LOG_LEVEL_MESSAGE, "<%s at %p> Compiling finalizer.", o->vtable->klass->name, o);
 
+#ifndef HOST_WASM
 	if (!domain->finalize_runtime_invoke) {
 		MonoMethod *invoke = mono_marshal_get_runtime_invoke (mono_class_get_method_from_name_flags (mono_defaults.object_class, "Finalize", 0, 0), TRUE);
 
-		domain->finalize_runtime_invoke = mono_compile_method_checked (invoke, &error);
-		mono_error_assert_ok (&error); /* expect this not to fail */
+		domain->finalize_runtime_invoke = mono_compile_method_checked (invoke, error);
+		mono_error_assert_ok (error); /* expect this not to fail */
 	}
 
-	runtime_invoke = (RuntimeInvokeFunction)domain->finalize_runtime_invoke;
+	RuntimeInvokeFunction runtime_invoke = (RuntimeInvokeFunction)domain->finalize_runtime_invoke;
+#endif
 
-	mono_runtime_class_init_full (o->vtable, &error);
-	goto_if_nok (&error, unhandled_error);
+	mono_runtime_class_init_full (o->vtable, error);
+	goto_if_nok (error, unhandled_error);
 
 	if (G_UNLIKELY (MONO_GC_FINALIZE_INVOKE_ENABLED ())) {
 		MONO_GC_FINALIZE_INVOKE ((unsigned long)o, mono_object_get_size (o),
@@ -309,7 +311,12 @@ mono_gc_run_finalize (void *obj, void *data)
 
 	MONO_PROFILER_RAISE (gc_finalizing_object, (o));
 
+#ifdef HOST_WASM
+	gpointer params[] = { NULL };
+	mono_runtime_try_invoke (finalizer, o, params, &exc, error);
+#else
 	runtime_invoke (o, NULL, &exc, NULL);
+#endif
 
 	MONO_PROFILER_RAISE (gc_finalized_object, (o));
 
@@ -317,8 +324,8 @@ mono_gc_run_finalize (void *obj, void *data)
 		g_log ("mono-gc-finalizers", G_LOG_LEVEL_MESSAGE, "<%s at %p> Returned from finalizer.", o->vtable->klass->name, o);
 
 unhandled_error:
-	if (!is_ok (&error))
-		exc = (MonoObject*)mono_error_convert_to_exception (&error);
+	if (!is_ok (error))
+		exc = (MonoObject*)mono_error_convert_to_exception (error);
 	if (exc)
 		mono_thread_internal_unhandled_exception (exc);
 
@@ -708,7 +715,11 @@ mono_gc_finalize_notify (void)
 	if (mono_gc_is_null ())
 		return;
 
+#ifdef HOST_WASM
+	mono_threads_schedule_background_job (mono_runtime_do_background_work);
+#else
 	mono_coop_sem_post (&finalizer_sem);
+#endif
 }
 
 /*
@@ -825,16 +836,46 @@ finalize_domain_objects (void)
 	}
 }
 
+
+static void
+mono_runtime_do_background_work (void)
+{
+	mono_threads_perform_thread_dump ();
+
+	mono_console_handle_async_ops ();
+
+	mono_attach_maybe_start ();
+
+	finalize_domain_objects ();
+
+	MONO_PROFILER_RAISE (gc_finalizing, ());
+
+	/* If finished == TRUE, mono_gc_cleanup has been called (from mono_runtime_cleanup),
+	 * before the domain is unloaded.
+	 */
+	mono_gc_invoke_finalizers ();
+
+	MONO_PROFILER_RAISE (gc_finalized, ());
+
+	mono_threads_join_threads ();
+
+	reference_queue_proccess_all ();
+
+	mono_w32process_signal_finished ();
+
+	hazard_free_queue_pump ();
+}
+
 static gsize WINAPI
 finalizer_thread (gpointer unused)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	gboolean wait = TRUE;
 
-	MonoString *finalizer = mono_string_new_checked (mono_get_root_domain (), "Finalizer", &error);
-	mono_error_assert_ok (&error);
-	mono_thread_set_name_internal (mono_thread_internal_current (), finalizer, FALSE, FALSE, &error);
-	mono_error_assert_ok (&error);
+	MonoString *finalizer = mono_string_new_checked (mono_get_root_domain (), "Finalizer", error);
+	mono_error_assert_ok (error);
+	mono_thread_set_name_internal (mono_thread_internal_current (), finalizer, FALSE, FALSE, error);
+	mono_error_assert_ok (error);
 
 	/* Register a hazard free queue pump callback */
 	mono_hazard_pointer_install_free_queue_size_callback (hazard_free_queue_is_too_big);
@@ -855,30 +896,7 @@ finalizer_thread (gpointer unused)
 
 		mono_gc_set_skip_thread (FALSE);
 
-		mono_threads_perform_thread_dump ();
-
-		mono_console_handle_async_ops ();
-
-		mono_attach_maybe_start ();
-
-		finalize_domain_objects ();
-
-		MONO_PROFILER_RAISE (gc_finalizing, ());
-
-		/* If finished == TRUE, mono_gc_cleanup has been called (from mono_runtime_cleanup),
-		 * before the domain is unloaded.
-		 */
-		mono_gc_invoke_finalizers ();
-
-		MONO_PROFILER_RAISE (gc_finalized, ());
-
-		mono_threads_join_threads ();
-
-		reference_queue_proccess_all ();
-
-		mono_w32process_signal_finished ();
-
-		hazard_free_queue_pump ();
+		mono_runtime_do_background_work ();
 
 		/* Avoid posting the pending done event until there are pending finalizers */
 		if (mono_coop_sem_timedwait (&finalizer_sem, 0, MONO_SEM_FLAGS_NONE) == MONO_SEM_TIMEDWAIT_RET_SUCCESS) {
@@ -910,9 +928,9 @@ static
 void
 mono_gc_init_finalizer_thread (void)
 {
-	MonoError error;
-	gc_thread = mono_thread_create_internal (mono_domain_get (), finalizer_thread, NULL, MONO_THREAD_CREATE_FLAGS_NONE, &error);
-	mono_error_assert_ok (&error);
+	ERROR_DECL (error);
+	gc_thread = mono_thread_create_internal (mono_domain_get (), finalizer_thread, NULL, MONO_THREAD_CREATE_FLAGS_NONE, error);
+	mono_error_assert_ok (error);
 }
 
 void

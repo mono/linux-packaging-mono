@@ -10,7 +10,7 @@ namespace System.Buffers
     /// <summary>
     /// A handle for the memory.
     /// </summary>
-    unsafe struct MemoryHandle : IDisposable
+    public unsafe struct MemoryHandle : IDisposable
     {
         private IRetainable _retainable;
         private void* _pointer;

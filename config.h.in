@@ -146,6 +146,9 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
+/* Some VES is available at runtime */
+#undef ENABLE_ILGEN
+
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
@@ -218,6 +221,12 @@
 
 /* Use classic Windows API support */
 #undef HAVE_CLASSIC_WINAPI_SUPPORT
+
+/* CLOCK_MONOTONIC */
+#undef HAVE_CLOCK_MONOTONIC
+
+/* CLOCK_MONOTONIC_COARSE */
+#undef HAVE_CLOCK_MONOTONIC_COARSE
 
 /* Define to 1 if you have the `clock_nanosleep' function. */
 #undef HAVE_CLOCK_NANOSLEEP
@@ -383,6 +392,9 @@
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
 
+/* gethrtime */
+#undef HAVE_GETHRTIME
+
 /* Have getifaddrs */
 #undef HAVE_GETIFADDRS
 
@@ -533,6 +545,9 @@
 /* Define to 1 if you have the <machine/endian.h> header file. */
 #undef HAVE_MACHINE_ENDIAN_H
 
+/* mach_absolute_time */
+#undef HAVE_MACH_ABSOLUTE_TIME
+
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
 
@@ -656,6 +671,9 @@
 
 /* Define to 1 if you have the `readv' function. */
 #undef HAVE_READV
+
+/* read_real_time */
+#undef HAVE_READ_REAL_TIME
 
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
@@ -842,6 +860,9 @@
 
 /* Define to 1 if `st_atim' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_ATIM
+
+/* Define to 1 if `st_atimespec' is a member of `struct stat'. */
+#undef HAVE_STRUCT_STAT_ST_ATIMESPEC
 
 /* Define to 1 if `st_ctim' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_CTIM
@@ -1047,6 +1068,9 @@
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
+/* Define to 1 if you have the `vsyslog' function. */
+#undef HAVE_VSYSLOG
+
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H
 
@@ -1145,6 +1169,15 @@
 
 /* Disable banned functions from being used by the runtime */
 #undef MONO_INSIDE_RUNTIME
+
+/* Make jemalloc assert for mono */
+#undef MONO_JEMALLOC_ASSERT
+
+/* Make jemalloc default for mono */
+#undef MONO_JEMALLOC_DEFAULT
+
+/* Enable jemalloc usage for mono */
+#undef MONO_JEMALLOC_ENABLED
 
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED

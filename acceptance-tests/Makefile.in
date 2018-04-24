@@ -91,14 +91,14 @@ DIST_COMMON = $(srcdir)/versions.mk \
 	$(top_srcdir)/mkinstalldirs
 subdir = acceptance-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -210,6 +210,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
+JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
+JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
+JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
+JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -238,6 +242,9 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
+MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
+MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -2562,7 +2569,6 @@ CORECLR_COREMANGLIB_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcgettotalmemory.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gckeepalive.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcmaxgeneration.cs	\
-	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcsuppressfinalize.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcwaitforpendingfinalizers.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/globalization/calendarweekrule/calendarweekrulefirstday.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/globalization/calendarweekrule/calendarweekrulefirstfourdayweek.cs	\
@@ -4106,6 +4112,8 @@ CORECLR_TESTLIBRARY_CS_SRC = \
 
 # Depends on small array behavior of .net. Mono supports objects > 2Gb on 64bits and the following tests verify for that
 
+# https://github.com/mono/mono/issues/7432
+
 # FIXME: these tests are baselined, i.e. we don't have time to investigate
 # them right now but want to make sure we don't introduce new regressions
 # in the rest of the tests
@@ -4308,6 +4316,7 @@ CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/poly
 	$(CORECLR_PATH)/tests/src/JIT/Directed/lifetime/lifetime2.cs \
 	$(CORECLR_PATH)/tests/src/JIT/Directed/newarr/newarr.cs \
 	$(CORECLR_PATH)/tests/src/baseservices/exceptions/sharedexceptions/emptystacktrace/oomexception01.cs \
+	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/gc/gcsuppressfinalize.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/eventhandler_generic/eventhandlerbegininvoke.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/action/actioninvoke.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/comparison/comparisonendinvoke.cs \

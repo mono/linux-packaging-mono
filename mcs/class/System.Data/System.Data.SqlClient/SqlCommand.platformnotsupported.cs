@@ -196,9 +196,6 @@ namespace System.Data.SqlClient
 		internal void OnReturnStatus(int status)
 			=> throw new PlatformNotSupportedException (EXCEPTION_MESSAGE);
 
-		internal void OnReturnValue(SqlReturnValue rec)
-			=> throw new PlatformNotSupportedException (EXCEPTION_MESSAGE);
-
 		internal void OnReturnValue(SqlReturnValue rec, TdsParserStateObject stateObj)
 			=> throw new PlatformNotSupportedException (EXCEPTION_MESSAGE);
 

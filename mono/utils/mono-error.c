@@ -162,15 +162,6 @@ mono_error_ok (MonoError *error)
 	return error->error_code == MONO_ERROR_NONE;
 }
 
-void
-mono_error_assert_ok_pos (MonoError *error, const char* filename, int lineno)
-{
-	if (mono_error_ok (error))
-		return;
-
-	g_error ("%s:%d: %s\n", filename, lineno, mono_error_get_message (error));
-}
-
 unsigned short
 mono_error_get_error_code (MonoError *error)
 {
@@ -593,7 +584,7 @@ mono_error_set_not_verifiable (MonoError *oerror, MonoMethod *method, const char
 static MonoString*
 string_new_cleanup (MonoDomain *domain, const char *text)
 {
-	MonoError ignored_err;
+	ERROR_DECL_VALUE (ignored_err);
 	MonoString *result = mono_string_new_checked (domain, text, &ignored_err);
 	mono_error_cleanup (&ignored_err);
 	return result;
@@ -831,7 +822,7 @@ The error object is cleant after.
 MonoException*
 mono_error_convert_to_exception (MonoError *target_error)
 {
-	MonoError error;
+	ERROR_DECL (error);
 	MonoException *ex;
 
 	/* Mempool stored error shouldn't be cleaned up */
@@ -840,14 +831,14 @@ mono_error_convert_to_exception (MonoError *target_error)
 	if (mono_error_ok (target_error))
 		return NULL;
 
-	ex = mono_error_prepare_exception (target_error, &error);
-	if (!mono_error_ok (&error)) {
-		MonoError second_chance;
+	ex = mono_error_prepare_exception (target_error, error);
+	if (!mono_error_ok (error)) {
+		ERROR_DECL_VALUE (second_chance);
 		/*Try to produce the exception for the second error. FIXME maybe we should log about the original one*/
-		ex = mono_error_prepare_exception (&error, &second_chance);
+		ex = mono_error_prepare_exception (error, &second_chance);
 
 		g_assert (mono_error_ok (&second_chance)); /*We can't reasonable handle double faults, maybe later.*/
-		mono_error_cleanup (&error);
+		mono_error_cleanup (error);
 	}
 	mono_error_cleanup (target_error);
 	return ex;
