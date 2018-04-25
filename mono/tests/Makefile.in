@@ -929,7 +929,7 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception6.cs exception7.cs exception8.cs exception10.cs \
 	exception11.cs exception12.cs exception13.cs exception14.cs \
 	exception15.cs exception16.cs exception17.cs exception18.cs \
-	exception19.cs typeload-unaligned.cs struct.cs \
+	exception19.cs exception20.cs typeload-unaligned.cs struct.cs \
 	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
 	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
 	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
