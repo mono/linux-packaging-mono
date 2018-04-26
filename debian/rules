@@ -86,6 +86,10 @@ ifneq (,$(wildcard /usr/lib/gcc-mozilla/bin/gcc))
         GCC := CC=/usr/lib/gcc-mozilla/bin/gcc CXX=/usr/lib/gcc-mozilla/bin/g++
 endif
 
+ifneq (,$(wildcard /usr/bin/clang))
+        GCC := CC=/usr/bin/clang CXX=/usr/bin/clang++
+endif
+
 ifdef LLVM_ARCH
 	CONF_FLAGS += --enable-loadedllvm
 endif
