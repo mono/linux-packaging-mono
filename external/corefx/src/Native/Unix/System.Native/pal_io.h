@@ -329,6 +329,11 @@ enum NotifyEvents
     PAL_IN_ISDIR = 0x40000000,
 };
 
+
+int32_t SystemNative_Stat2(const char* path, struct FileStatus* output);
+int32_t SystemNative_FStat2(intptr_t fd, struct FileStatus* output);
+int32_t SystemNative_LStat2(const char* path, struct FileStatus* output);
+
 /**
  * Get file status from a descriptor. Implemented as shim to fstat(2).
  *

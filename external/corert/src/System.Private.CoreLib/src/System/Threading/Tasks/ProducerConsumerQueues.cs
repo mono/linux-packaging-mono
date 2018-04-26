@@ -26,6 +26,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 
 namespace System.Threading.Tasks
@@ -64,7 +65,13 @@ namespace System.Threading.Tasks
     /// </summary>
     /// <typeparam name="T">Specifies the type of data contained in the queue.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
-    internal sealed class MultiProducerMultiConsumerQueue<T> : LowLevelConcurrentQueue<T>, IProducerConsumerQueue<T>
+    internal sealed class MultiProducerMultiConsumerQueue<T> : 
+#if MONO
+        ConcurrentQueue<T>, 
+#else
+        LowLevelConcurrentQueue<T>, 
+#endif
+        IProducerConsumerQueue<T>
     {
         /// <summary>Enqueues an item into the queue.</summary>
         /// <param name="item">The item to enqueue.</param>

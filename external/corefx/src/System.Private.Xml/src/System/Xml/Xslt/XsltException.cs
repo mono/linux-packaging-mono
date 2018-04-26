@@ -147,10 +147,9 @@ namespace System.Xml.Xsl
     }
 
     [Serializable]
-<<<<<<< HEAD
-=======
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
->>>>>>> upstream/master
+#endif
     public class XsltCompileException : XsltException
     {
         protected XsltCompileException(SerializationInfo info, StreamingContext context) : base(info, context)

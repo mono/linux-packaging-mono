@@ -3633,7 +3633,6 @@ namespace System
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Memory<T>
     {
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(System.Buffers.MemoryManager<T> manager, int start, int length) { throw null;}
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array) { throw null;}
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array, int start, int length) { throw null;}
         public static System.Memory<T> Empty { get { throw null; } }
@@ -3641,7 +3640,6 @@ namespace System
         public int Length { get { throw null; } }
         public System.Span<T> Span { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public void CopyTo(System.Memory<T> destination) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Memory<T> CreateFromPinnedArray(T[] array, int start, int length) { throw null; }
         public bool Equals(System.Memory<T> other) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -4060,6 +4058,7 @@ namespace System
         public System.ReadOnlySpan<T>.Enumerator GetEnumerator() { throw null; }
         [System.ObsoleteAttribute("GetHashCode() on ReadOnlySpan will always throw an exception.")]
         public override int GetHashCode() { throw null; }
+        public [System.Runtime.CompilerServices.IsReadOnlyAttribute]ref T GetPinnableReference() { throw null; }
         public static bool operator ==(System.ReadOnlySpan<T> left, System.ReadOnlySpan<T> right) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (T[] array) { throw null; }
@@ -4290,6 +4289,7 @@ namespace System
         public System.Span<T>.Enumerator GetEnumerator() { throw null; }
         [System.ObsoleteAttribute("GetHashCode() on Span will always throw an exception.")]
         public override int GetHashCode() { throw null; }
+        public ref T GetPinnableReference() { throw null; }
         public static bool operator ==(System.Span<T> left, System.Span<T> right) { throw null; }
         public static implicit operator System.Span<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (System.Span<T> span) { throw null; }
@@ -5838,8 +5838,9 @@ namespace System.Buffers
     public abstract partial class MemoryManager<T> : System.Buffers.IMemoryOwner<T>, System.Buffers.IPinnable, System.IDisposable
     {
         protected MemoryManager() { }
-        public virtual int Length { get { throw null; } }
         public virtual System.Memory<T> Memory { get { throw null; } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]protected System.Memory<T> CreateMemory(int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]protected System.Memory<T> CreateMemory(int start, int length) { throw null; }
         protected abstract void Dispose(bool disposing);
         public abstract System.Span<T> GetSpan();
         public abstract System.Buffers.MemoryHandle Pin(int elementIndex=0);
@@ -15188,6 +15189,7 @@ namespace System.Runtime.InteropServices
         public static System.Memory<T> AsMemory<T>(System.ReadOnlyMemory<T> memory) { throw null; }
         public static System.ReadOnlySpan<TTo> Cast<TFrom, TTo>(System.ReadOnlySpan<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
         public static System.Span<TTo> Cast<TFrom, TTo>(System.Span<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Memory<T> CreateFromPinnedArray<T>(T[] array, int start, int length) { throw null; }
         public static ref T GetReference<T>(System.ReadOnlySpan<T> span) { throw null; }
         public static ref T GetReference<T>(System.Span<T> span) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static T Read<T>(System.ReadOnlySpan<byte> source) where T : struct { throw null; }
@@ -25594,7 +25596,6 @@ namespace System.Threading.Tasks
 {
     [System.Diagnostics.DebuggerDisplayAttribute("Concurrent={ConcurrentTaskCountForDebugger}, Exclusive={ExclusiveTaskCountForDebugger}, Mode={ModeForDebugger}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Threading.Tasks.ConcurrentExclusiveSchedulerPair.DebugView")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public partial class ConcurrentExclusiveSchedulerPair
     {
         public ConcurrentExclusiveSchedulerPair() { }
