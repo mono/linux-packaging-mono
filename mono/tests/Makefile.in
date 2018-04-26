@@ -194,7 +194,8 @@ target_triplet = @target@
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
 
 @X86_TRUE@am__append_18 = tailcall-interface-conservestack.exe \
-@X86_TRUE@	tailcall/2.exe tailcall/3.exe tailcall/4.exe
+@X86_TRUE@	tailcall/2.exe tailcall/3.exe tailcall/4.exe \
+@X86_TRUE@	tailcall/8273.exe
 
 # bug #71274
 @POWERPC_TRUE@am__append_19 = finalizer-abort.exe \
@@ -202,7 +203,8 @@ target_triplet = @target@
 @POWERPC_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @POWERPC_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @POWERPC_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
-@POWERPC_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
+@POWERPC_TRUE@	tailcall/4.exe tailcall/8273.exe \
+@POWERPC_TRUE@	tailcall/fsharp-deeptail.exe \
 @POWERPC_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 
 # FIXME: These tests hang/fail for unknown reasons
@@ -223,7 +225,7 @@ target_triplet = @target@
 @POWERPC64_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @POWERPC64_TRUE@	tailcall-virt.exe tailcall/2.exe \
 @POWERPC64_TRUE@	tailcall/3.exe tailcall/4.exe \
-@POWERPC64_TRUE@	tailcall/fsharp-deeptail.exe \
+@POWERPC64_TRUE@	tailcall/8273.exe tailcall/fsharp-deeptail.exe \
 @POWERPC64_TRUE@	tailcall-interface-conservestack.exe \
 @POWERPC64_TRUE@	ivtail1.exe appdomain-threadpool-unload.exe \
 @POWERPC64_TRUE@	bug-60848.exe \
@@ -234,7 +236,8 @@ target_triplet = @target@
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @ARM_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
-@ARM_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
+@ARM_TRUE@	tailcall/4.exe tailcall/8273.exe \
+@ARM_TRUE@	tailcall/fsharp-deeptail.exe \
 @ARM_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval.exe \
 @ARM_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/gcval_sideeffect.exe \
@@ -262,7 +265,8 @@ target_triplet = @target@
 @MIPS_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @MIPS_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @MIPS_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
-@MIPS_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
+@MIPS_TRUE@	tailcall/4.exe tailcall/8273.exe \
+@MIPS_TRUE@	tailcall/fsharp-deeptail.exe \
 @MIPS_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
 @S390X_TRUE@am__append_24 = dynamic-method-resurrection.exe \
@@ -272,7 +276,8 @@ target_triplet = @target@
 @S390X_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @S390X_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @S390X_TRUE@	tailcall-virt.exe tailcall/2.exe tailcall/3.exe \
-@S390X_TRUE@	tailcall/4.exe tailcall/fsharp-deeptail.exe \
+@S390X_TRUE@	tailcall/4.exe tailcall/8273.exe \
+@S390X_TRUE@	tailcall/fsharp-deeptail.exe \
 @S390X_TRUE@	tailcall-interface-conservestack.exe ivtail1.exe
 
 # Tests which rely on TypeLoadExceptions or MemberAccessExceptions
@@ -301,6 +306,8 @@ target_triplet = @target@
 # can't AOT the TestingReferenceAssembly.dll which is a dependency
 # of reference-loader.exe because it contains the [ReferenceAssemblyAttribute]
 # and the runtime errors out with "File does not contain a valid CIL image."
+
+# Tests which have no way of finding AOT images because they use Assembly.Load(byte[])
 
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
@@ -371,8 +378,11 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.exe bug-80307.exe \
 @FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
-@FULL_AOT_TESTS_TRUE@	reference-loader.exe constraints-load.exe \
-@FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
+@FULL_AOT_TESTS_TRUE@	reference-loader.exe \
+@FULL_AOT_TESTS_TRUE@	assembly-load-bytes.exe \
+@FULL_AOT_TESTS_TRUE@	assembly-load-bytes-bindingredirect.exe \
+@FULL_AOT_TESTS_TRUE@	constraints-load.exe bug-515884.exe \
+@FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
@@ -919,22 +929,25 @@ TESTS_STRESS_SRC = \
 #	bug-331958.cs
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-2907.cs array-init.cs arraylist.cs assembly-load-remap.cs \
-	assemblyresolve_event.cs assemblyresolve_event3.cs \
-	assemblyresolve_event4.cs assemblyresolve_event5.cs \
-	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
-	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
-	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
-	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
-	exception2.cs exception3.cs exception4.cs exception5.cs \
-	exception6.cs exception7.cs exception8.cs exception10.cs \
-	exception11.cs exception12.cs exception13.cs exception14.cs \
-	exception15.cs exception16.cs exception17.cs exception18.cs \
-	exception19.cs exception20.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assembly-load-bytes.cs assembly-loadfile.cs \
+	assembly-loadfrom.cs assembly-load-bytes-bindingredirect.cs \
+	assembly-loadfile-bindingredirect.cs \
+	assembly-loadfrom-bindingredirect.cs assemblyresolve_event.cs \
+	assemblyresolve_event3.cs assemblyresolve_event4.cs \
+	assemblyresolve_event5.cs assemblyresolve_event6.cs checked.cs \
+	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
+	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
+	stringbuilder.cs switch.cs outparm.cs delegate.cs \
+	bitconverter.cs exception.cs exception2.cs exception3.cs \
+	exception4.cs exception5.cs exception6.cs exception7.cs \
+	exception8.cs exception10.cs exception11.cs exception12.cs \
+	exception13.cs exception14.cs exception15.cs exception16.cs \
+	exception17.cs exception18.cs exception19.cs exception20.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1227,7 +1240,6 @@ PLATFORM_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_12) \
 PROFILE_DISABLED_TESTS = tailcall-rgctxb.exe $(am__append_25) \
 	$(am__append_26)
 
-# tailcall/fsharp AOT hangs
 # tailcall/fsharp FullAOT stack overflow in CI but not locally.
 AOT_DISABLED_TESTS = constraints-load.exe tailcall/fsharp-deeptail.exe
 CI_DISABLED_TESTS = \
@@ -1306,8 +1318,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall-interface-conservestack.exe tailcall-mrgctx.exe \
 	tailcall-rgctxa.exe tailcall-rgctxb.exe tailcall-virt.exe \
 	tailcall/fsharp-deeptail.exe tailcall/2.exe tailcall/3.exe \
-	tailcall/4.exe bug-60843.exe $(am__append_27) $(am__append_28) \
-	$(am__append_29)
+	tailcall/4.exe tailcall/8273.exe bug-60843.exe \
+	$(am__append_27) $(am__append_28) $(am__append_29)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1368,6 +1380,12 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	generic-delegate2-lib.2.il \
 	appdomain-marshalbyref-assemblyload-MidAssembly.cs \
 	appdomain-marshalbyref-assemblyload-LeafAssembly.cs \
+	assembly-load-dir1/Lib.cs assembly-load-dir2/Lib.cs \
+	assembly-load-dir1/LibStrongName.cs \
+	assembly-load-dir2/LibStrongName.cs \
+	assembly-loadfrom-bindingredirect.exe.config \
+	assembly-loadfile-bindingredirect.exe.config \
+	assembly-load-bytes-bindingredirect.exe.config \
 	async-exceptions.cs modules.cs modules-m1.cs \
 	threadpool-in-processexit.cs \
 	threadpool-in-processexit.exe.stdout.expected \
@@ -2640,6 +2658,33 @@ MidAssembly.dll: appdomain-marshalbyref-assemblyload-MidAssembly.cs LeafAssembly
 
 appdomain-marshalbyref-assemblyload.exe: appdomain-marshalbyref-assemblyload.cs MidAssembly.dll LeafAssembly.dll appdomain-marshalbyref-assemblyload2/LeafAssembly.dll
 	$(MCS) -out:$@ $< -r:MidAssembly.dll -r:LeafAssembly.dll
+
+assembly-load-dir1/Lib.dll: assembly-load-dir1/Lib.cs
+	$(MCS) -target:library -out:$@ $<
+assembly-load-dir2/Lib.dll: assembly-load-dir2/Lib.cs
+	$(MCS) -target:library -out:$@ $<
+
+assembly-load-dir1/LibStrongName.dll: assembly-load-dir1/LibStrongName.cs testing_gac/testkey.snk
+	$(MCS) -target:library -out:$@ $<
+
+assembly-load-dir2/LibStrongName.dll: assembly-load-dir2/LibStrongName.cs testing_gac/testkey.snk
+	$(MCS) -target:library -out:$@ $<
+
+assembly-load-bytes.exe: assembly-load-dir1/Lib.dll assembly-load-dir2/Lib.dll
+
+assembly-loadfrom.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/Lib.dll$(PLATFORM_AOT_SUFFIX) assembly-load-dir2/Lib.dll$(PLATFORM_AOT_SUFFIX)
+assembly-loadfrom.exe: assembly-load-dir1/Lib.dll assembly-load-dir2/Lib.dll
+
+assembly-loadfile.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/Lib.dll$(PLATFORM_AOT_SUFFIX) assembly-load-dir2/Lib.dll$(PLATFORM_AOT_SUFFIX)
+assembly-loadfile.exe: assembly-load-dir1/Lib.dll assembly-load-dir2/Lib.dll
+
+assembly-loadfrom-bindingredirect.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/LibStrongName.dll$(PLATFORM_AOT_SUFFIX) assembly-load-dir2/LibStrongName.dll$(PLATFORM_AOT_SUFFIX) assembly-loadfrom-bindingredirect.exe.config
+assembly-loadfrom-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-loadfrom-bindingredirect.exe.config
+
+assembly-loadfile-bindingredirect.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/LibStrongName.dll$(PLATFORM_AOT_SUFFIX) assembly-load-dir2/LibStrongName.dll$(PLATFORM_AOT_SUFFIX) assembly-loadfile-bindingredirect.exe.config
+assembly-loadfile-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-loadfile-bindingredirect.exe.config
+
+assembly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-load-bytes-bindingredirect.exe.config
 
 gshared:
 	$(MAKE) test-generic-sharing

@@ -271,7 +271,8 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 @SHARED_MONO_TRUE@am_libmini_la_rpath =
-@BITCODE_TRUE@libmono_dbg_la_DEPENDENCIES = libmonosgen-2.0.la
+@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_DEPENDENCIES =  \
+@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -281,7 +282,8 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_DEBUGGER_AGENT_FALSE@am_libmono_dbg_la_rpath =
 @DISABLE_DEBUGGER_AGENT_TRUE@am_libmono_dbg_la_rpath = -rpath \
 @DISABLE_DEBUGGER_AGENT_TRUE@	$(libdir)
-@BITCODE_TRUE@libmono_ee_interp_la_DEPENDENCIES = libmonosgen-2.0.la
+@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
+@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_18 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
@@ -1133,10 +1135,10 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 libmono_ee_interp_la_SOURCES = $(interp_sources)
 libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
 libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
+@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
 libmono_dbg_la_SOURCES = debugger-agent.c
 libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
-@BITCODE_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
+@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
 dbg_libs = libmono-dbg.la
 @DISABLE_DEBUGGER_AGENT_FALSE@dbg_libs_with_mini = $(dbg_libs)
 
