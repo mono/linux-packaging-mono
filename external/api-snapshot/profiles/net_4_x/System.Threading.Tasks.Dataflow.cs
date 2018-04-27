@@ -207,6 +207,7 @@ namespace System.Threading.Tasks.Dataflow
         public DataflowBlockOptions() { }
         public int BoundedCapacity { get { throw null; } set { } }
         public System.Threading.CancellationToken CancellationToken { get { throw null; } set { } }
+        public bool EnsureOrdered { get { throw null; } set { } }
         public int MaxMessagesPerTask { get { throw null; } set { } }
         public string NameFormat { get { throw null; } set { } }
         public System.Threading.Tasks.TaskScheduler TaskScheduler { get { throw null; } set { } }
@@ -220,6 +221,7 @@ namespace System.Threading.Tasks.Dataflow
         public bool PropagateCompletion { get { throw null; } set { } }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Id = {Id}")]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DataflowMessageHeader : System.IEquatable<System.Threading.Tasks.Dataflow.DataflowMessageHeader>
     {
