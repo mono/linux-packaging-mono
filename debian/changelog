@@ -1,3 +1,9 @@
+mono (5.15.0.301-0nightly3) nightly; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 30 Apr 2018 09:53:35 +0000
+
 mono (5.15.0.301-0nightly2) nightly; urgency=medium
 
   * Packaging bugfix:
