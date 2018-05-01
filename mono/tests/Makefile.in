@@ -79,6 +79,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
+	$(srcdir)/tests-config.in $(top_srcdir)/depcomp
 
 # FullAOT Assertion at method-to-ir.c:9203, condition `*ip == CEE_RET' not met
 # This should raise a bad image format exception.
@@ -471,9 +474,6 @@ target_triplet = @target@
 @AMD64_TRUE@	pinvoke3.exe
 
 subdir = mono/tests
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs $(srcdir)/tests-config.in \
-	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -836,6 +836,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 SUBDIRS = gc-descriptors . testing_gac
 
 # These are not actually tests, but they are source files part of another test.
@@ -1174,6 +1175,7 @@ TESTS_IL_SRC = \
 	dim-valuetypes.il \
 	tailcall-generic-cast-conservestack-il.il \
 	tailcall-generic-cast-nocrash-il.il \
+	ldfldvt.il \
 	newobj-abstract.il
 
 TESTS_GSHARED_SRC = \
@@ -1636,7 +1638,7 @@ all: all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -1657,6 +1659,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/mk/common.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

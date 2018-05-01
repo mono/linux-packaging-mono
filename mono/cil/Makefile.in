@@ -79,9 +79,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs TODO
 subdir = mono/cil
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs TODO
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -384,6 +384,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 defdir = $(includedir)/mono-$(API_VER)/mono/cil
 def_DATA = opcode.def
 xmldir = $(datadir)/mono-$(API_VER)/mono/cil
@@ -392,7 +393,7 @@ EXTRA_DIST = tables.def opcode.def make-opcodes-def.pl make-opcode-def.xsl $(xml
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -413,6 +414,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/mk/common.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -624,6 +626,7 @@ uninstall-am: uninstall-defDATA uninstall-xmlDATA
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
 	uninstall-am uninstall-defDATA uninstall-xmlDATA
+
 
 opcode.def: make-opcodes-def.pl cil-opcodes.xml
 	perl $(srcdir)/make-opcodes-def.pl $(srcdir)/cil-opcodes.xml $@.tmp
