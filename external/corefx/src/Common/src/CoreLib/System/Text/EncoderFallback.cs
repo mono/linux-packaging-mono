@@ -8,6 +8,9 @@ using System.Threading;
 
 namespace System.Text
 {
+#if MONO
+    [System.Serializable]
+#endif
     public abstract class EncoderFallback
     {
         private static EncoderFallback s_replacementFallback; // Default fallback, uses no best fit & "?"

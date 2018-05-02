@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     public sealed class EncoderExceptionFallback : EncoderFallback
     {
         // Construction

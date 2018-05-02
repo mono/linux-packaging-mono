@@ -4,6 +4,7 @@
 
 using System.Collections;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 
 namespace System.Runtime.Serialization
 {

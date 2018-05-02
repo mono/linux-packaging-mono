@@ -34,6 +34,9 @@ namespace System.Text
     // used mostly to distinguish UTF-8 text from other encodings, and doesn't
     // switch the byte orderings.
 
+#if MONO
+    [Serializable]
+#endif
     public class UTF8Encoding : Encoding
     {
         /*

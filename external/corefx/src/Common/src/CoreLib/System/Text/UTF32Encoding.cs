@@ -22,6 +22,9 @@ namespace System.Text
     // mark is used mostly to distinguish UTF-32 text from other encodings, and doesn't
     // switch the byte orderings.
 
+#if MONO
+    [Serializable]
+#endif
     public sealed class UTF32Encoding : Encoding
     {
         /*
