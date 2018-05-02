@@ -75,7 +75,6 @@ endif
 ifeq ($(DEB_HOST_ARCH), ppc64el)
 	CONF_FLAGS += --with-csc=mcs
 	BTLS_ARCH = true
-	LLVM_ARCH = true
 endif
 
 ifneq (,$(wildcard /usr/bin/gcc-4.7))
