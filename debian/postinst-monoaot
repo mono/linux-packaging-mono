@@ -3,5 +3,5 @@ then
 	MONOARCH=`mono --version | grep Architecture | sed 's/.*:  //' | sed 's/el,.*//'`
 	echo "Mono precompiling #FILE# for ${MONOARCH}..."
 	mkdir -p /usr/lib/mono/aot-cache/${MONOARCH}/
-	/usr/bin/mono --aot=outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
+	/usr/bin/mono --aot=try-llvm,outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
 fi
