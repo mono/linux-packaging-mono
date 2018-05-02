@@ -21,6 +21,9 @@ namespace System.Text
     // class are typically obtained through calls to the GetEncoder method
     // of Encoding objects.
     //
+#if MONO
+    [Serializable]
+#endif
     public abstract class Encoder
     {
         internal EncoderFallback _fallback = null;

@@ -13,6 +13,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     public class UTF7Encoding : Encoding
     {
         private const String base64Chars =

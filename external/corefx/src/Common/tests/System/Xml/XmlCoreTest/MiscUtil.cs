@@ -4,7 +4,9 @@
 
 using System;
 
+#if !MONO
 [assembly: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAssembly]
+#endif
 
 namespace XmlCoreTest.Common
 {

@@ -5,6 +5,11 @@
 using System.IO;
 using StringBuilder = System.Text.StringBuilder;
 
+#if MONO
+// remove it when StringBuilderCache moves back to System.IO
+using StringBuilderCache = System.Text.StringBuilderCache;
+#endif
+
 namespace System.Xml.Linq
 {
     /// <summary>

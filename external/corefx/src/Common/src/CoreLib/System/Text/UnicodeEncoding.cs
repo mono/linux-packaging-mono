@@ -14,6 +14,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     public class UnicodeEncoding : Encoding
     {
         // Used by Encoding.BigEndianUnicode/Unicode for lazy initialization
