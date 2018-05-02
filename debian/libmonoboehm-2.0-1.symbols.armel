@@ -1,3 +1,4 @@
 #include "libmonoboehm-2.0-1.symbols"
+#include "libmono-llvm.symbols"
  GC_allocate_lock@Base 4.1.0.1738
  mono_arch_get_llvm_call_info@Base 5.15.0.231
