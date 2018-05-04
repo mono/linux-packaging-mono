@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.332],
+AC_INIT(mono, [5.15.0.346],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -4652,6 +4652,7 @@ if test "x$enable_btls" = "xyes"; then
 		;;
 	aarch64)
 		btls_arch=aarch64
+		btls_cflags="-march=armv8-a+crypto"
 		;;
 	s390x)
 		btls_arch=s390x
