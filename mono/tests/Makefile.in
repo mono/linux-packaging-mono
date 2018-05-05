@@ -144,7 +144,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_3b.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_void.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall_v4/delegateParamCallTarget.exe \
-@FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/ETW/TailCallCases.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/FastTailCall/FastTailCallCandidates.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/FastTailCall/FastTailCallInlining.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/opt/FastTailCall/FastTailCallInlining.exe \
@@ -843,9 +842,11 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 SUBDIRS = gc-descriptors . testing_gac
 
 # These are not actually tests, but they are source files part of another test.
+
+# FIXME valuetype parameter.
 TAILCALL_DISABLED_TESTS_COMPILE = tailcall/coreclr/JIT/opt/Tailcall/TailcallVerifyTransparentLibraryWithPrefix.exe \
 	tailcall/coreclr/JIT/opt/Tailcall/TailcallVerifyVerifiableLibraryWithPrefix.exe \
-	$(am__append_1)
+	tailcall/coreclr/JIT/opt/ETW/TailCallCases.exe $(am__append_1)
 
 # FIXME Some of these sound like negative tests -- "badtailcall". Verify and automate.
 TAILCALL_DISABLED_TESTS_RUN =  \
@@ -1180,6 +1181,8 @@ TESTS_IL_SRC = \
 	tailcall-generic-cast-conservestack-il.il \
 	tailcall-generic-cast-nocrash-il.il \
 	tailcall-member-function-in-valuetype.il \
+	tailcall-return-valuetype.il \
+	tailcall-valuetype-parameter.il \
 	ldfldvt.il \
 	newobj-abstract.il
 
@@ -1325,9 +1328,10 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall-generic-cast-conservestack-il.exe \
 	tailcall-interface-conservestack.exe tailcall-mrgctx.exe \
 	tailcall-rgctxa.exe tailcall-rgctxb.exe tailcall-virt.exe \
-	tailcall/fsharp-deeptail.exe tailcall/2.exe tailcall/3.exe \
-	tailcall/4.exe tailcall/8273.exe bug-60843.exe \
-	$(am__append_28) $(am__append_29) $(am__append_30)
+	tailcall-return-valuetype.exe tailcall/fsharp-deeptail.exe \
+	tailcall/2.exe tailcall/3.exe tailcall/4.exe tailcall/8273.exe \
+	bug-60843.exe $(am__append_28) $(am__append_29) \
+	$(am__append_30)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
