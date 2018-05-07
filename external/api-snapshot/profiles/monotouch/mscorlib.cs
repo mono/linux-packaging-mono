@@ -20,9 +20,6 @@
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("monotouch, PublicKey=0024000004800000940000000602000000240000525341310004000011000000438ac2a5acfbf16cbd2b2b47a62762f273df9cb2795ceccdf77d10bf508e69e7a362ea7a45455bbf3ac955e1f2e2814f144e5d817efc4c6502cc012df310783348304e3ae38573c6d658c234025821fda87a0be8a0d504df564e2c93b2b878925f42503e9d54dfef9f9586d9e6f38a305769587b1de01f6c0410328b2c9733db")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System, PublicKey=00240000048000009400000006020000002400005253413100040000010001008D56C76F9E8649383049F383C44BE0EC204181822A6C31CF5EB7EF486944D032188EA1D3920763712CCB12D75FB77E9811149E6148E5D32FBAAB37611C1878DDC19E20EF135D0CB2CFF2BFEC3D115810C3D9069638FE4BE215DBF795861920E5AB6F7DB2E2CEEF136AC23D5DD2BF031700AEC232F6C6B1C785B4305C123B37AB")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Core, PublicKey=00240000048000009400000006020000002400005253413100040000010001008D56C76F9E8649383049F383C44BE0EC204181822A6C31CF5EB7EF486944D032188EA1D3920763712CCB12D75FB77E9811149E6148E5D32FBAAB37611C1878DDC19E20EF135D0CB2CFF2BFEC3D115810C3D9069638FE4BE215DBF795861920E5AB6F7DB2E2CEEF136AC23D5DD2BF031700AEC232F6C6B1C785B4305C123B37AB")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Data, PublicKey=00000000000000000400000000000000")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.IO.Compression.FileSystem, PublicKey=00000000000000000400000000000000")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Numerics, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime.UI.Xaml, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Xamarin.iOS, PublicKey=0024000004800000940000000602000000240000525341310004000011000000438ac2a5acfbf16cbd2b2b47a62762f273df9cb2795ceccdf77d10bf508e69e7a362ea7a45455bbf3ac955e1f2e2814f144e5d817efc4c6502cc012df310783348304e3ae38573c6d658c234025821fda87a0be8a0d504df564e2c93b2b878925f42503e9d54dfef9f9586d9e6f38a305769587b1de01f6c0410328b2c9733db")]
@@ -5788,6 +5785,15 @@ namespace System
 }
 namespace System.Buffers
 {
+    public abstract partial class ArrayPool<T>
+    {
+        protected ArrayPool() { }
+        public static System.Buffers.ArrayPool<T> Shared { get { throw null; } }
+        public static System.Buffers.ArrayPool<T> Create() { throw null; }
+        public static System.Buffers.ArrayPool<T> Create(int maxArrayLength, int maxArraysPerBucket) { throw null; }
+        public abstract T[] Rent(int minimumLength);
+        public abstract void Return(T[] array, bool clearArray=false);
+    }
     public partial interface IMemoryOwner<T> : System.IDisposable
     {
         System.Memory<T> Memory { get; }

@@ -19,9 +19,6 @@
 [assembly:System.Runtime.CompilerServices.DefaultDependencyAttribute((System.Runtime.CompilerServices.LoadHint)(1))]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Core, PublicKey=00000000000000000400000000000000")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Data, PublicKey=00000000000000000400000000000000")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.IO.Compression.FileSystem, PublicKey=00000000000000000400000000000000")]
-[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Numerics, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Runtime.WindowsRuntime.UI.Xaml, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
@@ -5850,6 +5847,15 @@ namespace System
 }
 namespace System.Buffers
 {
+    public abstract partial class ArrayPool<T>
+    {
+        protected ArrayPool() { }
+        public static System.Buffers.ArrayPool<T> Shared { get { throw null; } }
+        public static System.Buffers.ArrayPool<T> Create() { throw null; }
+        public static System.Buffers.ArrayPool<T> Create(int maxArrayLength, int maxArraysPerBucket) { throw null; }
+        public abstract T[] Rent(int minimumLength);
+        public abstract void Return(T[] array, bool clearArray=false);
+    }
     public partial interface IMemoryOwner<T> : System.IDisposable
     {
         System.Memory<T> Memory { get; }
