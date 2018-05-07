@@ -35,6 +35,9 @@ namespace System.Xml.Linq
     ///     <item><see cref="XProcessingInstruction"/></item>
     ///   </list>
     /// </remarks>
+#if MONO_HYBRID_SYSTEM_XML
+    [XmlTypeConvertor ("ConvertForAssignment")]
+#endif
     [XmlSchemaProvider(null, IsAny = true)]
     public class XElement : XContainer, IXmlSerializable
     {
@@ -1862,6 +1865,18 @@ namespace System.Xml.Linq
             if (element == null) return null;
             return XmlConvert.ToGuid(element.Value);
         }
+
+#if MONO_HYBRID_SYSTEM_XML
+        static object ConvertForAssignment (object value)
+        {
+            var node = value as XmlNode;
+            if (node == null)
+                return value;
+            var doc = new XmlDocument ();
+            doc.AppendChild (doc.ImportNode (node, true));
+            return XElement.Parse (doc.InnerXml);
+        }
+#endif
 
         /// <summary>
         /// This method is obsolete for the IXmlSerializable contract.
