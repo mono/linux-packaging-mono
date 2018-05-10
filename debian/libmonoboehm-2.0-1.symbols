@@ -1808,6 +1808,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_utf8_validate@Base 5.7.0.181
  monoeg_g_vasprintf@Base 5.7.0.181
  monoeg_g_win32_getlocale@Base 5.7.0.181
+ monoeg_get_assertion_message@Base 5.15.0.406
  monoeg_log_default_handler@Base 5.7.0.181
  monoeg_log_set_default_handler@Base 5.7.0.181
  monoeg_malloc0@Base 5.7.0.181
