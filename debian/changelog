@@ -1,3 +1,14 @@
+mono (5.14.0.78-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [e5db75f] Revert "Revert "Remove vanished suppression file""
+    [0841f56] BTLS everywhere, apparently
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 10 May 2018 14:04:52 +0000
+
 mono (5.14.0.78-0xamarin1) preview; urgency=medium
 
   * New release - mono-5.14.0.78.tar.bz2
