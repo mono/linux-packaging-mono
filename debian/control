@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 7),
 	procps,
 	bison,
 	libtool,
-	cmake (>= 2.8.10) [i386 amd64 armel armhf arm64 ppc64el],
+	cmake (>= 2.8.10),
 	gcc (>= 4:4.7) | gcc-4.7 | gcc-mozilla (>= 4.7),
 	g++ (>= 4:4.7) | g++-4.7 | gcc-mozilla (>= 4.7),
 	mono-llvm-dev [amd64 arm64 armhf i386 ppc64el],
@@ -1113,7 +1113,7 @@ Description: Mono System.Security library (for CLI 4.0)
  This package contains the Mono System.Security library for CLI 4.0.
 
 Package: libmono-btls-interface4.0-cil
-Architecture: i386 amd64 armel armhf arm64
+Architecture: any
 Depends: ${misc:Depends},
          ${cli:Depends}
 Description: Mono Mono.Btls.Interface library (for CLI 4.0)
