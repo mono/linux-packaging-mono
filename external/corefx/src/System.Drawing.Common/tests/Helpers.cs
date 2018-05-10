@@ -27,6 +27,9 @@ namespace System.Drawing
             }
             else
             {
+#if MONO
+                return true;
+#else
                 IntPtr nativeLib;
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
@@ -42,6 +45,7 @@ namespace System.Drawing
                 }
 
                 return nativeLib != IntPtr.Zero;
+#endif
             }
         }
 

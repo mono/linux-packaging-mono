@@ -87,8 +87,6 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -150,7 +148,7 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HOST_ANDROID_TRUE@	$(top_builddir)/mono/mini/$(LIBMONO_LA)
 am__DEPENDENCIES_2 =
 libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2)
 am_libmono_profiler_aot_la_OBJECTS = aot.lo
 libmono_profiler_aot_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_la_OBJECTS)
@@ -218,7 +216,7 @@ libmono_profiler_vtune_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_DEPENDENCIES =  \
 @HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2)
 am__libmono_profiler_vtune_la_SOURCES_DIST = vtune.c
 @HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_la_OBJECTS =  \
 @HAVE_VTUNE_TRUE@	libmono_profiler_vtune_la-vtune.lo
@@ -234,7 +232,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
 mprof_report_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -384,6 +382,7 @@ G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
 G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
+HAVE_NINJA = @HAVE_NINJA@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -402,7 +401,6 @@ LIBC = @LIBC@
 LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
 LIBGC_LIBS = @LIBGC_LIBS@
 LIBGC_STATIC_LIBS = @LIBGC_STATIC_LIBS@
-LIBICONV = @LIBICONV@
 LIBMONO_LA = @LIBMONO_LA@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -416,7 +414,6 @@ LLVM_LIBS = @LLVM_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
-LTLIBICONV = @LTLIBICONV@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -530,7 +527,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -569,10 +565,7 @@ AM_CPPFLAGS = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	mono-profiler-coverage.suppression \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	mono-profiler-log.suppression
-
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-coverage.suppression
 
 # FIXME: The profiler tests currently don't work with coop because the
 # sampling infrastructure depends on signals being available.
@@ -618,7 +611,7 @@ AM_CPPFLAGS = \
 # the shared version on those targets since it's useful for e.g. simulator
 # builds.
 libmono_profiler_aot_la_SOURCES = aot.c
-libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(LIBICONV)
+libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(GLIB_LIBS)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_aot_static_la_SOURCES = aot.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
@@ -634,14 +627,14 @@ libmono_profiler_coverage_static_la_SOURCES = coverage.c
 libmono_profiler_coverage_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(GLIB_LIBS) $(LIBICONV)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(GLIB_LIBS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_CFLAGS = $(VTUNE_CFLAGS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
 mprof_report_SOURCES = mprof-report.c
-mprof_report_LDADD = $(GLIB_LIBS) $(LIBICONV) $(zlib_dep)
+mprof_report_LDADD = $(GLIB_LIBS) $(zlib_dep)
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \

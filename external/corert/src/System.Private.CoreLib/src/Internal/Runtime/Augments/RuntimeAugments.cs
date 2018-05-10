@@ -35,6 +35,7 @@ using Volatile = System.Threading.Volatile;
 
 namespace Internal.Runtime.Augments
 {
+    [ReflectionBlocked]
     public static class RuntimeAugments
     {
         /// <summary>
@@ -1074,22 +1075,12 @@ namespace Internal.Runtime.Augments
 
         public static bool FileExists(string path)
         {
-            return InternalFile.Exists(path);
+            return Internal.IO.File.Exists(path);
         }
 
         public static string GetLastResortString(RuntimeTypeHandle typeHandle)
         {
             return typeHandle.LastResortToString;
-        }
-
-        public static void RhpSetHighLevelDebugFuncEvalHelper(IntPtr highLevelDebugFuncEvalHelper)
-        {
-            RuntimeImports.RhpSetHighLevelDebugFuncEvalHelper(highLevelDebugFuncEvalHelper);
-        }
-
-        public static void RhpSetHighLevelDebugFuncEvalAbortHelper(IntPtr highLevelDebugFuncEvalAbortHelper)
-        {
-            RuntimeImports.RhpSetHighLevelDebugFuncEvalAbortHelper(highLevelDebugFuncEvalAbortHelper);
         }
 
         public static void RhpSendCustomEventToDebugger(IntPtr payload, int length)

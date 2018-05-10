@@ -14,22 +14,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Globalization.Extensions")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Globalization.GlobalizationExtensions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Globalization.IdnMapping))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.StringNormalizationExtensions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Text.NormalizationForm))]
-namespace System
-{
-    public static partial class StringNormalizationExtensions
-    {
-        public static bool IsNormalized(this string strInput) { throw null; }
-        public static bool IsNormalized(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
-        public static string Normalize(this string strInput) { throw null; }
-        public static string Normalize(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
-    }
-}
-namespace System.Globalization
-{
-    public static partial class GlobalizationExtensions
-    {
-        public static System.StringComparer GetStringComparer(this System.Globalization.CompareInfo compareInfo, System.Globalization.CompareOptions options) { throw null; }
-    }
-}

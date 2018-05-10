@@ -384,13 +384,13 @@ struct _MonoImage {
 	/* arguments */
 	MonoWrapperCaches wrapper_caches;
 
-	/* Caches for MonoClass-es representing anon generic params */
-	MonoClass **var_cache_fast;
-	MonoClass **mvar_cache_fast;
-	GHashTable *var_cache_slow;
-	GHashTable *mvar_cache_slow;
-	GHashTable *var_cache_constrained;
-	GHashTable *mvar_cache_constrained;
+	/* Pre-allocated anon generic params for the first N generic
+	 * parameters, for a small N */
+	MonoGenericParam *var_gparam_cache_fast;
+	MonoGenericParam *mvar_gparam_cache_fast;
+	/* Anon generic parameters past N, if needed */
+	MonoConcurrentHashTable *var_gparam_cache;
+	MonoConcurrentHashTable *mvar_gparam_cache;
 
 	/* Maps malloc-ed char* pinvoke scope -> MonoDl* */
 	GHashTable *pinvoke_scopes;
@@ -665,10 +665,10 @@ char*
 mono_image_strdup_printf (MonoImage *image, const char *format, ...) MONO_ATTR_FORMAT_PRINTF(2,3);;
 
 GList*
-g_list_prepend_image (MonoImage *image, GList *list, gpointer data);
+mono_g_list_prepend_image (MonoImage *image, GList *list, gpointer data);
 
 GSList*
-g_slist_append_image (MonoImage *image, GSList *list, gpointer data);
+mono_g_slist_append_image (MonoImage *image, GSList *list, gpointer data);
 
 void
 mono_image_lock (MonoImage *image);
@@ -840,6 +840,9 @@ mono_assembly_fill_assembly_name_full (MonoImage *image, MonoAssemblyName *aname
 
 MONO_API guint32 mono_metadata_get_generic_param_row (MonoImage *image, guint32 token, guint32 *owner);
 
+MonoGenericParam*
+mono_metadata_create_anon_gparam (MonoImage *image, gint32 param_num, gboolean is_mvar);
+
 void mono_unload_interface_ids (MonoBitSet *bitset);
 
 
@@ -903,7 +906,7 @@ MonoException *mono_get_exception_field_access_msg (const char *msg);
 
 MonoException *mono_get_exception_method_access_msg (const char *msg);
 
-MonoMethod* method_from_method_def_or_ref (MonoImage *m, guint32 tok, MonoGenericContext *context, MonoError *error);
+MonoMethod* mono_method_from_method_def_or_ref (MonoImage *m, guint32 tok, MonoGenericContext *context, MonoError *error);
 
 MonoMethod *mono_get_method_constrained_with_method (MonoImage *image, MonoMethod *method, MonoClass *constrained_class, MonoGenericContext *context, MonoError *error);
 MonoMethod *mono_get_method_constrained_checked (MonoImage *image, guint32 token, MonoClass *constrained_class, MonoGenericContext *context, MonoMethod **cil_method, MonoError *error);
@@ -936,7 +939,7 @@ MonoType*
 mono_metadata_parse_type_checked (MonoImage *m, MonoGenericContainer *container, short opt_attrs, gboolean transient, const char *ptr, const char **rptr, MonoError *error);
 
 MonoGenericContainer *
-get_anonymous_container_for_image (MonoImage *image, gboolean is_mvar);
+mono_get_anonymous_container_for_image (MonoImage *image, gboolean is_mvar);
 
 char *
 mono_image_set_description (MonoImageSet *);

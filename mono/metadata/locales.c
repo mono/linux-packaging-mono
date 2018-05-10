@@ -18,6 +18,7 @@
 #include <glib.h>
 #include <string.h>
 
+#include <mono/metadata/class-init.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/object.h>
 #include <mono/metadata/appdomain.h>
@@ -806,7 +807,8 @@ int ves_icall_System_Globalization_CompareInfo_internal_index_char (MonoCompareI
 					      first));
 }
 
-int ves_icall_System_Threading_Thread_current_lcid (void)
+int
+ves_icall_System_Threading_Thread_current_lcid (MonoError *error)
 {
 	/* Invariant */
 	return(0x007F);

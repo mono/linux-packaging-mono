@@ -77,14 +77,14 @@ handle_enum:
 	case MONO_TYPE_VOID:
 		return 'V';
 	case MONO_TYPE_VALUETYPE:
-		if (t->data.klass->enumtype) {
+		if (m_class_is_enumtype (t->data.klass)) {
 			t = mono_class_enum_basetype (t->data.klass);
 			goto handle_enum;
 		}
 
 		return 'I';
 	case MONO_TYPE_GENERICINST:
-		if (t->data.klass->valuetype)
+		if (m_class_is_valuetype (t->data.klass))
 			return 'S';
 		return 'I';
 	default:
@@ -159,8 +159,11 @@ mono_aot_get_trampoline_full (const char *name, MonoTrampInfo **out_tinfo)
 		code = wasm_throw_corlib_exception;
 	else if (!strcmp (name, "interp_to_native_trampoline"))
 		code = wasm_interp_to_native_trampoline;
+	else if (!strcmp (name, "sdb_breakpoint_trampoline"))
+		code = mono_wasm_breakpoint_hit;
 
-	g_assert (code);
+	if (!code)
+		g_error ("could not find trampoline for %s\n", name);
 
 	if (out_tinfo) {
 		MonoTrampInfo *tinfo = g_new0 (MonoTrampInfo, 1);

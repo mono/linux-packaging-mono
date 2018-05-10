@@ -77,7 +77,7 @@ typedef struct crypto_mutex_st {
 typedef union crypto_mutex_st {
   void *handle;
 } CRYPTO_MUTEX;
-#elif defined(__MACH__) && defined(__APPLE__)
+#elif (defined(__MACH__) && defined(__APPLE__)) || defined(_AIX)
 typedef pthread_rwlock_t CRYPTO_MUTEX;
 #else
 /* It is reasonable to include pthread.h on non-Windows systems, however the

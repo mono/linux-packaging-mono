@@ -7,7 +7,10 @@ namespace System.Runtime.CompilerServices
     // When applied to a type this custom attribute cause the type to be treated as reflection blocked.
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Delegate | AttributeTargets.Enum | AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
     [DependencyReductionRoot]
-    public class ReflectionBlockedAttribute : Attribute
+#if !MONO
+    public
+#endif
+    class ReflectionBlockedAttribute : Attribute
     {
     }
 }

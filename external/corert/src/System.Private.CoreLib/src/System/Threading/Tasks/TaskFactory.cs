@@ -14,7 +14,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.Private;
 
 using AsyncStatus = Internal.Runtime.Augments.AsyncStatus;
 using CausalityRelation = Internal.Runtime.Augments.CausalityRelation;

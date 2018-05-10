@@ -21,8 +21,6 @@
 #include <mono/arch/arm64/arm64-codegen.h>
 #include <mono/metadata/abi-details.h>
 
-#define ALIGN_TO(val,align) ((((guint64)val) + ((align) - 1)) & ~((align) - 1))
-
 #ifndef DISABLE_JIT
 
 gpointer
@@ -600,4 +598,10 @@ void
 mono_arch_setup_resume_sighandler_ctx (MonoContext *ctx, gpointer func)
 {
 	MONO_CONTEXT_SET_IP (ctx,func);
+}
+
+void
+mono_arch_undo_ip_adjustment (MonoContext *ctx)
+{
+	ctx->pc++;
 }

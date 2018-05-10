@@ -1126,14 +1126,12 @@ When Mono is built with a soft float fallback on ARM and this variable is set to
 "1", Mono will always emit soft float code, even if a VFP unit is
 detected.
 .TP
-\fBMONO_DARWIN_WATCHER_MAXFDS\fR
-This is a debugging aid used to force limits on the FileSystemWatcher
-implementation in Darwin.   There is no limit by default.
+\fBMONO_DARWIN_USE_KQUEUE_FSW\fR
+Fall back on the kqueue FileSystemWatcher implementation in Darwin. The default is the FSEvent implementation.
 .TP
-\fBMONO_DISABLE_AIO\fR
-If set, tells mono NOT to attempt using native asynchronous I/O services. In
-that case, a default select/poll implementation is used. Currently only epoll()
-is supported.
+\fBMONO_DARWIN_WATCHER_MAXFDS\fR
+This is a debugging aid used to force limits on the kqueue FileSystemWatcher
+implementation in Darwin.   There is no limit by default.
 .TP
 \fBMONO_DISABLE_MANAGED_COLLATION\fR
 If this environment variable is `yes', the runtime uses unmanaged
@@ -1159,6 +1157,11 @@ Note that /etc/nsswitch.conf will be ignored.
 For platforms that do not otherwise have a way of obtaining random bytes
 this can be set to the name of a file system socket on which an egd or
 prngd daemon is listening.
+.TP
+\fBMONO_ENABLE_AIO\fR
+If set, tells mono to attempt using native asynchronous I/O services. If not
+set, a default select/poll implementation is used. Currently epoll and kqueue
+are supported.
 .TP
 \fBMONO_ENABLE_COOP\fR
 This makes the Mono runtime and the SGen garbage collector run in cooperative
@@ -1595,12 +1598,6 @@ home directories that might be shared over the network.
 \fBMONO_STRICT_IO_EMULATION\fR
 If set, extra checks are made during IO operations.  Currently, this
 includes only advisory locks around file writes.
-.TP
-\fBMONO_THEME\fR
-The name of the theme to be used by Windows.Forms.   Available themes today
-include "clearlooks", "nice" and "win32".
-.Sp
-The default is "win32".  
 .TP
 \fBMONO_TLS_SESSION_CACHE_TIMEOUT\fR
 The time, in seconds, that the SSL/TLS session cache will keep it's entry to

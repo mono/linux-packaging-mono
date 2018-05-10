@@ -6,7 +6,10 @@ using System;
 
 namespace Internal.Runtime.Augments
 {
-    public enum CausalityRelation
+#if !MONO 
+    public 
+#endif 
+    enum CausalityRelation
     {
         AssignDelegate = 0,
         Join = 1,
@@ -15,21 +18,30 @@ namespace Internal.Runtime.Augments
         Error = 4,
     }
 
-    public enum CausalitySource
+#if !MONO 
+    public 
+#endif 
+    enum CausalitySource
     {
         Application = 0,
         Library = 1,
         System = 2,
     }
 
-    public enum CausalityTraceLevel
+#if !MONO 
+    public 
+#endif 
+    enum CausalityTraceLevel
     {
         Required = 0,
         Important = 1,
         Verbose = 2,
     }
 
-    public enum AsyncStatus
+#if !MONO 
+    public 
+#endif 
+    enum AsyncStatus
     {
         Started = 0,
         Completed = 1,
@@ -37,7 +49,10 @@ namespace Internal.Runtime.Augments
         Error = 3,
     }
 
-    public enum CausalitySynchronousWork
+#if !MONO 
+    public 
+#endif 
+    enum CausalitySynchronousWork
     {
         CompletionNotification = 0,
         ProgressNotification = 1,

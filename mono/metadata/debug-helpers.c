@@ -19,6 +19,17 @@
 #include "mono/metadata/debug-helpers.h"
 #include "mono/metadata/tabledefs.h"
 #include "mono/metadata/appdomain.h"
+#ifdef MONO_CLASS_DEF_PRIVATE
+/* Rationale: we want the functions in this file to work even when everything
+ * is broken.  They may be called from a debugger session, for example.  If
+ * MonoClass getters include assertions or trigger class loading, we don't want
+ * that kicked off by a call to one of the functions in here.
+ */
+#define REALLY_INCLUDE_CLASS_DEF 1
+#include <mono/metadata/class-private-definition.h>
+#undef REALLY_INCLUDE_CLASS_DEF
+#endif
+
 
 struct MonoMethodDesc {
 	char *name_space;
@@ -275,49 +286,6 @@ mono_signature_full_name (MonoMethodSignature *sig)
 	res = g_string_new ("");
 
 	mono_type_get_desc (res, sig->ret, TRUE);
-	g_string_append_c (res, '(');
-	for (i = 0; i < sig->param_count; ++i) {
-		if (i > 0)
-			g_string_append_c (res, ',');
-		mono_type_get_desc (res, sig->params [i], TRUE);
-	}
-	g_string_append_c (res, ')');
-	result = res->str;
-	g_string_free (res, FALSE);
-	return result;
-}
-
-/*
- * Returns a string ready to be consumed by managed code when formating a string to include class + method name.
- * IE, say you have void Foo:Bar(int). It will return "void {0}(int)".
- * The reason for this is that managed exception constructors for missing members require a both class and member names to be provided independently of the signature.
- */
-char*
-mono_signature_get_managed_fmt_string (MonoMethodSignature *sig)
-{
-	int i;
-	char *result;
-	GString *res;
-
-	if (!sig)
-		return g_strdup ("<invalid signature>");
-
-	res = g_string_new ("");
-
-	mono_type_get_desc (res, sig->ret, TRUE);
-
-	g_string_append (res, " {0}");
-
-	if (sig->generic_param_count) {
-		g_string_append_c (res, '<');
-		for (i = 0; i < sig->generic_param_count; ++i) {
-			if (i > 0)
-				g_string_append (res, ",");
-			g_string_append_printf (res, "!%d", i);
-		}
-		g_string_append_c (res, '>');
-	}
-
 	g_string_append_c (res, '(');
 	for (i = 0; i < sig->param_count; ++i) {
 		if (i > 0)

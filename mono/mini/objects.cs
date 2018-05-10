@@ -1836,6 +1836,31 @@ ncells ) {
 		return 0;
 	}
 
+	enum FooEnum { Bar }
+	//https://github.com/mono/mono/issues/6666
+	public static int test_0_bad_unbox_nullable_of_enum () {
+		try {
+			var enumValue = FooEnum.Bar;
+			object value = (int)enumValue;
+			var res = (FooEnum?)value; // Should throw
+		} catch (InvalidCastException) {
+			return 0;
+		}
+		return 1;
+	}
+
+	//https://github.com/mono/mono/issues/6666
+	public static int test_0_unbox_nullable_of_enum () {
+		try {
+			var enumValue = FooEnum.Bar;
+			object value = (object)enumValue;
+			var res = (FooEnum?)value; // Should not throw
+		} catch (InvalidCastException) {
+			return 1;
+		}
+		return 0;
+	}
+
 	static void decode (out sbyte v) {
 		byte tmp = 134;
 		v = (sbyte)tmp;
@@ -1872,6 +1897,16 @@ ncells ) {
 
 	  return 0;
     }
+
+	static volatile bool abool;
+
+	public static unsafe int test_0_stind_r4_float32_stack_merge () {
+		Single* dataPtr = stackalloc Single[4];
+		abool = true;
+		dataPtr[0] = abool ? 1.0f : 2.0f;
+		return dataPtr [0] == 1.0f ? 0 : 1;
+	}
+
 }
 
 #if __MOBILE__

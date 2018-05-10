@@ -140,9 +140,10 @@ opt_names [] = {
 	MONO_OPT_GSHARED |	\
 	MONO_OPT_SIMD |	\
 	MONO_OPT_ALIAS_ANALYSIS	| \
-	MONO_OPT_AOT)
+	MONO_OPT_AOT | \
+	MONO_OPT_FLOAT32)
 
-#define EXCLUDED_FROM_ALL (MONO_OPT_SHARED | MONO_OPT_PRECOMP | MONO_OPT_UNSAFE | MONO_OPT_GSHAREDVT | MONO_OPT_FLOAT32)
+#define EXCLUDED_FROM_ALL (MONO_OPT_SHARED | MONO_OPT_PRECOMP | MONO_OPT_UNSAFE | MONO_OPT_GSHAREDVT)
 
 static guint32
 parse_optimizations (guint32 opt, const char* p, gboolean cpu_opts)
@@ -393,7 +394,7 @@ mini_regression_step (MonoImage *image, int verbose, int *total_run, int *total,
 					g_print ("Running '%s' ...\n", method->name);
 #ifdef MONO_USE_AOT_COMPILER
 				ERROR_DECL (error);
-				func = (TestMethod)mono_aot_get_method_checked (mono_get_root_domain (), method, error);
+				func = (TestMethod)mono_aot_get_method (mono_get_root_domain (), method, error);
 				mono_error_cleanup (error);
 				if (!func)
 					func = (TestMethod)(gpointer)cfg->native_code;
@@ -616,7 +617,7 @@ interp_regression_step (MonoImage *image, int verbose, int *total_run, int *tota
 						continue;
 
 					MonoClass *klass = centry->ctor->klass;
-					if (strcmp (klass->name, "CategoryAttribute"))
+					if (strcmp (m_class_get_name (klass), "CategoryAttribute"))
 						continue;
 
 					MonoObject *obj = mono_custom_attrs_get_attr_checked (ainfo, klass, error);
@@ -928,7 +929,7 @@ test_thread_func (ThreadData *td)
 					guint pos = (*data)->start + random () % (*data)->length;
 					MonoJitInfo *ji;
 
-					ji = mono_jit_info_table_find (domain, (char*)(gulong) pos);
+					ji = mono_jit_info_table_find (domain, (char*)(gsize)pos);
 
 					g_assert (ji->cas_inited);
 					g_assert ((*data)->ji == ji);
@@ -1764,7 +1765,7 @@ mono_enable_interp (const char *opts)
 	g_error ("--interpreter on cross-compile runtimes not supported\n");
 #endif
 
-#if !defined(TARGET_AMD64) && !defined(TARGET_ARM) && !defined(TARGET_ARM64)
+#ifndef MONO_ARCH_INTERPRETER_SUPPORTED
 	g_error ("--interpreter not supported on this architecture.\n");
 #endif
 }

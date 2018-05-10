@@ -51,6 +51,9 @@ typedef struct
 	GHashTable *llvm_jit_callees;
 	/* Maps MonoMethod -> RuntimeMethod */
 	MonoInternalHashTable interp_code_hash;
+	/* Maps MonoMethod -> 	MonoMethodRuntimeGenericContext */
+	GHashTable *mrgctx_hash;
+	GHashTable *method_rgctx_hash;
 } MonoJitDomainInfo;
 
 #define domain_jit_info(domain) ((MonoJitDomainInfo*)((domain)->runtime_info))
@@ -153,7 +156,9 @@ typedef struct {
 	gpointer interp_exit_data;
 } MonoLMFExt;
 
-typedef struct {
+typedef void (*MonoFtnPtrEHCallback) (guint32 gchandle);
+
+typedef struct MonoDebugOptions {
 	gboolean handle_sigint;
 	gboolean keep_delegates;
 	gboolean reverse_pinvoke_exceptions;
@@ -215,6 +220,9 @@ typedef struct {
 	 * identify the stack on some platforms
 	 */
 	gboolean disable_omit_fp;
+
+	// Internal testing feature.
+	gboolean test_tailcall_require;
 } MonoDebugOptions;
 
 
@@ -329,7 +337,8 @@ extern MonoMethod *mono_current_single_method;
 extern GSList *mono_single_method_list;
 extern GHashTable *mono_single_method_hash;
 extern GList* mono_aot_paths;
-extern MonoDebugOptions debug_options;
+extern MonoDebugOptions mini_debug_options;
+extern GSList *mono_interp_only_classes;
 
 static inline MonoMethod*
 jinfo_get_method (MonoJitInfo *ji)
@@ -351,6 +360,9 @@ MonoDomain* mini_init                      (const char *filename, const char *ru
 void        mini_cleanup                   (MonoDomain *domain);
 MONO_API MonoDebugOptions *mini_get_debug_options   (void);
 MONO_API gboolean    mini_parse_debug_option (const char *option);
+
+MONO_API void
+mono_install_ftnptr_eh_callback (MonoFtnPtrEHCallback callback);
 
 void      mini_jit_init                    (void);
 void      mini_jit_cleanup                 (void);
@@ -381,6 +393,8 @@ MonoJumpInfo *mono_patch_info_list_prepend  (MonoJumpInfo *list, int ip, MonoJum
 MonoJumpInfoToken* mono_jump_info_token_new (MonoMemPool *mp, MonoImage *image, guint32 token);
 MonoJumpInfoToken* mono_jump_info_token_new2 (MonoMemPool *mp, MonoImage *image, guint32 token, MonoGenericContext *context);
 gpointer  mono_resolve_patch_target         (MonoMethod *method, MonoDomain *domain, guint8 *code, MonoJumpInfo *patch_info, gboolean run_cctors, MonoError *error) MONO_LLVM_INTERNAL;
+void mini_register_jump_site                (MonoDomain *domain, MonoMethod *method, gpointer ip);
+void mini_patch_jump_sites                  (MonoDomain *domain, MonoMethod *method, gpointer addr);
 gpointer  mono_jit_find_compiled_method_with_jit_info (MonoDomain *domain, MonoMethod *method, MonoJitInfo **ji);
 gpointer  mono_jit_find_compiled_method     (MonoDomain *domain, MonoMethod *method);
 gpointer  mono_jit_compile_method           (MonoMethod *method, MonoError *error);
@@ -480,4 +494,3 @@ void mini_register_sigterm_handler (void);
 #endif
 
 #endif /* __MONO_MINI_RUNTIME_H__ */
-

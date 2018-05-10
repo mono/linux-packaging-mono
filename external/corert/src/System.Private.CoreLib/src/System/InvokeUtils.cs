@@ -14,6 +14,7 @@ using Internal.Runtime.CompilerServices;
 
 namespace System
 {
+    [System.Runtime.CompilerServices.ReflectionBlocked]
     [System.Runtime.CompilerServices.DependencyReductionRoot]
     public static class InvokeUtils
     {
@@ -32,7 +33,7 @@ namespace System
         //
         //    null converted to default(T) (this is important when T is a valuetype.)
         //
-        // There is also another transform of T -> Nullable<T>. This method acknowleges that rule but does not actually transform the T.
+        // There is also another transform of T -> Nullable<T>. This method acknowledges that rule but does not actually transform the T.
         // Rather, the transformation happens naturally when the caller unboxes the value to its final destination.
         //
         // This method is targeted by the Delegate ILTransformer.

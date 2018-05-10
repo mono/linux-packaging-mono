@@ -248,7 +248,7 @@ typedef struct {
 	} d;
 } WrapperInfo;
 
-enum {
+typedef enum {
 	STELEMREF_OBJECT, /*no check at all*/
 	STELEMREF_SEALED_CLASS, /*check vtable->klass->element_type */
 	STELEMREF_CLASS, /*only the klass->parents check*/
@@ -256,14 +256,10 @@ enum {
 	STELEMREF_INTERFACE, /*interfaces without variant generic arguments. */
 	STELEMREF_COMPLEX, /*arrays, MBR or types with variant generic args - go straight to icalls*/
 	STELEMREF_KIND_COUNT
-};
-
-static const char *strelemref_wrapper_name[] = {
-	"object", "sealed_class", "class", "class_small_idepth", "interface", "complex"
-};
+} MonoStelemrefKind;
 
 
-#define MONO_MARSHAL_CALLBACKS_VERSION 1
+#define MONO_MARSHAL_CALLBACKS_VERSION 2
 
 typedef struct {
 	int version;
@@ -285,7 +281,7 @@ typedef struct {
 	void (*emit_struct_to_ptr) (MonoMethodBuilder *mb, MonoClass *klass);
 	void (*emit_ptr_to_struct) (MonoMethodBuilder *mb, MonoClass *klass);
 	void (*emit_isinst) (MonoMethodBuilder *mb);
-	void (*emit_virtual_stelemref) (MonoMethodBuilder *mb, const char **param_names, int kind);
+	void (*emit_virtual_stelemref) (MonoMethodBuilder *mb, const char **param_names, MonoStelemrefKind kind);
 	void (*emit_stelemref) (MonoMethodBuilder *mb);
 	void (*emit_array_address) (MonoMethodBuilder *mb, int rank, int elem_size);
 	void (*emit_native_wrapper) (MonoImage *image, MonoMethodBuilder *mb, MonoMethodSignature *sig, MonoMethodPInvoke *piinfo, MonoMarshalSpec **mspecs, gpointer func, gboolean aot, gboolean check_exceptions, gboolean func_param);
@@ -516,7 +512,7 @@ gboolean
 mono_marshal_free_ccw (MonoObject* obj);
 
 void
-cominterop_release_all_rcws (void); 
+mono_cominterop_release_all_rcws (void); 
 
 MonoString*
 ves_icall_mono_string_from_utf16 (gunichar2 *data);
@@ -622,10 +618,10 @@ MonoMarshalConv
 mono_marshal_get_ptr_to_string_conv (MonoMethodPInvoke *piinfo, MonoMarshalSpec *spec, gboolean *need_free);
 
 MonoType*
-marshal_boolean_conv_in_get_local_type (MonoMarshalSpec *spec, guint8 *ldc_op /*out*/);
+mono_marshal_boolean_conv_in_get_local_type (MonoMarshalSpec *spec, guint8 *ldc_op /*out*/);
 
 MonoClass*
-marshal_boolean_managed_conv_in_get_conv_arg_class (MonoMarshalSpec *spec, guint8 *ldop/*out*/);
+mono_marshal_boolean_managed_conv_in_get_conv_arg_class (MonoMarshalSpec *spec, guint8 *ldop/*out*/);
 
 gboolean
 mono_pinvoke_is_unicode (MonoMethodPInvoke *piinfo);
@@ -847,11 +843,6 @@ MonoMethod*
 mono_mb_create_and_cache_full (GHashTable *cache, gpointer key,
 							   MonoMethodBuilder *mb, MonoMethodSignature *sig,
 							   int max_stack, WrapperInfo *info, gboolean *out_found);
-
-typedef void (*MonoFtnPtrEHCallback) (guint32 gchandle);
-
-MONO_API void
-mono_install_ftnptr_eh_callback (MonoFtnPtrEHCallback callback);
 
 G_END_DECLS
 

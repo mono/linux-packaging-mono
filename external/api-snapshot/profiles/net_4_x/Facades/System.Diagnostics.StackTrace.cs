@@ -15,6 +15,7 @@
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.StackFrame))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.StackFrameExtensions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.StackTrace))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolBinder))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolBinder1))]
@@ -31,56 +32,3 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymDocumentType))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymLanguageType))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymLanguageVendor))]
-namespace System
-{
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
-    {
-        public MonoDocumentationNoteAttribute(string comment) { }
-    }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
-    {
-        public MonoExtensionAttribute(string comment) { }
-    }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
-    {
-        public MonoInternalNoteAttribute(string comment) { }
-    }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
-    {
-        public MonoLimitationAttribute(string comment) { }
-    }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
-    {
-        public MonoNotSupportedAttribute(string comment) { }
-    }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
-    internal partial class MonoTODOAttribute : System.Attribute
-    {
-        public MonoTODOAttribute() { }
-        public MonoTODOAttribute(string comment) { }
-        public string Comment { get { throw null; } }
-    }
-}
-namespace System.Diagnostics
-{
-    public static partial class StackFrameExtensions
-    {
-        [System.MonoTODOAttribute]
-        public static System.IntPtr GetNativeImageBase(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-        [System.MonoTODOAttribute]
-        public static System.IntPtr GetNativeIP(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-        [System.MonoTODOAttribute]
-        public static bool HasILOffset(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-        [System.MonoTODOAttribute]
-        public static bool HasMethod(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-        [System.MonoTODOAttribute]
-        public static bool HasNativeImage(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-        [System.MonoTODOAttribute]
-        public static bool HasSource(this System.Diagnostics.StackFrame stackFrame) { throw null; }
-    }
-}

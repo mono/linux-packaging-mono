@@ -75,10 +75,10 @@ If your application makes use of reflection, you will need to create a rd.xml fi
 
 At runtime, if a method or type is not found or cannot be loaded, an exception will be thrown. The exception message will contain information on the missing type reference, which you can then add to the rd.xml of your program.
 
-Once you've created a rd.xml file, navigate to the root directory of your project and open its `.csproj` file and in the first `<PropertyGroup>` element add the following:
+Once you've created a rd.xml file, navigate to the root directory of your project and open its `.csproj` file and in the first `<ItemGroup>` element add the following:
 
 ```xml
-<RdXmlFile>path_to_rdxml_file\rd.xml</RdXmlFile>
+<RdXmlFile Include="path_to_rdxml_file\rd.xml" />
 ```
 
 where path_to_rdxml_file is the location of the file on your disk.
@@ -120,13 +120,13 @@ public class ValuesController
 
 ## Restore and Publish your app
 
-Once the package has been successfully added it's time to compile and publish your app! If you're using Windows, make sure you're using `x64 Native Tools Command Prompt for VS 2017` instead of the standard Windows command prompt. In the shell/command prompt window, run the following command:
+Once the package has been successfully added it's time to compile and publish your app! In the shell/command prompt window, run the following command:
 
 ```bash
 > dotnet publish -r <RID> -c <Configuration>
 ```
 
-where `<Configuration>` is your project configuration (such as Debug or Release) and `<RID>` is the runtime identifier, which you specified in the csproj file (one of win-x64, linux-x64, osx-x64). For example, if you want to publish a release configuration of your app for a 64-bit version of Windows the command would look like:
+where `<Configuration>` is your project configuration (such as Debug or Release) and `<RID>` is the runtime identifier (one of win-x64, linux-x64, osx-x64). For example, if you want to publish a release configuration of your app for a 64-bit version of Windows the command would look like:
 
 ```bash 
 > dotnet publish -r win-x64 -c release
@@ -135,6 +135,8 @@ where `<Configuration>` is your project configuration (such as Debug or Release)
 Once completed, you can find the native executable in the root folder of your project under `/bin/x64/<Configuration>/netcoreapp2.0/publish/`
 
 ## Try it out!
+
+If you are running macOS, make sure you have [libuv](https://github.com/libuv/libuv) installed, as ASP.NET is built on top of libuv. You can use [homebrew](https://brew.sh/) to get it (`brew install libuv`).
 
 Navigate to `/bin/x64/<Configuration>/netcoreapp2.0/publish/` in your project folder and run the produced executable. It should display "Now listening on: http://localhost:XXXX" with XXXX being a port on your machine. Open your browser and navigate to that URL. You should see "Hello World!" displayed in your browser.
 

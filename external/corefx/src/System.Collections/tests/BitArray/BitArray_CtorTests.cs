@@ -192,6 +192,7 @@ namespace System.Collections.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Flaky test - OOM")]
         public static void Ctor_LargeIntArrayOverflowingBitArray_ThrowsArgumentException()
         {
             AssertExtensions.Throws<ArgumentException>("values", () => new BitArray(new int[int.MaxValue / BitsPerInt32 + 1 ]));
@@ -231,6 +232,7 @@ namespace System.Collections.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Flaky test - OOM")]
         public static void Ctor_LargeByteArrayOverflowingBitArray_ThrowsArgumentException()
         {
             AssertExtensions.Throws<ArgumentException>("bytes", () => new BitArray(new byte[int.MaxValue / BitsPerByte + 1 ]));
@@ -250,6 +252,7 @@ namespace System.Collections.Tests
 
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "A bug in BitArray.Clone() caused an ArgumentExeption to be thrown in this case.")]
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Flaky test - OOM")]
         public static void Clone_LongLength_Works()
         {
             BitArray bitArray = new BitArray(int.MaxValue - 30);

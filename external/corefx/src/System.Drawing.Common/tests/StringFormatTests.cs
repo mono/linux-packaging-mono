@@ -185,6 +185,7 @@ namespace System.Drawing.Tests
         }
 
         [ConditionalFact(Helpers.GdiplusIsAvailable)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public void SetTabStops_NegativeFirstTabOffset_ThrowsArgumentException()
         {
             using (var format = new StringFormat())
@@ -194,6 +195,7 @@ namespace System.Drawing.Tests
         }
 
         [ConditionalFact(Helpers.GdiplusIsAvailable)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public void SetTabStops_NegativeInfinityInTabStops_ThrowsNotImplementedException()
         {
             using (var format = new StringFormat())
@@ -308,6 +310,7 @@ namespace System.Drawing.Tests
         }
 
         [ConditionalFact(Helpers.GdiplusIsAvailable)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public void DigitSubstitutionLanguage_GetSetWhenDisposed_ThrowsArgumentException()
         {
             var format = new StringFormat();

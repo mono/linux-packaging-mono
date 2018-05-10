@@ -19,7 +19,7 @@ using ObjectData = ILCompiler.DependencyAnalysis.ObjectNode.ObjectData;
 namespace ILCompiler.DependencyAnalysis
 {
     /// <summary>
-    /// Object writer using https://github.com/dotnet/llilc
+    /// Object writer using src/Native/ObjWriter
     /// </summary>
     internal class ObjectWriter : IDisposable, ITypesDebugInfoWriter
     {
@@ -194,14 +194,16 @@ namespace ILCompiler.DependencyAnalysis
         private static extern int EmitSymbolRef(IntPtr objWriter, byte[] symbolName, RelocType relocType, int delta);
         public int EmitSymbolRef(Utf8StringBuilder symbolName, RelocType relocType, int delta = 0)
         {
-            // Workaround for ObjectWriter's lack of support for IMAGE_REL_BASED_RELPTR32
-            // https://github.com/dotnet/corert/issues/3278
-            if (relocType == RelocType.IMAGE_REL_BASED_RELPTR32)
+            if (_targetPlatform.Architecture != TargetArchitecture.ARMEL && _targetPlatform.Architecture != TargetArchitecture.ARM)
             {
-                relocType = RelocType.IMAGE_REL_BASED_REL32;
-                delta = checked(delta + sizeof(int));
+                // Workaround for ObjectWriter's lack of support for IMAGE_REL_BASED_RELPTR32
+                // https://github.com/dotnet/corert/issues/3278
+                if (relocType == RelocType.IMAGE_REL_BASED_RELPTR32)
+                {
+                    relocType = RelocType.IMAGE_REL_BASED_REL32;
+                    delta = checked(delta + sizeof(int));
+                }
             }
-
             return EmitSymbolRef(_nativeObjectWriter, symbolName.Append('\0').UnderlyingArray, relocType, delta);
         }
 
@@ -274,6 +276,40 @@ namespace ILCompiler.DependencyAnalysis
 
         [DllImport(NativeObjectWriterFileName)]
         private static extern uint GetCompleteClassTypeIndex(IntPtr objWriter, ClassTypeDescriptor classTypeDescriptor, ClassFieldsTypeDescriptor classFieldsTypeDescriptior, DataFieldDescriptor[] fields);
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern void EmitARMFnStart(IntPtr objWriter);
+        public void EmitARMFnStart()
+        {
+            Debug.Assert(!_frameOpened);
+            EmitARMFnStart(_nativeObjectWriter);
+            _frameOpened = true;
+        }
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern void EmitARMFnEnd(IntPtr objWriter);
+        public void EmitARMFnEnd()
+        {
+            Debug.Assert(_frameOpened);
+            EmitARMFnEnd(_nativeObjectWriter);
+            _frameOpened = false;
+        }
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern void EmitARMExIdxCode(IntPtr objWriter, int nativeOffset, byte[] blob);
+        public void EmitARMExIdxCode(int nativeOffset, byte[] blob)
+        {
+            Debug.Assert(_frameOpened);
+            EmitARMExIdxCode(_nativeObjectWriter, nativeOffset, blob);
+        }
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern void EmitARMExIdxLsda(IntPtr objWriter, byte[] blob);
+        public void EmitARMExIdxLsda(byte[] blob)
+        {
+            Debug.Assert(_frameOpened);
+            EmitARMExIdxLsda(_nativeObjectWriter, blob);
+        }
 
         public uint GetClassTypeIndex(ClassTypeDescriptor classTypeDescriptor)
         {
@@ -625,20 +661,32 @@ namespace ILCompiler.DependencyAnalysis
 
         public void EmitCFICodes(int offset)
         {
+            bool forArm = (_targetPlatform.Architecture == TargetArchitecture.ARMEL || _targetPlatform.Architecture == TargetArchitecture.ARM);
+
             // Emit end the old frame before start a frame.
             if (_offsetToCfiEnd.Contains(offset))
             {
-                EmitCFIEnd(offset);
+                if (forArm)
+                    EmitARMFnEnd();
+                else
+                    EmitCFIEnd(offset);
             }
 
             if (_offsetToCfiStart.Contains(offset))
             {
-                EmitCFIStart(offset);
+                if (forArm)
+                    EmitARMFnStart();
+                else
+                    EmitCFIStart(offset);
 
                 byte[] blobSymbolName;
                 if (_offsetToCfiLsdaBlobName.TryGetValue(offset, out blobSymbolName))
                 {
-                    EmitCFILsda(blobSymbolName);
+                    if (forArm)
+                        EmitARMExIdxLsda(blobSymbolName);
+                    else
+                        EmitCFILsda(blobSymbolName);
+
                 }
                 else
                 {
@@ -653,7 +701,10 @@ namespace ILCompiler.DependencyAnalysis
             {
                 foreach (byte[] cfi in cfis)
                 {
-                    EmitCFICode(offset, cfi);
+                    if (forArm)
+                        EmitARMExIdxCode(offset, cfi);
+                    else
+                        EmitCFICode(offset, cfi);
                 }
             }
         }

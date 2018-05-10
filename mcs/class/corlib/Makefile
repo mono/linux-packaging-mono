@@ -8,6 +8,7 @@ LIBRARY_NAME = mscorlib.dll
 
 LIB_MCS_FLAGS = $(REFERENCE_SOURCES_FLAGS) $(RESOURCE_FILES:%=-resource:%)
 
+USE_XTEST_REMOTE_EXECUTOR = YES
 LIBRARY_WARN_AS_ERROR = yes
 #LIBRARY_USE_INTERMEDIATE_FILE = yes
 
@@ -30,6 +31,7 @@ RESX_RESOURCE_STRING = \
 	../../../external/corefx/src/System.Collections.Concurrent/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Memory/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Runtime.InteropServices.RuntimeInformation/src/Resources/Strings.resx \
+	../../../external/corefx/src/System.Threading.Tasks.Parallel/src/Resources/Strings.resx \
 
 LIBRARY_COMPILE = $(BOOT_COMPILE)
 LIBRARY_INSTALL_DIR = $(mono_libdir)/mono/$(FRAMEWORK_VERSION)
@@ -207,9 +209,6 @@ $(vtsdir)/$(PROFILE)_TestLib/BinarySerializationOverVersions.exe: $(vtsdir)/Bina
 		-r:$(topdir)/class/lib/$(PROFILE)/System.dll \
 		$(vtsdir)/BinarySerializationOverVersions.cs -out:$@
 	@cp $(vtsdir)/$(PROFILE)_TestLib/1.0/Address.dll $(vtsdir)/$(PROFILE)_TestLib
-
-# Need to define TEST_MONO_PATH to an absolute dir since the test is ran from a subdir
-TEST_MONO_PATH=$(PWD)/../lib/$(PROFILE)
 
 run-test-vts: test-vts
 	@echo Running vts tests...
