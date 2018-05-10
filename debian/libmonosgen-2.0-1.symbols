@@ -1,10 +1,8 @@
 libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  eg_getdtablesize@Base 5.8.0.22
+ eg_my_charset@Base 5.14.0.78
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
- g_utf16_ascii_equal@Base 5.12.0.220
- g_utf16_asciiz_equal@Base 5.12.0.220
- g_utf8_jump_table@Base 5.8.0.22
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
@@ -714,6 +712,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
  mono_opcodes@Base 4.5.2.363-0nightly1
+ mono_os_event_destroy@Base 5.14.0.78
+ mono_os_event_init@Base 5.14.0.78
+ mono_os_event_reset@Base 5.14.0.78
+ mono_os_event_set@Base 5.14.0.78
+ mono_os_event_wait_multiple@Base 5.14.0.78
+ mono_os_event_wait_one@Base 5.14.0.78
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
@@ -883,6 +887,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_runtime_delegate_invoke@Base 4.1.0.1738
  mono_runtime_exec_main@Base 4.1.0.1738
  mono_runtime_exec_managed_code@Base 4.1.0.1738
+ mono_runtime_get_aotid@Base 5.14.0.78
  mono_runtime_get_main_args@Base 4.1.0.1738
  mono_runtime_init@Base 4.1.0.1738
  mono_runtime_invoke@Base 4.1.0.1738
@@ -953,6 +958,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_string_is_interned@Base 4.1.0.1738
  mono_string_length@Base 4.1.0.1738
  mono_string_new@Base 4.1.0.1738
+ mono_string_new_checked@Base 5.14.0.78
  mono_string_new_len@Base 4.1.0.1738
  mono_string_new_size@Base 4.1.0.1738
  mono_string_new_utf16@Base 4.1.0.1738
@@ -979,20 +985,23 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_hazardous_try_free@Base 4.5.2.48
  mono_thread_hazardous_try_free_all@Base 4.7.0.488
  mono_thread_info_detach@Base 4.5.2.48
+ mono_thread_info_get_flags@Base 5.14.0.78
  mono_thread_info_get_small_id@Base 5.8.0.22
  mono_thread_info_register_small_id@Base 5.8.0.22
+ mono_thread_info_set_flags@Base 5.14.0.78
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
+ mono_thread_internal_current@Base 5.14.0.78
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
  mono_thread_new_init@Base 4.1.0.1738
  mono_thread_set_main@Base 4.1.0.1738
  mono_thread_set_manage_callback@Base 4.1.0.1738
+ mono_thread_set_name_internal@Base 5.14.0.78
  mono_thread_stop@Base 4.1.0.1738
  mono_threads_assert_gc_safe_region@Base 4.3.3.735
  mono_threads_assert_gc_unsafe_region@Base 4.3.3.735
  mono_threads_attach_coop@Base 4.5.2.48
- mono_threads_attach_tools_thread@Base 4.1.0.1738
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
  mono_threads_enter_gc_safe_region_unbalanced@Base 4.5.2.195
@@ -1304,9 +1313,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_unichar_xdigit_value@Base 5.8.0.22
  monoeg_g_unsetenv@Base 5.8.0.22
  monoeg_g_usleep@Base 5.8.0.22
+ monoeg_g_utf16_ascii_equal@Base 5.14.0.78
+ monoeg_g_utf16_asciiz_equal@Base 5.14.0.78
  monoeg_g_utf16_to_ucs4@Base 5.8.0.22
  monoeg_g_utf16_to_utf8@Base 5.8.0.22
  monoeg_g_utf8_get_char@Base 5.8.0.22
+ monoeg_g_utf8_jump_table@Base 5.14.0.78
  monoeg_g_utf8_offset_to_pointer@Base 5.8.0.22
  monoeg_g_utf8_pointer_to_offset@Base 5.8.0.22
  monoeg_g_utf8_strdown@Base 5.8.0.22
@@ -1332,4 +1344,3 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_utf8_get_char_validated@Base 5.8.0.22
  monoeg_utf8_prev_char@Base 5.8.0.22
  monoeg_utf8_to_ucs4@Base 5.8.0.22
- my_charset@Base 5.8.0.22
