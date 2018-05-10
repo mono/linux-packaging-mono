@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 
 using Internal.Runtime.CompilerServices;
@@ -131,12 +131,16 @@ namespace System
 
         private static ulong GenerateSeed()
         {
+#if MONO
+            return 839433921;
+#else
             ulong seed;
             unsafe
             {
                 Interop.GetRandomBytes((byte*)&seed, sizeof(ulong));
             }
             return seed;
+#endif
         }
     }
 }

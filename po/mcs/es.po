@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-05-09 08:18+0000\n"
+"POT-Creation-Date: 2018-05-10 08:12+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -518,7 +518,7 @@ msgstr ""
 msgid "`{0}' is obsolete: `{1}'"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:845
+#: mcs/mcs/cs-tokenizer.cs:844
 msgid ""
 "The `partial' modifier can be used only immediately before `class', "
 "`struct', `interface', or `void' keyword"
@@ -526,56 +526,56 @@ msgstr ""
 "El modificador `partial' solamente puede ser utilizado antes de `class', "
 "`struct', `interface' o la palabra clave `void'"
 
-#: mcs/mcs/cs-tokenizer.cs:2131
+#: mcs/mcs/cs-tokenizer.cs:2136
 #, csharp-format
 msgid "Unrecognized escape sequence `\\{0}'"
 msgstr "Secuencia de escape no reconocida: `\\\\{0}'"
 
-#: mcs/mcs/cs-tokenizer.cs:2150
+#: mcs/mcs/cs-tokenizer.cs:2155
 msgid "Unrecognized escape sequence"
 msgstr "Secuencia de escape no reconocida"
 
-#: mcs/mcs/cs-tokenizer.cs:2415
+#: mcs/mcs/cs-tokenizer.cs:2420
 #, fuzzy
 msgid "Filename, single-line comment or end-of-line expected"
 msgstr "Esperaba un comentario de una sola línea o el final de archivo"
 
-#: mcs/mcs/cs-tokenizer.cs:2463
+#: mcs/mcs/cs-tokenizer.cs:2468
 #, fuzzy
 msgid "Missing identifier to pre-processor directive"
 msgstr "La directiva del pre-procesador requiere un identificador"
 
-#: mcs/mcs/cs-tokenizer.cs:2473 mcs/mcs/cs-tokenizer.cs:2477
+#: mcs/mcs/cs-tokenizer.cs:2478 mcs/mcs/cs-tokenizer.cs:2482
 #, csharp-format
 msgid "Identifier expected: {0}"
 msgstr "Esperaba un identificador: {0}."
 
-#: mcs/mcs/cs-tokenizer.cs:3077
+#: mcs/mcs/cs-tokenizer.cs:3082
 #, fuzzy
 msgid "Integral constant is too large"
 msgstr "La constante numérica es demasiado grande"
 
-#: mcs/mcs/cs-tokenizer.cs:3082
+#: mcs/mcs/cs-tokenizer.cs:3087
 msgid "Invalid number"
 msgstr "Número inválido"
 
-#: mcs/mcs/cs-tokenizer.cs:3087
+#: mcs/mcs/cs-tokenizer.cs:3092
 msgid "Invalid preprocessor directive"
 msgstr "Directiva inválida para el pre-procesador."
 
-#: mcs/mcs/cs-tokenizer.cs:3094
+#: mcs/mcs/cs-tokenizer.cs:3099
 #, csharp-format
 msgid "Unexpected processor directive ({0})"
 msgstr "Directiva inválida para el pre-procesador ({0})."
 
-#: mcs/mcs/cs-tokenizer.cs:3100
+#: mcs/mcs/cs-tokenizer.cs:3105
 msgid ""
 "Cannot define or undefine preprocessor symbols after first token in file"
 msgstr ""
 "No es posible definir nuevos símbolos para el preprocesador o elimiar las "
 "definiciones existentes después del primer tóken del archivo"
 
-#: mcs/mcs/cs-tokenizer.cs:3106
+#: mcs/mcs/cs-tokenizer.cs:3111
 msgid ""
 "Preprocessor directives must appear as the first non-whitespace character on "
 "a line"
@@ -583,94 +583,94 @@ msgstr ""
 "Las directivas del pre-procesador deben aparecer como el primer carácter en "
 "la línea (que no sea un espacio en blanco)"
 
-#: mcs/mcs/cs-tokenizer.cs:3111
+#: mcs/mcs/cs-tokenizer.cs:3116
 msgid "Single-line comment or end-of-line expected"
 msgstr "Esperaba un comentario de una sola línea o el final de archivo"
 
-#: mcs/mcs/cs-tokenizer.cs:3156 mcs/mcs/cs-tokenizer.cs:4394
+#: mcs/mcs/cs-tokenizer.cs:3161 mcs/mcs/cs-tokenizer.cs:4399
 msgid "Expected `#endif' directive"
 msgstr "Esperaba la directiva `#endif'"
 
-#: mcs/mcs/cs-tokenizer.cs:3189 mcs/mcs/cs-tokenizer.cs:3210
-#: mcs/mcs/cs-tokenizer.cs:3241 mcs/mcs/cs-tokenizer.cs:4392
+#: mcs/mcs/cs-tokenizer.cs:3194 mcs/mcs/cs-tokenizer.cs:3215
+#: mcs/mcs/cs-tokenizer.cs:3246 mcs/mcs/cs-tokenizer.cs:4397
 msgid "#endregion directive expected"
 msgstr "Esperaba la directiva `#endregion'"
 
-#: mcs/mcs/cs-tokenizer.cs:3290
+#: mcs/mcs/cs-tokenizer.cs:3295
 msgid "Wrong preprocessor directive"
 msgstr "La directiva del pre-procesador es errónea"
 
-#: mcs/mcs/cs-tokenizer.cs:3302
+#: mcs/mcs/cs-tokenizer.cs:3307
 #, csharp-format
 msgid "#error: '{0}'"
 msgstr "#error: '{0}'"
 
-#: mcs/mcs/cs-tokenizer.cs:3320
+#: mcs/mcs/cs-tokenizer.cs:3325
 msgid "The line number specified for #line directive is missing or invalid"
 msgstr ""
 "Falta el número de linea especificado en la directiva #line o el número es "
 "inválido"
 
-#: mcs/mcs/cs-tokenizer.cs:3374 mcs/mcs/cs-tokenizer.cs:4094
+#: mcs/mcs/cs-tokenizer.cs:3379 mcs/mcs/cs-tokenizer.cs:4099
 msgid "Newline in constant"
 msgstr "Hay un carácter nueva-linea en la constante"
 
-#: mcs/mcs/cs-tokenizer.cs:3401
+#: mcs/mcs/cs-tokenizer.cs:3406
 msgid "Unterminated string literal"
 msgstr "La literal de texto no tiene fin"
 
-#: mcs/mcs/cs-tokenizer.cs:3445 mcs/mcs/cs-tokenizer.cs:3476
+#: mcs/mcs/cs-tokenizer.cs:3450 mcs/mcs/cs-tokenizer.cs:3481
 #, fuzzy, csharp-format
 msgid "Unexpected character `\\{0}'"
 msgstr "Esperaba `{0}'"
 
-#: mcs/mcs/cs-tokenizer.cs:3492
+#: mcs/mcs/cs-tokenizer.cs:3497
 msgid "Identifier too long (limit is 512 chars)"
 msgstr "El identificador es demasiado grande (el límite son 512 caracteres)"
 
-#: mcs/mcs/cs-tokenizer.cs:3839
+#: mcs/mcs/cs-tokenizer.cs:3844
 msgid "A single-line comment may not be used in an interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:3909
+#: mcs/mcs/cs-tokenizer.cs:3914
 msgid "End-of-file found, '*/' expected"
 msgstr "El archivo se terminó, y esperaba encontrar un `*/'"
 
-#: mcs/mcs/cs-tokenizer.cs:4006
+#: mcs/mcs/cs-tokenizer.cs:4011
 msgid "Missing close delimiter `}' for interpolated expression"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4027
+#: mcs/mcs/cs-tokenizer.cs:4032
 msgid "Keyword, identifier, or string expected after verbatim specifier: @"
 msgstr ""
 "Esperaba una palabra clave, un identificador o una cadena después del "
 "especificador '@' (al pie de la letra)"
 
-#: mcs/mcs/cs-tokenizer.cs:4064
+#: mcs/mcs/cs-tokenizer.cs:4069
 #, fuzzy, csharp-format
 msgid "Unexpected character `{0}'"
 msgstr "Esperaba `{0}'"
 
-#: mcs/mcs/cs-tokenizer.cs:4089
+#: mcs/mcs/cs-tokenizer.cs:4094
 msgid "Empty character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4110
+#: mcs/mcs/cs-tokenizer.cs:4115
 msgid "Too many characters in character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4220 mcs/mcs/cs-tokenizer.cs:4283
+#: mcs/mcs/cs-tokenizer.cs:4225 mcs/mcs/cs-tokenizer.cs:4288
 #, csharp-format
 msgid ""
 "A `{0}' character may only be escaped by doubling `{0}{0}' in an "
 "interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4261
+#: mcs/mcs/cs-tokenizer.cs:4266
 msgid "Empty interpolated expression format specifier"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4263
+#: mcs/mcs/cs-tokenizer.cs:4268
 #, fuzzy
 msgid ""
 "A interpolated expression format specifier may not contain trailing "
@@ -3935,7 +3935,7 @@ msgstr ""
 msgid "A goto case is only valid inside a switch statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1813 mcs/mcs/statement.cs:7008
+#: mcs/mcs/statement.cs:1813 mcs/mcs/statement.cs:7016
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
@@ -4078,50 +4078,50 @@ msgstr ""
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6597
+#: mcs/mcs/statement.cs:6605
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6677
+#: mcs/mcs/statement.cs:6685
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6682
+#: mcs/mcs/statement.cs:6690
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6868
+#: mcs/mcs/statement.cs:6876
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7483
+#: mcs/mcs/statement.cs:7491
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7720
+#: mcs/mcs/statement.cs:7728
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8136
+#: mcs/mcs/statement.cs:8144
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8180
+#: mcs/mcs/statement.cs:8188
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4129,23 +4129,23 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8201
+#: mcs/mcs/statement.cs:8209
 #, fuzzy
 msgid "Use of default literal is not valid in this context"
 msgstr "El tipo predefinido `{0}.{1}' no está definido o no ha sido importado"
 
-#: mcs/mcs/statement.cs:8204
+#: mcs/mcs/statement.cs:8212
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8442
+#: mcs/mcs/statement.cs:8450
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8454
+#: mcs/mcs/statement.cs:8462
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "El mandato `foreach' no puede operar en un `{0}'"

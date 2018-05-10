@@ -37,6 +37,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.HMACSHA256))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.HMACSHA384))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.HMACSHA512))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.IncrementalHash))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.MaskGenerationMethod))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.MD5))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.PKCS1MaskGenerationMethod))]
@@ -67,17 +68,3 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.SHA512Managed))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.SignatureDescription))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.TripleDES))]
-namespace System.Security.Cryptography
-{
-    public sealed partial class IncrementalHash : System.IDisposable
-    {
-        internal IncrementalHash() { }
-        public System.Security.Cryptography.HashAlgorithmName AlgorithmName { get { throw null; } }
-        public void AppendData(byte[] data) { }
-        public void AppendData(byte[] data, int offset, int count) { }
-        public static System.Security.Cryptography.IncrementalHash CreateHash(System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
-        public static System.Security.Cryptography.IncrementalHash CreateHMAC(System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] key) { throw null; }
-        public void Dispose() { }
-        public byte[] GetHashAndReset() { throw null; }
-    }
-}

@@ -258,7 +258,7 @@ Facades/System.Xml.XmlSerializer_REFS := mscorlib System.Xml
 Facades/netstandard_REFS := mscorlib System System.Core System.Data System.Diagnostics.Tracing System.Drawing System.IO.Compression System.IO.Compression.FileSystem System.ComponentModel.Composition System.Net.Http System.Numerics System.Runtime.Serialization System.Transactions System.Web System.Xml System.Xml.Linq
 
 mscorlib_CSC_ARGS := -runtimemetadataversion:v4.0.30319
-System_CSC_ARGS := -d:CONFIG_DEP -d:XML_DEP
+System_CSC_ARGS := -d:CONFIG_DEP -d:XML_DEP ../src/Mono/System.extra.cs
 System.Configuration_CSC_ARGS := -d:CONFIG_DEP
 System.Xml_CSC_ARGS := -d:CONFIG_DEP
 System.ServiceModel.Activation_CSC_ARGS := -d:SERVICEMODEL_DEP -d:WEB_DEP

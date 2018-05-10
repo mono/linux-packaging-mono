@@ -98,7 +98,7 @@ create_method_noilgen (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
 
 	g_assert (mb != NULL);
 
-	image = mb->method->klass->image;
+	image = m_class_get_image (mb->method->klass);
 
 	{
 		/* Realloc the method info into a mempool */

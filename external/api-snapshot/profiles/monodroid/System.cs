@@ -93,6 +93,13 @@ namespace System
     {
         public NewsStyleUriParser() { }
     }
+    public static partial class StringNormalizationExtensions
+    {
+        public static bool IsNormalized(this string strInput) { throw null; }
+        public static bool IsNormalized(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
+        public static string Normalize(this string strInput) { throw null; }
+        public static string Normalize(this string strInput, System.Text.NormalizationForm normalizationForm) { throw null; }
+    }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.UriTypeConverter))]
     [System.SerializableAttribute]
     public partial class Uri : System.Runtime.Serialization.ISerializable
@@ -807,6 +814,8 @@ namespace System.Collections.Generic
 }
 namespace System.Collections.ObjectModel
 {
+    [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.CollectionDebugView<T>")]
     [System.SerializableAttribute]
     public partial class ObservableCollection<T> : System.Collections.ObjectModel.Collection<T>, System.Collections.Specialized.INotifyCollectionChanged, System.ComponentModel.INotifyPropertyChanged
     {
@@ -827,6 +836,8 @@ namespace System.Collections.ObjectModel
         protected override void RemoveItem(int index) { }
         protected override void SetItem(int index, T item) { }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.CollectionDebugView<T>")]
     [System.SerializableAttribute]
     public partial class ReadOnlyObservableCollection<T> : System.Collections.ObjectModel.ReadOnlyCollection<T>, System.Collections.Specialized.INotifyCollectionChanged, System.ComponentModel.INotifyPropertyChanged
     {
@@ -857,6 +868,7 @@ namespace System.Collections.Specialized
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
         public static string ToString(System.Collections.Specialized.BitVector32 value) { throw null; }
+        [System.Runtime.CompilerServices.IsReadOnlyAttribute]
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Section
         {
@@ -933,6 +945,14 @@ namespace System.Collections.Specialized
         public System.Collections.IDictionaryEnumerator GetEnumerator() { throw null; }
         public void Remove(object key) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
+        [System.SerializableAttribute]
+        public partial class DictionaryNode
+        {
+            public object key;
+            public System.Collections.Specialized.ListDictionary.DictionaryNode next;
+            public object value;
+            public DictionaryNode() { }
+        }
     }
     [System.SerializableAttribute]
     public abstract partial class NameObjectCollectionBase : System.Collections.ICollection, System.Collections.IEnumerable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
@@ -1064,7 +1084,6 @@ namespace System.Collections.Specialized
         public bool Contains(object key) { throw null; }
         public void CopyTo(System.Array array, int index) { }
         public virtual System.Collections.IDictionaryEnumerator GetEnumerator() { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public void Insert(int index, object key, object value) { }
         protected virtual void OnDeserialization(object sender) { }
@@ -1103,7 +1122,6 @@ namespace System.Collections.Specialized
         void System.Collections.IList.Insert(int index, object value) { }
         void System.Collections.IList.Remove(object value) { }
     }
-    [System.ComponentModel.Design.Serialization.DesignerSerializerAttribute("System.Diagnostics.Design.StringDictionaryCodeDomSerializer, System.Design, Version=2.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.Serialization.CodeDomSerializer, System.Design, Version=2.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.SerializableAttribute]
     public partial class StringDictionary : System.Collections.IEnumerable
     {
@@ -4814,6 +4832,15 @@ namespace System.Diagnostics
         protected override void OnValueChanged() { }
         public bool ShouldTrace(System.Diagnostics.TraceEventType eventType) { throw null; }
     }
+    public static partial class StackFrameExtensions
+    {
+        public static System.IntPtr GetNativeImageBase(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static System.IntPtr GetNativeIP(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasILOffset(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasMethod(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasNativeImage(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+        public static bool HasSource(this System.Diagnostics.StackFrame stackFrame) { throw null; }
+    }
     public partial class Stopwatch
     {
         public static readonly long Frequency;
@@ -5180,7 +5207,7 @@ namespace System.IO
         public string Name { get { throw null; } }
     }
     public delegate void FileSystemEventHandler(object sender, System.IO.FileSystemEventArgs e);
-    public partial class FileSystemWatcher : System.ComponentModel.Component, System.ComponentModel.ISupportInitialize, System.IDisposable
+    public partial class FileSystemWatcher : System.ComponentModel.Component, System.ComponentModel.ISupportInitialize
     {
         public FileSystemWatcher() { }
         public FileSystemWatcher(string path) { }
@@ -5252,10 +5279,10 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
-        public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
-        public string Name { get { throw null; } set { } }
-        public string OldName { get { throw null; } set { } }
-        public bool TimedOut { get { throw null; } set { } }
+        public System.IO.WatcherChangeTypes ChangeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string OldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TimedOut { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     [System.FlagsAttribute]
     public enum WatcherChangeTypes
@@ -5640,18 +5667,16 @@ namespace System.Net
     public sealed partial class FtpWebRequest : System.Net.WebRequest
     {
         internal FtpWebRequest() { }
-        [System.MonoTODOAttribute]
+        public override System.Net.Cache.RequestCachePolicy CachePolicy { get { throw null; } set { } }
         public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override string ConnectionGroupName { get { throw null; } set { } }
         public override long ContentLength { get { throw null; } set { } }
         public long ContentOffset { get { throw null; } set { } }
         public override string ContentType { get { throw null; } set { } }
         public override System.Net.ICredentials Credentials { get { throw null; } set { } }
+        public static new System.Net.Cache.RequestCachePolicy DefaultCachePolicy { get { throw null; } set { } }
         public bool EnableSsl { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override System.Net.WebHeaderCollection Headers { get { throw null; } set { } }
-        [System.MonoTODOAttribute("We don't support KeepAlive = true")]
         public bool KeepAlive { get { throw null; } set { } }
         public override string Method { get { throw null; } set { } }
         public override bool PreAuthenticate { get { throw null; } set { } }
@@ -5662,7 +5687,6 @@ namespace System.Net
         public System.Net.ServicePoint ServicePoint { get { throw null; } }
         public override int Timeout { get { throw null; } set { } }
         public bool UseBinary { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public override bool UseDefaultCredentials { get { throw null; } set { } }
         public bool UsePassive { get { throw null; } set { } }
         public override void Abort() { }
@@ -5673,7 +5697,7 @@ namespace System.Net
         public override System.IO.Stream GetRequestStream() { throw null; }
         public override System.Net.WebResponse GetResponse() { throw null; }
     }
-    public partial class FtpWebResponse : System.Net.WebResponse
+    public partial class FtpWebResponse : System.Net.WebResponse, System.IDisposable
     {
         internal FtpWebResponse() { }
         public string BannerMessage { get { throw null; } }
@@ -9075,6 +9099,16 @@ namespace System.Runtime.Versioning
         public override string ToString() { throw null; }
     }
 }
+namespace System.Security
+{
+    public static partial class SecureStringMarshal
+    {
+        public static System.IntPtr SecureStringToCoTaskMemAnsi(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToCoTaskMemUnicode(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToGlobalAllocAnsi(System.Security.SecureString s) { throw null; }
+        public static System.IntPtr SecureStringToGlobalAllocUnicode(System.Security.SecureString s) { throw null; }
+    }
+}
 namespace System.Security.AccessControl
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
@@ -9841,8 +9875,10 @@ namespace System.Text.RegularExpressions
         public string Value { get { throw null; } }
         public override string ToString() { throw null; }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Capture>")]
     [System.SerializableAttribute]
-    public partial class CaptureCollection : System.Collections.ICollection, System.Collections.IEnumerable
+    public partial class CaptureCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Capture>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         internal CaptureCollection() { }
         public int Count { get { throw null; } }
@@ -9850,8 +9886,27 @@ namespace System.Text.RegularExpressions
         public bool IsSynchronized { get { throw null; } }
         public System.Text.RegularExpressions.Capture this[int i] { get { throw null; } }
         public object SyncRoot { get { throw null; } }
+        System.Text.RegularExpressions.Capture System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>.this[int index] { get { throw null; } set { } }
+        bool System.Collections.IList.IsFixedSize { get { throw null; } }
+        object System.Collections.IList.this[int index] { get { throw null; } set { } }
         public void CopyTo(System.Array array, int arrayIndex) { }
+        public void CopyTo(System.Text.RegularExpressions.Capture[] array, int arrayIndex) { }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>.Add(System.Text.RegularExpressions.Capture item) { }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>.Clear() { }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>.Contains(System.Text.RegularExpressions.Capture item) { throw null; }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>.Remove(System.Text.RegularExpressions.Capture item) { throw null; }
+        System.Collections.Generic.IEnumerator<System.Text.RegularExpressions.Capture> System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Capture>.GetEnumerator() { throw null; }
+        int System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>.IndexOf(System.Text.RegularExpressions.Capture item) { throw null; }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>.Insert(int index, System.Text.RegularExpressions.Capture item) { }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>.RemoveAt(int index) { }
+        int System.Collections.IList.Add(object value) { throw null; }
+        void System.Collections.IList.Clear() { }
+        bool System.Collections.IList.Contains(object value) { throw null; }
+        int System.Collections.IList.IndexOf(object value) { throw null; }
+        void System.Collections.IList.Insert(int index, object value) { }
+        void System.Collections.IList.Remove(object value) { }
+        void System.Collections.IList.RemoveAt(int index) { }
     }
     [System.SerializableAttribute]
     public partial class Group : System.Text.RegularExpressions.Capture
@@ -9862,8 +9917,10 @@ namespace System.Text.RegularExpressions
         public bool Success { get { throw null; } }
         public static System.Text.RegularExpressions.Group Synchronized(System.Text.RegularExpressions.Group inner) { throw null; }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Group>")]
     [System.SerializableAttribute]
-    public partial class GroupCollection : System.Collections.ICollection, System.Collections.IEnumerable
+    public partial class GroupCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Group>, System.Collections.Generic.IList<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Group>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         internal GroupCollection() { }
         public int Count { get { throw null; } }
@@ -9872,8 +9929,27 @@ namespace System.Text.RegularExpressions
         public System.Text.RegularExpressions.Group this[int groupnum] { get { throw null; } }
         public System.Text.RegularExpressions.Group this[string groupname] { get { throw null; } }
         public object SyncRoot { get { throw null; } }
+        System.Text.RegularExpressions.Group System.Collections.Generic.IList<System.Text.RegularExpressions.Group>.this[int index] { get { throw null; } set { } }
+        bool System.Collections.IList.IsFixedSize { get { throw null; } }
+        object System.Collections.IList.this[int index] { get { throw null; } set { } }
         public void CopyTo(System.Array array, int arrayIndex) { }
+        public void CopyTo(System.Text.RegularExpressions.Group[] array, int arrayIndex) { }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>.Add(System.Text.RegularExpressions.Group item) { }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>.Clear() { }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>.Contains(System.Text.RegularExpressions.Group item) { throw null; }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>.Remove(System.Text.RegularExpressions.Group item) { throw null; }
+        System.Collections.Generic.IEnumerator<System.Text.RegularExpressions.Group> System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Group>.GetEnumerator() { throw null; }
+        int System.Collections.Generic.IList<System.Text.RegularExpressions.Group>.IndexOf(System.Text.RegularExpressions.Group item) { throw null; }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Group>.Insert(int index, System.Text.RegularExpressions.Group item) { }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Group>.RemoveAt(int index) { }
+        int System.Collections.IList.Add(object value) { throw null; }
+        void System.Collections.IList.Clear() { }
+        bool System.Collections.IList.Contains(object value) { throw null; }
+        int System.Collections.IList.IndexOf(object value) { throw null; }
+        void System.Collections.IList.Insert(int index, object value) { }
+        void System.Collections.IList.Remove(object value) { }
+        void System.Collections.IList.RemoveAt(int index) { }
     }
     [System.SerializableAttribute]
     public partial class Match : System.Text.RegularExpressions.Group
@@ -9885,8 +9961,10 @@ namespace System.Text.RegularExpressions
         public virtual string Result(string replacement) { throw null; }
         public static System.Text.RegularExpressions.Match Synchronized(System.Text.RegularExpressions.Match inner) { throw null; }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Match>")]
     [System.SerializableAttribute]
-    public partial class MatchCollection : System.Collections.ICollection, System.Collections.IEnumerable
+    public partial class MatchCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Match>, System.Collections.Generic.IList<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Match>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         internal MatchCollection() { }
         public int Count { get { throw null; } }
@@ -9894,10 +9972,28 @@ namespace System.Text.RegularExpressions
         public bool IsSynchronized { get { throw null; } }
         public virtual System.Text.RegularExpressions.Match this[int i] { get { throw null; } }
         public object SyncRoot { get { throw null; } }
+        System.Text.RegularExpressions.Match System.Collections.Generic.IList<System.Text.RegularExpressions.Match>.this[int index] { get { throw null; } set { } }
+        bool System.Collections.IList.IsFixedSize { get { throw null; } }
+        object System.Collections.IList.this[int index] { get { throw null; } set { } }
         public void CopyTo(System.Array array, int arrayIndex) { }
+        public void CopyTo(System.Text.RegularExpressions.Match[] array, int arrayIndex) { }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>.Add(System.Text.RegularExpressions.Match item) { }
+        void System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>.Clear() { }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>.Contains(System.Text.RegularExpressions.Match item) { throw null; }
+        bool System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>.Remove(System.Text.RegularExpressions.Match item) { throw null; }
+        System.Collections.Generic.IEnumerator<System.Text.RegularExpressions.Match> System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Match>.GetEnumerator() { throw null; }
+        int System.Collections.Generic.IList<System.Text.RegularExpressions.Match>.IndexOf(System.Text.RegularExpressions.Match item) { throw null; }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Match>.Insert(int index, System.Text.RegularExpressions.Match item) { }
+        void System.Collections.Generic.IList<System.Text.RegularExpressions.Match>.RemoveAt(int index) { }
+        int System.Collections.IList.Add(object value) { throw null; }
+        void System.Collections.IList.Clear() { }
+        bool System.Collections.IList.Contains(object value) { throw null; }
+        int System.Collections.IList.IndexOf(object value) { throw null; }
+        void System.Collections.IList.Insert(int index, object value) { }
+        void System.Collections.IList.Remove(object value) { }
+        void System.Collections.IList.RemoveAt(int index) { }
     }
-    [System.SerializableAttribute]
     public delegate string MatchEvaluator(System.Text.RegularExpressions.Match match);
     [System.SerializableAttribute]
     public partial class Regex : System.Runtime.Serialization.ISerializable
@@ -9907,9 +10003,7 @@ namespace System.Text.RegularExpressions
         protected internal int capsize;
         protected internal string[] capslist;
         protected internal System.Text.RegularExpressions.RegexRunnerFactory factory;
-        [System.NonSerializedAttribute]
         public static readonly System.TimeSpan InfiniteMatchTimeout;
-        [System.Runtime.Serialization.OptionalFieldAttribute(VersionAdded=2)]
         protected internal System.TimeSpan internalMatchTimeout;
         protected internal string pattern;
         protected internal System.Text.RegularExpressions.RegexOptions roptions;
@@ -9973,7 +10067,7 @@ namespace System.Text.RegularExpressions
         public override string ToString() { throw null; }
         public static string Unescape(string str) { throw null; }
         protected bool UseOptionC() { throw null; }
-        protected bool UseOptionR() { throw null; }
+        protected internal bool UseOptionR() { throw null; }
         protected internal static void ValidateMatchTimeout(System.TimeSpan matchTimeout) { }
     }
     [System.SerializableAttribute]
@@ -9981,27 +10075,25 @@ namespace System.Text.RegularExpressions
     {
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic) { }
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic, System.TimeSpan matchTimeout) { }
-        public bool IsPublic { get { throw null; } set { } }
+        public bool IsPublic { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.TimeSpan MatchTimeout { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
-        public System.Text.RegularExpressions.RegexOptions Options { get { throw null; } set { } }
+        public System.Text.RegularExpressions.RegexOptions Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string Pattern { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class RegexMatchTimeoutException : System.TimeoutException, System.Runtime.Serialization.ISerializable
     {
         public RegexMatchTimeoutException() { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SerializationFormatter=true)]
         protected RegexMatchTimeoutException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public RegexMatchTimeoutException(string message) { }
         public RegexMatchTimeoutException(string message, System.Exception inner) { }
         public RegexMatchTimeoutException(string regexInput, string regexPattern, System.TimeSpan matchTimeout) { }
-        public string Input { [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]get { throw null; } }
-        public System.TimeSpan MatchTimeout { [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]get { throw null; } }
-        public string Pattern { [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SerializationFormatter=true)]
-        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext context) { }
+        public string Input { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.TimeSpan MatchTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Pattern { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]
     public enum RegexOptions
@@ -10017,7 +10109,6 @@ namespace System.Text.RegularExpressions
         RightToLeft = 64,
         Singleline = 16,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public abstract partial class RegexRunner
     {
         protected internal int[] runcrawl;
@@ -10059,7 +10150,6 @@ namespace System.Text.RegularExpressions
         protected void TransferCapture(int capnum, int uncapnum, int start, int end) { }
         protected void Uncapture() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public abstract partial class RegexRunnerFactory
     {
         protected RegexRunnerFactory() { }

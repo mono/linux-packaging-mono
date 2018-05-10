@@ -12,7 +12,10 @@ namespace Internal.Runtime.Augments
     /// assembly.
     /// Implemented in System.Private.Threading.
     /// </summary>
-    public abstract class TaskTraceCallbacks
+#if !MONO
+    public 
+#endif
+    abstract class TaskTraceCallbacks
     {
         public abstract bool Enabled { get; }
 

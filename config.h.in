@@ -89,20 +89,17 @@
 /* Disable CAS/CoreCLR security */
 #undef DISABLE_SECURITY
 
-/* Disable major=copying support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_COPYING
+/* Disable debug helpers in SGEN. */
+#undef DISABLE_SGEN_DEBUG_HELPERS
 
-/* Disable major=marksweep-fixed support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_FIXED
+/* Disable gc bridge support in SGEN. */
+#undef DISABLE_SGEN_GC_BRIDGE
 
-/* Disable major=marksweep-fixed-par support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_FIXED_PAR
+/* Disable concurrent gc support in SGEN. */
+#undef DISABLE_SGEN_MAJOR_MARKSWEEP_CONC
 
-/* Disable major=marksweep-par support in SGEN. */
-#undef DISABLE_SGEN_MAJOR_MARKSWEEP_PAR
-
-/* Disable wbarrier=remset support in SGEN. */
-#undef DISABLE_SGEN_REMSET
+/* Disable minor=split support in SGEN. */
+#undef DISABLE_SGEN_SPLIT_NURSERY
 
 /* Disable Shadow Copy for AppDomains */
 #undef DISABLE_SHADOW_COPY
@@ -130,6 +127,9 @@
 
 /* Enable metadata checked build */
 #undef ENABLE_CHECKED_BUILD_METADATA
+
+/* Enable private types checked build */
+#undef ENABLE_CHECKED_BUILD_PRIVATE_TYPES
 
 /* Enable thread checked build */
 #undef ENABLE_CHECKED_BUILD_THREAD
@@ -166,6 +166,9 @@
 
 /* Define to 1 if you have the `accept4' function. */
 #undef HAVE_ACCEPT4
+
+/* Have access */
+#undef HAVE_ACCESS
 
 /* Has the 'aintl' function */
 #undef HAVE_AINTL
@@ -436,9 +439,6 @@
 
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
-
-/* Define if you have the iconv() function and it works. */
-#undef HAVE_ICONV
 
 /* Define to 1 if you have the <iconv.h> header file. */
 #undef HAVE_ICONV_H
@@ -1133,9 +1133,6 @@
 
 /* ... */
 #undef HOST_X86
-
-/* Define as const if the declaration of iconv() needs const. */
-#undef ICONV_CONST
 
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION

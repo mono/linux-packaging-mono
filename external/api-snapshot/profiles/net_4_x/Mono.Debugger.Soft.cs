@@ -502,6 +502,7 @@ namespace Mono.Debugger.Soft
         public PointerValue(Mono.Debugger.Soft.VirtualMachine vm, Mono.Debugger.Soft.TypeMirror type, long addr) { }
         public long Address { get { throw null; } }
         public Mono.Debugger.Soft.TypeMirror Type { get { throw null; } }
+        public Mono.Debugger.Soft.Value Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
@@ -740,6 +741,7 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.Value GetValue(Mono.Debugger.Soft.FieldInfoMirror field, Mono.Debugger.Soft.ThreadMirror thread) { throw null; }
         public Mono.Debugger.Soft.Value[] GetValues(System.Collections.Generic.IList<Mono.Debugger.Soft.FieldInfoMirror> fields) { throw null; }
         public Mono.Debugger.Soft.Value[] GetValues(System.Collections.Generic.IList<Mono.Debugger.Soft.FieldInfoMirror> fields, Mono.Debugger.Soft.ThreadMirror thread) { throw null; }
+        public int GetValueSize() { throw null; }
         protected virtual bool HasElementTypeImpl() { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }

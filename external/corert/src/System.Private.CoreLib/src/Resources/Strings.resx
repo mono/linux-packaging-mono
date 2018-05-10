@@ -534,6 +534,9 @@
   <data name="Argument_DateTimeKindMustBeUnspecified" xml:space="preserve">
     <value>The supplied DateTime must have the Kind property set to DateTimeKind.Unspecified.</value>
   </data>
+  <data name="Argument_DateTimeKindMustBeUnspecifiedOrUtc" xml:space="preserve">
+    <value>The supplied DateTime must have the Kind property set to DateTimeKind.Unspecified or DateTimeKind.Utc.</value>
+  </data>
   <data name="Argument_DateTimeOffsetInvalidDateTimeStyles" xml:space="preserve">
     <value>The DateTimeStyles value 'NoCurrentDateDefault' is not allowed when parsing DateTimeOffset.</value>
   </data>
@@ -566,15 +569,6 @@
   </data>
   <data name="Argument_FallbackBufferNotEmpty" xml:space="preserve">
     <value>Cannot change fallback when buffer is not empty. Previous Convert() call left data in the fallback buffer.</value>
-  </data>
-  <data name="Argument_IdnBadLabelSize" xml:space="preserve">
-    <value>IDN labels must be between 1 and 63 characters long.</value>
-  </data>
-  <data name="Argument_IdnBadPunycode" xml:space="preserve">
-    <value>Invalid IDN encoded string.</value>
-  </data>
-  <data name="Argument_IdnIllegalName" xml:space="preserve">
-    <value>Decoded string is not a valid IDN name.</value>
   </data>
   <data name="Argument_ImplementIComparable" xml:space="preserve">
     <value>At least one object must implement IComparable.</value>
@@ -1176,6 +1170,9 @@
   <data name="InvalidOperation_AsyncFlowCtrlCtxMismatch" xml:space="preserve">
     <value>AsyncFlowControl objects can be used to restore flow only on a Context that had its flow suppressed.</value>
   </data>
+  <data name="InvalidOperation_AsyncIOInProgress" xml:space="preserve">
+    <value>The stream is currently in use by a previous operation on the stream.</value>
+  </data>
   <data name="InvalidProgram_Default" xml:space="preserve">
     <value>Common Language Runtime detected an invalid program.</value>
   </data>
@@ -1193,6 +1190,18 @@
   </data>
   <data name="InvalidTimeZone_InvalidRegistryData" xml:space="preserve">
     <value>The time zone ID '{0}' was found on the local computer, but the registry information was corrupt.</value>
+  </data>
+  <data name="InvalidTimeZone_InvalidFileData" xml:space="preserve">
+    <value>The time zone ID '{0}' was found on the local computer, but the file at '{1}' was corrupt.</value>
+  </data>
+  <data name="InvalidTimeZone_JulianDayNotSupported" xml:space="preserve">
+    <value>Julian dates in POSIX strings are unsupported.</value>
+  </data>
+  <data name="InvalidTimeZone_NoTTInfoStructures" xml:space="preserve">
+    <value>There are no ttinfo structures in the tzfile.  At least one ttinfo structure is required in order to construct a TimeZoneInfo object.</value>
+  </data>
+  <data name="InvalidTimeZone_UnparseablePosixMDateString" xml:space="preserve">
+    <value>'{0}' is not a valid POSIX-TZ-environment-variable MDate rule.  A valid rule has the format 'Mm.w.d'.</value>
   </data>
   <data name="IO_DriveNotFound_Drive" xml:space="preserve">
     <value>Could not find the drive '{0}'. The drive might not be ready or might not be mapped.</value>
@@ -1386,7 +1395,7 @@
   <data name="Threading_WaitHandleCannotBeOpenedException_InvalidHandle" xml:space="preserve">
     <value>A WaitHandle with system-wide name '{0}' cannot be created. A WaitHandle of a different type might have the same name.</value>
   </data>
-  <data name="TimeZoneNotFound_MissingRegistryData" xml:space="preserve">
+  <data name="TimeZoneNotFound_MissingData" xml:space="preserve">
     <value>The time zone ID '{0}' was not found on the local computer.</value>
   </data>
   <data name="TypeInitialization_Default" xml:space="preserve">
@@ -1855,6 +1864,9 @@
   <data name="Format_StringZeroLength" xml:space="preserve">
     <value>String cannot have zero length.</value>
   </data>
+  <data name="Security_CannotReadFileData" xml:space="preserve">
+    <value>The time zone ID '{0}' was found on the local computer, but the application does not have permission to read the file.</value>
+  </data>
   <data name="Security_CannotReadRegistryData" xml:space="preserve">
     <value>The time zone ID '{0}' was found on the local computer, but the application does not have permission to read the registry information.</value>
   </data>
@@ -1972,9 +1984,6 @@
   <data name="IndexOutOfRange_UMSPosition" xml:space="preserve">
     <value>Unmanaged memory stream position was beyond the capacity of the stream.</value>
   </data>
-  <data name="ObjectDisposed_StreamIsClosed" xml:space="preserve">
-    <value>Cannot access a closed Stream.</value>
-  </data>
   <data name="ObjectDisposed_ViewAccessorClosed" xml:space="preserve">
     <value>Cannot access a closed accessor.</value>
   </data>
@@ -2031,6 +2040,9 @@
   </data>
   <data name="IO_FileStreamHandlePosition" xml:space="preserve">
     <value>The OS handle's position is not what FileStream expected. Do not use a handle simultaneously in one FileStream and in Win32 code or another FileStream. This may cause data loss.</value>
+  </data>
+  <data name="IO_FileTooLong2GB" xml:space="preserve">
+    <value>The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size.</value>
   </data>
   <data name="NotSupported_FileStreamOnNonFiles" xml:space="preserve">
     <value>FileStream was asked to open a device that was not a file. For support for devices like 'com1:' or 'lpt1:', call CreateFile, then use the FileStream constructors that take an OS handle as an IntPtr.</value>
@@ -2599,6 +2611,9 @@
   <data name="Argument_InvalidTypeWithPointersNotSupported" xml:space="preserve">
     <value>Cannot use type '{0}'. Only value types without pointers or references are supported.</value>
   </data>
+  <data name="Argument_OverlapAlignmentMismatch" xml:space="preserve">
+    <value>Overlapping spans have mismatching alignment.</value>
+  </data>
   <data name="ArrayTypeMismatch_ConstrainedCopy" xml:space="preserve">
     <value>Array.ConstrainedCopy will only work on array types that are provably compatible, without any form of boxing, unboxing, widening, or casting of each array element.  Change the array types (i.e., copy a Derived[] to a Base[]), or use a mitigation strategy in the CER for Array.Copy's less powerful reliability contract, such as cloning the array or throwing away the potentially corrupt destination array.</value>
   </data>
@@ -2668,13 +2683,16 @@
   <data name="Argument_IdnBadStd3" xml:space="preserve">
     <value>Label contains character '{0}' not allowed with UseStd3AsciiRules</value>
   </data>
+  <data name="Argument_IdnIllegalName" xml:space="preserve">
+    <value>Decoded string is not a valid IDN name.</value>
+  </data>
   <data name="InvalidOperation_NotGenericType" xml:space="preserve">
     <value>This operation is only valid on generic types.</value>
   </data>
   <data name="NotSupported_SignatureType" xml:space="preserve">
     <value>This method is not supported on signature types.</value>
   </data>
-  <data name="Memory_ThrowIfDisposed" xml:space="preserve">
+  <data name="MemoryDisposed" xml:space="preserve">
     <value>Memory&lt;T&gt; has been disposed.</value>
   </data>
   <data name="Memory_OutstandingReferences" xml:space="preserve">
@@ -2685,5 +2703,26 @@
   </data>
   <data name="HashCode_EqualityNotSupported" xml:space="preserve">
     <value>HashCode is a mutable struct and should not be compared with other HashCodes.</value>
+  </data>
+  <data name="ObjectDisposed_WriterClosed" xml:space="preserve">
+    <value>Cannot write to a closed TextWriter.</value>
+  </data>
+  <data name="ObjectDisposed_ReaderClosed" xml:space="preserve">
+    <value>Cannot read from a closed TextReader.</value>
+  </data>
+  <data name="IO_InvalidReadLength" xml:space="preserve">
+    <value>The read operation returned an invalid length.</value>
+  </data>
+  <data name="Arg_BasePathNotFullyQualified" xml:space="preserve">
+    <value>Basepath argument is not fully qualified.</value>
+  </data>
+  <data name="Arg_ElementsInSourceIsGreaterThanDestination" xml:space="preserve">
+    <value>Number of elements in source vector is greater than the destination array</value>
+  </data>
+  <data name="Arg_TypeNotSupported" xml:space="preserve">
+    <value>Specified type is not supported</value>
+  </data>
+  <data name="Arg_NullArgumentNullRef" xml:space="preserve">
+    <value>The method was called with a null array argument.</value>
   </data>
 </root>

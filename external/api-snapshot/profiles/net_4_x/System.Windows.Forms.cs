@@ -18,6 +18,7 @@
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
 [assembly:System.Runtime.CompilerServices.DependencyAttribute("System,", (System.Runtime.CompilerServices.LoadHint)(1))]
 [assembly:System.Runtime.CompilerServices.DependencyAttribute("System.Drawing,", (System.Runtime.CompilerServices.LoadHint)(1))]
+[assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("CocoaDriver, PublicKey=0024000004800000940000000602000000240000525341310004000001000100dfb6f531e52a405fce7bb127fdff8b462a29426618ae319093a6479dbc037c76ce025581c272d47806d3c4c9a65304b7ddacff806e6c7e6483f985a5ac39498190c87b7ddb13d3e9c7107f0ceef392ce3fd01391fd9f61199449fd8702ab0d9c2d32dee637bc557ecc7f75c85b350d0d80d8efdb5bdaa6ecaddae0a23a1eb8db")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Mono.WinformsSupport, PublicKey=00240000048000009400000006020000002400005253413100040000110000004bb98b1af6c1df0df8c02c380e116b7a7f0c8c827aecfccddc6e29b7c754cd608b49dfcef4df9699ad182e50f66afa4e68dabc7b6aeeec0aa4719a5f8e0aae8c193080a706adc3443a8356b1f254142034995532ac176398e12a30f6a74a119a89ac47672c9ae24d7e90de686557166e3b873cd707884431a0451d9d6f7fe795")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("UIAutomationWinforms, PublicKey=00240000048000009400000006020000002400005253413100040000110000004bb98b1af6c1df0df8c02c380e116b7a7f0c8c827aecfccddc6e29b7c754cd608b49dfcef4df9699ad182e50f66afa4e68dabc7b6aeeec0aa4719a5f8e0aae8c193080a706adc3443a8356b1f254142034995532ac176398e12a30f6a74a119a89ac47672c9ae24d7e90de686557166e3b873cd707884431a0451d9d6f7fe795")]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
@@ -1760,6 +1761,7 @@ namespace System.Windows.Forms
             public ObjectCollection(System.Windows.Forms.CheckedListBox owner) : base (default(System.Windows.Forms.ListBox)) { }
             public int Add(object item, bool isChecked) { throw null; }
             public int Add(object item, System.Windows.Forms.CheckState check) { throw null; }
+            public override void Clear() { }
         }
     }
     public enum CheckState
@@ -7093,7 +7095,6 @@ namespace System.Windows.Forms
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.DisplayNameAttribute("FlowBreak")]
         public bool GetFlowBreak(System.Windows.Forms.Control control) { throw null; }
-        protected override void OnLayout(System.Windows.Forms.LayoutEventArgs levent) { }
         [System.ComponentModel.DisplayNameAttribute("FlowBreak")]
         public void SetFlowBreak(System.Windows.Forms.Control control, bool value) { }
         bool System.ComponentModel.IExtenderProvider.CanExtend(object obj) { throw null; }
@@ -16784,11 +16785,9 @@ namespace System.Windows.Forms
         public ToolStripOverflow(System.Windows.Forms.ToolStripItem parentItem) { }
         protected internal override System.Windows.Forms.ToolStripItemCollection DisplayedItems { get { throw null; } }
         public override System.Windows.Forms.ToolStripItemCollection Items { get { throw null; } }
-        public override System.Windows.Forms.Layout.LayoutEngine LayoutEngine { get { throw null; } }
         protected override System.Windows.Forms.AccessibleObject CreateAccessibilityInstance() { throw null; }
+        protected override System.Windows.Forms.LayoutSettings CreateLayoutSettings(System.Windows.Forms.ToolStripLayoutStyle style) { throw null; }
         public override System.Drawing.Size GetPreferredSize(System.Drawing.Size constrainingSize) { throw null; }
-        [System.MonoInternalNoteAttribute("This should stack in rows of ~3, but for now 1 column will work.")]
-        protected override void OnLayout(System.Windows.Forms.LayoutEventArgs e) { }
         protected override void SetDisplayedItems() { }
     }
     [System.Windows.Forms.Design.ToolStripItemDesignerAvailabilityAttribute((System.Windows.Forms.Design.ToolStripItemDesignerAvailability)(0))]
@@ -18366,7 +18365,6 @@ namespace System.Windows.Forms
         protected virtual void OnLoad(System.EventArgs e) { }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
         protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e) { }
-        protected override void OnResize(System.EventArgs e) { }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
         public override bool ValidateChildren() { throw null; }
@@ -18766,6 +18764,7 @@ namespace System.Windows.Forms
         protected override void OnVisibleChanged(System.EventArgs e) { }
         public override bool PreProcessMessage(ref System.Windows.Forms.Message msg) { throw null; }
         protected override bool ProcessMnemonic(char charCode) { throw null; }
+        protected override void SetBoundsCore(int x, int y, int width, int height, System.Windows.Forms.BoundsSpecified specified) { }
         protected override void WndProc(ref System.Windows.Forms.Message m) { }
     }
     public partial class WebBrowserDocumentCompletedEventArgs : System.EventArgs

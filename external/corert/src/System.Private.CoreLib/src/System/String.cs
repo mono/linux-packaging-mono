@@ -12,7 +12,7 @@
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Globalization;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -74,38 +74,9 @@ namespace System
     // constructed itself depends on this class also being eagerly constructed. Plus, it's nice to have this
     // eagerly constructed to avoid the cost of defered ctors. I can't imagine any app that doesn't use string
     //
-    [StructLayout(LayoutKind.Sequential)]
-    [System.Runtime.CompilerServices.EagerStaticClassConstructionAttribute]
     [Serializable]
-    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public sealed partial class String : IComparable, IEnumerable, IEnumerable<char>, IComparable<String>, IEquatable<String>, IConvertible, ICloneable
     {
-#if BIT64
-        private const int POINTER_SIZE = 8;
-#else
-        private const int POINTER_SIZE = 4;
-#endif
-        //                                        m_pEEType    + _stringLength
-        internal const int FIRST_CHAR_OFFSET = POINTER_SIZE + sizeof(int);
-
-        // CS0169: The private field '{blah}' is never used
-        // CS0649: Field '{blah}' is never assigned to, and will always have its default value
-#pragma warning disable 169, 649
-
-#if PROJECTN
-        [Bound]
-#endif
-        // WARNING: We allow diagnostic tools to directly inspect these two members (_stringLength, _firstChar)
-        // See https://github.com/dotnet/corert/blob/master/Documentation/design-docs/diagnostics/diagnostics-tools-contract.md for more details. 
-        // Please do not change the type, the name, or the semantic usage of this member without understanding the implication for tools. 
-        // Get in touch with the diagnostics team if you have questions.
-        [NonSerialized]
-        private int _stringLength;
-        [NonSerialized]
-        private char _firstChar;
-
-#pragma warning restore
-
         // String constructors
         // These are special. the implementation methods for these have a different signature from the
         // declared constructors.
@@ -293,7 +264,7 @@ namespace System
             if (numBytes == 0)
                 return string.Empty;
 
-#if PLATFORM_UNIX
+#if PLATFORM_UNIX || MONO
             return Encoding.UTF8.GetString(pb, numBytes);
 #else
             int numCharsRequired = Interop.Kernel32.MultiByteToWideChar(Interop.Kernel32.CP_ACP, Interop.Kernel32.MB_PRECOMPOSED, pb, numBytes, (char*)null, 0);
@@ -325,6 +296,14 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(length), SR.ArgumentOutOfRange_NeedNonNegNum);
             if (startIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndex);
+
+            if (value == null)
+            {
+                if (length == 0)
+                    return Empty;
+
+                throw new ArgumentNullException(nameof(value));
+            }
 
             byte* pStart = (byte*)(value + startIndex);
             if (pStart < value)
@@ -415,6 +394,7 @@ namespace System
             return result;
         }
 
+#if !MONO // TODO: Undo
         public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
         {
             if (action == null)
@@ -439,6 +419,7 @@ namespace System
 
         public static implicit operator ReadOnlySpan<char>(string value) =>
             value != null ? new ReadOnlySpan<char>(ref value.GetRawStringData(), value.Length) : default;
+#endif
 
         public object Clone()
         {
@@ -462,31 +443,6 @@ namespace System
                 wstrcpy(dest, src, length);
             }
             return result;
-        }
-
-        public static readonly String Empty = "";
-
-        // Gets the character at a specified position.
-        //
-        // Spec#: Apply the precondition here using a contract assembly.  Potential perf issue.
-        [System.Runtime.CompilerServices.IndexerName("Chars")]
-        public unsafe char this[int index]
-        {
-#if PROJECTN
-            [BoundsChecking]
-            get
-            {
-                return Unsafe.Add(ref _firstChar, index);
-            }
-#else
-            [Intrinsic]
-            get
-            {
-                if ((uint)index >= _stringLength)
-                    ThrowHelper.ThrowIndexOutOfRangeException();
-                return Unsafe.Add(ref _firstChar, index);
-            }
-#endif
         }
 
         // Converts a substring of this string to an array of characters.  Copies the
@@ -628,16 +584,6 @@ namespace System
             string result = FastAllocateString(1);
             result._firstChar = c;
             return result;
-        }
-
-        internal static String FastAllocateString(int length)
-        {
-            // We allocate one extra char as an interop convenience so that our strings are null-
-            // terminated, however, we don't pass the extra +1 to the string allocation because the base
-            // size of this object includes the _firstChar field.
-            string newStr = RuntimeImports.RhNewString(EETypePtr.EETypePtrOf<string>(), length);
-            Debug.Assert(newStr._stringLength == length);
-            return newStr;
         }
 
         internal static unsafe void wstrcpy(char* dmem, char* smem, int charCount)

@@ -242,7 +242,7 @@ mono_debug_close_method (MonoCompile *cfg)
 	jit->code_start = cfg->native_code;
 	jit->epilogue_begin = cfg->epilog_begin;
 	jit->code_size = cfg->code_len;
-	jit->has_var_info = debug_options.mdb_optimizations || MONO_CFG_PROFILE_CALL_CONTEXT (cfg);
+	jit->has_var_info = mini_debug_options.mdb_optimizations || MONO_CFG_PROFILE_CALL_CONTEXT (cfg);
 
 	if (jit->epilogue_begin)
 		   record_line_number (info, jit->epilogue_begin, header->code_size);
@@ -665,7 +665,7 @@ void
 mono_debug_print_vars (gpointer ip, gboolean only_arguments)
 {
 	MonoDomain *domain = mono_domain_get ();
-	MonoJitInfo *ji = mono_jit_info_table_find (domain, (char *)ip);
+	MonoJitInfo *ji = mono_jit_info_table_find (domain, ip);
 	MonoDebugMethodJitInfo *jit;
 	int i;
 

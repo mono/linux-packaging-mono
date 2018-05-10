@@ -15,13 +15,7 @@
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
-namespace System.Reflection.Metadata
-{
-    public static partial class AssemblyExtensions
-    {
-        public unsafe static bool TryGetRawMetadata(this System.Reflection.Assembly assembly, out byte* blob, out int length) { blob = default(byte*); length = default(int); throw null; }
-    }
-}
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Reflection.Metadata.AssemblyExtensions))]
 namespace System.Runtime.Loader
 {
     public abstract partial class AssemblyLoadContext

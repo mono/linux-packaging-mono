@@ -83,7 +83,7 @@ namespace Ildasm
         readonly Type typeofSystemType;
         readonly Assembly assembly;
         readonly Module module;
-        readonly Dictionary<Assembly, string> referencedAssemblies = new Dictionary<Assembly, string>();
+        readonly Dictionary<string, string> referencedAssemblies = new Dictionary<string, string>();
         readonly Assembly[] resolvedAssemblies;
         readonly HashSet<Type> typerefs;
         readonly List<FieldInfo> dataFields = new List<FieldInfo>();
@@ -156,7 +156,15 @@ namespace Ildasm
                 }
                 names.Add(name);
                 resolvedAssemblies[i] = universe.CreateMissingAssembly(assemblyRefs[i].FullName);
-                referencedAssemblies.Add(resolvedAssemblies[i], name);
+
+                // Bug #53272: Some .net assemblers will produce references that only use the
+                //  short name of the assembly instead of the full name. We populate the lookup
+                //  table with short names so that everything will still work as intended.
+                // FIXME: What do we do if two versions of the same assembly are referenced?
+                if (!referencedAssemblies.ContainsKey(resolvedAssemblies[i].GetName().Name))
+                    referencedAssemblies.Add(resolvedAssemblies[i].GetName().Name, name);
+
+                referencedAssemblies.Add(resolvedAssemblies[i].FullName, name);
             }
             module.__ResolveReferencedAssemblies(resolvedAssemblies);
             typerefs = new HashSet<Type>(module.__GetReferencedTypes());
@@ -178,6 +186,29 @@ namespace Ildasm
                 }
             }
             return universe.CreateMissingAssembly(args.Name);
+        }
+
+        internal string FindReferencedAssembly(Assembly assembly)
+        {
+            string result;
+            if (!referencedAssemblies.TryGetValue(assembly.FullName, out result))
+            {
+                if (!referencedAssemblies.TryGetValue(assembly.GetName().Name, out result))
+                {
+                    var msg = string.Format("Referenced assembly '{0}' not found", assembly.FullName);
+                    throw new KeyNotFoundException(msg);
+                }
+                else
+                {
+                    // TODO: What do we do here? 
+                    var msg = string.Format(
+                        "Referenced assembly '{0}' not found, but an assembly named '{1}' does exist", 
+                        assembly.FullName, assembly.GetName().Name
+                    );
+                    throw new KeyNotFoundException(msg);
+                }
+            }
+            return result;
         }
 
         internal void Save(System.IO.TextWriter writer)
@@ -364,7 +395,7 @@ namespace Ildasm
                 }
                 else
                 {
-                    lw.WriteLine("  .assembly extern {0}", QuoteIdentifier(referencedAssemblies[exported[i].Assembly]));
+                    lw.WriteLine("  .assembly extern {0}", QuoteIdentifier(FindReferencedAssembly(exported[i].Assembly)));
                 }
                 if (exported[i].MetadataToken != 0)
                 {
@@ -2089,9 +2120,9 @@ namespace Ildasm
                         break;
                 }
                 lw.Write(QuoteIdentifier(asm.Name));
-                if (asm.Name != this.referencedAssemblies[resolvedAssemblies[i]])
+                if (asm.Name != this.FindReferencedAssembly(resolvedAssemblies[i]))
                 {
-                    lw.Write(" as {0}", QuoteIdentifier(this.referencedAssemblies[resolvedAssemblies[i]]));
+                    lw.Write(" as {0}", QuoteIdentifier(this.FindReferencedAssembly(resolvedAssemblies[i])));
                 }
                 lw.WriteLine();
                 lw.WriteLine("{");
@@ -2536,7 +2567,7 @@ namespace Ildasm
                 }
                 else if (mres.ReferencedAssembly != null)
                 {
-                    lw.WriteLine("  .assembly extern {0}", QuoteIdentifier(referencedAssemblies[mres.ReferencedAssembly]));
+                    lw.WriteLine("  .assembly extern {0}", QuoteIdentifier(FindReferencedAssembly(mres.ReferencedAssembly)));
                 }
                 else
                 {
@@ -2703,7 +2734,7 @@ namespace Ildasm
         {
             if (mod.Assembly != assembly)
             {
-                lw.Write("[{0}]", QuoteIdentifier(referencedAssemblies[mod.Assembly]));
+                lw.Write("[{0}]", QuoteIdentifier(FindReferencedAssembly(mod.Assembly)));
             }
             else if (mod != this.module)
             {

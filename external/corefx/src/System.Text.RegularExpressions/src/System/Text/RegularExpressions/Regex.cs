@@ -1081,6 +1081,16 @@ namespace System.Text.RegularExpressions
 
         protected bool UseOptionC()
         {
+#if MOBILE
+            return false;
+#elif MONO
+            // This is here so we can debug this issue: https://github.com/mono/mono/pull/7982,
+            // once that is fixed, we can remove this.   Disabling it completely for mobile
+            // as we are not likely to debug the threading issue there.
+            if (Environment.GetEnvironmentVariable ("MONO_REGEX_COMPILED_ENABLE") == null)
+                return false;
+#endif
+
             return (roptions & RegexOptions.Compiled) != 0;
         }
 

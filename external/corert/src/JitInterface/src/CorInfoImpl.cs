@@ -2,6 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if SUPPORT_JIT
+extern alias System_Private_CoreLib;
+using TextWriter = System_Private_CoreLib::System.IO.TextWriter;
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -855,7 +860,7 @@ namespace Internal.JitInterface
             // Normalize to the slot defining method. We don't have slot information for the overrides.
             methodDesc = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(methodDesc);
 
-            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(_compilation.NodeFactory, methodDesc.Normalize());
+            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(_compilation.NodeFactory, methodDesc);
             Debug.Assert(slot != -1);
 
             offsetAfterIndirection = (uint)(EETypeNode.GetVTableOffset(pointerSize) + slot * pointerSize);
@@ -2899,6 +2904,7 @@ namespace Internal.JitInterface
 
                 if (pResolvedToken.tokenType == CorInfoTokenKind.CORINFO_TOKENKIND_NewObj
                         || pResolvedToken.tokenType == CorInfoTokenKind.CORINFO_TOKENKIND_Box
+                        || pResolvedToken.tokenType == CorInfoTokenKind.CORINFO_TOKENKIND_Constrained
                         || (pResolvedToken.tokenType == CorInfoTokenKind.CORINFO_TOKENKIND_Ldtoken && ConstructedEETypeNode.CreationAllowed(td)))
                 {
                     helperId = ReadyToRunHelperId.TypeHandle;
@@ -3299,7 +3305,7 @@ namespace Internal.JitInterface
                 }
             }
             else if ((flags & CORINFO_CALLINFO_FLAGS.CORINFO_CALLINFO_LDFTN) == 0
-                && _compilation.HasFixedSlotVTable(targetMethod.Normalize().OwningType))
+                && _compilation.HasFixedSlotVTable(targetMethod.OwningType))
             {
                 pResult.kind = CORINFO_CALL_KIND.CORINFO_VIRTUALCALL_VTABLE;
                 pResult.nullInstanceCheck = true;

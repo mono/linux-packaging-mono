@@ -182,8 +182,12 @@ common_sources = \
 	attach.c		\
 	cil-coff.h		\
 	class.c			\
+	class-getters.h		\
+	class-init.h		\
+	class-init.c		\
 	class-internals.h	\
 	class-inlines.h		\
+	class-private-definition.h	\
 	class-accessors.c	\
 	cominterop.c		\
 	cominterop.h		\
@@ -313,6 +317,7 @@ common_sources = \
 	file-mmap.h	\
 	object-offsets.h	\
 	abi-details.h	\
+	class-abi-details.h	\
 	metadata-cross-helpers.c	\
 	seq-points-data.h	\
 	seq-points-data.c	\
@@ -388,6 +393,7 @@ libmonoruntimeinclude_HEADERS = \
 	mono-debug.h		\
 	mono-gc.h		\
 	object.h		\
+	object-forward.h	\
 	opcodes.h		\
 	profiler.h		\
 	profiler-events.h	\
