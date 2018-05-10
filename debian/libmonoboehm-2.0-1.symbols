@@ -505,6 +505,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_world_stopped@Base 4.1.0.1738
  GC_write@Base 4.1.0.1738
  eg_getdtablesize@Base 5.8.0.22
+ eg_my_charset@Base 5.14.0.78
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
