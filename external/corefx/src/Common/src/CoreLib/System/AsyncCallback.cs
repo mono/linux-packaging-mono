@@ -12,5 +12,8 @@
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     public delegate void AsyncCallback(IAsyncResult ar);
 }

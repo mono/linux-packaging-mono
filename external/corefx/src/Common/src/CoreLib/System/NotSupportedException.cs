@@ -16,8 +16,10 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-    public class NotSupportedException : SystemException
+#endif
+    public partial class NotSupportedException : SystemException
     {
         public NotSupportedException()
             : base(SR.Arg_NotSupportedException)

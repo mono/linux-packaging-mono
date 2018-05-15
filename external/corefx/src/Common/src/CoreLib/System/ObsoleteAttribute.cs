@@ -24,6 +24,9 @@ namespace System
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum |
         AttributeTargets.Interface | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Delegate
         , Inherited = false)]
+#if MONO
+    [Serializable]
+#endif
     public sealed class ObsoleteAttribute : Attribute
     {
         private String _message;

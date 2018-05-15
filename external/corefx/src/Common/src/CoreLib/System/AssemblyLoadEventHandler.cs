@@ -4,5 +4,8 @@
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     public delegate void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args);
 }

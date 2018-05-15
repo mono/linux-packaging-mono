@@ -17,6 +17,9 @@ using System.Collections.Generic;
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     public sealed class CharEnumerator : IEnumerator, IEnumerator<char>, IDisposable, ICloneable
     {
         private String _str;

@@ -4,6 +4,9 @@
 
 namespace System.Globalization
 {
+#if MONO
+    [Serializable]
+#endif
     // This class represents a starting/ending time for a period of daylight saving time.
     public class DaylightTime
     {

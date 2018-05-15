@@ -4,6 +4,9 @@
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     public class UnhandledExceptionEventArgs : EventArgs
     {
         private Object _exception;
