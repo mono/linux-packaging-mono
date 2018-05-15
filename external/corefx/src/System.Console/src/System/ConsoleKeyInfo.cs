@@ -4,6 +4,9 @@
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     public readonly struct ConsoleKeyInfo
     {
         private readonly char _keyChar;

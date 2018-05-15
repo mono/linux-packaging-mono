@@ -17,6 +17,9 @@ using System;
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     [AttributeUsage(AttributeTargets.Field, Inherited = false)]
     public class ThreadStaticAttribute : Attribute
     {
