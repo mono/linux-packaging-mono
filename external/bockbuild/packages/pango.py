@@ -36,7 +36,10 @@ class PangoPackage (GnomeXzPackage):
             'patches/pango-coretext-fix-yosemite-crasher.patch',
 
             'patches/pango-system-font-single.patch',
-            'patches/pango-system-font-check-version.patch'
+            'patches/pango-system-font-check-version.patch',
+
+            # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/573960
+            'patches/pango-get-shaper-for-ideographic-space.patch'
         ])
 
     def prep(self):
