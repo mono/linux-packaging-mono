@@ -728,16 +728,16 @@ namespace System.Xaml
         public System.Xaml.XamlReader Reader { get { throw null; } }
         public System.Xaml.XamlWriter Writer { get { throw null; } }
     }
-    public enum XamlNodeType
+    public enum XamlNodeType : byte
     {
-        EndMember = 5,
-        EndObject = 3,
-        GetObject = 2,
-        NamespaceDeclaration = 7,
-        None = 0,
-        StartMember = 4,
-        StartObject = 1,
-        Value = 6,
+        EndMember = (byte)5,
+        EndObject = (byte)3,
+        GetObject = (byte)2,
+        NamespaceDeclaration = (byte)7,
+        None = (byte)0,
+        StartMember = (byte)4,
+        StartObject = (byte)1,
+        Value = (byte)6,
     }
     public partial class XamlObjectEventArgs : System.EventArgs
     {
@@ -1149,12 +1149,12 @@ namespace System.Xaml.Schema
         False = 2,
         True = 1,
     }
-    public enum XamlCollectionKind
+    public enum XamlCollectionKind : byte
     {
-        Array = 3,
-        Collection = 1,
-        Dictionary = 2,
-        None = 0,
+        Array = (byte)3,
+        Collection = (byte)1,
+        Dictionary = (byte)2,
+        None = (byte)0,
     }
     public partial class XamlMemberInvoker
     {
