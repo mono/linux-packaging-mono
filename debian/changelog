@@ -1,3 +1,9 @@
+mono (5.15.0.461-0nightly2) nightly; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 21 May 2018 11:11:08 +0000
+
 mono (5.15.0.461-0nightly1) nightly; urgency=medium
 
   * New release - mono-5.15.0.461.tar.bz2
