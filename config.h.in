@@ -6,6 +6,9 @@
 /* Whether Android NDK unified headers are used */
 #undef ANDROID_UNIFIED_HEADERS
 
+/* bind with unsigned addrlen */
+#undef BIND_ADDRLEN_UNSIGNED
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -164,6 +167,12 @@
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
 
+/* Enable runtime support for Monodroid (Xamarin.Android) */
+#undef ENABLE_MONODROID
+
+/* Enable runtime support for Monotouch (Xamarin.iOS and Xamarin.Mac) */
+#undef ENABLE_MONOTOUCH
+
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
 
@@ -173,7 +182,7 @@
 /* GLIBC has CPU_COUNT macro in sched.h */
 #undef GLIBC_HAS_CPU_COUNT
 
-/* Define to 1 if you have the `accept4' function. */
+/* accept4 */
 #undef HAVE_ACCEPT4
 
 /* Have access */
@@ -243,6 +252,9 @@
 /* Define to 1 if you have the `clock_nanosleep' function. */
 #undef HAVE_CLOCK_NANOSLEEP
 
+/* CLOCK_REALTIME */
+#undef HAVE_CLOCK_REALTIME
+
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
 
@@ -254,6 +266,9 @@
 
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
+
+/* Define to 1 if you have the <crt_externs.h> header file. */
+#undef HAVE_CRT_EXTERNS_H
 
 /* Have /dev/random */
 #undef HAVE_CRYPT_RNG
@@ -299,6 +314,9 @@
 /* Define to 1 if you have the <dirent.h> header file. */
 #undef HAVE_DIRENT_H
 
+/* struct dirent.d_namlen */
+#undef HAVE_DIRENT_NAME_LEN
+
 /* Define to 1 if you have the `dladdr' function. */
 #undef HAVE_DLADDR
 
@@ -310,6 +328,9 @@
 
 /* dlopen-based dynamic loader available */
 #undef HAVE_DL_LOADER
+
+/* ECHO */
+#undef HAVE_ECHO
 
 /* Define to 1 if you have the <elf.h> header file. */
 #undef HAVE_ELF_H
@@ -323,7 +344,7 @@
 /* Define to 1 if you have the `endusershell' function. */
 #undef HAVE_ENDUSERSHELL
 
-/* epoll supported */
+/* epoll_create1 */
 #undef HAVE_EPOLL
 
 /* Define to 1 if you have the `epoll_ctl' function. */
@@ -341,6 +362,12 @@
 /* Define to 1 if you have the `execvp' function. */
 #undef HAVE_EXECVP
 
+/* fcopyfile */
+#undef HAVE_FCOPYFILE
+
+/* struct fd_set.fds_bits */
+#undef HAVE_FDS_BITS
+
 /* Define to 1 if you have the `fgetgrent' function. */
 #undef HAVE_FGETGRENT
 
@@ -349,6 +376,9 @@
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
+
+/* struct flock64 */
+#undef HAVE_FLOCK64
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
@@ -365,6 +395,9 @@
 /* Define to 1 if you have the `fstatvfs' function. */
 #undef HAVE_FSTATVFS
 
+/* ftruncate64 */
+#undef HAVE_FTRUNCATE64
+
 /* Define to 1 if you have the `futimens' function. */
 #undef HAVE_FUTIMENS
 
@@ -374,8 +407,11 @@
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
-/* Define to 1 if you have the `getdomainname' function. */
+/* getdomainname */
 #undef HAVE_GETDOMAINNAME
+
+/* getdomainname with size_t namelen */
+#undef HAVE_GETDOMAINNAME_SIZET
 
 /* Define to 1 if you have the `getentropy' function. */
 #undef HAVE_GETENTROPY
@@ -413,11 +449,20 @@
 /* Define to 1 if you have the `getlogin_r' function. */
 #undef HAVE_GETLOGIN_R
 
+/* getmntinfo */
+#undef HAVE_GETMNTINFO
+
 /* Have getnameinfo */
 #undef HAVE_GETNAMEINFO
 
+/* getnameinfo with signed flags */
+#undef HAVE_GETNAMEINFO_SIGNED_FLAGS
+
 /* Define to 1 if you have the <getopt.h> header file. */
 #undef HAVE_GETOPT_H
+
+/* getpeereid */
+#undef HAVE_GETPEEREID
 
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
@@ -446,8 +491,14 @@
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
 
+/* char* strerror(int errnum, char *buf, size_t buflen) */
+#undef HAVE_GNU_STRERROR_R
+
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
+
+/* ICANON */
+#undef HAVE_ICANON
 
 /* Define to 1 if you have the <iconv.h> header file. */
 #undef HAVE_ICONV_H
@@ -467,8 +518,29 @@
 /* Have inet_pton */
 #undef HAVE_INET_PTON
 
+/* HAVE_INOTIFY */
+#undef HAVE_INOTIFY
+
+/* inotify_add_watch */
+#undef HAVE_INOTIFY_ADD_WATCH
+
+/* inotify_init */
+#undef HAVE_INOTIFY_INIT
+
+/* inotify_rm_watch */
+#undef HAVE_INOTIFY_RM_WATCH
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* IN_EXCL_UNLINK */
+#undef HAVE_IN_EXCL_UNLINK
+
+/* struct in_pktinfo */
+#undef HAVE_IN_PKTINFO
+
+/* ioctl */
+#undef HAVE_IOCTL
 
 /* Have IPPROTO_IP */
 #undef HAVE_IPPROTO_IP
@@ -488,6 +560,9 @@
 /* Have IP_DONTFRAGMENT */
 #undef HAVE_IP_DONTFRAGMENT
 
+/* struct ip_mreqn */
+#undef HAVE_IP_MREQN
+
 /* Have IP_MTU_DISCOVER */
 #undef HAVE_IP_MTU_DISCOVER
 
@@ -506,7 +581,7 @@
 /* Define to 1 if you have the `kill' function. */
 #undef HAVE_KILL
 
-/* Define to 1 if you have the `kqueue' function. */
+/* kqueue */
 #undef HAVE_KQUEUE
 
 /* Have __thread keyword */
@@ -523,6 +598,9 @@
 
 /* Define to 1 if you have the <link.h> header file. */
 #undef HAVE_LINK_H
+
+/* linux/in.h */
+#undef HAVE_LINUX_IN_H
 
 /* Define to 1 if you have the <linux/magic.h> header file. */
 #undef HAVE_LINUX_MAGIC_H
@@ -548,6 +626,9 @@
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
 
+/* lseek64 */
+#undef HAVE_LSEEK64
+
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
 
@@ -556,6 +637,9 @@
 
 /* mach_absolute_time */
 #undef HAVE_MACH_ABSOLUTE_TIME
+
+/* mach_timebase_info */
+#undef HAVE_MACH_TIMEBASE_INFO
 
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
@@ -575,8 +659,14 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
+/* mkstemps */
+#undef HAVE_MKSTEMPS
+
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
+
+/* mmap64 */
+#undef HAVE_MMAP64
 
 /* Moving collector */
 #undef HAVE_MOVING_COLLECTOR
@@ -599,11 +689,17 @@
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
 
+/* _NSGetEnviron */
+#undef HAVE_NSGETENVIRON
+
 /* No GC support. */
 #undef HAVE_NULL_GC
 
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
+
+/* pipe2 */
+#undef HAVE_PIPE2
 
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
@@ -611,8 +707,11 @@
 /* Define to 1 if you have the <poll.h> header file. */
 #undef HAVE_POLL_H
 
-/* Define to 1 if you have the `posix_fadvise' function. */
+/* posix_fadvise */
 #undef HAVE_POSIX_FADVISE
+
+/* posix_fadvise64 */
+#undef HAVE_POSIX_FADVISE64
 
 /* Define to 1 if you have the `posix_fallocate' function. */
 #undef HAVE_POSIX_FALLOCATE
@@ -625,6 +724,9 @@
 
 /* Define to 1 if you have the `preadv' function. */
 #undef HAVE_PREADV
+
+/* struct fd_set.__fds_bits */
+#undef HAVE_PRIVATE_FDS_BITS
 
 /* Define to 1 if you have the `psignal' function. */
 #undef HAVE_PSIGNAL
@@ -675,6 +777,9 @@
 /* Define to 1 if you have the `pwritev' function. */
 #undef HAVE_PWRITEV
 
+/* readdir_r */
+#undef HAVE_READDIR_R
+
 /* Define to 1 if you have the `readlinkat' function. */
 #undef HAVE_READLINKAT
 
@@ -690,13 +795,16 @@
 /* Define to 1 if you have the `rewinddir' function. */
 #undef HAVE_REWINDDIR
 
-/* Define to 1 if you have the `sched_getaffinity' function. */
+/* struct rt_msghdr */
+#undef HAVE_RT_MSGHDR
+
+/* sched_getaffinity */
 #undef HAVE_SCHED_GETAFFINITY
 
 /* Define to 1 if you have the `sched_getcpu' function. */
 #undef HAVE_SCHED_GETCPU
 
-/* Define to 1 if you have the `sched_setaffinity' function. */
+/* sched_setaffinity */
 #undef HAVE_SCHED_SETAFFINITY
 
 /* Define to 1 if you have the `seekdir' function. */
@@ -707,6 +815,12 @@
 
 /* Define to 1 if you have the `sendfile' function. */
 #undef HAVE_SENDFILE
+
+/* sendfile with 4 arguments */
+#undef HAVE_SENDFILE_4
+
+/* sendfile with 6 arguments */
+#undef HAVE_SENDFILE_6
 
 /* Define to 1 if you have the `setdomainname' function. */
 #undef HAVE_SETDOMAINNAME
@@ -741,6 +855,9 @@
 /* Define to 1 if you have the `shm_open' function. */
 #undef HAVE_SHM_OPEN
 
+/* shm_open that works well enough with mmap */
+#undef HAVE_SHM_OPEN_THAT_WORKS_WELL_ENOUGH_WITH_MMAP
+
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
 
@@ -774,11 +891,32 @@
 /* Have SOL_TCP */
 #undef HAVE_SOL_TCP
 
-/* Define to 1 if you have the `statfs' function. */
+/* stat64 */
+#undef HAVE_STAT64
+
+/* struct statfs */
 #undef HAVE_STATFS
+
+/* struct statfs.f_fstypename */
+#undef HAVE_STATFS_FSTYPENAME
 
 /* Define to 1 if you have the `statvfs' function. */
 #undef HAVE_STATVFS
+
+/* struct statvfs.f_fstypename */
+#undef HAVE_STATVFS_FSTYPENAME
+
+/* struct stat.st_birthtime */
+#undef HAVE_STAT_BIRTHTIME
+
+/* struct stat.st_atimensec */
+#undef HAVE_STAT_NSEC
+
+/* struct stat.st_atim */
+#undef HAVE_STAT_TIM
+
+/* struct stat.st_atimespec */
+#undef HAVE_STAT_TIMESPEC
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -791,6 +929,9 @@
 
 /* Define to 1 if you have the `stpcpy' function. */
 #undef HAVE_STPCPY
+
+/* strcpy_s */
+#undef HAVE_STRCPY_S
 
 /* Define to 1 if you have the `strerror_r' function. */
 #undef HAVE_STRERROR_R
@@ -891,6 +1032,9 @@
 /* Define to 1 if the system has the type `struct utimbuf'. */
 #undef HAVE_STRUCT_UTIMBUF
 
+/* HAVE_SUPPORT_FOR_DUAL_MODE_IPV4_PACKET_INFO */
+#undef HAVE_SUPPORT_FOR_DUAL_MODE_IPV4_PACKET_INFO
+
 /* Define to 1 if the system has the type `suseconds_t'. */
 #undef HAVE_SUSECONDS_T
 
@@ -908,6 +1052,9 @@
 
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #undef HAVE_SYS_AUXV_H
+
+/* Define to 1 if you have the <sys/cdefs.h> header file. */
+#undef HAVE_SYS_CDEFS_H
 
 /* Define to 1 if you have the <sys/endian.h> header file. */
 #undef HAVE_SYS_ENDIAN_H
@@ -1023,6 +1170,24 @@
 /* Have system zlib */
 #undef HAVE_SYS_ZLIB
 
+/* tcgetattr */
+#undef HAVE_TCGETATTR
+
+/* HAVE_TCP_FSM_H */
+#undef HAVE_TCP_FSM_H
+
+/* TCPSTATE enum in netinet/tcp.h */
+#undef HAVE_TCP_H_TCPSTATE_ENUM
+
+/* tcp/var.h */
+#undef HAVE_TCP_VAR_H
+
+/* TCSANOW */
+#undef HAVE_TCSANOW
+
+/* tcsetattr */
+#undef HAVE_TCSETATTR
+
 /* Define to 1 if you have the `telldir' function. */
 #undef HAVE_TELLDIR
 
@@ -1034,6 +1199,9 @@
 
 /* Have timezone variable */
 #undef HAVE_TIMEZONE
+
+/* TIOCGWINSZ */
+#undef HAVE_TIOCGWINSZ
 
 /* tls_model available */
 #undef HAVE_TLS_MODEL_ATTR
@@ -1049,6 +1217,9 @@
 
 /* Define to 1 if you have the <ucontext.h> header file. */
 #undef HAVE_UCONTEXT_H
+
+/* uname */
+#undef HAVE_UNAME
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -1143,6 +1314,18 @@
 /* ... */
 #undef HOST_X86
 
+/* inotify_rm_watch with unsigned wd */
+#undef INOTIFY_RM_WATCH_WD_UNSIGNED
+
+/* struct ipv6_mreq with unsigned ipv6mr_interface */
+#undef IPV6MR_INTERFACE_UNSIGNED
+
+/* kevent with void *data */
+#undef KEVENT_HAS_VOID_UDATA
+
+/* kevent with int parameters */
+#undef KEVENT_REQUIRES_INT_PARAMS
+
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION
 
@@ -1229,6 +1412,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* getpriority with int who */
+#undef PRIORITY_REQUIRES_INT_WHO
 
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID
