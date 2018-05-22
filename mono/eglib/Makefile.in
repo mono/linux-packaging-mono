@@ -427,6 +427,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
+
+# FIXME
+#SUBDIRS = test
 noinst_LTLIBRARIES = libeglib.la
 AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \
