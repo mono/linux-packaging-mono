@@ -124,12 +124,13 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-dl-wasm.c mono-dl.h mono-dl-windows-internals.h \
 	mono-log-windows.c mono-log-common.c mono-log-posix.c \
 	mono-log-android.c mono-log-darwin.c mono-merp.c mono-merp.h \
-	mono-internal-hash.c mono-internal-hash.h \
-	mono-io-portability.c mono-io-portability.h monobitset.c \
-	mono-filemap.c mono-math.c mono-mmap.c mono-mmap-windows.c \
-	mono-mmap.h mono-mmap-internals.h \
-	mono-mmap-windows-internals.h mono-os-mutex.h mono-os-mutex.c \
-	mono-os-wait.h mono-coop-mutex.h mono-once.h mono-lazy-init.h \
+	mono-state.h mono-state.c mono-internal-hash.c \
+	mono-internal-hash.h mono-io-portability.c \
+	mono-io-portability.h monobitset.c mono-filemap.c mono-math.c \
+	mono-mmap.c mono-mmap-windows.c mono-mmap.h \
+	mono-mmap-internals.h mono-mmap-windows-internals.h \
+	mono-os-mutex.h mono-os-mutex.c mono-os-wait.h \
+	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
 	mono-networkinterfaces.c mono-networkinterfaces.h \
 	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
 	mono-proclib-windows-internals.h mono-publib.c mono-jemalloc.c \
@@ -190,7 +191,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-log-posix.lo \
 	libmonoutils_la-mono-log-android.lo \
 	libmonoutils_la-mono-log-darwin.lo \
-	libmonoutils_la-mono-merp.lo \
+	libmonoutils_la-mono-merp.lo libmonoutils_la-mono-state.lo \
 	libmonoutils_la-mono-internal-hash.lo \
 	libmonoutils_la-mono-io-portability.lo \
 	libmonoutils_la-monobitset.lo libmonoutils_la-mono-filemap.lo \
@@ -682,6 +683,8 @@ monoutils_sources = \
 	mono-log-darwin.c \
 	mono-merp.c	\
 	mono-merp.h	\
+	mono-state.h	\
+	mono-state.c	\
 	mono-internal-hash.c	\
 	mono-internal-hash.h	\
 	mono-io-portability.c 	\
@@ -960,6 +963,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-rand-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-sha1.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-state.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-stdlib.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-aix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-android.Plo@am__quote@
@@ -1156,6 +1160,13 @@ libmonoutils_la-mono-merp.lo: mono-merp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-merp.c' object='libmonoutils_la-mono-merp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-merp.lo `test -f 'mono-merp.c' || echo '$(srcdir)/'`mono-merp.c
+
+libmonoutils_la-mono-state.lo: mono-state.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-state.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-state.Tpo -c -o libmonoutils_la-mono-state.lo `test -f 'mono-state.c' || echo '$(srcdir)/'`mono-state.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-state.Tpo $(DEPDIR)/libmonoutils_la-mono-state.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-state.c' object='libmonoutils_la-mono-state.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-state.lo `test -f 'mono-state.c' || echo '$(srcdir)/'`mono-state.c
 
 libmonoutils_la-mono-internal-hash.lo: mono-internal-hash.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-internal-hash.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-internal-hash.Tpo -c -o libmonoutils_la-mono-internal-hash.lo `test -f 'mono-internal-hash.c' || echo '$(srcdir)/'`mono-internal-hash.c
