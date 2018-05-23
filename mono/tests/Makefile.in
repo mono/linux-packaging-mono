@@ -367,7 +367,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	handleref.exe \
 @ARM_TRUE@	monitor-abort.exe \
 @ARM_TRUE@	nullable_boxing.2.exe \
-@ARM_TRUE@	pinvoke.exe \
 @ARM_TRUE@	pinvoke2.exe \
 @ARM_TRUE@	pinvoke3.exe \
 @ARM_TRUE@	remoting2.exe \
@@ -400,7 +399,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @AMD64_TRUE@	cominterop.exe \
 @AMD64_TRUE@	delegate-with-null-target.exe \
 @AMD64_TRUE@	dim-diamondshape.exe \
-@AMD64_TRUE@	pinvoke.exe \
 @AMD64_TRUE@	pinvoke3.exe
 
 subdir = mono/tests

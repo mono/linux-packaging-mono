@@ -3,9 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Buffers.Text;
 
-#if !netstandard
+#if !netstandard && !MONO
 using Internal.Runtime.CompilerServices;
 #else
 using System.Runtime.CompilerServices;
@@ -15,7 +16,11 @@ using System.Runtime.CompilerServices;
 // This code is copied almost verbatim from the same-named file in CoreRT with mechanical changes to Span-ify it.
 //
 
+#if MONO
+namespace System.Buffers.Text
+#else
 namespace System
+#endif
 {
     internal static partial class Number
     {

@@ -16,7 +16,7 @@ namespace System.Net.Http
             private HttpContentStream _stream;
             private bool _consumedStream;
 
-            public void SetStream(HttpContentReadStream stream)
+            public void SetStream(HttpContentStream stream)
             {
                 Debug.Assert(stream != null);
                 Debug.Assert(stream.CanRead);
@@ -45,7 +45,7 @@ namespace System.Net.Http
             {
                 Debug.Assert(stream != null);
 
-                using (HttpContentReadStream contentStream = ConsumeStream())
+                using (HttpContentStream contentStream = ConsumeStream())
                 {
                     const int BufferSize = 8192;
                     await contentStream.CopyToAsync(stream, BufferSize, cancellationToken).ConfigureAwait(false);
