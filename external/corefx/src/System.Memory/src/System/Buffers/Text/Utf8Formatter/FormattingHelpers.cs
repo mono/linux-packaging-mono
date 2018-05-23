@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
@@ -22,7 +23,11 @@ namespace System.Buffers.Text
         /// has not been initialized, returns the provided fallback symbol.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if !__MonoCS__
         public static char GetSymbolOrDefault(in StandardFormat format, char defaultSymbol)
+#else
+        public static char GetSymbolOrDefault(StandardFormat format, char defaultSymbol)
+#endif
         {
             // This is equivalent to the line below, but it is written in such a way
             // that the JIT is able to perform more optimizations.

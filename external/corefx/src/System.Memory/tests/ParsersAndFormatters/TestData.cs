@@ -220,6 +220,7 @@ namespace System.Buffers.Text.Tests
         {
             get
             {
+#if !MONO
                 foreach (long l in Int64TestData)
                 {
                     yield return l;
@@ -245,6 +246,10 @@ namespace System.Buffers.Text.Tests
                 yield return 0.00m;
                 yield return -1.00m;
                 yield return -0.00m;
+#else
+                // See https://github.com/mono/mono/issues/8710 for details.
+                yield break;
+#endif
             }
         }
 

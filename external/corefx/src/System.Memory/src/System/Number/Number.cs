@@ -6,7 +6,11 @@
 // This code is copied almost verbatim from the same-named file in CoreRT with mechanical changes to Span-ify it.
 //
 
+#if MONO
+namespace System.Buffers.Text
+#else
 namespace System
+#endif
 {
     internal static partial class Number
     {

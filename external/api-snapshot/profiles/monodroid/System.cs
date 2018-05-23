@@ -6792,7 +6792,6 @@ namespace System.Net.Mail
     {
         public MailAddress(string address) { }
         public MailAddress(string address, string displayName) { }
-        [System.MonoTODOAttribute("We don't do anything with displayNameEncoding")]
         public MailAddress(string address, string displayName, System.Text.Encoding displayNameEncoding) { }
         public string Address { get { throw null; } }
         public string DisplayName { get { throw null; } }
