@@ -6793,7 +6793,7 @@ namespace System.Collections.Generic
     public abstract partial class EqualityComparer<T> : System.Collections.Generic.IEqualityComparer<T>, System.Collections.IEqualityComparer
     {
         protected EqualityComparer() { }
-        public static System.Collections.Generic.EqualityComparer<T> Default { get { throw null; } }
+        public static System.Collections.Generic.EqualityComparer<T> Default { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public abstract bool Equals(T x, T y);
         public abstract int GetHashCode(T obj);
         bool System.Collections.IEqualityComparer.Equals(object x, object y) { throw null; }

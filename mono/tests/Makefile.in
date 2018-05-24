@@ -179,6 +179,9 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @POWERPC64_TRUE@	tailcall-virt.exe tailcall/2.exe \
 @POWERPC64_TRUE@	tailcall/3.exe tailcall/4.exe \
 @POWERPC64_TRUE@	tailcall/8273.exe tailcall/fsharp-deeptail.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Directed/tailcall/tailcall.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe \
+@POWERPC64_TRUE@	tailcall/coreclr/JIT/Methodical/nonvirtualcall/tailcall.exe \
 @POWERPC64_TRUE@	tailcall-interface-conservestack.exe \
 @POWERPC64_TRUE@	ivtail1.exe appdomain-threadpool-unload.exe \
 @POWERPC64_TRUE@	bug-60848.exe
