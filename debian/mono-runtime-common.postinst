@@ -13,4 +13,5 @@ if [ "$1" = "configure" ]; then
 	ldconfig
 fi
         
+mkdir -p /etc/mono/registry/LocalMachine/
 #DEBHELPER#
