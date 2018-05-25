@@ -120,7 +120,7 @@ namespace System
             ThrowHelper.ThrowFormatException_BadFormatSpecifier();
             return false;
         }
-#if !MONO
+
         //
         // ReadOnlySequence .ctor validation Throws coalesced to enable inlining of the .ctor
         //
@@ -140,7 +140,7 @@ namespace System
             else
                 return CreateArgumentOutOfRangeException(ExceptionArgument.endIndex);
         }
-#endif
+
         public static void ThrowArgumentValidationException(Array array, int start)
             => throw CreateArgumentValidationException(array, start);
 
