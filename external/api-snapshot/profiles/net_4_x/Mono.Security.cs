@@ -1100,6 +1100,7 @@ namespace Mono.Security.Interface
         public Mono.Security.Interface.ICertificateValidator CertificateValidator { get { throw null; } }
         public bool CheckCertificateName { get { throw null; } set { } }
         public bool CheckCertificateRevocationStatus { get { throw null; } set { } }
+        public string[] ClientCertificateIssuers { get { throw null; } set { } }
         public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { get { throw null; } set { } }
         public static Mono.Security.Interface.MonoTlsSettings DefaultSettings { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]

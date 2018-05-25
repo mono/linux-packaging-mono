@@ -19167,8 +19167,6 @@ namespace System.Web.UI.WebControls.WebParts
     public partial interface IPersonalizable
     {
         bool IsDirty { get; }
-        void Load(System.Collections.IDictionary sharedState, System.Collections.IDictionary userState);
-        void Save(System.Collections.IDictionary state);
     }
     public partial interface ITrackingPersonalizable
     {
