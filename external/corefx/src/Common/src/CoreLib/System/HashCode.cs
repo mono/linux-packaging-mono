@@ -42,7 +42,9 @@ https://raw.githubusercontent.com/Cyan4973/xxHash/5c174cfa4e45a42f94082dc0d4539b
 */
 
 using System.Collections.Generic;
+#if !MONO
 using System.ComponentModel;
+#endif
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -419,11 +421,15 @@ namespace System
         //   about people who might have incorrectly used this type.
 
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.", error: true)]
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public override int GetHashCode() => throw new NotSupportedException(SR.HashCode_HashCodeNotSupported);
 
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes.", error: true)]
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public override bool Equals(object obj) => throw new NotSupportedException(SR.HashCode_EqualityNotSupported);
 #pragma warning restore 0809
     }
