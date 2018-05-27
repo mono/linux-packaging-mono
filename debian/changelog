@@ -1,3 +1,9 @@
+mono (5.14.0.106-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 27 May 2018 08:45:56 +0000
+
 mono (5.14.0.106-0xamarin1) preview; urgency=medium
 
   * New release - mono-5.14.0.106.tar.bz2
