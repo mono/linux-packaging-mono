@@ -223,7 +223,7 @@ static const struct curve_data P521 = {
 /* MSan appears to have a bug that causes code to be miscompiled in opt mode.
  * While that is being looked at, don't run the uint128_t code under MSan. */
 #if defined(OPENSSL_64_BIT) && !defined(OPENSSL_WINDOWS) && \
-    !defined(MEMORY_SANITIZER)
+    !defined(MEMORY_SANITIZER) && __BYTE_ORDER__ != __ORDER_BIG_ENDIAN__
 #define BORINGSSL_USE_INT128_CODE
 #endif
 

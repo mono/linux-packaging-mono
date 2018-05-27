@@ -212,15 +212,21 @@ namespace Mono.Linker {
 			try {
 				AssemblyDefinition assembly = _resolver.Resolve (reference, _readerParameters);
 
-				if (assembly != null && SeenFirstTime (assembly)) {
-					SafeReadSymbols (assembly);
-					SetAction (assembly);
-				}
+				if (assembly != null)
+					RegisterAssembly (assembly);
 
 				return assembly;
 			}
 			catch (Exception e) {
 				throw new AssemblyResolutionException (reference, e);
+			}
+		}
+
+		public void RegisterAssembly (AssemblyDefinition assembly)
+		{
+			if (SeenFirstTime (assembly)) {
+				SafeReadSymbols (assembly);
+				SetAction (assembly);
 			}
 		}
 
@@ -245,8 +251,15 @@ namespace Mono.Linker {
 				if (symbolReader == null)
 					return;
 
+				try {
+					assembly.MainModule.ReadSymbols (symbolReader);
+				} catch {
+					symbolReader.Dispose ();
+					return;
+				}
+
+				// Add symbol reader to annotations only if we have successfully read it
 				_annotations.AddSymbolReader (assembly, symbolReader);
-				assembly.MainModule.ReadSymbols (symbolReader);
 			} catch { }
 		}
 
@@ -289,7 +302,7 @@ namespace Mono.Linker {
 			_annotations.SetAction (assembly, action);
 		}
 
-		static bool IsCore (AssemblyNameReference name)
+		public static bool IsCore (AssemblyNameReference name)
 		{
 			switch (name.Name) {
 			case "mscorlib":

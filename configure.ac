@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.514],
+AC_INIT(mono, [5.15.0.534],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -40,7 +40,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This can be reset to 0 when Mono's version number is bumped
 # since it's part of the corlib version (the prefix '1' in the full
 # version number is to ensure the number isn't treated as octal in C)
-MONO_CORLIB_COUNTER=6
+MONO_CORLIB_COUNTER=7
 MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR 0 $MONO_CORLIB_COUNTER`
 
 AC_DEFINE_UNQUOTED(MONO_CORLIB_VERSION,$MONO_CORLIB_VERSION,[Version of the corlib-runtime interface])
@@ -1842,6 +1842,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(sysconf)
 	AC_CHECK_FUNCS(getrlimit)
 	AC_CHECK_FUNCS(prctl)
+	AC_CHECK_FUNCS(arc4random)
 
 	AC_CHECK_FUNCS(sched_getaffinity)
 	AC_CHECK_FUNCS(sched_setaffinity)
@@ -2990,6 +2991,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_DECL(TIOCGWINSZ,        [AC_DEFINE(HAVE_TIOCGWINSZ, 1, [TIOCGWINSZ])], [], [[#include <sys/ioctl.h>]])
 	AC_CHECK_FUNC(tcgetattr,         [AC_DEFINE(HAVE_TCGETATTR, 1, [tcgetattr])])
 	AC_CHECK_FUNC(tcsetattr,         [AC_DEFINE(HAVE_TCSETATTR, 1, [tcsetattr])])
+	AC_CHECK_FUNC(arc4random,        [AC_DEFINE(HAVE_ARC4RANDOM, 1, [arc4random])])
 	AC_CHECK_DECL(ECHO,              [AC_DEFINE(HAVE_ECHO, 1, [ECHO])], [], [[#include <termios.h>]])
 	AC_CHECK_DECL(ICANON,            [AC_DEFINE(HAVE_ICANON, 1, [ICANON])], [], [[#include <termios.h>]])
 	AC_CHECK_DECL(TCSANOW,           [AC_DEFINE(HAVE_TCSANOW, 1, [TCSANOW])], [], [[#include <termios.h>]])
@@ -5324,7 +5326,7 @@ AC_SUBST(mono_build_root)
 mono_runtime=mono/mini/mono
 AC_SUBST(mono_runtime)
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.7.0/tools/csc.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.8.2/tools/csc.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe

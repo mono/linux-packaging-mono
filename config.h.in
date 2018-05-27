@@ -204,6 +204,9 @@
 /* Define to 1 if you have the <android/versioning.h> header file. */
 #undef HAVE_ANDROID_VERSIONING_H
 
+/* arc4random */
+#undef HAVE_ARC4RANDOM
+
 /* ARM v5 */
 #undef HAVE_ARMV5
 

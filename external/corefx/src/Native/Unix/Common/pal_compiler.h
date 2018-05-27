@@ -21,8 +21,10 @@
 #define c_static_assert(e) static_assert((e),"")
 #elif __has_extension(c_static_assert)
 #define c_static_assert(e) _Static_assert((e), "")
-#else
+#elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
 #define c_static_assert(e) typedef char __c_static_assert__[(e)?1:-1]
+#else
+#define c_static_assert(e)
 #endif
 
 #define DLLEXPORT __attribute__ ((__visibility__ ("default")))

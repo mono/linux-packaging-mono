@@ -991,6 +991,7 @@ namespace Mono.Security.Interface
     {
         System.Net.Security.AuthenticatedStream AuthenticatedStream { get; }
         bool CanRead { get; }
+        bool CanRenegotiate { get; }
         bool CanTimeout { get; }
         bool CanWrite { get; }
         bool CheckCertRevocationStatus { get; }
@@ -1042,6 +1043,7 @@ namespace Mono.Security.Interface
         void EndWrite(System.IAsyncResult asyncResult);
         Mono.Security.Interface.MonoTlsConnectionInfo GetConnectionInfo();
         int Read(byte[] buffer, int offset, int count);
+        System.Threading.Tasks.Task RenegotiateAsync(System.Threading.CancellationToken cancellationToken);
         void SetLength(long value);
         System.Threading.Tasks.Task ShutdownAsync();
         void Write(byte[] buffer);
@@ -1112,6 +1114,7 @@ namespace Mono.Security.Interface
         public string[] ClientCertificateIssuers { get { throw null; } set { } }
         public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { get { throw null; } set { } }
         public static Mono.Security.Interface.MonoTlsSettings DefaultSettings { get { throw null; } set { } }
+        public bool DisallowUnauthenticatedCertificateRequest { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
         public Mono.Security.Interface.CipherSuiteCode[] EnabledCiphers { get { throw null; } set { } }
         public System.Nullable<Mono.Security.Interface.TlsProtocols> EnabledProtocols { get { throw null; } set { } }
