@@ -11,8 +11,8 @@ all:
 	$(MAKE) -C v4.7
 	$(MAKE) -C v4.7.1
 	$(MAKE) -C mono
-	$(MAKE) -C build/monotouch clean
-	$(MAKE) -C build/monodroid clean
+	$(MAKE) -C build/monotouch
+	$(MAKE) -C build/monodroid
 
 clean:
 	$(MAKE) -C v2.0 clean
