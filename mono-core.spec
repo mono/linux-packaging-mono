@@ -587,7 +587,7 @@ Loadable LLVM libary for mono.
 
 %files -n libmono-llvm0
 %defattr(-, root, root)
-%{_libdir}/libmono-llvm.so.0*
+%{_libdir}/libmono-llvm.so*
 
 %post -n libmono-llvm0 -p /sbin/ldconfig
 
