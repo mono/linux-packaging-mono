@@ -41,7 +41,10 @@
  /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- pal_config.h ../../config.h
+ pal_config.h ../../config.h \
+ ../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+ /mnt/jenkins/workspace/release-tarball-mono/external/corefx/src/Native/Unix/Common/pal_compiler.h \
+ /mnt/jenkins/workspace/release-tarball-mono/external/corefx/src/Native/Unix/Common/pal_types.h
 
 /usr/include/stdc-predef.h:
 
@@ -156,3 +159,9 @@
 pal_config.h:
 
 ../../config.h:
+
+../../external/corefx/src/Native/Unix/System.Native/pal_random.h:
+
+/mnt/jenkins/workspace/release-tarball-mono/external/corefx/src/Native/Unix/Common/pal_compiler.h:
+
+/mnt/jenkins/workspace/release-tarball-mono/external/corefx/src/Native/Unix/Common/pal_types.h:

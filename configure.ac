@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.15.0.559],
+AC_INIT(mono, [5.15.0.574],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3070,7 +3070,7 @@ if test x$host_win32 = xno; then
 	])
 
 	AC_MSG_CHECKING(for sendfile with 6 arguments)
-	AC_TRY_COMPILE([
+	AC_TRY_LINK([
 		#include <stdlib.h>
 		#include <sys/types.h>
 		#include <sys/socket.h>
@@ -4646,21 +4646,6 @@ AC_TRY_LINK(, [int i;], found_export_dynamic=yes, found_export_dynamic=no)
 if test $found_export_dynamic = no; then
 	LDFLAGS="${old_ldflags}"
 fi
-
-AC_MSG_CHECKING(for varargs macros)
-AC_TRY_COMPILE([],[
-int foo (int i, int j);
-#define bar(...) foo (1, __VA_ARGS__)
-void main () {
-	 bar (2);
-}
-],have_iso_varargs=yes,have_iso_varargs=no)
-AC_MSG_RESULT($have_iso_varargs)
-G_HAVE_ISO_VARARGS=0
-if test "x$have_iso_varargs" = "xyes"; then
-   G_HAVE_ISO_VARARGS=1
-fi
-AC_SUBST(G_HAVE_ISO_VARARGS)
 
 AC_CHECK_HEADERS(getopt.h sys/select.h sys/time.h sys/wait.h pwd.h iconv.h localcharset.h sys/types.h sys/resource.h)
 AC_CHECK_LIB([iconv], [locale_charset],[],[AC_CHECK_LIB([charset], [locale_charset],[LIBS+=" -liconv -lcharset"])])
