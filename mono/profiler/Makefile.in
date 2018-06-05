@@ -143,6 +143,7 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_profiler_aot_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@BITCODE_TRUE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 @HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 @HOST_ANDROID_FALSE@@HOST_IOS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 @HOST_ANDROID_TRUE@am__DEPENDENCIES_1 =  \
@@ -580,7 +581,10 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # profiler modules contain versioned sonames, things will fail to resolve
 # at runtime.
 @HOST_ANDROID_TRUE@prof_ldflags = -avoid-version
-@HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
+@BITCODE_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
+# BITCODE => -no-undefined
+@BITCODE_TRUE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@HOST_ANDROID_FALSE@@HOST_DARWIN_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
 @HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 # Note that BITCODE implies HOST_IOS, so this case ensures that we link to
 # libmono when building a bitcode runtime.
