@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.14.0.121],
+AC_INIT(mono, [5.14.0.125],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3253,6 +3253,9 @@ if test "x$enable_llvm" = "xyes"; then
    powerpc*)
 		llvm_codegen="powerpccodegen"
 		LLVM_ARCH_LIBS="-lLLVMPowerPCDisassembler -lLLVMPowerPCCodeGen -lLLVMPowerPCAsmParser -lLLVMPowerPCDesc -lLLVMPowerPCInfo -lLLVMPowerPCAsmPrinter"
+		;;
+   aarch64*)
+		llvm_codegen="aarch64codegen"
 		;;
    esac
 
