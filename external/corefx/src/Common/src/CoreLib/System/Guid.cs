@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -14,7 +15,9 @@ namespace System
     [StructLayout(LayoutKind.Sequential)]
     [Serializable]
     [Runtime.Versioning.NonVersionable] // This only applies to field layout
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public partial struct Guid : IFormattable, IComparable, IComparable<Guid>, IEquatable<Guid>, ISpanFormattable
     {
         public static readonly Guid Empty = new Guid();
@@ -1300,7 +1303,18 @@ namespace System
             string guidString = string.FastAllocateString(guidSize);
 
             int bytesWritten;
-            bool result = TryFormat(new Span<char>(ref guidString.GetRawStringData(), guidString.Length), out bytesWritten, format);
+            bool result;
+#if MONO
+            // Span.Portable doesn't have Span(ref T[], int) constructor
+            // Remove it once Mono switches to Span.Fast
+            unsafe 
+            {
+                fixed (char* guidStringPtr = guidString)
+                    result = TryFormat(new Span<char>(guidStringPtr, guidString.Length), out bytesWritten, format);
+            }
+#else
+            result = TryFormat(new Span<char>(ref guidString.GetRawStringData(), guidString.Length), out bytesWritten, format);
+#endif
             Debug.Assert(result && bytesWritten == guidString.Length, "Formatting guid should have succeeded.");
 
             return guidString;

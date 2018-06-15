@@ -101,6 +101,7 @@
 #include <mono/metadata/w32error.h>
 #include <mono/utils/w32api.h>
 #include <mono/utils/mono-merp.h>
+#include <mono/utils/mono-logger-internals.h>
 
 #include "decimal-ms.h"
 #include "number-ms.h"
@@ -136,15 +137,6 @@ static inline MonoBoolean
 is_generic_parameter (MonoType *type)
 {
 	return !type->byref && (type->type == MONO_TYPE_VAR || type->type == MONO_TYPE_MVAR);
-}
-
-static void
-mono_class_init_checked (MonoClass *klass, MonoError *error)
-{
-	error_init (error);
-
-	if (!mono_class_init (klass))
-		mono_error_set_for_class_failure (error, klass);
 }
 
 #ifndef HOST_WIN32
@@ -5457,6 +5449,8 @@ ves_icall_System_Reflection_Assembly_InternalGetAssemblyName (MonoStringHandle f
 	replace_shadow_path (mono_domain_get (), dirname, &filename);
 	g_free (dirname);
 
+	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_ASSEMBLY, "InternalGetAssemblyName (\"%s\")", filename);
+
 	image = mono_image_open_full (filename, &status, TRUE);
 
 	if (!image){
@@ -7077,7 +7071,7 @@ ves_icall_System_Environment_get_TickCount (void)
 }
 
 ICALL_EXPORT gint32
-ves_icall_System_Runtime_Versioning_VersioningHelper_GetRuntimeId (void)
+ves_icall_System_Runtime_Versioning_VersioningHelper_GetRuntimeId (MonoError *error)
 {
 	return 9;
 }
@@ -7228,7 +7222,7 @@ ves_icall_System_IO_DriveInfo_GetDiskFreeSpace (MonoString *path_name, guint64 *
 	return result;
 }
 
-#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
+#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) || G_HAVE_API_SUPPORT(HAVE_UWP_WINAPI_SUPPORT)
 static inline guint32
 mono_icall_drive_info_get_drive_type (MonoString *root_path_name)
 {
@@ -7605,7 +7599,6 @@ mono_TypedReference_MakeTypedReferenceInternal (MonoObject *target, MonoArray *f
 	MonoType *ftype = NULL;
 	guint8 *p = NULL;
 	int i;
-	ERROR_DECL (error);
 
 	memset (&res, 0, sizeof (res));
 

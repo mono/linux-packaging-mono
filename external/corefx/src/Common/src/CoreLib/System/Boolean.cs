@@ -18,7 +18,9 @@ using System.Runtime.Versioning;
 namespace System
 {
     [Serializable]
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct Boolean : IComparable, IConvertible, IComparable<Boolean>, IEquatable<Boolean>
     {
         //

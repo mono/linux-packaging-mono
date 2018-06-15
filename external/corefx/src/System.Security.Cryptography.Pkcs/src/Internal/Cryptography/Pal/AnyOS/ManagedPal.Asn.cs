@@ -33,7 +33,11 @@ namespace Internal.Cryptography.Pal.AnyOS
             const int ArbitraryStackLimit = 256;
             Span<byte> tmp = stackalloc byte[ArbitraryStackLimit];
             // Use stackalloc 0 so data can later hold a slice of tmp.
+#if __MonoCS__
+            ReadOnlySpan<byte> data = new byte[0];
+#else
             ReadOnlySpan<byte> data = stackalloc byte[0];
+#endif            
             byte[] poolBytes = null;
 
             try
@@ -143,7 +147,18 @@ namespace Internal.Cryptography.Pal.AnyOS
                 reader.GetEncodedValue(),
                 AsnEncodingRules.BER);
 
-            return new Oid(contentInfo.ContentType);
+            switch (contentInfo.ContentType)
+            {
+                case Oids.Pkcs7Data:
+                case Oids.Pkcs7Signed:
+                case Oids.Pkcs7Enveloped:
+                case Oids.Pkcs7SignedEnveloped:
+                case Oids.Pkcs7Hashed:
+                case Oids.Pkcs7Encrypted:
+                    return new Oid(contentInfo.ContentType);
+            }
+
+            throw new CryptographicException(SR.Cryptography_Cms_InvalidMessageType);
         }
     }
 }

@@ -11,6 +11,7 @@ import shutil
 import tarfile
 import hashlib
 import stat
+from datetime import datetime,timedelta
 import functools
 
 # from
@@ -44,6 +45,7 @@ class config:
     absolute_root = None # there is no file resolution beneath this path. Displayed paths are shortened by omitting this segment.
     state_root = None
     exit_code = exit_codes.NOTSET
+    artifact_lifespan_days = 7
 
 class CommandException (Exception):  # shell command failure
 
@@ -298,6 +300,9 @@ def is_changed(new, file, show_diff=True):
     else:
         return False
 
+def is_expired (path, age_cutoff_days):
+    artifact_age_days = (datetime.utcnow() - datetime.utcfromtimestamp(os.path.getmtime(path))).days
+    return artifact_age_days > age_cutoff_days
 
 def get_filetype(path):
     # the env variables are to work around a issue with OS X and 'file':

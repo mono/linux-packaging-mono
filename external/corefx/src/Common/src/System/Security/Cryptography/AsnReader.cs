@@ -2462,6 +2462,25 @@ namespace System.Security.Cryptography.Asn1
             return value;
         }
 
+        const byte HmsState = 0;
+        const byte FracState = 1;
+        const byte SuffixState = 2;
+
+        private static byte? ParseGeneralizedTime_GetNextState(byte octet)
+        {
+            if (octet == 'Z' || octet == '-' || octet == '+')
+            {
+                return SuffixState;
+            }
+
+            if (octet == '.' || octet == ',')
+            {
+                return FracState;
+            }
+
+            return null;
+        }
+
         private static DateTimeOffset ParseGeneralizedTime(
             AsnEncodingRules ruleSet,
             ReadOnlySpan<byte> contentOctets,
@@ -2524,32 +2543,14 @@ namespace System.Security.Cryptography.Asn1
             TimeSpan? timeOffset = null;
             bool isZulu = false;
 
-            const byte HmsState = 0;
-            const byte FracState = 1;
-            const byte SuffixState = 2;
             byte state = HmsState;
-
-            byte? GetNextState(byte octet)
-            {
-                if (octet == 'Z' || octet == '-' || octet == '+')
-                {
-                    return SuffixState;
-                }
-
-                if (octet == '.' || octet == ',')
-                {
-                    return FracState;
-                }
-
-                return null;
-            }
 
             // This while loop could be rewritten to include the FracState and Suffix
             // processing steps.  But since there's a forward flow to the state machine
             // the loop body then needs to account for that.
             while (state == HmsState && contents.Length != 0)
             {
-                byte? nextState = GetNextState(contents[0]);
+                byte? nextState = ParseGeneralizedTime_GetNextState(contents[0]);
 
                 if (nextState == null)
                 {
@@ -2581,7 +2582,7 @@ namespace System.Security.Cryptography.Asn1
 
                 Debug.Assert(!contents.IsEmpty);
                 byte octet = contents[0];
-                Debug.Assert(state == GetNextState(octet));
+                Debug.Assert(state == ParseGeneralizedTime_GetNextState(octet));
 
                 if (octet == '.')
                 {
@@ -2639,7 +2640,7 @@ namespace System.Security.Cryptography.Asn1
 
                 if (contents.Length != 0)
                 {
-                    byte? nextState = GetNextState(contents[0]);
+                    byte? nextState = ParseGeneralizedTime_GetNextState(contents[0]);
 
                     if (nextState == null)
                     {
@@ -2655,7 +2656,7 @@ namespace System.Security.Cryptography.Asn1
             {
                 Debug.Assert(!contents.IsEmpty);
                 byte octet = contents[0];
-                Debug.Assert(state == GetNextState(octet));
+                Debug.Assert(state == ParseGeneralizedTime_GetNextState(octet));
                 contents = contents.Slice(1);
 
                 if (octet == 'Z')
