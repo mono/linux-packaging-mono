@@ -2376,7 +2376,9 @@ lookup_start:
 
 	if (!code) {
 		if (mono_class_is_open_constructed_type (m_class_get_byval_arg (method->klass))) {
-			mono_error_set_invalid_operation (error, "Could not execute the method because the containing type is not fully instantiated.");
+			char *full_name = mono_type_get_full_name (method->klass);
+			mono_error_set_invalid_operation (error, "Could not execute the method because the containing type '%s', is not fully instantiated.", full_name);
+			g_free (full_name);
 			return NULL;
 		}
 
@@ -2483,7 +2485,8 @@ mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 	if (mono_use_interpreter) {
 		mono_domain_jit_code_hash_lock (domain);
 		/* InterpMethod is allocated in the domain mempool */
-		mono_internal_hash_table_remove (&info->interp_code_hash, method);
+		if (mono_internal_hash_table_lookup (&info->interp_code_hash, method))
+			mono_internal_hash_table_remove (&info->interp_code_hash, method);
 		mono_domain_jit_code_hash_unlock (domain);
 	}
 
@@ -3321,6 +3324,14 @@ MONO_SIG_HANDLER_FUNC (, mono_sigill_signal_handler)
 #define HAVE_SIG_INFO
 #endif
 
+static gboolean
+is_addr_implicit_null_check (void *addr)
+{
+	/* implicit null checks are only expected to work on the first page. larger
+	 * offsets are expected to have an explicit null check */
+	return addr <= GUINT_TO_POINTER (mono_target_pagesize ());
+}
+
 MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 {
 	MonoJitInfo *ji;
@@ -3395,7 +3406,11 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		if (!ji && mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
 
-		mono_arch_handle_altstack_exception (ctx, info, info->si_addr, FALSE);
+		if (is_addr_implicit_null_check (info->si_addr)) {
+			mono_arch_handle_altstack_exception (ctx, info, info->si_addr, FALSE);
+		} else {
+			mono_handle_native_crash ("SIGSEGV", ctx, info);
+		}
 	}
 #else
 
@@ -3411,7 +3426,11 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		}
 	}
 
-	mono_arch_handle_exception (ctx, NULL);
+	if (is_addr_implicit_null_check (fault_addr)) {
+		mono_arch_handle_exception (ctx, NULL);
+	} else {
+		mono_handle_native_crash ("SIGSEGV", ctx, info);
+	}
 #endif
 }
 
@@ -3740,7 +3759,10 @@ mini_parse_debug_option (const char *option)
 		mini_debug_options.verbose_gdb = TRUE;
 	else if (!strncmp (option, "thread-dump-dir=", 16))
 		mono_set_thread_dump_dir(g_strdup(option + 16));
-	else
+	else if (!strncmp (option, "aot-skip=", 9)) {
+		mini_debug_options.aot_skip_set = TRUE;
+		mini_debug_options.aot_skip = atoi (option + 9);
+	} else
 		return FALSE;
 
 	return TRUE;
@@ -3978,6 +4000,7 @@ mini_free_jit_domain_info (MonoDomain *domain)
 	g_hash_table_destroy (info->static_rgctx_trampoline_hash);
 	g_hash_table_destroy (info->mrgctx_hash);
 	g_hash_table_destroy (info->method_rgctx_hash);
+	g_hash_table_destroy (info->interp_method_pointer_hash);
 	g_hash_table_destroy (info->llvm_vcall_trampoline_hash);
 	mono_conc_hashtable_destroy (info->runtime_invoke_hash);
 	g_hash_table_destroy (info->seq_points);
@@ -4582,6 +4605,7 @@ register_icalls (void)
 
 	/* other jit icalls */
 	register_icall (ves_icall_mono_delegate_ctor, "ves_icall_mono_delegate_ctor", "void object object ptr", FALSE);
+	register_icall (ves_icall_mono_delegate_ctor_interp, "ves_icall_mono_delegate_ctor_interp", "void object object ptr", FALSE);
 	register_icall (mono_class_static_field_address , "mono_class_static_field_address",
 				 "ptr ptr ptr", FALSE);
 	register_icall (mono_ldtoken_wrapper, "mono_ldtoken_wrapper", "ptr ptr ptr ptr", FALSE);

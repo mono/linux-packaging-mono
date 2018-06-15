@@ -22,7 +22,9 @@ namespace System
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct Single : IComparable, IConvertible, IFormattable, IComparable<Single>, IEquatable<Single>, ISpanFormattable
     {
         private float m_value; // Do not rename (binary serialization)

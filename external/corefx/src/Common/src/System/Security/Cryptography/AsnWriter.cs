@@ -1194,7 +1194,11 @@ namespace System.Security.Cryptography.Asn1
                     // We're only loading in sub-second ticks.
                     // Ticks are defined as 1e-7 seconds, so their printed form
                     // is at the longest "0.1234567", or 9 bytes.
+#if __MonoCS__
+                    fraction = new byte[9];
+#else
                     fraction = stackalloc byte[9];
+#endif
 
                     decimal decimalTicks = floatingTicks;
                     decimalTicks /= TimeSpan.TicksPerSecond;
@@ -1562,8 +1566,10 @@ namespace System.Security.Cryptography.Asn1
 
             pos = 0;
 
-            foreach ((int offset, int length) in positions)
+            foreach (var position in positions)
             {
+                var offset = position.Item1;
+                var length = position.Item2;
                 Buffer.BlockCopy(buffer, offset, tmp, pos, length);
                 pos += length;
             }
@@ -1612,8 +1618,10 @@ namespace System.Security.Cryptography.Asn1
 
             public int Compare((int, int) x, (int, int) y)
             {
-                (int xOffset, int xLength) = x;
-                (int yOffset, int yLength) = y;
+                int xOffset = x.Item1;
+                int xLength = x.Item2;
+                int yOffset = y.Item1;
+                int yLength = y.Item2;
 
                 int value =
                     SetOfValueComparer.Instance.Compare(

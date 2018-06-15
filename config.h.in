@@ -407,6 +407,9 @@
 /* Define to 1 if you have the `futimes' function. */
 #undef HAVE_FUTIMES
 
+/* F_DUPFD_CLOEXEC */
+#undef HAVE_F_DUPFD_CLOEXEC
+
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
@@ -697,6 +700,9 @@
 
 /* No GC support. */
 #undef HAVE_NULL_GC
+
+/* O_CLOEXEC */
+#undef HAVE_O_CLOEXEC
 
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H

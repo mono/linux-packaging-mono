@@ -1293,8 +1293,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall-rgctxb-static.exe tailcall-virt.exe \
 	tailcall-return-valuetype.exe tailcall/fsharp-deeptail.exe \
 	tailcall/2.exe tailcall/3.exe tailcall/4.exe tailcall/8273.exe \
-	$(TAILCALL_DISABLED_TESTS_RUN) bug-60843.exe $(am__append_29) \
-	$(am__append_30) $(am__append_31)
+	$(TAILCALL_DISABLED_TESTS_RUN) thread6.exe bug-60843.exe \
+	$(am__append_29) $(am__append_30) $(am__append_31)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))

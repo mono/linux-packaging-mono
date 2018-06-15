@@ -65,14 +65,21 @@ namespace Mono.Debugger.Soft
         internal AssemblyMirror() { }
         public Mono.Debugger.Soft.AppDomainMirror Domain { get { throw null; } }
         public Mono.Debugger.Soft.MethodMirror EntryPoint { get { throw null; } }
+        public bool HasFetchedPdb { get { throw null; } }
+        public bool HasPdb { get { throw null; } }
+        public bool IsDynamic { get { throw null; } }
         public string Location { get { throw null; } }
         public Mono.Debugger.Soft.ModuleMirror ManifestModule { get { throw null; } }
         public Mono.Cecil.AssemblyDefinition Metadata { get { throw null; } set { } }
         public Mono.Debugger.Soft.ObjectMirror GetAssemblyObject() { throw null; }
+        public byte[] GetMetadataBlob() { throw null; }
+        public Mono.Debugger.Soft.MethodMirror GetMethod(uint token) { throw null; }
         public virtual System.Reflection.AssemblyName GetName() { throw null; }
+        public byte[] GetPdbBlob() { throw null; }
         public Mono.Debugger.Soft.TypeMirror GetType(string name) { throw null; }
         public Mono.Debugger.Soft.TypeMirror GetType(string name, bool throwOnError) { throw null; }
         public Mono.Debugger.Soft.TypeMirror GetType(string name, bool throwOnError, bool ignoreCase) { throw null; }
+        public Mono.Debugger.Soft.TypeMirror GetType(uint token) { throw null; }
     }
     public partial class AssemblyUnloadEvent : Mono.Debugger.Soft.Event
     {

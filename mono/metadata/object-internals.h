@@ -324,6 +324,8 @@ typedef struct {
 	MonoObject *synchronization_context;
 } MonoComObject;
 
+TYPED_HANDLE_DECL (MonoComObject);
+
 typedef struct {
 	MonoRealProxy real_proxy;
 	MonoComObject *com_object;
@@ -799,6 +801,7 @@ struct _MonoDelegate {
 	 * the compiled code of the method, or NULL if it is not yet compiled.
 	 */
 	guint8 **method_code;
+	gpointer interp_method;
 	MonoReflectionMethod *method_info;
 	MonoReflectionMethod *original_method_info;
 	MonoObject *data;
@@ -1722,8 +1725,8 @@ mono_method_clear_object (MonoDomain *domain, MonoMethod *method);
 gsize*
 mono_class_compute_bitmap (MonoClass *klass, gsize *bitmap, int size, int offset, int *max_set, gboolean static_fields);
 
-MonoObject*
-mono_object_xdomain_representation (MonoObject *obj, MonoDomain *target_domain, MonoError *error);
+MonoObjectHandle
+mono_object_xdomain_representation (MonoObjectHandle obj, MonoDomain *target_domain, MonoError *error);
 
 gboolean
 mono_class_is_reflection_method_or_constructor (MonoClass *klass);
@@ -1824,6 +1827,11 @@ mono_object_new_checked (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 MonoObjectHandle
 mono_object_new_handle (MonoDomain *domain, MonoClass *klass, MonoError *error);
+
+// This function skips handling of remoting and COM.
+// "alloc" means "less".
+MonoObjectHandle
+mono_object_new_alloc_by_vtable (MonoVTable *vtable, MonoError *error);
 
 MonoObject*
 mono_object_new_mature (MonoVTable *vtable, MonoError *error);

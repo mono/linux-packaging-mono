@@ -49,11 +49,12 @@
 ////////////////////////////////////////////////////////////////////////////
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Text;
 
 namespace System.Globalization
 {
-    internal static class TimeSpanParse
+    internal static partial class TimeSpanParse
     {
         private const int MaxFractionDigits = 7;
         private const int MaxDays = 10675199;

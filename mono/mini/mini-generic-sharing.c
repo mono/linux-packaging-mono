@@ -1426,6 +1426,15 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 	return res;
 }
 
+static gboolean
+signature_equal_pinvoke (MonoMethodSignature *sig1, MonoMethodSignature *sig2)
+{
+	/* mono_metadata_signature_equal () doesn't do this check */
+	if (sig1->pinvoke != sig2->pinvoke)
+		return FALSE;
+	return mono_metadata_signature_equal (sig1, sig2);
+}
+
 /*
  * mini_get_interp_in_wrapper:
  *
@@ -1452,7 +1461,7 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 
 	gshared_lock ();
 	if (!cache)
-		cache = g_hash_table_new_full ((GHashFunc)mono_signature_hash, (GEqualFunc)mono_metadata_signature_equal, NULL, NULL);
+		cache = g_hash_table_new_full ((GHashFunc)mono_signature_hash, (GEqualFunc)signature_equal_pinvoke, NULL, NULL);
 	res = g_hash_table_lookup (cache, sig);
 	gshared_unlock ();
 	if (res) {
@@ -1475,6 +1484,11 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 	/* Create the signature for the wrapper */
 	csig = g_malloc0 (MONO_SIZEOF_METHOD_SIGNATURE + (sig->param_count * sizeof (MonoType*)));
 	memcpy (csig, sig, mono_metadata_signature_size (sig));
+
+	for (i = 0; i < sig->param_count; i++) {
+		if (sig->params [i]->byref)
+			csig->params [i] = m_class_get_this_arg (mono_defaults.int_class);
+	}
 
 	MonoType *int_type = mono_get_int_type ();
 	/* Create the signature for the callee callconv */
@@ -1609,7 +1623,7 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 #endif
 
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_INTERP_IN);
-	info->d.interp_in.sig = sig;
+	info->d.interp_in.sig = csig;
 
 	res = mono_mb_create (mb, csig, sig->param_count + 16, info);
 

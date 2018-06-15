@@ -7,7 +7,11 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
+#if MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Core, Version=2.0.5.0, Culture=Neutral, PublicKeyToken=7cec85d7bea7798e")]
+#else
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TimeZoneNotFoundException : Exception
     {
         public TimeZoneNotFoundException()

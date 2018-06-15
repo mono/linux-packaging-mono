@@ -596,7 +596,6 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void FileSystemWatcher_StopCalledOnBackgroundThreadDoesNotDeadlock()
         {
             // Check the case where Stop or Dispose (they do the same thing) is called from 

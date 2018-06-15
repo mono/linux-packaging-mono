@@ -830,8 +830,13 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 				if (!ji)
 					ji = mini_jit_info_table_find (mono_domain_get (), (char*)code, NULL);
 
-				if (ji && target_ji && generic_shared && ji->has_generic_jit_info && !target_ji->has_generic_jit_info) {
-					no_patch = TRUE;
+				if (ji && ji->has_generic_jit_info) {
+					if (target_ji && !target_ji->has_generic_jit_info) {
+						no_patch = TRUE;
+					} else if (mono_use_interpreter && !target_ji) {
+						/* compiled_method might be an interp entry trampoline and the interpreter has no generic sharing */
+						no_patch = TRUE;
+					}
 				}
 			}
 			if (!no_patch)
@@ -1451,7 +1456,7 @@ mono_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean ad
 	error_init (error);
 
 	if (mono_use_interpreter) {
-		gpointer ret = mini_get_interp_callbacks ()->create_trampoline (domain, method, error);
+		gpointer ret = mini_get_interp_callbacks ()->create_method_pointer (method, error);
 		if (!mono_error_ok (error))
 			return NULL;
 		return ret;
