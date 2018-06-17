@@ -998,13 +998,13 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	marshal-valuetypes.cs xdomain-threads.cs monitor.cs \
 	generic-xdomain.2.cs threadpool-exceptions7.cs cross-domain.cs \
 	generic-unloading.2.cs namedmutex-destroy-race.cs thread6.cs \
-	appdomain-threadpool-unload.cs process-unref-race.cs \
-	bug-46661.cs w32message.cs runtime-invoke.gen.cs \
-	imt_big_iface_test.cs bug-58782-plain-throw.cs \
-	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
-	struct-explicit-layout.cs bug-59281.cs \
-	init_array_with_lazy_type.cs weak-fields.cs threads-leak.cs \
-	threads-init.cs bug-60848.cs bug-59400.cs \
+	thread7.cs appdomain-threadpool-unload.cs \
+	process-unref-race.cs bug-46661.cs w32message.cs \
+	runtime-invoke.gen.cs imt_big_iface_test.cs \
+	bug-58782-plain-throw.cs bug-58782-capture-and-throw.cs \
+	recursive-struct-arrays.cs struct-explicit-layout.cs \
+	bug-59281.cs init_array_with_lazy_type.cs weak-fields.cs \
+	threads-leak.cs threads-init.cs bug-60848.cs bug-59400.cs \
 	tailcall-generic-cast-cs.cs tailcall-interface.cs bug-60843.cs \
 	nested_type_visibility.cs $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
