@@ -12,7 +12,7 @@ class EnvironmentItem:
         self.values = values
 
     def __str__(self):
-        return self.joinchar.join(self.values)
+        return os.path.expandvars(self.joinchar.join(self.values))
 
 
 class Environment:
