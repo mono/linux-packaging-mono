@@ -12542,7 +12542,7 @@ namespace System.Security.Cryptography.X509Certificates
         public int Version { get { throw null; } }
         [System.MonoTODOAttribute("X509ContentType.SerializedCert is not supported")]
         public override byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType, string password) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12, Pkcs7 and Unknown")]
+        [System.MonoTODOAttribute("Detection limited to Cert, Pfx/Pkcs12, Pkcs7 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(byte[] rawData) { throw null; }
         [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(string fileName) { throw null; }

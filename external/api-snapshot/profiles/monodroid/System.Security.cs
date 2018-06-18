@@ -19,6 +19,7 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
+[assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System
 {
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
@@ -141,14 +142,28 @@ namespace System.Security.Cryptography.Pkcs
         public bool MoveNext() { throw null; }
         public void Reset() { }
     }
+    public sealed partial class CmsSigner
+    {
+        public CmsSigner() { }
+        public CmsSigner(System.Security.Cryptography.CspParameters parameters) { }
+        public CmsSigner(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType) { }
+        public CmsSigner(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType, System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
+        public CmsSigner(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
+        public System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509Certificate2Collection Certificates { get { throw null; } }
+        public System.Security.Cryptography.Oid DigestAlgorithm { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509IncludeOption IncludeOption { get { throw null; } set { } }
+        public System.Security.Cryptography.AsymmetricAlgorithm PrivateKey { get { throw null; } set { } }
+        public System.Security.Cryptography.CryptographicAttributeObjectCollection SignedAttributes { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.SubjectIdentifierType SignerIdentifierType { get { throw null; } set { } }
+        public System.Security.Cryptography.CryptographicAttributeObjectCollection UnsignedAttributes { get { throw null; } }
+    }
     public sealed partial class ContentInfo
     {
         public ContentInfo(byte[] content) { }
         public ContentInfo(System.Security.Cryptography.Oid contentType, byte[] content) { }
         public byte[] Content { get { throw null; } }
         public System.Security.Cryptography.Oid ContentType { get { throw null; } }
-        ~ContentInfo() { }
-        [System.MonoTODOAttribute("MS is stricter than us about the content structure")]
         public static System.Security.Cryptography.Oid GetContentType(byte[] encodedMessage) { throw null; }
     }
     public sealed partial class EnvelopedCms
@@ -164,26 +179,16 @@ namespace System.Security.Cryptography.Pkcs
         public System.Security.Cryptography.Pkcs.RecipientInfoCollection RecipientInfos { get { throw null; } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection UnprotectedAttributes { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute]
         public void Decode(byte[] encodedMessage) { }
-        [System.MonoTODOAttribute]
         public void Decrypt() { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo recipientInfo) { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo recipientInfo, System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore) { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore) { }
-        [System.MonoTODOAttribute]
         public byte[] Encode() { throw null; }
-        [System.MonoTODOAttribute]
         public void Encrypt() { }
-        [System.MonoTODOAttribute]
         public void Encrypt(System.Security.Cryptography.Pkcs.CmsRecipient recipient) { }
-        [System.MonoTODOAttribute]
         public void Encrypt(System.Security.Cryptography.Pkcs.CmsRecipientCollection recipients) { }
     }
-    [System.MonoTODOAttribute]
     public sealed partial class KeyAgreeRecipientInfo : System.Security.Cryptography.Pkcs.RecipientInfo
     {
         internal KeyAgreeRecipientInfo() { }
@@ -288,6 +293,70 @@ namespace System.Security.Cryptography.Pkcs
         KeyAgreement = 2,
         KeyTransport = 1,
         Unknown = 0,
+    }
+    public sealed partial class SignedCms
+    {
+        public SignedCms() { }
+        public SignedCms(System.Security.Cryptography.Pkcs.ContentInfo contentInfo) { }
+        public SignedCms(System.Security.Cryptography.Pkcs.ContentInfo contentInfo, bool detached) { }
+        public SignedCms(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType) { }
+        public SignedCms(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType, System.Security.Cryptography.Pkcs.ContentInfo contentInfo) { }
+        public SignedCms(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType, System.Security.Cryptography.Pkcs.ContentInfo contentInfo, bool detached) { }
+        public System.Security.Cryptography.X509Certificates.X509Certificate2Collection Certificates { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.ContentInfo ContentInfo { get { throw null; } }
+        public bool Detached { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.SignerInfoCollection SignerInfos { get { throw null; } }
+        public int Version { get { throw null; } }
+        public void CheckHash() { }
+        public void CheckSignature(bool verifySignatureOnly) { }
+        public void CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore, bool verifySignatureOnly) { }
+        public void ComputeSignature() { }
+        public void ComputeSignature(System.Security.Cryptography.Pkcs.CmsSigner signer) { }
+        public void ComputeSignature(System.Security.Cryptography.Pkcs.CmsSigner signer, bool silent) { }
+        public void Decode(byte[] encodedMessage) { }
+        public byte[] Encode() { throw null; }
+        public void RemoveSignature(int index) { }
+        public void RemoveSignature(System.Security.Cryptography.Pkcs.SignerInfo signerInfo) { }
+    }
+    public sealed partial class SignerInfo
+    {
+        internal SignerInfo() { }
+        public System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.SignerInfoCollection CounterSignerInfos { get { throw null; } }
+        public System.Security.Cryptography.Oid DigestAlgorithm { get { throw null; } }
+        public System.Security.Cryptography.Oid SignatureAlgorithm { get { throw null; } }
+        public System.Security.Cryptography.CryptographicAttributeObjectCollection SignedAttributes { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.SubjectIdentifier SignerIdentifier { get { throw null; } }
+        public System.Security.Cryptography.CryptographicAttributeObjectCollection UnsignedAttributes { get { throw null; } }
+        public int Version { get { throw null; } }
+        public void CheckHash() { }
+        public void CheckSignature(bool verifySignatureOnly) { }
+        public void CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore, bool verifySignatureOnly) { }
+        public void ComputeCounterSignature() { }
+        public void ComputeCounterSignature(System.Security.Cryptography.Pkcs.CmsSigner signer) { }
+        public byte[] GetSignature() { throw null; }
+        public void RemoveCounterSignature(int index) { }
+        public void RemoveCounterSignature(System.Security.Cryptography.Pkcs.SignerInfo counterSignerInfo) { }
+    }
+    public sealed partial class SignerInfoCollection : System.Collections.ICollection, System.Collections.IEnumerable
+    {
+        internal SignerInfoCollection() { }
+        public int Count { get { throw null; } }
+        public bool IsSynchronized { get { throw null; } }
+        public System.Security.Cryptography.Pkcs.SignerInfo this[int index] { get { throw null; } }
+        public object SyncRoot { get { throw null; } }
+        public void CopyTo(System.Array array, int index) { }
+        public void CopyTo(System.Security.Cryptography.Pkcs.SignerInfo[] array, int index) { }
+        public System.Security.Cryptography.Pkcs.SignerInfoEnumerator GetEnumerator() { throw null; }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
+    }
+    public sealed partial class SignerInfoEnumerator : System.Collections.IEnumerator
+    {
+        internal SignerInfoEnumerator() { }
+        public System.Security.Cryptography.Pkcs.SignerInfo Current { get { throw null; } }
+        object System.Collections.IEnumerator.Current { get { throw null; } }
+        public bool MoveNext() { throw null; }
+        public void Reset() { }
     }
     public sealed partial class SubjectIdentifier
     {
