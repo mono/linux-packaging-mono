@@ -19,6 +19,7 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
+[assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System
 {
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
@@ -158,7 +159,6 @@ namespace System.Security.Cryptography.Pkcs
     public sealed partial class CmsSigner
     {
         public CmsSigner() { }
-        [System.MonoTODOAttribute]
         public CmsSigner(System.Security.Cryptography.CspParameters parameters) { }
         public CmsSigner(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType) { }
         public CmsSigner(System.Security.Cryptography.Pkcs.SubjectIdentifierType signerIdentifierType, System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { }
@@ -167,6 +167,7 @@ namespace System.Security.Cryptography.Pkcs
         public System.Security.Cryptography.X509Certificates.X509Certificate2Collection Certificates { get { throw null; } }
         public System.Security.Cryptography.Oid DigestAlgorithm { get { throw null; } set { } }
         public System.Security.Cryptography.X509Certificates.X509IncludeOption IncludeOption { get { throw null; } set { } }
+        public System.Security.Cryptography.AsymmetricAlgorithm PrivateKey { get { throw null; } set { } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection SignedAttributes { get { throw null; } }
         public System.Security.Cryptography.Pkcs.SubjectIdentifierType SignerIdentifierType { get { throw null; } set { } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection UnsignedAttributes { get { throw null; } }
@@ -177,8 +178,6 @@ namespace System.Security.Cryptography.Pkcs
         public ContentInfo(System.Security.Cryptography.Oid contentType, byte[] content) { }
         public byte[] Content { get { throw null; } }
         public System.Security.Cryptography.Oid ContentType { get { throw null; } }
-        ~ContentInfo() { }
-        [System.MonoTODOAttribute("MS is stricter than us about the content structure")]
         public static System.Security.Cryptography.Oid GetContentType(byte[] encodedMessage) { throw null; }
     }
     public sealed partial class EnvelopedCms
@@ -194,23 +193,14 @@ namespace System.Security.Cryptography.Pkcs
         public System.Security.Cryptography.Pkcs.RecipientInfoCollection RecipientInfos { get { throw null; } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection UnprotectedAttributes { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute]
         public void Decode(byte[] encodedMessage) { }
-        [System.MonoTODOAttribute]
         public void Decrypt() { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo recipientInfo) { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.Pkcs.RecipientInfo recipientInfo, System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore) { }
-        [System.MonoTODOAttribute]
         public void Decrypt(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore) { }
-        [System.MonoTODOAttribute]
         public byte[] Encode() { throw null; }
-        [System.MonoTODOAttribute]
         public void Encrypt() { }
-        [System.MonoTODOAttribute]
         public void Encrypt(System.Security.Cryptography.Pkcs.CmsRecipient recipient) { }
-        [System.MonoTODOAttribute]
         public void Encrypt(System.Security.Cryptography.Pkcs.CmsRecipientCollection recipients) { }
     }
     public enum KeyAgreeKeyChoice
@@ -219,7 +209,6 @@ namespace System.Security.Cryptography.Pkcs
         StaticKey = 2,
         Unknown = 0,
     }
-    [System.MonoTODOAttribute]
     public sealed partial class KeyAgreeRecipientInfo : System.Security.Cryptography.Pkcs.RecipientInfo
     {
         internal KeyAgreeRecipientInfo() { }
@@ -338,25 +327,15 @@ namespace System.Security.Cryptography.Pkcs
         public bool Detached { get { throw null; } }
         public System.Security.Cryptography.Pkcs.SignerInfoCollection SignerInfos { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute]
         public void CheckHash() { }
-        [System.MonoTODOAttribute]
         public void CheckSignature(bool verifySignatureOnly) { }
-        [System.MonoTODOAttribute]
         public void CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore, bool verifySignatureOnly) { }
-        [System.MonoTODOAttribute]
         public void ComputeSignature() { }
-        [System.MonoTODOAttribute]
         public void ComputeSignature(System.Security.Cryptography.Pkcs.CmsSigner signer) { }
-        [System.MonoTODOAttribute]
         public void ComputeSignature(System.Security.Cryptography.Pkcs.CmsSigner signer, bool silent) { }
-        [System.MonoTODOAttribute("incomplete - missing attributes")]
         public void Decode(byte[] encodedMessage) { }
-        [System.MonoTODOAttribute]
         public byte[] Encode() { throw null; }
-        [System.MonoTODOAttribute]
         public void RemoveSignature(int index) { }
-        [System.MonoTODOAttribute]
         public void RemoveSignature(System.Security.Cryptography.Pkcs.SignerInfo signerInfo) { }
     }
     public sealed partial class SignerInfo
@@ -365,23 +344,18 @@ namespace System.Security.Cryptography.Pkcs
         public System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate { get { throw null; } }
         public System.Security.Cryptography.Pkcs.SignerInfoCollection CounterSignerInfos { get { throw null; } }
         public System.Security.Cryptography.Oid DigestAlgorithm { get { throw null; } }
+        public System.Security.Cryptography.Oid SignatureAlgorithm { get { throw null; } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection SignedAttributes { get { throw null; } }
         public System.Security.Cryptography.Pkcs.SubjectIdentifier SignerIdentifier { get { throw null; } }
         public System.Security.Cryptography.CryptographicAttributeObjectCollection UnsignedAttributes { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute]
         public void CheckHash() { }
-        [System.MonoTODOAttribute]
         public void CheckSignature(bool verifySignatureOnly) { }
-        [System.MonoTODOAttribute]
         public void CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection extraStore, bool verifySignatureOnly) { }
-        [System.MonoTODOAttribute]
         public void ComputeCounterSignature() { }
-        [System.MonoTODOAttribute]
         public void ComputeCounterSignature(System.Security.Cryptography.Pkcs.CmsSigner signer) { }
-        [System.MonoTODOAttribute]
+        public byte[] GetSignature() { throw null; }
         public void RemoveCounterSignature(int index) { }
-        [System.MonoTODOAttribute]
         public void RemoveCounterSignature(System.Security.Cryptography.Pkcs.SignerInfo counterSignerInfo) { }
     }
     public sealed partial class SignerInfoCollection : System.Collections.ICollection, System.Collections.IEnumerable
