@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.17.0.98],
+AC_INIT(mono, [5.17.0.113],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3748,6 +3748,9 @@ if test "x$enable_llvm" = "xyes"; then
       AC_PATH_PROG(LLVM_CONFIG, llvm-config, no)
       if test "x$LLVM_CONFIG" = "xno"; then
    	     AC_MSG_ERROR([llvm-config not found.])
+      fi
+      if test "x$with_llvm" = "x"; then
+         with_llvm=`$LLVM_CONFIG --prefix`
       fi
    fi
 
