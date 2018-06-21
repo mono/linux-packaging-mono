@@ -1,3 +1,123 @@
+mono (5.14.0.140-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.14.0.140.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 21 Jun 2018 08:31:20 +0000
+
+mono (5.14.0.139-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.14.0.139.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 20 Jun 2018 08:28:49 +0000
+
+mono (5.14.0.136-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.14.0.136.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 19 Jun 2018 08:30:12 +0000
+
+mono (5.14.0.134-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 18 Jun 2018 08:49:57 +0000
+
+mono (5.14.0.134-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.14.0.134.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 17 Jun 2018 08:24:15 +0000
+
+mono (5.14.0.125-0xamarin12) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 20:56:19 +0000
+
+mono (5.14.0.125-0xamarin11) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 20:27:35 +0000
+
+mono (5.14.0.125-0xamarin10) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 19:26:47 +0000
+
+mono (5.14.0.125-0xamarin9) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 18:58:03 +0000
+
+mono (5.14.0.125-0xamarin8) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 18:00:31 +0000
+
+mono (5.14.0.125-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 17:29:03 +0000
+
+mono (5.14.0.125-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 14:11:15 +0000
+
+mono (5.14.0.125-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 05:01:02 +0000
+
+mono (5.14.0.125-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 08 Jun 2018 00:04:06 +0000
+
+mono (5.14.0.125-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 07 Jun 2018 23:30:28 +0000
+
+mono (5.14.0.125-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 07 Jun 2018 20:17:54 +0000
+
+mono (5.14.0.125-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.14.0.125.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 07 Jun 2018 18:59:37 +0000
+
+mono (5.14.0.121-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 07 Jun 2018 08:45:45 +0000
+
+mono (5.14.0.121-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 06 Jun 2018 08:45:28 +0000
+
+mono (5.14.0.121-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 05 Jun 2018 08:46:29 +0000
+
 mono (5.14.0.121-0xamarin3) preview; urgency=medium
 
   * Packaging bugfix:
