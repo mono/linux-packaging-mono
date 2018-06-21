@@ -1,7 +1,13 @@
 if [ "$1" = "configure" ]
 then
+	TEMPDIR=`mktemp -d -t monoaot.XXXXXXXXX`
 	MONOARCH=`mono --version | grep Architecture | sed 's/.*:  //' | sed 's/el,.*//'`
 	echo "Mono precompiling #FILE# for ${MONOARCH}..."
 	mkdir -p /usr/lib/mono/aot-cache/${MONOARCH}/
-	/usr/bin/mono --aot=try-llvm,outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
+	/usr/bin/mono --aot=try-llvm,temp-path=${TEMPDIR},outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
+	if [ -n "${TEMPDIR}" -a "${TEMPDIR}" != "/tmp" -a "${TEMPDIR}" != "/tmp/"  -a "${TEMPDIR}" != "/" ]
+	then
+		rm -f ${TEMPDIR}/*
+		rmdir ${TEMPDIR}
+	fi
 fi
