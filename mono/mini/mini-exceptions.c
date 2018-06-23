@@ -70,6 +70,7 @@
 #include <mono/utils/mono-error.h>
 #include <mono/utils/mono-error-internals.h>
 #include <mono/utils/mono-state.h>
+#include <mono/mini/debugger-state-machine.h>
 
 #include "mini.h"
 #include "trace.h"
@@ -1354,14 +1355,20 @@ summarize_frame (StackFrameInfo *frame, MonoContext *ctx, gpointer data)
 	if (method && method->wrapper_type != MONO_WRAPPER_NONE) {
 		dest->is_managed = FALSE;
 		dest->unmanaged_data.has_name = TRUE;
+
 		copy_summary_string_safe (dest->str_descr, mono_method_full_name (method, TRUE));
 	}
 
 	MonoDebugSourceLocation *location = NULL;
 
 	if (dest->is_managed) {
+		MonoImage *image = mono_class_get_image (method->klass);
+		// Used for hashing, more stable across rebuilds than using GUID
+		copy_summary_string_safe (dest->str_descr, image->assembly_name);
+
+		dest->managed_data.guid = image->guid;
+
 		dest->managed_data.native_offset = frame->native_offset;
-		copy_summary_string_safe (dest->str_descr, mono_class_get_image(method->klass)->assembly_name);
 		dest->managed_data.token = method->token;
 		location = mono_debug_lookup_source_location (method, frame->native_offset, mono_domain_get ());
 	} else {
@@ -3060,6 +3067,10 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 	g_free (names);
 
 	/* Try to get more meaningful information using gdb */
+	char *debugger_log = mono_debugger_state_str ();
+	if (debugger_log) {
+		fprintf (stderr, "\n\tDebugger session state:\n%s\n", debugger_log);
+	}
 
 #if !defined(HOST_WIN32) && defined(HAVE_SYS_SYSCALL_H) && (defined(SYS_fork) || HAVE_FORK)
 	if (!mini_get_debug_options ()->no_gdb_backtrace) {

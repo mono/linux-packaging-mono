@@ -3898,14 +3898,12 @@ namespace System
         public NotSupportedException(string message) { }
         public NotSupportedException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public static partial class Nullable
     {
         public static int Compare<T>(System.Nullable<T> n1, System.Nullable<T> n2) where T : struct { throw null; }
         public static bool Equals<T>(System.Nullable<T> n1, System.Nullable<T> n2) where T : struct { throw null; }
         public static System.Type GetUnderlyingType(System.Type nullableType) { throw null; }
     }
-    [System.Diagnostics.DebuggerStepThroughAttribute]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Nullable<T> where T : struct

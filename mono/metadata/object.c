@@ -3055,14 +3055,12 @@ mono_runtime_try_invoke_handle (MonoMethod *method, MonoObjectHandle obj, void *
 {
 	// FIXME? typing of params
 	MonoException *exc = NULL;
-	MonoObject *obj_raw = (obj && !MONO_HANDLE_IS_NULL (obj)) ? MONO_HANDLE_RAW (obj) : NULL;
-	obj_raw = mono_runtime_try_invoke (method, obj_raw, params, (MonoObject**)&exc, error);
-	obj = MONO_HANDLE_NEW (MonoObject, obj_raw);
+	MonoObject *obj_raw = mono_runtime_try_invoke (method, MONO_HANDLE_RAW (obj), params, (MonoObject**)&exc, error);
 
 	if (exc && is_ok (error))
 		mono_error_set_exception_instance (error, exc);
 
-	return obj;
+	return MONO_HANDLE_NEW (MonoObject, obj_raw);
 }
 
 /**
@@ -3114,9 +3112,7 @@ mono_runtime_invoke_checked (MonoMethod *method, void *obj, void **params, MonoE
 static MonoObjectHandle
 mono_runtime_invoke_handle (MonoMethod *method, MonoObjectHandle obj, void **params, MonoError* error)
 {
-	MonoObject *obj_raw = (obj && !MONO_HANDLE_IS_NULL (obj)) ? MONO_HANDLE_RAW (obj) : NULL;
-	obj_raw = mono_runtime_invoke_checked (method, obj_raw, params, error);
-	return MONO_HANDLE_NEW (MonoObject, obj_raw);
+	return MONO_HANDLE_NEW (MonoObject, mono_runtime_invoke_checked (method, MONO_HANDLE_RAW (obj), params, error));
 }
 
 /**
@@ -3304,14 +3300,17 @@ handle_enum:
 void
 mono_field_set_value (MonoObject *obj, MonoClassField *field, void *value)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
+	MONO_ENTER_GC_UNSAFE;
 
 	void *dest;
 
-	g_return_if_fail (!(field->type->attrs & FIELD_ATTRIBUTE_STATIC));
+	if ((field->type->attrs & FIELD_ATTRIBUTE_STATIC))
+		goto leave;
 
 	dest = (char*)obj + field->offset;
 	mono_copy_value (field->type, dest, value, FALSE);
+leave:
+	MONO_EXIT_GC_UNSAFE;
 }
 
 /**
@@ -3325,13 +3324,15 @@ mono_field_set_value (MonoObject *obj, MonoClassField *field, void *value)
 void
 mono_field_static_set_value (MonoVTable *vt, MonoClassField *field, void *value)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
+	MONO_ENTER_GC_UNSAFE;
 
 	void *dest;
 
-	g_return_if_fail (field->type->attrs & FIELD_ATTRIBUTE_STATIC);
+	if ((field->type->attrs & FIELD_ATTRIBUTE_STATIC) == 0)
+		goto leave;
 	/* you cant set a constant! */
-	g_return_if_fail (!(field->type->attrs & FIELD_ATTRIBUTE_LITERAL));
+	if ((field->type->attrs & FIELD_ATTRIBUTE_LITERAL))
+		goto leave;
 
 	if (field->offset == -1) {
 		/* Special static */
@@ -3345,6 +3346,8 @@ mono_field_static_set_value (MonoVTable *vt, MonoClassField *field, void *value)
 		dest = (char*)mono_vtable_get_static_field_data (vt) + field->offset;
 	}
 	mono_copy_value (field->type, dest, value, FALSE);
+leave:
+	MONO_EXIT_GC_UNSAFE;
 }
 
 /**
@@ -3412,6 +3415,14 @@ mono_field_get_addr (MonoObject *obj, MonoVTable *vt, MonoClassField *field)
  */
 void
 mono_field_get_value (MonoObject *obj, MonoClassField *field, void *value)
+{
+	MONO_ENTER_GC_UNSAFE;
+	mono_field_get_value_internal (obj, field, value);
+	MONO_EXIT_GC_UNSAFE;
+}
+
+void
+mono_field_get_value_internal (MonoObject *obj, MonoClassField *field, void *value)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
@@ -3760,7 +3771,7 @@ mono_field_static_get_value_checked (MonoVTable *vt, MonoClassField *field, void
 void
 mono_property_set_value (MonoProperty *prop, void *obj, void **params, MonoObject **exc)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
+	MONO_ENTER_GC_UNSAFE;
 
 	ERROR_DECL (error);
 	do_runtime_invoke (prop->set, obj, params, exc, error);
@@ -3769,6 +3780,7 @@ mono_property_set_value (MonoProperty *prop, void *obj, void **params, MonoObjec
 	} else {
 		mono_error_cleanup (error);
 	}
+	MONO_EXIT_GC_UNSAFE;
 }
 
 /**
@@ -3857,6 +3869,25 @@ mono_property_get_value_checked (MonoProperty *prop, void *obj, void **params, M
 	return val;
 }
 
+static MonoClassField*
+nullable_class_get_value_field (MonoClass *klass)
+{
+	mono_class_setup_fields (klass);
+	g_assert (m_class_is_fields_inited (klass));
+
+	MonoClassField *klass_fields = m_class_get_fields (klass);
+	return &klass_fields [1];
+}
+
+static MonoClassField*
+nullable_class_get_has_value_field (MonoClass *klass)
+{
+	mono_class_setup_fields (klass);
+	g_assert (m_class_is_fields_inited (klass));
+
+	MonoClassField *klass_fields = m_class_get_fields (klass);
+	return &klass_fields [0];
+}
 
 /*
  * mono_nullable_init:
@@ -3879,21 +3910,17 @@ mono_nullable_init (guint8 *buf, MonoObject *value, MonoClass *klass)
 
 	MonoClass *param_class = m_class_get_cast_class (klass);
 
-	mono_class_setup_fields (klass);
-	g_assert (m_class_is_fields_inited (klass));
-				
-	MonoClassField *klass_fields = m_class_get_fields (klass);
-	g_assert (mono_class_from_mono_type (klass_fields [0].type) == param_class);
-	g_assert (mono_class_from_mono_type (klass_fields [1].type) == mono_defaults.boolean_class);
+	MonoClassField *has_value_field = nullable_class_get_has_value_field (klass);
+	MonoClassField *value_field = nullable_class_get_value_field (klass);
 
-	*(guint8*)(buf + klass_fields [1].offset - sizeof (MonoObject)) = value ? 1 : 0;
+	*(guint8*)(buf + has_value_field->offset - sizeof (MonoObject)) = value ? 1 : 0;
 	if (value) {
 		if (m_class_has_references (param_class))
-			mono_gc_wbarrier_value_copy (buf + klass_fields [0].offset - sizeof (MonoObject), mono_object_unbox (value), 1, param_class);
+			mono_gc_wbarrier_value_copy (buf + value_field->offset - sizeof (MonoObject), mono_object_unbox (value), 1, param_class);
 		else
-			mono_gc_memmove_atomic (buf + klass_fields [0].offset - sizeof (MonoObject), mono_object_unbox (value), mono_class_value_size (param_class, NULL));
+			mono_gc_memmove_atomic (buf + value_field->offset - sizeof (MonoObject), mono_object_unbox (value), mono_class_value_size (param_class, NULL));
 	} else {
-		mono_gc_bzero_atomic (buf + klass_fields [0].offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
+		mono_gc_bzero_atomic (buf + value_field->offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
 	}
 }
 
@@ -3918,24 +3945,20 @@ mono_nullable_init_from_handle (guint8 *buf, MonoObjectHandle value, MonoClass *
 
 	MonoClass *param_class = m_class_get_cast_class (klass);
 
-	mono_class_setup_fields (klass);
-	g_assert (m_class_is_fields_inited (klass));
+	MonoClassField *has_value_field = nullable_class_get_has_value_field (klass);
+	MonoClassField *value_field = nullable_class_get_value_field (klass);
 
-	MonoClassField *klass_fields = m_class_get_fields (klass);
-	g_assert (mono_class_from_mono_type (klass_fields [0].type) == param_class);
-	g_assert (mono_class_from_mono_type (klass_fields [1].type) == mono_defaults.boolean_class);
-
-	*(guint8*)(buf + klass_fields [1].offset - sizeof (MonoObject)) = MONO_HANDLE_IS_NULL  (value) ? 0 : 1;
+	*(guint8*)(buf + has_value_field->offset - sizeof (MonoObject)) = MONO_HANDLE_IS_NULL  (value) ? 0 : 1;
 	if (!MONO_HANDLE_IS_NULL (value)) {
 		uint32_t value_gchandle = 0;
 		gpointer src = mono_object_handle_pin_unbox (value, &value_gchandle);
 		if (m_class_has_references (param_class))
-			mono_gc_wbarrier_value_copy (buf + klass_fields [0].offset - sizeof (MonoObject), src, 1, param_class);
+			mono_gc_wbarrier_value_copy (buf + value_field->offset - sizeof (MonoObject), src, 1, param_class);
 		else
-			mono_gc_memmove_atomic (buf + klass_fields [0].offset - sizeof (MonoObject), src, mono_class_value_size (param_class, NULL));
+			mono_gc_memmove_atomic (buf + value_field->offset - sizeof (MonoObject), src, mono_class_value_size (param_class, NULL));
 		mono_gchandle_free (value_gchandle);
 	} else {
-		mono_gc_bzero_atomic (buf + klass_fields [0].offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
+		mono_gc_bzero_atomic (buf + value_field->offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
 	}
 }
 
@@ -3959,20 +3982,16 @@ mono_nullable_box (gpointer vbuf, MonoClass *klass, MonoError *error)
 	error_init (error);
 	MonoClass *param_class = m_class_get_cast_class (klass);
 
-	mono_class_setup_fields (klass);
-	g_assert (m_class_is_fields_inited (klass));
+	MonoClassField *has_value_field = nullable_class_get_has_value_field (klass);
+	MonoClassField *value_field = nullable_class_get_value_field (klass);
 
-	MonoClassField *klass_fields = m_class_get_fields (klass);
-	g_assert (mono_class_from_mono_type (klass_fields [0].type) == param_class);
-	g_assert (mono_class_from_mono_type (klass_fields [1].type) == mono_defaults.boolean_class);
-
-	if (*(guint8*)(buf + klass_fields [1].offset - sizeof (MonoObject))) {
+	if (*(guint8*)(buf + has_value_field->offset - sizeof (MonoObject))) {
 		MonoObject *o = mono_object_new_checked (mono_domain_get (), param_class, error);
 		return_val_if_nok (error, NULL);
 		if (m_class_has_references (param_class))
-			mono_gc_wbarrier_value_copy (mono_object_unbox (o), buf + klass_fields [0].offset - sizeof (MonoObject), 1, param_class);
+			mono_gc_wbarrier_value_copy (mono_object_unbox (o), buf + value_field->offset - sizeof (MonoObject), 1, param_class);
 		else
-			mono_gc_memmove_atomic (mono_object_unbox (o), buf + klass_fields [0].offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
+			mono_gc_memmove_atomic (mono_object_unbox (o), buf + value_field->offset - sizeof (MonoObject), mono_class_value_size (param_class, NULL));
 		return o;
 	}
 	else
@@ -4449,7 +4468,7 @@ serialize_or_deserialize_object (MonoObjectHandle obj, const gchar *method_name,
 	}
 
 	void *params [ ] = { MONO_HANDLE_RAW (obj) };
-	return mono_runtime_try_invoke_handle (*method, NULL, params, error);
+	return mono_runtime_try_invoke_handle (*method, NULL_HANDLE, params, error);
 }
 
 static MonoMethod *serialize_method;
@@ -4492,7 +4511,7 @@ make_transparent_proxy (MonoObjectHandle obj, MonoError *error)
 	MONO_HANDLE_SET (real_proxy, class_to_proxy, reflection_type);
 	MONO_HANDLE_SET (real_proxy, unwrapped_server, obj);
 
-	return mono_runtime_try_invoke_handle (get_proxy_method, real_proxy, NULL, error);
+	return mono_runtime_try_invoke_handle (get_proxy_method, MONO_HANDLE_CAST (MonoObject, real_proxy), NULL, error);
 return_null:
 	return mono_new_null ();
 }
@@ -5385,13 +5404,12 @@ object_new_handle_common_tail (MonoObjectHandle o, MonoClass *klass, MonoError *
 MonoObject *
 mono_object_new (MonoDomain *domain, MonoClass *klass)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
-
+	MonoObject * result;
+	MONO_ENTER_GC_UNSAFE;
 	ERROR_DECL (error);
-
-	MonoObject * result = mono_object_new_checked (domain, klass, error);
-
+	result = mono_object_new_checked (domain, klass, error);
 	mono_error_cleanup (error);
+	MONO_EXIT_GC_UNSAFE;
 	return result;
 }
 
@@ -5809,7 +5827,8 @@ mono_object_clone_handle (MonoObjectHandle obj, MonoError *error)
 	MonoClass* const klass = vtable->klass;
 
 	if (m_class_get_rank (klass))
-		return (MonoObjectHandle)mono_array_clone_in_domain (MONO_HANDLE_DOMAIN (obj), (MonoArrayHandle)obj, error);
+		return MONO_HANDLE_CAST (MonoObject, mono_array_clone_in_domain (MONO_HANDLE_DOMAIN (obj),
+			MONO_HANDLE_CAST (MonoArray, obj), error));
 
 	int const size = m_class_get_instance_size (klass);
 
@@ -6596,9 +6615,12 @@ mono_string_new_wrapper (const char *text)
 MonoObject *
 mono_value_box (MonoDomain *domain, MonoClass *klass, gpointer value)
 {
+	MonoObject *result;
+	MONO_ENTER_GC_UNSAFE;
 	ERROR_DECL (error);
-	MonoObject *result = mono_value_box_checked (domain, klass, value, error);
+	result = mono_value_box_checked (domain, klass, value, error);
 	mono_error_cleanup (error);
+	MONO_EXIT_GC_UNSAFE;
 	return result;
 }
 
@@ -7305,15 +7327,16 @@ mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error)
 char *
 mono_string_to_utf8 (MonoString *s)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
-
+	char *result;
+	MONO_ENTER_GC_UNSAFE;
 	ERROR_DECL (error);
-	char *result = mono_string_to_utf8_checked (s, error);
+	result = mono_string_to_utf8_checked (s, error);
 	
 	if (!is_ok (error)) {
 		mono_error_cleanup (error);
-		return NULL;
+		result = NULL;
 	}
+	MONO_EXIT_GC_UNSAFE;
 	return result;
 }
 
@@ -7631,7 +7654,9 @@ mono_get_eh_callbacks (void)
 void
 mono_raise_exception (MonoException *ex) 
 {
+	MONO_ENTER_GC_UNSAFE;
 	mono_raise_exception_deprecated (ex);
+	MONO_EXIT_GC_UNSAFE;
 }
 
 /*
@@ -8737,9 +8762,11 @@ mono_string_handle_length (MonoStringHandle s)
 uintptr_t
 mono_array_length (MonoArray *array)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
-
-	return array->max_length;
+	uintptr_t res;
+	MONO_ENTER_GC_UNSAFE;
+	res = array->max_length;
+	MONO_EXIT_GC_UNSAFE;
+	return res;
 }
 
 /**
