@@ -167,8 +167,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
-	xdebug.c mini-llvm.h mini-llvm-cpp.h llvm-jit.h \
-	alias-analysis.c mini-cross-helpers.c arch-stubs.c \
+	debugger-state-machine.h xdebug.c mini-llvm.h mini-llvm-cpp.h \
+	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
 	intrinsics.c mini-profiler.c interp-stubs.c aot-runtime.h ee.h \
 	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
@@ -276,10 +276,11 @@ am__v_lt_1 =
 @SHARED_MONO_TRUE@am_libmini_la_rpath =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
-am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c debugger-engine.c
+am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
+	debugger-state-machine.c debugger-engine.c
 @WASM_FALSE@am__objects_18 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	$(am__objects_18)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_18)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1014,6 +1015,7 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-engine.h	\
 	debugger-agent-stubs.c	\
+	debugger-state-machine.h	\
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
@@ -1141,7 +1143,7 @@ libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
 @BITCODE_TRUE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
 @WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
-libmono_dbg_la_SOURCES = debugger-agent.c $(extra_libmono_dbg_source)
+libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
 libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
 dbg_libs = libmono-dbg.la
@@ -1502,6 +1504,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-xdebug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-agent.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-engine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
@@ -2168,6 +2171,13 @@ libmono_dbg_la-debugger-agent.lo: debugger-agent.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debugger-agent.c' object='libmono_dbg_la-debugger-agent.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -c -o libmono_dbg_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
+
+libmono_dbg_la-debugger-state-machine.lo: debugger-state-machine.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-state-machine.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Tpo -c -o libmono_dbg_la-debugger-state-machine.lo `test -f 'debugger-state-machine.c' || echo '$(srcdir)/'`debugger-state-machine.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Tpo $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debugger-state-machine.c' object='libmono_dbg_la-debugger-state-machine.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -c -o libmono_dbg_la-debugger-state-machine.lo `test -f 'debugger-state-machine.c' || echo '$(srcdir)/'`debugger-state-machine.c
 
 libmono_dbg_la-debugger-engine.lo: debugger-engine.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-engine.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-engine.Tpo -c -o libmono_dbg_la-debugger-engine.lo `test -f 'debugger-engine.c' || echo '$(srcdir)/'`debugger-engine.c
