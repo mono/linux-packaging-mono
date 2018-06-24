@@ -530,8 +530,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_assembly_foreach@Base 4.1.0.1738
  mono_assembly_get_assemblyref@Base 4.1.0.1738
  mono_assembly_get_image@Base 4.1.0.1738
+ mono_assembly_get_image_internal@Base 5.17.0.151
  mono_assembly_get_main@Base 4.1.0.1738
  mono_assembly_get_name@Base 4.3.0.624
+ mono_assembly_get_name_internal@Base 5.17.0.151
  mono_assembly_get_object@Base 4.1.0.1738
  mono_assembly_getrootdir@Base 4.1.0.1738
  mono_assembly_invoke_load_hook@Base 4.1.0.1738
