@@ -396,7 +396,7 @@ mono_exception_from_name_msg (MonoImage *image, const char *name_space,
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
 mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
-				      const char *name, MonoString *a1, MonoString *a2)
+				      const char *name, MonoString *a1_raw, MonoString *a2_raw)
 
 </div>
             <p />
@@ -672,7 +672,7 @@ mono_get_exception_execution_engine (const char *msg)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_file_not_found2 (const char *msg, MonoString *fname)
+mono_get_exception_file_not_found2 (const char *msg, MonoString *fname_raw)
 
 </div>
             <p />
@@ -694,7 +694,7 @@ mono_get_exception_file_not_found2 (const char *msg, MonoString *fname)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_file_not_found (MonoString *fname)
+mono_get_exception_file_not_found (MonoString *fname_raw)
 
 </div>
             <p />
@@ -866,7 +866,7 @@ mono_get_exception_overflow (void)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_security ()
+mono_get_exception_security (void)
 
 </div>
             <p />
@@ -952,7 +952,7 @@ mono_get_exception_synchronization_lock (const char *msg)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_thread_abort ()
+mono_get_exception_thread_abort (void)
 
 </div>
             <p />
@@ -972,8 +972,7 @@ mono_get_exception_thread_abort ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">MONO_RT_EXTERNAL_ONLY
-MonoException *
+            <div class="mapi-prototype">MonoException*
 mono_get_exception_thread_state (const char *msg)
 
 </div>
@@ -996,7 +995,7 @@ mono_get_exception_thread_state (const char *msg)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_type_initialization (const gchar *type_name, MonoException *inner)
+mono_get_exception_type_initialization (const gchar *type_name, MonoException* inner_raw)
 
 </div>
             <p />
@@ -1018,7 +1017,7 @@ mono_get_exception_type_initialization (const gchar *type_name, MonoException *i
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_type_load (MonoString *class_name, char *assembly_name)
+mono_get_exception_type_load (MonoString *class_name_raw, char *assembly_name)
 
 </div>
             <p />
@@ -1067,7 +1066,7 @@ mono_get_exception_missing_field (const char *class_name, const char *member_nam
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i></td><td> the class where the lookup was performed</td></tr><tr><td><i>member_name</i></td><td> the name of the missing method.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i></td><td> the class where the lookup was performed</td></tr><tr><td><i>member_name</i></td><td> the name of the missing field.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
              <div>	 a new instance of the <code>System.MissingFieldException</code>
 </div>
         </div><!--mapi-description -->
@@ -1128,8 +1127,7 @@ mono_get_exception_reflection_type_load (MonoArray *types_raw, MonoArray *except
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_exception_from_token_two_strings (MonoImage *image, guint32 token,
-									   MonoString *a1, MonoString *a2)
+mono_exception_from_token_two_strings (MonoImage *image, guint32 token, MonoString *arg1_raw, MonoString *arg2_raw)
 
 </div>
             <p />
@@ -1152,7 +1150,7 @@ mono_exception_from_token_two_strings (MonoImage *image, guint32 token,
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_bad_image_format2 (const char *msg, MonoString *fname)
+mono_get_exception_bad_image_format2 (const char *msg, MonoString *fname_raw)
 
 </div>
             <p />
@@ -1237,7 +1235,7 @@ mono_get_exception_out_of_memory (void)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_runtime_wrapped (MonoObject *wrapped_exception)
+mono_get_exception_runtime_wrapped (MonoObject *wrapped_exception_raw)
 
 </div>
             <p />
