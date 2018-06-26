@@ -774,9 +774,14 @@ jit_call_supported (MonoMethod *method, MonoMethodSignature *sig)
 	if (method->string_ctor)
 		return FALSE;
 
+	/* TODO: We need a better check here. We can't assume everything is AOT'd
+	 * of an image, e.g. with --aot=interp, mscorlib.dll.dylib will contain
+	 * only a few wrappers */
+#if 0
 	if (mono_aot_only && m_class_get_image (method->klass)->aot_module)
 		/* The AOTed version of the called method is assumed to be available in full-aot mode */
 		return TRUE;
+#endif
 
 	for (l = mono_interp_jit_classes; l; l = l->next) {
 		char *class_name = l->data;
@@ -4889,6 +4894,7 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Int
 		imethod->next_jit_code_hash = hash;
 		mono_memory_barrier ();
 		imethod->transformed = TRUE;
+		mono_atomic_fetch_add_i32 (&mono_jit_stats.methods_with_interp, 1);
 	}
 	mono_os_mutex_unlock (&calc_section);
 
