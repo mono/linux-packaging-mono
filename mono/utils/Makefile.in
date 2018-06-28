@@ -165,14 +165,14 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-conc-hashtable.c json.h json.c networking.c \
 	networking-posix.c networking-fallback.c networking-missing.c \
 	networking-windows.c networking.h mono-rand.c \
-	mono-rand-windows.c mono-rand.h mono-rand-windows-internals.h \
-	memfuncs.c memfuncs.h parse.c parse.h checked-build.c \
-	checked-build.h os-event.h refcount.h w32api.h unlocked.h \
-	ward.h mach-support-x86.c mach-support-amd64.c \
-	mach-support-arm.c mach-support-arm64.c mach-support-unknown.c \
-	mono-hwcap-x86.c mono-hwcap-arm.c mono-hwcap-arm64.c \
-	mono-hwcap-mips.c mono-hwcap-ppc.c mono-hwcap-sparc.c \
-	mono-hwcap-s390x.c mono-hwcap-wasm.c mono-hwcap-cross.c
+	mono-rand-windows.c mono-rand.h memfuncs.c memfuncs.h parse.c \
+	parse.h checked-build.c checked-build.h os-event.h refcount.h \
+	w32api.h unlocked.h ward.h mach-support-x86.c \
+	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
+	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
+	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
+	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-wasm.c \
+	mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-os-event-win32.lo \
 @HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo
@@ -802,7 +802,6 @@ monoutils_sources = \
 	mono-rand.c	\
 	mono-rand-windows.c	\
 	mono-rand.h \
-	mono-rand-windows-internals.h \
 	memfuncs.c \
 	memfuncs.h \
 	parse.c \
