@@ -82,6 +82,7 @@ namespace System
         // declared constructors.
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char[])")]
         public extern String(char[] value);
 
         [System.Runtime.CompilerServices.DependencyReductionRoot]
@@ -105,6 +106,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char[], System.Int32, System.Int32)")]
         public extern String(char[] value, int startIndex, int length);
 
         [System.Runtime.CompilerServices.DependencyReductionRoot]
@@ -141,6 +143,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char*)")]
         unsafe public extern String(char* value);
 
         [System.Runtime.CompilerServices.DependencyReductionRoot]
@@ -173,6 +176,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char*, System.Int32, System.Int32)")]
         unsafe public extern String(char* value, int startIndex, int length);
 
         [System.Runtime.CompilerServices.DependencyReductionRoot]
@@ -214,6 +218,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*)")]
         public extern unsafe String(sbyte* value);
 
         [DependencyReductionRoot]
@@ -232,6 +237,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32)")]
         public extern unsafe String(sbyte* value, int startIndex, int length);
 
         [DependencyReductionRoot]
@@ -284,6 +290,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32, System.Text.Encoding)")]
         public extern unsafe String(sbyte* value, int startIndex, int length, Encoding enc);
 
         [DependencyReductionRoot]
@@ -329,6 +336,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char, System.Int32)")]
         public extern String(char c, int count);
 
         [System.Runtime.CompilerServices.DependencyReductionRoot]
@@ -376,6 +384,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.ReadOnlySpan`1<System.Char>)")]
         public extern String(ReadOnlySpan<char> value);
 
         [DependencyReductionRoot]
