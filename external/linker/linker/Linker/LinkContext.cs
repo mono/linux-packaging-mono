@@ -50,7 +50,7 @@ namespace Mono.Linker {
 		readonly Dictionary<string, string> _parameters;
 		bool _linkSymbols;
 		bool _keepTypeForwarderOnlyAssemblies;
-		bool _keepMembersForDebuggerAttributes;
+		bool _keepMembersForDebugger;
 		bool _ignoreUnresolved;
 
 		AssemblyResolver _resolver;
@@ -95,10 +95,10 @@ namespace Mono.Linker {
 			set { _keepTypeForwarderOnlyAssemblies = value; }
 		}
 
-		public bool KeepMembersForDebuggerAttributes
+		public bool KeepMembersForDebugger
 		{
-			get { return _keepMembersForDebuggerAttributes; }
-			set { _keepMembersForDebuggerAttributes = value; }
+			get { return _keepMembersForDebugger; }
+			set { _keepMembersForDebugger = value; }
 		}
 
 		public bool IgnoreUnresolved
@@ -135,13 +135,15 @@ namespace Mono.Linker {
 			set { _symbolWriterProvider = value; }
 		}
 
-		public bool LogMessages { get; set; } = false;
+		public bool LogMessages { get; set; }
 
 		public ILogger Logger { get; set; } = new ConsoleLogger ();
 
 		public MarkingHelpers MarkingHelpers { get; private set; }
 
 		public Tracer Tracer { get; private set; }
+
+		public string[] ExcludedFeatures { get; set; }
 
 		public LinkContext (Pipeline pipeline)
 			: this (pipeline, new AssemblyResolver ())
@@ -179,7 +181,7 @@ namespace Mono.Linker {
 		public TypeDefinition GetType (string fullName)
 		{
 			int pos = fullName.IndexOf (",");
-			fullName = fullName.Replace ("+", "/");
+			fullName = TypeReferenceExtensions.ToCecilName (fullName);
 			if (pos == -1) {
 				foreach (AssemblyDefinition asm in GetAssemblies ()) {
 					var type = asm.MainModule.GetType (fullName);
@@ -351,6 +353,11 @@ namespace Mono.Linker {
 		public void Dispose ()
 		{
 			_resolver.Dispose ();
+		}
+
+		public bool IsFeatureExcluded (string featureName)
+		{
+			return ExcludedFeatures != null && Array.IndexOf (ExcludedFeatures, featureName) >= 0;
 		}
 
 		public void LogMessage (string message, params object[] values)
