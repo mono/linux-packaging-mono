@@ -1,0 +1,13 @@
+diff --git a/gdk/quartz/gdkevents-quartz.c b/gdk/quartz/gdkevents-quartz.c
+index 195899b13b..844128e0b2 100644
+--- a/gdk/quartz/gdkevents-quartz.c
++++ b/gdk/quartz/gdkevents-quartz.c
+@@ -748,7 +748,7 @@ find_nsview_at_pos (GdkWindowImplQuartz *impl, gint x, gint y)
+       if (r.origin.x <= x && r.origin.x + r.size.width >= x &&
+           r.origin.y <= y && r.origin.y + r.size.height >= y)
+         {
+-          NSView* child = find_nsview_at_pos (impl, x - r.origin.x, y - r.origin.y);
++          NSView* child = find_nsview_at_pos (sv, x - r.origin.x, y - r.origin.y);
+           if (child != NULL)
+             return child;
+           else
