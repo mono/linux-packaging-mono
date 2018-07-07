@@ -1326,6 +1326,12 @@
 /* inotify_rm_watch with unsigned wd */
 #undef INOTIFY_RM_WATCH_WD_UNSIGNED
 
+/* LLVM used is being build during mono build */
+#undef INTERNAL_LLVM
+
+/* Build LLVM with assertions */
+#undef INTERNAL_LLVM_ASSERTS
+
 /* struct ipv6_mreq with unsigned ipv6mr_interface */
 #undef IPV6MR_INTERFACE_UNSIGNED
 
@@ -1337,9 +1343,6 @@
 
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION
-
-/* Full version of LLVM libraries */
-#undef LLVM_VERSION
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

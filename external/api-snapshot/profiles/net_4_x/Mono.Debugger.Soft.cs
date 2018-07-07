@@ -72,6 +72,7 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.ModuleMirror ManifestModule { get { throw null; } }
         public Mono.Cecil.AssemblyDefinition Metadata { get { throw null; } set { } }
         public Mono.Debugger.Soft.ObjectMirror GetAssemblyObject() { throw null; }
+        public Mono.Cecil.AssemblyDefinition GetMetadata() { throw null; }
         public byte[] GetMetadataBlob() { throw null; }
         public Mono.Debugger.Soft.MethodMirror GetMethod(uint token) { throw null; }
         public virtual System.Reflection.AssemblyName GetName() { throw null; }
