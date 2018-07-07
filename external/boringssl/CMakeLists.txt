@@ -27,7 +27,12 @@ endif()
 #endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(C_CXX_FLAGS "-Wall -Wformat=2 -Wsign-compare -Wmissing-field-initializers -ggdb -fvisibility=hidden")
+  if(${CMAKE_SYSTEM_NAME} MATCHES "AIX" OR ${CMAKE_SYSTEM_NAME} MATCHES "OS400")
+    # XCOFF doesn't support -fvisibility=hidden, and we would prefer XCOFF debugging info.
+    set(C_CXX_FLAGS "-Wall -Wformat=2 -Wsign-compare -Wmissing-field-initializers -gxcoff")
+  else()
+    set(C_CXX_FLAGS "-Wall -Wformat=2 -Wsign-compare -Wmissing-field-initializers -ggdb -fvisibility=hidden")
+  endif()
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_CXX_FLAGS}")
   if(ANDROID)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x ${C_CXX_FLAGS}")

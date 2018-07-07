@@ -533,6 +533,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -573,11 +574,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CFLAGS = @LLVM_CFLAGS@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_CXXFLAGS = @LLVM_CXXFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
+LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
@@ -739,6 +736,10 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(glib_libs)
 
+@ENABLE_LLVM_TRUE@LLVM_CFLAGS = $(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_CXXFLAGS = $(LLVM_CXXFLAGS_INTERNAL) $(LLVM_CXXFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_LDFLAGS = $(LLVM_LDFLAGS_INTERNAL) $(LLVM_LDFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_LIBS = $(LLVM_LIBS_INTERNAL) $(LLVM_LIBS_EXTERNAL)
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
 # if the tests are going to run with framework assemblies compiled with
@@ -796,7 +797,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_2) \
 noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_8)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
-@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 mono_boehm_SOURCES = \
 	main.c
 
@@ -832,7 +833,7 @@ mono_boehm_LDADD = \
 	$(MONO_DTRACE_OBJECT)
 
 mono_boehm_LDFLAGS = \
-	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
@@ -841,7 +842,7 @@ mono_sgen_LDADD = \
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
-mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDADD = $(mono_sgen_LDADD)
 
 # Create monow.exe, linked for the 'windows' subsystem
@@ -1158,11 +1159,11 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
@@ -1218,6 +1219,7 @@ EXTRA_DIST = TestDriver.cs \
 	test_op_il_seq_point_headerfooter.sh	\
 	Makefile.am.in
 
+@ENABLE_LLVM_TRUE@llvm_makefile_dep = $(mono_build_root)/llvm/llvm_config.mk
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -2525,6 +2527,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-libLTLIBRARIES uninstall-libmonoincludeHEADERS
 
 
+@ENABLE_LLVM_TRUE@-include $(mono_build_root)/llvm/llvm_config.mk
+
+@ENABLE_LLVM_TRUE@print-llvm-info:
+@ENABLE_LLVM_TRUE@	echo "cflags: $(LLVM_CFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "cxxflags: $(LLVM_CXXFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "ldflags: $(LLVM_LDFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "libs: $(LLVM_LIBS)"
+
 @HOST_WIN32_TRUE@export HOST_CC
 
 @DISABLE_EXECUTABLES_FALSE@mono: mono-$(mono_bin_suffix)
@@ -2780,7 +2790,7 @@ patch-automake:
 tags:
 	etags -o TAGS `find .. -name "*.h" -o -name "*.c"`
 
-@HAS_EXTENSION_MODULE_FALSE@Makefile.am: Makefile.am.in
+@HAS_EXTENSION_MODULE_FALSE@Makefile.am: Makefile.am.in $(llvm_makefile_dep)
 @HAS_EXTENSION_MODULE_FALSE@	echo "##################### Generated from Makefile.am.in, do not modify ##########################" > $@
 @HAS_EXTENSION_MODULE_FALSE@	cat $< >> $@
 
