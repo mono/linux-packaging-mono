@@ -123,24 +123,25 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c \
 	mono-dl-wasm.c mono-dl.h mono-dl-windows-internals.h \
 	mono-log-windows.c mono-log-common.c mono-log-posix.c \
-	mono-log-android.c mono-log-darwin.c mono-merp.c mono-merp.h \
+	mono-log-android.c mono-log-darwin.c \
+	mono-log-flight-recorder.c mono-merp.c mono-merp.h \
 	mono-state.h mono-state.c mono-internal-hash.c \
 	mono-internal-hash.h mono-io-portability.c \
 	mono-io-portability.h monobitset.c mono-filemap.c mono-math.c \
 	mono-mmap.c mono-mmap-windows.c mono-mmap.h \
 	mono-mmap-internals.h mono-mmap-windows-internals.h \
-	mono-os-mutex.h mono-os-mutex.c mono-os-wait.h \
-	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
-	mono-networkinterfaces.c mono-networkinterfaces.h \
-	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
-	mono-proclib-windows-internals.h mono-publib.c mono-jemalloc.c \
-	mono-string.h mono-time.c mono-time.h strenc.h strenc.c \
-	mono-uri.c mono-poll.c mono-path.c mono-os-semaphore.h \
-	mono-coop-semaphore.h mono-sigcontext.h mono-stdlib.c \
-	mono-property-hash.h mono-property-hash.c mono-value-hash.h \
-	mono-value-hash.c freebsd-elf_common.h freebsd-elf32.h \
-	freebsd-elf64.h freebsd-dwarf.h dtrace.h gc_wrapper.h \
-	mono-error.c mono-error-internals.h monobitset.h \
+	mono-os-mutex.h mono-os-mutex.c mono-flight-recorder.h \
+	mono-flight-recorder.c mono-os-wait.h mono-coop-mutex.h \
+	mono-once.h mono-lazy-init.h mono-networkinterfaces.c \
+	mono-networkinterfaces.h mono-proclib.c mono-proclib-windows.c \
+	mono-proclib.h mono-proclib-windows-internals.h mono-publib.c \
+	mono-jemalloc.c mono-string.h mono-time.c mono-time.h strenc.h \
+	strenc.c mono-uri.c mono-poll.c mono-path.c \
+	mono-os-semaphore.h mono-coop-semaphore.h mono-sigcontext.h \
+	mono-stdlib.c mono-property-hash.h mono-property-hash.c \
+	mono-value-hash.h mono-value-hash.c freebsd-elf_common.h \
+	freebsd-elf32.h freebsd-elf64.h freebsd-dwarf.h dtrace.h \
+	gc_wrapper.h mono-error.c mono-error-internals.h monobitset.h \
 	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
 	mono-machine.h mono-math.h mono-membar.h mono-path.h \
 	mono-poll.h mono-uri.h mono-stdlib.h valgrind.h mach-support.h \
@@ -158,10 +159,11 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-threads-android.c mono-threads-haiku.c mono-threads-aix.c \
 	mono-threads-wasm.c mono-threads.h mono-threads-debug.h \
 	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
-	mono-tls.h mono-tls.c mono-utils-debug.c mono-utils-debug.h \
-	linux_magic.h mono-memory-model.h atomic.h atomic.c \
-	mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h bsearch.h \
-	bsearch.c mono-signal-handler.h mono-conc-hashtable.h \
+	mono-utility-thread.c mono-utility-thread.h mono-tls.h \
+	mono-tls.c mono-utils-debug.c mono-utils-debug.h linux_magic.h \
+	mono-memory-model.h atomic.h atomic.c mono-hwcap.h \
+	mono-hwcap.c mono-hwcap-vars.h bsearch.h bsearch.c \
+	mono-signal-handler.h mono-conc-hashtable.h \
 	mono-conc-hashtable.c json.h json.c networking.c \
 	networking-posix.c networking-fallback.c networking-missing.c \
 	networking-windows.c networking.h mono-rand.c \
@@ -191,6 +193,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-log-posix.lo \
 	libmonoutils_la-mono-log-android.lo \
 	libmonoutils_la-mono-log-darwin.lo \
+	libmonoutils_la-mono-log-flight-recorder.lo \
 	libmonoutils_la-mono-merp.lo libmonoutils_la-mono-state.lo \
 	libmonoutils_la-mono-internal-hash.lo \
 	libmonoutils_la-mono-io-portability.lo \
@@ -198,6 +201,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-math.lo libmonoutils_la-mono-mmap.lo \
 	libmonoutils_la-mono-mmap-windows.lo \
 	libmonoutils_la-mono-os-mutex.lo \
+	libmonoutils_la-mono-flight-recorder.lo \
 	libmonoutils_la-mono-networkinterfaces.lo \
 	libmonoutils_la-mono-proclib.lo \
 	libmonoutils_la-mono-proclib-windows.lo \
@@ -230,6 +234,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-threads-aix.lo \
 	libmonoutils_la-mono-threads-wasm.lo \
 	libmonoutils_la-mono-threads-coop.lo \
+	libmonoutils_la-mono-utility-thread.lo \
 	libmonoutils_la-mono-tls.lo \
 	libmonoutils_la-mono-utils-debug.lo libmonoutils_la-atomic.lo \
 	libmonoutils_la-mono-hwcap.lo libmonoutils_la-bsearch.lo \
@@ -675,6 +680,7 @@ monoutils_sources = \
 	mono-log-posix.c	\
 	mono-log-android.c \
 	mono-log-darwin.c \
+	mono-log-flight-recorder.c \
 	mono-merp.c	\
 	mono-merp.h	\
 	mono-state.h	\
@@ -693,6 +699,8 @@ monoutils_sources = \
 	mono-mmap-windows-internals.h	\
 	mono-os-mutex.h		\
 	mono-os-mutex.c		\
+	mono-flight-recorder.h		\
+	mono-flight-recorder.c		\
 	mono-os-wait.h \
 	mono-coop-mutex.h		\
 	mono-once.h		\
@@ -777,6 +785,8 @@ monoutils_sources = \
 	mono-threads-api.h	\
 	mono-threads-coop.c	\
 	mono-threads-coop.h	\
+	mono-utility-thread.c	\
+	mono-utility-thread.h	\
 	mono-tls.h	\
 	mono-tls.c	\
 	mono-utils-debug.c \
@@ -920,6 +930,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-dl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-filemap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-flight-recorder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-arm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-cross.Plo@am__quote@
@@ -937,6 +948,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-android.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-darwin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-flight-recorder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-log-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-logger.Plo@am__quote@
@@ -978,6 +990,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-time.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-tls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-uri.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-utility-thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-utils-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-value-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-monobitset.Plo@am__quote@
@@ -1148,6 +1161,13 @@ libmonoutils_la-mono-log-darwin.lo: mono-log-darwin.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-log-darwin.lo `test -f 'mono-log-darwin.c' || echo '$(srcdir)/'`mono-log-darwin.c
 
+libmonoutils_la-mono-log-flight-recorder.lo: mono-log-flight-recorder.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-log-flight-recorder.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-log-flight-recorder.Tpo -c -o libmonoutils_la-mono-log-flight-recorder.lo `test -f 'mono-log-flight-recorder.c' || echo '$(srcdir)/'`mono-log-flight-recorder.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-log-flight-recorder.Tpo $(DEPDIR)/libmonoutils_la-mono-log-flight-recorder.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-log-flight-recorder.c' object='libmonoutils_la-mono-log-flight-recorder.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-log-flight-recorder.lo `test -f 'mono-log-flight-recorder.c' || echo '$(srcdir)/'`mono-log-flight-recorder.c
+
 libmonoutils_la-mono-merp.lo: mono-merp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-merp.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-merp.Tpo -c -o libmonoutils_la-mono-merp.lo `test -f 'mono-merp.c' || echo '$(srcdir)/'`mono-merp.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-merp.Tpo $(DEPDIR)/libmonoutils_la-mono-merp.Plo
@@ -1217,6 +1237,13 @@ libmonoutils_la-mono-os-mutex.lo: mono-os-mutex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-os-mutex.c' object='libmonoutils_la-mono-os-mutex.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-os-mutex.lo `test -f 'mono-os-mutex.c' || echo '$(srcdir)/'`mono-os-mutex.c
+
+libmonoutils_la-mono-flight-recorder.lo: mono-flight-recorder.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-flight-recorder.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-flight-recorder.Tpo -c -o libmonoutils_la-mono-flight-recorder.lo `test -f 'mono-flight-recorder.c' || echo '$(srcdir)/'`mono-flight-recorder.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-flight-recorder.Tpo $(DEPDIR)/libmonoutils_la-mono-flight-recorder.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-flight-recorder.c' object='libmonoutils_la-mono-flight-recorder.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-flight-recorder.lo `test -f 'mono-flight-recorder.c' || echo '$(srcdir)/'`mono-flight-recorder.c
 
 libmonoutils_la-mono-networkinterfaces.lo: mono-networkinterfaces.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-networkinterfaces.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-networkinterfaces.Tpo -c -o libmonoutils_la-mono-networkinterfaces.lo `test -f 'mono-networkinterfaces.c' || echo '$(srcdir)/'`mono-networkinterfaces.c
@@ -1469,6 +1496,13 @@ libmonoutils_la-mono-threads-coop.lo: mono-threads-coop.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-threads-coop.c' object='libmonoutils_la-mono-threads-coop.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-threads-coop.lo `test -f 'mono-threads-coop.c' || echo '$(srcdir)/'`mono-threads-coop.c
+
+libmonoutils_la-mono-utility-thread.lo: mono-utility-thread.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-utility-thread.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-utility-thread.Tpo -c -o libmonoutils_la-mono-utility-thread.lo `test -f 'mono-utility-thread.c' || echo '$(srcdir)/'`mono-utility-thread.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-utility-thread.Tpo $(DEPDIR)/libmonoutils_la-mono-utility-thread.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-utility-thread.c' object='libmonoutils_la-mono-utility-thread.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-utility-thread.lo `test -f 'mono-utility-thread.c' || echo '$(srcdir)/'`mono-utility-thread.c
 
 libmonoutils_la-mono-tls.lo: mono-tls.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-tls.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-tls.Tpo -c -o libmonoutils_la-mono-tls.lo `test -f 'mono-tls.c' || echo '$(srcdir)/'`mono-tls.c
