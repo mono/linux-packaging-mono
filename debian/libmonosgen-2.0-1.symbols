@@ -1261,12 +1261,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_string_append_printf@Base 5.7.0.181
  monoeg_g_string_append_unichar@Base 5.7.0.181
  monoeg_g_string_append_vprintf@Base 5.7.0.181
- monoeg_g_string_erase@Base 5.7.0.181
  monoeg_g_string_free@Base 5.7.0.181
- monoeg_g_string_insert@Base 5.7.0.181
  monoeg_g_string_new@Base 5.7.0.181
  monoeg_g_string_new_len@Base 5.7.0.181
- monoeg_g_string_prepend@Base 5.7.0.181
  monoeg_g_string_printf@Base 5.7.0.181
  monoeg_g_string_set_size@Base 5.7.0.181
  monoeg_g_string_sized_new@Base 5.7.0.181
