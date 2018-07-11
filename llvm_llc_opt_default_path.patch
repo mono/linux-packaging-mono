@@ -1,11 +1,11 @@
 diff --git a/mono/mini/aot-compiler.c b/mono/mini/aot-compiler.c
-index d831bfe8cf5..e419cbdb53b 100644
+index 17a377236c7..8225b9e870f 100644
 --- a/mono/mini/aot-compiler.c
 +++ b/mono/mini/aot-compiler.c
-@@ -12465,7 +12465,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options,
- 	acfg->aot_opts.nimt_trampolines = 512;
- 	acfg->aot_opts.nrgctx_fetch_trampolines = 128;
- 	acfg->aot_opts.ngsharedvt_arg_trampolines = 512;
+@@ -12588,7 +12588,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options,
+ #ifdef MONO_ARCH_HAVE_FTNPTR_ARG_TRAMPOLINE
+ 	acfg->aot_opts.nftnptr_arg_trampolines = 128;
+ #endif
 -	acfg->aot_opts.llvm_path = g_strdup ("");
 +	acfg->aot_opts.llvm_path = g_strdup ("/usr/lib/mono/llvm/bin/");
  	acfg->aot_opts.temp_path = g_strdup ("");
