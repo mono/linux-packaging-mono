@@ -876,7 +876,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @HOST_WIN32_FALSE@	$(am__append_2) $(am__append_3)
 @HOST_WIN32_TRUE@platform_sources = $(win32_sources) $(am__append_1) \
 @HOST_WIN32_TRUE@	$(am__append_2) $(am__append_3)
-@HOST_WIN32_TRUE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@assembliesdir = `cygpath -m "${libdir}"`
 
 # Use -m here. This will use / as directory separator (C:/WINNT).
@@ -907,6 +906,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @HOST_WIN32_FALSE@	w32file-unix-glob.h \
 @HOST_WIN32_FALSE@	w32error-unix.c
 
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @BITCODE_TRUE@libmonoldflags = -no-undefined
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
