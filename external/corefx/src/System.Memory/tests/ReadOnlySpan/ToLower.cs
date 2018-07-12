@@ -223,7 +223,7 @@ namespace System.SpanTests
             yield return new object[] { "H\u0131 World", "h\u0131 world", CultureInfo.InvariantCulture };
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue")]
         [MemberData(nameof(ToLower_Culture_TestData))]
         public static void Test_ToLower_Culture(string actual, string expected, CultureInfo culture)
         {
@@ -286,7 +286,7 @@ namespace System.SpanTests
             yield return new object[] { "\ud801\udc29", PlatformDetection.IsWindows7 ? "\ud801\udc29" : "\ud801\udc01", "en-US" };
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue")]
         [MemberData(nameof(UpperLowerCasing_TestData))]
         public static void CasingTest(string lowerForm, string upperForm, string cultureName)
         {

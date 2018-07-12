@@ -223,7 +223,7 @@ namespace System.SpanTests
             yield return new object[] { "h\u0131 world", "H\u0131 WORLD", CultureInfo.InvariantCulture };
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue")]
         [MemberData(nameof(ToUpper_Culture_TestData))]
         public static void Test_ToUpper_Culture(string actual, string expected, CultureInfo culture)
         {
@@ -233,7 +233,7 @@ namespace System.SpanTests
             Assert.Equal(expected, destination.ToString());
         }
 
-        [Fact]
+        [Theory(Skip="Mono issue")]
         public static void ToUpper_TurkishI_TurkishCulture()
         {
             CultureInfo culture = new CultureInfo("tr-TR");
@@ -287,7 +287,7 @@ namespace System.SpanTests
             Assert.Equal(expected, destination.ToString());
         }
 
-        [Fact]
+        [Theory(Skip="Mono issue")]
         public static void ToUpper_TurkishI_InvariantCulture()
         {
             CultureInfo culture = CultureInfo.InvariantCulture;
