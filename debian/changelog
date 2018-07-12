@@ -1,3 +1,15 @@
+mono (5.17.0.325-0nightly2) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [ae307ed] Fix out-of-tree LLVM build [3fb8270] Merge branch 'master-
+    nightly' of github.com:mono/linux-packaging-mono into master-nightly
+    [3ecec8a] Refreshed symbols
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 12 Jul 2018 14:56:45 +0000
+
 mono (5.17.0.325-0nightly1) nightly; urgency=medium
 
   * New release - mono-5.17.0.325.tar.bz2
