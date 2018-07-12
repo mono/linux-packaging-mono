@@ -127,6 +127,9 @@ build-stamp: configure-stamp
 ifndef SKIP_LIBGC
 	cd libgc && $(MAKE) $(LIBGC_MAKE_FLAGS)
 endif
+ifdef LLVM_ARCH
+	cd llvm && $(MAKE)
+endif
 	cd mono && $(MAKE) $(MONO_MAKE_FLAGS)
 	LC_ALL=C $(MAKE) $(MAKE_FLAGS) EXTERNAL_MCS=false EXTERNAL_MONO=false
 
