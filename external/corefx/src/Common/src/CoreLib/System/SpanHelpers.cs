@@ -7,7 +7,12 @@ using System.Globalization;
 using System.Runtime;
 using System.Runtime.InteropServices;
 
+#if MONO
+using System.Runtime.CompilerServices;
+using System.Diagnostics.Private;
+#else
 using Internal.Runtime.CompilerServices;
+#endif
 
 #if BIT64
 using nuint = System.UInt64;
