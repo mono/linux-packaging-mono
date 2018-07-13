@@ -260,7 +260,7 @@ namespace System.SpanTests
             Assert.Equal(expected, destination.ToString());
         }
 
-        [Fact]
+        [Theory(Skip="Mono issue")]
         public static void ToUpper_TurkishI_EnglishUSCulture()
         {
             CultureInfo culture = new CultureInfo("en-US");
