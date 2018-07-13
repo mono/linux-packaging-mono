@@ -402,8 +402,10 @@ namespace System
             }
             return result;
         }
-
-#if !MONO // TODO: Undo
+#if MONO
+        public delegate void SpanAction<T, in TArg>(Span<T> span, TArg arg);
+        public delegate void ReadOnlySpanAction<T, in TArg>(ReadOnlySpan<T> span, TArg arg);
+#endif
         public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
         {
             if (action == null)
@@ -428,7 +430,6 @@ namespace System
 
         public static implicit operator ReadOnlySpan<char>(string value) =>
             value != null ? new ReadOnlySpan<char>(ref value.GetRawStringData(), value.Length) : default;
-#endif
 
         public object Clone()
         {

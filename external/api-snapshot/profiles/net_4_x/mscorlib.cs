@@ -855,6 +855,7 @@ namespace System
         int System.Collections.IStructuralEquatable.GetHashCode(System.Collections.IEqualityComparer comparer) { throw null; }
         public static bool TrueForAll<T>(T[] array, System.Predicate<T> match) { throw null; }
     }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ArraySegment<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.Generic.IReadOnlyList<T>, System.Collections.IEnumerable
@@ -863,25 +864,43 @@ namespace System
         public ArraySegment(T[] array, int offset, int count) { throw null;}
         public T[] Array { get { throw null; } }
         public int Count { get { throw null; } }
+        public static System.ArraySegment<T> Empty { get { throw null; } }
+        public T this[int index] { get { throw null; } set { } }
         public int Offset { get { throw null; } }
         bool System.Collections.Generic.ICollection<T>.IsReadOnly { get { throw null; } }
         T System.Collections.Generic.IList<T>.this[int index] { get { throw null; } set { } }
         T System.Collections.Generic.IReadOnlyList<T>.this[int index] { get { throw null; } }
+        public void CopyTo(System.ArraySegment<T> destination) { }
+        public void CopyTo(T[] destination) { }
+        public void CopyTo(T[] destination, int destinationIndex) { }
         public bool Equals(System.ArraySegment<T> obj) { throw null; }
         public override bool Equals(object obj) { throw null; }
+        public System.ArraySegment<T>.Enumerator GetEnumerator() { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.ArraySegment<T> a, System.ArraySegment<T> b) { throw null; }
+        public static implicit operator System.ArraySegment<T> (T[] array) { throw null; }
         public static bool operator !=(System.ArraySegment<T> a, System.ArraySegment<T> b) { throw null; }
+        public System.ArraySegment<T> Slice(int index) { throw null; }
+        public System.ArraySegment<T> Slice(int index, int count) { throw null; }
         void System.Collections.Generic.ICollection<T>.Add(T item) { }
         void System.Collections.Generic.ICollection<T>.Clear() { }
         bool System.Collections.Generic.ICollection<T>.Contains(T item) { throw null; }
-        void System.Collections.Generic.ICollection<T>.CopyTo(T[] array, int arrayIndex) { }
         bool System.Collections.Generic.ICollection<T>.Remove(T item) { throw null; }
         System.Collections.Generic.IEnumerator<T> System.Collections.Generic.IEnumerable<T>.GetEnumerator() { throw null; }
         int System.Collections.Generic.IList<T>.IndexOf(T item) { throw null; }
         void System.Collections.Generic.IList<T>.Insert(int index, T item) { }
         void System.Collections.Generic.IList<T>.RemoveAt(int index) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
+        public T[] ToArray() { throw null; }
+        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
+        {
+            public T Current { get { throw null; } }
+            object System.Collections.IEnumerator.Current { get { throw null; } }
+            public void Dispose() { }
+            public bool MoveNext() { throw null; }
+            void System.Collections.IEnumerator.Reset() { }
+        }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -3629,7 +3648,7 @@ namespace System
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start, int length) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array) { throw null; }
-        public static System.Span<T> AsSpan<T>(this T[] array, int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, int start, int length) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.ReadOnlySpan<T> span, System.IComparable<T> comparable) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.Span<T> span, System.IComparable<T> comparable) { throw null; }
@@ -4354,7 +4373,7 @@ namespace System
         public bool IsEmpty { get { throw null; } }
         public ref T this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public int Length { get { throw null; } }
-        public void Clear() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Clear() { }
         public void CopyTo(System.Span<T> destination) { }
         [System.ObsoleteAttribute("Equals() on Span will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
@@ -4370,7 +4389,7 @@ namespace System
         public static bool operator !=(System.Span<T> left, System.Span<T> right) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Span<T> Slice(int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Span<T> Slice(int start, int length) { throw null; }
-        public T[] ToArray() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public T[] ToArray() { throw null; }
         public override string ToString() { throw null; }
         public bool TryCopyTo(System.Span<T> destination) { throw null; }
         [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
@@ -4448,6 +4467,7 @@ namespace System
         public bool Contains(System.String value, System.StringComparison comparisonType) { throw null; }
         public static System.String Copy(System.String str) { throw null; }
         public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count) { }
+        public static System.String Create<TState>(int length, TState state, string.SpanAction<char, TState> action) { throw null; }
         public bool EndsWith(char value) { throw null; }
         public bool EndsWith(System.String value) { throw null; }
         public bool EndsWith(System.String value, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
@@ -4577,6 +4597,8 @@ namespace System
         public System.String TrimStart() { throw null; }
         public System.String TrimStart(char trimChar) { throw null; }
         public System.String TrimStart(params char[] trimChars) { throw null; }
+        public delegate void ReadOnlySpanAction<T, in TArg>(System.ReadOnlySpan<T> span, TArg arg);
+        public delegate void SpanAction<T, in TArg>(System.Span<T> span, TArg arg);
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -15457,9 +15479,11 @@ namespace System.Runtime.InteropServices
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<byte> AsBytes<T>(System.ReadOnlySpan<T> span) where T : struct { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<byte> AsBytes<T>(System.Span<T> span) where T : struct { throw null; }
         public static System.Memory<T> AsMemory<T>(System.ReadOnlyMemory<T> memory) { throw null; }
-        public static System.ReadOnlySpan<TTo> Cast<TFrom, TTo>(System.ReadOnlySpan<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
-        public static System.Span<TTo> Cast<TFrom, TTo>(System.Span<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<TTo> Cast<TFrom, TTo>(System.ReadOnlySpan<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<TTo> Cast<TFrom, TTo>(System.Span<TFrom> span) where TFrom : struct where TTo : struct { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Memory<T> CreateFromPinnedArray<T>(T[] array, int start, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<T> CreateReadOnlySpan<T>(ref T reference, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> CreateSpan<T>(ref T reference, int length) { throw null; }
         public static ref T GetReference<T>(System.ReadOnlySpan<T> span) { throw null; }
         public static ref T GetReference<T>(System.Span<T> span) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static T Read<T>(System.ReadOnlySpan<byte> source) where T : struct { throw null; }
