@@ -31,6 +31,7 @@ namespace System
         // declared constructors.
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char[])")]
         public extern String(char[] value);
 
 #if PROJECTN
@@ -54,6 +55,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char[], System.Int32, System.Int32)")]
         public extern String(char[] value, int startIndex, int length);
 
 #if PROJECTN
@@ -90,6 +92,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char*)")]
         public extern unsafe String(char* value);
 
 #if PROJECTN
@@ -115,6 +118,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char*, System.Int32, System.Int32)")]
         public extern unsafe String(char* value, int startIndex, int length);
 
 #if PROJECTN
@@ -151,6 +155,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*)")]
         public extern unsafe String(sbyte* value);
 
 #if PROJECTN
@@ -176,6 +181,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32)")]
         public extern unsafe String(sbyte* value, int startIndex, int length);
 
 #if PROJECTN
@@ -238,6 +244,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32, System.Text.Encoding)")]
         public extern unsafe String(sbyte* value, int startIndex, int length, Encoding enc);
 
 #if PROJECTN
@@ -275,6 +282,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.Char, System.Int32)")]
         public extern String(char c, int count);
 
 #if PROJECTN
@@ -327,6 +335,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [PreserveDependency("System.String.CreateString(System.ReadOnlySpan`1<System.Char>)")]
         public extern String(ReadOnlySpan<char> value);
 
 #if PROJECTN
@@ -345,7 +354,7 @@ namespace System
                 wstrcpy(dest, src, value.Length);
             return result;
         }
-#if !MONO // Requires fast-span
+
         public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
         {
             if (action == null)
@@ -366,7 +375,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlySpan<char>(string value) =>
             value != null ? new ReadOnlySpan<char>(ref value.GetRawStringData(), value.Length) : default;
-#endif
+
         public object Clone()
         {
             return this;
