@@ -2794,6 +2794,7 @@ namespace System.Security.Cryptography
         None = 0,
         ProtectKey = 1,
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("ECCurve: {Oid}")]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ECCurve
     {
