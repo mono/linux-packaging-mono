@@ -9338,7 +9338,6 @@ namespace System.IO
         public long AvailableFreeSpace { get { throw null; } }
         public string DriveFormat { get { throw null; } }
         public System.IO.DriveType DriveType { get { throw null; } }
-        [System.MonoTODOAttribute("It always returns true")]
         public bool IsReady { get { throw null; } }
         public string Name { get { throw null; } }
         public System.IO.DirectoryInfo RootDirectory { get { throw null; } }
@@ -15317,13 +15316,13 @@ namespace System.Runtime.InteropServices
         public static int SizeOf<T>() { throw null; }
         public static int SizeOf<T>(T structure) { throw null; }
         public static System.IntPtr StringToAllocatedMemoryUTF8(string s) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.IntPtr StringToBSTR(string s) { throw null; }
+        public static System.IntPtr StringToBSTR(string s) { throw null; }
         public static System.IntPtr StringToCoTaskMemAnsi(string s) { throw null; }
         public static System.IntPtr StringToCoTaskMemAuto(string s) { throw null; }
         public static System.IntPtr StringToCoTaskMemUni(string s) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.IntPtr StringToHGlobalAnsi(string s) { throw null; }
+        public static System.IntPtr StringToHGlobalAnsi(string s) { throw null; }
         public static System.IntPtr StringToHGlobalAuto(string s) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.IntPtr StringToHGlobalUni(string s) { throw null; }
+        public static System.IntPtr StringToHGlobalUni(string s) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public static void StructureToPtr(object structure, System.IntPtr ptr, bool fDeleteOld) { }
