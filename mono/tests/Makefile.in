@@ -920,6 +920,12 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 SUBDIRS = gc-descriptors . testing_gac
+BUILT_SOURCES = $(TAILCALL_FSHARP_DEEPTAIL_IL) $(TAILCALL_INTERFACE_CONSERVESTACK_IL)
+ARRAY_COOP_CS = \
+	array-coop-bigvt.cs     \
+	array-coop-int.cs       \
+	array-coop-smallvt.cs
+
 
 # These are not actually tests, but they are source files part of another test.
 
@@ -1016,9 +1022,10 @@ TESTS_STRESS_SRC = \
 # Disabled until ?mcs is fixed
 #	bug-331958.cs
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
-	bug-2907.cs array-init.cs arraylist.cs assembly-load-remap.cs \
-	assembly-load-bytes.cs assembly-loadfile.cs \
-	assembly-loadfrom.cs assembly-load-bytes-bindingredirect.cs \
+	bug-2907.cs $(ARRAY_COOP_CS) array-init.cs arraylist.cs \
+	assembly-load-remap.cs assembly-load-bytes.cs \
+	assembly-loadfile.cs assembly-loadfrom.cs \
+	assembly-load-bytes-bindingredirect.cs \
 	assembly-loadfile-bindingredirect.cs \
 	assembly-loadfrom-bindingredirect.cs \
 	assembly-loadfrom-simplename.cs assemblyresolve_event.cs \
@@ -1293,7 +1300,6 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 @CROSS_COMPILING_TRUE@TAILCALL_FSHARP_DEEPTAIL_IL = 
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@tailcall_split_fsharp_SOURCES = tailcall/split-fsharp.cpp
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@split_tailcall_interface_conservestack_SOURCES = split-tailcall-interface-conservestack.cpp
-BUILT_SOURCES = $(TAILCALL_FSHARP_DEEPTAIL_IL) $(TAILCALL_INTERFACE_CONSERVESTACK_IL)
 TESTS_IL_SRC = \
 	tailcall/2.il	     \
 	tailcall/3.il	     \
@@ -1722,9 +1728,12 @@ TESTS_TAILCALL_RUN = $(filter-out $(TAILCALL_DISABLED_TESTS_RUN),$(TESTS_TAILCAL
 # Tests for the Mono lldb plugin
 EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	$(TESTS_IL_SRC) $(TESTS_BENCH_SRC) $(TESTS_STRESS_SRC) \
-	stress-runner.pl $(TEST_TAILCALL_CS_SRC) \
-	$(TEST_TAILCALL_IL_SRC) load-missing.il t-missing.cs \
-	load-exceptions.cs test-multi-netmodule-1-netmodule.cs \
+	stress-runner.pl array-coop-1.cs array-coop-2.cs \
+	array-coop-bigvt.cs array-coop-int.cs array-coop-smallvt.cs \
+	array-coop-bigvt.sh array-coop-smallvt.sh array-coop-int.sh \
+	$(TEST_TAILCALL_CS_SRC) $(TEST_TAILCALL_IL_SRC) \
+	load-missing.il t-missing.cs load-exceptions.cs \
+	test-multi-netmodule-1-netmodule.cs \
 	test-multi-netmodule-2-dll1.cs test-multi-netmodule-3-dll2.cs \
 	test-multi-netmodule-4-exe.cs custom-attr-errors.cs \
 	custom-attr-errors-lib.cs reflection-load-with-context-lib.cs \
@@ -2462,6 +2471,15 @@ check-local:
 	$(MAKE) rm-empty-logs || ok=false; \
 	$(MAKE) runtest-gac-loading || ok=false; \
 	$$ok
+
+array-coop-bigvt.cs: array-coop-bigvt.sh array-coop-1.cs array-coop-2.cs
+	 . $(srcdir)/array-coop-bigvt.sh $(srcdir) > $@
+
+array-coop-smallvt.cs: array-coop-smallvt.sh array-coop-1.cs array-coop-2.cs
+	 . $(srcdir)/array-coop-smallvt.sh $(srcdir) > $@
+
+array-coop-int.cs: array-coop-int.sh array-coop-1.cs array-coop-2.cs
+	 . $(srcdir)/array-coop-int.sh $(srcdir) > $@
 
 # This test is also slow, though its sleep can be dialed down.
 #TAILCALL_DISABLED_TESTS_RUN += tailcall/coreclr/JIT/Methodical/tailcall_v4/hijacking.exe
