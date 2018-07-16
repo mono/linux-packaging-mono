@@ -255,14 +255,10 @@ namespace System
         public AccessViolationException(string message) { }
         public AccessViolationException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate void Action();
     public delegate void Action<in T>(T obj);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate void Action<in T1, in T2>(T1 arg1, T2 arg2);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate void Action<in T1, in T2, in T3>(T1 arg1, T2 arg2, T3 arg3);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate void Action<in T1, in T2, in T3, in T4>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
     public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
     public delegate void Action<in T1, in T2, in T3, in T4, in T5, in T6>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
@@ -2909,15 +2905,10 @@ namespace System
         public override string ToString() { throw null; }
         public abstract string ToString(System.IFormatProvider formatProvider);
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate TResult Func<out TResult>();
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate TResult Func<in T, out TResult>(T arg);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate TResult Func<in T1, in T2, in T3, out TResult>(T1 arg1, T2 arg2, T3 arg3);
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
     public delegate TResult Func<in T1, in T2, in T3, in T4, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
     public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
     public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
@@ -4467,7 +4458,7 @@ namespace System
         public bool Contains(System.String value, System.StringComparison comparisonType) { throw null; }
         public static System.String Copy(System.String str) { throw null; }
         public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count) { }
-        public static System.String Create<TState>(int length, TState state, string.SpanAction<char, TState> action) { throw null; }
+        public static System.String Create<TState>(int length, TState state, System.Buffers.SpanAction<char, TState> action) { throw null; }
         public bool EndsWith(char value) { throw null; }
         public bool EndsWith(System.String value) { throw null; }
         public bool EndsWith(System.String value, bool ignoreCase, System.Globalization.CultureInfo culture) { throw null; }
@@ -4533,7 +4524,7 @@ namespace System
         public System.String Normalize() { throw null; }
         public System.String Normalize(System.Text.NormalizationForm normalizationForm) { throw null; }
         public static bool operator ==(System.String a, System.String b) { throw null; }
-        public static implicit operator System.ReadOnlySpan<char> (System.String value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static implicit operator System.ReadOnlySpan<char> (System.String value) { throw null; }
         public static bool operator !=(System.String a, System.String b) { throw null; }
         public System.String PadLeft(int totalWidth) { throw null; }
         public System.String PadLeft(int totalWidth, char paddingChar) { throw null; }
@@ -4597,8 +4588,6 @@ namespace System
         public System.String TrimStart() { throw null; }
         public System.String TrimStart(char trimChar) { throw null; }
         public System.String TrimStart(params char[] trimChars) { throw null; }
-        public delegate void ReadOnlySpanAction<T, in TArg>(System.ReadOnlySpan<T> span, TArg arg);
-        public delegate void SpanAction<T, in TArg>(System.Span<T> span, TArg arg);
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -6018,6 +6007,8 @@ namespace System.Buffers
             public bool MoveNext() { throw null; }
         }
     }
+    public delegate void ReadOnlySpanAction<T, in TArg>(System.ReadOnlySpan<T> span, TArg arg);
+    public delegate void SpanAction<T, in TArg>(System.Span<T> span, TArg arg);
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct StandardFormat : System.IEquatable<System.Buffers.StandardFormat>
