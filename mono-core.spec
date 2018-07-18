@@ -1281,6 +1281,8 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/mkbundle.pdb
 %{_prefix}/lib/mono/4.5/mono-api-info.exe*
 %{_prefix}/lib/mono/4.5/mono-api-info.pdb
+%{_prefix}/lib/mono/4.5/mono-api-diff.exe*
+%{_prefix}/lib/mono/4.5/mono-api-diff.pdb
 %{_prefix}/lib/mono/4.5/mono-api-html.exe*
 %{_prefix}/lib/mono/4.5/mono-api-html.pdb
 %{_prefix}/lib/mono/4.5/mono-cil-strip.exe*
