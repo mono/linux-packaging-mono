@@ -379,12 +379,14 @@ namespace System.IO.Pipes
         /// semaphore.  Since we don't delegate to the base stream for Read/WriteAsync due 
         /// to having specialized support for cancellation, we do the same serialization here.
         /// </summary>
+#if !MONO
         private SemaphoreSlim _asyncActiveSemaphore;
 
         private SemaphoreSlim EnsureAsyncActiveSemaphoreInitialized()
         {
             return LazyInitializer.EnsureInitialized(ref _asyncActiveSemaphore, () => new SemaphoreSlim(1, 1));
         }
+#endif
 
         private static void CreateDirectory(string directoryPath)
         {

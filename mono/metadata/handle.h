@@ -698,8 +698,27 @@ mono_gchandle_from_handle (MonoObjectHandle handle, mono_bool pinned);
 MonoObjectHandle
 mono_gchandle_get_target_handle (uint32_t gchandle);
 
-gboolean
-mono_gchandle_target_equal (uint32_t gchandle, MonoObjectHandle equal);
+static inline gboolean
+mono_gchandle_target_equal (uint32_t gchandle, MonoObjectHandle equal)
+{
+	// This function serves to reduce coop handle creation.
+	MONO_HANDLE_SUPPRESS_SCOPE (1);
+	return mono_gchandle_get_target (gchandle) == MONO_HANDLE_RAW (equal);
+}
+
+static inline void
+mono_gchandle_target_is_null_or_equal (uint32_t gchandle, MonoObjectHandle equal, gboolean *is_null,
+	gboolean *is_equal)
+{
+	// This function serves to reduce coop handle creation.
+	MONO_HANDLE_SUPPRESS_SCOPE (1);
+	MonoObject *target = mono_gchandle_get_target (gchandle);
+	*is_null = target == NULL;
+	*is_equal = target == MONO_HANDLE_RAW (equal);
+}
+
+void
+mono_gchandle_set_target_handle (guint32 gchandle, MonoObjectHandle obj);
 
 void
 mono_array_handle_memcpy_refs (MonoArrayHandle dest, uintptr_t dest_idx, MonoArrayHandle src, uintptr_t src_idx, uintptr_t len);
@@ -745,6 +764,12 @@ static inline int
 mono_handle_hash (MonoObjectHandle object)
 {
 	return mono_object_hash (MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (object)));
+}
+
+static inline guint32
+mono_gchandle_new_weakref_from_handle_track_resurrection (MonoObjectHandle handle)
+{
+	return mono_gchandle_new_weakref (MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (handle)), TRUE);
 }
 
 G_END_DECLS

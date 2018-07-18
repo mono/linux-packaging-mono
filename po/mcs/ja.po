@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-07-17 08:42+0000\n"
+"POT-Creation-Date: 2018-07-18 08:41+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -98,39 +98,39 @@ msgid ""
 "`{0}': An anonymous type cannot have multiple properties with the same name"
 msgstr "`{0}': 匿名型は同一の名前で複数のプロパティをもつことができません"
 
-#: mcs/mcs/argument.cs:110
+#: mcs/mcs/argument.cs:112
 #, fuzzy
 msgid ""
 "An expression tree cannot contain an invocation which uses optional parameter"
 msgstr "式ツリーは代入オペレータを含むことができません"
 
-#: mcs/mcs/argument.cs:273
+#: mcs/mcs/argument.cs:275
 #, fuzzy
 msgid "An expression tree cannot contain named argument"
 msgstr "式ツリーは代入オペレータを含むことができません"
 
-#: mcs/mcs/argument.cs:394
+#: mcs/mcs/argument.cs:396
 #, csharp-format
 msgid ""
 "The method group `{0}' cannot be used as an argument of dynamic operation. "
 "Consider using parentheses to invoke the method"
 msgstr ""
 
-#: mcs/mcs/argument.cs:398
+#: mcs/mcs/argument.cs:400
 #, fuzzy
 msgid ""
 "An anonymous method or lambda expression cannot be used as an argument of "
 "dynamic operation. Consider using a cast"
 msgstr "匿名メソッドとラムダ式は現在の文脈では使用できません"
 
-#: mcs/mcs/argument.cs:401
+#: mcs/mcs/argument.cs:403
 #, fuzzy, csharp-format
 msgid ""
 "An expression of type `{0}' cannot be used as an argument of dynamic "
 "operation"
 msgstr "式ツリーは代入オペレータを含むことができません"
 
-#: mcs/mcs/argument.cs:692
+#: mcs/mcs/argument.cs:694
 #, csharp-format
 msgid ""
 "Reference to an implicitly typed out variable `{0}' is not permitted in the "
