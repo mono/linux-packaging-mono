@@ -748,6 +748,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_debug_symfile_lookup_location@Base 4.1.0.1738
  mono_debug_symfile_lookup_method@Base 4.1.0.1738
  mono_debugger_agent_init@Base 5.15.0.101
+ mono_debugger_agent_parse_options@Base 5.17.0.386
  mono_debugger_agent_register_transport@Base 4.1.0.1738
  mono_debugger_agent_transport_handshake@Base 4.1.0.1738
  mono_debugger_insert_breakpoint@Base 4.1.0.1738
@@ -1053,6 +1054,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_lookup_pinvoke_call@Base 4.1.0.1738
  mono_main@Base 4.1.0.1738
  mono_marshal_ilgen_init@Base 5.13.0.408
+ mono_marshal_set_last_error@Base 5.17.0.386
  mono_marshal_string_to_utf16@Base 4.1.0.1738
  mono_md5_final@Base 4.1.0.1738
  mono_md5_get_digest@Base 4.1.0.1738
@@ -1469,9 +1471,11 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_info_get_flags@Base 5.13.0.273
  mono_thread_info_get_small_id@Base 5.5.0.263
  mono_thread_info_get_tools_data@Base 5.17.0.98
+ mono_thread_info_install_interrupt@Base 5.17.0.386
  mono_thread_info_register_small_id@Base 5.5.0.263
  mono_thread_info_set_flags@Base 5.13.0.273
  mono_thread_info_set_tools_data@Base 5.17.0.98
+ mono_thread_info_uninstall_interrupt@Base 5.17.0.386
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
  mono_thread_internal_current@Base 5.13.0.273
