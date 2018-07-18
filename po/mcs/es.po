@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-07-17 08:42+0000\n"
+"POT-Creation-Date: 2018-07-18 08:41+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -110,25 +110,25 @@ msgstr ""
 "`{0}' An tipo anónimo no puede tener multiples propiedades con el mismo "
 "nombre"
 
-#: mcs/mcs/argument.cs:110
+#: mcs/mcs/argument.cs:112
 #, fuzzy
 msgid ""
 "An expression tree cannot contain an invocation which uses optional parameter"
 msgstr "Un árbol de expresiones no puede contener un operador de asignación"
 
-#: mcs/mcs/argument.cs:273
+#: mcs/mcs/argument.cs:275
 #, fuzzy
 msgid "An expression tree cannot contain named argument"
 msgstr "Un árbol de expresiones no puede contener un operador de asignación"
 
-#: mcs/mcs/argument.cs:394
+#: mcs/mcs/argument.cs:396
 #, csharp-format
 msgid ""
 "The method group `{0}' cannot be used as an argument of dynamic operation. "
 "Consider using parentheses to invoke the method"
 msgstr ""
 
-#: mcs/mcs/argument.cs:398
+#: mcs/mcs/argument.cs:400
 #, fuzzy
 msgid ""
 "An anonymous method or lambda expression cannot be used as an argument of "
@@ -137,14 +137,14 @@ msgstr ""
 "Los métodos anónimos y las expresiones lambdas no pueden ser usados en este "
 "contexto"
 
-#: mcs/mcs/argument.cs:401
+#: mcs/mcs/argument.cs:403
 #, fuzzy, csharp-format
 msgid ""
 "An expression of type `{0}' cannot be used as an argument of dynamic "
 "operation"
 msgstr "Un árbol de expresiones no puede contener un operador de asignación"
 
-#: mcs/mcs/argument.cs:692
+#: mcs/mcs/argument.cs:694
 #, csharp-format
 msgid ""
 "Reference to an implicitly typed out variable `{0}' is not permitted in the "
