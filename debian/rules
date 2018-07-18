@@ -154,8 +154,7 @@ clean:
 	       mcs/class/lib/net_4_5/
 
 	-cd debian/detector && $(MAKE) clean
-	rm -f debian/MonoGetAssemblyName.exe \
-	      debian/mono-api-diff.exe
+	rm -f debian/MonoGetAssemblyName.exe
 
 	# clean stuff handled by autoreconf
 	rm -rf configure config.sub config.guess aclocal.m4 autom4te.cache/
@@ -225,12 +224,6 @@ binary-indep: build-stamp install-stamp
 	  -target:exe \
 	  -out:debian/MonoGetAssemblyName.exe \
 	  debian/MonoGetAssemblyName.cs
-
-	# Build mono-api-diff
-	$(RUN_MONO) mcs/class/lib/net_4_x/mcs.exe \
-	  -target:exe \
-	  -out:debian/mono-api-diff.exe \
-	  debian/mono-api-diff.cs
 
 	# that exclude list are programs for arch-dep packages
 	dh_install -i --list-missing -Xusr/share/man -Xusr/share/jay -Xusr/lib/libmono -Xusr/lib/libMono -Xbin/monodis -Xbin/monograph -Xbin/mono-find-provides -Xbin/mono-find-requires -Xbin/pedump -Xbin/jay
