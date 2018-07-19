@@ -5442,8 +5442,12 @@ mono_thread_internal_suspend_for_shutdown (MonoInternalThread *thread)
 mono_bool
 mono_thread_is_foreign (MonoThread *thread)
 {
+	mono_bool result;
+	MONO_ENTER_GC_UNSAFE;
 	MonoThreadInfo *info = (MonoThreadInfo *)thread->internal_thread->thread_info;
-	return info->runtime_thread == FALSE;
+	result = (info->runtime_thread == FALSE);
+	MONO_EXIT_GC_UNSAFE;
+	return result;
 }
 
 #ifndef HOST_WIN32
@@ -5768,7 +5772,7 @@ mono_threads_attach_coop_internal (MonoDomain *domain, gpointer *cookie, MonoSta
 			*cookie = mono_threads_enter_gc_unsafe_region_cookie ();
 		} else {
 			/* thread state (BLOCKING|RUNNING) -> RUNNING */
-			*cookie = mono_threads_enter_gc_unsafe_region_internal (stackdata);
+			*cookie = mono_threads_enter_gc_unsafe_region_unbalanced_internal (stackdata);
 		}
 	}
 
@@ -5810,7 +5814,7 @@ mono_threads_detach_coop_internal (MonoDomain *orig, gpointer cookie, MonoStackD
 	if (mono_threads_is_blocking_transition_enabled ()) {
 		/* it won't do anything if cookie is NULL
 		 * thread state RUNNING -> (RUNNING|BLOCKING) */
-		mono_threads_exit_gc_unsafe_region_internal (cookie, stackdata);
+		mono_threads_exit_gc_unsafe_region_unbalanced_internal (cookie, stackdata);
 	}
 
 	if (orig != domain) {
