@@ -1557,7 +1557,7 @@ ves_icall_System_Type_internal_from_handle (MonoType *handle, MonoError *error)
 ICALL_EXPORT MonoType*
 ves_icall_Mono_RuntimeClassHandle_GetTypeFromClass (MonoClass *klass, MonoError *error)
 {
-	return mono_class_get_type (klass);
+	return m_class_get_byval_arg (klass);
 }
 
 ICALL_EXPORT void
@@ -7959,7 +7959,7 @@ ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_Wind
 ICALL_EXPORT void
 ves_icall_System_IO_LogcatTextWriter_Log (const char *appname, gint32 level, const char *message)
 {
-	g_log (appname, (GLogLevelFlags)level, message);
+	g_log (appname, (GLogLevelFlags)level, "%s", message);
 }
 
 static MonoIcallTableCallbacks icall_table;
