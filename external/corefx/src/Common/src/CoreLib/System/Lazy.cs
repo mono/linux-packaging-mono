@@ -13,7 +13,6 @@
 #pragma warning disable 0420
 
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;

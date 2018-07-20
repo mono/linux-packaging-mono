@@ -210,7 +210,7 @@ class GtkPackage (GitHubPackage):
 
                 'patches/gtk/gtk-backing-scale-factor.patch',
 
-                'patches/gtk/gtk-fix-find_nsview_at_pos-recursive.patch',
+                #'patches/gtk/gtk-fix-find_nsview_at_pos-recursive.patch',
 
 		# https://devdiv.visualstudio.com/DevDiv/_workitems/edit/569768
 		'patches/gtk/gtk-imquartz-commit-on-focus-out.patch'

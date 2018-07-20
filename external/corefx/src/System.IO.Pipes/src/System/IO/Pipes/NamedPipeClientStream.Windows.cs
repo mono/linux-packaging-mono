@@ -34,7 +34,11 @@ namespace System.IO.Pipes
                 _pipeFlags |= (((int)_impersonationLevel - 1) << 16);
             }
 
+#if MONO
+            int access = _access;
+#else
             int access = 0;
+#endif
             if ((PipeDirection.In & _direction) != 0)
             {
                 access |= Interop.Kernel32.GenericOperations.GENERIC_READ;

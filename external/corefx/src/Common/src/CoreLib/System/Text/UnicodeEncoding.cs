@@ -9,7 +9,6 @@
 using System;
 using System.Globalization;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 
 namespace System.Text

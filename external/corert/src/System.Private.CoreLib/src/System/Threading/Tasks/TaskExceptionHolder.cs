@@ -18,7 +18,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.ExceptionServices;
 
 namespace System.Threading.Tasks

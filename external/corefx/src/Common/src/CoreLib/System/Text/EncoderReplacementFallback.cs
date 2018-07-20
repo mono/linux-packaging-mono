@@ -5,7 +5,6 @@
 using System;
 using System.Runtime;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 
 namespace System.Text
 {

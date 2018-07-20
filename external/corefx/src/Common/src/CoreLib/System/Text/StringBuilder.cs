@@ -13,7 +13,6 @@ using System.Security;
 using System.Threading;
 using System.Globalization;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Collections.Generic;
 
 namespace System.Text

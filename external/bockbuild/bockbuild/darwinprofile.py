@@ -122,11 +122,11 @@ class DarwinProfile (UnixProfile):
             self.gcc_flags.extend(['-O0', '-ggdb3'])
 
         if os.getenv('BOCKBUILD_USE_CCACHE') is None:
-            self.env.set('CC',  'xcrun gcc')
-            self.env.set('CXX', 'xcrun g++')
+            self.env.set('CC',  'xcrun clang')
+            self.env.set('CXX', 'xcrun clang++')
         else:
-            self.env.set('CC',  'ccache xcrun gcc')
-            self.env.set('CXX', 'ccache xcrun g++')
+            self.env.set('CC',  'ccache xcrun clang')
+            self.env.set('CXX', 'ccache xcrun clang++')
 
         if self.bockbuild.cmd_options.arch == 'default':
             self.bockbuild.cmd_options.arch = 'darwin-32'

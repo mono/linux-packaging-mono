@@ -66,6 +66,13 @@ namespace System.IO.Pipes
             HandleAcceptedSocket(accepted);
         }
 
+#if __MonoCS__
+        async Task WaitForConnectionAsyncCore()
+        {
+            return HandleAcceptedSocket(await _instance.ListeningSocket.AcceptAsync().ConfigureAwait(false));
+        }
+#endif
+
         public Task WaitForConnectionAsync(CancellationToken cancellationToken)
         {
             CheckConnectOperationsServer();
@@ -78,8 +85,10 @@ namespace System.IO.Pipes
                 Task.FromCanceled(cancellationToken) :
                 WaitForConnectionAsyncCore();
 
+#if !__MonoCS__
             async Task WaitForConnectionAsyncCore() =>
                HandleAcceptedSocket(await _instance.ListeningSocket.AcceptAsync().ConfigureAwait(false));
+#endif
         }
 
         private void HandleAcceptedSocket(Socket acceptedSocket)

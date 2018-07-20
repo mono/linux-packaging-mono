@@ -46,9 +46,13 @@ namespace System.Configuration
             {
                 if (s_machineConfigFilePath == null)
                 {
+#if !MONO
                     string directory = AppDomain.CurrentDomain.BaseDirectory;
                     s_machineConfigFilePath = Path.Combine(Path.Combine(directory, MachineConfigSubdirectory),
                         MachineConfigFilename);
+#else
+                    s_machineConfigFilePath = DefaultConfig.MachineConfigPath;
+#endif
                 }
 
                 return s_machineConfigFilePath;

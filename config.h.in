@@ -590,9 +590,6 @@
 /* kqueue */
 #undef HAVE_KQUEUE
 
-/* Have __thread keyword */
-#undef HAVE_KW_THREAD
-
 /* Have large file support */
 #undef HAVE_LARGE_FILE_SUPPORT
 
@@ -1379,6 +1376,9 @@
 
 /* Enable jemalloc usage for mono */
 #undef MONO_JEMALLOC_ENABLED
+
+/* Have __thread keyword */
+#undef MONO_KEYWORD_THREAD
 
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED

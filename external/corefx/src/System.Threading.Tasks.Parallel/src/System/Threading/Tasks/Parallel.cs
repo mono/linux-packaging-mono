@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Runtime.ExceptionServices;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 
 namespace System.Threading.Tasks
 {
