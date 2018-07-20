@@ -61,16 +61,16 @@ namespace System.Net.WebSockets
 
         public Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) =>
             _webSocket.SendAsync(buffer, messageType, endOfMessage, cancellationToken);
-
+/*
         public Task SendAsync(ReadOnlyMemory<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) =>
             _webSocket.SendAsync(buffer, messageType, endOfMessage, cancellationToken);
-
+*/
         public Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) =>
             _webSocket.ReceiveAsync(buffer, cancellationToken);
-
+/*
         public ValueTask<ValueWebSocketReceiveResult> ReceiveAsync(Memory<byte> buffer, CancellationToken cancellationToken) =>
             _webSocket.ReceiveAsync(buffer, cancellationToken);
-
+*/
         public Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken) =>
             _webSocket.CloseAsync(closeStatus, statusDescription, cancellationToken);
 

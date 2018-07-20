@@ -589,7 +589,7 @@ namespace System.Numerics
 
         internal static string FormatBigInteger(BigInteger value, string format, NumberFormatInfo info)
         {
-            return FormatBigInteger(targetSpan: false, value, format, format, info, default, out _, out _);
+            return FormatBigInteger(targetSpan: false, value, format, string.ToReadOnlySpan(format), info, default, out _, out _);
         }
 
         internal static bool TryFormatBigInteger(BigInteger value, ReadOnlySpan<char> format, NumberFormatInfo info, Span<char> destination, out int charsWritten)
@@ -617,7 +617,8 @@ namespace System.Numerics
             {
                 if (fmt == 'g' || fmt == 'G' || fmt == 'r' || fmt == 'R')
                 {
-                    formatSpan = formatString = digits > 0 ? string.Format("D{0}", digits) : "D";
+                    formatString = digits > 0 ? string.Format("D{0}", digits) : "D";
+                    formatSpan = string.ToReadOnlySpan(formatString);
                 }
 
                 if (targetSpan)

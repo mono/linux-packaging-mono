@@ -10,7 +10,7 @@ namespace System
     /// <summary>
     /// Extension methods for Span{T}, Memory{T}, and friends.
     /// </summary>
-    public static partial class MemoryExtensions
+    static partial class MemoryExtensions
     {
         /// <summary>
         /// Casts a Span of one primitive type <typeparamref name="T"/> to Span of bytes.

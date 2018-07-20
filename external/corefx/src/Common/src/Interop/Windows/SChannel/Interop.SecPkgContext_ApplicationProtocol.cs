@@ -35,7 +35,9 @@ internal static partial class Interop
         {
             get
             {
-                return new Span<byte>(ProtocolId, 0, ProtocolIdSize).ToArray();
+                var dest = new byte[ProtocolIdSize];
+                Array.Copy(ProtocolId, dest, ProtocolIdSize);
+                return dest;
             }
         }
     }

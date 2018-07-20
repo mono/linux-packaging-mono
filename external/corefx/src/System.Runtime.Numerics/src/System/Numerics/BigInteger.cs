@@ -256,7 +256,7 @@ namespace System.Numerics
         {
         }
 
-        public BigInteger(ReadOnlySpan<byte> value, bool isUnsigned=false, bool isBigEndian=false)
+        internal BigInteger(ReadOnlySpan<byte> value, bool isUnsigned=false, bool isBigEndian=false)
         {
             int byteCount = value.Length;
 
@@ -685,17 +685,17 @@ namespace System.Numerics
             return BigNumber.TryParseBigInteger(value, style, NumberFormatInfo.GetInstance(provider), out result);
         }
 
-        public static BigInteger Parse(ReadOnlySpan<char> value, NumberStyles style = NumberStyles.Integer, IFormatProvider provider = null)
+        internal static BigInteger Parse(ReadOnlySpan<char> value, NumberStyles style = NumberStyles.Integer, IFormatProvider provider = null)
         {
             return BigNumber.ParseBigInteger(value, style, NumberFormatInfo.GetInstance(provider));
         }
 
-        public static bool TryParse(ReadOnlySpan<char> value, out BigInteger result)
+        internal static bool TryParse(ReadOnlySpan<char> value, out BigInteger result)
         {
             return BigNumber.TryParseBigInteger(value, NumberStyles.Integer, NumberFormatInfo.CurrentInfo, out result);
         }
 
-        public static bool TryParse(ReadOnlySpan<char> value, NumberStyles style, IFormatProvider provider, out BigInteger result)
+        internal static bool TryParse(ReadOnlySpan<char> value, NumberStyles style, IFormatProvider provider, out BigInteger result)
         {
             return BigNumber.TryParseBigInteger(value, style, NumberFormatInfo.GetInstance(provider), out result);
         }
@@ -1170,7 +1170,7 @@ namespace System.Numerics
         /// <param name="isBigEndian">Whether or not to write the bytes in a big-endian byte order</param>
         /// <returns>true if the bytes fit in <see cref="destination"/>; false if not all bytes could be written due to lack of space.</returns>
         /// <exception cref="OverflowException">If <paramref name="isUnsigned"/> is <c>true</c> and <see cref="Sign"/> is negative.</exception>
-        public bool TryWriteBytes(Span<byte> destination, out int bytesWritten, bool isUnsigned=false, bool isBigEndian=false)
+        internal bool TryWriteBytes(Span<byte> destination, out int bytesWritten, bool isUnsigned=false, bool isBigEndian=false)
         {
             bytesWritten = 0;
             if (TryGetBytes(GetBytesMode.Span, destination, isUnsigned, isBigEndian, ref bytesWritten) == null)
@@ -1470,7 +1470,7 @@ namespace System.Numerics
             return BigNumber.FormatBigInteger(this, format, NumberFormatInfo.GetInstance(provider));
         }
 
-        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider provider = null) // TODO: change format to ReadOnlySpan<char>
+        internal bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider provider = null) // TODO: change format to ReadOnlySpan<char>
         {
             return BigNumber.TryFormatBigInteger(this, format, NumberFormatInfo.GetInstance(provider), destination, out charsWritten);
         }
