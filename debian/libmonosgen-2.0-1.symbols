@@ -980,7 +980,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_hazardous_try_free_all@Base 4.7.0.488
  mono_thread_info_detach@Base 4.5.2.48
  mono_thread_info_get_small_id@Base 5.8.0.22
+ mono_thread_info_get_tools_data@Base 5.12.0.301
  mono_thread_info_register_small_id@Base 5.8.0.22
+ mono_thread_info_set_tools_data@Base 5.12.0.301
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
  mono_thread_is_foreign@Base 4.1.0.1738
@@ -1317,6 +1319,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_utf8_validate@Base 5.8.0.22
  monoeg_g_vasprintf@Base 5.8.0.22
  monoeg_g_win32_getlocale@Base 5.8.0.22
+ monoeg_get_assertion_message@Base 5.12.0.301
  monoeg_log_default_handler@Base 5.8.0.22
  monoeg_log_set_default_handler@Base 5.8.0.22
  monoeg_malloc0@Base 5.8.0.22
