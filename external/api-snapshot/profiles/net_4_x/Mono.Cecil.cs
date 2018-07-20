@@ -4,9 +4,9 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("0.10.0.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
-[assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2015 Jb Evain")]
+[assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2018 Jb Evain")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta7")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -177,6 +177,7 @@ namespace Mono.Cecil
         public Mono.Cecil.IMetadataScope Scope { get { throw null; } }
         public override string ToString() { throw null; }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{AttributeType}")]
     public sealed partial class CustomAttribute : Mono.Cecil.ICustomAttribute
     {
         public CustomAttribute(Mono.Cecil.MethodReference constructor) { }
@@ -229,6 +230,8 @@ namespace Mono.Cecil
         public virtual Mono.Cecil.FieldReference ImportReference(Mono.Cecil.FieldReference field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
         public virtual Mono.Cecil.MethodReference ImportReference(Mono.Cecil.MethodReference method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
         public virtual Mono.Cecil.TypeReference ImportReference(Mono.Cecil.TypeReference type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        protected Mono.Cecil.IMetadataScope ImportScope(Mono.Cecil.IMetadataScope scope) { throw null; }
+        protected virtual Mono.Cecil.IMetadataScope ImportScope(Mono.Cecil.TypeReference type) { throw null; }
     }
     public partial class DefaultReflectionImporter : Mono.Cecil.IReflectionImporter
     {
@@ -238,6 +241,8 @@ namespace Mono.Cecil
         public virtual Mono.Cecil.FieldReference ImportReference(System.Reflection.FieldInfo field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
         public virtual Mono.Cecil.MethodReference ImportReference(System.Reflection.MethodBase method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
         public virtual Mono.Cecil.TypeReference ImportReference(System.Type type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        protected Mono.Cecil.AssemblyNameReference ImportScope(System.Reflection.Assembly assembly) { throw null; }
+        protected virtual Mono.Cecil.IMetadataScope ImportScope(System.Type type) { throw null; }
     }
     public sealed partial class EmbeddedResource : Mono.Cecil.Resource
     {
@@ -895,6 +900,7 @@ namespace Mono.Cecil
     [System.FlagsAttribute]
     public enum ModuleAttributes
     {
+        ILLibrary = 4,
         ILOnly = 1,
         Preferred32Bit = 131072,
         Required32Bit = 2,
@@ -1005,6 +1011,7 @@ namespace Mono.Cecil
         public static Mono.Cecil.ModuleDefinition ReadModule(string fileName, Mono.Cecil.ReaderParameters parameters) { throw null; }
         public void ReadSymbols() { }
         public void ReadSymbols(Mono.Cecil.Cil.ISymbolReader reader) { }
+        public void ReadSymbols(Mono.Cecil.Cil.ISymbolReader reader, bool throwIfSymbolsAreNotMaching) { }
         public bool TryGetTypeReference(string fullName, out Mono.Cecil.TypeReference type) { type = default(Mono.Cecil.TypeReference); throw null; }
         public bool TryGetTypeReference(string scope, string fullName, out Mono.Cecil.TypeReference type) { type = default(Mono.Cecil.TypeReference); throw null; }
         public void Write() { }
@@ -1251,6 +1258,7 @@ namespace Mono.Cecil
         public Mono.Cecil.IReflectionImporterProvider ReflectionImporterProvider { get { throw null; } set { } }
         public Mono.Cecil.Cil.ISymbolReaderProvider SymbolReaderProvider { get { throw null; } set { } }
         public System.IO.Stream SymbolStream { get { throw null; } set { } }
+        public bool ThrowIfSymbolsAreNotMatching { get { throw null; } set { } }
     }
     public enum ReadingMode
     {
@@ -1312,6 +1320,7 @@ namespace Mono.Cecil
         RequestOptional = (ushort)9,
         RequestRefuse = (ushort)10,
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{AttributeType}")]
     public sealed partial class SecurityAttribute : Mono.Cecil.ICustomAttribute
     {
         public SecurityAttribute(Mono.Cecil.TypeReference attributeType) { }
@@ -1877,11 +1886,16 @@ namespace Mono.Cecil.Cil
     public sealed partial class Document : Mono.Cecil.Cil.DebugInformation
     {
         public Document(string url) { }
+        public byte[] EmbeddedSource { get { throw null; } set { } }
         public byte[] Hash { get { throw null; } set { } }
         public Mono.Cecil.Cil.DocumentHashAlgorithm HashAlgorithm { get { throw null; } set { } }
+        public System.Guid HashAlgorithmGuid { get { throw null; } set { } }
         public Mono.Cecil.Cil.DocumentLanguage Language { get { throw null; } set { } }
+        public System.Guid LanguageGuid { get { throw null; } set { } }
         public Mono.Cecil.Cil.DocumentLanguageVendor LanguageVendor { get { throw null; } set { } }
+        public System.Guid LanguageVendorGuid { get { throw null; } set { } }
         public Mono.Cecil.Cil.DocumentType Type { get { throw null; } set { } }
+        public System.Guid TypeGuid { get { throw null; } set { } }
         public string Url { get { throw null; } set { } }
     }
     public enum DocumentHashAlgorithm
@@ -2556,6 +2570,16 @@ namespace Mono.Cecil.Cil
         public StateMachineScopeDebugInformation() { }
         public override Mono.Cecil.Cil.CustomDebugInformationKind Kind { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.StateMachineScope> Scopes { get { throw null; } }
+    }
+    [System.SerializableAttribute]
+    public sealed partial class SymbolsNotFoundException : System.IO.FileNotFoundException
+    {
+        public SymbolsNotFoundException(string message) { }
+    }
+    [System.SerializableAttribute]
+    public sealed partial class SymbolsNotMatchingException : System.InvalidOperationException
+    {
+        public SymbolsNotMatchingException(string message) { }
     }
     [System.FlagsAttribute]
     public enum VariableAttributes : ushort

@@ -87,12 +87,12 @@ namespace System.Net.Http
         {
             return _innerStream.Read(buffer, offset, count);
         }
-
+/*
         public override int Read(Span<byte> destination)
         {
             return _innerStream.Read(destination);
         }
-
+*/
         public override int ReadByte()
         {
             return _innerStream.ReadByte();
@@ -102,12 +102,12 @@ namespace System.Net.Http
         {
             return _innerStream.ReadAsync(buffer, offset, count, cancellationToken);
         }
-
+/*
         public override ValueTask<int> ReadAsync(Memory<byte> destination, CancellationToken cancellationToken = default)
         {
             return _innerStream.ReadAsync(destination, cancellationToken);
         }
-
+*/
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             return _innerStream.BeginRead(buffer, offset, count, callback, state);
@@ -141,12 +141,12 @@ namespace System.Net.Http
         {
             _innerStream.Write(buffer, offset, count);
         }
-
+/*
         public override void Write(ReadOnlySpan<byte> source)
         {
             _innerStream.Write(source);
         }
-
+*/
         public override void WriteByte(byte value)
         {
             _innerStream.WriteByte(value);
@@ -156,12 +156,12 @@ namespace System.Net.Http
         {
             return _innerStream.WriteAsync(buffer, offset, count, cancellationToken);
         }
-
+/*
         public override Task WriteAsync(ReadOnlyMemory<byte> source, CancellationToken cancellationToken = default)
         {
             return _innerStream.WriteAsync(source, cancellationToken);
         }
-
+*/
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             return _innerStream.BeginWrite(buffer, offset, count, callback, state);

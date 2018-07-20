@@ -119,6 +119,9 @@
 /* Disable advanced SSA JIT optimizations */
 #undef DISABLE_SSA
 
+/* Do not create structured crash files during unmanaged crashes */
+#undef DISABLE_STRUCTURED_CRASH
+
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
 
@@ -1184,6 +1187,9 @@
 
 /* AOT cross offsets file */
 #undef MONO_OFFSETS_FILE
+
+/* Do not include names of unmanaged functions in the crash dump */
+#undef MONO_PRIVATE_CRASHES
 
 /* Reduce runtime requirements (and capabilities) */
 #undef MONO_SMALL_CONFIG

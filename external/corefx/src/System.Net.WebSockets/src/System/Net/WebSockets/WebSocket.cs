@@ -32,7 +32,7 @@ namespace System.Net.WebSockets
             WebSocketMessageType messageType,
             bool endOfMessage,
             CancellationToken cancellationToken);
-
+/*
         public virtual async ValueTask<ValueWebSocketReceiveResult> ReceiveAsync(Memory<byte> buffer, CancellationToken cancellationToken)
         {
             if (buffer.TryGetArray(out ArraySegment<byte> arraySegment))
@@ -60,7 +60,7 @@ namespace System.Net.WebSockets
             MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> arraySegment) ?
                 SendAsync(arraySegment, messageType, endOfMessage, cancellationToken) :
                 SendWithArrayPoolAsync(buffer, messageType, endOfMessage, cancellationToken);
-
+*/
         private async Task SendWithArrayPoolAsync(
             ReadOnlyMemory<byte> buffer,
             WebSocketMessageType messageType,
@@ -129,7 +129,7 @@ namespace System.Net.WebSockets
             }
             return new ArraySegment<byte>(new byte[receiveBufferSize]);
         }
-
+/*
         /// <summary>Creates a <see cref="WebSocket"/> that operates on a <see cref="Stream"/> representing a web socket connection.</summary>
         /// <param name="stream">The <see cref="Stream"/> for the connection.</param>
         /// <param name="isServer"><code>true</code> if this is the server-side of the connection; <code>false</code> if it's the client side.</param>
@@ -163,7 +163,7 @@ namespace System.Net.WebSockets
 
             return ManagedWebSocket.CreateFromConnectedStream(stream, isServer, subProtocol, keepAliveInterval, buffer);
         }
-
+*/
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.")]
         public static bool IsApplicationTargeting45() => true;
