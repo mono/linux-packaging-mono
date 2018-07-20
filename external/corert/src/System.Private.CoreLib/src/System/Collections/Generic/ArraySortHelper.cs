@@ -3,9 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-#if MONO
-using System.Diagnostics.Private;
-#endif
 
 namespace System.Collections.Generic
 {

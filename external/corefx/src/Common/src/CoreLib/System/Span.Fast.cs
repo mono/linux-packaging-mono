@@ -6,7 +6,6 @@
 using System.ComponentModel;
 #endif
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using Internal.Runtime.CompilerServices;

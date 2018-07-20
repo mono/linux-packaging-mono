@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Internal.Cryptography
