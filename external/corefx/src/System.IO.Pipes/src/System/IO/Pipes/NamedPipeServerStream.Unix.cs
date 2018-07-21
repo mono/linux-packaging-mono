@@ -68,9 +68,7 @@ namespace System.IO.Pipes
 
 #if __MonoCS__
         async Task WaitForConnectionAsyncCore()
-        {
-            return HandleAcceptedSocket(await _instance.ListeningSocket.AcceptAsync().ConfigureAwait(false));
-        }
+            => HandleAcceptedSocket(await _instance.ListeningSocket.AcceptAsync().ConfigureAwait(false));
 #endif
 
         public Task WaitForConnectionAsync(CancellationToken cancellationToken)
