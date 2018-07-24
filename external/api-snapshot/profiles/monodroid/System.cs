@@ -9368,7 +9368,6 @@ namespace System.Security.Cryptography.X509Certificates
         [System.MonoTODOAttribute("always return String.Empty for UpnName, DnsFromAlternativeName and UrlName")]
         public string GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType nameType, bool forIssuer) { throw null; }
         public override void Import(byte[] rawData) { }
-        [System.MonoTODOAttribute("SecureString is incomplete")]
         public override void Import(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }

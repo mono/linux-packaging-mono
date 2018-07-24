@@ -270,6 +270,9 @@
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
 
+/* Define to 1 if you have the <copyfile.h> header file. */
+#undef HAVE_COPYFILE_H
+
 /* Define to 1 if you have the <crt_externs.h> header file. */
 #undef HAVE_CRT_EXTERNS_H
 
