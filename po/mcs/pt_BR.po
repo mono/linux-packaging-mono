@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-07-23 08:38+0000\n"
+"POT-Creation-Date: 2018-07-24 08:51+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -1637,7 +1637,7 @@ msgstr ""
 msgid "The operation in question is undefined on void pointers"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:543 mcs/mcs/statement.cs:4102 mcs/mcs/statement.cs:4104
+#: mcs/mcs/ecore.cs:543 mcs/mcs/statement.cs:4101 mcs/mcs/statement.cs:4103
 #, csharp-format
 msgid "Internal compiler error: {0}"
 msgstr ""
@@ -4317,13 +4317,13 @@ msgstr "Controle não pode deixar o corpo de um método anônimo"
 msgid "Control cannot leave the body of a finally clause"
 msgstr "O controle não pode deixar o corpo de uma cláusula final"
 
-#: mcs/mcs/statement.cs:1180
+#: mcs/mcs/statement.cs:1179
 #, csharp-format
 msgid ""
 "An object of a type convertible to `{0}' is required for the return statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1193
+#: mcs/mcs/statement.cs:1192
 #, csharp-format
 msgid ""
 "`{0}': A return keyword must not be followed by any expression when method "
@@ -4332,26 +4332,26 @@ msgstr ""
 "\"{0}\": Uma palavra chave return não deve ser seguida por nenhuma expressão "
 "quando o método retornar void"
 
-#: mcs/mcs/statement.cs:1212
+#: mcs/mcs/statement.cs:1211
 #, fuzzy
 msgid "Cannot return an expression of type `void'"
 msgstr ""
 "Não foi possível aplicar uma indexação com [] para uma expressão do tipo "
 "\"{0}\""
 
-#: mcs/mcs/statement.cs:1220 mcs/mcs/statement.cs:1253
+#: mcs/mcs/statement.cs:1219 mcs/mcs/statement.cs:1252
 msgid ""
 "Anonymous function or lambda expression converted to a void returning "
 "delegate cannot return a value"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1230
+#: mcs/mcs/statement.cs:1229
 msgid ""
 "Async lambda expression or anonymous method converted to a `Task' cannot "
 "return a value. Consider returning `Task<T>'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1233
+#: mcs/mcs/statement.cs:1232
 #, fuzzy, csharp-format
 msgid ""
 "`{0}': A return keyword must not be followed by an expression when async "
@@ -4360,30 +4360,30 @@ msgstr ""
 "\"{0}\": Uma palavra chave return não deve ser seguida por nenhuma expressão "
 "quando o método retornar void"
 
-#: mcs/mcs/statement.cs:1244
+#: mcs/mcs/statement.cs:1243
 #, csharp-format
 msgid ""
 "`{0}': The return expression type of async method must be `{1}' rather than "
 "`Task<{1}>'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1279
+#: mcs/mcs/statement.cs:1278
 msgid ""
 "By-reference returns can only be used in methods that return by reference"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1287
+#: mcs/mcs/statement.cs:1286
 msgid "By-reference return is required when method returns by reference"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1294
+#: mcs/mcs/statement.cs:1293
 #, csharp-format
 msgid ""
 "The return by reference expression must be of type `{0}' because this method "
 "returns by reference"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1305
+#: mcs/mcs/statement.cs:1304
 #, csharp-format
 msgid ""
 "Cannot convert `{0}' to delegate type `{1}' because some of the return types "
@@ -4393,7 +4393,7 @@ msgstr ""
 "alguns dos tipos de retorno no bloco não são implicitamente conversíveis no "
 "tipo de retorno delegate"
 
-#: mcs/mcs/statement.cs:1380
+#: mcs/mcs/statement.cs:1379
 msgid ""
 "Cannot return a value from iterators. Use the yield return statement to "
 "return a value, or yield break to end the iteration"
@@ -4401,29 +4401,29 @@ msgstr ""
 "Não foi possível devolver um valor de iteradores. Use a declaração yield do "
 "return para devolver um valor, ou yield break para terminar a iteração"
 
-#: mcs/mcs/statement.cs:1448
+#: mcs/mcs/statement.cs:1447
 #, csharp-format
 msgid ""
 "The label `{0}:' could not be found within the scope of the goto statement"
 msgstr ""
 "O rótulo \"{0}:\" não pôde ser encontrado no escopo do declaração do goto"
 
-#: mcs/mcs/statement.cs:1788
+#: mcs/mcs/statement.cs:1787
 msgid "A goto case is only valid inside a switch statement"
 msgstr "Um case do goto é válido somente dentro de uma declaração switch"
 
-#: mcs/mcs/statement.cs:1813 mcs/mcs/statement.cs:7087
+#: mcs/mcs/statement.cs:1812 mcs/mcs/statement.cs:7086
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1824
+#: mcs/mcs/statement.cs:1823
 msgid ""
 "A throw statement with no arguments is not allowed outside of a catch clause"
 msgstr ""
 "Uma declaração throw sem argumentos não é permitida fora de uma cláusula "
 "catch"
 
-#: mcs/mcs/statement.cs:1829
+#: mcs/mcs/statement.cs:1828
 msgid ""
 "A throw statement with no arguments is not allowed inside of a finally "
 "clause nested inside of the innermost catch clause"
@@ -4431,28 +4431,28 @@ msgstr ""
 "Uma declaração throw sem argumentos não é permitida dentro de uma clálculsa "
 "finalmente aninhada dentro da cláusula de catch mais interna"
 
-#: mcs/mcs/statement.cs:2010
+#: mcs/mcs/statement.cs:2009
 msgid "No enclosing loop out of which to break or continue"
 msgstr "Sem fechamento de loop para break ou continue"
 
-#: mcs/mcs/statement.cs:2179
+#: mcs/mcs/statement.cs:2178
 msgid "A fixed statement cannot use an implicitly typed local variable"
 msgstr ""
 "Uma declaração fixa não pode utilizar uma variável local tipada "
 "implicitamente"
 
-#: mcs/mcs/statement.cs:2184
+#: mcs/mcs/statement.cs:2183
 msgid "An implicitly typed local variable cannot be a constant"
 msgstr "Uma variável local implicitamente tipada não pode ser uma constante"
 
-#: mcs/mcs/statement.cs:2189
+#: mcs/mcs/statement.cs:2188
 msgid ""
 "An implicitly typed local variable declarator must include an initializer"
 msgstr ""
 "Uma declaração de variável local tipada implicitamente deve incluir um "
 "inicializador"
 
-#: mcs/mcs/statement.cs:2194
+#: mcs/mcs/statement.cs:2193
 msgid ""
 "An implicitly typed local variable declaration cannot include multiple "
 "declarators"
@@ -4460,29 +4460,29 @@ msgstr ""
 "Uma declaração de variável local tipada implicitamente não pode incluir "
 "múltiplos declaradores"
 
-#: mcs/mcs/statement.cs:2238
+#: mcs/mcs/statement.cs:2237
 #, fuzzy, csharp-format
 msgid "Cannot initialize a by-reference variable `{0}' with a value"
 msgstr ""
 "Não foi possível inicializar objetos do tipo \"{0}\" com um inicializador de "
 "coleções"
 
-#: mcs/mcs/statement.cs:2243
+#: mcs/mcs/statement.cs:2242
 #, fuzzy
 msgid "Async methods cannot use by-reference variables"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:2245
+#: mcs/mcs/statement.cs:2244
 #, fuzzy
 msgid "Iterators cannot use by-reference variables"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:2250
+#: mcs/mcs/statement.cs:2249
 #, csharp-format
 msgid "Cannot initialize a by-value variable `{0}' with a reference expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:2910
+#: mcs/mcs/statement.cs:2909
 #, csharp-format
 msgid ""
 "A local variable named `{0}' cannot be declared in this scope because it "
@@ -4493,18 +4493,18 @@ msgstr ""
 "esta daria um significado distinto para \"{0}\", que já é usada em um escopo "
 "\"{1}\" para denotar outra coisa"
 
-#: mcs/mcs/statement.cs:2922
+#: mcs/mcs/statement.cs:2921
 #, csharp-format
 msgid "A local variable named `{0}' is already defined in this scope"
 msgstr "Uma variável local nomeada \"{0}\" já foi definida neste escopo"
 
-#: mcs/mcs/statement.cs:2929
+#: mcs/mcs/statement.cs:2928
 #, fuzzy, csharp-format
 msgid ""
 "The type parameter name `{0}' is the same as local variable or parameter name"
 msgstr "O nome do tipo parâmetro \"{0}\" é o mesmo que \"{1}\""
 
-#: mcs/mcs/statement.cs:3877
+#: mcs/mcs/statement.cs:3876
 #, csharp-format
 msgid ""
 "The out parameter `{0}' must be assigned to before control leaves the "
@@ -4513,73 +4513,73 @@ msgstr ""
 "O parâmetro externo \"{0}\" deve estar atribuída para antes que o controle "
 "deixe o método atual"
 
-#: mcs/mcs/statement.cs:4158
+#: mcs/mcs/statement.cs:4157
 #, fuzzy
 msgid "Async methods cannot have ref or out parameters"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:4164
+#: mcs/mcs/statement.cs:4163
 #, fuzzy
 msgid "__arglist is not allowed in parameter list of async methods"
 msgstr "__arglist não é permitida em parâmetros de listas de iteradores"
 
-#: mcs/mcs/statement.cs:4170
+#: mcs/mcs/statement.cs:4169
 #, fuzzy
 msgid "Async methods cannot have unsafe parameters"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:4367
+#: mcs/mcs/statement.cs:4366
 #, csharp-format
 msgid "The label `{0}' is a duplicate"
 msgstr "O rótulo \"{0}\" é uma duplicata"
 
-#: mcs/mcs/statement.cs:4376 mcs/mcs/statement.cs:4387
+#: mcs/mcs/statement.cs:4375 mcs/mcs/statement.cs:4386
 #, csharp-format
 msgid ""
 "The label `{0}' shadows another label by the same name in a contained scope"
 msgstr ""
 "O rótulo \"{0}\" esconde outro rótulo pelo mesmo nome em um escopo contido"
 
-#: mcs/mcs/statement.cs:4665
+#: mcs/mcs/statement.cs:4664
 #, csharp-format
 msgid "`{0}': not all code paths return a value"
 msgstr "\"{0}\": nem todos caminhos de códigos devolvem um valor"
 
-#: mcs/mcs/statement.cs:4797
+#: mcs/mcs/statement.cs:4796
 #, fuzzy, csharp-format
 msgid "The label `{0}' already occurs in this switch statement"
 msgstr "O rótulo \"case {0}:\" já ocorre nesta declaração de switch"
 
-#: mcs/mcs/statement.cs:4924
+#: mcs/mcs/statement.cs:4923
 #, fuzzy, csharp-format
 msgid ""
 "Control cannot fall out of switch statement through final case label `{0}'"
 msgstr "Controle não pode passar de um rótulo de caso para outro"
 
-#: mcs/mcs/statement.cs:4927
+#: mcs/mcs/statement.cs:4926
 #, fuzzy, csharp-format
 msgid "Control cannot fall through from one case label `{0}' to another"
 msgstr "Controle não pode passar de um rótulo de caso para outro"
 
-#: mcs/mcs/statement.cs:5364
+#: mcs/mcs/statement.cs:5363
 #, csharp-format
 msgid ""
 "A switch expression of type `{0}' cannot be converted to an integral type, "
 "bool, char, string, enum or nullable type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6223
+#: mcs/mcs/statement.cs:6222
 #, csharp-format
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 "\"{0}\" não é um tipo de referência como necessário para a declaração lock"
 
-#: mcs/mcs/statement.cs:6613
+#: mcs/mcs/statement.cs:6612
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 "O tipo de locais declarados em uma declaração fixa devem ser tipos ponteiros"
 
-#: mcs/mcs/statement.cs:6694
+#: mcs/mcs/statement.cs:6693
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
@@ -4587,19 +4587,19 @@ msgstr ""
 "Você não pode usar a declaração fixa para pegar o endereço de uma expressão "
 "já fixa"
 
-#: mcs/mcs/statement.cs:6703
+#: mcs/mcs/statement.cs:6702
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr "O lado direito de uma declaração fixa não deve ser uma expressão cast"
 
-#: mcs/mcs/statement.cs:6712
+#: mcs/mcs/statement.cs:6711
 #, fuzzy
 msgid "The given expression cannot be used in a fixed statement"
 msgstr ""
 "O operador \"{0}\" não pode ser aplicado a um operando de tipo estático"
 
-#: mcs/mcs/statement.cs:6947
+#: mcs/mcs/statement.cs:6946
 #, fuzzy
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
@@ -4607,7 +4607,7 @@ msgid ""
 msgstr ""
 "O operador \"{0}\" não pode ser aplicado a um operando de tipo estático"
 
-#: mcs/mcs/statement.cs:7562
+#: mcs/mcs/statement.cs:7561
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
@@ -4616,7 +4616,7 @@ msgstr ""
 "Uma cláusula catch anterior já pega todas as exceções do this ou um tipo "
 "super \"{0}\""
 
-#: mcs/mcs/statement.cs:7799
+#: mcs/mcs/statement.cs:7798
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
@@ -4625,7 +4625,7 @@ msgstr ""
 "\"{0}\": tipo utilizado em uma declaração em uso deve ser implicitamente "
 "conversível para \"System.IDisposable\""
 
-#: mcs/mcs/statement.cs:8215
+#: mcs/mcs/statement.cs:8214
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
@@ -4634,7 +4634,7 @@ msgstr ""
 "declaração do foreach requer que o tipo de retorno \"{0}\" de \"{1}\" deve "
 "ter um método apropriado público MoveNext e a propriedade pública Current"
 
-#: mcs/mcs/statement.cs:8259
+#: mcs/mcs/statement.cs:8258
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4645,12 +4645,12 @@ msgstr ""
 "estas contém múltiplas implementações de \"{1}\". Tente um casting para uma "
 "implementação específica"
 
-#: mcs/mcs/statement.cs:8280
+#: mcs/mcs/statement.cs:8279
 #, fuzzy
 msgid "Use of default literal is not valid in this context"
 msgstr "Uso do null é inválido neste contexto"
 
-#: mcs/mcs/statement.cs:8283
+#: mcs/mcs/statement.cs:8282
 #, fuzzy, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
@@ -4659,11 +4659,11 @@ msgstr ""
 "declaração do foreach não pode operar em variáveis do tipo \"{0}\" pois "
 "estas não contém uma definição para \"GetEnumerator\" ou não estão acessíveis"
 
-#: mcs/mcs/statement.cs:8521
+#: mcs/mcs/statement.cs:8520
 msgid "Use of null is not valid in this context"
 msgstr "Uso do null é inválido neste contexto"
 
-#: mcs/mcs/statement.cs:8533
+#: mcs/mcs/statement.cs:8532
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "Declaração do foreach não pode operar em um \"{0}\""
