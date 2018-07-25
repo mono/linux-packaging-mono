@@ -76,11 +76,11 @@ namespace Microsoft.Win32.SafeHandles
         public SafeNCryptSecretHandle() { }
         protected override bool ReleaseNativeHandle() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
-    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode=true)]
     public sealed partial class SafePipeHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
         public SafePipeHandle(System.IntPtr preexistingHandle, bool ownsHandle) : base (default(bool)) { }
+        public override bool IsInvalid { get { throw null; } }
+        protected override void Dispose(bool disposing) { }
         protected override bool ReleaseHandle() { throw null; }
     }
 }
@@ -537,8 +537,6 @@ namespace System.IO.MemoryMappedFiles
 }
 namespace System.IO.Pipes
 {
-    [System.MonoTODOAttribute("Anonymous pipes are not working even on win32, due to some access authorization issue")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class AnonymousPipeClientStream : System.IO.Pipes.PipeStream
     {
         public AnonymousPipeClientStream(System.IO.Pipes.PipeDirection direction, Microsoft.Win32.SafeHandles.SafePipeHandle safePipeHandle) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
@@ -548,28 +546,22 @@ namespace System.IO.Pipes
         public override System.IO.Pipes.PipeTransmissionMode TransmissionMode { get { throw null; } }
         ~AnonymousPipeClientStream() { }
     }
-    [System.MonoTODOAttribute("Anonymous pipes are not working even on win32, due to some access authorization issue")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class AnonymousPipeServerStream : System.IO.Pipes.PipeStream
     {
         public AnonymousPipeServerStream() : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
-        [System.MonoTODOAttribute]
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, Microsoft.Win32.SafeHandles.SafePipeHandle serverSafePipeHandle, Microsoft.Win32.SafeHandles.SafePipeHandle clientSafePipeHandle) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, System.IO.HandleInheritability inheritability) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, System.IO.HandleInheritability inheritability, int bufferSize) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public AnonymousPipeServerStream(System.IO.Pipes.PipeDirection direction, System.IO.HandleInheritability inheritability, int bufferSize, System.IO.Pipes.PipeSecurity pipeSecurity) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
-        [System.MonoTODOAttribute]
         public Microsoft.Win32.SafeHandles.SafePipeHandle ClientSafePipeHandle { get { throw null; } }
         public override System.IO.Pipes.PipeTransmissionMode ReadMode { set { } }
         public override System.IO.Pipes.PipeTransmissionMode TransmissionMode { get { throw null; } }
-        [System.MonoTODOAttribute]
+        protected override void Dispose(bool disposing) { }
         public void DisposeLocalCopyOfClientHandle() { }
         ~AnonymousPipeServerStream() { }
         public string GetClientHandleAsString() { throw null; }
     }
-    [System.MonoTODOAttribute("working only on win32 right now")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class NamedPipeClientStream : System.IO.Pipes.PipeStream
     {
         public NamedPipeClientStream(System.IO.Pipes.PipeDirection direction, bool isAsync, bool isConnected, Microsoft.Win32.SafeHandles.SafePipeHandle safePipeHandle) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
@@ -580,7 +572,9 @@ namespace System.IO.Pipes
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options, System.Security.Principal.TokenImpersonationLevel impersonationLevel) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options, System.Security.Principal.TokenImpersonationLevel impersonationLevel, System.IO.HandleInheritability inheritability) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
+        public override int InBufferSize { get { throw null; } }
         public int NumberOfServerInstances { get { throw null; } }
+        public override int OutBufferSize { get { throw null; } }
         protected internal override void CheckPipePropertyOperations() { }
         public void Connect() { }
         public void Connect(int timeout) { }
@@ -590,8 +584,6 @@ namespace System.IO.Pipes
         public System.Threading.Tasks.Task ConnectAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         ~NamedPipeClientStream() { }
     }
-    [System.MonoTODOAttribute("working only on win32 right now")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class NamedPipeServerStream : System.IO.Pipes.PipeStream
     {
         public const int MaxAllowedServerInstances = -1;
@@ -604,22 +596,17 @@ namespace System.IO.Pipes
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity, System.IO.HandleInheritability inheritability) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
-        [System.MonoTODOAttribute]
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity, System.IO.HandleInheritability inheritability, System.IO.Pipes.PipeAccessRights additionalAccessRights) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
+        public override int InBufferSize { get { throw null; } }
+        public override int OutBufferSize { get { throw null; } }
         public System.IAsyncResult BeginWaitForConnection(System.AsyncCallback callback, object state) { throw null; }
         public void Disconnect() { }
         public void EndWaitForConnection(System.IAsyncResult asyncResult) { }
         ~NamedPipeServerStream() { }
-        [System.MonoTODOAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(512))]
         public string GetImpersonationUserName() { throw null; }
-        [System.MonoTODOAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(512))]
         public void RunAsClient(System.IO.Pipes.PipeStreamImpersonationWorker impersonationWorker) { }
         public void WaitForConnection() { }
         public System.Threading.Tasks.Task WaitForConnectionAsync() { throw null; }
-        [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task WaitForConnectionAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     [System.FlagsAttribute]
@@ -643,21 +630,18 @@ namespace System.IO.Pipes
         WriteData = 2,
         WriteExtendedAttributes = 16,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class PipeAccessRule : System.Security.AccessControl.AccessRule
     {
         public PipeAccessRule(System.Security.Principal.IdentityReference identity, System.IO.Pipes.PipeAccessRights rights, System.Security.AccessControl.AccessControlType type) : base (default(System.Security.Principal.IdentityReference), default(int), default(bool), default(System.Security.AccessControl.InheritanceFlags), default(System.Security.AccessControl.PropagationFlags), default(System.Security.AccessControl.AccessControlType)) { }
         public PipeAccessRule(string identity, System.IO.Pipes.PipeAccessRights rights, System.Security.AccessControl.AccessControlType type) : base (default(System.Security.Principal.IdentityReference), default(int), default(bool), default(System.Security.AccessControl.InheritanceFlags), default(System.Security.AccessControl.PropagationFlags), default(System.Security.AccessControl.AccessControlType)) { }
         public System.IO.Pipes.PipeAccessRights PipeAccessRights { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class PipeAuditRule : System.Security.AccessControl.AuditRule
     {
         public PipeAuditRule(System.Security.Principal.IdentityReference identity, System.IO.Pipes.PipeAccessRights rights, System.Security.AccessControl.AuditFlags flags) : base (default(System.Security.Principal.IdentityReference), default(int), default(bool), default(System.Security.AccessControl.InheritanceFlags), default(System.Security.AccessControl.PropagationFlags), default(System.Security.AccessControl.AuditFlags)) { }
         public PipeAuditRule(string identity, System.IO.Pipes.PipeAccessRights rights, System.Security.AccessControl.AuditFlags flags) : base (default(System.Security.Principal.IdentityReference), default(int), default(bool), default(System.Security.AccessControl.InheritanceFlags), default(System.Security.AccessControl.PropagationFlags), default(System.Security.AccessControl.AuditFlags)) { }
         public System.IO.Pipes.PipeAccessRights PipeAccessRights { get { throw null; } }
     }
-    [System.SerializableAttribute]
     public enum PipeDirection
     {
         In = 1,
@@ -668,10 +652,10 @@ namespace System.IO.Pipes
     public enum PipeOptions
     {
         Asynchronous = 1073741824,
+        CurrentUserOnly = 536870912,
         None = 0,
         WriteThrough = -2147483648,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public partial class PipeSecurity : System.Security.AccessControl.NativeObjectSecurity
     {
         public PipeSecurity() : base (default(bool), default(System.Security.AccessControl.ResourceType)) { }
@@ -682,9 +666,7 @@ namespace System.IO.Pipes
         public void AddAccessRule(System.IO.Pipes.PipeAccessRule rule) { }
         public void AddAuditRule(System.IO.Pipes.PipeAuditRule rule) { }
         public sealed override System.Security.AccessControl.AuditRule AuditRuleFactory(System.Security.Principal.IdentityReference identityReference, int accessMask, bool isInherited, System.Security.AccessControl.InheritanceFlags inheritanceFlags, System.Security.AccessControl.PropagationFlags propagationFlags, System.Security.AccessControl.AuditFlags flags) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true)]
         protected internal void Persist(System.Runtime.InteropServices.SafeHandle handle) { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true)]
         protected internal void Persist(string name) { }
         public bool RemoveAccessRule(System.IO.Pipes.PipeAccessRule rule) { throw null; }
         public void RemoveAccessRuleSpecific(System.IO.Pipes.PipeAccessRule rule) { }
@@ -695,8 +677,6 @@ namespace System.IO.Pipes
         public void SetAccessRule(System.IO.Pipes.PipeAccessRule rule) { }
         public void SetAuditRule(System.IO.Pipes.PipeAuditRule rule) { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public abstract partial class PipeStream : System.IO.Stream
     {
         protected PipeStream(System.IO.Pipes.PipeDirection direction, int bufferSize) { }
@@ -708,47 +688,40 @@ namespace System.IO.Pipes
         public bool IsAsync { get { throw null; } }
         public bool IsConnected { get { throw null; } protected set { } }
         protected bool IsHandleExposed { get { throw null; } }
-        [System.MonoTODOAttribute]
         public bool IsMessageComplete { get { throw null; } }
         public override long Length { get { throw null; } }
-        [System.MonoTODOAttribute]
         public virtual int OutBufferSize { get { throw null; } }
         public override long Position { get { throw null; } set { } }
         public virtual System.IO.Pipes.PipeTransmissionMode ReadMode { get { throw null; } set { } }
         public Microsoft.Win32.SafeHandles.SafePipeHandle SafePipeHandle { get { throw null; } }
         public virtual System.IO.Pipes.PipeTransmissionMode TransmissionMode { get { throw null; } }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public override System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public override System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
-        [System.MonoTODOAttribute]
         protected internal virtual void CheckPipePropertyOperations() { }
-        [System.MonoTODOAttribute]
         protected internal void CheckReadOperations() { }
-        [System.MonoTODOAttribute]
         protected internal void CheckWriteOperations() { }
         protected override void Dispose(bool disposing) { }
         public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
         public override void EndWrite(System.IAsyncResult asyncResult) { }
-        [System.MonoTODOAttribute]
         public override void Flush() { }
         public System.IO.Pipes.PipeSecurity GetAccessControl() { throw null; }
         protected void InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle handle, bool isExposed, bool isAsync) { }
-        [System.MonoTODOAttribute]
-        public override int Read([System.Runtime.InteropServices.In]byte[] buffer, int offset, int count) { throw null; }
-        [System.MonoTODOAttribute]
+        public override int Read(byte[] buffer, int offset, int count) { throw null; }
+        public override int Read(System.Span<byte> buffer) { throw null; }
+        public override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
         public void SetAccessControl(System.IO.Pipes.PipeSecurity pipeSecurity) { }
         public override void SetLength(long value) { }
         public void WaitForPipeDrain() { }
-        [System.MonoTODOAttribute]
         public override void Write(byte[] buffer, int offset, int count) { }
-        [System.MonoTODOAttribute]
+        public override void Write(System.ReadOnlySpan<byte> buffer) { }
+        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override void WriteByte(byte value) { }
     }
     public delegate void PipeStreamImpersonationWorker();
-    [System.SerializableAttribute]
     public enum PipeTransmissionMode
     {
         Byte = 0,

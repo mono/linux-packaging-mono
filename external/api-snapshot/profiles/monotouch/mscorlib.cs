@@ -10423,7 +10423,6 @@ namespace System.Numerics
 }
 namespace System.Reflection
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class AmbiguousMatchException : System.SystemException
     {
@@ -10541,7 +10540,6 @@ namespace System.Reflection
         public static System.Reflection.Assembly UnsafeLoadFrom(string assemblyFile) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyAlgorithmIdAttribute : System.Attribute
     {
         public AssemblyAlgorithmIdAttribute(System.Configuration.Assemblies.AssemblyHashAlgorithm algorithmId) { }
@@ -10551,70 +10549,59 @@ namespace System.Reflection
         public uint AlgorithmId { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyCompanyAttribute : System.Attribute
     {
         public AssemblyCompanyAttribute(string company) { }
         public string Company { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyConfigurationAttribute : System.Attribute
     {
         public AssemblyConfigurationAttribute(string configuration) { }
         public string Configuration { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.SerializableAttribute]
     public enum AssemblyContentType
     {
         Default = 0,
         WindowsRuntime = 1,
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyCopyrightAttribute : System.Attribute
     {
         public AssemblyCopyrightAttribute(string copyright) { }
         public string Copyright { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyCultureAttribute : System.Attribute
     {
         public AssemblyCultureAttribute(string culture) { }
         public string Culture { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyDefaultAliasAttribute : System.Attribute
     {
         public AssemblyDefaultAliasAttribute(string defaultAlias) { }
         public string DefaultAlias { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyDelaySignAttribute : System.Attribute
     {
         public AssemblyDelaySignAttribute(bool delaySign) { }
         public bool DelaySign { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyDescriptionAttribute : System.Attribute
     {
         public AssemblyDescriptionAttribute(string description) { }
         public string Description { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyFileVersionAttribute : System.Attribute
     {
         public AssemblyFileVersionAttribute(string version) { }
         public string Version { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyFlagsAttribute : System.Attribute
     {
         [System.ObsoleteAttribute("This constructor has been deprecated. Please use AssemblyFlagsAttribute(AssemblyNameFlags) instead. http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -10629,21 +10616,18 @@ namespace System.Reflection
         public uint Flags { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyInformationalVersionAttribute : System.Attribute
     {
         public AssemblyInformationalVersionAttribute(string informationalVersion) { }
         public string InformationalVersion { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyKeyFileAttribute : System.Attribute
     {
         public AssemblyKeyFileAttribute(string keyFile) { }
         public string KeyFile { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyKeyNameAttribute : System.Attribute
     {
         public AssemblyKeyNameAttribute(string keyName) { }
@@ -10693,8 +10677,6 @@ namespace System.Reflection
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum AssemblyNameFlags
     {
         EnableJITcompileOptimizer = 16384,
@@ -10710,7 +10692,6 @@ namespace System.Reflection
         public System.Reflection.AssemblyName GetAssemblyName(string assemblyFile) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyProductAttribute : System.Attribute
     {
         public AssemblyProductAttribute(string product) { }
@@ -10724,21 +10705,18 @@ namespace System.Reflection
         public string PublicKey { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyTitleAttribute : System.Attribute
     {
         public AssemblyTitleAttribute(string title) { }
         public string Title { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyTrademarkAttribute : System.Attribute
     {
         public AssemblyTrademarkAttribute(string trademark) { }
         public string Trademark { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class AssemblyVersionAttribute : System.Attribute
     {
         public AssemblyVersionAttribute(string version) { }
@@ -10784,8 +10762,6 @@ namespace System.Reflection
         SuppressChangeType = 131072,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CallingConventions
     {
         Any = 3,
@@ -10874,7 +10850,6 @@ namespace System.Reflection
         public static bool IsDefined(this System.Reflection.ParameterInfo element, System.Type attributeType) { throw null; }
         public static bool IsDefined(this System.Reflection.ParameterInfo element, System.Type attributeType, bool inherit) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CustomAttributeFormatException : System.FormatException
     {
@@ -10916,16 +10891,12 @@ namespace System.Reflection
         public override string ToString() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1036))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class DefaultMemberAttribute : System.Attribute
     {
         public DefaultMemberAttribute(string memberName) { }
         public string MemberName { get { throw null; } }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum EventAttributes
     {
         None = 0,
@@ -10992,8 +10963,6 @@ namespace System.Reflection
         Finally = 2,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FieldAttributes
     {
         Assembly = 3,
@@ -11074,15 +11043,12 @@ namespace System.Reflection
         SpecialConstraintMask = 28,
         VarianceMask = 3,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICustomAttributeProvider
     {
         object[] GetCustomAttributes(bool inherit);
         object[] GetCustomAttributes(System.Type attributeType, bool inherit);
         bool IsDefined(System.Type attributeType, bool inherit);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ImageFileMachine
     {
         AMD64 = 34404,
@@ -11090,24 +11056,18 @@ namespace System.Reflection
         I386 = 332,
         IA64 = 512,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct InterfaceMapping
     {
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.MethodInfo[] InterfaceMethods;
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Type InterfaceType;
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.MethodInfo[] TargetMethods;
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Type TargetType;
     }
     public static partial class IntrospectionExtensions
     {
         public static System.Reflection.TypeInfo GetTypeInfo(this System.Type type) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class InvalidFilterCriteriaException : System.ApplicationException
     {
@@ -11116,8 +11076,6 @@ namespace System.Reflection
         public InvalidFilterCriteriaException(string message) { }
         public InvalidFilterCriteriaException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Runtime.InteropServices.GuidAttribute("AFBF15E5-C37C-11d2-B88E-00A0C9B471B8")]
     public partial interface IReflect
     {
         System.Type UnderlyingSystemType { get; }
@@ -11155,8 +11113,6 @@ namespace System.Reflection
         public virtual System.Reflection.Assembly ReferencedAssembly { get { throw null; } }
         public virtual System.Reflection.ResourceLocation ResourceLocation { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public delegate bool MemberFilter(System.Reflection.MemberInfo m, object filterCriteria);
     [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
     [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MemberInfo))]
@@ -11188,8 +11144,6 @@ namespace System.Reflection
         void System.Runtime.InteropServices._MemberInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum MemberTypes
     {
         All = 191,
@@ -11203,8 +11157,6 @@ namespace System.Reflection
         TypeInfo = 32,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum MethodAttributes
     {
         Abstract = 1024,
@@ -11314,11 +11266,8 @@ namespace System.Reflection
         public virtual int MaxStackSize { get { throw null; } }
         public virtual byte[] GetILAsByteArray() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum MethodImplAttributes
     {
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         AggressiveInlining = 256,
         CodeTypeMask = 3,
         ForwardRef = 16,
@@ -11436,7 +11385,6 @@ namespace System.Reflection
     [System.SerializableAttribute]
     public delegate System.Reflection.Module ModuleResolveEventHandler(object sender, System.ResolveEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false, Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class ObfuscateAssemblyAttribute : System.Attribute
     {
         public ObfuscateAssemblyAttribute(bool assemblyIsPrivate) { }
@@ -11444,7 +11392,6 @@ namespace System.Reflection
         public bool StripAfterObfuscation { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(8157), AllowMultiple=true, Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class ObfuscationAttribute : System.Attribute
     {
         public ObfuscationAttribute() { }
@@ -11454,8 +11401,6 @@ namespace System.Reflection
         public bool StripAfterObfuscation { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ParameterAttributes
     {
         HasDefault = 4096,
@@ -11508,8 +11453,7 @@ namespace System.Reflection
         public virtual bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ParameterModifier
     {
@@ -11530,8 +11474,6 @@ namespace System.Reflection
         public unsafe static void* Unbox(object ptr) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PortableExecutableKinds
     {
         ILOnly = 1,
@@ -11541,8 +11483,6 @@ namespace System.Reflection
         Required32Bit = 2,
         Unmanaged32Bit = 8,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ProcessorArchitecture
     {
         Amd64 = 4,
@@ -11553,8 +11493,6 @@ namespace System.Reflection
         X86 = 2,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PropertyAttributes
     {
         HasDefault = 4096,
@@ -11618,20 +11556,18 @@ namespace System.Reflection
         public abstract System.Reflection.Assembly MapAssembly(System.Reflection.Assembly assembly);
         public abstract System.Reflection.TypeInfo MapType(System.Reflection.TypeInfo type);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class ReflectionTypeLoadException : System.SystemException, System.Runtime.Serialization.ISerializable
     {
         public ReflectionTypeLoadException(System.Type[] classes, System.Exception[] exceptions) { }
         public ReflectionTypeLoadException(System.Type[] classes, System.Exception[] exceptions, string message) { }
         public System.Exception[] LoaderExceptions { get { throw null; } }
+        public override string Message { get { throw null; } }
         public System.Type[] Types { get { throw null; } }
-        [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+        public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ResourceAttributes
     {
         Private = 2,
@@ -11675,7 +11611,6 @@ namespace System.Reflection
         void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender) { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class TargetException : System.ApplicationException
     {
@@ -11684,14 +11619,12 @@ namespace System.Reflection
         public TargetException(string message) { }
         public TargetException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class TargetInvocationException : System.ApplicationException
     {
         public TargetInvocationException(System.Exception inner) { }
         public TargetInvocationException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class TargetParameterCountException : System.ApplicationException
     {
@@ -11700,8 +11633,6 @@ namespace System.Reflection
         public TargetParameterCountException(string message, System.Exception inner) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum TypeAttributes
     {
         Abstract = 128,
@@ -11735,7 +11666,6 @@ namespace System.Reflection
         StringFormatMask = 196608,
         UnicodeClass = 65536,
         VisibilityMask = 7,
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         WindowsRuntime = 16384,
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -11793,8 +11723,6 @@ namespace System.Reflection
         protected override bool IsPrimitiveImpl() { throw null; }
         protected override bool IsValueTypeImpl() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public delegate bool TypeFilter(System.Type m, object filterCriteria);
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
