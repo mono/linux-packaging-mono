@@ -289,9 +289,7 @@ namespace System.Security.Cryptography.X509Certificates
         {
             get
             {
-                byte[] serialNumber = GetSerialNumber();
-                Array.Reverse(serialNumber);
-                return serialNumber.ToHexStringUpper();
+                return GetSerialNumberString();
             }
         }
 
