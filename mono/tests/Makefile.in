@@ -137,7 +137,10 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @HOST_DARWIN_TRUE@am__append_13 = bug-8417.cs
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@noinst_PROGRAMS = tailcall/split-fsharp$(EXEEXT) \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	split-tailcall-interface-conservestack$(EXEEXT)
-@HOST_WIN32_TRUE@am__append_14 = bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe
+
+# see https://github.com/mono/mono/issues/9739
+@HOST_WIN32_TRUE@am__append_14 = bug-58782-plain-throw.exe \
+@HOST_WIN32_TRUE@	bug-58782-capture-and-throw.exe verbose.exe
 
 # #651684
 @AMD64_TRUE@am__append_15 = finally_guard.exe
