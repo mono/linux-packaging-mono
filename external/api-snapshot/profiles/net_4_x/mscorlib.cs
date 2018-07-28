@@ -23474,7 +23474,6 @@ namespace System.Security.Policy
         LevelFinal = 2,
         Nothing = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class Publisher : System.Security.Policy.EvidenceBase, System.Security.Policy.IIdentityPermissionFactory
     {
@@ -23486,7 +23485,6 @@ namespace System.Security.Policy
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class PublisherMembershipCondition : System.Security.ISecurityEncodable, System.Security.ISecurityPolicyEncodable, System.Security.Policy.IMembershipCondition
     {
