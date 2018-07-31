@@ -645,7 +645,10 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS = @CFLAGS@
+
+# Per-library to workaround CoreFX/native until/unless https://github.com/dotnet/corefx/pull/31342.
+#CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -655,6 +658,8 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
+CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
@@ -931,7 +936,8 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_SOURCES = \
 @DISABLE_ICALL_TABLES_TRUE@	icall-table.c
 
-@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
+# Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
+@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 
@@ -947,7 +953,8 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 @ENABLE_ILGEN_FALSE@	sgen-mono-ilgen.c \
 @ENABLE_ILGEN_FALSE@	sgen-mono-ilgen.h
 
-@ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES)
+# Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
+@ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 libmono_system_native_la_SOURCES = \
@@ -975,7 +982,9 @@ libmono_system_native_la_SOURCES = \
 	pal-icalls.h \
 	pal-icalls.c
 
-libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition
+
+# Add back CXX_REMOVE_CFLAGS to keep this as C until/unless https://github.com/dotnet/corefx/pull/31342.
+libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition @CXX_REMOVE_CFLAGS@
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
@@ -1190,10 +1199,12 @@ sgen_sources = \
 	sgen-client-mono.h
 
 libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
-libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
+# Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
+libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES) @CXX_ADD_CFLAGS@
 libmonoruntime_la_LIBADD = libmonoruntime-config.la
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
-libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
+# Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
+libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 
