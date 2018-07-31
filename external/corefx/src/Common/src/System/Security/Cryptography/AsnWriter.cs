@@ -1214,7 +1214,13 @@ namespace System.Security.Cryptography.Asn1
 #endif
 
                     decimal decimalTicks = floatingTicks;
+
+#if __MonoCS__
+                    /* bug in mcs is making it pick the wrong overload, only manifesting in BE? */
+                    decimalTicks = decimal.Divide(decimalTicks, new decimal(TimeSpan.TicksPerSecond));
+#else
                     decimalTicks /= TimeSpan.TicksPerSecond;
+#endif
 
                     if (!Utf8Formatter.TryFormat(decimalTicks, fraction, out int bytesWritten, new StandardFormat('G')))
                     {
