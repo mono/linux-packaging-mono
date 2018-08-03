@@ -10756,7 +10756,6 @@ namespace System.Reflection
         PublicKey = 1,
         Retargetable = 256,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class AssemblyNameProxy : System.MarshalByRefObject
     {
         public AssemblyNameProxy() { }
@@ -10793,9 +10792,6 @@ namespace System.Reflection
         public AssemblyVersionAttribute(string version) { }
         public string Version { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(2))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public abstract partial class Binder
     {
         protected Binder() { }
@@ -11404,13 +11400,10 @@ namespace System.Reflection
         void System.Runtime.InteropServices._MethodInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
         void System.Runtime.InteropServices._MethodInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class Missing : System.Runtime.Serialization.ISerializable
     {
         internal Missing() { }
         public static readonly System.Reflection.Missing Value;
-        [System.Security.SecurityCriticalAttribute]
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]

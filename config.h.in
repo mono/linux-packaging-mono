@@ -1443,7 +1443,7 @@
 /* The size of `long long', as computed by sizeof. */
 #undef SIZEOF_LONG_LONG
 
-/* size of machine integer registers */
+/* size of target machine integer registers */
 #undef SIZEOF_REGISTER
 
 /* The size of `size_t', as computed by sizeof. */
@@ -1499,6 +1499,9 @@
 
 /* ... */
 #undef TARGET_S390X
+
+/* wordsize of target */
+#undef TARGET_SIZEOF_VOID_P
 
 /* ... */
 #undef TARGET_SPARC

@@ -10686,7 +10686,6 @@ namespace System.Reflection
         PublicKey = 1,
         Retargetable = 256,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class AssemblyNameProxy : System.MarshalByRefObject
     {
         public AssemblyNameProxy() { }
@@ -10723,15 +10722,11 @@ namespace System.Reflection
         public AssemblyVersionAttribute(string version) { }
         public string Version { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(2))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public abstract partial class Binder
     {
         protected Binder() { }
         public abstract System.Reflection.FieldInfo BindToField(System.Reflection.BindingFlags bindingAttr, System.Reflection.FieldInfo[] match, object value, System.Globalization.CultureInfo culture);
         public abstract System.Reflection.MethodBase BindToMethod(System.Reflection.BindingFlags bindingAttr, System.Reflection.MethodBase[] match, ref object[] args, System.Reflection.ParameterModifier[] modifiers, System.Globalization.CultureInfo culture, string[] names, out object state);
-        public virtual bool CanChangeType(object value, System.Type type, System.Globalization.CultureInfo culture) { throw null; }
         public abstract object ChangeType(object value, System.Type type, System.Globalization.CultureInfo culture);
         public abstract void ReorderArgumentArray(ref object[] args, object state);
         public abstract System.Reflection.MethodBase SelectMethod(System.Reflection.BindingFlags bindingAttr, System.Reflection.MethodBase[] match, System.Type[] types, System.Reflection.ParameterModifier[] modifiers);
@@ -11311,13 +11306,10 @@ namespace System.Reflection
         public static bool operator ==(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
         public static bool operator !=(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class Missing : System.Runtime.Serialization.ISerializable
     {
         internal Missing() { }
         public static readonly System.Reflection.Missing Value;
-        [System.Security.SecurityCriticalAttribute]
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
