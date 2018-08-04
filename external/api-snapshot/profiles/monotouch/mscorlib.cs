@@ -10950,7 +10950,6 @@ namespace System.Reflection
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum ExceptionHandlingClauseOptions
     {
         Clause = 0,
