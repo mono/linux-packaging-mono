@@ -509,6 +509,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
+ g_printv@Base 5.16.0.100
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
@@ -742,6 +743,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_debug_symfile_lookup_locals@Base 4.1.0.1738
  mono_debug_symfile_lookup_location@Base 4.1.0.1738
  mono_debug_symfile_lookup_method@Base 4.1.0.1738
+ mono_debugger_agent_init@Base 5.16.0.100
  mono_debugger_agent_parse_options@Base 4.1.0.1738
  mono_debugger_agent_register_transport@Base 4.1.0.1738
  mono_debugger_agent_transport_handshake@Base 4.1.0.1738
@@ -1248,6 +1250,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_create@Base 5.8.0.22
  mono_profiler_enable_allocations@Base 5.8.0.22
  mono_profiler_enable_call_context_introspection@Base 5.8.0.22
+ mono_profiler_enable_clauses@Base 5.16.0.100
  mono_profiler_enable_coverage@Base 5.8.0.22
  mono_profiler_enable_sampling@Base 5.8.0.22
  mono_profiler_get_coverage_data@Base 5.8.0.22
@@ -1305,7 +1308,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_set_exception_clause_callback@Base 5.8.0.22
  mono_profiler_set_exception_throw_callback@Base 5.8.0.22
  mono_profiler_set_gc_allocation_callback@Base 5.8.0.22
- mono_profiler_set_gc_event2_callback@Base 5.11.0.133
  mono_profiler_set_gc_event_callback@Base 5.8.0.22
  mono_profiler_set_gc_finalized_callback@Base 5.8.0.22
  mono_profiler_set_gc_finalized_object_callback@Base 5.8.0.22
@@ -1323,7 +1325,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_set_image_loading_callback@Base 5.8.0.22
  mono_profiler_set_image_unloaded_callback@Base 5.8.0.22
  mono_profiler_set_image_unloading_callback@Base 5.8.0.22
- mono_profiler_set_iomap_report_callback@Base 5.8.0.22
  mono_profiler_set_jit_begin_callback@Base 5.8.0.22
  mono_profiler_set_jit_chunk_created_callback@Base 5.8.0.22
  mono_profiler_set_jit_chunk_destroyed_callback@Base 5.8.0.22
@@ -1510,10 +1511,12 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_threads_attach_coop@Base 4.5.2.48
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
+ mono_threads_enter_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_enter_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
+ mono_threads_exit_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_exit_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.5.2.195
