@@ -1,2 +1,1 @@
 llvm_llc_opt_default_path.patch
-disable_asm_in_btls_on_arm.patch
