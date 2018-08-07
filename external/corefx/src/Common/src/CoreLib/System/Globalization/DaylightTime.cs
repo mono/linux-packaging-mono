@@ -4,16 +4,15 @@
 
 namespace System.Globalization
 {
+#if MONO
+    [Serializable]
+#endif
     // This class represents a starting/ending time for a period of daylight saving time.
     public class DaylightTime
     {
         private readonly DateTime _start;
         private readonly DateTime _end;
         private readonly TimeSpan _delta;
-
-        private DaylightTime()
-        {
-        }
 
         public DaylightTime(DateTime start, DateTime end, TimeSpan delta)
         {

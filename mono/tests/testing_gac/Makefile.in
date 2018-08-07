@@ -13,8 +13,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
-### buildtree stuff
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -80,11 +78,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs README
 @FULL_AOT_TESTS_TRUE@am__append_1 = --runtime-args "$(AOT_RUN_FLAGS)"
 @HYBRID_AOT_TESTS_TRUE@am__append_2 = --runtime-args "$(AOT_RUN_FLAGS)"
 subdir = mono/tests/testing_gac
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs README
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -173,26 +171,17 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
 GNUC_PRETTY = @GNUC_PRETTY@
 GNUC_UNUSED = @GNUC_UNUSED@
-GPOINTER_TO_INT = @GPOINTER_TO_INT@
-GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
 GSIZE = @GSIZE@
 GSIZE_FORMAT = @GSIZE_FORMAT@
+GSSIZE = @GSSIZE@
 GTKX11 = @GTKX11@
-GUINT_TO_POINTER = @GUINT_TO_POINTER@
-G_GINT32_FORMAT = @G_GINT32_FORMAT@
-G_GINT64_FORMAT = @G_GINT64_FORMAT@
-G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
-G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
-G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
@@ -359,6 +348,9 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
+
+### buildtree stuff
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
@@ -420,7 +412,7 @@ EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS)
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -441,6 +433,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/mk/common.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

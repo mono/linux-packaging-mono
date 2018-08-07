@@ -85,7 +85,7 @@ namespace System.Text.RegularExpressions.Tests
                 Assert.Throws<TypeInitializationException>(() => Regex.InfiniteMatchTimeout);
 
                 return SuccessExitCode;
-            });
+            }).Dispose();
         }
 
         [Fact]
@@ -97,32 +97,7 @@ namespace System.Text.RegularExpressions.Tests
                 Assert.Throws<TypeInitializationException>(() => Regex.InfiniteMatchTimeout);
 
                 return SuccessExitCode;
-            });
-        }
-
-        [Fact]
-        public void CacheSize_Get()
-        {
-            Assert.Equal(15, Regex.CacheSize);
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(12)]
-        public void CacheSize_Set(int newCacheSize)
-        {
-            int originalCacheSize = Regex.CacheSize;
-
-            Regex.CacheSize = newCacheSize;
-            Assert.Equal(newCacheSize, Regex.CacheSize);
-
-            Regex.CacheSize = originalCacheSize;
-        }
-
-        [Fact]
-        public void CacheSize_Set_NegativeValue_ThrowsArgumentOutOfRangeException()
-        {
-            AssertExtensions.Throws<ArgumentOutOfRangeException>("value", () => Regex.CacheSize = -1);
+            }).Dispose();
         }
 
         [Theory]
@@ -235,8 +210,10 @@ namespace System.Text.RegularExpressions.Tests
         [InlineData("(?<=", RegexOptions.None)]
         [InlineData("(?<!", RegexOptions.None)]
         [InlineData("(?>", RegexOptions.None)]
+        [InlineData("(?>-", RegexOptions.None)]
         [InlineData("(?)", RegexOptions.None)]
         [InlineData("(?<)", RegexOptions.None)]
+        [InlineData("(?<", RegexOptions.None)]
         [InlineData("(?')", RegexOptions.None)]
         [InlineData(@"\1", RegexOptions.None)]
         [InlineData(@"\1", RegexOptions.None)]
@@ -278,6 +255,14 @@ namespace System.Text.RegularExpressions.Tests
         [InlineData("?((a)a|", RegexOptions.None)]
         [InlineData("?((a)a|b", RegexOptions.None)]
         public void Ctor_InvalidPattern(string pattern, RegexOptions options)
+        {
+            AssertExtensions.Throws<ArgumentException>(null, () => new Regex(pattern, options));
+        }
+
+        [Theory]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Full framework throws InvalidOperationException")]
+        [InlineData("(?<-", RegexOptions.None)]
+        public void Ctor_InvalidPattern_NotNetFramework(string pattern, RegexOptions options)
         {
             AssertExtensions.Throws<ArgumentException>(null, () => new Regex(pattern, options));
         }

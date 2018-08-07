@@ -18,7 +18,9 @@ namespace System.Text
     //
     // Note: IsAlwaysNormalized remains false because 1/2 the code points are unassigned, so they'd
     //       use fallbacks, and we cannot guarantee that fallbacks are normalized.
-
+#if MONO
+    [Serializable]
+#endif
     public class ASCIIEncoding : Encoding
     {
         // Allow for devirtualization (see https://github.com/dotnet/coreclr/pull/9230)

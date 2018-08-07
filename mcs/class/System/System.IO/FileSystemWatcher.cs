@@ -73,7 +73,7 @@ namespace System.IO {
 		{
 			this.notifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 			this.enableRaisingEvents = false;
-			this.filter = "*.*";
+			this.filter = "*";
 			this.includeSubdirectories = false;
 			this.internalBufferSize = 8192;
 			this.path = "";
@@ -81,7 +81,7 @@ namespace System.IO {
 		}
 
 		public FileSystemWatcher (string path)
-			: this (path, "*.*")
+			: this (path, "*")
 		{
 		}
 
@@ -103,6 +103,9 @@ namespace System.IO {
 			this.start_requested = false;
 			this.enableRaisingEvents = false;
 			this.filter = filter;
+			if (this.filter == "*.*")
+				this.filter = "*";
+
 			this.includeSubdirectories = false;
 			this.internalBufferSize = 8192;
 			this.notifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
@@ -251,10 +254,10 @@ namespace System.IO {
 			get { return filter; }
 			set {
 				if (value == null || value == "")
-					value = "*.*";
+					value = "*";
 
 				if (!string.Equals(filter, value, PathInternal.StringComparison)) {
-					filter = value;
+					filter = value == "*.*" ? "*" : value;
 					pattern = null;
 					mangledFilter = null;
 				}

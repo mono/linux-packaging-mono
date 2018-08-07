@@ -1048,6 +1048,24 @@ mono_metadata_string_heap (MonoImage *meta, guint32 index)
 }
 
 /**
+ * mono_metadata_string_heap_checked:
+ * \param meta metadata context
+ * \param index index into the string heap.
+ * \param error set on error
+ * \returns an in-memory pointer to the \p index in the string heap.
+ * On failure returns NULL and sets \p error.
+ */
+const char *
+mono_metadata_string_heap_checked (MonoImage *meta, guint32 index, MonoError *error)
+{
+	if (G_UNLIKELY (!(index < meta->heap_strings.size))) {
+		mono_error_set_bad_image_by_name (error, meta->name ? meta->name : "unknown image", "string heap index %ud out bounds %u", index, meta->heap_strings.size);
+		return NULL;
+	}
+	return meta->heap_strings.data + index;
+}
+
+/**
  * mono_metadata_user_string:
  * \param meta metadata context
  * \param index index into the user string heap.
@@ -1072,6 +1090,24 @@ mono_metadata_blob_heap (MonoImage *meta, guint32 index)
 {
 	g_assert (index < meta->heap_blob.size);
 	g_return_val_if_fail (index < meta->heap_blob.size, "");/*FIXME shouldn't we return NULL and check for index == 0?*/
+	return meta->heap_blob.data + index;
+}
+
+/**
+ * mono_metadata_blob_heap_checked:
+ * \param meta metadata context
+ * \param index index into the blob.
+ * \param error set on error
+ * \returns an in-memory pointer to the \p index in the Blob heap.  On failure sets \p error and returns NULL;
+ *
+ */
+const char *
+mono_metadata_blob_heap_checked (MonoImage *meta, guint32 index, MonoError *error)
+{
+	if (G_UNLIKELY (!(index < meta->heap_blob.size))) {
+		mono_error_set_bad_image_by_name (error, meta->name ? meta->name : "unknown image", "blob heap index %u out of bounds %u", index, meta->heap_blob.size);
+		return NULL;
+	}
 	return meta->heap_blob.data + index;
 }
 
@@ -1137,6 +1173,59 @@ mono_metadata_decode_row (const MonoTableInfo *t, int idx, guint32 *res, int res
 		}
 		data += n;
 	}
+}
+
+/**
+ * mono_metadata_decode_row_checked:
+ * \param image the \c MonoImage the table belongs to
+ * \param t table to extract information from.
+ * \param idx index in the table.
+ * \param res array of \p res_size cols to store the results in
+ * \param error set on bounds error
+ *
+ *
+ * This decompresses the metadata element \p idx in the table \p t
+ * into the \c guint32 \p res array that has \p res_size elements.
+ *
+ * \returns TRUE if the read succeeded. Otherwise sets \p error and returns FALSE.
+ */
+gboolean
+mono_metadata_decode_row_checked (const MonoImage *image, const MonoTableInfo *t, int idx, guint32 *res, int res_size, MonoError *error)
+{
+	guint32 bitfield = t->size_bitfield;
+	int i, count = mono_metadata_table_count (bitfield);
+
+	const char *image_name = image && image->name ? image->name : "unknown image";
+
+	if (G_UNLIKELY (! (idx < t->rows && idx >= 0))) {
+		mono_error_set_bad_image_by_name (error, image_name, "row index %d out of bounds: %d rows", idx, t->rows);
+		return FALSE;
+	}
+	const char *data = t->base + idx * t->row_size;
+
+	if (G_UNLIKELY (res_size != count)) {
+		mono_error_set_bad_image_by_name (error, image_name, "res_size %d != count %d", res_size, count);
+		return FALSE;
+	}
+
+	for (i = 0; i < count; i++) {
+		int n = mono_metadata_table_size (bitfield, i);
+
+		switch (n) {
+		case 1:
+			res [i] = *data; break;
+		case 2:
+			res [i] = read16 (data); break;
+		case 4:
+			res [i] = read32 (data); break;
+		default:
+			mono_error_set_bad_image_by_name (error, image_name, "unexpected table [%d] size %d", i, n);
+			return FALSE;
+		}
+		data += n;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -1755,16 +1844,21 @@ mono_metadata_parse_type_internal (MonoImage *m, MonoGenericContainer *container
 		}
 	}
 
-	if (count) { // There are mods, so the MonoType will be of nonstandard size.
-		int size;
+	MonoCustomModContainer *cmods = NULL;
 
-		size = MONO_SIZEOF_TYPE + ((gint32)count) * sizeof (MonoCustomMod);
-		type = transient ? (MonoType *)g_malloc0 (size) : (MonoType *)mono_image_alloc0 (m, size);
-		type->num_mods = count;
+	if (count) { // There are mods, so the MonoType will be of nonstandard size.
 		if (count > 64) {
 			mono_error_set_bad_image (error, m, "Invalid type with more than 64 modifiers");
 			return NULL;
 		}
+
+		size_t size = mono_sizeof_type_with_mods (count);
+		type = transient ? (MonoType *)g_malloc0 (size) : (MonoType *)mono_image_alloc0 (m, size);
+		type->has_cmods = TRUE;
+
+		cmods = mono_type_get_cmods (type);
+		cmods->count = count;
+		cmods->image = m;
 	} else {     // The type is of standard size, so we can allocate it on the stack.
 		type = &stype;
 		memset (type, 0, MONO_SIZEOF_TYPE);
@@ -1785,7 +1879,7 @@ mono_metadata_parse_type_internal (MonoImage *m, MonoGenericContainer *container
 			break;
 		case MONO_TYPE_CMOD_REQD:
 		case MONO_TYPE_CMOD_OPT:
-			mono_metadata_parse_custom_mod (m, &(type->modifiers [count]), ptr, &ptr);
+			mono_metadata_parse_custom_mod (m, &(cmods->modifiers [count]), ptr, &ptr);
 			count ++;
 			break;
 		default:
@@ -1804,7 +1898,7 @@ mono_metadata_parse_type_internal (MonoImage *m, MonoGenericContainer *container
 		*rptr = ptr;
 
 	// Possibly we can return an already-allocated type instead of the one we decoded
-	if (!type->num_mods && !transient) {
+	if (!type->has_cmods && !transient) {
 		/* no need to free type here, because it is on the stack */
 		if ((type->type == MONO_TYPE_CLASS || type->type == MONO_TYPE_VALUETYPE) && !type->pinned && !type->attrs) {
 			MonoType *ret = type->byref ? m_class_get_this_arg (type->data.klass) : m_class_get_byval_arg (type->data.klass);
@@ -1819,7 +1913,7 @@ mono_metadata_parse_type_internal (MonoImage *m, MonoGenericContainer *container
 
 			   We ensure that the MonoClass is in a state that we can canonicalize to:
 
-			     klass->byval_arg.data.klass == klass
+			     klass->_byval_arg.data.klass == klass
 			     klass->this_arg.data.klass == klass
 
 			   If we can't canonicalize 'type', it doesn't matter, since later users of 'type' will do it.
@@ -2017,7 +2111,7 @@ mono_metadata_signature_dup_internal_with_padding (MonoImage *image, MonoMemPool
 	MonoMethodSignature *ret;
 	sigsize = sig_header_size = MONO_SIZEOF_METHOD_SIGNATURE + sig->param_count * sizeof (MonoType *) + padding;
 	if (sig->ret)
-		sigsize += MONO_SIZEOF_TYPE;
+		sigsize += mono_sizeof_type (sig->ret);
 
 	if (image) {
 		ret = (MonoMethodSignature *)mono_image_alloc (image, sigsize);
@@ -2034,7 +2128,7 @@ mono_metadata_signature_dup_internal_with_padding (MonoImage *image, MonoMemPool
 		// Danger! Do not alter padding use without changing the dup_add_this below
 		intptr_t end_of_header = (intptr_t)( (char*)(ret) + sig_header_size);
 		ret->ret = (MonoType *)end_of_header;
-		memcpy (ret->ret, sig->ret, MONO_SIZEOF_TYPE);
+		memcpy (ret->ret, sig->ret, mono_sizeof_type (sig->ret));
 	}
 
 	return ret;
@@ -3654,7 +3748,7 @@ compare_type_literals (MonoImage *image, int class_type, int type_type, MonoErro
 {
 	error_init (error);
 
-	/* byval_arg.type can be zero if we're decoding a type that references a class been loading.
+	/* _byval_arg.type can be zero if we're decoding a type that references a class been loading.
 	 * See mcs/test/gtest-440. and #650936.
 	 * FIXME This better be moved to the metadata verifier as it can catch more cases.
 	 */
@@ -3997,6 +4091,7 @@ mono_method_get_header_summary (MonoMethod *method, MonoMethodHeaderSummary *sum
 	const char *ptr;
 	unsigned char flags, format;
 	guint16 fat_flags;
+	ERROR_DECL (error);
 
 	/*Only the GMD has a pointer to the metadata.*/
 	while (method->is_inflated)
@@ -4030,8 +4125,10 @@ mono_method_get_header_summary (MonoMethod *method, MonoMethodHeaderSummary *sum
 	rva = mono_metadata_decode_row_col (&img->tables [MONO_TABLE_METHOD], idx - 1, MONO_METHOD_RVA);
 
 	/*We must run the verifier since we'll be decoding it.*/
-	if (!mono_verifier_verify_method_header (img, rva, NULL))
+	if (!mono_verifier_verify_method_header (img, rva, error)) {
+		mono_error_cleanup (error);
 		return FALSE;
+	}
 
 	ptr = mono_image_rva_map (img, rva);
 	if (!ptr)
@@ -4149,10 +4246,8 @@ mono_metadata_parse_mh_full (MonoImage *m, MonoGenericContainer *container, cons
 		}
 		mono_metadata_decode_row (t, idx, cols, 1);
 
-		if (!mono_verifier_verify_standalone_signature (m, cols [MONO_STAND_ALONE_SIGNATURE], NULL)) {
-			mono_error_set_bad_image (error, m, "Method header locals signature 0x%8x verification failed", idx);
+		if (!mono_verifier_verify_standalone_signature (m, cols [MONO_STAND_ALONE_SIGNATURE], error))
 			goto fail;
-		}
 	}
 	if (fat_flags & METHOD_HEADER_MORE_SECTS) {
 		clauses = parse_section_data (m, &num_clauses, (const unsigned char*)ptr, error);
@@ -4231,7 +4326,7 @@ mono_metadata_free_mh (MonoMethodHeader *mh)
 	 * or a SRE-generated method, so the lifetime in that case is
 	 * dictated by the method's own lifetime
 	 */
-	if (mh->is_transient) {
+	if (mh && mh->is_transient) {
 		for (i = 0; i < mh->num_locals; ++i)
 			mono_metadata_free_type (mh->locals [i]);
 		g_free (mh);
@@ -5435,6 +5530,39 @@ do_mono_metadata_type_equal (MonoType *t1, MonoType *t2, gboolean signature_only
 	if (t1->type != t2->type || t1->byref != t2->byref)
 		return FALSE;
 
+	if (t1->has_cmods != t2->has_cmods)
+		return FALSE;
+
+	if (t1->has_cmods) {
+		MonoCustomModContainer *cm1 = mono_type_get_cmods (t1);
+		MonoCustomModContainer *cm2 = mono_type_get_cmods (t2);
+
+		g_assert (cm1);
+		g_assert (cm2);
+
+		// ECMA 335, 7.1.1:
+		// The CLI itself shall treat required and optional modifiers in the same manner.
+		// Two signatures that differ only by the addition of a custom modifier 
+		// (required or optional) shall not be considered to match.
+		if (cm1->count != cm2->count)
+			return FALSE;
+
+		for (int i=0; i < cm1->count; i++) {
+			if (cm1->modifiers[i].required != cm2->modifiers[i].required)
+				return FALSE;
+
+			// FIXME: propagate error to caller
+			ERROR_DECL (error);
+			MonoClass *c1 = mono_class_get_checked (cm1->image, cm1->modifiers [i].token, error);
+			mono_error_assert_ok (error);
+			MonoClass *c2 = mono_class_get_checked (cm2->image, cm2->modifiers [i].token, error);
+			mono_error_assert_ok (error);
+
+			if (c1 != c2)
+				return FALSE;
+		}
+	}
+
 	switch (t1->type) {
 	case MONO_TYPE_VOID:
 	case MONO_TYPE_BOOLEAN:
@@ -5565,9 +5693,7 @@ MonoType *
 mono_metadata_type_dup (MonoImage *image, const MonoType *o)
 {
 	MonoType *r = NULL;
-	int sizeof_o = MONO_SIZEOF_TYPE;
-	if (o->num_mods)
-		sizeof_o += o->num_mods  * sizeof (MonoCustomMod);
+	size_t sizeof_o = mono_sizeof_type (o);
 
 	r = image ? (MonoType *)mono_image_alloc0 (image, sizeof_o) : (MonoType *)g_malloc (sizeof_o);
 
@@ -5995,10 +6121,8 @@ mono_type_create_from_typespec_checked (MonoImage *image, guint32 type_spec, Mon
 	mono_metadata_decode_row (t, idx-1, cols, MONO_TYPESPEC_SIZE);
 	ptr = mono_metadata_blob_heap (image, cols [MONO_TYPESPEC_SIGNATURE]);
 
-	if (!mono_verifier_verify_typespec_signature (image, cols [MONO_TYPESPEC_SIGNATURE], type_spec, NULL)) {
-		mono_error_set_bad_image (error, image, "Could not verify type spec %08x.", type_spec);
+	if (!mono_verifier_verify_typespec_signature (image, cols [MONO_TYPESPEC_SIGNATURE], type_spec, error))
 		return NULL;
-	}
 
 	mono_metadata_decode_value (ptr, &ptr);
 
@@ -6287,6 +6411,7 @@ handle_enum:
 		if (mspec) {
 			switch (mspec->native) {
 			case MONO_NATIVE_STRUCT:
+				*conv = MONO_MARSHAL_CONV_OBJECT_STRUCT;
 				return MONO_NATIVE_STRUCT;
 			case MONO_NATIVE_CUSTOM:
 				return MONO_NATIVE_CUSTOM;
@@ -7107,3 +7232,40 @@ mono_loader_get_strict_strong_names (void)
 {
 	return check_strong_names_strictly;
 }
+
+
+MonoCustomModContainer *
+mono_type_get_cmods (const MonoType *t)
+{
+	if (!t->has_cmods)
+		return NULL;
+
+	MonoTypeWithModifiers *full = (MonoTypeWithModifiers *)t;
+
+	return &full->cmods;
+}
+
+size_t 
+mono_sizeof_type_with_mods (uint8_t num_mods)
+{
+	size_t accum = 0;
+	accum += sizeof (MonoType);
+	if (num_mods == 0)
+		return accum;
+
+	accum += offsetof (struct _MonoCustomModContainer, modifiers);
+	accum += sizeof (MonoCustomMod) * num_mods;
+	return accum;
+}
+
+size_t 
+mono_sizeof_type (const MonoType *ty)
+{
+	MonoCustomModContainer *cmods = mono_type_get_cmods (ty);
+	if (cmods)
+		return mono_sizeof_type_with_mods (cmods->count);
+	else
+		return sizeof (MonoType);
+}
+
+

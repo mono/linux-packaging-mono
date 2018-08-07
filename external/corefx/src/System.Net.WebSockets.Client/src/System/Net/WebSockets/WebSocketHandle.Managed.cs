@@ -9,6 +9,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +29,10 @@ namespace System.Net.WebSockets
         private const int DefaultReceiveBufferSize = 0x1000;
         /// <summary>GUID appended by the server as part of the security key response.  Defined in the RFC.</summary>
         private const string WSServerGuid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
+#if !MONO
+        /// <summary>Shared, lazily-initialized handler for when using default options.</summary>
+        private static SocketsHttpHandler s_defaultHandler;
+#endif
         private readonly CancellationTokenSource _abortSource = new CancellationTokenSource();
         private WebSocketState _state = WebSocketState.Connecting;
         private WebSocket _webSocket;
@@ -62,7 +66,7 @@ namespace System.Net.WebSockets
         public Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) =>
             _webSocket.SendAsync(buffer, messageType, endOfMessage, cancellationToken);
 
-        public Task SendAsync(ReadOnlyMemory<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) =>
+        public ValueTask SendAsync(ReadOnlyMemory<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) =>
             _webSocket.SendAsync(buffer, messageType, endOfMessage, cancellationToken);
 
         public Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken) =>
@@ -93,6 +97,8 @@ namespace System.Net.WebSockets
                 Socket connectedSocket = await ConnectSocketAsync(uri.Host, uri.Port, cancellationToken).ConfigureAwait(false);
                 Stream stream = new NetworkStream(connectedSocket, ownsSocket:true);
 
+               const System.Security.Authentication.SslProtocols AllowedSecurityProtocols = System.Security.Authentication.SslProtocols.Tls | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls12;
+
                 // Upgrade to SSL if needed
                 if (uri.Scheme == UriScheme.Wss)
                 {
@@ -100,7 +106,7 @@ namespace System.Net.WebSockets
                     await sslStream.AuthenticateAsClientAsync(
                         uri.Host,
                         options.ClientCertificates,
-                        SecurityProtocol.AllowedSecurityProtocols,
+                        AllowedSecurityProtocols,
                         checkCertificateRevocation: false).ConfigureAwait(false);
                     stream = sslStream;
                 }

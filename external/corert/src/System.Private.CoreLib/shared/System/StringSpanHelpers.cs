@@ -37,7 +37,10 @@ namespace System
             return true;
         }
 
-        private static bool EqualsOrdinalIgnoreCase(this ReadOnlySpan<char> left, ReadOnlySpan<char> right)
+#if MONO
+        internal
+#endif
+        static bool EqualsOrdinalIgnoreCase(this ReadOnlySpan<char> left, ReadOnlySpan<char> right)
         {
             if (left.Length != right.Length)
             {

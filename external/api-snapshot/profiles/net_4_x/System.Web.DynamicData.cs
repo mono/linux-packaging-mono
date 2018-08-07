@@ -62,8 +62,8 @@ namespace System.Web.DynamicData
     public partial class ContextConfiguration
     {
         public ContextConfiguration() { }
-        public System.Func<System.Type, System.ComponentModel.TypeDescriptionProvider> MetadataProviderFactory { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ScaffoldAllTables { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Func<System.Type, System.ComponentModel.TypeDescriptionProvider> MetadataProviderFactory { get { throw null; } set { } }
+        public bool ScaffoldAllTables { get { throw null; } set { } }
     }
     [System.Drawing.ToolboxBitmapAttribute(typeof(System.Web.DynamicData.DynamicControl), "DynamicControl.ico")]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -76,7 +76,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ApplyFormatInEditMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        public System.Web.DynamicData.MetaColumn Column { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.DynamicData.MetaColumn Column { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ConvertEmptyStringToNull { get { throw null; } set { } }
@@ -84,7 +84,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.MonoTODOAttribute]
         [System.Web.UI.CssClassPropertyAttribute]
-        public virtual string CssClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string CssClass { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DataField { get { throw null; } set { } }
@@ -93,12 +93,12 @@ namespace System.Web.DynamicData
         public string DataFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.MonoTODOAttribute]
-        public System.Web.UI.Control FieldTemplate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.Control FieldTemplate { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool HtmlEncode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Web.UI.WebControls.DataBoundControlMode Mode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.UI.WebControls.DataBoundControlMode Mode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
         public string NullDisplayText { get { throw null; } set { } }
@@ -111,7 +111,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
-        public virtual string ValidationGroup { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string ValidationGroup { get { throw null; } set { } }
         public string GetAttribute(string key) { throw null; }
         protected override void OnInit(System.EventArgs e) { }
         protected override void Render(System.Web.UI.HtmlTextWriter writer) { }
@@ -126,7 +126,7 @@ namespace System.Web.DynamicData
         [System.MonoTODOAttribute]
         public DynamicControlParameter(string controlId) { }
         [System.MonoTODOAttribute]
-        public string ControlId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ControlId { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override object Evaluate(System.Web.HttpContext context, System.Web.UI.Control control) { throw null; }
         [System.MonoTODOAttribute]
@@ -162,7 +162,7 @@ namespace System.Web.DynamicData
     public partial class DynamicDataManager : System.Web.UI.Control
     {
         public DynamicDataManager() { }
-        public bool AutoLoadForeignKeys { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoLoadForeignKeys { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override bool Visible { get { throw null; } set { } }
         protected override void OnLoad(System.EventArgs e) { }
@@ -174,11 +174,11 @@ namespace System.Web.DynamicData
     public partial class DynamicDataRoute : System.Web.Routing.Route
     {
         public DynamicDataRoute(string url) : base (default(string), default(System.Web.Routing.IRouteHandler)) { }
-        public string Action { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.DynamicData.MetaModel Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Action { get { throw null; } set { } }
+        public System.Web.DynamicData.MetaModel Model { get { throw null; } set { } }
         public new System.Web.DynamicData.DynamicDataRouteHandler RouteHandler { get { throw null; } set { } }
-        public string Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ViewName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Table { get { throw null; } set { } }
+        public string ViewName { get { throw null; } set { } }
         public string GetActionFromRouteData(System.Web.Routing.RouteData routeData) { throw null; }
         public override System.Web.Routing.RouteData GetRouteData(System.Web.HttpContextBase httpContext) { throw null; }
         public System.Web.DynamicData.MetaTable GetTableFromRouteData(System.Web.Routing.RouteData routeData) { throw null; }
@@ -189,7 +189,7 @@ namespace System.Web.DynamicData
     public partial class DynamicDataRouteHandler : System.Web.Routing.IRouteHandler
     {
         public DynamicDataRouteHandler() { }
-        public System.Web.DynamicData.MetaModel Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaModel Model { get { throw null; } }
         [System.MonoTODOAttribute("Needs a working test")]
         public virtual System.Web.IHttpHandler CreateHandler(System.Web.DynamicData.DynamicDataRoute route, System.Web.DynamicData.MetaTable table, string action) { throw null; }
         protected virtual string GetCustomPageVirtualPath(System.Web.DynamicData.MetaTable table, string viewName) { throw null; }
@@ -204,13 +204,13 @@ namespace System.Web.DynamicData
     public partial class DynamicField : System.Web.UI.WebControls.DataControlField, System.Web.DynamicData.IFieldFormattingOptions, System.Web.UI.IAttributeAccessor
     {
         public DynamicField() { }
-        public bool ApplyFormatInEditMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ConvertEmptyStringToNull { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ApplyFormatInEditMode { get { throw null; } set { } }
+        public bool ConvertEmptyStringToNull { get { throw null; } set { } }
         public virtual string DataField { get { throw null; } set { } }
-        public string DataFormatString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DataFormatString { get { throw null; } set { } }
         public override string HeaderText { get { throw null; } set { } }
-        public bool HtmlEncode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string NullDisplayText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool HtmlEncode { get { throw null; } set { } }
+        public string NullDisplayText { get { throw null; } set { } }
         public override string SortExpression { get { throw null; } set { } }
         public virtual string UIHint { get { throw null; } set { } }
         [System.MonoTODOAttribute]
@@ -241,11 +241,11 @@ namespace System.Web.DynamicData
         public DynamicValidator() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
-        public System.Web.DynamicData.MetaColumn Column { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.DynamicData.MetaColumn Column { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public string ColumnName { get { throw null; } }
-        protected virtual System.Exception ValidationException { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected virtual System.Exception ValidationException { get { throw null; } set { } }
         protected override bool ControlPropertiesValid() { throw null; }
         [System.MonoTODOAttribute]
         protected override bool EvaluateIsValid() { throw null; }
@@ -258,7 +258,7 @@ namespace System.Web.DynamicData
     public partial class FieldTemplateFactory : System.Web.DynamicData.IFieldTemplateFactory
     {
         public FieldTemplateFactory() { }
-        public System.Web.DynamicData.MetaModel Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaModel Model { get { throw null; } }
         public string TemplateFolderVirtualPath { get { throw null; } set { } }
         public virtual string BuildVirtualPath(string templateName, System.Web.DynamicData.MetaColumn column, System.Web.UI.WebControls.DataBoundControlMode mode) { throw null; }
         public virtual System.Web.DynamicData.IFieldTemplate CreateFieldTemplate(System.Web.DynamicData.MetaColumn column, System.Web.UI.WebControls.DataBoundControlMode mode, string uiHint) { throw null; }
@@ -276,20 +276,20 @@ namespace System.Web.DynamicData
         protected string ChildrenPath { get { throw null; } }
         public System.Web.DynamicData.MetaColumn Column { get { throw null; } }
         [System.MonoTODOAttribute]
-        public virtual System.Web.UI.Control DataControl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual System.Web.UI.Control DataControl { get { throw null; } }
         [System.MonoTODOAttribute]
-        public virtual object FieldValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual object FieldValue { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public virtual string FieldValueEditString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual string FieldValueEditString { get { throw null; } }
         [System.MonoTODOAttribute]
-        public virtual string FieldValueString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual string FieldValueString { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.Web.DynamicData.MetaForeignKeyColumn ForeignKeyColumn { get { throw null; } }
         [System.MonoTODOAttribute]
         protected string ForeignKeyPath { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.IFieldFormattingOptions FormattingOptions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.DynamicData.IFieldTemplateHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.IFieldFormattingOptions FormattingOptions { get { throw null; } }
+        public System.Web.DynamicData.IFieldTemplateHost Host { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.ComponentModel.AttributeCollection MetadataAttributes { get { throw null; } }
         [System.MonoTODOAttribute]
@@ -336,22 +336,22 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.MonoTODOAttribute]
         [System.Web.UI.ThemeableAttribute(false)]
-        public string ContextTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ContextTypeName { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("DynamicFilter")]
         [System.MonoTODOAttribute]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.DynamicData.FilterUserControlBase))]
         [System.Web.UI.ThemeableAttribute(false)]
-        public string DynamicFilterContainerId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DynamicFilterContainerId { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.MetaTable Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaTable Table { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.MonoTODOAttribute]
         [System.Web.UI.ThemeableAttribute(false)]
-        public string TableName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TableName { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public override bool Visible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override bool Visible { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override void DataBind() { }
         [System.MonoTODOAttribute]
@@ -371,23 +371,23 @@ namespace System.Web.DynamicData
     {
         public FilterUserControlBase() { }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.MetaColumn Column { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaColumn Column { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string ContextTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ContextTypeName { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string DataField { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DataField { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string InitialValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string InitialValue { get { throw null; } }
         [System.MonoTODOAttribute]
-        public virtual System.Web.UI.WebControls.DataKey SelectedDataKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual System.Web.UI.WebControls.DataKey SelectedDataKey { get { throw null; } }
         [System.MonoTODOAttribute]
-        public virtual string SelectedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual string SelectedValue { get { throw null; } }
         [System.MonoTODOAttribute]
         System.Web.DynamicData.MetaColumn System.Web.DynamicData.IControlParameterTarget.FilteredColumn { get { throw null; } }
         [System.MonoTODOAttribute]
         System.Web.DynamicData.MetaTable System.Web.DynamicData.IControlParameterTarget.Table { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string TableName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TableName { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void PopulateListControl(System.Web.UI.WebControls.ListControl listControl) { }
         [System.MonoTODOAttribute]
@@ -445,9 +445,9 @@ namespace System.Web.DynamicData
     {
         internal MetaChildrenColumn() { }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.MetaTable ChildTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaTable ChildTable { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.MetaColumn ColumnInOtherTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaColumn ColumnInOtherTable { get { throw null; } }
         [System.MonoTODOAttribute]
         public string GetChildrenListPath(object row) { throw null; }
         [System.MonoTODOAttribute]
@@ -470,28 +470,28 @@ namespace System.Web.DynamicData
         public string Description { get { throw null; } }
         public string DisplayName { get { throw null; } }
         public System.Reflection.PropertyInfo EntityTypeProperty { get { throw null; } }
-        public bool HtmlEncode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsBinaryData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool HtmlEncode { get { throw null; } }
+        public bool IsBinaryData { get { throw null; } }
         public bool IsCustomProperty { get { throw null; } }
-        public bool IsFloatingPoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsFloatingPoint { get { throw null; } }
         public bool IsForeignKeyComponent { get { throw null; } }
         public bool IsGenerated { get { throw null; } }
-        public bool IsInteger { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsLongString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsInteger { get { throw null; } }
+        public bool IsLongString { get { throw null; } }
         public bool IsPrimaryKey { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }
         public bool IsRequired { get { throw null; } }
-        public bool IsString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsString { get { throw null; } }
         public int MaxLength { get { throw null; } }
-        public System.Web.DynamicData.MetaModel Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaModel Model { get { throw null; } }
         public string Name { get { throw null; } }
         public string NullDisplayText { get { throw null; } }
-        public System.Web.DynamicData.ModelProviders.ColumnProvider Provider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.ModelProviders.ColumnProvider Provider { get { throw null; } }
         public string RequiredErrorMessage { get { throw null; } }
         public bool Scaffold { get { throw null; } set { } }
         public string SortExpression { get { throw null; } }
-        public System.Web.DynamicData.MetaTable Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TypeCode TypeCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaTable Table { get { throw null; } }
+        public System.TypeCode TypeCode { get { throw null; } }
         public string UIHint { get { throw null; } }
         public override string ToString() { throw null; }
     }
@@ -501,11 +501,11 @@ namespace System.Web.DynamicData
     {
         internal MetaForeignKeyColumn() { }
         [System.MonoTODOAttribute]
-        public System.Collections.ObjectModel.ReadOnlyCollection<string> ForeignKeyNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<string> ForeignKeyNames { get { throw null; } }
         [System.MonoTODOAttribute]
-        public bool IsPrimaryKeyInThisTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsPrimaryKeyInThisTable { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.MetaTable ParentTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.MetaTable ParentTable { get { throw null; } }
         [System.MonoTODOAttribute]
         public void ExtractForeignKey(System.Collections.IDictionary dictionary, string value) { }
         [System.MonoTODOAttribute]
@@ -526,9 +526,9 @@ namespace System.Web.DynamicData
         public MetaModel() { }
         public static System.Web.DynamicData.MetaModel Default { get { throw null; } }
         public string DynamicDataFolderVirtualPath { get { throw null; } set { } }
-        public System.Web.DynamicData.IFieldTemplateFactory FieldTemplateFactory { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaTable> Tables { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.List<System.Web.DynamicData.MetaTable> VisibleTables { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.IFieldTemplateFactory FieldTemplateFactory { get { throw null; } set { } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaTable> Tables { get { throw null; } }
+        public System.Collections.Generic.List<System.Web.DynamicData.MetaTable> VisibleTables { get { throw null; } }
         public string GetActionPath(string tableName, string action, object row) { throw null; }
         public static System.Web.DynamicData.MetaModel GetModel(System.Type contextType) { throw null; }
         public System.Web.DynamicData.MetaTable GetTable(string uniqueTableName) { throw null; }
@@ -549,21 +549,21 @@ namespace System.Web.DynamicData
     {
         internal MetaTable() { }
         public System.ComponentModel.AttributeCollection Attributes { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaColumn> Columns { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaColumn> Columns { get { throw null; } }
         public string DataContextPropertyName { get { throw null; } }
-        public System.Type DataContextType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type DataContextType { get { throw null; } }
         public System.Web.DynamicData.MetaColumn DisplayColumn { get { throw null; } }
         public string DisplayName { get { throw null; } }
         public System.Type EntityType { get { throw null; } }
-        public string ForeignKeyColumnsNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool HasPrimaryKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ForeignKeyColumnsNames { get { throw null; } }
+        public bool HasPrimaryKey { get { throw null; } }
+        public bool IsReadOnly { get { throw null; } }
         public string ListActionPath { get { throw null; } }
         public System.Web.DynamicData.MetaModel Model { get { throw null; } }
         public string Name { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaColumn> PrimaryKeyColumns { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.DynamicData.ModelProviders.TableProvider Provider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Scaffold { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.MetaColumn> PrimaryKeyColumns { get { throw null; } }
+        public System.Web.DynamicData.ModelProviders.TableProvider Provider { get { throw null; } }
+        public bool Scaffold { get { throw null; } }
         public System.Web.DynamicData.MetaColumn SortColumn { get { throw null; } }
         public bool SortDescending { get { throw null; } }
         public object CreateContext() { throw null; }
@@ -596,7 +596,7 @@ namespace System.Web.DynamicData
     public sealed partial class TableNameAttribute : System.Attribute
     {
         public TableNameAttribute(string name) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
     }
 }
 namespace System.Web.DynamicData.ModelProviders
@@ -614,17 +614,17 @@ namespace System.Web.DynamicData.ModelProviders
     {
         protected AssociationProvider() { }
         [System.MonoTODOAttribute]
-        public virtual System.Web.DynamicData.ModelProviders.AssociationDirection Direction { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Web.DynamicData.ModelProviders.AssociationDirection Direction { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Collections.ObjectModel.ReadOnlyCollection<string> ForeignKeyNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Collections.ObjectModel.ReadOnlyCollection<string> ForeignKeyNames { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Web.DynamicData.ModelProviders.ColumnProvider FromColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Web.DynamicData.ModelProviders.ColumnProvider FromColumn { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsPrimaryKeyInThisTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsPrimaryKeyInThisTable { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Web.DynamicData.ModelProviders.ColumnProvider ToColumn { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Web.DynamicData.ModelProviders.ColumnProvider ToColumn { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Web.DynamicData.ModelProviders.TableProvider ToTable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Web.DynamicData.ModelProviders.TableProvider ToTable { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
         public virtual string GetSortExpression(System.Web.DynamicData.ModelProviders.ColumnProvider sortColumn) { throw null; }
     }
@@ -634,29 +634,29 @@ namespace System.Web.DynamicData.ModelProviders
     {
         protected ColumnProvider(System.Web.DynamicData.ModelProviders.TableProvider table) { }
         [System.MonoTODOAttribute]
-        public virtual System.Web.DynamicData.ModelProviders.AssociationProvider Association { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Web.DynamicData.ModelProviders.AssociationProvider Association { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Type ColumnType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Type ColumnType { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual System.Reflection.PropertyInfo EntityTypeProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Reflection.PropertyInfo EntityTypeProperty { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsCustomProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsCustomProperty { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsForeignKeyComponent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsForeignKeyComponent { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsGenerated { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsGenerated { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsPrimaryKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsPrimaryKey { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool IsSortable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool IsSortable { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual int MaxLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual int MaxLength { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual string Name { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public virtual bool Nullable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual bool Nullable { get { throw null; } protected set { } }
         [System.MonoTODOAttribute]
-        public System.Web.DynamicData.ModelProviders.TableProvider Table { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.DynamicData.ModelProviders.TableProvider Table { get { throw null; } }
         [System.MonoTODOAttribute]
         public override string ToString() { throw null; }
     }
@@ -666,7 +666,7 @@ namespace System.Web.DynamicData.ModelProviders
     {
         protected DataModelProvider() { }
         [System.MonoTODOAttribute]
-        public virtual System.Type ContextType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public virtual System.Type ContextType { get { throw null; } protected set { } }
         public abstract System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.ModelProviders.TableProvider> Tables { get; }
         public abstract object CreateContext();
     }
@@ -676,9 +676,9 @@ namespace System.Web.DynamicData.ModelProviders
     {
         protected TableProvider(System.Web.DynamicData.ModelProviders.DataModelProvider model) { }
         public abstract System.Collections.ObjectModel.ReadOnlyCollection<System.Web.DynamicData.ModelProviders.ColumnProvider> Columns { get; }
-        public System.Web.DynamicData.ModelProviders.DataModelProvider DataModel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual System.Type EntityType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public virtual string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Web.DynamicData.ModelProviders.DataModelProvider DataModel { get { throw null; } }
+        public virtual System.Type EntityType { get { throw null; } protected set { } }
+        public virtual string Name { get { throw null; } protected set { } }
         public virtual object EvaluateForeignKey(object row, string foreignKeyName) { throw null; }
         public abstract System.Linq.IQueryable GetQuery(object context);
         public override string ToString() { throw null; }

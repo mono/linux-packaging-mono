@@ -30,7 +30,7 @@ namespace System.ServiceModel.Discovery
         public System.ServiceModel.Description.ClientCredentials ClientCredentials { get { throw null; } }
         public System.ServiceModel.Description.ServiceEndpoint Endpoint { get { throw null; } }
         public System.ServiceModel.IClientChannel InnerChannel { get { throw null; } }
-        public System.ServiceModel.Discovery.DiscoveryMessageSequenceGenerator MessageSequenceGenerator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Discovery.DiscoveryMessageSequenceGenerator MessageSequenceGenerator { get { throw null; } set { } }
         System.ServiceModel.CommunicationState System.ServiceModel.ICommunicationObject.State { get { throw null; } }
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AnnounceOfflineCompleted { add { } remove { } }
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AnnounceOnlineCompleted { add { } remove { } }
@@ -70,14 +70,14 @@ namespace System.ServiceModel.Discovery
         public AnnouncementEndpoint(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress address) : base (default(System.ServiceModel.Description.ContractDescription)) { }
         public AnnouncementEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion) : base (default(System.ServiceModel.Description.ContractDescription)) { }
         public AnnouncementEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress address) : base (default(System.ServiceModel.Description.ContractDescription)) { }
-        public System.ServiceModel.Discovery.DiscoveryVersion DiscoveryVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TimeSpan MaxAnnouncementDelay { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Discovery.DiscoveryVersion DiscoveryVersion { get { throw null; } }
+        public System.TimeSpan MaxAnnouncementDelay { get { throw null; } set { } }
     }
     public partial class AnnouncementEventArgs : System.EventArgs
     {
         internal AnnouncementEventArgs() { }
-        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { get { throw null; } }
+        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { get { throw null; } }
     }
     [System.ServiceModel.ServiceBehaviorAttribute(InstanceContextMode=(System.ServiceModel.InstanceContextMode)(2), ConcurrencyMode=(System.ServiceModel.ConcurrencyMode)(2))]
     public partial class AnnouncementService
@@ -137,8 +137,8 @@ namespace System.ServiceModel.Discovery
         public static readonly System.ServiceModel.EndpointAddress DiscoveryEndpointAddress;
         public DiscoveryClientBindingElement() { }
         public DiscoveryClientBindingElement(System.ServiceModel.Discovery.DiscoveryEndpointProvider discoveryEndpointProvider, System.ServiceModel.Discovery.FindCriteria findCriteria) { }
-        public System.ServiceModel.Discovery.DiscoveryEndpointProvider DiscoveryEndpointProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Discovery.FindCriteria FindCriteria { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Discovery.DiscoveryEndpointProvider DiscoveryEndpointProvider { get { throw null; } set { } }
+        public System.ServiceModel.Discovery.FindCriteria FindCriteria { get { throw null; } set { } }
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         public override System.ServiceModel.Channels.IChannelListener<TChannel> BuildChannelListener<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         public override bool CanBuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
@@ -152,9 +152,9 @@ namespace System.ServiceModel.Discovery
         public DiscoveryEndpoint(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress endpointAddress) : base (default(System.ServiceModel.Description.ContractDescription)) { }
         public DiscoveryEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion, System.ServiceModel.Discovery.ServiceDiscoveryMode discoveryMode) : base (default(System.ServiceModel.Description.ContractDescription)) { }
         public DiscoveryEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion, System.ServiceModel.Discovery.ServiceDiscoveryMode discoveryMode, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress endpointAddress) : base (default(System.ServiceModel.Description.ContractDescription)) { }
-        public System.ServiceModel.Discovery.ServiceDiscoveryMode DiscoveryMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Discovery.DiscoveryVersion DiscoveryVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TimeSpan MaxResponseDelay { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Discovery.ServiceDiscoveryMode DiscoveryMode { get { throw null; } }
+        public System.ServiceModel.Discovery.DiscoveryVersion DiscoveryVersion { get { throw null; } }
+        public System.TimeSpan MaxResponseDelay { get { throw null; } set { } }
     }
     public abstract partial class DiscoveryEndpointProvider
     {
@@ -164,9 +164,9 @@ namespace System.ServiceModel.Discovery
     public partial class DiscoveryMessageSequence : System.IComparable<System.ServiceModel.Discovery.DiscoveryMessageSequence>, System.IEquatable<System.ServiceModel.Discovery.DiscoveryMessageSequence>
     {
         internal DiscoveryMessageSequence() { }
-        public long InstanceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long MessageNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri SequenceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long InstanceId { get { throw null; } }
+        public long MessageNumber { get { throw null; } }
+        public System.Uri SequenceId { get { throw null; } }
         public bool CanCompareTo(System.ServiceModel.Discovery.DiscoveryMessageSequence other) { throw null; }
         public int CompareTo(System.ServiceModel.Discovery.DiscoveryMessageSequence other) { throw null; }
         public override bool Equals(object obj) { throw null; }
@@ -224,7 +224,7 @@ namespace System.ServiceModel.Discovery
     public abstract partial class DiscoveryServiceExtension : System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>
     {
         protected DiscoveryServiceExtension() { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> PublishedEndpoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> PublishedEndpoints { get { throw null; } }
         protected abstract System.ServiceModel.Discovery.DiscoveryService GetDiscoveryService();
         void System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>.Attach(System.ServiceModel.ServiceHostBase owner) { }
         void System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>.Detach(System.ServiceModel.ServiceHostBase owner) { }
@@ -232,10 +232,10 @@ namespace System.ServiceModel.Discovery
     public sealed partial class DiscoveryVersion
     {
         internal DiscoveryVersion() { }
-        public System.Uri AdhocAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Channels.MessageVersion MessageVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Uri AdhocAddress { get { throw null; } }
+        public System.ServiceModel.Channels.MessageVersion MessageVersion { get { throw null; } }
+        public string Name { get { throw null; } }
+        public string Namespace { get { throw null; } }
         public static System.ServiceModel.Discovery.DiscoveryVersion WSDiscovery11 { get { throw null; } }
         public static System.ServiceModel.Discovery.DiscoveryVersion WSDiscoveryApril2005 { get { throw null; } }
         public static System.ServiceModel.Discovery.DiscoveryVersion WSDiscoveryCD1 { get { throw null; } }
@@ -245,16 +245,16 @@ namespace System.ServiceModel.Discovery
     public partial class DynamicEndpoint : System.ServiceModel.Description.ServiceEndpoint
     {
         public DynamicEndpoint(System.ServiceModel.Description.ContractDescription contract, System.ServiceModel.Channels.Binding binding) : base (default(System.ServiceModel.Description.ContractDescription)) { }
-        public System.ServiceModel.Discovery.DiscoveryEndpointProvider DiscoveryEndpointProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Discovery.FindCriteria FindCriteria { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Discovery.DiscoveryEndpointProvider DiscoveryEndpointProvider { get { throw null; } set { } }
+        public System.ServiceModel.Discovery.FindCriteria FindCriteria { get { throw null; } set { } }
     }
     public partial class EndpointDiscoveryBehavior : System.ServiceModel.Description.IEndpointBehavior
     {
         public EndpointDiscoveryBehavior() { }
-        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { get { throw null; } }
+        public bool Enabled { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { get { throw null; } }
         void System.ServiceModel.Description.IEndpointBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection bindingParameters) { }
         void System.ServiceModel.Description.IEndpointBehavior.ApplyClientBehavior(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.ClientRuntime clientRuntime) { }
         void System.ServiceModel.Description.IEndpointBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.EndpointDispatcher endpointDispatcher) { }
@@ -263,19 +263,19 @@ namespace System.ServiceModel.Discovery
     public partial class EndpointDiscoveryMetadata
     {
         public EndpointDiscoveryMetadata() { }
-        public System.ServiceModel.EndpointAddress Address { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Uri> ListenUris { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Version { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.EndpointAddress Address { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Uri> ListenUris { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { get { throw null; } }
+        public int Version { get { throw null; } set { } }
         public static System.ServiceModel.Discovery.EndpointDiscoveryMetadata FromServiceEndpoint(System.ServiceModel.Description.ServiceEndpoint endpoint) { throw null; }
         public static System.ServiceModel.Discovery.EndpointDiscoveryMetadata FromServiceEndpoint(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.EndpointDispatcher endpointDispatcher) { throw null; }
     }
     public partial class FindCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
     {
         internal FindCompletedEventArgs() : base (default(System.Exception), default(bool), default(object)) { }
-        public System.ServiceModel.Discovery.FindResponse Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.FindResponse Result { get { throw null; } }
     }
     public partial class FindCriteria
     {
@@ -286,12 +286,12 @@ namespace System.ServiceModel.Discovery
         public static readonly System.Uri ScopeMatchByUuid;
         public FindCriteria() { }
         public FindCriteria(System.Type contractType) { }
-        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TimeSpan Duration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int MaxResults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri ScopeMatchBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Xml.XmlQualifiedName> ContractTypeNames { get { throw null; } }
+        public System.TimeSpan Duration { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { get { throw null; } }
+        public int MaxResults { get { throw null; } set { } }
+        public System.Uri ScopeMatchBy { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Uri> Scopes { get { throw null; } }
         public static System.ServiceModel.Discovery.FindCriteria CreateMetadataExchangeEndpointCriteria() { throw null; }
         public static System.ServiceModel.Discovery.FindCriteria CreateMetadataExchangeEndpointCriteria(System.Collections.Generic.IEnumerable<System.Xml.XmlQualifiedName> contractTypeNames) { throw null; }
         public static System.ServiceModel.Discovery.FindCriteria CreateMetadataExchangeEndpointCriteria(System.Type contractType) { throw null; }
@@ -301,46 +301,46 @@ namespace System.ServiceModel.Discovery
     public partial class FindProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal FindProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { get { throw null; } }
+        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { get { throw null; } }
     }
     public partial class FindRequestContext
     {
         protected FindRequestContext(System.ServiceModel.Discovery.FindCriteria criteria) { }
-        public System.ServiceModel.Discovery.FindCriteria Criteria { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.FindCriteria Criteria { get { throw null; } }
         public void AddMatchingEndpoint(System.ServiceModel.Discovery.EndpointDiscoveryMetadata matchingEndpoint) { }
         protected virtual void OnAddMatchingEndpoint(System.ServiceModel.Discovery.EndpointDiscoveryMetadata matchingEndpoint) { }
     }
     public partial class FindResponse
     {
         internal FindResponse() { }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> Endpoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> Endpoints { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.ServiceModel.Discovery.DiscoveryMessageSequence GetMessageSequence(System.ServiceModel.Discovery.EndpointDiscoveryMetadata endpointDiscoveryMetadata) { throw null; }
     }
     public partial class ResolveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
     {
         internal ResolveCompletedEventArgs() : base (default(System.Exception), default(bool), default(object)) { }
-        public System.ServiceModel.Discovery.ResolveResponse Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.ResolveResponse Result { get { throw null; } }
     }
     public partial class ResolveCriteria
     {
         public ResolveCriteria() { }
         public ResolveCriteria(System.ServiceModel.EndpointAddress address) { }
-        public System.ServiceModel.EndpointAddress Address { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.TimeSpan Duration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.EndpointAddress Address { get { throw null; } set { } }
+        public System.TimeSpan Duration { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Xml.Linq.XElement> Extensions { get { throw null; } }
     }
     public partial class ResolveResponse
     {
         internal ResolveResponse() { }
-        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { get { throw null; } }
+        public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { get { throw null; } }
     }
     public partial class ServiceDiscoveryBehavior : System.ServiceModel.Description.IServiceBehavior
     {
         public ServiceDiscoveryBehavior() { }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.AnnouncementEndpoint> AnnouncementEndpoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.AnnouncementEndpoint> AnnouncementEndpoints { get { throw null; } }
         void System.ServiceModel.Description.IServiceBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<System.ServiceModel.Description.ServiceEndpoint> endpoints, System.ServiceModel.Channels.BindingParameterCollection bindingParameters) { }
         void System.ServiceModel.Description.IServiceBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase) { }
         void System.ServiceModel.Description.IServiceBehavior.Validate(System.ServiceModel.Description.ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase) { }
@@ -360,8 +360,8 @@ namespace System.ServiceModel.Discovery
         public UdpAnnouncementEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion, System.Uri multicastAddress) { }
         public UdpAnnouncementEndpoint(string multicastAddress) { }
         public UdpAnnouncementEndpoint(System.Uri multicastAddress) { }
-        public System.Uri MulticastAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Discovery.UdpTransportSettings TransportSettings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Uri MulticastAddress { get { throw null; } set { } }
+        public System.ServiceModel.Discovery.UdpTransportSettings TransportSettings { get { throw null; } }
     }
     public partial class UdpDiscoveryEndpoint : System.ServiceModel.Discovery.DiscoveryEndpoint
     {
@@ -373,21 +373,21 @@ namespace System.ServiceModel.Discovery
         public UdpDiscoveryEndpoint(System.ServiceModel.Discovery.DiscoveryVersion discoveryVersion, System.Uri multicastAddress) { }
         public UdpDiscoveryEndpoint(string multicastAddress) { }
         public UdpDiscoveryEndpoint(System.Uri multicastAddress) { }
-        public System.Uri MulticastAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Discovery.UdpTransportSettings TransportSettings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Uri MulticastAddress { get { throw null; } set { } }
+        public System.ServiceModel.Discovery.UdpTransportSettings TransportSettings { get { throw null; } }
     }
     public partial class UdpTransportSettings
     {
         internal UdpTransportSettings() { }
-        public int DuplicateMessageHistoryLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public long MaxBufferPoolSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxMulticastRetransmitCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxPendingMessageCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public long MaxReceivedMessageSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxUnicastRetransmitCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string MulticastInterfaceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int SocketReceiveBufferSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int TimeToLive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int DuplicateMessageHistoryLength { get { throw null; } set { } }
+        public long MaxBufferPoolSize { get { throw null; } set { } }
+        public int MaxMulticastRetransmitCount { get { throw null; } set { } }
+        public int MaxPendingMessageCount { get { throw null; } set { } }
+        public long MaxReceivedMessageSize { get { throw null; } set { } }
+        public int MaxUnicastRetransmitCount { get { throw null; } set { } }
+        public string MulticastInterfaceId { get { throw null; } set { } }
+        public int SocketReceiveBufferSize { get { throw null; } set { } }
+        public int TimeToLive { get { throw null; } set { } }
     }
 }
 namespace System.ServiceModel.Discovery.Configuration

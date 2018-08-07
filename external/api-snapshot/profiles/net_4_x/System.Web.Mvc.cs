@@ -31,7 +31,7 @@ namespace System.Web.Mvc
     {
         public AcceptVerbsAttribute(params string[] verbs) { }
         public AcceptVerbsAttribute(System.Web.Mvc.HttpVerbs verbs) { }
-        public System.Collections.Generic.ICollection<string> Verbs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.ICollection<string> Verbs { get { throw null; } }
         public override bool IsValidForRequest(System.Web.Mvc.ControllerContext controllerContext, System.Reflection.MethodInfo methodInfo) { throw null; }
     }
     public abstract partial class ActionDescriptor : System.Reflection.ICustomAttributeProvider
@@ -54,19 +54,19 @@ namespace System.Web.Mvc
     {
         public ActionExecutedContext() { }
         public ActionExecutedContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionDescriptor actionDescriptor, bool canceled, System.Exception exception) { }
-        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool Canceled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { get { throw null; } set { } }
+        public virtual bool Canceled { get { throw null; } set { } }
+        public virtual System.Exception Exception { get { throw null; } set { } }
+        public bool ExceptionHandled { get { throw null; } set { } }
         public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     public partial class ActionExecutingContext : System.Web.Mvc.ControllerContext
     {
         public ActionExecutingContext() { }
         public ActionExecutingContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionDescriptor actionDescriptor, System.Collections.Generic.IDictionary<string, object> actionParameters) { }
-        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Collections.Generic.IDictionary<string, object> ActionParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Mvc.ActionResult Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { get { throw null; } set { } }
+        public virtual System.Collections.Generic.IDictionary<string, object> ActionParameters { get { throw null; } set { } }
+        public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
     public abstract partial class ActionFilterAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IActionFilter, System.Web.Mvc.IResultFilter
@@ -87,7 +87,7 @@ namespace System.Web.Mvc
     public sealed partial class ActionNameAttribute : System.Web.Mvc.ActionNameSelectorAttribute
     {
         public ActionNameAttribute(string name) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public override bool IsValidName(System.Web.Mvc.ControllerContext controllerContext, string actionName, System.Reflection.MethodInfo methodInfo) { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
@@ -106,9 +106,9 @@ namespace System.Web.Mvc
     public sealed partial class AdditionalMetadataAttribute : System.Attribute, System.Web.Mvc.IMetadataAware
     {
         public AdditionalMetadataAttribute(string name, object value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public override object TypeId { get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Value { get { throw null; } }
         public void OnMetadataCreated(System.Web.Mvc.ModelMetadata metadata) { }
     }
     public partial class AjaxHelper
@@ -116,10 +116,10 @@ namespace System.Web.Mvc
         public AjaxHelper(System.Web.Mvc.ViewContext viewContext, System.Web.Mvc.IViewDataContainer viewDataContainer) { }
         public AjaxHelper(System.Web.Mvc.ViewContext viewContext, System.Web.Mvc.IViewDataContainer viewDataContainer, System.Web.Routing.RouteCollection routeCollection) { }
         public static string GlobalizationScriptPath { get { throw null; } set { } }
-        public System.Web.Routing.RouteCollection RouteCollection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Mvc.ViewContext ViewContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Routing.RouteCollection RouteCollection { get { throw null; } }
+        public System.Web.Mvc.ViewContext ViewContext { get { throw null; } }
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } }
-        public System.Web.Mvc.IViewDataContainer ViewDataContainer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Mvc.IViewDataContainer ViewDataContainer { get { throw null; } }
         public string JavaScriptStringEncode(string message) { throw null; }
     }
     public partial class AjaxHelper<TModel> : System.Web.Mvc.AjaxHelper
@@ -150,10 +150,10 @@ namespace System.Web.Mvc
     {
         public AreaRegistrationContext(string areaName, System.Web.Routing.RouteCollection routes) { }
         public AreaRegistrationContext(string areaName, System.Web.Routing.RouteCollection routes, object state) { }
-        public string AreaName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string AreaName { get { throw null; } }
         public System.Collections.Generic.ICollection<string> Namespaces { get { throw null; } }
-        public System.Web.Routing.RouteCollection Routes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object State { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Routing.RouteCollection Routes { get { throw null; } }
+        public object State { get { throw null; } }
         public System.Web.Routing.Route MapRoute(string name, string url) { throw null; }
         public System.Web.Routing.Route MapRoute(string name, string url, object defaults) { throw null; }
         public System.Web.Routing.Route MapRoute(string name, string url, object defaults, object constraints) { throw null; }
@@ -195,7 +195,7 @@ namespace System.Web.Mvc
     public partial class AsyncTimeoutAttribute : System.Web.Mvc.ActionFilterAttribute
     {
         public AsyncTimeoutAttribute(int duration) { }
-        public int Duration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Duration { get { throw null; } }
         public override void OnActionExecuting(System.Web.Mvc.ActionExecutingContext filterContext) { }
     }
     public partial class AuthorizationContext : System.Web.Mvc.ControllerContext
@@ -204,8 +204,8 @@ namespace System.Web.Mvc
         [System.ObsoleteAttribute("The recommended alternative is the constructor AuthorizationContext(ControllerContext controllerContext, ActionDescriptor actionDescriptor).")]
         public AuthorizationContext(System.Web.Mvc.ControllerContext controllerContext) { }
         public AuthorizationContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionDescriptor actionDescriptor) { }
-        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Mvc.ActionResult Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { get { throw null; } set { } }
+        public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
     public partial class AuthorizeAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
@@ -225,14 +225,14 @@ namespace System.Web.Mvc
         public BindAttribute() { }
         public string Exclude { get { throw null; } set { } }
         public string Include { get { throw null; } set { } }
-        public string Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Prefix { get { throw null; } set { } }
         public bool IsPropertyAllowed(string propertyName) { throw null; }
     }
     public abstract partial class BuildManagerCompiledView : System.Web.Mvc.IView
     {
         protected BuildManagerCompiledView(System.Web.Mvc.ControllerContext controllerContext, string viewPath) { }
         protected BuildManagerCompiledView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, System.Web.Mvc.IViewPageActivator viewPageActivator) { }
-        public string ViewPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public string ViewPath { get { throw null; } protected set { } }
         public void Render(System.Web.Mvc.ViewContext viewContext, System.IO.TextWriter writer) { }
         protected abstract void RenderView(System.Web.Mvc.ViewContext viewContext, System.IO.TextWriter writer, object instance);
     }
@@ -273,7 +273,7 @@ namespace System.Web.Mvc
     public partial class CompareAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute, System.Web.Mvc.IClientValidatable
     {
         public CompareAttribute(string otherProperty) { }
-        public string OtherProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string OtherProperty { get { throw null; } }
         public override string FormatErrorMessage(string name) { throw null; }
         public static string FormatPropertyForClientValidation(string property) { throw null; }
         public System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelClientValidationRule> GetClientValidationRules(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context) { throw null; }
@@ -282,9 +282,9 @@ namespace System.Web.Mvc
     public partial class ContentResult : System.Web.Mvc.ActionResult
     {
         public ContentResult() { }
-        public string Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Text.Encoding ContentEncoding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContentType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Content { get { throw null; } set { } }
+        public System.Text.Encoding ContentEncoding { get { throw null; } set { } }
+        public string ContentType { get { throw null; } set { } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public abstract partial class Controller : System.Web.Mvc.ControllerBase, System.IDisposable, System.Web.Mvc.IActionFilter, System.Web.Mvc.IAuthorizationFilter, System.Web.Mvc.IExceptionFilter, System.Web.Mvc.IResultFilter
@@ -300,7 +300,7 @@ namespace System.Web.Mvc
         public System.Web.HttpServerUtilityBase Server { get { throw null; } }
         public System.Web.HttpSessionStateBase Session { get { throw null; } }
         public System.Web.Mvc.ITempDataProvider TempDataProvider { get { throw null; } set { } }
-        public System.Web.Mvc.UrlHelper Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.UrlHelper Url { get { throw null; } set { } }
         public System.Security.Principal.IPrincipal User { get { throw null; } }
         protected internal System.Web.Mvc.ContentResult Content(string content) { throw null; }
         protected internal System.Web.Mvc.ContentResult Content(string content, string contentType) { throw null; }
@@ -421,7 +421,7 @@ namespace System.Web.Mvc
     public abstract partial class ControllerBase : System.Web.Mvc.IController
     {
         protected ControllerBase() { }
-        public System.Web.Mvc.ControllerContext ControllerContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.ControllerContext ControllerContext { get { throw null; } set { } }
         public System.Web.Mvc.TempDataDictionary TempData { get { throw null; } set { } }
         public bool ValidateRequest { get { throw null; } set { } }
         public System.Web.Mvc.IValueProvider ValueProvider { get { throw null; } set { } }
@@ -447,7 +447,7 @@ namespace System.Web.Mvc
         public ControllerContext(System.Web.HttpContextBase httpContext, System.Web.Routing.RouteData routeData, System.Web.Mvc.ControllerBase controller) { }
         protected ControllerContext(System.Web.Mvc.ControllerContext controllerContext) { }
         public ControllerContext(System.Web.Routing.RequestContext requestContext, System.Web.Mvc.ControllerBase controller) { }
-        public virtual System.Web.Mvc.ControllerBase Controller { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.ControllerBase Controller { get { throw null; } set { } }
         public virtual System.Web.HttpContextBase HttpContext { get { throw null; } set { } }
         public virtual bool IsChildAction { get { throw null; } }
         public System.Web.Mvc.ViewContext ParentActionViewContext { get { throw null; } }
@@ -491,7 +491,7 @@ namespace System.Web.Mvc
     public partial class DataAnnotationsModelValidator : System.Web.Mvc.ModelValidator
     {
         public DataAnnotationsModelValidator(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context, System.ComponentModel.DataAnnotations.ValidationAttribute attribute) : base (default(System.Web.Mvc.ModelMetadata), default(System.Web.Mvc.ControllerContext)) { }
-        protected internal System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get { throw null; } }
         protected internal string ErrorMessage { get { throw null; } }
         public override bool IsRequired { get { throw null; } }
         public override System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelClientValidationRule> GetClientValidationRules() { throw null; }
@@ -560,7 +560,7 @@ namespace System.Web.Mvc
         public static readonly System.Web.Mvc.IViewLocationCache Null;
         public DefaultViewLocationCache() { }
         public DefaultViewLocationCache(System.TimeSpan timeSpan) { }
-        public System.TimeSpan TimeSpan { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.TimeSpan TimeSpan { get { throw null; } }
         public string GetViewLocation(System.Web.HttpContextBase httpContext, string key) { throw null; }
         public void InsertViewLocation(System.Web.HttpContextBase httpContext, string key, string virtualPath) { }
     }
@@ -606,8 +606,8 @@ namespace System.Web.Mvc
     {
         public ExceptionContext() { }
         public ExceptionContext(System.Web.Mvc.ControllerContext controllerContext, System.Exception exception) { }
-        public virtual System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Exception Exception { get { throw null; } set { } }
+        public bool ExceptionHandled { get { throw null; } set { } }
         public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     public static partial class ExpressionHelper
@@ -619,26 +619,26 @@ namespace System.Web.Mvc
     {
         public FieldValidationMetadata() { }
         public string FieldName { get { throw null; } set { } }
-        public bool ReplaceValidationMessageContents { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ValidationMessageId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ReplaceValidationMessageContents { get { throw null; } set { } }
+        public string ValidationMessageId { get { throw null; } set { } }
         public System.Collections.Generic.ICollection<System.Web.Mvc.ModelClientValidationRule> ValidationRules { get { throw null; } }
     }
     public partial class FileContentResult : System.Web.Mvc.FileResult
     {
         public FileContentResult(byte[] fileContents, string contentType) : base (default(string)) { }
-        public byte[] FileContents { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public byte[] FileContents { get { throw null; } }
         protected override void WriteFile(System.Web.HttpResponseBase response) { }
     }
     public partial class FilePathResult : System.Web.Mvc.FileResult
     {
         public FilePathResult(string fileName, string contentType) : base (default(string)) { }
-        public string FileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string FileName { get { throw null; } }
         protected override void WriteFile(System.Web.HttpResponseBase response) { }
     }
     public abstract partial class FileResult : System.Web.Mvc.ActionResult
     {
         protected FileResult(string contentType) { }
-        public string ContentType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ContentType { get { throw null; } }
         public string FileDownloadName { get { throw null; } set { } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
         protected abstract void WriteFile(System.Web.HttpResponseBase response);
@@ -646,16 +646,16 @@ namespace System.Web.Mvc
     public partial class FileStreamResult : System.Web.Mvc.FileResult
     {
         public FileStreamResult(System.IO.Stream fileStream, string contentType) : base (default(string)) { }
-        public System.IO.Stream FileStream { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IO.Stream FileStream { get { throw null; } }
         protected override void WriteFile(System.Web.HttpResponseBase response) { }
     }
     public partial class Filter
     {
         public const int DefaultOrder = -1;
         public Filter(object instance, System.Web.Mvc.FilterScope scope, System.Nullable<int> order) { }
-        public object Instance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public int Order { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Web.Mvc.FilterScope Scope { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public object Instance { get { throw null; } protected set { } }
+        public int Order { get { throw null; } protected set { } }
+        public System.Web.Mvc.FilterScope Scope { get { throw null; } protected set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
     public abstract partial class FilterAttribute : System.Attribute, System.Web.Mvc.IMvcFilter
@@ -689,7 +689,7 @@ namespace System.Web.Mvc
     }
     public static partial class FilterProviders
     {
-        public static System.Web.Mvc.FilterProviderCollection Providers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Web.Mvc.FilterProviderCollection Providers { get { throw null; } }
     }
     public enum FilterScope
     {
@@ -712,9 +712,9 @@ namespace System.Web.Mvc
     {
         public FormContext() { }
         public System.Collections.Generic.IDictionary<string, System.Web.Mvc.FieldValidationMetadata> FieldValidators { get { throw null; } }
-        public string FormId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ReplaceValidationSummary { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ValidationSummaryId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string FormId { get { throw null; } set { } }
+        public bool ReplaceValidationSummary { get { throw null; } set { } }
+        public string ValidationSummaryId { get { throw null; } set { } }
         public string GetJsonValidationMetadata() { throw null; }
         public System.Web.Mvc.FieldValidationMetadata GetValidationMetadataForField(string fieldName) { throw null; }
         public System.Web.Mvc.FieldValidationMetadata GetValidationMetadataForField(string fieldName, bool createIfNotFound) { throw null; }
@@ -750,7 +750,7 @@ namespace System.Web.Mvc
     }
     public static partial class GlobalFilters
     {
-        public static System.Web.Mvc.GlobalFilterCollection Filters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Web.Mvc.GlobalFilterCollection Filters { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
     public partial class HandleErrorAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IExceptionFilter
@@ -765,15 +765,15 @@ namespace System.Web.Mvc
     public partial class HandleErrorInfo
     {
         public HandleErrorInfo(System.Exception exception, string controllerName, string actionName) { }
-        public string ActionName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ControllerName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ActionName { get { throw null; } }
+        public string ControllerName { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
     public sealed partial class HiddenInputAttribute : System.Attribute
     {
         public HiddenInputAttribute() { }
-        public bool DisplayValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DisplayValue { get { throw null; } set { } }
     }
     public partial class HtmlHelper
     {
@@ -787,11 +787,11 @@ namespace System.Web.Mvc
         public HtmlHelper(System.Web.Mvc.ViewContext viewContext, System.Web.Mvc.IViewDataContainer viewDataContainer, System.Web.Routing.RouteCollection routeCollection) { }
         public static bool ClientValidationEnabled { get { throw null; } set { } }
         public static string IdAttributeDotReplacement { get { throw null; } set { } }
-        public System.Web.Routing.RouteCollection RouteCollection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Routing.RouteCollection RouteCollection { get { throw null; } }
         public static bool UnobtrusiveJavaScriptEnabled { get { throw null; } set { } }
-        public System.Web.Mvc.ViewContext ViewContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Mvc.ViewContext ViewContext { get { throw null; } }
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } }
-        public System.Web.Mvc.IViewDataContainer ViewDataContainer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Mvc.IViewDataContainer ViewDataContainer { get { throw null; } }
         public static System.Web.Routing.RouteValueDictionary AnonymousObjectToHtmlAttributes(object htmlAttributes) { throw null; }
         public System.Web.Mvc.MvcHtmlString AntiForgeryToken() { throw null; }
         public System.Web.Mvc.MvcHtmlString AntiForgeryToken(string salt) { throw null; }
@@ -875,8 +875,8 @@ namespace System.Web.Mvc
     {
         public HttpStatusCodeResult(int statusCode) { }
         public HttpStatusCodeResult(int statusCode, string statusDescription) { }
-        public int StatusCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string StatusDescription { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int StatusCode { get { throw null; } }
+        public string StatusDescription { get { throw null; } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public partial class HttpUnauthorizedResult : System.Web.Mvc.HttpStatusCodeResult
@@ -1011,7 +1011,7 @@ namespace System.Web.Mvc
     public partial class JavaScriptResult : System.Web.Mvc.ActionResult
     {
         public JavaScriptResult() { }
-        public string Script { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Script { get { throw null; } set { } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public enum JsonRequestBehavior
@@ -1022,10 +1022,10 @@ namespace System.Web.Mvc
     public partial class JsonResult : System.Web.Mvc.ActionResult
     {
         public JsonResult() { }
-        public System.Text.Encoding ContentEncoding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContentType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object Data { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Mvc.JsonRequestBehavior JsonRequestBehavior { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Text.Encoding ContentEncoding { get { throw null; } set { } }
+        public string ContentType { get { throw null; } set { } }
+        public object Data { get { throw null; } set { } }
+        public System.Web.Mvc.JsonRequestBehavior JsonRequestBehavior { get { throw null; } set { } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public sealed partial class JsonValueProviderFactory : System.Web.Mvc.ValueProviderFactory
@@ -1042,7 +1042,7 @@ namespace System.Web.Mvc
     public sealed partial class ModelBinderAttribute : System.Web.Mvc.CustomModelBinderAttribute
     {
         public ModelBinderAttribute(System.Type binderType) { }
-        public System.Type BinderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type BinderType { get { throw null; } }
         public override System.Web.Mvc.IModelBinder GetBinder() { throw null; }
     }
     public partial class ModelBinderDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Type, System.Web.Mvc.IModelBinder>>, System.Collections.Generic.IDictionary<System.Type, System.Web.Mvc.IModelBinder>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Type, System.Web.Mvc.IModelBinder>>, System.Collections.IEnumerable
@@ -1088,15 +1088,15 @@ namespace System.Web.Mvc
     {
         public ModelBindingContext() { }
         public ModelBindingContext(System.Web.Mvc.ModelBindingContext bindingContext) { }
-        public bool FallbackToEmptyPrefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool FallbackToEmptyPrefix { get { throw null; } set { } }
         public object Model { get { throw null; } set { } }
-        public System.Web.Mvc.ModelMetadata ModelMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.ModelMetadata ModelMetadata { get { throw null; } set { } }
         public string ModelName { get { throw null; } set { } }
         public System.Web.Mvc.ModelStateDictionary ModelState { get { throw null; } set { } }
         public System.Type ModelType { get { throw null; } set { } }
         public System.Predicate<string> PropertyFilter { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<string, System.Web.Mvc.ModelMetadata> PropertyMetadata { get { throw null; } }
-        public System.Web.Mvc.IValueProvider ValueProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.IValueProvider ValueProvider { get { throw null; } set { } }
     }
     public partial class ModelClientValidationEqualToRule : System.Web.Mvc.ModelClientValidationRule
     {
@@ -1121,7 +1121,7 @@ namespace System.Web.Mvc
     public partial class ModelClientValidationRule
     {
         public ModelClientValidationRule() { }
-        public string ErrorMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ErrorMessage { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<string, object> ValidationParameters { get { throw null; } }
         public string ValidationType { get { throw null; } set { } }
     }
@@ -1135,8 +1135,8 @@ namespace System.Web.Mvc
         public ModelError(System.Exception exception) { }
         public ModelError(System.Exception exception, string errorMessage) { }
         public ModelError(string errorMessage) { }
-        public string ErrorMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ErrorMessage { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class ModelErrorCollection : System.Collections.ObjectModel.Collection<System.Web.Mvc.ModelError>
@@ -1152,30 +1152,30 @@ namespace System.Web.Mvc
         public virtual System.Collections.Generic.Dictionary<string, object> AdditionalValues { get { throw null; } }
         public System.Type ContainerType { get { throw null; } }
         public virtual bool ConvertEmptyStringToNull { get { throw null; } set { } }
-        public virtual string DataTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Description { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string DisplayFormatString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string DisplayName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string EditFormatString { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool HideSurroundingHtml { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string DataTypeName { get { throw null; } set { } }
+        public virtual string Description { get { throw null; } set { } }
+        public virtual string DisplayFormatString { get { throw null; } set { } }
+        public virtual string DisplayName { get { throw null; } set { } }
+        public virtual string EditFormatString { get { throw null; } set { } }
+        public virtual bool HideSurroundingHtml { get { throw null; } set { } }
         public virtual bool IsComplexType { get { throw null; } }
         public bool IsNullableValueType { get { throw null; } }
-        public virtual bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool IsReadOnly { get { throw null; } set { } }
         public virtual bool IsRequired { get { throw null; } set { } }
         public object Model { get { throw null; } set { } }
         public System.Type ModelType { get { throw null; } }
-        public virtual string NullDisplayText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string NullDisplayText { get { throw null; } set { } }
         public virtual int Order { get { throw null; } set { } }
         public virtual System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelMetadata> Properties { get { throw null; } }
         public string PropertyName { get { throw null; } }
-        protected System.Web.Mvc.ModelMetadataProvider Provider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected System.Web.Mvc.ModelMetadataProvider Provider { get { throw null; } set { } }
         public virtual bool RequestValidationEnabled { get { throw null; } set { } }
-        public virtual string ShortDisplayName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string ShortDisplayName { get { throw null; } set { } }
         public virtual bool ShowForDisplay { get { throw null; } set { } }
         public virtual bool ShowForEdit { get { throw null; } set { } }
         public virtual string SimpleDisplayText { get { throw null; } set { } }
-        public virtual string TemplateHint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Watermark { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string TemplateHint { get { throw null; } set { } }
+        public virtual string Watermark { get { throw null; } set { } }
         public static System.Web.Mvc.ModelMetadata FromLambdaExpression<TParameter, TValue>(System.Linq.Expressions.Expression<System.Func<TParameter, TValue>> expression, System.Web.Mvc.ViewDataDictionary<TParameter> viewData) { throw null; }
         public static System.Web.Mvc.ModelMetadata FromStringExpression(string expression, System.Web.Mvc.ViewDataDictionary viewData) { throw null; }
         public string GetDisplayName() { throw null; }
@@ -1199,7 +1199,7 @@ namespace System.Web.Mvc
     {
         public ModelState() { }
         public System.Web.Mvc.ModelErrorCollection Errors { get { throw null; } }
-        public System.Web.Mvc.ValueProviderResult Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.ValueProviderResult Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class ModelStateDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Web.Mvc.ModelState>>, System.Collections.Generic.IDictionary<string, System.Web.Mvc.ModelState>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Web.Mvc.ModelState>>, System.Collections.IEnumerable
@@ -1238,9 +1238,9 @@ namespace System.Web.Mvc
     public abstract partial class ModelValidator
     {
         protected ModelValidator(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext controllerContext) { }
-        protected internal System.Web.Mvc.ControllerContext ControllerContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.Web.Mvc.ControllerContext ControllerContext { get { throw null; } }
         public virtual bool IsRequired { get { throw null; } }
-        protected internal System.Web.Mvc.ModelMetadata Metadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.Web.Mvc.ModelMetadata Metadata { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelClientValidationRule> GetClientValidationRules() { throw null; }
         public static System.Web.Mvc.ModelValidator GetModelValidator(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context) { throw null; }
         public abstract System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelValidationResult> Validate(object container);
@@ -1268,10 +1268,10 @@ namespace System.Web.Mvc
         public MultiSelectList(System.Collections.IEnumerable items, System.Collections.IEnumerable selectedValues) { }
         public MultiSelectList(System.Collections.IEnumerable items, string dataValueField, string dataTextField) { }
         public MultiSelectList(System.Collections.IEnumerable items, string dataValueField, string dataTextField, System.Collections.IEnumerable selectedValues) { }
-        public string DataTextField { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string DataValueField { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.IEnumerable Items { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.IEnumerable SelectedValues { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string DataTextField { get { throw null; } }
+        public string DataValueField { get { throw null; } }
+        public System.Collections.IEnumerable Items { get { throw null; } }
+        public System.Collections.IEnumerable SelectedValues { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerator<System.Web.Mvc.SelectListItem> GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
@@ -1279,16 +1279,16 @@ namespace System.Web.Mvc
     {
         protected MvcFilter() { }
         protected MvcFilter(bool allowMultiple, int order) { }
-        public bool AllowMultiple { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Order { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool AllowMultiple { get { throw null; } }
+        public int Order { get { throw null; } }
     }
     public partial class MvcHandler : System.Web.IHttpAsyncHandler, System.Web.IHttpHandler, System.Web.SessionState.IRequiresSessionState
     {
         public static readonly string MvcVersionHeaderName;
         public MvcHandler(System.Web.Routing.RequestContext requestContext) { }
-        public static bool DisableMvcResponseHeader { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public static bool DisableMvcResponseHeader { get { throw null; } set { } }
         protected virtual bool IsReusable { get { throw null; } }
-        public System.Web.Routing.RequestContext RequestContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Routing.RequestContext RequestContext { get { throw null; } }
         bool System.Web.IHttpHandler.IsReusable { get { throw null; } }
         protected internal virtual void AddVersionHeader(System.Web.HttpContextBase httpContext) { }
         protected virtual System.IAsyncResult BeginProcessRequest(System.Web.HttpContext httpContext, System.AsyncCallback callback, object state) { throw null; }
@@ -1423,9 +1423,9 @@ namespace System.Web.Mvc
     {
         public RazorView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, string layoutPath, bool runViewStartPages, System.Collections.Generic.IEnumerable<string> viewStartFileExtensions) : base (default(System.Web.Mvc.ControllerContext), default(string)) { }
         public RazorView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, string layoutPath, bool runViewStartPages, System.Collections.Generic.IEnumerable<string> viewStartFileExtensions, System.Web.Mvc.IViewPageActivator viewPageActivator) : base (default(System.Web.Mvc.ControllerContext), default(string)) { }
-        public string LayoutPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool RunViewStartPages { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IEnumerable<string> ViewStartFileExtensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string LayoutPath { get { throw null; } }
+        public bool RunViewStartPages { get { throw null; } }
+        public System.Collections.Generic.IEnumerable<string> ViewStartFileExtensions { get { throw null; } }
         protected override void RenderView(System.Web.Mvc.ViewContext viewContext, System.IO.TextWriter writer, object instance) { }
     }
     public partial class RazorViewEngine : System.Web.Mvc.BuildManagerViewEngine
@@ -1439,8 +1439,8 @@ namespace System.Web.Mvc
     {
         public RedirectResult(string url) { }
         public RedirectResult(string url, bool permanent) { }
-        public bool Permanent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Permanent { get { throw null; } }
+        public string Url { get { throw null; } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public partial class RedirectToRouteResult : System.Web.Mvc.ActionResult
@@ -1448,9 +1448,9 @@ namespace System.Web.Mvc
         public RedirectToRouteResult(string routeName, System.Web.Routing.RouteValueDictionary routeValues) { }
         public RedirectToRouteResult(string routeName, System.Web.Routing.RouteValueDictionary routeValues, bool permanent) { }
         public RedirectToRouteResult(System.Web.Routing.RouteValueDictionary routeValues) { }
-        public bool Permanent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string RouteName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Routing.RouteValueDictionary RouteValues { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool Permanent { get { throw null; } }
+        public string RouteName { get { throw null; } }
+        public System.Web.Routing.RouteValueDictionary RouteValues { get { throw null; } }
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context) { }
     }
     public partial class ReflectedActionDescriptor : System.Web.Mvc.ActionDescriptor
@@ -1458,7 +1458,7 @@ namespace System.Web.Mvc
         public ReflectedActionDescriptor(System.Reflection.MethodInfo methodInfo, string actionName, System.Web.Mvc.ControllerDescriptor controllerDescriptor) { }
         public override string ActionName { get { throw null; } }
         public override System.Web.Mvc.ControllerDescriptor ControllerDescriptor { get { throw null; } }
-        public System.Reflection.MethodInfo MethodInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.MethodInfo MethodInfo { get { throw null; } }
         public override string UniqueId { get { throw null; } }
         public override object Execute(System.Web.Mvc.ControllerContext controllerContext, System.Collections.Generic.IDictionary<string, object> parameters) { throw null; }
         public override object[] GetCustomAttributes(bool inherit) { throw null; }
@@ -1483,7 +1483,7 @@ namespace System.Web.Mvc
         public override System.Web.Mvc.ActionDescriptor ActionDescriptor { get { throw null; } }
         public override System.Web.Mvc.ParameterBindingInfo BindingInfo { get { throw null; } }
         public override object DefaultValue { get { throw null; } }
-        public System.Reflection.ParameterInfo ParameterInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.ParameterInfo ParameterInfo { get { throw null; } }
         public override string ParameterName { get { throw null; } }
         public override System.Type ParameterType { get { throw null; } }
         public override object[] GetCustomAttributes(bool inherit) { throw null; }
@@ -1503,9 +1503,9 @@ namespace System.Web.Mvc
         public RemoteAttribute(string action, string controller) { }
         public RemoteAttribute(string action, string controller, string areaName) { }
         public string AdditionalFields { get { throw null; } set { } }
-        public string HttpMethod { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        protected System.Web.Routing.RouteValueDictionary RouteData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        protected string RouteName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string HttpMethod { get { throw null; } set { } }
+        protected System.Web.Routing.RouteValueDictionary RouteData { get { throw null; } }
+        protected string RouteName { get { throw null; } set { } }
         protected virtual System.Web.Routing.RouteCollection Routes { get { throw null; } }
         public string FormatAdditionalFieldsForClientValidation(string property) { throw null; }
         public override string FormatErrorMessage(string name) { throw null; }
@@ -1530,17 +1530,17 @@ namespace System.Web.Mvc
     {
         public ResultExecutedContext() { }
         public ResultExecutedContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionResult result, bool canceled, System.Exception exception) { }
-        public virtual bool Canceled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Web.Mvc.ActionResult Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool Canceled { get { throw null; } set { } }
+        public virtual System.Exception Exception { get { throw null; } set { } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public virtual System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     public partial class ResultExecutingContext : System.Web.Mvc.ControllerContext
     {
         public ResultExecutingContext() { }
         public ResultExecutingContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionResult result) { }
-        public bool Cancel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Web.Mvc.ActionResult Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Cancel { get { throw null; } set { } }
+        public virtual System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
     public static partial class RouteCollectionExtensions
     {
@@ -1570,20 +1570,20 @@ namespace System.Web.Mvc
         public SelectList(System.Collections.IEnumerable items, object selectedValue) : base (default(System.Collections.IEnumerable)) { }
         public SelectList(System.Collections.IEnumerable items, string dataValueField, string dataTextField) : base (default(System.Collections.IEnumerable)) { }
         public SelectList(System.Collections.IEnumerable items, string dataValueField, string dataTextField, object selectedValue) : base (default(System.Collections.IEnumerable)) { }
-        public object SelectedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object SelectedValue { get { throw null; } }
     }
     public partial class SelectListItem
     {
         public SelectListItem() { }
-        public bool Selected { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Selected { get { throw null; } set { } }
+        public string Text { get { throw null; } set { } }
+        public string Value { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
     public sealed partial class SessionStateAttribute : System.Attribute
     {
         public SessionStateAttribute(System.Web.SessionState.SessionStateBehavior behavior) { }
-        public System.Web.SessionState.SessionStateBehavior Behavior { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.SessionState.SessionStateBehavior Behavior { get { throw null; } }
     }
     public partial class SessionStateTempDataProvider : System.Web.Mvc.ITempDataProvider
     {
@@ -1636,8 +1636,8 @@ namespace System.Web.Mvc
     {
         public UrlHelper(System.Web.Routing.RequestContext requestContext) { }
         public UrlHelper(System.Web.Routing.RequestContext requestContext, System.Web.Routing.RouteCollection routeCollection) { }
-        public System.Web.Routing.RequestContext RequestContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Routing.RouteCollection RouteCollection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Routing.RequestContext RequestContext { get { throw null; } }
+        public System.Web.Routing.RouteCollection RouteCollection { get { throw null; } }
         public string Action(string actionName) { throw null; }
         public string Action(string actionName, object routeValues) { throw null; }
         public string Action(string actionName, string controllerName) { throw null; }
@@ -1682,7 +1682,7 @@ namespace System.Web.Mvc
     public partial class ValidateInputAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public ValidateInputAttribute(bool enableValidation) { }
-        public bool EnableValidation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool EnableValidation { get { throw null; } }
         public virtual void OnAuthorization(System.Web.Mvc.AuthorizationContext filterContext) { }
     }
     public partial class ValueProviderCollection : System.Collections.ObjectModel.Collection<System.Web.Mvc.IValueProvider>, System.Web.Mvc.IUnvalidatedValueProvider, System.Web.Mvc.IValueProvider
@@ -1699,7 +1699,7 @@ namespace System.Web.Mvc
     public partial class ValueProviderDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Web.Mvc.ValueProviderResult>>, System.Collections.Generic.IDictionary<string, System.Web.Mvc.ValueProviderResult>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Web.Mvc.ValueProviderResult>>, System.Collections.IEnumerable, System.Web.Mvc.IValueProvider
     {
         public ValueProviderDictionary(System.Web.Mvc.ControllerContext controllerContext) { }
-        public System.Web.Mvc.ControllerContext ControllerContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Mvc.ControllerContext ControllerContext { get { throw null; } }
         public int Count { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }
         public System.Web.Mvc.ValueProviderResult this[string key] { get { throw null; } set { } }
@@ -1742,9 +1742,9 @@ namespace System.Web.Mvc
     {
         protected ValueProviderResult() { }
         public ValueProviderResult(object rawValue, string attemptedValue, System.Globalization.CultureInfo culture) { }
-        public string AttemptedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public string AttemptedValue { get { throw null; } protected set { } }
         public System.Globalization.CultureInfo Culture { get { throw null; } protected set { } }
-        public object RawValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public object RawValue { get { throw null; } protected set { } }
         public object ConvertTo(System.Type type) { throw null; }
         public virtual object ConvertTo(System.Type type, System.Globalization.CultureInfo culture) { throw null; }
     }
@@ -1754,11 +1754,11 @@ namespace System.Web.Mvc
         public ViewContext(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.IView view, System.Web.Mvc.ViewDataDictionary viewData, System.Web.Mvc.TempDataDictionary tempData, System.IO.TextWriter writer) { }
         public virtual bool ClientValidationEnabled { get { throw null; } set { } }
         public virtual System.Web.Mvc.FormContext FormContext { get { throw null; } set { } }
-        public virtual System.Web.Mvc.TempDataDictionary TempData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.TempDataDictionary TempData { get { throw null; } set { } }
         public virtual bool UnobtrusiveJavaScriptEnabled { get { throw null; } set { } }
-        public virtual System.Web.Mvc.IView View { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Web.Mvc.ViewDataDictionary ViewData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.IO.TextWriter Writer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.Mvc.IView View { get { throw null; } set { } }
+        public virtual System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } set { } }
+        public virtual System.IO.TextWriter Writer { get { throw null; } set { } }
         public void OutputClientValidation() { }
     }
     public partial class ViewDataDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.IEnumerable
@@ -1804,8 +1804,8 @@ namespace System.Web.Mvc
     {
         public ViewDataInfo() { }
         public ViewDataInfo(System.Func<object> valueAccessor) { }
-        public object Container { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ComponentModel.PropertyDescriptor PropertyDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object Container { get { throw null; } set { } }
+        public System.ComponentModel.PropertyDescriptor PropertyDescriptor { get { throw null; } set { } }
         public object Value { get { throw null; } set { } }
     }
     public partial class ViewEngineCollection : System.Collections.ObjectModel.Collection<System.Web.Mvc.IViewEngine>
@@ -1821,9 +1821,9 @@ namespace System.Web.Mvc
     {
         public ViewEngineResult(System.Collections.Generic.IEnumerable<string> searchedLocations) { }
         public ViewEngineResult(System.Web.Mvc.IView view, System.Web.Mvc.IViewEngine viewEngine) { }
-        public System.Collections.Generic.IEnumerable<string> SearchedLocations { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Mvc.IView View { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Mvc.IViewEngine ViewEngine { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IEnumerable<string> SearchedLocations { get { throw null; } }
+        public System.Web.Mvc.IView View { get { throw null; } }
+        public System.Web.Mvc.IViewEngine ViewEngine { get { throw null; } }
     }
     public static partial class ViewEngines
     {
@@ -1853,16 +1853,16 @@ namespace System.Web.Mvc
     public partial class ViewPage : System.Web.UI.Page, System.Web.Mvc.IViewDataContainer
     {
         public ViewPage() { }
-        public System.Web.Mvc.AjaxHelper<object> Ajax { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Mvc.HtmlHelper<object> Html { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.AjaxHelper<object> Ajax { get { throw null; } set { } }
+        public System.Web.Mvc.HtmlHelper<object> Html { get { throw null; } set { } }
         public string MasterLocation { get { throw null; } set { } }
         public object Model { get { throw null; } }
         public System.Web.Mvc.TempDataDictionary TempData { get { throw null; } }
-        public System.Web.Mvc.UrlHelper Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.UrlHelper Url { get { throw null; } set { } }
         public dynamic ViewBag { get { throw null; } }
-        public System.Web.Mvc.ViewContext ViewContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.ViewContext ViewContext { get { throw null; } set { } }
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } set { } }
-        public System.Web.UI.HtmlTextWriter Writer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.HtmlTextWriter Writer { get { throw null; } }
         public virtual void InitHelpers() { }
         protected override void OnPreInit(System.EventArgs e) { }
         public override void ProcessRequest(System.Web.HttpContext context) { }
@@ -1875,8 +1875,8 @@ namespace System.Web.Mvc
     public partial class ViewPage<TModel> : System.Web.Mvc.ViewPage
     {
         public ViewPage() { }
-        public new System.Web.Mvc.AjaxHelper<TModel> Ajax { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public new System.Web.Mvc.HtmlHelper<TModel> Html { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public new System.Web.Mvc.AjaxHelper<TModel> Ajax { get { throw null; } set { } }
+        public new System.Web.Mvc.HtmlHelper<TModel> Html { get { throw null; } set { } }
         public new TModel Model { get { throw null; } }
         public new System.Web.Mvc.ViewDataDictionary<TModel> ViewData { get { throw null; } set { } }
         public override void InitHelpers() { }
@@ -1893,7 +1893,7 @@ namespace System.Web.Mvc
         protected ViewResultBase() { }
         public object Model { get { throw null; } }
         public System.Web.Mvc.TempDataDictionary TempData { get { throw null; } set { } }
-        public System.Web.Mvc.IView View { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.IView View { get { throw null; } set { } }
         public dynamic ViewBag { get { throw null; } }
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } set { } }
         public System.Web.Mvc.ViewEngineCollection ViewEngineCollection { get { throw null; } set { } }
@@ -1960,14 +1960,14 @@ namespace System.Web.Mvc
     public abstract partial class VirtualPathProviderViewEngine : System.Web.Mvc.IViewEngine
     {
         protected VirtualPathProviderViewEngine() { }
-        public string[] AreaMasterLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] AreaPartialViewLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] AreaViewLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] FileExtensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] MasterLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] PartialViewLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Mvc.IViewLocationCache ViewLocationCache { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string[] ViewLocationFormats { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string[] AreaMasterLocationFormats { get { throw null; } set { } }
+        public string[] AreaPartialViewLocationFormats { get { throw null; } set { } }
+        public string[] AreaViewLocationFormats { get { throw null; } set { } }
+        public string[] FileExtensions { get { throw null; } set { } }
+        public string[] MasterLocationFormats { get { throw null; } set { } }
+        public string[] PartialViewLocationFormats { get { throw null; } set { } }
+        public System.Web.Mvc.IViewLocationCache ViewLocationCache { get { throw null; } set { } }
+        public string[] ViewLocationFormats { get { throw null; } set { } }
         protected System.Web.Hosting.VirtualPathProvider VirtualPathProvider { get { throw null; } set { } }
         protected abstract System.Web.Mvc.IView CreatePartialView(System.Web.Mvc.ControllerContext controllerContext, string partialPath);
         protected abstract System.Web.Mvc.IView CreateView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, string masterPath);
@@ -1981,7 +1981,7 @@ namespace System.Web.Mvc
         public WebFormView(System.Web.Mvc.ControllerContext controllerContext, string viewPath) : base (default(System.Web.Mvc.ControllerContext), default(string)) { }
         public WebFormView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, string masterPath) : base (default(System.Web.Mvc.ControllerContext), default(string)) { }
         public WebFormView(System.Web.Mvc.ControllerContext controllerContext, string viewPath, string masterPath, System.Web.Mvc.IViewPageActivator viewPageActivator) : base (default(System.Web.Mvc.ControllerContext), default(string)) { }
-        public string MasterPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string MasterPath { get { throw null; } }
         protected override void RenderView(System.Web.Mvc.ViewContext viewContext, System.IO.TextWriter writer, object instance) { }
     }
     public partial class WebFormViewEngine : System.Web.Mvc.BuildManagerViewEngine
@@ -1994,14 +1994,14 @@ namespace System.Web.Mvc
     public abstract partial class WebViewPage : System.Web.WebPages.WebPageBase, System.Web.Mvc.IViewDataContainer
     {
         protected WebViewPage() { }
-        public System.Web.Mvc.AjaxHelper<object> Ajax { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.AjaxHelper<object> Ajax { get { throw null; } set { } }
         public override System.Web.HttpContextBase Context { get { throw null; } set { } }
-        public System.Web.Mvc.HtmlHelper<object> Html { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.HtmlHelper<object> Html { get { throw null; } set { } }
         public object Model { get { throw null; } }
         public System.Web.Mvc.TempDataDictionary TempData { get { throw null; } }
-        public System.Web.Mvc.UrlHelper Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.UrlHelper Url { get { throw null; } set { } }
         public dynamic ViewBag { get { throw null; } }
-        public System.Web.Mvc.ViewContext ViewContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Mvc.ViewContext ViewContext { get { throw null; } set { } }
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } set { } }
         protected override void ConfigurePage(System.Web.WebPages.WebPageBase parentPage) { }
         public override void ExecutePageHierarchy() { }
@@ -2011,8 +2011,8 @@ namespace System.Web.Mvc
     public abstract partial class WebViewPage<TModel> : System.Web.Mvc.WebViewPage
     {
         protected WebViewPage() { }
-        public new System.Web.Mvc.AjaxHelper<TModel> Ajax { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public new System.Web.Mvc.HtmlHelper<TModel> Html { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public new System.Web.Mvc.AjaxHelper<TModel> Ajax { get { throw null; } set { } }
+        public new System.Web.Mvc.HtmlHelper<TModel> Html { get { throw null; } set { } }
         public new TModel Model { get { throw null; } }
         public new System.Web.Mvc.ViewDataDictionary<TModel> ViewData { get { throw null; } set { } }
         public override void InitHelpers() { }
@@ -2072,7 +2072,7 @@ namespace System.Web.Mvc.Ajax
         public string Confirm { get { throw null; } set { } }
         public string HttpMethod { get { throw null; } set { } }
         public System.Web.Mvc.Ajax.InsertionMode InsertionMode { get { throw null; } set { } }
-        public int LoadingElementDuration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int LoadingElementDuration { get { throw null; } set { } }
         public string LoadingElementId { get { throw null; } set { } }
         public string OnBegin { get { throw null; } set { } }
         public string OnComplete { get { throw null; } set { } }
@@ -2113,8 +2113,8 @@ namespace System.Web.Mvc.Async
     {
         public AsyncManager() { }
         public AsyncManager(System.Threading.SynchronizationContext syncContext) { }
-        public System.Web.Mvc.Async.OperationCounter OutstandingOperations { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<string, object> Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Mvc.Async.OperationCounter OutstandingOperations { get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, object> Parameters { get { throw null; } }
         public int Timeout { get { throw null; } set { } }
         public event System.EventHandler Finished { add { } remove { } }
         public virtual void Finish() { }
@@ -2148,8 +2148,8 @@ namespace System.Web.Mvc.Async
     {
         public ReflectedAsyncActionDescriptor(System.Reflection.MethodInfo asyncMethodInfo, System.Reflection.MethodInfo completedMethodInfo, string actionName, System.Web.Mvc.ControllerDescriptor controllerDescriptor) { }
         public override string ActionName { get { throw null; } }
-        public System.Reflection.MethodInfo AsyncMethodInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Reflection.MethodInfo CompletedMethodInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Reflection.MethodInfo AsyncMethodInfo { get { throw null; } }
+        public System.Reflection.MethodInfo CompletedMethodInfo { get { throw null; } }
         public override System.Web.Mvc.ControllerDescriptor ControllerDescriptor { get { throw null; } }
         public override string UniqueId { get { throw null; } }
         public override System.IAsyncResult BeginExecute(System.Web.Mvc.ControllerContext controllerContext, System.Collections.Generic.IDictionary<string, object> parameters, System.AsyncCallback callback, object state) { throw null; }

@@ -519,7 +519,7 @@ mono_get_exception_argument_out_of_range (const char *arg)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_arithmetic ()
+mono_get_exception_arithmetic (void)
 
 </div>
             <p />
@@ -540,7 +540,7 @@ mono_get_exception_arithmetic ()
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_array_type_mismatch ()
+mono_get_exception_array_type_mismatch (void)
 
 </div>
             <p />
@@ -629,7 +629,7 @@ mono_get_exception_class (void)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_divide_by_zero ()
+mono_get_exception_divide_by_zero (void)
 
 </div>
             <p />
@@ -824,7 +824,7 @@ mono_get_exception_not_implemented (const char *msg)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_null_reference ()
+mono_get_exception_null_reference (void)
 
 </div>
             <p />
@@ -845,7 +845,7 @@ mono_get_exception_null_reference ()
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoException*
-mono_get_exception_overflow ()
+mono_get_exception_overflow (void)
 
 </div>
             <p />
@@ -972,7 +972,8 @@ mono_get_exception_thread_abort ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">MonoException*
+            <div class="mapi-prototype">MONO_RT_EXTERNAL_ONLY
+MonoException *
 mono_get_exception_thread_state (const char *msg)
 
 </div>

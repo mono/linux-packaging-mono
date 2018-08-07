@@ -31,6 +31,7 @@
 #include <mono/metadata/attrdefs.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/monobitset.h>
+#include <mono/utils/mono-error-internals.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -354,20 +355,6 @@ init_verifier_stats (void)
 
 
 //////////////////////////////////////////////////////////////////
-
-
-/*Token validation macros and functions */
-#define IS_MEMBER_REF(token) (mono_metadata_token_table (token) == MONO_TABLE_MEMBERREF)
-#define IS_METHOD_DEF(token) (mono_metadata_token_table (token) == MONO_TABLE_METHOD)
-#define IS_METHOD_SPEC(token) (mono_metadata_token_table (token) == MONO_TABLE_METHODSPEC)
-#define IS_FIELD_DEF(token) (mono_metadata_token_table (token) == MONO_TABLE_FIELD)
-
-#define IS_TYPE_REF(token) (mono_metadata_token_table (token) == MONO_TABLE_TYPEREF)
-#define IS_TYPE_DEF(token) (mono_metadata_token_table (token) == MONO_TABLE_TYPEDEF)
-#define IS_TYPE_SPEC(token) (mono_metadata_token_table (token) == MONO_TABLE_TYPESPEC)
-#define IS_METHOD_DEF_OR_REF_OR_SPEC(token) (IS_METHOD_DEF (token) || IS_MEMBER_REF (token) || IS_METHOD_SPEC (token))
-#define IS_TYPE_DEF_OR_REF_OR_SPEC(token) (IS_TYPE_DEF (token) || IS_TYPE_REF (token) || IS_TYPE_SPEC (token))
-#define IS_FIELD_DEF_OR_REF(token) (IS_FIELD_DEF (token) || IS_MEMBER_REF (token))
 
 /*
  * Verify if @token refers to a valid row on int's table.
@@ -2854,7 +2841,7 @@ push_arg (VerifyContext *ctx, unsigned int arg, int take_addr)
 		else {
 			CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Method doesn't have argument %d", arg + 1));
 			if (check_overflow (ctx)) //FIXME: what sane value could we ever push?
-				stack_push_val (ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+				stack_push_val (ctx, TYPE_I4, mono_get_int32_type ());
 		}
 	} else if (check_overflow (ctx)) {
 		/*We must let the value be pushed, otherwise we would get an underflow error*/
@@ -3142,7 +3129,7 @@ do_cmp_op (VerifyContext *ctx, const unsigned char table [TYPE_MAX][TYPE_MAX], g
 	if (opcode == CEE_CGT_UN) {
 		if ((stack_slot_is_reference_value (a) && stack_slot_is_null_literal (b)) ||
 			(stack_slot_is_reference_value (b) && stack_slot_is_null_literal (a))) {
-			stack_push_val (ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+			stack_push_val (ctx, TYPE_I4, mono_get_int32_type ());
 			return;
 		}
 	}
@@ -3173,7 +3160,7 @@ do_cmp_op (VerifyContext *ctx, const unsigned char table [TYPE_MAX][TYPE_MAX], g
 		CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Compare instruction is not verifiable (%s x %s) at 0x%04x", stack_slot_get_name (a), stack_slot_get_name (b), ctx->ip_offset)); 
  		res = res & ~NON_VERIFIABLE_RESULT;
  	}
- 	stack_push_val (ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+ 	stack_push_val (ctx, TYPE_I4, mono_get_int32_type ());
 }
 
 static void
@@ -3687,7 +3674,7 @@ do_conversion (VerifyContext *ctx, int kind)
 
 	switch (kind) {
 	case TYPE_I4:
-		stack_push_val (ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+		stack_push_val (ctx, TYPE_I4, mono_get_int32_type ());
 		break;
 	case TYPE_I8:
 		stack_push_val (ctx,TYPE_I8, m_class_get_byval_arg (mono_defaults.int64_class));
@@ -3696,7 +3683,7 @@ do_conversion (VerifyContext *ctx, int kind)
 		stack_push_val (ctx, TYPE_R8, m_class_get_byval_arg (mono_defaults.double_class));
 		break;
 	case TYPE_NATIVE_INT:
-		stack_push_val (ctx, TYPE_NATIVE_INT, m_class_get_byval_arg (mono_defaults.int_class));
+		stack_push_val (ctx, TYPE_NATIVE_INT, mono_get_int_type ());
 		break;
 	default:
 		g_error ("unknown type %02x in conversion", kind);
@@ -4033,7 +4020,7 @@ mono_type_from_opcode (int opcode) {
 	case CEE_LDELEM_I4:
 	case CEE_LDELEM_U4:
 	case CEE_STELEM_I4:
-		return m_class_get_byval_arg (mono_defaults.int32_class);
+		return mono_get_int32_type ();
 
 	case CEE_LDIND_I8:
 	case CEE_STIND_I8:
@@ -4057,13 +4044,13 @@ mono_type_from_opcode (int opcode) {
 	case CEE_STIND_I:
 	case CEE_LDELEM_I:
 	case CEE_STELEM_I:
-		return m_class_get_byval_arg (mono_defaults.int_class);
+		return mono_get_int_type ();
 
 	case CEE_LDIND_REF:
 	case CEE_STIND_REF:
 	case CEE_LDELEM_REF:
 	case CEE_STELEM_REF:
-		return m_class_get_byval_arg (mono_defaults.object_class);
+		return mono_get_object_type ();
 
 	default:
 		g_error ("unknown opcode %02x in mono_type_from_opcode ", opcode);
@@ -4162,7 +4149,7 @@ do_ldlen (VerifyContext *ctx)
 	if (stack_slot_get_type (value) != TYPE_COMPLEX || value->type->type != MONO_TYPE_SZARRAY)
 		CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Invalid array type for ldlen at 0x%04x", ctx->ip_offset));
 
-	stack_push_val (ctx, TYPE_NATIVE_INT, m_class_get_byval_arg (mono_defaults.int_class));	
+	stack_push_val (ctx, TYPE_NATIVE_INT, mono_get_int_type ());
 }
 
 /*FIXME handle arrays that are not 0-indexed*/
@@ -4532,24 +4519,23 @@ do_localloc (VerifyContext *ctx)
 	/*TODO verify top type*/
 	/* top = */ stack_pop (ctx);
 
-	set_stack_value (ctx, stack_push (ctx), m_class_get_byval_arg (mono_defaults.int_class), FALSE);
+	set_stack_value (ctx, stack_push (ctx), mono_get_int_type (), FALSE);
 	CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Instruction localloc in never verifiable at 0x%04x", ctx->ip_offset));
 }
 
 static void
 do_ldstr (VerifyContext *ctx, guint32 token)
 {
-	GSList *error = NULL;
+	ERROR_DECL (error);
 	if (ctx->method->wrapper_type == MONO_WRAPPER_NONE && !image_is_dynamic (ctx->image)) {
 		if (mono_metadata_token_code (token) != MONO_TOKEN_STRING) {
 			ADD_VERIFY_ERROR2 (ctx, g_strdup_printf ("Invalid string token %x at 0x%04x", token, ctx->ip_offset), MONO_EXCEPTION_BAD_IMAGE);
 			return;
 		}
 
-		if (!mono_verifier_verify_string_signature (ctx->image, mono_metadata_token_index (token), &error)) {
-			if (error)
-				ctx->list = g_slist_concat (ctx->list, error);
-			ADD_VERIFY_ERROR2 (ctx, g_strdup_printf ("Invalid string index %x at 0x%04x", token, ctx->ip_offset), MONO_EXCEPTION_BAD_IMAGE);
+		if (!mono_verifier_verify_string_signature (ctx->image, mono_metadata_token_index (token), error)) {
+			ADD_VERIFY_ERROR2 (ctx, g_strdup_printf ("Invalid string index %x at 0x%04x due to: %", token, ctx->ip_offset, mono_error_get_message (error)), MONO_EXCEPTION_BAD_IMAGE);
+			mono_error_cleanup (error);
 			return;
 		}
 	}
@@ -5144,7 +5130,7 @@ mono_method_verify (MonoMethod *method, int level)
 		ip_offset = (guint) (ip - code_start);
 		{
 			const unsigned char *ip_copy = ip;
-			int op;
+			MonoOpcodeEnum op;
 
 			if (ip_offset > bb->end) {
 				ADD_VERIFY_ERROR (&ctx, g_strdup_printf ("Branch or EH block at [0x%04x] targets middle instruction at 0x%04x", bb->end, ip_offset));
@@ -5368,21 +5354,21 @@ mono_method_verify (MonoMethod *method, int level)
 		case CEE_LDC_I4_7:
 		case CEE_LDC_I4_8:
 			if (check_overflow (&ctx))
-				stack_push_val (&ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+				stack_push_val (&ctx, TYPE_I4, mono_get_int32_type ());
 			++ip;
 			break;
 
 		case CEE_LDC_I4_S:
 			code_bounds_check (2);
 			if (check_overflow (&ctx))
-				stack_push_val (&ctx, TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+				stack_push_val (&ctx, TYPE_I4, mono_get_int32_type ());
 			ip += 2;
 			break;
 
 		case CEE_LDC_I4:
 			code_bounds_check (5);
 			if (check_overflow (&ctx))
-				stack_push_val (&ctx,TYPE_I4, m_class_get_byval_arg (mono_defaults.int32_class));
+				stack_push_val (&ctx,TYPE_I4, mono_get_int32_type ());
 			ip += 5;
 			break;
 
@@ -5409,7 +5395,7 @@ mono_method_verify (MonoMethod *method, int level)
 
 		case CEE_LDNULL:
 			if (check_overflow (&ctx))
-				stack_push_val (&ctx, TYPE_COMPLEX | NULL_LITERAL_MASK, m_class_get_byval_arg (mono_defaults.object_class));
+				stack_push_val (&ctx, TYPE_COMPLEX | NULL_LITERAL_MASK, mono_get_object_type ());
 			++ip;
 			break;
 

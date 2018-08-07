@@ -16,6 +16,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 
 namespace System
 {
@@ -25,7 +26,9 @@ namespace System
     // three fields from an ArraySegment may not see the same ArraySegment from one call to another
     // (ie, users could assign a new value to the old location).  
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public readonly struct ArraySegment<T> : IList<T>, IReadOnlyList<T>
     {
         // Do not replace the array allocation with Array.Empty. We don't want to have the overhead of
@@ -192,7 +195,7 @@ namespace System
             return !(a == b);
         }
 
-        public static implicit operator ArraySegment<T>(T[] array) => new ArraySegment<T>(array);
+        public static implicit operator ArraySegment<T>(T[] array) => array != null ? new ArraySegment<T>(array) : default;
 
         #region IList<T>
         T IList<T>.this[int index]

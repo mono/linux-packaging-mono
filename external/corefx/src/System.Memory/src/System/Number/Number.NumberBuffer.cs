@@ -6,13 +6,17 @@ using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 
-#if !netstandard
+#if !netstandard && !MONO
 using Internal.Runtime.CompilerServices;
 #else
 using System.Runtime.CompilerServices;
 #endif
 
+#if MONO
+namespace System.Buffers.Text
+#else
 namespace System
+#endif
 {
     //
     // This is a port of the Number/NumberBuffer structure from CoreRT (which in turn was a C#-ized port of the NUMBER struct inside CoreCLR.)

@@ -13,6 +13,9 @@
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = false)]
     public sealed class CLSCompliantAttribute : Attribute
     {

@@ -179,7 +179,7 @@ namespace Microsoft.Build.BuildEngine
         public Microsoft.Build.BuildEngine.BuildPropertyGroup GlobalProperties { get { throw null; } set { } }
         public bool IsBuilding { get { throw null; } }
         public bool OnlyLogCriticalEvents { get { throw null; } set { } }
-        public Microsoft.Build.BuildEngine.ToolsetCollection Toolsets { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Microsoft.Build.BuildEngine.ToolsetCollection Toolsets { get { throw null; } }
         public static System.Version Version { get { throw null; } }
         [System.MonoTODOAttribute]
         public bool BuildProject(Microsoft.Build.BuildEngine.Project project) { throw null; }
@@ -295,7 +295,7 @@ namespace Microsoft.Build.BuildEngine
         public string SchemaFile { get { throw null; } set { } }
         public Microsoft.Build.BuildEngine.TargetCollection Targets { get { throw null; } }
         public System.DateTime TimeOfLastDirty { get { throw null; } }
-        public string ToolsVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ToolsVersion { get { throw null; } }
         public Microsoft.Build.BuildEngine.UsingTaskCollection UsingTasks { get { throw null; } }
         [System.MonoTODOAttribute]
         public string Xml { get { throw null; } }
@@ -411,9 +411,9 @@ namespace Microsoft.Build.BuildEngine
     {
         public Toolset(string toolsVersion, string toolsPath) { }
         public Toolset(string toolsVersion, string toolsPath, Microsoft.Build.BuildEngine.BuildPropertyGroup buildProperties) { }
-        public Microsoft.Build.BuildEngine.BuildPropertyGroup BuildProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ToolsPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ToolsVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Microsoft.Build.BuildEngine.BuildPropertyGroup BuildProperties { get { throw null; } }
+        public string ToolsPath { get { throw null; } }
+        public string ToolsVersion { get { throw null; } }
     }
     public partial class ToolsetCollection : System.Collections.Generic.ICollection<Microsoft.Build.BuildEngine.Toolset>, System.Collections.Generic.IEnumerable<Microsoft.Build.BuildEngine.Toolset>, System.Collections.IEnumerable
     {

@@ -510,8 +510,8 @@ namespace System.CodeDom
         public CodeArrayCreateExpression(System.Type createType, int size) { }
         public System.CodeDom.CodeTypeReference CreateType { get { throw null; } set { } }
         public System.CodeDom.CodeExpressionCollection Initializers { get { throw null; } }
-        public int Size { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeExpression SizeExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Size { get { throw null; } set { } }
+        public System.CodeDom.CodeExpression SizeExpression { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeArrayIndexerExpression : System.CodeDom.CodeExpression
@@ -519,15 +519,15 @@ namespace System.CodeDom
         public CodeArrayIndexerExpression() { }
         public CodeArrayIndexerExpression(System.CodeDom.CodeExpression targetObject, params System.CodeDom.CodeExpression[] indices) { }
         public System.CodeDom.CodeExpressionCollection Indices { get { throw null; } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeAssignStatement : System.CodeDom.CodeStatement
     {
         public CodeAssignStatement() { }
         public CodeAssignStatement(System.CodeDom.CodeExpression left, System.CodeDom.CodeExpression right) { }
-        public System.CodeDom.CodeExpression Left { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeExpression Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Left { get { throw null; } set { } }
+        public System.CodeDom.CodeExpression Right { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeAttachEventStatement : System.CodeDom.CodeStatement
@@ -536,7 +536,7 @@ namespace System.CodeDom
         public CodeAttachEventStatement(System.CodeDom.CodeEventReferenceExpression eventRef, System.CodeDom.CodeExpression listener) { }
         public CodeAttachEventStatement(System.CodeDom.CodeExpression targetObject, string eventName, System.CodeDom.CodeExpression listener) { }
         public System.CodeDom.CodeEventReferenceExpression Event { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression Listener { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Listener { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeAttributeArgument
@@ -545,7 +545,7 @@ namespace System.CodeDom
         public CodeAttributeArgument(System.CodeDom.CodeExpression value) { }
         public CodeAttributeArgument(string name, System.CodeDom.CodeExpression value) { }
         public string Name { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeAttributeArgumentCollection : System.Collections.CollectionBase
@@ -601,9 +601,9 @@ namespace System.CodeDom
     {
         public CodeBinaryOperatorExpression() { }
         public CodeBinaryOperatorExpression(System.CodeDom.CodeExpression left, System.CodeDom.CodeBinaryOperatorType op, System.CodeDom.CodeExpression right) { }
-        public System.CodeDom.CodeExpression Left { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeBinaryOperatorType Operator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeExpression Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Left { get { throw null; } set { } }
+        public System.CodeDom.CodeBinaryOperatorType Operator { get { throw null; } set { } }
+        public System.CodeDom.CodeExpression Right { get { throw null; } set { } }
     }
     public enum CodeBinaryOperatorType
     {
@@ -632,7 +632,7 @@ namespace System.CodeDom
         public CodeCastExpression(System.CodeDom.CodeTypeReference targetType, System.CodeDom.CodeExpression expression) { }
         public CodeCastExpression(string targetType, System.CodeDom.CodeExpression expression) { }
         public CodeCastExpression(System.Type targetType, System.CodeDom.CodeExpression expression) { }
-        public System.CodeDom.CodeExpression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Expression { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference TargetType { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -667,8 +667,8 @@ namespace System.CodeDom
     {
         public CodeChecksumPragma() { }
         public CodeChecksumPragma(string fileName, System.Guid checksumAlgorithmId, byte[] checksumData) { }
-        public System.Guid ChecksumAlgorithmId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public byte[] ChecksumData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Guid ChecksumAlgorithmId { get { throw null; } set { } }
+        public byte[] ChecksumData { get { throw null; } set { } }
         public string FileName { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -677,7 +677,7 @@ namespace System.CodeDom
         public CodeComment() { }
         public CodeComment(string text) { }
         public CodeComment(string text, bool docComment) { }
-        public bool DocComment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DocComment { get { throw null; } set { } }
         public string Text { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -687,7 +687,7 @@ namespace System.CodeDom
         public CodeCommentStatement(System.CodeDom.CodeComment comment) { }
         public CodeCommentStatement(string text) { }
         public CodeCommentStatement(string text, bool docComment) { }
-        public System.CodeDom.CodeComment Comment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeComment Comment { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeCommentStatementCollection : System.Collections.CollectionBase
@@ -711,7 +711,7 @@ namespace System.CodeDom
         public CodeCompileUnit() { }
         public System.CodeDom.CodeAttributeDeclarationCollection AssemblyCustomAttributes { get { throw null; } }
         public System.CodeDom.CodeDirectiveCollection EndDirectives { get { throw null; } }
-        public System.CodeDom.CodeNamespaceCollection Namespaces { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeNamespaceCollection Namespaces { get { throw null; } }
         public System.Collections.Specialized.StringCollection ReferencedAssemblies { get { throw null; } }
         public System.CodeDom.CodeDirectiveCollection StartDirectives { get { throw null; } }
     }
@@ -721,16 +721,16 @@ namespace System.CodeDom
         public CodeConditionStatement() { }
         public CodeConditionStatement(System.CodeDom.CodeExpression condition, params System.CodeDom.CodeStatement[] trueStatements) { }
         public CodeConditionStatement(System.CodeDom.CodeExpression condition, System.CodeDom.CodeStatement[] trueStatements, System.CodeDom.CodeStatement[] falseStatements) { }
-        public System.CodeDom.CodeExpression Condition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeStatementCollection FalseStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeStatementCollection TrueStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeExpression Condition { get { throw null; } set { } }
+        public System.CodeDom.CodeStatementCollection FalseStatements { get { throw null; } }
+        public System.CodeDom.CodeStatementCollection TrueStatements { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class CodeConstructor : System.CodeDom.CodeMemberMethod
     {
         public CodeConstructor() { }
-        public System.CodeDom.CodeExpressionCollection BaseConstructorArgs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeExpressionCollection ChainedConstructorArgs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeExpressionCollection BaseConstructorArgs { get { throw null; } }
+        public System.CodeDom.CodeExpressionCollection ChainedConstructorArgs { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class CodeDefaultValueExpression : System.CodeDom.CodeExpression
@@ -746,7 +746,7 @@ namespace System.CodeDom
         public CodeDelegateCreateExpression(System.CodeDom.CodeTypeReference delegateType, System.CodeDom.CodeExpression targetObject, string methodName) { }
         public System.CodeDom.CodeTypeReference DelegateType { get { throw null; } set { } }
         public string MethodName { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeDelegateInvokeExpression : System.CodeDom.CodeExpression
@@ -754,16 +754,16 @@ namespace System.CodeDom
         public CodeDelegateInvokeExpression() { }
         public CodeDelegateInvokeExpression(System.CodeDom.CodeExpression targetObject) { }
         public CodeDelegateInvokeExpression(System.CodeDom.CodeExpression targetObject, params System.CodeDom.CodeExpression[] parameters) { }
-        public System.CodeDom.CodeExpressionCollection Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpressionCollection Parameters { get { throw null; } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeDirectionExpression : System.CodeDom.CodeExpression
     {
         public CodeDirectionExpression() { }
         public CodeDirectionExpression(System.CodeDom.FieldDirection direction, System.CodeDom.CodeExpression expression) { }
-        public System.CodeDom.FieldDirection Direction { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeExpression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.FieldDirection Direction { get { throw null; } set { } }
+        public System.CodeDom.CodeExpression Expression { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeDirective : System.CodeDom.CodeObject
@@ -797,7 +797,7 @@ namespace System.CodeDom
         public CodeEventReferenceExpression() { }
         public CodeEventReferenceExpression(System.CodeDom.CodeExpression targetObject, string eventName) { }
         public string EventName { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeExpression : System.CodeDom.CodeObject
@@ -825,7 +825,7 @@ namespace System.CodeDom
     {
         public CodeExpressionStatement() { }
         public CodeExpressionStatement(System.CodeDom.CodeExpression expression) { }
-        public System.CodeDom.CodeExpression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Expression { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeFieldReferenceExpression : System.CodeDom.CodeExpression
@@ -833,7 +833,7 @@ namespace System.CodeDom
         public CodeFieldReferenceExpression() { }
         public CodeFieldReferenceExpression(System.CodeDom.CodeExpression targetObject, string fieldName) { }
         public string FieldName { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeGotoStatement : System.CodeDom.CodeStatement
@@ -848,17 +848,17 @@ namespace System.CodeDom
         public CodeIndexerExpression() { }
         public CodeIndexerExpression(System.CodeDom.CodeExpression targetObject, params System.CodeDom.CodeExpression[] indices) { }
         public System.CodeDom.CodeExpressionCollection Indices { get { throw null; } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeIterationStatement : System.CodeDom.CodeStatement
     {
         public CodeIterationStatement() { }
         public CodeIterationStatement(System.CodeDom.CodeStatement initStatement, System.CodeDom.CodeExpression testExpression, System.CodeDom.CodeStatement incrementStatement, params System.CodeDom.CodeStatement[] statements) { }
-        public System.CodeDom.CodeStatement IncrementStatement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeStatement InitStatement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeStatementCollection Statements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeExpression TestExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeStatement IncrementStatement { get { throw null; } set { } }
+        public System.CodeDom.CodeStatement InitStatement { get { throw null; } set { } }
+        public System.CodeDom.CodeStatementCollection Statements { get { throw null; } }
+        public System.CodeDom.CodeExpression TestExpression { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeLabeledStatement : System.CodeDom.CodeStatement
@@ -867,7 +867,7 @@ namespace System.CodeDom
         public CodeLabeledStatement(string label) { }
         public CodeLabeledStatement(string label, System.CodeDom.CodeStatement statement) { }
         public string Label { get { throw null; } set { } }
-        public System.CodeDom.CodeStatement Statement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeStatement Statement { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeLinePragma
@@ -875,14 +875,14 @@ namespace System.CodeDom
         public CodeLinePragma() { }
         public CodeLinePragma(string fileName, int lineNumber) { }
         public string FileName { get { throw null; } set { } }
-        public int LineNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int LineNumber { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeMemberEvent : System.CodeDom.CodeTypeMember
     {
         public CodeMemberEvent() { }
         public System.CodeDom.CodeTypeReferenceCollection ImplementationTypes { get { throw null; } }
-        public System.CodeDom.CodeTypeReference PrivateImplementationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeTypeReference PrivateImplementationType { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -892,7 +892,7 @@ namespace System.CodeDom
         public CodeMemberField(System.CodeDom.CodeTypeReference type, string name) { }
         public CodeMemberField(string type, string name) { }
         public CodeMemberField(System.Type type, string name) { }
-        public System.CodeDom.CodeExpression InitExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression InitExpression { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -901,7 +901,7 @@ namespace System.CodeDom
         public CodeMemberMethod() { }
         public System.CodeDom.CodeTypeReferenceCollection ImplementationTypes { get { throw null; } }
         public System.CodeDom.CodeParameterDeclarationExpressionCollection Parameters { get { throw null; } }
-        public System.CodeDom.CodeTypeReference PrivateImplementationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeTypeReference PrivateImplementationType { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference ReturnType { get { throw null; } set { } }
         public System.CodeDom.CodeAttributeDeclarationCollection ReturnTypeCustomAttributes { get { throw null; } }
         public System.CodeDom.CodeStatementCollection Statements { get { throw null; } }
@@ -914,13 +914,13 @@ namespace System.CodeDom
     public partial class CodeMemberProperty : System.CodeDom.CodeTypeMember
     {
         public CodeMemberProperty() { }
-        public System.CodeDom.CodeStatementCollection GetStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeStatementCollection GetStatements { get { throw null; } }
         public bool HasGet { get { throw null; } set { } }
         public bool HasSet { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReferenceCollection ImplementationTypes { get { throw null; } }
-        public System.CodeDom.CodeParameterDeclarationExpressionCollection Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeTypeReference PrivateImplementationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeStatementCollection SetStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeParameterDeclarationExpressionCollection Parameters { get { throw null; } }
+        public System.CodeDom.CodeTypeReference PrivateImplementationType { get { throw null; } set { } }
+        public System.CodeDom.CodeStatementCollection SetStatements { get { throw null; } }
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -930,7 +930,7 @@ namespace System.CodeDom
         public CodeMethodInvokeExpression(System.CodeDom.CodeExpression targetObject, string methodName, params System.CodeDom.CodeExpression[] parameters) { }
         public CodeMethodInvokeExpression(System.CodeDom.CodeMethodReferenceExpression method, params System.CodeDom.CodeExpression[] parameters) { }
         public System.CodeDom.CodeMethodReferenceExpression Method { get { throw null; } set { } }
-        public System.CodeDom.CodeExpressionCollection Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeExpressionCollection Parameters { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class CodeMethodReferenceExpression : System.CodeDom.CodeExpression
@@ -939,7 +939,7 @@ namespace System.CodeDom
         public CodeMethodReferenceExpression(System.CodeDom.CodeExpression targetObject, string methodName) { }
         public CodeMethodReferenceExpression(System.CodeDom.CodeExpression targetObject, string methodName, params System.CodeDom.CodeTypeReference[] typeParameters) { }
         public string MethodName { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReferenceCollection TypeArguments { get { throw null; } }
     }
     [System.SerializableAttribute]
@@ -947,7 +947,7 @@ namespace System.CodeDom
     {
         public CodeMethodReturnStatement() { }
         public CodeMethodReturnStatement(System.CodeDom.CodeExpression expression) { }
-        public System.CodeDom.CodeExpression Expression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Expression { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeNamespace : System.CodeDom.CodeObject
@@ -983,7 +983,7 @@ namespace System.CodeDom
     {
         public CodeNamespaceImport() { }
         public CodeNamespaceImport(string nameSpace) { }
-        public System.CodeDom.CodeLinePragma LinePragma { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeLinePragma LinePragma { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -1026,7 +1026,7 @@ namespace System.CodeDom
         public CodeObjectCreateExpression(string createType, params System.CodeDom.CodeExpression[] parameters) { }
         public CodeObjectCreateExpression(System.Type createType, params System.CodeDom.CodeExpression[] parameters) { }
         public System.CodeDom.CodeTypeReference CreateType { get { throw null; } set { } }
-        public System.CodeDom.CodeExpressionCollection Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeExpressionCollection Parameters { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class CodeParameterDeclarationExpression : System.CodeDom.CodeExpression
@@ -1036,7 +1036,7 @@ namespace System.CodeDom
         public CodeParameterDeclarationExpression(string type, string name) { }
         public CodeParameterDeclarationExpression(System.Type type, string name) { }
         public System.CodeDom.CodeAttributeDeclarationCollection CustomAttributes { get { throw null; } set { } }
-        public System.CodeDom.FieldDirection Direction { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.FieldDirection Direction { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
@@ -1061,7 +1061,7 @@ namespace System.CodeDom
     {
         public CodePrimitiveExpression() { }
         public CodePrimitiveExpression(object value) { }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodePropertyReferenceExpression : System.CodeDom.CodeExpression
@@ -1069,7 +1069,7 @@ namespace System.CodeDom
         public CodePropertyReferenceExpression() { }
         public CodePropertyReferenceExpression(System.CodeDom.CodeExpression targetObject, string propertyName) { }
         public string PropertyName { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression TargetObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression TargetObject { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodePropertySetValueReferenceExpression : System.CodeDom.CodeExpression
@@ -1081,7 +1081,7 @@ namespace System.CodeDom
     {
         public CodeRegionDirective() { }
         public CodeRegionDirective(System.CodeDom.CodeRegionMode regionMode, string regionText) { }
-        public System.CodeDom.CodeRegionMode RegionMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeRegionMode RegionMode { get { throw null; } set { } }
         public string RegionText { get { throw null; } set { } }
     }
     public enum CodeRegionMode
@@ -1097,14 +1097,14 @@ namespace System.CodeDom
         public CodeRemoveEventStatement(System.CodeDom.CodeEventReferenceExpression eventRef, System.CodeDom.CodeExpression listener) { }
         public CodeRemoveEventStatement(System.CodeDom.CodeExpression targetObject, string eventName, System.CodeDom.CodeExpression listener) { }
         public System.CodeDom.CodeEventReferenceExpression Event { get { throw null; } set { } }
-        public System.CodeDom.CodeExpression Listener { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression Listener { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeSnippetCompileUnit : System.CodeDom.CodeCompileUnit
     {
         public CodeSnippetCompileUnit() { }
         public CodeSnippetCompileUnit(string value) { }
-        public System.CodeDom.CodeLinePragma LinePragma { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeLinePragma LinePragma { get { throw null; } set { } }
         public string Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -1133,7 +1133,7 @@ namespace System.CodeDom
     {
         public CodeStatement() { }
         public System.CodeDom.CodeDirectiveCollection EndDirectives { get { throw null; } }
-        public System.CodeDom.CodeLinePragma LinePragma { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeLinePragma LinePragma { get { throw null; } set { } }
         public System.CodeDom.CodeDirectiveCollection StartDirectives { get { throw null; } }
     }
     [System.SerializableAttribute]
@@ -1163,7 +1163,7 @@ namespace System.CodeDom
     {
         public CodeThrowExceptionStatement() { }
         public CodeThrowExceptionStatement(System.CodeDom.CodeExpression toThrow) { }
-        public System.CodeDom.CodeExpression ToThrow { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression ToThrow { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeTryCatchFinallyStatement : System.CodeDom.CodeStatement
@@ -1171,9 +1171,9 @@ namespace System.CodeDom
         public CodeTryCatchFinallyStatement() { }
         public CodeTryCatchFinallyStatement(System.CodeDom.CodeStatement[] tryStatements, System.CodeDom.CodeCatchClause[] catchClauses) { }
         public CodeTryCatchFinallyStatement(System.CodeDom.CodeStatement[] tryStatements, System.CodeDom.CodeCatchClause[] catchClauses, System.CodeDom.CodeStatement[] finallyStatements) { }
-        public System.CodeDom.CodeCatchClauseCollection CatchClauses { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeStatementCollection FinallyStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.CodeDom.CodeStatementCollection TryStatements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeCatchClauseCollection CatchClauses { get { throw null; } }
+        public System.CodeDom.CodeStatementCollection FinallyStatements { get { throw null; } }
+        public System.CodeDom.CodeStatementCollection TryStatements { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class CodeTypeConstructor : System.CodeDom.CodeMemberMethod
@@ -1189,10 +1189,10 @@ namespace System.CodeDom
         public bool IsClass { get { throw null; } set { } }
         public bool IsEnum { get { throw null; } set { } }
         public bool IsInterface { get { throw null; } set { } }
-        public bool IsPartial { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsPartial { get { throw null; } set { } }
         public bool IsStruct { get { throw null; } set { } }
         public System.CodeDom.CodeTypeMemberCollection Members { get { throw null; } }
-        public System.Reflection.TypeAttributes TypeAttributes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Reflection.TypeAttributes TypeAttributes { get { throw null; } set { } }
         public System.CodeDom.CodeTypeParameterCollection TypeParameters { get { throw null; } }
         public event System.EventHandler PopulateBaseTypes { add { } remove { } }
         public event System.EventHandler PopulateMembers { add { } remove { } }
@@ -1218,18 +1218,18 @@ namespace System.CodeDom
     {
         public CodeTypeDelegate() { }
         public CodeTypeDelegate(string name) { }
-        public System.CodeDom.CodeParameterDeclarationExpressionCollection Parameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.CodeParameterDeclarationExpressionCollection Parameters { get { throw null; } }
         public System.CodeDom.CodeTypeReference ReturnType { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CodeTypeMember : System.CodeDom.CodeObject
     {
         public CodeTypeMember() { }
-        public System.CodeDom.MemberAttributes Attributes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.CodeDom.CodeCommentStatementCollection Comments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.CodeDom.MemberAttributes Attributes { get { throw null; } set { } }
+        public System.CodeDom.CodeCommentStatementCollection Comments { get { throw null; } }
         public System.CodeDom.CodeAttributeDeclarationCollection CustomAttributes { get { throw null; } set { } }
         public System.CodeDom.CodeDirectiveCollection EndDirectives { get { throw null; } }
-        public System.CodeDom.CodeLinePragma LinePragma { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeLinePragma LinePragma { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public System.CodeDom.CodeDirectiveCollection StartDirectives { get { throw null; } }
     }
@@ -1265,7 +1265,7 @@ namespace System.CodeDom
         public CodeTypeParameter(string name) { }
         public System.CodeDom.CodeTypeReferenceCollection Constraints { get { throw null; } }
         public System.CodeDom.CodeAttributeDeclarationCollection CustomAttributes { get { throw null; } }
-        public bool HasConstructorConstraint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool HasConstructorConstraint { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -1297,10 +1297,10 @@ namespace System.CodeDom
         public CodeTypeReference(string baseType, int rank) { }
         public CodeTypeReference(System.Type type) { }
         public CodeTypeReference(System.Type type, System.CodeDom.CodeTypeReferenceOptions codeTypeReferenceOption) { }
-        public System.CodeDom.CodeTypeReference ArrayElementType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ArrayRank { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeTypeReference ArrayElementType { get { throw null; } set { } }
+        public int ArrayRank { get { throw null; } set { } }
         public string BaseType { get { throw null; } set { } }
-        public System.CodeDom.CodeTypeReferenceOptions Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeTypeReferenceOptions Options { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReferenceCollection TypeArguments { get { throw null; } }
     }
     [System.SerializableAttribute]
@@ -1346,7 +1346,7 @@ namespace System.CodeDom
         public CodeVariableDeclarationStatement(string type, string name, System.CodeDom.CodeExpression initExpression) { }
         public CodeVariableDeclarationStatement(System.Type type, string name) { }
         public CodeVariableDeclarationStatement(System.Type type, string name, System.CodeDom.CodeExpression initExpression) { }
-        public System.CodeDom.CodeExpression InitExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.CodeDom.CodeExpression InitExpression { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
@@ -1590,12 +1590,12 @@ namespace System.CodeDom.Compiler
     {
         public CompilerError() { }
         public CompilerError(string fileName, int line, int column, string errorNumber, string errorText) { }
-        public int Column { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ErrorNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ErrorText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string FileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsWarning { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int Line { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Column { get { throw null; } set { } }
+        public string ErrorNumber { get { throw null; } set { } }
+        public string ErrorText { get { throw null; } set { } }
+        public string FileName { get { throw null; } set { } }
+        public bool IsWarning { get { throw null; } set { } }
+        public int Line { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     [System.SerializableAttribute]
@@ -1636,23 +1636,23 @@ namespace System.CodeDom.Compiler
         public CompilerParameters(string[] assemblyNames) { }
         public CompilerParameters(string[] assemblyNames, string outputName) { }
         public CompilerParameters(string[] assemblyNames, string outputName, bool includeDebugInformation) { }
-        public string CompilerOptions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string CoreAssemblyFileName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string CompilerOptions { get { throw null; } set { } }
+        public string CoreAssemblyFileName { get { throw null; } set { } }
         public System.Collections.Specialized.StringCollection EmbeddedResources { get { throw null; } }
         [System.ObsoleteAttribute("CAS policy is obsolete and will be removed in a future release of the .NET Framework. Please see http://go2.microsoft.com/fwlink/?LinkId=131738 for more information.")]
         public System.Security.Policy.Evidence Evidence { get { throw null; } set { } }
-        public bool GenerateExecutable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool GenerateInMemory { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IncludeDebugInformation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool GenerateExecutable { get { throw null; } set { } }
+        public bool GenerateInMemory { get { throw null; } set { } }
+        public bool IncludeDebugInformation { get { throw null; } set { } }
         public System.Collections.Specialized.StringCollection LinkedResources { get { throw null; } }
-        public string MainClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string OutputAssembly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string MainClass { get { throw null; } set { } }
+        public string OutputAssembly { get { throw null; } set { } }
         public System.Collections.Specialized.StringCollection ReferencedAssemblies { get { throw null; } }
         public System.CodeDom.Compiler.TempFileCollection TempFiles { get { throw null; } set { } }
-        public bool TreatWarningsAsErrors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IntPtr UserToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int WarningLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Win32Resource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TreatWarningsAsErrors { get { throw null; } set { } }
+        public System.IntPtr UserToken { get { throw null; } set { } }
+        public int WarningLevel { get { throw null; } set { } }
+        public string Win32Resource { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class CompilerResults
@@ -1662,9 +1662,9 @@ namespace System.CodeDom.Compiler
         public System.CodeDom.Compiler.CompilerErrorCollection Errors { get { throw null; } }
         [System.ObsoleteAttribute("CAS policy is obsolete and will be removed in a future release of the .NET Framework. Please see http://go2.microsoft.com/fwlink/?LinkId=131738 for more information.")]
         public System.Security.Policy.Evidence Evidence { get { throw null; } set { } }
-        public int NativeCompilerReturnValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int NativeCompilerReturnValue { get { throw null; } set { } }
         public System.Collections.Specialized.StringCollection Output { get { throw null; } }
-        public string PathToAssembly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string PathToAssembly { get { throw null; } set { } }
         public System.CodeDom.Compiler.TempFileCollection TempFiles { get { throw null; } set { } }
     }
     [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
@@ -1801,7 +1801,7 @@ namespace System.CodeDom.Compiler
         public TempFileCollection(string tempDir, bool keepFiles) { }
         public string BasePath { get { throw null; } }
         public int Count { get { throw null; } }
-        public bool KeepFiles { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool KeepFiles { get { throw null; } set { } }
         int System.Collections.ICollection.Count { get { throw null; } }
         bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
         object System.Collections.ICollection.SyncRoot { get { throw null; } }
@@ -2608,14 +2608,12 @@ namespace System.Collections.Specialized
 }
 namespace System.ComponentModel
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class AddingNewEventArgs : System.EventArgs
     {
         public AddingNewEventArgs() { }
         public AddingNewEventArgs(object newObject) { }
         public object NewObject { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void AddingNewEventHandler(object sender, System.ComponentModel.AddingNewEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
     public sealed partial class AmbientValueAttribute : System.Attribute
@@ -2635,7 +2633,6 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ArrayConverter : System.ComponentModel.CollectionConverter
     {
         public ArrayConverter() { }
@@ -2657,7 +2654,6 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void AsyncCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public sealed partial class AsyncOperation
     {
         internal AsyncOperation() { }
@@ -2668,15 +2664,12 @@ namespace System.ComponentModel
         public void Post(System.Threading.SendOrPostCallback d, object arg) { }
         public void PostOperationCompleted(System.Threading.SendOrPostCallback d, object arg) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public static partial class AsyncOperationManager
     {
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
-        public static System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]set { } }
+        public static System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } set { } }
         public static System.ComponentModel.AsyncOperation CreateOperation(object userSuppliedState) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class AttributeCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public static readonly System.ComponentModel.AttributeCollection Empty;
@@ -2708,23 +2701,18 @@ namespace System.ComponentModel
         public string PropertyName { get { throw null; } }
         public string TypeName { get { throw null; } }
     }
-    [System.ComponentModel.DefaultEventAttribute("DoWork")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class BackgroundWorker : System.ComponentModel.Component
     {
         public BackgroundWorker() { }
-        [System.ComponentModel.BrowsableAttribute(false)]
         public bool CancellationPending { get { throw null; } }
-        [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsBusy { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool WorkerReportsProgress { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool WorkerSupportsCancellation { get { throw null; } set { } }
         public event System.ComponentModel.DoWorkEventHandler DoWork { add { } remove { } }
         public event System.ComponentModel.ProgressChangedEventHandler ProgressChanged { add { } remove { } }
         public event System.ComponentModel.RunWorkerCompletedEventHandler RunWorkerCompleted { add { } remove { } }
         public void CancelAsync() { }
+        protected override void Dispose(bool disposing) { }
         protected virtual void OnDoWork(System.ComponentModel.DoWorkEventArgs e) { }
         protected virtual void OnProgressChanged(System.ComponentModel.ProgressChangedEventArgs e) { }
         protected virtual void OnRunWorkerCompleted(System.ComponentModel.RunWorkerCompletedEventArgs e) { }
@@ -2733,12 +2721,11 @@ namespace System.ComponentModel
         public void RunWorkerAsync() { }
         public void RunWorkerAsync(object argument) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class BaseNumberConverter : System.ComponentModel.TypeConverter
     {
         protected BaseNumberConverter() { }
         public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
-        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type t) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
@@ -2769,7 +2756,6 @@ namespace System.ComponentModel
         OneWay = 0,
         TwoWay = 1,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class BindingList<T> : System.Collections.ObjectModel.Collection<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList, System.ComponentModel.IBindingList, System.ComponentModel.ICancelAddNew, System.ComponentModel.IRaiseItemChangedEvents
     {
@@ -2819,7 +2805,6 @@ namespace System.ComponentModel
         void System.ComponentModel.IBindingList.RemoveIndex(System.ComponentModel.PropertyDescriptor prop) { }
         void System.ComponentModel.IBindingList.RemoveSort() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class BooleanConverter : System.ComponentModel.TypeConverter
     {
         public BooleanConverter() { }
@@ -2841,19 +2826,16 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ByteConverter : System.ComponentModel.BaseNumberConverter
     {
         public ByteConverter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CancelEventArgs : System.EventArgs
     {
         public CancelEventArgs() { }
         public CancelEventArgs(bool cancel) { }
         public bool Cancel { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void CancelEventHandler(object sender, System.ComponentModel.CancelEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
     public partial class CategoryAttribute : System.Attribute
@@ -2880,7 +2862,6 @@ namespace System.ComponentModel
         protected virtual string GetLocalizedString(string value) { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CharConverter : System.ComponentModel.TypeConverter
     {
         public CharConverter() { }
@@ -2894,14 +2875,12 @@ namespace System.ComponentModel
         Refresh = 3,
         Remove = 2,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CollectionChangeEventArgs : System.EventArgs
     {
         public CollectionChangeEventArgs(System.ComponentModel.CollectionChangeAction action, object element) { }
         public virtual System.ComponentModel.CollectionChangeAction Action { get { throw null; } }
         public virtual object Element { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void CollectionChangeEventHandler(object sender, System.ComponentModel.CollectionChangeEventArgs e);
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CollectionConverter : System.ComponentModel.TypeConverter
@@ -2949,8 +2928,6 @@ namespace System.ComponentModel
         protected virtual object GetService(System.Type service) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class ComponentCollection : System.Collections.ReadOnlyCollectionBase
     {
         public ComponentCollection(System.ComponentModel.IComponent[] components) { }
@@ -2965,14 +2942,12 @@ namespace System.ComponentModel
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
         public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ComponentEditor
     {
         protected ComponentEditor() { }
         public abstract bool EditComponent(System.ComponentModel.ITypeDescriptorContext context, object component);
         public bool EditComponent(object component) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ComponentResourceManager : System.Resources.ResourceManager
     {
         public ComponentResourceManager() { }
@@ -2996,13 +2971,11 @@ namespace System.ComponentModel
         protected void RemoveWithoutUnsiting(System.ComponentModel.IComponent component) { }
         protected virtual void ValidateName(System.ComponentModel.IComponent component, string name) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ContainerFilterService
     {
         protected ContainerFilterService() { }
         public virtual System.ComponentModel.ComponentCollection FilterComponents(System.ComponentModel.ComponentCollection components) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class CultureInfoConverter : System.ComponentModel.TypeConverter
     {
         public CultureInfoConverter() { }
@@ -3015,7 +2988,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class CustomTypeDescriptor : System.ComponentModel.ICustomTypeDescriptor
     {
         protected CustomTypeDescriptor() { }
@@ -3033,7 +3005,6 @@ namespace System.ComponentModel
         public virtual System.ComponentModel.PropertyDescriptorCollection GetProperties(System.Attribute[] attributes) { throw null; }
         public virtual object GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DataErrorsChangedEventArgs : System.EventArgs
     {
         public DataErrorsChangedEventArgs(string propertyName) { }
@@ -3085,7 +3056,6 @@ namespace System.ComponentModel
         Select = 1,
         Update = 2,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DateTimeConverter : System.ComponentModel.TypeConverter
     {
         public DateTimeConverter() { }
@@ -3103,7 +3073,6 @@ namespace System.ComponentModel
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DecimalConverter : System.ComponentModel.BaseNumberConverter
     {
         public DecimalConverter() { }
@@ -3149,9 +3118,17 @@ namespace System.ComponentModel
         public DefaultValueAttribute(int value) { }
         public DefaultValueAttribute(long value) { }
         public DefaultValueAttribute(object value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(sbyte value) { }
         public DefaultValueAttribute(float value) { }
         public DefaultValueAttribute(string value) { }
         public DefaultValueAttribute(System.Type type, string value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(ushort value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(uint value) { }
+        [System.CLSCompliantAttribute(false)]
+        public DefaultValueAttribute(ulong value) { }
         public virtual object Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3198,7 +3175,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum DesignerSerializationVisibility
     {
         Content = 2,
@@ -3255,7 +3231,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class DoubleConverter : System.ComponentModel.BaseNumberConverter
     {
         public DoubleConverter() { }
@@ -3313,8 +3288,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool IsValid(System.ComponentModel.ITypeDescriptorContext context, object value) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class EventDescriptor : System.ComponentModel.MemberDescriptor
     {
         protected EventDescriptor(System.ComponentModel.MemberDescriptor descr) : base (default(string)) { }
@@ -3326,8 +3299,6 @@ namespace System.ComponentModel
         public abstract void AddEventHandler(object component, System.Delegate value);
         public abstract void RemoveEventHandler(object component, System.Delegate value);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class EventDescriptorCollection : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         public static readonly System.ComponentModel.EventDescriptorCollection Empty;
@@ -3367,7 +3338,6 @@ namespace System.ComponentModel
         void System.Collections.IList.Remove(object value) { }
         void System.Collections.IList.RemoveAt(int index) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public sealed partial class EventHandlerList : System.IDisposable
     {
         public EventHandlerList() { }
@@ -3394,7 +3364,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class GuidConverter : System.ComponentModel.TypeConverter
     {
         public GuidConverter() { }
@@ -3403,14 +3372,12 @@ namespace System.ComponentModel
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class HandledEventArgs : System.EventArgs
     {
         public HandledEventArgs() { }
         public HandledEventArgs(bool defaultHandledValue) { }
         public bool Handled { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void HandledEventHandler(object sender, System.ComponentModel.HandledEventArgs e);
     public partial interface IBindingList : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -3476,7 +3443,6 @@ namespace System.ComponentModel
         System.ComponentModel.ISite Site { get; set; }
         event System.EventHandler Disposed;
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IContainer : System.IDisposable
     {
         System.ComponentModel.ComponentCollection Components { get; }
@@ -3519,9 +3485,7 @@ namespace System.ComponentModel
         string Name { get; }
         bool Show(string language, string value, ref string newValue);
     }
-    [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataSourceListEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.ComponentModel.MergablePropertyAttribute(false)]
-    [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     public partial interface IListSource
     {
         bool ContainsListCollection { get; }
@@ -3597,29 +3561,24 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class InstanceCreationEditor
     {
         protected InstanceCreationEditor() { }
         public virtual string Text { get { throw null; } }
         public abstract object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Type instanceType);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int16Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int16Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int32Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int32Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class Int64Converter : System.ComponentModel.BaseNumberConverter
     {
         public Int64Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class InvalidAsynchronousStateException : System.ArgumentException
     {
@@ -3645,7 +3604,6 @@ namespace System.ComponentModel
     {
         void RejectChanges();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISite : System.IServiceProvider
     {
         System.ComponentModel.IComponent Component { get; }
@@ -3666,12 +3624,10 @@ namespace System.ComponentModel
     public partial interface ISynchronizeInvoke
     {
         bool InvokeRequired { get; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         System.IAsyncResult BeginInvoke(System.Delegate method, object[] args);
         object EndInvoke(System.IAsyncResult result);
         object Invoke(System.Delegate method, object[] args);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ITypeDescriptorContext : System.IServiceProvider
     {
         System.ComponentModel.IContainer Container { get; }
@@ -3685,14 +3641,12 @@ namespace System.ComponentModel
         System.ComponentModel.PropertyDescriptorCollection GetItemProperties(System.ComponentModel.PropertyDescriptor[] listAccessors);
         string GetListName(System.ComponentModel.PropertyDescriptor[] listAccessors);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class License : System.IDisposable
     {
         protected License() { }
         public abstract string LicenseKey { get; }
         public abstract void Dispose();
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class LicenseContext : System.IServiceProvider
     {
         public LicenseContext() { }
@@ -3714,7 +3668,6 @@ namespace System.ComponentModel
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalProcessMgmt=true)]
     public sealed partial class LicenseManager
     {
         internal LicenseManager() { }
@@ -3730,7 +3683,6 @@ namespace System.ComponentModel
         public static void Validate(System.Type type) { }
         public static System.ComponentModel.License Validate(System.Type type, object instance) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class LicenseProvider
     {
         protected LicenseProvider() { }
@@ -3753,7 +3705,6 @@ namespace System.ComponentModel
         Designtime = 1,
         Runtime = 0,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class LicFileLicenseProvider : System.ComponentModel.LicenseProvider
     {
         public LicFileLicenseProvider() { }
@@ -3774,7 +3725,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListChangedEventArgs : System.EventArgs
     {
         public ListChangedEventArgs(System.ComponentModel.ListChangedType listChangedType, System.ComponentModel.PropertyDescriptor propDesc) { }
@@ -3786,7 +3736,6 @@ namespace System.ComponentModel
         public int OldIndex { get { throw null; } }
         public System.ComponentModel.PropertyDescriptor PropertyDescriptor { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ListChangedEventHandler(object sender, System.ComponentModel.ListChangedEventArgs e);
     public enum ListChangedType
     {
@@ -3799,14 +3748,12 @@ namespace System.ComponentModel
         PropertyDescriptorDeleted = 6,
         Reset = 0,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListSortDescription
     {
         public ListSortDescription(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction) { }
         public System.ComponentModel.PropertyDescriptor PropertyDescriptor { get { throw null; } set { } }
         public System.ComponentModel.ListSortDirection SortDirection { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ListSortDescriptionCollection : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         public ListSortDescriptionCollection() { }
@@ -3861,7 +3808,6 @@ namespace System.ComponentModel
     [System.ComponentModel.DesignerAttribute("System.Windows.Forms.Design.ComponentDocumentDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.ComponentModel.Design.IRootDesigner))]
     [System.ComponentModel.DesignerCategoryAttribute("Component")]
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ComponentConverter))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class MarshalByValueComponent : System.ComponentModel.IComponent, System.IDisposable, System.IServiceProvider
     {
         public MarshalByValueComponent() { }
@@ -3882,7 +3828,6 @@ namespace System.ComponentModel
         public virtual object GetService(System.Type service) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class MaskedTextProvider : System.ICloneable
     {
         public MaskedTextProvider(string mask) { }
@@ -4024,7 +3969,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class MultilineStringConverter : System.ComponentModel.TypeConverter
     {
         public MultilineStringConverter() { }
@@ -4032,7 +3976,6 @@ namespace System.ComponentModel
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
         public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class NestedContainer : System.ComponentModel.Container, System.ComponentModel.IContainer, System.ComponentModel.INestedContainer, System.IDisposable
     {
         public NestedContainer(System.ComponentModel.IComponent owner) { }
@@ -4054,7 +3997,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class NullableConverter : System.ComponentModel.TypeConverter
     {
         public NullableConverter(System.Type type) { }
@@ -4107,24 +4049,18 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ProgressChangedEventHandler(object sender, System.ComponentModel.ProgressChangedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class PropertyChangedEventArgs : System.EventArgs
     {
         public PropertyChangedEventArgs(string propertyName) { }
         public virtual string PropertyName { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void PropertyChangedEventHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class PropertyChangingEventArgs : System.EventArgs
     {
         public PropertyChangingEventArgs(string propertyName) { }
         public virtual string PropertyName { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void PropertyChangingEventHandler(object sender, System.ComponentModel.PropertyChangingEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class PropertyDescriptor : System.ComponentModel.MemberDescriptor
     {
         protected PropertyDescriptor(System.ComponentModel.MemberDescriptor descr) : base (default(string)) { }
@@ -4158,7 +4094,6 @@ namespace System.ComponentModel
         public abstract void SetValue(object component, object value);
         public abstract bool ShouldSerializeValue(object component);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class PropertyDescriptorCollection : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable, System.Collections.IList
     {
         public static readonly System.ComponentModel.PropertyDescriptorCollection Empty;
@@ -4268,7 +4203,6 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ReferenceConverter : System.ComponentModel.TypeConverter
     {
         public ReferenceConverter(System.Type type) { }
@@ -4280,7 +4214,6 @@ namespace System.ComponentModel
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         protected virtual bool IsValueAllowed(System.ComponentModel.ITypeDescriptorContext context, object value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class RefreshEventArgs : System.EventArgs
     {
         public RefreshEventArgs(object componentChanged) { }
@@ -4288,7 +4221,6 @@ namespace System.ComponentModel
         public object ComponentChanged { get { throw null; } }
         public System.Type TypeChanged { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void RefreshEventHandler(System.ComponentModel.RefreshEventArgs e);
     public enum RefreshProperties
     {
@@ -4331,7 +4263,6 @@ namespace System.ComponentModel
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void RunWorkerCompletedEventHandler(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class SByteConverter : System.ComponentModel.BaseNumberConverter
     {
         public SByteConverter() { }
@@ -4346,26 +4277,22 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class SingleConverter : System.ComponentModel.BaseNumberConverter
     {
         public SingleConverter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class StringConverter : System.ComponentModel.TypeConverter
     {
         public StringConverter() { }
         public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public static partial class SyntaxCheck
     {
         public static bool CheckMachineName(string value) { throw null; }
         public static bool CheckPath(string value) { throw null; }
         public static bool CheckRootedPath(string value) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class TimeSpanConverter : System.ComponentModel.TypeConverter
     {
         public TimeSpanConverter() { }
@@ -4488,7 +4415,6 @@ namespace System.ComponentModel
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class TypeDescriptionProvider
     {
         protected TypeDescriptionProvider() { }
@@ -4631,7 +4557,6 @@ namespace System.ComponentModel
         public static void RemoveProviderTransparent(System.ComponentModel.TypeDescriptionProvider provider, System.Type type) { }
         public static void SortDescriptorArray(System.Collections.IList infos) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class TypeListConverter : System.ComponentModel.TypeConverter
     {
         protected TypeListConverter(System.Type[] types) { }
@@ -4643,22 +4568,18 @@ namespace System.ComponentModel
         public override bool GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
         public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt16Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt16Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt32Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt32Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class UInt64Converter : System.ComponentModel.BaseNumberConverter
     {
         public UInt64Converter() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     [System.SerializableAttribute]
     public partial class WarningException : System.SystemException
     {
@@ -4670,7 +4591,6 @@ namespace System.ComponentModel
         public WarningException(string message, string helpUrl, string helpTopic) { }
         public string HelpTopic { get { throw null; } }
         public string HelpUrl { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.Security.SuppressUnmanagedCodeSecurityAttribute]
@@ -4696,20 +4616,13 @@ namespace System.ComponentModel
 }
 namespace System.ComponentModel.Design
 {
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ActiveDesignerEventArgs : System.EventArgs
     {
         public ActiveDesignerEventArgs(System.ComponentModel.Design.IDesignerHost oldDesigner, System.ComponentModel.Design.IDesignerHost newDesigner) { }
         public System.ComponentModel.Design.IDesignerHost NewDesigner { get { throw null; } }
         public System.ComponentModel.Design.IDesignerHost OldDesigner { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ActiveDesignerEventHandler(object sender, System.ComponentModel.Design.ActiveDesignerEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     [System.SerializableAttribute]
     public partial class CheckoutException : System.Runtime.InteropServices.ExternalException
     {
@@ -4720,10 +4633,6 @@ namespace System.ComponentModel.Design
         public CheckoutException(string message, System.Exception innerException) { }
         public CheckoutException(string message, int errorCode) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class CommandID
     {
         public CommandID(System.Guid menuGroup, int commandID) { }
@@ -4733,9 +4642,6 @@ namespace System.ComponentModel.Design
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ComponentChangedEventArgs : System.EventArgs
     {
         public ComponentChangedEventArgs(object component, System.ComponentModel.MemberDescriptor member, object oldValue, object newValue) { }
@@ -4744,37 +4650,20 @@ namespace System.ComponentModel.Design
         public object NewValue { get { throw null; } }
         public object OldValue { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentChangedEventHandler(object sender, System.ComponentModel.Design.ComponentChangedEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ComponentChangingEventArgs : System.EventArgs
     {
         public ComponentChangingEventArgs(object component, System.ComponentModel.MemberDescriptor member) { }
         public object Component { get { throw null; } }
         public System.ComponentModel.MemberDescriptor Member { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentChangingEventHandler(object sender, System.ComponentModel.Design.ComponentChangingEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ComponentEventArgs : System.EventArgs
     {
         public ComponentEventArgs(System.ComponentModel.IComponent component) { }
         public virtual System.ComponentModel.IComponent Component { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentEventHandler(object sender, System.ComponentModel.Design.ComponentEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ComponentRenameEventArgs : System.EventArgs
     {
         public ComponentRenameEventArgs(object component, string oldName, string newName) { }
@@ -4782,12 +4671,7 @@ namespace System.ComponentModel.Design
         public virtual string NewName { get { throw null; } }
         public virtual string OldName { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ComponentRenameEventHandler(object sender, System.ComponentModel.Design.ComponentRenameEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DesignerCollection(System.Collections.IList designers) { }
@@ -4801,15 +4685,11 @@ namespace System.ComponentModel.Design
         void System.Collections.ICollection.CopyTo(System.Array array, int index) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerEventArgs : System.EventArgs
     {
         public DesignerEventArgs(System.ComponentModel.Design.IDesignerHost host) { }
         public System.ComponentModel.Design.IDesignerHost Designer { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void DesignerEventHandler(object sender, System.ComponentModel.Design.DesignerEventArgs e);
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerOptionService : System.ComponentModel.Design.IDesignerOptionService
@@ -4850,8 +4730,6 @@ namespace System.ComponentModel.Design
             void System.Collections.IList.RemoveAt(int index) { }
         }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerTransaction : System.IDisposable
     {
         protected DesignerTransaction() { }
@@ -4867,10 +4745,6 @@ namespace System.ComponentModel.Design
         protected abstract void OnCommit();
         void System.IDisposable.Dispose() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerTransactionCloseEventArgs : System.EventArgs
     {
         [System.ObsoleteAttribute("This constructor is obsolete. Use DesignerTransactionCloseEventArgs(bool, bool) instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -4879,13 +4753,7 @@ namespace System.ComponentModel.Design
         public bool LastTransaction { get { throw null; } }
         public bool TransactionCommitted { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void DesignerTransactionCloseEventHandler(object sender, System.ComponentModel.Design.DesignerTransactionCloseEventArgs e);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerVerb : System.ComponentModel.Design.MenuCommand
     {
         public DesignerVerb(string text, System.EventHandler handler) : base (default(System.EventHandler), default(System.ComponentModel.Design.CommandID)) { }
@@ -4894,10 +4762,6 @@ namespace System.ComponentModel.Design
         public string Text { get { throw null; } }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesignerVerbCollection : System.Collections.CollectionBase
     {
         public DesignerVerbCollection() { }
@@ -4917,9 +4781,6 @@ namespace System.ComponentModel.Design
         protected override void OnValidate(object value) { }
         public void Remove(System.ComponentModel.Design.DesignerVerb value) { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesigntimeLicenseContext : System.ComponentModel.LicenseContext
     {
         public DesigntimeLicenseContext() { }
@@ -4927,9 +4788,6 @@ namespace System.ComponentModel.Design
         public override string GetSavedLicenseKey(System.Type type, System.Reflection.Assembly resourceAssembly) { throw null; }
         public override void SetSavedLicenseKey(System.Type type, string key) { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class DesigntimeLicenseContextSerializer
     {
         internal DesigntimeLicenseContextSerializer() { }
@@ -4961,7 +4819,6 @@ namespace System.ComponentModel.Design
         FilterKeyword = 2,
         GeneralKeyword = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IComponentChangeService
     {
         event System.ComponentModel.Design.ComponentEventHandler ComponentAdded;
@@ -4983,7 +4840,6 @@ namespace System.ComponentModel.Design
         void InitializeExistingComponent(System.Collections.IDictionary defaultValues);
         void InitializeNewComponent(System.Collections.IDictionary defaultValues);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDesigner : System.IDisposable
     {
         System.ComponentModel.IComponent Component { get; }
@@ -5009,7 +4865,6 @@ namespace System.ComponentModel.Design
         void PreFilterEvents(System.Collections.IDictionary events);
         void PreFilterProperties(System.Collections.IDictionary properties);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDesignerHost : System.ComponentModel.Design.IServiceContainer, System.IServiceProvider
     {
         System.ComponentModel.IContainer Container { get; }
@@ -5049,7 +4904,6 @@ namespace System.ComponentModel.Design
         object GetValue(object key);
         void SetValue(object key, object value);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IEventBindingService
     {
         string CreateUniqueMethodName(System.ComponentModel.IComponent component, System.ComponentModel.EventDescriptor e);
@@ -5085,7 +4939,6 @@ namespace System.ComponentModel.Design
         void AddInheritedComponents(System.ComponentModel.IComponent component, System.ComponentModel.IContainer container);
         System.ComponentModel.InheritanceAttribute GetInheritanceAttribute(System.ComponentModel.IComponent component);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IMenuCommandService
     {
         System.ComponentModel.Design.DesignerVerbCollection Verbs { get; }
@@ -5110,13 +4963,11 @@ namespace System.ComponentModel.Design
         System.Resources.IResourceReader GetResourceReader(System.Globalization.CultureInfo info);
         System.Resources.IResourceWriter GetResourceWriter(System.Globalization.CultureInfo info);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IRootDesigner : System.ComponentModel.Design.IDesigner, System.IDisposable
     {
         System.ComponentModel.Design.ViewTechnology[] SupportedTechnologies { get; }
         object GetView(System.ComponentModel.Design.ViewTechnology technology);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISelectionService
     {
         object PrimarySelection { get; }
@@ -5128,7 +4979,6 @@ namespace System.ComponentModel.Design
         void SetSelectedComponents(System.Collections.ICollection components);
         void SetSelectedComponents(System.Collections.ICollection components, System.ComponentModel.Design.SelectionTypes selectionType);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IServiceContainer : System.IServiceProvider
     {
         void AddService(System.Type serviceType, System.ComponentModel.Design.ServiceCreatorCallback callback);
@@ -5163,10 +5013,6 @@ namespace System.ComponentModel.Design
         System.Type GetType(string name, bool throwOnError, bool ignoreCase);
         void ReferenceAssembly(System.Reflection.AssemblyName name);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class MenuCommand
     {
         public MenuCommand(System.EventHandler handler, System.ComponentModel.Design.CommandID command) { }
@@ -5184,7 +5030,6 @@ namespace System.ComponentModel.Design
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum SelectionTypes
     {
         Add = 64,
@@ -5204,7 +5049,6 @@ namespace System.ComponentModel.Design
         [System.ObsoleteAttribute("This value has been deprecated. Use Enum class methods to determine valid values, or use a type converter. http://go.microsoft.com/fwlink/?linkid=14202")]
         Valid = 31,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public partial class ServiceContainer : System.ComponentModel.Design.IServiceContainer, System.IDisposable, System.IServiceProvider
     {
         public ServiceContainer() { }
@@ -5220,12 +5064,7 @@ namespace System.ComponentModel.Design
         public void RemoveService(System.Type serviceType) { }
         public virtual void RemoveService(System.Type serviceType, bool promote) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate object ServiceCreatorCallback(System.ComponentModel.Design.IServiceContainer container, System.Type serviceType);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class StandardCommands
     {
         public static readonly System.ComponentModel.Design.CommandID AlignBottom;
@@ -5285,9 +5124,6 @@ namespace System.ComponentModel.Design
         public static readonly System.ComponentModel.Design.CommandID ViewGrid;
         public StandardCommands() { }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class StandardToolWindows
     {
         public static readonly System.Guid ObjectBrowser;
@@ -5306,7 +5142,6 @@ namespace System.ComponentModel.Design
         public abstract System.ComponentModel.TypeDescriptionProvider GetProvider(object instance);
         public abstract System.ComponentModel.TypeDescriptionProvider GetProvider(System.Type type);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum ViewTechnology
     {
         Default = 2,
@@ -5318,7 +5153,6 @@ namespace System.ComponentModel.Design
 }
 namespace System.ComponentModel.Design.Serialization
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class ComponentSerializationService
     {
         protected ComponentSerializationService() { }
@@ -5334,8 +5168,6 @@ namespace System.ComponentModel.Design.Serialization
         public abstract void SerializeMember(System.ComponentModel.Design.Serialization.SerializationStore store, object owningObject, System.ComponentModel.MemberDescriptor member);
         public abstract void SerializeMemberAbsolute(System.ComponentModel.Design.Serialization.SerializationStore store, object owningObject, System.ComponentModel.MemberDescriptor member);
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ContextStack
     {
         public ContextStack() { }
@@ -5353,9 +5185,6 @@ namespace System.ComponentModel.Design.Serialization
         public DefaultSerializationProviderAttribute(System.Type providerType) { }
         public string ProviderTypeName { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class DesignerLoader
     {
         protected DesignerLoader() { }
@@ -5430,6 +5259,7 @@ namespace System.ComponentModel.Design.Serialization
         public System.Reflection.MemberInfo MemberInfo { get { throw null; } }
         public object Invoke() { throw null; }
     }
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct MemberRelationship
     {
@@ -5443,7 +5273,6 @@ namespace System.ComponentModel.Design.Serialization
         public static bool operator ==(System.ComponentModel.Design.Serialization.MemberRelationship left, System.ComponentModel.Design.Serialization.MemberRelationship right) { throw null; }
         public static bool operator !=(System.ComponentModel.Design.Serialization.MemberRelationship left, System.ComponentModel.Design.Serialization.MemberRelationship right) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class MemberRelationshipService
     {
         protected MemberRelationshipService() { }
@@ -5453,16 +5282,12 @@ namespace System.ComponentModel.Design.Serialization
         protected virtual void SetRelationship(System.ComponentModel.Design.Serialization.MemberRelationship source, System.ComponentModel.Design.Serialization.MemberRelationship relationship) { }
         public abstract bool SupportsRelationship(System.ComponentModel.Design.Serialization.MemberRelationship source, System.ComponentModel.Design.Serialization.MemberRelationship relationship);
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ResolveNameEventArgs : System.EventArgs
     {
         public ResolveNameEventArgs(string name) { }
         public string Name { get { throw null; } }
         public object Value { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public delegate void ResolveNameEventHandler(object sender, System.ComponentModel.Design.Serialization.ResolveNameEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=true, Inherited=true)]
     [System.ObsoleteAttribute("This attribute has been deprecated. Use DesignerSerializerAttribute instead.  For example, to specify a root designer for CodeDom, use DesignerSerializerAttribute(...,typeof(TypeCodeDomSerializer)).  http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -5476,7 +5301,6 @@ namespace System.ComponentModel.Design.Serialization
         public string SerializerTypeName { get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true)]
     public abstract partial class SerializationStore : System.IDisposable
     {
         protected SerializationStore() { }
@@ -7692,10 +7516,10 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
-        public System.IO.WatcherChangeTypes ChangeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string OldName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TimedOut { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public string OldName { get { throw null; } set { } }
+        public bool TimedOut { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
     public enum WatcherChangeTypes
@@ -7765,16 +7589,16 @@ namespace System.IO.Compression
         public override void Flush() { }
         public override System.Threading.Tasks.Task FlushAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         public override int Read(byte[] array, int offset, int count) { throw null; }
-        public override int Read(System.Span<byte> destination) { throw null; }
+        public override int Read(System.Span<byte> buffer) { throw null; }
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] array, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> destination, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
         public override void SetLength(long value) { }
         public override void Write(byte[] array, int offset, int count) { }
-        public override void Write(System.ReadOnlySpan<byte> source) { }
+        public override void Write(System.ReadOnlySpan<byte> buffer) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] array, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.Task WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
     }
 }
 namespace System.IO.CoreFX
@@ -7807,6 +7631,15 @@ namespace System.IO.CoreFX
         protected void OnRenamed(System.IO.RenamedEventArgs e) { }
         public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType) { throw null; }
         public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType, int timeout) { throw null; }
+    }
+}
+namespace System.IO.Enumeration
+{
+    public static partial class FileSystemName
+    {
+        public static bool MatchesSimpleExpression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase=true) { throw null; }
+        public static bool MatchesWin32Expression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase=true) { throw null; }
+        public static string TranslateWin32Expression(string expression) { throw null; }
     }
 }
 namespace System.IO.Ports
@@ -8247,8 +8080,8 @@ namespace System.Net
     public partial class DownloadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal DownloadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long BytesReceived { get { throw null; } }
+        public long TotalBytesToReceive { get { throw null; } }
     }
     public delegate void DownloadProgressChangedEventHandler(object sender, System.Net.DownloadProgressChangedEventArgs e);
     public partial class DownloadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -9086,10 +8919,10 @@ namespace System.Net
     public partial class UploadProgressChangedEventArgs : System.ComponentModel.ProgressChangedEventArgs
     {
         internal UploadProgressChangedEventArgs() : base (default(int), default(object)) { }
-        public long BytesReceived { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long BytesSent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToReceive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public long TotalBytesToSend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long BytesReceived { get { throw null; } }
+        public long BytesSent { get { throw null; } }
+        public long TotalBytesToReceive { get { throw null; } }
+        public long TotalBytesToSend { get { throw null; } }
     }
     public delegate void UploadProgressChangedEventHandler(object sender, System.Net.UploadProgressChangedEventArgs e);
     public partial class UploadStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -9109,12 +8942,12 @@ namespace System.Net
         public WebClient() { }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
-        public bool AllowReadStreamBuffering { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowReadStreamBuffering { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
-        public bool AllowWriteStreamBuffering { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowWriteStreamBuffering { get { throw null; } set { } }
         public string BaseAddress { get { throw null; } set { } }
-        public System.Net.Cache.RequestCachePolicy CachePolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Cache.RequestCachePolicy CachePolicy { get { throw null; } set { } }
         public System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.Text.Encoding Encoding { get { throw null; } set { } }
         public System.Net.WebHeaderCollection Headers { get { throw null; } set { } }
@@ -10072,7 +9905,6 @@ namespace System.Net.Mail
     {
         public MailAddress(string address) { }
         public MailAddress(string address, string displayName) { }
-        [System.MonoTODOAttribute("We don't do anything with displayNameEncoding")]
         public MailAddress(string address, string displayName, System.Text.Encoding displayNameEncoding) { }
         public string Address { get { throw null; } }
         public string DisplayName { get { throw null; } }
@@ -10149,7 +9981,7 @@ namespace System.Net.Mail
         public int Port { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Net.ServicePoint ServicePoint { get { throw null; } }
-        public string TargetName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TargetName { get { throw null; } set { } }
         public int Timeout { get { throw null; } set { } }
         public bool UseDefaultCredentials { get { throw null; } [System.MonoNotSupportedAttribute("no DefaultCredential support in Mono")]set { } }
         public event System.Net.Mail.SendCompletedEventHandler SendCompleted { add { } remove { } }
@@ -10308,10 +10140,12 @@ namespace System.Net.Mime
     {
         public static partial class Application
         {
+            public const string Json = "application/json";
             public const string Octet = "application/octet-stream";
             public const string Pdf = "application/pdf";
             public const string Rtf = "application/rtf";
             public const string Soap = "application/soap+xml";
+            public const string Xml = "application/xml";
             public const string Zip = "application/zip";
         }
         public static partial class Image
@@ -11072,6 +10906,36 @@ namespace System.Net.Security
         Sign = 1,
     }
     public delegate bool RemoteCertificateValidationCallback(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors);
+    public delegate System.Security.Cryptography.X509Certificates.X509Certificate ServerCertificateSelectionCallback(object sender, string hostName);
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct SslApplicationProtocol : System.IEquatable<System.Net.Security.SslApplicationProtocol>
+    {
+        public static readonly System.Net.Security.SslApplicationProtocol Http11;
+        public static readonly System.Net.Security.SslApplicationProtocol Http2;
+        public SslApplicationProtocol(byte[] protocol) { throw null;}
+        public SslApplicationProtocol(string protocol) { throw null;}
+        public System.ReadOnlyMemory<byte> Protocol { get { throw null; } }
+        public bool Equals(System.Net.Security.SslApplicationProtocol other) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static bool operator ==(System.Net.Security.SslApplicationProtocol left, System.Net.Security.SslApplicationProtocol right) { throw null; }
+        public static bool operator !=(System.Net.Security.SslApplicationProtocol left, System.Net.Security.SslApplicationProtocol right) { throw null; }
+        public override string ToString() { throw null; }
+    }
+    public partial class SslClientAuthenticationOptions
+    {
+        public SslClientAuthenticationOptions() { }
+        public bool AllowRenegotiation { get { throw null; } set { } }
+        public System.Collections.Generic.List<System.Net.Security.SslApplicationProtocol> ApplicationProtocols { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509RevocationMode CertificateRevocationCheckMode { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } set { } }
+        public System.Security.Authentication.SslProtocols EnabledSslProtocols { get { throw null; } set { } }
+        public System.Net.Security.EncryptionPolicy EncryptionPolicy { get { throw null; } set { } }
+        public System.Net.Security.LocalCertificateSelectionCallback LocalCertificateSelectionCallback { get { throw null; } set { } }
+        public System.Net.Security.RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
+        public string TargetHost { get { throw null; } set { } }
+    }
     [System.FlagsAttribute]
     public enum SslPolicyErrors
     {
@@ -11079,6 +10943,19 @@ namespace System.Net.Security
         RemoteCertificateChainErrors = 4,
         RemoteCertificateNameMismatch = 2,
         RemoteCertificateNotAvailable = 1,
+    }
+    public partial class SslServerAuthenticationOptions
+    {
+        public SslServerAuthenticationOptions() { }
+        public bool AllowRenegotiation { get { throw null; } set { } }
+        public System.Collections.Generic.List<System.Net.Security.SslApplicationProtocol> ApplicationProtocols { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509RevocationMode CertificateRevocationCheckMode { get { throw null; } set { } }
+        public bool ClientCertificateRequired { get { throw null; } set { } }
+        public System.Security.Authentication.SslProtocols EnabledSslProtocols { get { throw null; } set { } }
+        public System.Net.Security.EncryptionPolicy EncryptionPolicy { get { throw null; } set { } }
+        public System.Net.Security.RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509Certificate ServerCertificate { get { throw null; } set { } }
+        public System.Net.Security.ServerCertificateSelectionCallback ServerCertificateSelectionCallback { get { throw null; } set { } }
     }
     public partial class SslStream : System.Net.Security.AuthenticatedStream
     {
@@ -11113,16 +10990,24 @@ namespace System.Net.Security
         public System.Net.TransportContext TransportContext { get { throw null; } }
         public override int WriteTimeout { get { throw null; } set { } }
         public virtual void AuthenticateAsClient(string targetHost) { }
+        public virtual void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation) { }
         public virtual void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation) { }
+        public System.Threading.Tasks.Task AuthenticateAsClientAsync(System.Net.Security.SslClientAuthenticationOptions sslClientAuthenticationOptions, System.Threading.CancellationToken cancellationToken) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost) { throw null; }
+        public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation) { throw null; }
         public virtual void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate) { }
+        public virtual void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation) { }
         public virtual void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation) { }
+        public System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Net.Security.SslServerAuthenticationOptions sslServerAuthenticationOptions, System.Threading.CancellationToken cancellationToken) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate) { throw null; }
+        public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation) { throw null; }
         public virtual System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation) { throw null; }
         public virtual System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
+        public virtual System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
         public virtual System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
+        public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
         public virtual System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
         public override System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
         public override System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState) { throw null; }
@@ -11523,25 +11408,25 @@ namespace System.Net.Sockets
     public partial class SocketAsyncEventArgs : System.EventArgs, System.IDisposable
     {
         public SocketAsyncEventArgs() { }
-        public System.Net.Sockets.Socket AcceptSocket { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public byte[] Buffer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Sockets.Socket AcceptSocket { get { throw null; } set { } }
+        public byte[] Buffer { get { throw null; } }
         public System.Collections.Generic.IList<System.ArraySegment<byte>> BufferList { get { throw null; } set { } }
-        public int BytesTransferred { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception ConnectByNameError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int BytesTransferred { get { throw null; } }
+        public System.Exception ConnectByNameError { get { throw null; } }
         public System.Net.Sockets.Socket ConnectSocket { get { throw null; } }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool DisconnectReuseSocket { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketAsyncOperation LastOperation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Offset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Sockets.IPPacketInformation ReceiveMessageFromPacketInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Count { get { throw null; } }
+        public bool DisconnectReuseSocket { get { throw null; } set { } }
+        public System.Net.Sockets.SocketAsyncOperation LastOperation { get { throw null; } }
+        public int Offset { get { throw null; } }
+        public System.Net.Sockets.IPPacketInformation ReceiveMessageFromPacketInfo { get { throw null; } }
         public System.Net.EndPoint RemoteEndPoint { get { throw null; } set { } }
-        public System.Net.Sockets.SendPacketsElement[] SendPacketsElements { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.TransmitFileOptions SendPacketsFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Sockets.SendPacketsElement[] SendPacketsElements { get { throw null; } set { } }
+        public System.Net.Sockets.TransmitFileOptions SendPacketsFlags { get { throw null; } set { } }
         [System.MonoTODOAttribute("unused property")]
-        public int SendPacketsSendSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketError SocketError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Sockets.SocketFlags SocketFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object UserToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int SendPacketsSendSize { get { throw null; } set { } }
+        public System.Net.Sockets.SocketError SocketError { get { throw null; } set { } }
+        public System.Net.Sockets.SocketFlags SocketFlags { get { throw null; } set { } }
+        public object UserToken { get { throw null; } set { } }
         public event System.EventHandler<System.Net.Sockets.SocketAsyncEventArgs> Completed { add { } remove { } }
         public void Dispose() { }
         ~SocketAsyncEventArgs() { }
@@ -11922,7 +11807,7 @@ namespace System.Net.WebSockets
         public override System.Threading.Tasks.Task<System.Net.WebSockets.WebSocketReceiveResult> ReceiveAsync(System.ArraySegment<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.ValueTask<System.Net.WebSockets.ValueWebSocketReceiveResult> ReceiveAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken) { throw null; }
         public override System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override System.Threading.Tasks.ValueTask SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public sealed partial class ClientWebSocketOptions
     {
@@ -11932,6 +11817,7 @@ namespace System.Net.WebSockets
         public System.Net.ICredentials Credentials { get { throw null; } set { } }
         public System.TimeSpan KeepAliveInterval { get { throw null; } set { } }
         public System.Net.IWebProxy Proxy { get { throw null; } set { } }
+        public System.Net.Security.RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
         public bool UseDefaultCredentials { get { throw null; } set { } }
         public void AddSubProtocol(string subProtocol) { }
         public void SetBuffer(int receiveBufferSize, int sendBufferSize) { }
@@ -11977,7 +11863,7 @@ namespace System.Net.WebSockets
         public static System.ArraySegment<byte> CreateClientBuffer(int receiveBufferSize, int sendBufferSize) { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static System.Net.WebSockets.WebSocket CreateClientWebSocket(System.IO.Stream innerStream, string subProtocol, int receiveBufferSize, int sendBufferSize, System.TimeSpan keepAliveInterval, bool useZeroMaskingKey, System.ArraySegment<byte> internalBuffer) { throw null; }
-        public static System.Net.WebSockets.WebSocket CreateFromStream(System.IO.Stream stream, bool isServer, string subProtocol, System.TimeSpan keepAliveInterval, System.Memory<byte> buffer=default(System.Memory<byte>)) { throw null; }
+        public static System.Net.WebSockets.WebSocket CreateFromStream(System.IO.Stream stream, bool isServer, string subProtocol, System.TimeSpan keepAliveInterval) { throw null; }
         public static System.ArraySegment<byte> CreateServerBuffer(int receiveBufferSize) { throw null; }
         public abstract void Dispose();
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
@@ -11989,7 +11875,7 @@ namespace System.Net.WebSockets
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
         public static void RegisterPrefixes() { }
         public abstract System.Threading.Tasks.Task SendAsync(System.ArraySegment<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken);
-        public virtual System.Threading.Tasks.Task SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public virtual System.Threading.Tasks.ValueTask SendAsync(System.ReadOnlyMemory<byte> buffer, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Threading.CancellationToken cancellationToken) { throw null; }
         protected static void ThrowOnInvalidState(System.Net.WebSockets.WebSocketState state, params System.Net.WebSockets.WebSocketState[] validStates) { }
     }
     public enum WebSocketCloseStatus
@@ -12065,11 +11951,11 @@ namespace System.Net.WebSockets
     {
         public WebSocketReceiveResult(int count, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage) { }
         public WebSocketReceiveResult(int count, System.Net.WebSockets.WebSocketMessageType messageType, bool endOfMessage, System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> closeStatus, string closeStatusDescription) { }
-        public System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> CloseStatus { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string CloseStatusDescription { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool EndOfMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.WebSockets.WebSocketMessageType MessageType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<System.Net.WebSockets.WebSocketCloseStatus> CloseStatus { get { throw null; } }
+        public string CloseStatusDescription { get { throw null; } }
+        public int Count { get { throw null; } }
+        public bool EndOfMessage { get { throw null; } }
+        public System.Net.WebSockets.WebSocketMessageType MessageType { get { throw null; } }
     }
     public enum WebSocketState
     {
@@ -12419,7 +12305,7 @@ namespace System.Security.Authentication.ExtendedProtection
     public partial class TokenBinding
     {
         internal TokenBinding() { }
-        public System.Security.Authentication.ExtendedProtection.TokenBindingType BindingType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Security.Authentication.ExtendedProtection.TokenBindingType BindingType { get { throw null; } }
         public byte[] GetRawTokenBindingId() { throw null; }
     }
     public enum TokenBindingType
@@ -13115,7 +13001,6 @@ namespace System.Security.Permissions
 }
 namespace System.Text.RegularExpressions
 {
-    [System.SerializableAttribute]
     public partial class Capture
     {
         internal Capture() { }
@@ -13125,8 +13010,7 @@ namespace System.Text.RegularExpressions
         public override string ToString() { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Capture>")]
-    [System.SerializableAttribute]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Capture>")]
     public partial class CaptureCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IList<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Capture>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Capture>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         internal CaptureCollection() { }
@@ -13167,7 +13051,7 @@ namespace System.Text.RegularExpressions
         public static System.Text.RegularExpressions.Group Synchronized(System.Text.RegularExpressions.Group inner) { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Group>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Group>")]
     [System.SerializableAttribute]
     public partial class GroupCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Group>, System.Collections.Generic.IList<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Group>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Group>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -13211,7 +13095,7 @@ namespace System.Text.RegularExpressions
         public static System.Text.RegularExpressions.Match Synchronized(System.Text.RegularExpressions.Match inner) { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
-    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.RegexCollectionDebuggerProxy<System.Text.RegularExpressions.Match>")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.Text.RegularExpressions.CollectionDebuggerProxy<System.Text.RegularExpressions.Match>")]
     [System.SerializableAttribute]
     public partial class MatchCollection : System.Collections.Generic.ICollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IEnumerable<System.Text.RegularExpressions.Match>, System.Collections.Generic.IList<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyCollection<System.Text.RegularExpressions.Match>, System.Collections.Generic.IReadOnlyList<System.Text.RegularExpressions.Match>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
@@ -13244,7 +13128,6 @@ namespace System.Text.RegularExpressions
         void System.Collections.IList.RemoveAt(int index) { }
     }
     public delegate string MatchEvaluator(System.Text.RegularExpressions.Match match);
-    [System.SerializableAttribute]
     public partial class Regex : System.Runtime.Serialization.ISerializable
     {
         protected internal System.Collections.Hashtable capnames;
@@ -13324,11 +13207,11 @@ namespace System.Text.RegularExpressions
     {
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic) { }
         public RegexCompilationInfo(string pattern, System.Text.RegularExpressions.RegexOptions options, string name, string fullnamespace, bool ispublic, System.TimeSpan matchTimeout) { }
-        public bool IsPublic { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsPublic { get { throw null; } set { } }
         public System.TimeSpan MatchTimeout { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
-        public System.Text.RegularExpressions.RegexOptions Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Text.RegularExpressions.RegexOptions Options { get { throw null; } set { } }
         public string Pattern { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
@@ -13339,9 +13222,9 @@ namespace System.Text.RegularExpressions
         public RegexMatchTimeoutException(string message) { }
         public RegexMatchTimeoutException(string message, System.Exception inner) { }
         public RegexMatchTimeoutException(string regexInput, string regexPattern, System.TimeSpan matchTimeout) { }
-        public string Input { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.TimeSpan MatchTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Pattern { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Input { get { throw null; } }
+        public System.TimeSpan MatchTimeout { get { throw null; } }
+        public string Pattern { get { throw null; } }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]

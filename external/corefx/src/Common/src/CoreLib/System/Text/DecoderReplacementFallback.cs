@@ -7,6 +7,9 @@ using System.Diagnostics.Private;
 
 namespace System.Text
 {
+#if MONO
+    [System.Serializable]
+#endif
     public sealed class DecoderReplacementFallback : DecoderFallback
     {
         // Our variables

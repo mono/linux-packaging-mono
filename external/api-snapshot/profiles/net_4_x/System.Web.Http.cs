@@ -60,7 +60,7 @@ namespace System.Net.Http.Formatting
         public static readonly string UriPathExtensionKey;
         public UriPathExtensionMapping(string uriPathExtension, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
         public UriPathExtensionMapping(string uriPathExtension, string mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
-        public string UriPathExtension { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string UriPathExtension { get { throw null; } }
         public override double TryMatchMediaType(System.Net.Http.HttpRequestMessage request) { throw null; }
     }
 }
@@ -77,7 +77,7 @@ namespace System.Web.Http
     public sealed partial class ActionNameAttribute : System.Attribute
     {
         public ActionNameAttribute(string name) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
     public sealed partial class AllowAnonymousAttribute : System.Attribute
@@ -136,11 +136,11 @@ namespace System.Web.Http
         public System.Web.Http.Dependencies.IDependencyResolver DependencyResolver { get { throw null; } set { } }
         public System.Web.Http.Filters.HttpFilterCollection Filters { get { throw null; } }
         public System.Net.Http.Formatting.MediaTypeFormatterCollection Formatters { get { throw null; } }
-        public System.Web.Http.IncludeErrorDetailPolicy IncludeErrorDetailPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.IncludeErrorDetailPolicy IncludeErrorDetailPolicy { get { throw null; } set { } }
         public System.Collections.ObjectModel.Collection<System.Net.Http.DelegatingHandler> MessageHandlers { get { throw null; } }
         public System.Collections.Concurrent.ConcurrentDictionary<object, object> Properties { get { throw null; } }
         public System.Web.Http.HttpRouteCollection Routes { get { throw null; } }
-        public System.Web.Http.Services.DefaultServices Services { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Services.DefaultServices Services { get { throw null; } }
         public string VirtualPathRoot { get { throw null; } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -190,7 +190,7 @@ namespace System.Web.Http
     public partial class HttpResponseException : System.Exception
     {
         public HttpResponseException(System.Net.Http.HttpResponseMessage response) { }
-        public System.Net.Http.HttpResponseMessage Response { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Http.HttpResponseMessage Response { get { throw null; } }
     }
     public partial class HttpRouteCollection : System.Collections.Generic.ICollection<System.Web.Http.Routing.IHttpRoute>, System.Collections.Generic.IEnumerable<System.Web.Http.Routing.IHttpRoute>, System.Collections.IEnumerable, System.IDisposable
     {
@@ -256,7 +256,7 @@ namespace System.Web.Http
     public partial class QueryableAttribute : System.Web.Http.Filters.ActionFilterAttribute
     {
         public QueryableAttribute() { }
-        public int ResultLimit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int ResultLimit { get { throw null; } set { } }
         protected virtual System.Linq.IQueryable ApplyResultLimit(System.Web.Http.Filters.HttpActionExecutedContext actionExecutedContext, System.Linq.IQueryable query) { throw null; }
         public override void OnActionExecuted(System.Web.Http.Filters.HttpActionExecutedContext actionExecutedContext) { }
         public override void OnActionExecuting(System.Web.Http.Controllers.HttpActionContext actionContext) { }
@@ -320,7 +320,7 @@ namespace System.Web.Http.Controllers
         public System.Web.Http.Controllers.HttpControllerContext ControllerContext { get { throw null; } set { } }
         public System.Web.Http.ModelBinding.ModelStateDictionary ModelState { get { throw null; } }
         public System.Net.Http.HttpRequestMessage Request { get { throw null; } }
-        public System.Net.Http.HttpResponseMessage Response { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Http.HttpResponseMessage Response { get { throw null; } set { } }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public static partial class HttpActionContextExtensions
@@ -353,10 +353,10 @@ namespace System.Web.Http.Controllers
     public sealed partial class HttpControllerConfigurationAttribute : System.Attribute
     {
         public HttpControllerConfigurationAttribute() { }
-        public System.Type ActionValueBinder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type HttpActionInvoker { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type HttpActionSelector { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type HttpControllerActivator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Type ActionValueBinder { get { throw null; } set { } }
+        public System.Type HttpActionInvoker { get { throw null; } set { } }
+        public System.Type HttpActionSelector { get { throw null; } set { } }
+        public System.Type HttpControllerActivator { get { throw null; } set { } }
     }
     public partial class HttpControllerContext
     {
@@ -485,21 +485,21 @@ namespace System.Web.Http.Description
     public partial class ApiDescription
     {
         public ApiDescription() { }
-        public System.Web.Http.Controllers.HttpActionDescriptor ActionDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Documentation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Http.HttpMethod HttpMethod { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.Controllers.HttpActionDescriptor ActionDescriptor { get { throw null; } set { } }
+        public string Documentation { get { throw null; } set { } }
+        public System.Net.Http.HttpMethod HttpMethod { get { throw null; } set { } }
         public string ID { get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Web.Http.Description.ApiParameterDescription> ParameterDescriptions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string RelativePath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Http.Routing.IHttpRoute Route { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeFormatter> SupportedRequestBodyFormatters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeFormatter> SupportedResponseFormatters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Web.Http.Description.ApiParameterDescription> ParameterDescriptions { get { throw null; } }
+        public string RelativePath { get { throw null; } set { } }
+        public System.Web.Http.Routing.IHttpRoute Route { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeFormatter> SupportedRequestBodyFormatters { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeFormatter> SupportedResponseFormatters { get { throw null; } }
     }
     public partial class ApiExplorer : System.Web.Http.Description.IApiExplorer
     {
         public ApiExplorer(System.Web.Http.HttpConfiguration configuration) { }
         public System.Collections.ObjectModel.Collection<System.Web.Http.Description.ApiDescription> ApiDescriptions { get { throw null; } }
-        public System.Web.Http.Description.IDocumentationProvider DocumentationProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.Description.IDocumentationProvider DocumentationProvider { get { throw null; } set { } }
         public virtual System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> GetHttpMethodsSupportedByAction(System.Web.Http.Routing.IHttpRoute route, System.Web.Http.Controllers.HttpActionDescriptor actionDescriptor) { throw null; }
         public virtual bool ShouldExploreAction(string actionVariableValue, System.Web.Http.Controllers.HttpActionDescriptor actionDescriptor, System.Web.Http.Routing.IHttpRoute route) { throw null; }
         public virtual bool ShouldExploreController(string controllerVariableValue, System.Web.Http.Controllers.HttpControllerDescriptor controllerDescriptor, System.Web.Http.Routing.IHttpRoute route) { throw null; }
@@ -508,15 +508,15 @@ namespace System.Web.Http.Description
     public sealed partial class ApiExplorerSettingsAttribute : System.Attribute
     {
         public ApiExplorerSettingsAttribute() { }
-        public bool IgnoreApi { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IgnoreApi { get { throw null; } set { } }
     }
     public partial class ApiParameterDescription
     {
         public ApiParameterDescription() { }
-        public string Documentation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Http.Controllers.HttpParameterDescriptor ParameterDescriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Http.Description.ApiParameterSource Source { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Documentation { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public System.Web.Http.Controllers.HttpParameterDescriptor ParameterDescriptor { get { throw null; } set { } }
+        public System.Web.Http.Description.ApiParameterSource Source { get { throw null; } set { } }
     }
     public enum ApiParameterSource
     {
@@ -562,13 +562,13 @@ namespace System.Web.Http.Dispatcher
     {
         internal ExceptionSurrogate() { }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public string ExceptionType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ExceptionType { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, IsRequired=false)]
-        public System.Web.Http.Dispatcher.ExceptionSurrogate InnerException { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.Dispatcher.ExceptionSurrogate InnerException { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, IsRequired=false)]
-        public string Message { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Message { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, IsRequired=false)]
-        public string StackTrace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string StackTrace { get { throw null; } set { } }
     }
     public partial class HttpControllerDispatcher : System.Net.Http.HttpMessageHandler
     {
@@ -639,8 +639,8 @@ namespace System.Web.Http.Filters
     public sealed partial class FilterInfo
     {
         public FilterInfo(System.Web.Http.Filters.IFilter instance, System.Web.Http.Filters.FilterScope scope) { }
-        public System.Web.Http.Filters.IFilter Instance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Http.Filters.FilterScope Scope { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Filters.IFilter Instance { get { throw null; } }
+        public System.Web.Http.Filters.FilterScope Scope { get { throw null; } }
     }
     public enum FilterScope
     {
@@ -653,7 +653,7 @@ namespace System.Web.Http.Filters
         public HttpActionExecutedContext() { }
         public HttpActionExecutedContext(System.Web.Http.Controllers.HttpActionContext actionContext, System.Exception exception) { }
         public System.Web.Http.Controllers.HttpActionContext ActionContext { get { throw null; } set { } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Exception Exception { get { throw null; } set { } }
         public System.Net.Http.HttpRequestMessage Request { get { throw null; } }
         public System.Net.Http.HttpResponseMessage Response { get { throw null; } set { } }
     }
@@ -709,15 +709,15 @@ namespace System.Web.Http.Metadata
         public virtual System.Collections.Generic.Dictionary<string, object> AdditionalValues { get { throw null; } }
         public System.Type ContainerType { get { throw null; } }
         public virtual bool ConvertEmptyStringToNull { get { throw null; } set { } }
-        public virtual string Description { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string Description { get { throw null; } set { } }
         public virtual bool IsComplexType { get { throw null; } }
         public bool IsNullableValueType { get { throw null; } }
-        public virtual bool IsReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool IsReadOnly { get { throw null; } set { } }
         public object Model { get { throw null; } set { } }
         public System.Type ModelType { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Web.Http.Metadata.ModelMetadata> Properties { get { throw null; } }
         public string PropertyName { get { throw null; } }
-        protected System.Web.Http.Metadata.ModelMetadataProvider Provider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected System.Web.Http.Metadata.ModelMetadataProvider Provider { get { throw null; } set { } }
         public string GetDisplayName() { throw null; }
         public virtual System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidator> GetValidators(System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> validatorProviders) { throw null; }
     }
@@ -743,10 +743,10 @@ namespace System.Web.Http.Metadata.Providers
     public partial class CachedDataAnnotationsMetadataAttributes
     {
         public CachedDataAnnotationsMetadataAttributes(System.Collections.Generic.IEnumerable<System.Attribute> attributes) { }
-        public System.ComponentModel.DataAnnotations.DisplayAttribute Display { [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]protected set { } }
-        public System.ComponentModel.DataAnnotations.DisplayFormatAttribute DisplayFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]protected set { } }
-        public System.ComponentModel.DataAnnotations.EditableAttribute Editable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute, System.Security.SecuritySafeCriticalAttribute]protected set { } }
-        public System.ComponentModel.ReadOnlyAttribute ReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.ComponentModel.DataAnnotations.DisplayAttribute Display { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecuritySafeCriticalAttribute]protected set { } }
+        public System.ComponentModel.DataAnnotations.DisplayFormatAttribute DisplayFormat { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecuritySafeCriticalAttribute]protected set { } }
+        public System.ComponentModel.DataAnnotations.EditableAttribute Editable { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecuritySafeCriticalAttribute]protected set { } }
+        public System.ComponentModel.ReadOnlyAttribute ReadOnly { get { throw null; } protected set { } }
     }
     public partial class CachedDataAnnotationsModelMetadata : System.Web.Http.Metadata.Providers.CachedModelMetadata<System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes>
     {
@@ -766,7 +766,7 @@ namespace System.Web.Http.Metadata.Providers
         public sealed override bool ConvertEmptyStringToNull { get { throw null; } set { } }
         public sealed override string Description { get { throw null; } set { } }
         public sealed override bool IsReadOnly { get { throw null; } set { } }
-        protected TPrototypeCache PrototypeCache { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        protected TPrototypeCache PrototypeCache { get { throw null; } set { } }
         protected virtual bool ComputeConvertEmptyStringToNull() { throw null; }
         protected virtual string ComputeDescription() { throw null; }
         protected virtual bool ComputeIsReadOnly() { throw null; }
@@ -813,7 +813,7 @@ namespace System.Web.Http.ModelBinding
     public partial class FormatterParameterBinding : System.Web.Http.Controllers.HttpParameterBinding
     {
         public FormatterParameterBinding(System.Web.Http.Controllers.HttpParameterDescriptor descriptor, System.Collections.Generic.IEnumerable<System.Net.Http.Formatting.MediaTypeFormatter> formatters, System.Web.Http.Validation.IBodyModelValidator bodyModelValidator) : base (default(System.Web.Http.Controllers.HttpParameterDescriptor)) { }
-        public System.Web.Http.Validation.IBodyModelValidator BodyModelValidator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.Validation.IBodyModelValidator BodyModelValidator { get { throw null; } set { } }
         public System.Collections.Generic.IEnumerable<System.Net.Http.Formatting.MediaTypeFormatter> Formatters { get { throw null; } set { } }
         public override bool WillReadBody { get { throw null; } }
         public override System.Threading.Tasks.Task ExecuteBindingAsync(System.Web.Http.Metadata.ModelMetadataProvider metadataProvider, System.Web.Http.Controllers.HttpActionContext actionContext, System.Threading.CancellationToken cancellationToken) { throw null; }
@@ -836,7 +836,7 @@ namespace System.Web.Http.ModelBinding
     public partial class HttpBindingBehaviorAttribute : System.Attribute
     {
         public HttpBindingBehaviorAttribute(System.Web.Http.ModelBinding.HttpBindingBehavior behavior) { }
-        public System.Web.Http.ModelBinding.HttpBindingBehavior Behavior { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.ModelBinding.HttpBindingBehavior Behavior { get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
     public partial class HttpRequestParameterBinding : System.Web.Http.Controllers.HttpParameterBinding
@@ -859,9 +859,9 @@ namespace System.Web.Http.ModelBinding
     {
         public ModelBinderAttribute() { }
         public ModelBinderAttribute(System.Type binderType) { }
-        public System.Type BinderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SuppressPrefixCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Type BinderType { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public bool SuppressPrefixCheck { get { throw null; } set { } }
         public System.Web.Http.ModelBinding.ModelBinderProvider GetModelBinderProvider(System.Web.Http.HttpConfiguration configuration) { throw null; }
         public virtual System.Collections.Generic.IEnumerable<System.Web.Http.ValueProviders.ValueProviderFactory> GetValueProviderFactories(System.Web.Http.HttpConfiguration configuration) { throw null; }
     }
@@ -888,15 +888,15 @@ namespace System.Web.Http.ModelBinding
     {
         public ModelBindingContext() { }
         public ModelBindingContext(System.Web.Http.ModelBinding.ModelBindingContext bindingContext) { }
-        public bool FallbackToEmptyPrefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool FallbackToEmptyPrefix { get { throw null; } set { } }
         public object Model { get { throw null; } set { } }
-        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { get { throw null; } set { } }
         public string ModelName { get { throw null; } set { } }
         public System.Web.Http.ModelBinding.ModelStateDictionary ModelState { get { throw null; } set { } }
         public System.Type ModelType { get { throw null; } }
         public System.Collections.Generic.IDictionary<string, System.Web.Http.Metadata.ModelMetadata> PropertyMetadata { get { throw null; } }
         public System.Web.Http.Validation.ModelValidationNode ValidationNode { get { throw null; } set { } }
-        public System.Web.Http.ValueProviders.IValueProvider ValueProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.ValueProviders.IValueProvider ValueProvider { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class ModelError
@@ -904,8 +904,8 @@ namespace System.Web.Http.ModelBinding
         public ModelError(System.Exception exception) { }
         public ModelError(System.Exception exception, string errorMessage) { }
         public ModelError(string errorMessage) { }
-        public string ErrorMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ErrorMessage { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class ModelErrorCollection : System.Collections.ObjectModel.Collection<System.Web.Http.ModelBinding.ModelError>
@@ -919,7 +919,7 @@ namespace System.Web.Http.ModelBinding
     {
         public ModelState() { }
         public System.Web.Http.ModelBinding.ModelErrorCollection Errors { get { throw null; } }
-        public System.Web.Http.ValueProviders.ValueProviderResult Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Http.ValueProviders.ValueProviderResult Value { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class ModelStateDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Web.Http.ModelBinding.ModelState>>, System.Collections.Generic.IDictionary<string, System.Web.Http.ModelBinding.ModelState>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Web.Http.ModelBinding.ModelState>>, System.Collections.IEnumerable
@@ -981,9 +981,9 @@ namespace System.Web.Http.ModelBinding.Binders
     public partial class ComplexModelDto
     {
         public ComplexModelDto(System.Web.Http.Metadata.ModelMetadata modelMetadata, System.Collections.Generic.IEnumerable<System.Web.Http.Metadata.ModelMetadata> propertyMetadata) { }
-        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Web.Http.Metadata.ModelMetadata> PropertyMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<System.Web.Http.Metadata.ModelMetadata, System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult> Results { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Web.Http.Metadata.ModelMetadata> PropertyMetadata { get { throw null; } }
+        public System.Collections.Generic.IDictionary<System.Web.Http.Metadata.ModelMetadata, System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult> Results { get { throw null; } }
     }
     public sealed partial class ComplexModelDtoModelBinder : System.Web.Http.ModelBinding.IModelBinder
     {
@@ -998,8 +998,8 @@ namespace System.Web.Http.ModelBinding.Binders
     public sealed partial class ComplexModelDtoResult
     {
         public ComplexModelDtoResult(object model, System.Web.Http.Validation.ModelValidationNode validationNode) { }
-        public object Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Http.Validation.ModelValidationNode ValidationNode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Model { get { throw null; } }
+        public System.Web.Http.Validation.ModelValidationNode ValidationNode { get { throw null; } }
     }
     public partial class CompositeModelBinder : System.Web.Http.ModelBinding.IModelBinder
     {
@@ -1030,7 +1030,7 @@ namespace System.Web.Http.ModelBinding.Binders
         public GenericModelBinderProvider(System.Type modelType, System.Type modelBinderType) { }
         public GenericModelBinderProvider(System.Type modelType, System.Web.Http.ModelBinding.IModelBinder modelBinder) { }
         public System.Type ModelType { get { throw null; } }
-        public bool SuppressPrefixCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool SuppressPrefixCheck { get { throw null; } set { } }
         public override System.Web.Http.ModelBinding.IModelBinder GetBinder(System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.ModelBinding.ModelBindingContext bindingContext) { throw null; }
     }
     public sealed partial class KeyValuePairModelBinderProvider : System.Web.Http.ModelBinding.ModelBinderProvider
@@ -1063,7 +1063,7 @@ namespace System.Web.Http.ModelBinding.Binders
         public SimpleModelBinderProvider(System.Type modelType, System.Func<System.Web.Http.ModelBinding.IModelBinder> modelBinderFactory) { }
         public SimpleModelBinderProvider(System.Type modelType, System.Web.Http.ModelBinding.IModelBinder modelBinder) { }
         public System.Type ModelType { get { throw null; } }
-        public bool SuppressPrefixCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool SuppressPrefixCheck { get { throw null; } set { } }
         public override System.Web.Http.ModelBinding.IModelBinder GetBinder(System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.ModelBinding.ModelBindingContext bindingContext) { throw null; }
     }
     public sealed partial class TypeConverterModelBinder : System.Web.Http.ModelBinding.IModelBinder
@@ -1092,7 +1092,7 @@ namespace System.Web.Http.Routing
     public partial class HttpMethodConstraint : System.Web.Http.Routing.IHttpRouteConstraint
     {
         public HttpMethodConstraint(params System.Net.Http.HttpMethod[] allowedMethods) { }
-        public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> AllowedMethods { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> AllowedMethods { get { throw null; } }
         protected virtual bool Match(System.Net.Http.HttpRequestMessage request, System.Web.Http.Routing.IHttpRoute route, string parameterName, System.Collections.Generic.IDictionary<string, object> values, System.Web.Http.Routing.HttpRouteDirection routeDirection) { throw null; }
         bool System.Web.Http.Routing.IHttpRouteConstraint.Match(System.Net.Http.HttpRequestMessage request, System.Web.Http.Routing.IHttpRoute route, string parameterName, System.Collections.Generic.IDictionary<string, object> values, System.Web.Http.Routing.HttpRouteDirection routeDirection) { throw null; }
     }
@@ -1132,8 +1132,8 @@ namespace System.Web.Http.Routing
     public partial class HttpVirtualPathData : System.Web.Http.Routing.IHttpVirtualPathData
     {
         public HttpVirtualPathData(System.Web.Http.Routing.IHttpRoute route, string virtualPath) { }
-        public System.Web.Http.Routing.IHttpRoute Route { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Routing.IHttpRoute Route { get { throw null; } }
+        public string VirtualPath { get { throw null; } }
     }
     public partial interface IHttpRoute
     {
@@ -1255,18 +1255,18 @@ namespace System.Web.Http.Tracing
     public partial class TraceRecord
     {
         public TraceRecord(System.Net.Http.HttpRequestMessage request, string category, System.Web.Http.Tracing.TraceLevel level) { }
-        public string Category { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Http.Tracing.TraceKind Kind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.Http.Tracing.TraceLevel Level { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Message { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Operation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Operator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Category { get { throw null; } set { } }
+        public System.Exception Exception { get { throw null; } set { } }
+        public System.Web.Http.Tracing.TraceKind Kind { get { throw null; } set { } }
+        public System.Web.Http.Tracing.TraceLevel Level { get { throw null; } set { } }
+        public string Message { get { throw null; } set { } }
+        public string Operation { get { throw null; } set { } }
+        public string Operator { get { throw null; } set { } }
         public System.Collections.Generic.Dictionary<object, object> Properties { get { throw null; } }
-        public System.Net.Http.HttpRequestMessage Request { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Guid RequestId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.HttpStatusCode Status { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.DateTime Timestamp { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Http.HttpRequestMessage Request { get { throw null; } }
+        public System.Guid RequestId { get { throw null; } }
+        public System.Net.HttpStatusCode Status { get { throw null; } set { } }
+        public System.DateTime Timestamp { get { throw null; } }
     }
 }
 namespace System.Web.Http.Validation
@@ -1288,24 +1288,24 @@ namespace System.Web.Http.Validation
     public sealed partial class ModelValidatedEventArgs : System.EventArgs
     {
         public ModelValidatedEventArgs(System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.Validation.ModelValidationNode parentNode) { }
-        public System.Web.Http.Controllers.HttpActionContext ActionContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Http.Validation.ModelValidationNode ParentNode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Controllers.HttpActionContext ActionContext { get { throw null; } }
+        public System.Web.Http.Validation.ModelValidationNode ParentNode { get { throw null; } }
     }
     public sealed partial class ModelValidatingEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ModelValidatingEventArgs(System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.Validation.ModelValidationNode parentNode) { }
-        public System.Web.Http.Controllers.HttpActionContext ActionContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Http.Validation.ModelValidationNode ParentNode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.Http.Controllers.HttpActionContext ActionContext { get { throw null; } }
+        public System.Web.Http.Validation.ModelValidationNode ParentNode { get { throw null; } }
     }
     public sealed partial class ModelValidationNode
     {
         public ModelValidationNode(System.Web.Http.Metadata.ModelMetadata modelMetadata, string modelStateKey) { }
         public ModelValidationNode(System.Web.Http.Metadata.ModelMetadata modelMetadata, string modelStateKey, System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidationNode> childNodes) { }
-        public System.Collections.Generic.ICollection<System.Web.Http.Validation.ModelValidationNode> ChildNodes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ModelStateKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool SuppressValidation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ValidateAllProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.ICollection<System.Web.Http.Validation.ModelValidationNode> ChildNodes { get { throw null; } }
+        public System.Web.Http.Metadata.ModelMetadata ModelMetadata { get { throw null; } }
+        public string ModelStateKey { get { throw null; } }
+        public bool SuppressValidation { get { throw null; } set { } }
+        public bool ValidateAllProperties { get { throw null; } set { } }
         public event System.EventHandler<System.Web.Http.Validation.ModelValidatedEventArgs> Validated { add { } remove { } }
         public event System.EventHandler<System.Web.Http.Validation.ModelValidatingEventArgs> Validating { add { } remove { } }
         public void CombineWith(System.Web.Http.Validation.ModelValidationNode otherNode) { }
@@ -1327,7 +1327,7 @@ namespace System.Web.Http.Validation
     {
         protected ModelValidator(System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> validatorProviders) { }
         public virtual bool IsRequired { get { throw null; } }
-        protected internal System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> ValidatorProviders { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> ValidatorProviders { get { throw null; } }
         public static System.Web.Http.Validation.ModelValidator GetModelValidator(System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> validatorProviders) { throw null; }
         public abstract System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidationResult> Validate(System.Web.Http.Metadata.ModelMetadata metadata, object container);
     }
@@ -1380,7 +1380,7 @@ namespace System.Web.Http.Validation.Validators
     public partial class DataAnnotationsModelValidator : System.Web.Http.Validation.ModelValidator
     {
         public DataAnnotationsModelValidator(System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> validatorProviders, System.ComponentModel.DataAnnotations.ValidationAttribute attribute) : base (default(System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider>)) { }
-        protected internal System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected internal System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get { throw null; } }
         public override bool IsRequired { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
         [System.Security.SecuritySafeCriticalAttribute]
         public override System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidationResult> Validate(System.Web.Http.Metadata.ModelMetadata metadata, object container) { throw null; }
@@ -1429,9 +1429,9 @@ namespace System.Web.Http.ValueProviders
     {
         protected ValueProviderResult() { }
         public ValueProviderResult(object rawValue, string attemptedValue, System.Globalization.CultureInfo culture) { }
-        public string AttemptedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public string AttemptedValue { get { throw null; } protected set { } }
         public System.Globalization.CultureInfo Culture { get { throw null; } protected set { } }
-        public object RawValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public object RawValue { get { throw null; } protected set { } }
         public object ConvertTo(System.Type type) { throw null; }
         public virtual object ConvertTo(System.Type type, System.Globalization.CultureInfo culture) { throw null; }
     }

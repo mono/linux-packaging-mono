@@ -9,6 +9,9 @@ using System.Diagnostics.Private;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     public sealed class EncoderReplacementFallback : EncoderFallback
     {
         // Our variables

@@ -55,7 +55,6 @@ namespace Mono.Data.Sqlite
         Collation = 2,
         Scalar = 0,
     }
-    [System.ComponentModel.DesignerAttribute("SQLite.Designer.SqliteCommandDesigner, SQLite.Designer, Version=1.0.36.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139")]
     [System.ComponentModel.ToolboxItemAttribute(true)]
     public sealed partial class SqliteCommand : System.Data.Common.DbCommand, System.ICloneable
     {
@@ -285,7 +284,6 @@ namespace Mono.Data.Sqlite
         public static string UTF8ToString(System.IntPtr nativestring, int nativestringlen) { throw null; }
     }
     [System.ComponentModel.DefaultEventAttribute("RowUpdated")]
-    [System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.Data.VS.SqlDataAdapterDesigner, Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.ComponentModel.ToolboxItemAttribute("SQLite.Designer.SqliteDataAdapterToolboxItem, SQLite.Designer, Version=1.0.36.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139")]
     public sealed partial class SqliteDataAdapter : System.Data.Common.DbDataAdapter
     {

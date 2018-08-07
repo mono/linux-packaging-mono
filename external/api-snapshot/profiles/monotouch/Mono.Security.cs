@@ -991,6 +991,7 @@ namespace Mono.Security.Interface
     {
         System.Net.Security.AuthenticatedStream AuthenticatedStream { get; }
         bool CanRead { get; }
+        bool CanRenegotiate { get; }
         bool CanTimeout { get; }
         bool CanWrite { get; }
         bool CheckCertRevocationStatus { get; }
@@ -1017,16 +1018,22 @@ namespace Mono.Security.Interface
         System.Net.TransportContext TransportContext { get; }
         int WriteTimeout { get; set; }
         void AuthenticateAsClient(string targetHost);
+        void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation);
         void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost);
+        System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
         void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate);
+        void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation);
         void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate);
+        System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
         System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.AsyncCallback asyncCallback, object asyncState);
+        System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
         System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
         System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, System.AsyncCallback asyncCallback, object asyncState);
+        System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
         System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
         System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState);
         System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState);
@@ -1036,6 +1043,7 @@ namespace Mono.Security.Interface
         void EndWrite(System.IAsyncResult asyncResult);
         Mono.Security.Interface.MonoTlsConnectionInfo GetConnectionInfo();
         int Read(byte[] buffer, int offset, int count);
+        System.Threading.Tasks.Task RenegotiateAsync(System.Threading.CancellationToken cancellationToken);
         void SetLength(long value);
         System.Threading.Tasks.Task ShutdownAsync();
         void Write(byte[] buffer);
@@ -1061,13 +1069,13 @@ namespace Mono.Security.Interface
     public partial class MonoTlsConnectionInfo
     {
         public MonoTlsConnectionInfo() { }
-        public Mono.Security.Interface.CipherAlgorithmType CipherAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherAlgorithmType CipherAlgorithmType { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
-        public Mono.Security.Interface.CipherSuiteCode CipherSuiteCode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.ExchangeAlgorithmType ExchangeAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.HashAlgorithmType HashAlgorithmType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string PeerDomainName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.TlsProtocols ProtocolVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherSuiteCode CipherSuiteCode { get { throw null; } set { } }
+        public Mono.Security.Interface.ExchangeAlgorithmType ExchangeAlgorithmType { get { throw null; } set { } }
+        public Mono.Security.Interface.HashAlgorithmType HashAlgorithmType { get { throw null; } set { } }
+        public string PeerDomainName { get { throw null; } set { } }
+        public Mono.Security.Interface.TlsProtocols ProtocolVersion { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     public abstract partial class MonoTlsProvider
@@ -1098,20 +1106,22 @@ namespace Mono.Security.Interface
     {
         public MonoTlsSettings() { }
         public bool CallbackNeedsCertificateChain { get { throw null; } set { } }
-        public System.Nullable<System.DateTime> CertificateValidationTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.DateTime> CertificateValidationTime { get { throw null; } set { } }
         [System.ObsoleteAttribute("Do not use outside System.dll!")]
         public Mono.Security.Interface.ICertificateValidator CertificateValidator { get { throw null; } }
         public bool CheckCertificateName { get { throw null; } set { } }
         public bool CheckCertificateRevocationStatus { get { throw null; } set { } }
-        public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string[] ClientCertificateIssuers { get { throw null; } set { } }
+        public Mono.Security.Interface.MonoLocalCertificateSelectionCallback ClientCertificateSelectionCallback { get { throw null; } set { } }
         public static Mono.Security.Interface.MonoTlsSettings DefaultSettings { get { throw null; } set { } }
+        public bool DisallowUnauthenticatedCertificateRequest { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
-        public Mono.Security.Interface.CipherSuiteCode[] EnabledCiphers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Mono.Security.Interface.TlsProtocols> EnabledProtocols { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.Security.Interface.MonoRemoteCertificateValidationCallback RemoteCertificateValidationCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.Security.Interface.CipherSuiteCode[] EnabledCiphers { get { throw null; } set { } }
+        public System.Nullable<Mono.Security.Interface.TlsProtocols> EnabledProtocols { get { throw null; } set { } }
+        public Mono.Security.Interface.MonoRemoteCertificateValidationCallback RemoteCertificateValidationCallback { get { throw null; } set { } }
         public bool SkipSystemValidators { get { throw null; } set { } }
-        public System.Security.Cryptography.X509Certificates.X509CertificateCollection TrustAnchors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object UserSettings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Security.Cryptography.X509Certificates.X509CertificateCollection TrustAnchors { get { throw null; } set { } }
+        public object UserSettings { get { throw null; } set { } }
         public System.Nullable<bool> UseServicePointManagerCallback { get { throw null; } set { } }
         public Mono.Security.Interface.MonoTlsSettings Clone() { throw null; }
         [System.ObsoleteAttribute("Do not use outside System.dll!")]
@@ -1825,9 +1835,9 @@ namespace Mono.Security.X509.Extensions
         {
             public DistributionPoint(Mono.Security.ASN1 dp) { }
             public DistributionPoint(string dp, Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags reasons, string issuer) { }
-            public string CRLIssuer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-            public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-            public Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags Reasons { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+            public string CRLIssuer { get { throw null; } }
+            public string Name { get { throw null; } }
+            public Mono.Security.X509.Extensions.CRLDistributionPointsExtension.ReasonFlags Reasons { get { throw null; } }
         }
         [System.FlagsAttribute]
         public enum ReasonFlags

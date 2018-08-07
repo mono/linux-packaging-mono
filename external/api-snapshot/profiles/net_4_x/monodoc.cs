@@ -2372,7 +2372,7 @@ namespace Lucene.Net.Search
         protected CacheEntry() { }
         public abstract System.Type CacheType { get; }
         public abstract object Custom { get; }
-        public string EstimatedSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected internal set { } }
+        public string EstimatedSize { get { throw null; } protected internal set { } }
         public abstract string FieldName { get; }
         public abstract object ReaderKey { get; }
         public abstract object Value { get; }
@@ -2907,7 +2907,7 @@ namespace Lucene.Net.Search
         public virtual float MinSimilarity { get { throw null; } }
         public virtual int PrefixLength { get { throw null; } }
         public override Lucene.Net.Search.RewriteMethod RewriteMethod { set { } }
-        public Lucene.Net.Index.Term Term { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected internal set { } }
+        public Lucene.Net.Index.Term Term { get { throw null; } protected internal set { } }
         public override bool Equals(object obj) { throw null; }
         protected internal override Lucene.Net.Search.FilteredTermEnum GetEnum(Lucene.Net.Index.IndexReader reader) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3241,8 +3241,8 @@ namespace Lucene.Net.Search
     public partial class ScoreDoc
     {
         public ScoreDoc(int doc, float score) { }
-        public int Doc { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float Score { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Doc { get { throw null; } set { } }
+        public float Score { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     public abstract partial class Scorer : Lucene.Net.Search.DocIdSetIterator
@@ -5326,7 +5326,7 @@ namespace Monodoc
         public virtual Monodoc.SortType SortType { get { throw null; } }
         public int SourceID { get { throw null; } }
         public Monodoc.IDocStorage Storage { get { throw null; } protected set { } }
-        public System.Diagnostics.TraceLevel TraceLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Diagnostics.TraceLevel TraceLevel { get { throw null; } set { } }
         public Monodoc.Tree Tree { get { throw null; } }
         protected virtual string UriPrefix { get { throw null; } }
         public virtual bool CanHandleUrl(string url) { throw null; }
@@ -5396,9 +5396,9 @@ namespace Monodoc
     {
         public IndexEntry() { }
         public IndexEntry(System.IO.FileStream fs, System.IO.BinaryReader reader, int position) { }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Count { get { throw null; } }
         public Monodoc.Topic this[int idx] { get { throw null; } }
-        public int Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Position { get { throw null; } }
         public System.Collections.Generic.IList<Monodoc.Topic> Topics { get { throw null; } }
         public void Add(Monodoc.Topic t) { }
         public void WriteTopics(Monodoc.IndexMaker maker, System.IO.Stream stream, System.IO.BinaryWriter writer) { }
@@ -5452,7 +5452,7 @@ namespace Monodoc
     public abstract partial class Provider
     {
         public Provider() { }
-        public int Code { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Code { get { throw null; } set { } }
         public abstract void CloseTree(Monodoc.HelpSource hs, Monodoc.Tree tree);
         public abstract void PopulateTree(Monodoc.Tree tree);
     }
@@ -5472,7 +5472,7 @@ namespace Monodoc
         internal RootTree() : base (default(Monodoc.HelpSource), default(string)) { }
         public const int MonodocVersion = 2;
         public System.Collections.Generic.IList<Monodoc.HelpSource> HelpSources { get { throw null; } }
-        public System.DateTime LastHelpSourceTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.DateTime LastHelpSourceTime { get { throw null; } set { } }
         public void AddSource(string sourcesDir) { }
         public bool AddSourceFile(string sourceFile) { throw null; }
         public static void AddUncompiledSource(string path) { }
@@ -5578,7 +5578,7 @@ namespace Monodoc
         public Tree(Monodoc.HelpSource hs, string filename) : base (default(string), default(string)) { }
         public Tree(Monodoc.HelpSource hs, string caption, string url) : base (default(string), default(string)) { }
         public Monodoc.Node RootNode { get { throw null; } }
-        public long VersionNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public long VersionNumber { get { throw null; } }
         public void InflateNode(Monodoc.Node baseNode) { }
         public void Save(string file) { }
     }
@@ -5626,25 +5626,25 @@ namespace Monodoc.Ecma
     public partial class EcmaDesc : System.IEquatable<Monodoc.Ecma.EcmaDesc>
     {
         public EcmaDesc() { }
-        public System.Collections.Generic.IList<int> ArrayDimensions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Monodoc.Ecma.EcmaDesc.Kind DescKind { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Monodoc.Ecma.EcmaDesc.Mod DescModifier { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public char Etc { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string EtcFilter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Monodoc.Ecma.EcmaDesc ExplicitImplMember { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> GenericMemberArguments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.IList<int> ArrayDimensions { get { throw null; } set { } }
+        public Monodoc.Ecma.EcmaDesc.Kind DescKind { get { throw null; } set { } }
+        public Monodoc.Ecma.EcmaDesc.Mod DescModifier { get { throw null; } set { } }
+        public char Etc { get { throw null; } set { } }
+        public string EtcFilter { get { throw null; } set { } }
+        public Monodoc.Ecma.EcmaDesc ExplicitImplMember { get { throw null; } set { } }
+        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> GenericMemberArguments { get { throw null; } set { } }
         public int GenericMemberArgumentsCount { get { throw null; } }
         public bool GenericMemberArgumentsIsNumeric { get { throw null; } }
-        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> GenericTypeArguments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> GenericTypeArguments { get { throw null; } set { } }
         public int GenericTypeArgumentsCount { get { throw null; } }
         public bool GenericTypeArgumentsIsNumeric { get { throw null; } }
         public bool IsEtc { get { throw null; } }
-        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> MemberArguments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.IList<Monodoc.Ecma.EcmaDesc> MemberArguments { get { throw null; } set { } }
         public int MemberArgumentsCount { get { throw null; } }
-        public string MemberName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Monodoc.Ecma.EcmaDesc NestedType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string TypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string MemberName { get { throw null; } set { } }
+        public string Namespace { get { throw null; } set { } }
+        public Monodoc.Ecma.EcmaDesc NestedType { get { throw null; } set { } }
+        public string TypeName { get { throw null; } set { } }
         public bool Equals(Monodoc.Ecma.EcmaDesc other) { throw null; }
         public override bool Equals(object other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -5877,7 +5877,7 @@ namespace Monodoc.Providers
     {
         public readonly string BasePath;
         public EcmaUncompiledHelpSource(string base_file, bool markName=true) { }
-        public new string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public new string Name { get { throw null; } }
         protected override string UriPrefix { get { throw null; } }
         public override System.IO.Stream GetImage(string url) { throw null; }
     }

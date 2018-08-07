@@ -184,7 +184,7 @@ namespace System.Net.Http
         public HttpRequestMessage() { }
         public HttpRequestMessage(System.Net.Http.HttpMethod method, string requestUri) { }
         public HttpRequestMessage(System.Net.Http.HttpMethod method, System.Uri requestUri) { }
-        public System.Net.Http.HttpContent Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Http.HttpContent Content { get { throw null; } set { } }
         public System.Net.Http.Headers.HttpRequestHeaders Headers { get { throw null; } }
         public System.Net.Http.HttpMethod Method { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<string, object> Properties { get { throw null; } }
@@ -198,11 +198,11 @@ namespace System.Net.Http
     {
         public HttpResponseMessage() { }
         public HttpResponseMessage(System.Net.HttpStatusCode statusCode) { }
-        public System.Net.Http.HttpContent Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Http.HttpContent Content { get { throw null; } set { } }
         public System.Net.Http.Headers.HttpResponseHeaders Headers { get { throw null; } }
         public bool IsSuccessStatusCode { get { throw null; } }
         public string ReasonPhrase { get { throw null; } set { } }
-        public System.Net.Http.HttpRequestMessage RequestMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Http.HttpRequestMessage RequestMessage { get { throw null; } set { } }
         public System.Net.HttpStatusCode StatusCode { get { throw null; } set { } }
         public System.Version Version { get { throw null; } set { } }
         public void Dispose() { }
@@ -260,8 +260,8 @@ namespace System.Net.Http.Headers
     {
         public AuthenticationHeaderValue(string scheme) { }
         public AuthenticationHeaderValue(string scheme, string parameter) { }
-        public string Parameter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Scheme { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Parameter { get { throw null; } }
+        public string Scheme { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.AuthenticationHeaderValue Parse(string input) { throw null; }
@@ -273,21 +273,21 @@ namespace System.Net.Http.Headers
     {
         public CacheControlHeaderValue() { }
         public System.Collections.Generic.ICollection<System.Net.Http.Headers.NameValueHeaderValue> Extensions { get { throw null; } }
-        public System.Nullable<System.TimeSpan> MaxAge { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool MaxStale { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.TimeSpan> MaxStaleLimit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.TimeSpan> MinFresh { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool MustRevalidate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool NoCache { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.TimeSpan> MaxAge { get { throw null; } set { } }
+        public bool MaxStale { get { throw null; } set { } }
+        public System.Nullable<System.TimeSpan> MaxStaleLimit { get { throw null; } set { } }
+        public System.Nullable<System.TimeSpan> MinFresh { get { throw null; } set { } }
+        public bool MustRevalidate { get { throw null; } set { } }
+        public bool NoCache { get { throw null; } set { } }
         public System.Collections.Generic.ICollection<string> NoCacheHeaders { get { throw null; } }
-        public bool NoStore { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool NoTransform { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool OnlyIfCached { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Private { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool NoStore { get { throw null; } set { } }
+        public bool NoTransform { get { throw null; } set { } }
+        public bool OnlyIfCached { get { throw null; } set { } }
+        public bool Private { get { throw null; } set { } }
         public System.Collections.Generic.ICollection<string> PrivateHeaders { get { throw null; } }
-        public bool ProxyRevalidate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Public { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.TimeSpan> SharedMaxAge { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ProxyRevalidate { get { throw null; } set { } }
+        public bool Public { get { throw null; } set { } }
+        public System.Nullable<System.TimeSpan> SharedMaxAge { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.CacheControlHeaderValue Parse(string input) { throw null; }
@@ -320,11 +320,11 @@ namespace System.Net.Http.Headers
         public ContentRangeHeaderValue(long length) { }
         public ContentRangeHeaderValue(long from, long to) { }
         public ContentRangeHeaderValue(long from, long to, long length) { }
-        public System.Nullable<long> From { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<long> From { get { throw null; } }
         public bool HasLength { get { throw null; } }
         public bool HasRange { get { throw null; } }
-        public System.Nullable<long> Length { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<long> To { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<long> Length { get { throw null; } }
+        public System.Nullable<long> To { get { throw null; } }
         public string Unit { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -338,8 +338,8 @@ namespace System.Net.Http.Headers
         public EntityTagHeaderValue(string tag) { }
         public EntityTagHeaderValue(string tag, bool isWeak) { }
         public static System.Net.Http.Headers.EntityTagHeaderValue Any { get { throw null; } }
-        public bool IsWeak { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Tag { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsWeak { get { throw null; } }
+        public string Tag { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.EntityTagHeaderValue Parse(string input) { throw null; }
@@ -480,7 +480,7 @@ namespace System.Net.Http.Headers
         protected internal NameValueHeaderValue(System.Net.Http.Headers.NameValueHeaderValue source) { }
         public NameValueHeaderValue(string name) { }
         public NameValueHeaderValue(string name, string value) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
         public string Value { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -506,8 +506,8 @@ namespace System.Net.Http.Headers
     {
         public ProductHeaderValue(string name) { }
         public ProductHeaderValue(string name, string version) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Version { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public string Version { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.ProductHeaderValue Parse(string input) { throw null; }
@@ -520,8 +520,8 @@ namespace System.Net.Http.Headers
         public ProductInfoHeaderValue(System.Net.Http.Headers.ProductHeaderValue product) { }
         public ProductInfoHeaderValue(string comment) { }
         public ProductInfoHeaderValue(string productName, string productVersion) { }
-        public string Comment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Http.Headers.ProductHeaderValue Product { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Comment { get { throw null; } }
+        public System.Net.Http.Headers.ProductHeaderValue Product { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.ProductInfoHeaderValue Parse(string input) { throw null; }
@@ -534,8 +534,8 @@ namespace System.Net.Http.Headers
         public RangeConditionHeaderValue(System.DateTimeOffset date) { }
         public RangeConditionHeaderValue(System.Net.Http.Headers.EntityTagHeaderValue entityTag) { }
         public RangeConditionHeaderValue(string entityTag) { }
-        public System.Nullable<System.DateTimeOffset> Date { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Http.Headers.EntityTagHeaderValue EntityTag { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<System.DateTimeOffset> Date { get { throw null; } }
+        public System.Net.Http.Headers.EntityTagHeaderValue EntityTag { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.RangeConditionHeaderValue Parse(string input) { throw null; }
@@ -559,8 +559,8 @@ namespace System.Net.Http.Headers
     public partial class RangeItemHeaderValue : System.ICloneable
     {
         public RangeItemHeaderValue(System.Nullable<long> from, System.Nullable<long> to) { }
-        public System.Nullable<long> From { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<long> To { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<long> From { get { throw null; } }
+        public System.Nullable<long> To { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         object System.ICloneable.Clone() { throw null; }
@@ -570,8 +570,8 @@ namespace System.Net.Http.Headers
     {
         public RetryConditionHeaderValue(System.DateTimeOffset date) { }
         public RetryConditionHeaderValue(System.TimeSpan delta) { }
-        public System.Nullable<System.DateTimeOffset> Date { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<System.TimeSpan> Delta { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<System.DateTimeOffset> Date { get { throw null; } }
+        public System.Nullable<System.TimeSpan> Delta { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.RetryConditionHeaderValue Parse(string input) { throw null; }
@@ -583,8 +583,8 @@ namespace System.Net.Http.Headers
     {
         public StringWithQualityHeaderValue(string value) { }
         public StringWithQualityHeaderValue(string value, double quality) { }
-        public System.Nullable<double> Quality { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Nullable<double> Quality { get { throw null; } }
+        public string Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.StringWithQualityHeaderValue Parse(string input) { throw null; }
@@ -618,10 +618,10 @@ namespace System.Net.Http.Headers
         public ViaHeaderValue(string protocolVersion, string receivedBy) { }
         public ViaHeaderValue(string protocolVersion, string receivedBy, string protocolName) { }
         public ViaHeaderValue(string protocolVersion, string receivedBy, string protocolName, string comment) { }
-        public string Comment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ProtocolName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ProtocolVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ReceivedBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Comment { get { throw null; } }
+        public string ProtocolName { get { throw null; } }
+        public string ProtocolVersion { get { throw null; } }
+        public string ReceivedBy { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.ViaHeaderValue Parse(string input) { throw null; }
@@ -633,10 +633,10 @@ namespace System.Net.Http.Headers
     {
         public WarningHeaderValue(int code, string agent, string text) { }
         public WarningHeaderValue(int code, string agent, string text, System.DateTimeOffset date) { }
-        public string Agent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Code { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<System.DateTimeOffset> Date { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Agent { get { throw null; } }
+        public int Code { get { throw null; } }
+        public System.Nullable<System.DateTimeOffset> Date { get { throw null; } }
+        public string Text { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static System.Net.Http.Headers.WarningHeaderValue Parse(string input) { throw null; }

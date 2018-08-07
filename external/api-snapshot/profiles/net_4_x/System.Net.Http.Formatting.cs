@@ -78,10 +78,10 @@ namespace Newtonsoft.Json
     {
         protected JsonContainerAttribute() { }
         protected JsonContainerAttribute(string id) { }
-        public string Description { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Id { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Description { get { throw null; } set { } }
+        public string Id { get { throw null; } set { } }
         public bool IsReference { get { throw null; } set { } }
-        public string Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Title { get { throw null; } set { } }
     }
     public static partial class JsonConvert
     {
@@ -201,15 +201,15 @@ namespace Newtonsoft.Json
         public Newtonsoft.Json.NullValueHandling NullValueHandling { get { throw null; } set { } }
         public Newtonsoft.Json.ObjectCreationHandling ObjectCreationHandling { get { throw null; } set { } }
         public int Order { get { throw null; } set { } }
-        public string PropertyName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string PropertyName { get { throw null; } set { } }
         public Newtonsoft.Json.ReferenceLoopHandling ReferenceLoopHandling { get { throw null; } set { } }
-        public Newtonsoft.Json.Required Required { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.Required Required { get { throw null; } set { } }
         public Newtonsoft.Json.TypeNameHandling TypeNameHandling { get { throw null; } set { } }
     }
     public abstract partial class JsonReader : System.IDisposable
     {
         protected JsonReader() { }
-        public bool CloseInput { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool CloseInput { get { throw null; } set { } }
         public System.Globalization.CultureInfo Culture { get { throw null; } set { } }
         protected Newtonsoft.Json.JsonReader.State CurrentState { get { throw null; } }
         public Newtonsoft.Json.DateTimeZoneHandling DateTimeZoneHandling { get { throw null; } set { } }
@@ -257,9 +257,9 @@ namespace Newtonsoft.Json
         public JsonReaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public JsonReaderException(string message) { }
         public JsonReaderException(string message, System.Exception innerException) { }
-        public int LineNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int LinePosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int LineNumber { get { throw null; } }
+        public int LinePosition { get { throw null; } }
+        public string Path { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class JsonSerializationException : System.Exception
@@ -304,25 +304,25 @@ namespace Newtonsoft.Json
     public partial class JsonSerializerSettings
     {
         public JsonSerializerSettings() { }
-        public System.Runtime.Serialization.SerializationBinder Binder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.ConstructorHandling ConstructorHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.StreamingContext Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Serialization.IContractResolver ContractResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IList<Newtonsoft.Json.JsonConverter> Converters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Runtime.Serialization.SerializationBinder Binder { get { throw null; } set { } }
+        public Newtonsoft.Json.ConstructorHandling ConstructorHandling { get { throw null; } set { } }
+        public System.Runtime.Serialization.StreamingContext Context { get { throw null; } set { } }
+        public Newtonsoft.Json.Serialization.IContractResolver ContractResolver { get { throw null; } set { } }
+        public System.Collections.Generic.IList<Newtonsoft.Json.JsonConverter> Converters { get { throw null; } set { } }
         public System.Globalization.CultureInfo Culture { get { throw null; } set { } }
         public Newtonsoft.Json.DateFormatHandling DateFormatHandling { get { throw null; } set { } }
         public Newtonsoft.Json.DateTimeZoneHandling DateTimeZoneHandling { get { throw null; } set { } }
-        public Newtonsoft.Json.DefaultValueHandling DefaultValueHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.EventHandler<Newtonsoft.Json.Serialization.ErrorEventArgs> Error { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.DefaultValueHandling DefaultValueHandling { get { throw null; } set { } }
+        public System.EventHandler<Newtonsoft.Json.Serialization.ErrorEventArgs> Error { get { throw null; } set { } }
         public Newtonsoft.Json.Formatting Formatting { get { throw null; } set { } }
-        public Newtonsoft.Json.MissingMemberHandling MissingMemberHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.NullValueHandling NullValueHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.ObjectCreationHandling ObjectCreationHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.PreserveReferencesHandling PreserveReferencesHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.ReferenceLoopHandling ReferenceLoopHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Serialization.IReferenceResolver ReferenceResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TypeNameAssemblyFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.TypeNameHandling TypeNameHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.MissingMemberHandling MissingMemberHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.NullValueHandling NullValueHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.ObjectCreationHandling ObjectCreationHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.PreserveReferencesHandling PreserveReferencesHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.ReferenceLoopHandling ReferenceLoopHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.Serialization.IReferenceResolver ReferenceResolver { get { throw null; } set { } }
+        public System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TypeNameAssemblyFormat { get { throw null; } set { } }
+        public Newtonsoft.Json.TypeNameHandling TypeNameHandling { get { throw null; } set { } }
     }
     public partial class JsonTextReader : Newtonsoft.Json.JsonReader, Newtonsoft.Json.IJsonLineInfo
     {
@@ -434,7 +434,7 @@ namespace Newtonsoft.Json
     public abstract partial class JsonWriter : System.IDisposable
     {
         protected JsonWriter() { }
-        public bool CloseOutput { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool CloseOutput { get { throw null; } set { } }
         public Newtonsoft.Json.DateFormatHandling DateFormatHandling { get { throw null; } set { } }
         public Newtonsoft.Json.DateTimeZoneHandling DateTimeZoneHandling { get { throw null; } set { } }
         public Newtonsoft.Json.Formatting Formatting { get { throw null; } set { } }
@@ -584,7 +584,7 @@ namespace Newtonsoft.Json.Bson
     public partial class BsonObjectId
     {
         public BsonObjectId(byte[] value) { }
-        public byte[] Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public byte[] Value { get { throw null; } }
     }
     public partial class BsonReader : Newtonsoft.Json.JsonReader
     {
@@ -740,7 +740,7 @@ namespace Newtonsoft.Json.Converters
     public partial class StringEnumConverter : Newtonsoft.Json.JsonConverter
     {
         public StringEnumConverter() { }
-        public bool CamelCaseText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool CamelCaseText { get { throw null; } set { } }
         public override bool CanConvert(System.Type objectType) { throw null; }
         public override object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer) { throw null; }
         public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer) { }
@@ -755,9 +755,9 @@ namespace Newtonsoft.Json.Converters
     public partial class XmlNodeConverter : Newtonsoft.Json.JsonConverter
     {
         public XmlNodeConverter() { }
-        public string DeserializeRootElementName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool OmitRootObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool WriteArrayAttribute { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DeserializeRootElementName { get { throw null; } set { } }
+        public bool OmitRootObject { get { throw null; } set { } }
+        public bool WriteArrayAttribute { get { throw null; } set { } }
         public override bool CanConvert(System.Type valueType) { throw null; }
         public override object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer) { throw null; }
         public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer) { }
@@ -1219,37 +1219,37 @@ namespace Newtonsoft.Json.Schema
     public partial class JsonSchema
     {
         public JsonSchema() { }
-        public Newtonsoft.Json.Schema.JsonSchema AdditionalProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool AllowAdditionalProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Linq.JToken Default { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Description { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.Schema.JsonSchemaType> Disallow { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<double> DivisibleBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IList<Newtonsoft.Json.Linq.JToken> Enum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> ExclusiveMaximum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> ExclusiveMinimum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Schema.JsonSchema Extends { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Format { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> Hidden { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Id { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IList<string> Identity { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IList<Newtonsoft.Json.Schema.JsonSchema> Items { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<double> Maximum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> MaximumItems { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> MaximumLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<double> Minimum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> MinimumItems { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> MinimumLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IDictionary<Newtonsoft.Json.Linq.JToken, string> Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Pattern { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IDictionary<string, Newtonsoft.Json.Schema.JsonSchema> PatternProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IDictionary<string, Newtonsoft.Json.Schema.JsonSchema> Properties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> ReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> Required { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Requires { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> Transient { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.Schema.JsonSchemaType> Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.Schema.JsonSchema AdditionalProperties { get { throw null; } set { } }
+        public bool AllowAdditionalProperties { get { throw null; } set { } }
+        public Newtonsoft.Json.Linq.JToken Default { get { throw null; } set { } }
+        public string Description { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.Schema.JsonSchemaType> Disallow { get { throw null; } set { } }
+        public System.Nullable<double> DivisibleBy { get { throw null; } set { } }
+        public System.Collections.Generic.IList<Newtonsoft.Json.Linq.JToken> Enum { get { throw null; } set { } }
+        public System.Nullable<bool> ExclusiveMaximum { get { throw null; } set { } }
+        public System.Nullable<bool> ExclusiveMinimum { get { throw null; } set { } }
+        public Newtonsoft.Json.Schema.JsonSchema Extends { get { throw null; } set { } }
+        public string Format { get { throw null; } set { } }
+        public System.Nullable<bool> Hidden { get { throw null; } set { } }
+        public string Id { get { throw null; } set { } }
+        public System.Collections.Generic.IList<string> Identity { get { throw null; } set { } }
+        public System.Collections.Generic.IList<Newtonsoft.Json.Schema.JsonSchema> Items { get { throw null; } set { } }
+        public System.Nullable<double> Maximum { get { throw null; } set { } }
+        public System.Nullable<int> MaximumItems { get { throw null; } set { } }
+        public System.Nullable<int> MaximumLength { get { throw null; } set { } }
+        public System.Nullable<double> Minimum { get { throw null; } set { } }
+        public System.Nullable<int> MinimumItems { get { throw null; } set { } }
+        public System.Nullable<int> MinimumLength { get { throw null; } set { } }
+        public System.Collections.Generic.IDictionary<Newtonsoft.Json.Linq.JToken, string> Options { get { throw null; } set { } }
+        public string Pattern { get { throw null; } set { } }
+        public System.Collections.Generic.IDictionary<string, Newtonsoft.Json.Schema.JsonSchema> PatternProperties { get { throw null; } set { } }
+        public System.Collections.Generic.IDictionary<string, Newtonsoft.Json.Schema.JsonSchema> Properties { get { throw null; } set { } }
+        public System.Nullable<bool> ReadOnly { get { throw null; } set { } }
+        public System.Nullable<bool> Required { get { throw null; } set { } }
+        public string Requires { get { throw null; } set { } }
+        public string Title { get { throw null; } set { } }
+        public System.Nullable<bool> Transient { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.Schema.JsonSchemaType> Type { get { throw null; } set { } }
         public static Newtonsoft.Json.Schema.JsonSchema Parse(string json) { throw null; }
         public static Newtonsoft.Json.Schema.JsonSchema Parse(string json, Newtonsoft.Json.Schema.JsonSchemaResolver resolver) { throw null; }
         public static Newtonsoft.Json.Schema.JsonSchema Read(Newtonsoft.Json.JsonReader reader) { throw null; }
@@ -1265,15 +1265,15 @@ namespace Newtonsoft.Json.Schema
         public JsonSchemaException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public JsonSchemaException(string message) { }
         public JsonSchemaException(string message, System.Exception innerException) { }
-        public int LineNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int LinePosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int LineNumber { get { throw null; } }
+        public int LinePosition { get { throw null; } }
+        public string Path { get { throw null; } }
     }
     public partial class JsonSchemaGenerator
     {
         public JsonSchemaGenerator() { }
         public Newtonsoft.Json.Serialization.IContractResolver ContractResolver { get { throw null; } set { } }
-        public Newtonsoft.Json.Schema.UndefinedSchemaIdHandling UndefinedSchemaIdHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.Schema.UndefinedSchemaIdHandling UndefinedSchemaIdHandling { get { throw null; } set { } }
         public Newtonsoft.Json.Schema.JsonSchema Generate(System.Type type) { throw null; }
         public Newtonsoft.Json.Schema.JsonSchema Generate(System.Type type, Newtonsoft.Json.Schema.JsonSchemaResolver resolver) { throw null; }
         public Newtonsoft.Json.Schema.JsonSchema Generate(System.Type type, Newtonsoft.Json.Schema.JsonSchemaResolver resolver, bool rootSchemaNullable) { throw null; }
@@ -1282,7 +1282,7 @@ namespace Newtonsoft.Json.Schema
     public partial class JsonSchemaResolver
     {
         public JsonSchemaResolver() { }
-        public System.Collections.Generic.IList<Newtonsoft.Json.Schema.JsonSchema> LoadedSchemas { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public System.Collections.Generic.IList<Newtonsoft.Json.Schema.JsonSchema> LoadedSchemas { get { throw null; } protected set { } }
         public virtual Newtonsoft.Json.Schema.JsonSchema GetSchema(string id) { throw null; }
     }
     [System.FlagsAttribute]
@@ -1324,10 +1324,10 @@ namespace Newtonsoft.Json.Serialization
     {
         public DefaultContractResolver() { }
         public DefaultContractResolver(bool shareCache) { }
-        public System.Reflection.BindingFlags DefaultMembersSearchFlags { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Reflection.BindingFlags DefaultMembersSearchFlags { get { throw null; } set { } }
         public bool DynamicCodeGeneration { get { throw null; } }
-        public bool IgnoreSerializableInterface { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SerializeCompilerGeneratedMembers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IgnoreSerializableInterface { get { throw null; } set { } }
+        public bool SerializeCompilerGeneratedMembers { get { throw null; } set { } }
         protected virtual Newtonsoft.Json.Serialization.JsonArrayContract CreateArrayContract(System.Type objectType) { throw null; }
         protected virtual System.Collections.Generic.IList<Newtonsoft.Json.Serialization.JsonProperty> CreateConstructorParameters(System.Reflection.ConstructorInfo constructor, Newtonsoft.Json.Serialization.JsonPropertyCollection memberProperties) { throw null; }
         protected virtual Newtonsoft.Json.Serialization.JsonContract CreateContract(System.Type objectType) { throw null; }
@@ -1362,17 +1362,17 @@ namespace Newtonsoft.Json.Serialization
     public partial class ErrorContext
     {
         internal ErrorContext() { }
-        public System.Exception Error { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Handled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object Member { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object OriginalObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Exception Error { get { throw null; } }
+        public bool Handled { get { throw null; } set { } }
+        public object Member { get { throw null; } }
+        public object OriginalObject { get { throw null; } }
+        public string Path { get { throw null; } }
     }
     public partial class ErrorEventArgs : System.EventArgs
     {
         public ErrorEventArgs(object currentObject, Newtonsoft.Json.Serialization.ErrorContext errorContext) { }
-        public object CurrentObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public Newtonsoft.Json.Serialization.ErrorContext ErrorContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object CurrentObject { get { throw null; } }
+        public Newtonsoft.Json.Serialization.ErrorContext ErrorContext { get { throw null; } }
     }
     public partial interface IContractResolver
     {
@@ -1393,40 +1393,40 @@ namespace Newtonsoft.Json.Serialization
     public partial class JsonArrayContract : Newtonsoft.Json.Serialization.JsonContract
     {
         public JsonArrayContract(System.Type underlyingType) { }
-        public System.Type CollectionItemType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type CollectionItemType { get { throw null; } }
     }
     public abstract partial class JsonContract
     {
         internal JsonContract() { }
-        public Newtonsoft.Json.JsonConverter Converter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type CreatedType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Func<object> DefaultCreator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool DefaultCreatorNonPublic { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.MethodInfo OnDeserialized { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.MethodInfo OnDeserializing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.MethodInfo OnError { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.MethodInfo OnSerialized { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.MethodInfo OnSerializing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type UnderlyingType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Newtonsoft.Json.JsonConverter Converter { get { throw null; } set { } }
+        public System.Type CreatedType { get { throw null; } set { } }
+        public System.Func<object> DefaultCreator { get { throw null; } set { } }
+        public bool DefaultCreatorNonPublic { get { throw null; } set { } }
+        public System.Nullable<bool> IsReference { get { throw null; } set { } }
+        public System.Reflection.MethodInfo OnDeserialized { get { throw null; } set { } }
+        public System.Reflection.MethodInfo OnDeserializing { get { throw null; } set { } }
+        public System.Reflection.MethodInfo OnError { get { throw null; } set { } }
+        public System.Reflection.MethodInfo OnSerialized { get { throw null; } set { } }
+        public System.Reflection.MethodInfo OnSerializing { get { throw null; } set { } }
+        public System.Type UnderlyingType { get { throw null; } }
     }
     public partial class JsonDictionaryContract : Newtonsoft.Json.Serialization.JsonContract
     {
         public JsonDictionaryContract(System.Type underlyingType) { }
-        public System.Type DictionaryKeyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type DictionaryValueType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Func<string, string> PropertyNameResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Type DictionaryKeyType { get { throw null; } }
+        public System.Type DictionaryValueType { get { throw null; } }
+        public System.Func<string, string> PropertyNameResolver { get { throw null; } set { } }
     }
     public partial class JsonDynamicContract : Newtonsoft.Json.Serialization.JsonContract
     {
         public JsonDynamicContract(System.Type underlyingType) { }
-        public Newtonsoft.Json.Serialization.JsonPropertyCollection Properties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Func<string, string> PropertyNameResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.Serialization.JsonPropertyCollection Properties { get { throw null; } }
+        public System.Func<string, string> PropertyNameResolver { get { throw null; } set { } }
     }
     public partial class JsonISerializableContract : Newtonsoft.Json.Serialization.JsonContract
     {
         public JsonISerializableContract(System.Type underlyingType) { }
-        public Newtonsoft.Json.Serialization.ObjectConstructor<object> ISerializableCreator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.Serialization.ObjectConstructor<object> ISerializableCreator { get { throw null; } set { } }
     }
     public partial class JsonLinqContract : Newtonsoft.Json.Serialization.JsonContract
     {
@@ -1435,11 +1435,11 @@ namespace Newtonsoft.Json.Serialization
     public partial class JsonObjectContract : Newtonsoft.Json.Serialization.JsonContract
     {
         public JsonObjectContract(System.Type underlyingType) { }
-        public Newtonsoft.Json.Serialization.JsonPropertyCollection ConstructorParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public Newtonsoft.Json.MemberSerialization MemberSerialization { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.ConstructorInfo OverrideConstructor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Reflection.ConstructorInfo ParametrizedConstructor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Serialization.JsonPropertyCollection Properties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Newtonsoft.Json.Serialization.JsonPropertyCollection ConstructorParameters { get { throw null; } }
+        public Newtonsoft.Json.MemberSerialization MemberSerialization { get { throw null; } set { } }
+        public System.Reflection.ConstructorInfo OverrideConstructor { get { throw null; } set { } }
+        public System.Reflection.ConstructorInfo ParametrizedConstructor { get { throw null; } set { } }
+        public Newtonsoft.Json.Serialization.JsonPropertyCollection Properties { get { throw null; } }
     }
     public partial class JsonPrimitiveContract : Newtonsoft.Json.Serialization.JsonContract
     {
@@ -1448,28 +1448,28 @@ namespace Newtonsoft.Json.Serialization
     public partial class JsonProperty
     {
         public JsonProperty() { }
-        public Newtonsoft.Json.JsonConverter Converter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type DeclaringType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object DefaultValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.DefaultValueHandling> DefaultValueHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Predicate<object> GetIsSpecified { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Ignored { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<bool> IsReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.JsonConverter MemberConverter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.NullValueHandling> NullValueHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.ObjectCreationHandling> ObjectCreationHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> Order { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string PropertyName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type PropertyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Readable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.ReferenceLoopHandling> ReferenceLoopHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Required Required { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Action<object, object> SetIsSpecified { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Predicate<object> ShouldSerialize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<Newtonsoft.Json.TypeNameHandling> TypeNameHandling { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string UnderlyingName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Newtonsoft.Json.Serialization.IValueProvider ValueProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Writable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Newtonsoft.Json.JsonConverter Converter { get { throw null; } set { } }
+        public System.Type DeclaringType { get { throw null; } set { } }
+        public object DefaultValue { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.DefaultValueHandling> DefaultValueHandling { get { throw null; } set { } }
+        public System.Predicate<object> GetIsSpecified { get { throw null; } set { } }
+        public bool Ignored { get { throw null; } set { } }
+        public System.Nullable<bool> IsReference { get { throw null; } set { } }
+        public Newtonsoft.Json.JsonConverter MemberConverter { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.NullValueHandling> NullValueHandling { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.ObjectCreationHandling> ObjectCreationHandling { get { throw null; } set { } }
+        public System.Nullable<int> Order { get { throw null; } set { } }
+        public string PropertyName { get { throw null; } set { } }
+        public System.Type PropertyType { get { throw null; } set { } }
+        public bool Readable { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.ReferenceLoopHandling> ReferenceLoopHandling { get { throw null; } set { } }
+        public Newtonsoft.Json.Required Required { get { throw null; } set { } }
+        public System.Action<object, object> SetIsSpecified { get { throw null; } set { } }
+        public System.Predicate<object> ShouldSerialize { get { throw null; } set { } }
+        public System.Nullable<Newtonsoft.Json.TypeNameHandling> TypeNameHandling { get { throw null; } set { } }
+        public string UnderlyingName { get { throw null; } set { } }
+        public Newtonsoft.Json.Serialization.IValueProvider ValueProvider { get { throw null; } set { } }
+        public bool Writable { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     public partial class JsonPropertyCollection : System.Collections.ObjectModel.KeyedCollection<string, Newtonsoft.Json.Serialization.JsonProperty>
@@ -1565,8 +1565,8 @@ namespace System.Net.Http
     {
         public HttpMessageContent(System.Net.Http.HttpRequestMessage httpRequest) { }
         public HttpMessageContent(System.Net.Http.HttpResponseMessage httpResponse) { }
-        public System.Net.Http.HttpRequestMessage HttpRequestMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Http.HttpResponseMessage HttpResponseMessage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Http.HttpRequestMessage HttpRequestMessage { get { throw null; } }
+        public System.Net.Http.HttpResponseMessage HttpResponseMessage { get { throw null; } }
         protected override void Dispose(bool disposing) { }
         protected override System.Threading.Tasks.Task SerializeToStreamAsync(System.IO.Stream stream, System.Net.TransportContext context) { throw null; }
         protected override bool TryComputeLength(out long length) { length = default(long); throw null; }
@@ -1612,7 +1612,7 @@ namespace System.Net.Http
         public ObjectContent(System.Type type, object value, System.Net.Http.Formatting.MediaTypeFormatter formatter) { }
         public ObjectContent(System.Type type, object value, System.Net.Http.Formatting.MediaTypeFormatter formatter, string mediaType) { }
         public System.Net.Http.Formatting.MediaTypeFormatter Formatter { get { throw null; } }
-        public System.Type ObjectType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type ObjectType { get { throw null; } }
         public object Value { get { throw null; } set { } }
         protected override System.Threading.Tasks.Task SerializeToStreamAsync(System.IO.Stream stream, System.Net.TransportContext context) { throw null; }
         protected override bool TryComputeLength(out long length) { length = default(long); throw null; }
@@ -1646,7 +1646,7 @@ namespace System.Net.Http.Formatting
     {
         public ContentNegotiationResult(System.Net.Http.Formatting.MediaTypeFormatter formatter, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) { }
         public System.Net.Http.Formatting.MediaTypeFormatter Formatter { get { throw null; } set { } }
-        public System.Net.Http.Headers.MediaTypeHeaderValue MediaType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Http.Headers.MediaTypeHeaderValue MediaType { get { throw null; } set { } }
     }
     public partial class DefaultContentNegotiator : System.Net.Http.Formatting.IContentNegotiator
     {
@@ -1698,10 +1698,10 @@ namespace System.Net.Http.Formatting
     {
         public JsonMediaTypeFormatter() { }
         public static System.Net.Http.Headers.MediaTypeHeaderValue DefaultMediaType { get { throw null; } }
-        public bool Indent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Indent { get { throw null; } set { } }
         public int MaxDepth { get { throw null; } set { } }
         public Newtonsoft.Json.JsonSerializerSettings SerializerSettings { get { throw null; } set { } }
-        public bool UseDataContractJsonSerializer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool UseDataContractJsonSerializer { get { throw null; } set { } }
         public override bool CanReadType(System.Type type) { throw null; }
         public override bool CanWriteType(System.Type type) { throw null; }
         public Newtonsoft.Json.JsonSerializerSettings CreateDefaultSerializerSettings() { throw null; }
@@ -1712,17 +1712,17 @@ namespace System.Net.Http.Formatting
     {
         public MediaRangeMapping(System.Net.Http.Headers.MediaTypeHeaderValue mediaRange, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
         public MediaRangeMapping(string mediaRange, string mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
-        public System.Net.Http.Headers.MediaTypeHeaderValue MediaRange { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Http.Headers.MediaTypeHeaderValue MediaRange { get { throw null; } }
         public override double TryMatchMediaType(System.Net.Http.HttpRequestMessage request) { throw null; }
     }
     public abstract partial class MediaTypeFormatter
     {
         protected MediaTypeFormatter() { }
         public static int MaxHttpCollectionKeys { get { throw null; } set { } }
-        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeMapping> MediaTypeMappings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Net.Http.Formatting.IRequiredMemberSelector RequiredMemberSelector { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.Text.Encoding> SupportedEncodings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.ObjectModel.Collection<System.Net.Http.Headers.MediaTypeHeaderValue> SupportedMediaTypes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Net.Http.Formatting.MediaTypeMapping> MediaTypeMappings { get { throw null; } }
+        public System.Net.Http.Formatting.IRequiredMemberSelector RequiredMemberSelector { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.Text.Encoding> SupportedEncodings { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<System.Net.Http.Headers.MediaTypeHeaderValue> SupportedMediaTypes { get { throw null; } }
         public abstract bool CanReadType(System.Type type);
         public abstract bool CanWriteType(System.Type type);
         protected internal static object GetDefaultValueForType(System.Type type) { throw null; }
@@ -1757,35 +1757,35 @@ namespace System.Net.Http.Formatting
     {
         protected MediaTypeMapping(System.Net.Http.Headers.MediaTypeHeaderValue mediaType) { }
         protected MediaTypeMapping(string mediaType) { }
-        public System.Net.Http.Headers.MediaTypeHeaderValue MediaType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.Http.Headers.MediaTypeHeaderValue MediaType { get { throw null; } }
         public abstract double TryMatchMediaType(System.Net.Http.HttpRequestMessage request);
     }
     public partial class QueryStringMapping : System.Net.Http.Formatting.MediaTypeMapping
     {
         public QueryStringMapping(string queryStringParameterName, string queryStringParameterValue, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
         public QueryStringMapping(string queryStringParameterName, string queryStringParameterValue, string mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
-        public string QueryStringParameterName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string QueryStringParameterValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string QueryStringParameterName { get { throw null; } }
+        public string QueryStringParameterValue { get { throw null; } }
         public override double TryMatchMediaType(System.Net.Http.HttpRequestMessage request) { throw null; }
     }
     public partial class RequestHeaderMapping : System.Net.Http.Formatting.MediaTypeMapping
     {
         public RequestHeaderMapping(string headerName, string headerValue, System.StringComparison valueComparison, bool isValueSubstring, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
         public RequestHeaderMapping(string headerName, string headerValue, System.StringComparison valueComparison, bool isValueSubstring, string mediaType) : base (default(System.Net.Http.Headers.MediaTypeHeaderValue)) { }
-        public string HeaderName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string HeaderValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.StringComparison HeaderValueComparison { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsValueSubstring { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string HeaderName { get { throw null; } }
+        public string HeaderValue { get { throw null; } }
+        public System.StringComparison HeaderValueComparison { get { throw null; } }
+        public bool IsValueSubstring { get { throw null; } }
         public override double TryMatchMediaType(System.Net.Http.HttpRequestMessage request) { throw null; }
     }
     public partial class XmlMediaTypeFormatter : System.Net.Http.Formatting.MediaTypeFormatter
     {
         public XmlMediaTypeFormatter() { }
         public static System.Net.Http.Headers.MediaTypeHeaderValue DefaultMediaType { get { throw null; } }
-        public bool Indent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Indent { get { throw null; } set { } }
         public int MaxDepth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool UseXmlSerializer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool UseXmlSerializer { get { throw null; } set { } }
         public override bool CanReadType(System.Type type) { throw null; }
         public override bool CanWriteType(System.Type type) { throw null; }
         public override System.Threading.Tasks.Task<object> ReadFromStreamAsync(System.Type type, System.IO.Stream stream, System.Net.Http.Headers.HttpContentHeaders contentHeaders, System.Net.Http.Formatting.IFormatterLogger formatterLogger) { throw null; }
@@ -1805,13 +1805,13 @@ namespace System.Net.Http.Headers
         public CookieHeaderValue(string name, System.Collections.Specialized.NameValueCollection values) { }
         public CookieHeaderValue(string name, string value) { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.Headers.CookieState> Cookies { get { throw null; } }
-        public string Domain { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.DateTimeOffset> Expires { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HttpOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Domain { get { throw null; } set { } }
+        public System.Nullable<System.DateTimeOffset> Expires { get { throw null; } set { } }
+        public bool HttpOnly { get { throw null; } set { } }
         public System.Net.Http.Headers.CookieState this[string name] { get { throw null; } }
-        public System.Nullable<System.TimeSpan> MaxAge { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Path { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Secure { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.TimeSpan> MaxAge { get { throw null; } set { } }
+        public string Path { get { throw null; } set { } }
+        public bool Secure { get { throw null; } set { } }
         public object Clone() { throw null; }
         public override string ToString() { throw null; }
         public static bool TryParse(string input, out System.Net.Http.Headers.CookieHeaderValue parsedValue) { parsedValue = default(System.Net.Http.Headers.CookieHeaderValue); throw null; }

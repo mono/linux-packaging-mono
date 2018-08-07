@@ -1222,6 +1222,12 @@ namespace System.Data.SqlClient
             }
         }
 
+
+        public IAsyncResult BeginExecuteXmlReader()
+        {
+            return BeginExecuteXmlReader(null, null);
+        }
+
         public IAsyncResult BeginExecuteXmlReader(AsyncCallback callback, object stateObject)
         {
             // Reset _pendingCancel upon entry into any Execute - used to synchronize state

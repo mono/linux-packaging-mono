@@ -187,6 +187,48 @@ namespace System {
         {
             throw GetKeyNotFoundException(key);
         }
+
+        internal static void ThrowInvalidTypeWithPointersNotSupported(Type targetType)
+        {
+            throw new ArgumentException(SR.Format(SR.Argument_InvalidTypeWithPointersNotSupported, targetType));
+        }
+
+        internal static void ThrowInvalidOperationException_ConcurrentOperationsNotSupported()
+        {
+            throw GetInvalidOperationException("Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection's state is no longer correct.");
+        }
+
+        internal static InvalidOperationException GetInvalidOperationException(string str)
+        {
+            return new InvalidOperationException(str);
+        }
+
+        internal static void ThrowArraySegmentCtorValidationFailedExceptions(Array array, int offset, int count)
+        {
+            throw GetArraySegmentCtorValidationFailedException(array, offset, count);
+        }
+
+        private static Exception GetArraySegmentCtorValidationFailedException(Array array, int offset, int count)
+        {
+            if (array == null)
+                return GetArgumentNullException(ExceptionArgument.array);
+            if (offset < 0)
+                return GetArgumentOutOfRangeException(ExceptionArgument.offset, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+            if (count < 0)
+                return GetArgumentOutOfRangeException(ExceptionArgument.count, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+
+            return GetArgumentException(ExceptionResource.Argument_InvalidOffLen);
+        }
+
+        private static ArgumentException GetArgumentException(ExceptionResource resource)
+        {
+            return new ArgumentException(resource.ToString());
+        }
+
+        private static ArgumentNullException GetArgumentNullException(ExceptionArgument argument)
+        {
+            return new ArgumentNullException(GetArgumentName(argument));
+        }
 #endif
 
         // Allow nulls for reference types and Nullable<U>, but not for value types.
@@ -566,7 +608,20 @@ namespace System {
         exceptions,
         exception,
         action,
-        comparison
+        comparison,
+        startSegment,
+        endSegment,
+        endIndex,
+        task,
+        source,
+        state,
+        culture,
+        destination,
+        byteOffset,
+        minimumBufferSize,
+        offset,
+        values,
+        comparisonType,
 #endif
     }
 
@@ -625,6 +680,8 @@ namespace System {
         TaskT_TransitionToFinal_AlreadyCompleted,
         TaskCompletionSourceT_TrySetException_NullException,
         TaskCompletionSourceT_TrySetException_NoExceptions,
+        NotSupported_StringComparison,
+        InvalidOperation_NullArray,
     }
 }
 

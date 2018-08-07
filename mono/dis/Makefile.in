@@ -80,10 +80,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
+	$(top_srcdir)/depcomp
 @DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@bin_PROGRAMS = monodis$(EXEEXT)
 subdir = mono/dis
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -117,11 +118,9 @@ am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 =  \
 @SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
-	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(am__DEPENDENCIES_1)
+	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
 monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(glib_libs)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -270,26 +269,17 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
 GNUC_PRETTY = @GNUC_PRETTY@
 GNUC_UNUSED = @GNUC_UNUSED@
-GPOINTER_TO_INT = @GPOINTER_TO_INT@
-GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
 GSIZE = @GSIZE@
 GSIZE_FORMAT = @GSIZE_FORMAT@
+GSSIZE = @GSSIZE@
 GTKX11 = @GTKX11@
-GUINT_TO_POINTER = @GUINT_TO_POINTER@
-G_GINT32_FORMAT = @G_GINT32_FORMAT@
-G_GINT64_FORMAT = @G_GINT64_FORMAT@
-G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
-G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
-G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
@@ -456,7 +446,9 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
 @SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
 @SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
@@ -465,7 +457,7 @@ runtime_lib = \
 	$(metadata_lib) \
 	$(gc_lib)	\
 	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 noinst_LIBRARIES = libmonodis.a
 libmonodis_a_SOURCES = \
@@ -489,7 +481,7 @@ monodis_LDADD = \
 	$(runtime_lib)			\
 	$(LLVM_LIBS)			\
 	$(LLVM_LDFLAGS)			\
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 @HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
 man_MANS = monodis.1
@@ -498,7 +490,7 @@ all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -519,6 +511,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/mk/common.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

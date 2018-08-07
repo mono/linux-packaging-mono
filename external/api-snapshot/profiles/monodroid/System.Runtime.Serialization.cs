@@ -107,15 +107,15 @@ namespace System.Runtime.Serialization
     public partial class DataContractSerializerSettings
     {
         public DataContractSerializerSettings() { }
-        public System.Runtime.Serialization.DataContractResolver DataContractResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IgnoreExtensionDataObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IEnumerable<System.Type> KnownTypes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Runtime.Serialization.DataContractResolver DataContractResolver { get { throw null; } set { } }
+        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { get { throw null; } set { } }
+        public bool IgnoreExtensionDataObject { get { throw null; } set { } }
+        public System.Collections.Generic.IEnumerable<System.Type> KnownTypes { get { throw null; } set { } }
         public int MaxItemsInObjectGraph { get { throw null; } set { } }
-        public bool PreserveObjectReferences { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Xml.XmlDictionaryString RootName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Xml.XmlDictionaryString RootNamespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SerializeReadOnlyTypes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool PreserveObjectReferences { get { throw null; } set { } }
+        public System.Xml.XmlDictionaryString RootName { get { throw null; } set { } }
+        public System.Xml.XmlDictionaryString RootNamespace { get { throw null; } set { } }
+        public bool SerializeReadOnlyTypes { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false, AllowMultiple=false)]
     public sealed partial class DataMemberAttribute : System.Attribute
@@ -320,15 +320,15 @@ namespace System.Runtime.Serialization.Json
     public partial class DataContractJsonSerializerSettings
     {
         public DataContractJsonSerializerSettings() { }
-        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.DateTimeFormat DateTimeFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.EmitTypeInformation EmitTypeInformation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IgnoreExtensionDataObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IEnumerable<System.Type> KnownTypes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { get { throw null; } set { } }
+        public System.Runtime.Serialization.DateTimeFormat DateTimeFormat { get { throw null; } set { } }
+        public System.Runtime.Serialization.EmitTypeInformation EmitTypeInformation { get { throw null; } set { } }
+        public bool IgnoreExtensionDataObject { get { throw null; } set { } }
+        public System.Collections.Generic.IEnumerable<System.Type> KnownTypes { get { throw null; } set { } }
         public int MaxItemsInObjectGraph { get { throw null; } set { } }
-        public string RootName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SerializeReadOnlyTypes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool UseSimpleDictionaryFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string RootName { get { throw null; } set { } }
+        public bool SerializeReadOnlyTypes { get { throw null; } set { } }
+        public bool UseSimpleDictionaryFormat { get { throw null; } set { } }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.ServiceModel.Web, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
     public partial interface IXmlJsonReaderInitializer

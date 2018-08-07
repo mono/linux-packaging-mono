@@ -831,6 +831,9 @@ namespace Ildasm
                 case TypeAttributes.NestedFamORAssem:
                     lw.Write("nested famorassem ");
                     break;
+                case TypeAttributes.NestedFamANDAssem:
+                    lw.Write("nested famandassem ");
+                    break;
             }
             if ((type.Attributes & TypeAttributes.BeforeFieldInit) != 0)
             {
@@ -1187,6 +1190,9 @@ namespace Ildasm
                     break;
                 case MethodAttributes.FamORAssem:
                     lw.Write("famorassem ");
+                    break;
+                case MethodAttributes.FamANDAssem:
+                    lw.Write("famandassem ");
                     break;
                 case MethodAttributes.PrivateScope:
                     lw.Write("privatescope ");

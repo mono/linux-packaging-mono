@@ -5,6 +5,7 @@
 using Microsoft.Win32.SafeHandles;
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Authentication.ExtendedProtection;
 
@@ -77,15 +78,6 @@ namespace System.Net.Security
         //
         public static unsafe int QueryContextAttributes(SafeDeleteContext phContext, Interop.SspiCli.ContextAttribute contextAttribute, byte* buffer, SafeHandle refHandle)
         {
-            return QueryContextAttributes_SECURITY(phContext, contextAttribute, buffer, refHandle);
-        }
-
-        private static unsafe int QueryContextAttributes_SECURITY(
-            SafeDeleteContext phContext,
-            Interop.SspiCli.ContextAttribute contextAttribute,
-            byte* buffer,
-            SafeHandle refHandle)
-        {
             int status = (int)Interop.SECURITY_STATUS.InvalidHandle;
 
             try
@@ -122,14 +114,6 @@ namespace System.Net.Security
         public static int SetContextAttributes(
             SafeDeleteContext phContext,
             Interop.SspiCli.ContextAttribute contextAttribute, byte[] buffer)
-        {
-            return SetContextAttributes_SECURITY(phContext, contextAttribute, buffer);
-        }
-
-        private static int SetContextAttributes_SECURITY(
-            SafeDeleteContext phContext,
-            Interop.SspiCli.ContextAttribute contextAttribute,
-            byte[] buffer)
         {
             try
             {
@@ -444,6 +428,7 @@ namespace System.Net.Security
 #endif
         private const string dummyStr = " ";
         private static readonly byte[] s_dummyBytes = new byte[] { 0 };
+        private static readonly IdnMapping s_idnMapping = new IdnMapping();
 
         protected SafeFreeCredentials _EffectiveCredential;
 
@@ -562,66 +547,65 @@ namespace System.Net.Security
                         }
                     }
 
-                    Interop.SspiCli.SecBuffer[] outUnmanagedBuffer = new Interop.SspiCli.SecBuffer[1];
-                    fixed (void* outUnmanagedBufferPtr = &outUnmanagedBuffer[0])
+                    Interop.SspiCli.SecBuffer outUnmanagedBuffer = default;
+                    
+                    // Fix Descriptor pointer that points to unmanaged SecurityBuffers.
+                    outSecurityBufferDescriptor.pBuffers = &outUnmanagedBuffer;
+                    outUnmanagedBuffer.cbBuffer = outSecBuffer.size;
+                    outUnmanagedBuffer.BufferType = outSecBuffer.type;
+                    if (outSecBuffer.token == null || outSecBuffer.token.Length == 0)
                     {
-                        // Fix Descriptor pointer that points to unmanaged SecurityBuffers.
-                        outSecurityBufferDescriptor.pBuffers = outUnmanagedBufferPtr;
-                        outUnmanagedBuffer[0].cbBuffer = outSecBuffer.size;
-                        outUnmanagedBuffer[0].BufferType = outSecBuffer.type;
-                        if (outSecBuffer.token == null || outSecBuffer.token.Length == 0)
-                        {
-                            outUnmanagedBuffer[0].pvBuffer = IntPtr.Zero;
-                        }
-                        else
-                        {
-                            outUnmanagedBuffer[0].pvBuffer = Marshal.UnsafeAddrOfPinnedArrayElement(outSecBuffer.token, outSecBuffer.offset);
-                        }
+                        outUnmanagedBuffer.pvBuffer = IntPtr.Zero;
+                    }
+                    else
+                    {
+                        outUnmanagedBuffer.pvBuffer = Marshal.UnsafeAddrOfPinnedArrayElement(outSecBuffer.token, outSecBuffer.offset);
+                    }
 
-                        if (isSspiAllocated)
-                        {
-                            outFreeContextBuffer = SafeFreeContextBuffer.CreateEmptyHandle();
-                        }
+                    if (isSspiAllocated)
+                    {
+                        outFreeContextBuffer = SafeFreeContextBuffer.CreateEmptyHandle();
+                    }
 
-                        if (refContext == null || refContext.IsInvalid)
-                        {
-                            refContext = new SafeDeleteContext_SECURITY();
-                        }
+                    if (refContext == null || refContext.IsInvalid)
+                    {
+                        refContext = new SafeDeleteContext_SECURITY();
+                    }
 
-                        if (targetName == null || targetName.Length == 0)
-                        {
-                            targetName = dummyStr;
-                        }
+                    if (targetName == null || targetName.Length == 0)
+                    {
+                        targetName = dummyStr;
+                    }
 
-                        fixed (char* namePtr = targetName)
-                        {
-                            errorCode = MustRunInitializeSecurityContext_SECURITY(
-                                            ref inCredentials,
-                                            contextHandle.IsZero ? null : &contextHandle,
-                                            (byte*)(((object)targetName == (object)dummyStr) ? null : namePtr),
-                                            inFlags,
-                                            endianness,
-                                            haveInSecurityBufferDescriptor ? &inSecurityBufferDescriptor : null,
-                                            refContext,
-                                            ref outSecurityBufferDescriptor,
-                                            ref outFlags,
-                                            outFreeContextBuffer);
-                        }
+                    string punyCode = s_idnMapping.GetAscii(targetName);
+                    fixed (char* namePtr = punyCode)
+                    {
+                        errorCode = MustRunInitializeSecurityContext(
+                                        ref inCredentials,
+                                        contextHandle.IsZero ? null : &contextHandle,
+                                        (byte*)(((object)targetName == (object)dummyStr) ? null : namePtr),
+                                        inFlags,
+                                        endianness,
+                                        haveInSecurityBufferDescriptor ? &inSecurityBufferDescriptor : null,
+                                        refContext,
+                                        ref outSecurityBufferDescriptor,
+                                        ref outFlags,
+                                        outFreeContextBuffer);
+                    }
 
-                        if (NetEventSource.IsEnabled) NetEventSource.Info(null, "Marshalling OUT buffer");
+                    if (NetEventSource.IsEnabled) NetEventSource.Info(null, "Marshalling OUT buffer");
 
-                        // Get unmanaged buffer with index 0 as the only one passed into PInvoke.
-                        outSecBuffer.size = outUnmanagedBuffer[0].cbBuffer;
-                        outSecBuffer.type = outUnmanagedBuffer[0].BufferType;
-                        if (outSecBuffer.size > 0)
-                        {
-                            outSecBuffer.token = new byte[outSecBuffer.size];
-                            Marshal.Copy(outUnmanagedBuffer[0].pvBuffer, outSecBuffer.token, 0, outSecBuffer.size);
-                        }
-                        else
-                        {
-                            outSecBuffer.token = null;
-                        }
+                    // Get unmanaged buffer with index 0 as the only one passed into PInvoke.
+                    outSecBuffer.size = outUnmanagedBuffer.cbBuffer;
+                    outSecBuffer.type = outUnmanagedBuffer.BufferType;
+                    if (outSecBuffer.size > 0)
+                    {
+                        outSecBuffer.token = new byte[outSecBuffer.size];
+                        Marshal.Copy(outUnmanagedBuffer.pvBuffer, outSecBuffer.token, 0, outSecBuffer.size);
+                    }
+                    else
+                    {
+                        outSecBuffer.token = null;
                     }
                 }
             }
@@ -656,7 +640,7 @@ namespace System.Net.Security
         // After PInvoke call the method will fix the handleTemplate.handle with the returned value.
         // The caller is responsible for creating a correct SafeFreeContextBuffer_XXX flavor or null can be passed if no handle is returned.
         //
-        private static unsafe int MustRunInitializeSecurityContext_SECURITY(
+        private static unsafe int MustRunInitializeSecurityContext(
             ref SafeFreeCredentials inCredentials,
             void* inContextPtr,
             byte* targetName,
@@ -1265,11 +1249,6 @@ namespace System.Net.Security
         }
 
         public static unsafe int QueryContextChannelBinding(SafeDeleteContext phContext, Interop.SspiCli.ContextAttribute contextAttribute, SecPkgContext_Bindings* buffer, SafeFreeContextBufferChannelBinding refHandle)
-        {
-            return QueryContextChannelBinding_SECURITY(phContext, contextAttribute, buffer, refHandle);
-        }
-
-        private static unsafe int QueryContextChannelBinding_SECURITY(SafeDeleteContext phContext, Interop.SspiCli.ContextAttribute contextAttribute, SecPkgContext_Bindings* buffer, SafeFreeContextBufferChannelBinding refHandle)
         {
             int status = (int)Interop.SECURITY_STATUS.InvalidHandle;
 

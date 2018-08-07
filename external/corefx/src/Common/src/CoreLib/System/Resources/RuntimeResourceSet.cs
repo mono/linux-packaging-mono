@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 
 namespace System.Resources
 {

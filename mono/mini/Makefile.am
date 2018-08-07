@@ -1,3 +1,5 @@
+include $(top_srcdir)/mk/common.mk
+
 count=100000
 mtest=for_loop
 monodir=$(top_builddir)
@@ -18,17 +20,19 @@ libgc_libs=$(monodir)/libgc/libmonogc.la
 libgc_static_libs=$(monodir)/libgc/libmonogc-static.la
 endif
 
+glib_libs = $(monodir)/mono/eglib/libeglib.la
+
 boehm_libs=	\
 	$(monodir)/mono/metadata/libmonoruntime.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS) \
+	$(glib_libs) \
 	$(libgc_libs)
 
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
-	$(GLIB_LIBS)
+	$(glib_libs)
 
 if FULL_AOT_TESTS
 # if the tests are going to run with framework assemblies compiled with
@@ -83,12 +87,12 @@ endif
 if SUPPORT_SGEN
 sgen_binaries = mono-sgen
 sgen_libraries = libmonosgen-2.0.la
-sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(sgen_libs)
+sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
 endif
 
 if SUPPORT_BOEHM
 boehm_libraries = libmonoboehm-2.0.la
-boehm_static_libraries = libmini.la $(interp_libs_with_mini) $(boehm_libs)
+boehm_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs)
 boehm_binaries  = mono-boehm
 endif
 
@@ -153,7 +157,7 @@ noinst_LTLIBRARIES = $(mini_common_lib)
 if LOADED_LLVM
 lib_LTLIBRARIES += libmono-llvm.la
 libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
-libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) $(LLVM_LDFLAGS)
+libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
 if HOST_DARWIN
 libmono_llvm_la_LDFLAGS=-Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 endif
@@ -219,7 +223,7 @@ endif
 
 mono_boehm_LDADD = \
 	$(MONO_LIB)		\
-	$(GLIB_LIBS)		\
+	$(glib_libs)		\
 	$(LLVMMONOF)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
@@ -229,7 +233,7 @@ mono_boehm_LDFLAGS = \
 
 mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
-	$(GLIB_LIBS)		\
+	$(glib_libs)		\
 	$(LLVMMONOF)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
@@ -276,6 +280,8 @@ endif
 wasm_sources = \
 	mini-wasm.c		\
 	mini-wasm.h		\
+	mini-wasm-debugger.c	\
+	debugger-engine.c	\
 	exceptions-wasm.c	\
 	tramp-wasm.c
 
@@ -446,7 +452,8 @@ common_sources = \
 	mini-gc.h		\
 	mini-gc.c		\
 	debugger-agent.h 	\
-	debugger-agent.c	\
+	debugger-engine.h	\
+	debugger-agent-stubs.c	\
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
@@ -459,6 +466,7 @@ common_sources = \
 	lldb.h			\
 	lldb.c	\
 	memory-access.c	\
+	intrinsics.c \
 	mini-profiler.c	\
 	interp-stubs.c \
 	aot-runtime.h	\
@@ -622,9 +630,34 @@ endif
 
 libmono_ee_interp_la_SOURCES = $(interp_sources)
 libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
-libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 if BITCODE
+libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
+if DISABLE_INTERPRETER
 libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
+endif
+endif
+
+if !WASM
+extra_libmono_dbg_source = debugger-engine.c
+endif
+
+libmono_dbg_la_SOURCES = debugger-agent.c $(extra_libmono_dbg_source)
+libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
+if BITCODE
+if DISABLE_DEBUGGER_AGENT
+libmono_dbg_la_LIBADD = libmonosgen-2.0.la
+endif
+endif
+
+dbg_libs = libmono-dbg.la
+
+if DISABLE_DEBUGGER_AGENT
+lib_LTLIBRARIES += $(dbg_libs)
+endif
+
+if !DISABLE_DEBUGGER_AGENT
+dbg_libs_with_mini = $(dbg_libs)
+noinst_LTLIBRARIES += $(dbg_libs)
 endif
 
 #
@@ -636,12 +669,12 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 
 libmonoboehm_2_0_la_SOURCES =
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
-libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
+libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 libmonosgen_2_0_la_SOURCES =
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
-libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
+libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
@@ -776,6 +809,9 @@ gsharedvtcheck:
 hybridcheck:
 	$(MAKE) fullaotcheck HYBRID=1
 
+fullaotmixedcheck:
+	$(MAKE) fullaotcheck MIXED=1
+
 fullaot_regtests = $(regtests)
 fullaot_testing_deps = generics-variant-types.dll TestDriver.dll MemoryIntrinsics.dll
 fullaot_testing_deps_commas = generics-variant-types.dll,TestDriver.dll,MemoryIntrinsics.dll
@@ -809,7 +845,7 @@ FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 
 FULLAOT_TMP_DIR=$(top_builddir)/mono/mini/fullaot-tmp
 
-FULLAOT_AOT_ARGS=$(if $(HYBRID),hybrid,full)
+FULLAOT_AOT_ARGS=$(if $(HYBRID),hybrid,full,interp)
 FULLAOT_ARGS=$(if $(HYBRID),--hybrid-aot,--full-aot)
 
 # This currently only works on amd64/arm
@@ -821,6 +857,7 @@ fullaotcheck: $(mono) $(fullaot_regtests) $(fullaot_testing_deps)
 	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="$(FULLAOT_AOT_ARGS),$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" $(FULLAOT_TMP_DIR)/{$(fullaot_testing_deps_commas),*.exe} || exit 1
 	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) $(FULLAOT_TMP_DIR)/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(FULLAOT_ARGS) $(FULLAOT_TMP_DIR)/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	if test x$(MIXED) == x1; then failed=0;i=0; while test $$i -lt 900; do i=`expr $$i + 1`; bash -c "echo -n '.'"; MONO_PATH=$(FULLAOT_TMP_DIR) MONO_DEBUG=aot-skip=$$i ./mono --full-aot-interp $(FULLAOT_TMP_DIR)/basic.exe > $(FULLAOT_TMP_DIR)/mixed.log || failed=1; if test $$failed -eq 1; then echo "Failed at $$i"; exit $$failed; fi; done; fi
 
 # This can run in parallel
 fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
@@ -942,5 +979,6 @@ tags:
 if HAS_EXTENSION_MODULE
 else
 Makefile.am: Makefile.am.in
-	cp $< $@
+	echo "##################### Generated from Makefile.am.in, do not modify ##########################" > $@
+	cat $< >> $@
 endif

@@ -74,6 +74,7 @@
 static FILE *mini_stats_fd;
 
 static void mini_usage (void);
+static void mono_runtime_set_execution_mode (MonoEEMode mode);
 
 #ifdef HOST_WIN32
 /* Need this to determine whether to detach console */
@@ -144,6 +145,8 @@ opt_names [] = {
 	MONO_OPT_FLOAT32)
 
 #define EXCLUDED_FROM_ALL (MONO_OPT_SHARED | MONO_OPT_PRECOMP | MONO_OPT_UNSAFE | MONO_OPT_GSHAREDVT)
+
+static char *mono_parse_options (const char *options, int *ref_argc, char **ref_argv [], gboolean prepend);
 
 static guint32
 parse_optimizations (guint32 opt, const char* p, gboolean cpu_opts)
@@ -323,7 +326,7 @@ opt_sets [] = {
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_ALIAS_ANALYSIS,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS,
-       MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_TAILC,
+       MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_TAILCALL,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_SSA,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION | MONO_OPT_CMOV,
@@ -546,7 +549,7 @@ mini_regression_list (int verbose, int count, char *images [])
 	
 	total_run =  total = 0;
 	for (i = 0; i < count; ++i) {
-		ass = mono_assembly_open_predicate (images [i], FALSE, FALSE, NULL, NULL, NULL);
+		ass = mono_assembly_open_predicate (images [i], MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
 			continue;
@@ -712,7 +715,7 @@ mono_interp_regression_list (int verbose, int count, char *images [])
 
 	total_run = total = 0;
 	for (i = 0; i < count; ++i) {
-		MonoAssembly *ass = mono_assembly_open_predicate (images [i], FALSE, FALSE, NULL, NULL, NULL);
+		MonoAssembly *ass = mono_assembly_open_predicate (images [i], MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
 			continue;
@@ -1119,7 +1122,10 @@ compile_all_methods_thread_main_inner (CompileAllThreadArgs *args)
 		}
 		cfg = mini_method_compile (method, mono_get_optimizations_for_method (method, args->opts), mono_get_root_domain (), (JitFlags)JIT_FLAG_DISCARD_RESULTS, 0, -1);
 		if (cfg->exception_type != MONO_EXCEPTION_NONE) {
-			printf ("Compilation of %s failed with exception '%s':\n", mono_method_full_name (cfg->method, TRUE), cfg->exception_message);
+			const char *msg = cfg->exception_message;
+			if (cfg->exception_type == MONO_EXCEPTION_MONO_ERROR)
+				msg = mono_error_get_message (&cfg->error);
+			g_print ("Compilation of %s failed with exception '%s':\n", mono_method_full_name (cfg->method, TRUE), msg);
 			fail_count ++;
 		}
 		mono_destroy_compile (cfg);
@@ -1304,7 +1310,7 @@ load_agent (MonoDomain *domain, char *desc)
 		args = NULL;
 	}
 
-	agent_assembly = mono_assembly_open_predicate (agent, FALSE, FALSE, NULL, NULL, &open_status);
+	agent_assembly = mono_assembly_open_predicate (agent, MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, &open_status);
 	if (!agent_assembly) {
 		fprintf (stderr, "Cannot open agent assembly '%s': %s.\n", agent, mono_image_strerror (open_status));
 		g_free (agent);
@@ -1524,7 +1530,7 @@ static const char info[] =
 #ifdef MONO_BIG_ARRAYS
 	"bigarrays "
 #endif
-#if defined(MONO_ARCH_SOFT_DEBUG_SUPPORTED) && !defined(DISABLE_SOFT_DEBUG)
+#if !defined(DISABLE_SDB)
 	"softdebug "
 #endif
 		"\n"
@@ -1578,7 +1584,7 @@ mono_jit_parse_options (int argc, char * argv[])
  		if (strncmp (argv [i], "--debugger-agent=", 17) == 0) {
 			MonoDebugOptions *opt = mini_get_debug_options ();
 
- 			mono_debugger_agent_parse_options (argv [i] + 17);
+			sdb_options = g_strdup (argv [i] + 17);
 			opt->mdb_optimizations = TRUE;
 			enable_debugging = TRUE;
 		} else if (!strcmp (argv [i], "--soft-breakpoints")) {
@@ -1753,7 +1759,7 @@ apply_root_domain_configuration_file_bindings (MonoDomain *domain, char *root_do
 static void
 mono_enable_interp (const char *opts)
 {
-	mono_use_interpreter = TRUE;
+	mono_runtime_set_execution_mode (MONO_EE_MODE_INTERP);
 	if (opts)
 		mono_interp_opts_string = opts;
 
@@ -2064,7 +2070,7 @@ mono_main (int argc, char* argv[])
  		} else if (strncmp (argv [i], "--debugger-agent=", 17) == 0) {
 			MonoDebugOptions *opt = mini_get_debug_options ();
 
- 			mono_debugger_agent_parse_options (argv [i] + 17);
+			sdb_options = g_strdup (argv [i] + 17);
 			opt->mdb_optimizations = TRUE;
 			enable_debugging = TRUE;
 		} else if (strcmp (argv [i], "--security") == 0) {
@@ -2158,6 +2164,16 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--help-handlers") == 0) {
 			mono_runtime_install_custom_handlers_usage ();
 			return 0;
+		} else if (strncmp (argv [i], "--response=", 11) == 0){
+			gchar *text;
+			gsize len;
+			
+			if (!g_file_get_contents (&argv[i][11], &text, &len, NULL)){
+				fprintf (stderr, "The specified response file can not be read\n");
+				exit (1);
+			}
+			mono_parse_options (text, &argc, &argv, FALSE);
+			g_free (text);
 		} else if (argv [i][0] == '-' && argv [i][1] == '-' && mini_parse_debug_option (argv [i] + 2)) {
 		} else {
 			fprintf (stderr, "Unknown command line option: '%s'\n", argv [i]);
@@ -2342,7 +2358,7 @@ mono_main (int argc, char* argv[])
 		apply_root_domain_configuration_file_bindings (domain, extra_bindings_config_file);
 	}
 
-	assembly = mono_assembly_open_predicate (aname, FALSE, FALSE, NULL, NULL, &open_status);
+	assembly = mono_assembly_open_predicate (aname, MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, &open_status);
 	if (!assembly) {
 		fprintf (stderr, "Cannot open assembly '%s': %s.\n", aname, mono_image_strerror (open_status));
 		mini_cleanup (domain);
@@ -2559,6 +2575,59 @@ mono_jit_set_aot_only (gboolean val)
 	mono_aot_only = val;
 }
 
+static void
+mono_runtime_set_execution_mode (MonoEEMode mode)
+{
+	memset (&mono_ee_features, 0, sizeof (mono_ee_features));
+
+	switch (mode) {
+	case MONO_AOT_MODE_LLVMONLY:
+		mono_aot_only = TRUE;
+		mono_llvm_only = TRUE;
+
+		mono_ee_features.use_aot_trampolines = TRUE;
+		break;
+
+	case MONO_AOT_MODE_FULL:
+		mono_aot_only = TRUE;
+
+		mono_ee_features.use_aot_trampolines = TRUE;
+		break;
+
+	case MONO_AOT_MODE_HYBRID:
+		mono_set_generic_sharing_vt_supported (TRUE);
+		mono_set_partial_sharing_supported (TRUE);
+		break;
+
+	case MONO_AOT_MODE_INTERP:
+		mono_aot_only = TRUE;
+		mono_use_interpreter = TRUE;
+
+		mono_ee_features.use_aot_trampolines = TRUE;
+		break;
+
+	case MONO_AOT_MODE_INTERP_LLVMONLY:
+		mono_aot_only = TRUE;
+		mono_use_interpreter = TRUE;
+		mono_llvm_only = TRUE;
+
+		mono_ee_features.force_use_interpreter = TRUE;
+		break;
+
+	case MONO_EE_MODE_INTERP:
+		mono_use_interpreter = TRUE;
+
+		mono_ee_features.force_use_interpreter = TRUE;
+		break;
+
+	case MONO_AOT_MODE_NORMAL:
+		break;
+
+	default:
+		g_error ("Unknown execution-mode %d", mode);
+	}
+}
+
 /**
  * mono_jit_set_aot_mode:
  */
@@ -2568,27 +2637,9 @@ mono_jit_set_aot_mode (MonoAotMode mode)
 	/* we don't want to set mono_aot_mode twice */
 	g_assert (mono_aot_mode == MONO_AOT_MODE_NONE);
 	mono_aot_mode = mode;
+	
+	mono_runtime_set_execution_mode ((MonoEEMode)mode);
 
-	if (mono_aot_mode == MONO_AOT_MODE_LLVMONLY) {
-		mono_aot_only = TRUE;
-		mono_llvm_only = TRUE;
-	}
-	if (mono_aot_mode == MONO_AOT_MODE_FULL) {
-		mono_aot_only = TRUE;
-	}
-	if (mono_aot_mode == MONO_AOT_MODE_HYBRID) {
-		mono_set_generic_sharing_vt_supported (TRUE);
-		mono_set_partial_sharing_supported (TRUE);
-	}
-	if (mono_aot_mode == MONO_AOT_MODE_INTERP) {
-		mono_aot_only = TRUE;
-		mono_use_interpreter = TRUE;
-	}
-	if (mono_aot_mode == MONO_AOT_MODE_INTERP_LLVMONLY) {
-		mono_aot_only = TRUE;
-		mono_use_interpreter = TRUE;
-		mono_llvm_only = TRUE;
-	}
 }
 
 mono_bool
@@ -2678,6 +2729,12 @@ mono_set_crash_chaining (gboolean chain_crashes)
 char *
 mono_parse_options_from (const char *options, int *ref_argc, char **ref_argv [])
 {
+	return mono_parse_options (options, ref_argc, ref_argv, TRUE);
+}
+
+static char *
+mono_parse_options (const char *options, int *ref_argc, char **ref_argv [], gboolean prepend)
+{
 	int argc = *ref_argc;
 	char **argv = *ref_argv;
 	GPtrArray *array = g_ptr_array_new ();
@@ -2692,7 +2749,7 @@ mono_parse_options_from (const char *options, int *ref_argc, char **ref_argv [])
 	
 	for (p = options; *p; p++){
 		switch (*p){
-		case ' ': case '\t':
+		case ' ': case '\t': case '\n':
 			if (!in_quotes) {
 				if (buffer->len != 0){
 					g_ptr_array_add (array, g_strdup (buffer->str));
@@ -2738,13 +2795,20 @@ mono_parse_options_from (const char *options, int *ref_argc, char **ref_argv [])
 		int j;
 
 		new_argv [0] = argv [0];
-		
-		/* First the environment variable settings, to allow the command line options to override */
-		for (i = 0; i < array->len; i++)
-			new_argv [i+1] = (char *)g_ptr_array_index (array, i);
-		i++;
+
+		i = 1;
+		if (prepend){
+			/* First the environment variable settings, to allow the command line options to override */
+			for (i = 0; i < array->len; i++)
+				new_argv [i+1] = (char *)g_ptr_array_index (array, i);
+			i++;
+		}
 		for (j = 1; j < argc; j++)
 			new_argv [i++] = argv [j];
+		if (!prepend){
+			for (j = 0; j < array->len; j++)
+				new_argv [i++] = (char *)g_ptr_array_index (array, j);
+		}
 		new_argv [i] = NULL;
 
 		*ref_argc = new_argc;

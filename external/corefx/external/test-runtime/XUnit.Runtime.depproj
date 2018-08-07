@@ -51,7 +51,7 @@
       <Version>0.10.0-alpha-experimental</Version>
     </PackageReference>
     <PackageReference Condition="'$(TargetGroup)' != 'uapaot'" Include="Microsoft.DotNet.PlatformAbstractions">
-      <Version>$(MicrosoftDotNetPlatformAbstractionsPackageVersion)</Version>
+      <Version>2.0.4</Version>
     </PackageReference>
     <PackageReference Include="CommandLineParser">
       <Version>2.1.1-beta</Version>
@@ -83,6 +83,9 @@
     <PackageReference Include="System.Drawing.Common.TestData">
       <Version>1.0.6</Version>
     </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions.TestData">
+      <Version>1.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetGroup)' == 'netfx'">
     <PackageReference Include="xunit.runner.console">
@@ -101,6 +104,23 @@
     <PackageToInclude Condition="'$(TargetGroup)' != 'uapaot'" Include="Microsoft.DotNet.PlatformAbstractions" />
     <PackageToInclude Include="$(XUnitRunnerPackageId)" />
   </ItemGroup>
+
+  <!-- Ensure that the native components of TraceEvent are restored into the runtime directory so that TraceEvent can pinvoke into them. -->
+  <Target Name="CopyTraceEventNativeFiles" AfterTargets="RestorePackages">
+    <ItemGroup>
+      <TraceEventNativeFiles
+        Include="$(PackagesDir)\Microsoft.Diagnostics.Tracing.TraceEvent\$(TraceEventPackageVersion)\lib\native\**\*.*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(TraceEventNativeFiles)"
+      DestinationFiles="@(TraceEventNativeFiles->'$(TargetDir)%(RecursiveDir)%(FileName)%(Extension)')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="@(TraceEventNativeFiles)"
+      DestinationFiles="@(TraceEventNativeFiles->'$(NETCoreAppTestSharedFrameworkPath)%(RecursiveDir)%(FileName)%(Extension)')"
+      UseHardlinksIfPossible="true"
+      SkipUnchangedFiles="true" />
+  </Target>
 
   <PropertyGroup Condition="'$(TargetGroup)' == 'uap'">
     <UAPToolsPackageVersion>1.0.17</UAPToolsPackageVersion>

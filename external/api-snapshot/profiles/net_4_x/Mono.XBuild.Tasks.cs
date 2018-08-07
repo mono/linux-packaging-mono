@@ -55,9 +55,9 @@ namespace Mono.PkgConfig
         public string PublicKeyToken;
         public string Version;
         public PackageAssemblyInfo() { }
-        public string File { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string File { get { throw null; } set { } }
         public string FullName { get { throw null; } }
-        public Mono.PkgConfig.LibraryPackageInfo ParentPackage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.PkgConfig.LibraryPackageInfo ParentPackage { get { throw null; } set { } }
         public void Update(System.Reflection.AssemblyName aname) { }
         public void UpdateFromFile(string file) { }
     }

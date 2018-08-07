@@ -59,52 +59,52 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public abstract partial class Annotation : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         protected Annotation() { }
-        public virtual System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowAnchorMoving { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowMoving { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowPathEditing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowResizing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowSelecting { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool AllowTextEditing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.ContentAlignment AnchorAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.DataPoint AnchorDataPoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string AnchorDataPointName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double AnchorOffsetX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double AnchorOffsetY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double AnchorX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double AnchorY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AnnotationGroup AnnotationGroup { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public virtual bool AllowAnchorMoving { get { throw null; } set { } }
+        public virtual bool AllowMoving { get { throw null; } set { } }
+        public virtual bool AllowPathEditing { get { throw null; } set { } }
+        public virtual bool AllowResizing { get { throw null; } set { } }
+        public virtual bool AllowSelecting { get { throw null; } set { } }
+        public virtual bool AllowTextEditing { get { throw null; } set { } }
+        public virtual System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.DataPoint AnchorDataPoint { get { throw null; } set { } }
+        public virtual string AnchorDataPointName { get { throw null; } set { } }
+        public virtual double AnchorOffsetX { get { throw null; } set { } }
+        public virtual double AnchorOffsetY { get { throw null; } set { } }
+        public virtual double AnchorX { get { throw null; } set { } }
+        public virtual double AnchorY { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AnnotationGroup AnnotationGroup { get { throw null; } }
         public abstract string AnnotationType { get; }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string AxisXName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string AxisYName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double Bottom { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string ClipToChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double Height { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsSelected { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsSizeAlwaysRelative { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AnnotationSmartLabelStyle SmartLabelStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool Visible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double Width { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double X { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double Y { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string YAxisName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisX { get { throw null; } set { } }
+        public virtual string AxisXName { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisY { get { throw null; } set { } }
+        public virtual string AxisYName { get { throw null; } set { } }
+        public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public virtual System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public virtual double Bottom { get { throw null; } set { } }
+        public virtual string ClipToChartArea { get { throw null; } set { } }
+        public virtual System.Drawing.Font Font { get { throw null; } set { } }
+        public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public virtual double Height { get { throw null; } set { } }
+        public virtual bool IsSelected { get { throw null; } set { } }
+        public virtual bool IsSizeAlwaysRelative { get { throw null; } set { } }
+        public virtual System.Drawing.Color LineColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public virtual int LineWidth { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public virtual double Right { get { throw null; } set { } }
+        public virtual System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public virtual int ShadowOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AnnotationSmartLabelStyle SmartLabelStyle { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
+        public virtual string ToolTip { get { throw null; } set { } }
+        public virtual bool Visible { get { throw null; } set { } }
+        public virtual double Width { get { throw null; } set { } }
+        public virtual double X { get { throw null; } set { } }
+        public virtual double Y { get { throw null; } set { } }
+        public virtual string YAxisName { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public virtual void BeginPlacement() { }
         [System.MonoTODOAttribute]
@@ -131,41 +131,41 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AnnotationGroup : System.Windows.Forms.DataVisualization.Charting.Annotation
     {
         public AnnotationGroup() { }
-        public override System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowAnchorMoving { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowMoving { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowPathEditing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowResizing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowSelecting { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool AllowTextEditing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public override bool AllowAnchorMoving { get { throw null; } set { } }
+        public override bool AllowMoving { get { throw null; } set { } }
+        public override bool AllowPathEditing { get { throw null; } set { } }
+        public override bool AllowResizing { get { throw null; } set { } }
+        public override bool AllowSelecting { get { throw null; } set { } }
+        public override bool AllowTextEditing { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { get { throw null; } }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string ClipToChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool IsSelected { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool IsSizeAlwaysRelative { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool Visible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public override string ClipToChartArea { get { throw null; } set { } }
+        public override System.Drawing.Font Font { get { throw null; } set { } }
+        public override System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public override bool IsSelected { get { throw null; } set { } }
+        public override bool IsSizeAlwaysRelative { get { throw null; } set { } }
+        public override System.Drawing.Color LineColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public override int LineWidth { get { throw null; } set { } }
+        public override System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public override int ShadowOffset { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
+        public override bool Visible { get { throw null; } set { } }
     }
     public partial class AnnotationPathPoint : System.Windows.Forms.DataVisualization.Charting.ChartElement
     {
         public AnnotationPathPoint() { }
         public AnnotationPathPoint(float x, float y) { }
         public AnnotationPathPoint(float x, float y, byte type) { }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public byte PointType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float X { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float Y { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } }
+        public byte PointType { get { throw null; } set { } }
+        public float X { get { throw null; } set { } }
+        public float Y { get { throw null; } set { } }
     }
     public partial class AnnotationPathPointCollection : System.Windows.Forms.DataVisualization.Charting.ChartElementCollection<System.Windows.Forms.DataVisualization.Charting.AnnotationPathPoint>
     {
@@ -176,13 +176,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AnnotationPositionChangingEventArgs : System.EventArgs
     {
         public AnnotationPositionChangingEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.Annotation Annotation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.PointF NewAnchorLocation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Annotation Annotation { get { throw null; } set { } }
+        public System.Drawing.PointF NewAnchorLocation { get { throw null; } set { } }
         public double NewAnchorLocationX { get { throw null; } set { } }
         public double NewAnchorLocationY { get { throw null; } set { } }
         public double NewLocationX { get { throw null; } set { } }
         public double NewLocationY { get { throw null; } set { } }
-        public System.Drawing.RectangleF NewPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.RectangleF NewPosition { get { throw null; } set { } }
         public double NewSizeHeight { get { throw null; } set { } }
         public double NewSizeWidth { get { throw null; } set { } }
     }
@@ -193,16 +193,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AnovaResult
     {
         public AnovaResult() { }
-        public double DegreeOfFreedomBetweenGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double DegreeOfFreedomTotal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double DegreeOfFreedomWithinGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FCriticalValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FRatio { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double MeanSquareVarianceBetweenGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double MeanSquareVarianceWithinGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SumOfSquaresBetweenGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SumOfSquaresTotal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SumOfSquaresWithinGroups { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public double DegreeOfFreedomBetweenGroups { get { throw null; } }
+        public double DegreeOfFreedomTotal { get { throw null; } }
+        public double DegreeOfFreedomWithinGroups { get { throw null; } }
+        public double FCriticalValue { get { throw null; } }
+        public double FRatio { get { throw null; } }
+        public double MeanSquareVarianceBetweenGroups { get { throw null; } }
+        public double MeanSquareVarianceWithinGroups { get { throw null; } }
+        public double SumOfSquaresBetweenGroups { get { throw null; } }
+        public double SumOfSquaresTotal { get { throw null; } }
+        public double SumOfSquaresWithinGroups { get { throw null; } }
     }
     [System.FlagsAttribute]
     public enum AntiAliasingStyles
@@ -233,10 +233,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ArrowAnnotation : System.Windows.Forms.DataVisualization.Charting.Annotation
     {
         public ArrowAnnotation() { }
-        public override System.Drawing.ContentAlignment AnchorAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         public override string AnnotationType { get { throw null; } }
         public virtual int ArrowSize { get { throw null; } set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.ArrowStyle ArrowStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.ArrowStyle ArrowStyle { get { throw null; } set { } }
     }
     public enum ArrowStyle
     {
@@ -248,50 +248,50 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public Axis() { }
         public Axis(System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea, System.Windows.Forms.DataVisualization.Charting.AxisName axisTypeName) { }
-        public System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle ArrowStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.AxisName AxisName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual double Crossing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.CustomLabelCollection CustomLabels { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisEnabled Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color InterlacedColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Interval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode IntervalAutoMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double IntervalOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsInterlaced { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsLabelAutoFit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsLogarithmic { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsMarginVisible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsMarksNextToAxis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsReversed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsStartedFromZero { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LabelAutoFitMaxFontSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LabelAutoFitMinFontSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles LabelAutoFitStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LabelStyle LabelStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double LogarithmBase { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Grid MajorGrid { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TickMark MajorTickMark { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Maximum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float MaximumAutoSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Minimum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Grid MinorGrid { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TickMark MinorTickMark { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle ArrowStyle { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.AxisName AxisName { get { throw null; } }
+        public virtual double Crossing { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.CustomLabelCollection CustomLabels { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisEnabled Enabled { get { throw null; } set { } }
+        public System.Drawing.Color InterlacedColor { get { throw null; } set { } }
+        public double Interval { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode IntervalAutoMode { get { throw null; } set { } }
+        public double IntervalOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
+        public bool IsInterlaced { get { throw null; } set { } }
+        public bool IsLabelAutoFit { get { throw null; } set { } }
+        public bool IsLogarithmic { get { throw null; } set { } }
+        public bool IsMarginVisible { get { throw null; } set { } }
+        public virtual bool IsMarksNextToAxis { get { throw null; } set { } }
+        public bool IsReversed { get { throw null; } set { } }
+        public bool IsStartedFromZero { get { throw null; } set { } }
+        public int LabelAutoFitMaxFontSize { get { throw null; } set { } }
+        public int LabelAutoFitMinFontSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles LabelAutoFitStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LabelStyle LabelStyle { get { throw null; } set { } }
+        public System.Drawing.Color LineColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public int LineWidth { get { throw null; } set { } }
+        public double LogarithmBase { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Grid MajorGrid { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TickMark MajorTickMark { get { throw null; } set { } }
+        public double Maximum { get { throw null; } set { } }
+        public float MaximumAutoSize { get { throw null; } set { } }
+        public double Minimum { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Grid MinorGrid { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TickMark MinorTickMark { get { throw null; } set { } }
         public override string Name { get { throw null; } set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.AxisScaleBreakStyle ScaleBreakStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisScaleView ScaleView { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisScrollBar ScrollBar { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.StripLinesCollection StripLines { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.StringAlignment TitleAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font TitleFont { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color TitleForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.AxisScaleBreakStyle ScaleBreakStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisScaleView ScaleView { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisScrollBar ScrollBar { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.StripLinesCollection StripLines { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
+        public string Title { get { throw null; } set { } }
+        public System.Drawing.StringAlignment TitleAlignment { get { throw null; } set { } }
+        public System.Drawing.Font TitleFont { get { throw null; } set { } }
+        public System.Drawing.Color TitleForeColor { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public double GetPosition(double axisValue) { throw null; }
         [System.MonoTODOAttribute]
@@ -328,32 +328,32 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AxisScaleBreakStyle
     {
         public AxisScaleBreakStyle() { }
-        public System.Windows.Forms.DataVisualization.Charting.BreakLineStyle BreakLineStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int CollapsibleSpaceThreshold { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxNumberOfBreaks { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Spacing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.StartFromZero StartFromZero { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.BreakLineStyle BreakLineStyle { get { throw null; } set { } }
+        public int CollapsibleSpaceThreshold { get { throw null; } set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public System.Drawing.Color LineColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public int LineWidth { get { throw null; } set { } }
+        public int MaxNumberOfBreaks { get { throw null; } set { } }
+        public double Spacing { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.StartFromZero StartFromZero { get { throw null; } set { } }
     }
     public partial class AxisScaleView
     {
         public AxisScaleView() { }
-        public bool IsZoomed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double MinSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType MinSizeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Size { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SizeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double SmallScrollMinSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollMinSizeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double SmallScrollSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollSizeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double ViewMaximum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ViewMinimum { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Zoomable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsZoomed { get { throw null; } }
+        public double MinSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType MinSizeType { get { throw null; } set { } }
+        public double Position { get { throw null; } set { } }
+        public double Size { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SizeType { get { throw null; } set { } }
+        public double SmallScrollMinSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollMinSizeType { get { throw null; } set { } }
+        public double SmallScrollSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollSizeType { get { throw null; } set { } }
+        public double ViewMaximum { get { throw null; } }
+        public double ViewMinimum { get { throw null; } }
+        public bool Zoomable { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void Scroll(System.DateTime newPosition) { }
         [System.MonoTODOAttribute]
@@ -374,16 +374,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AxisScrollBar : System.IDisposable
     {
         public AxisScrollBar() { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ButtonColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles ButtonStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsPositionedInside { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsVisible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Size { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Drawing.Color ButtonColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles ButtonStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } }
+        public bool Enabled { get { throw null; } set { } }
+        public bool IsPositionedInside { get { throw null; } set { } }
+        public bool IsVisible { get { throw null; } }
+        public System.Drawing.Color LineColor { get { throw null; } set { } }
+        public double Size { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void Dispose() { }
         [System.MonoTODOAttribute]
@@ -398,24 +398,24 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public Border3DAnnotation() { }
         public override string AnnotationType { get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { get { throw null; } set { } }
     }
     public partial class BorderSkin : System.Windows.Forms.DataVisualization.Charting.ChartElement
     {
         public BorderSkin() { }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color PageColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle SkinStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Drawing.Color PageColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle SkinStyle { get { throw null; } set { } }
     }
     public enum BorderSkinStyle
     {
@@ -448,19 +448,19 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class CalloutAnnotation : System.Windows.Forms.DataVisualization.Charting.TextAnnotation
     {
         public CalloutAnnotation() { }
-        public override System.Drawing.ContentAlignment AnchorAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override double AnchorOffsetX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override double AnchorOffsetY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
+        public override double AnchorOffsetX { get { throw null; } set { } }
+        public override double AnchorOffsetY { get { throw null; } set { } }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutAnchorCap { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.CalloutStyle CalloutStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutAnchorCap { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.CalloutStyle CalloutStyle { get { throw null; } set { } }
+        public override System.Drawing.Color LineColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public override int LineWidth { get { throw null; } set { } }
     }
     public enum CalloutStyle
     {
@@ -475,43 +475,43 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class Chart : System.Windows.Forms.Control, System.ComponentModel.ISupportInitialize, System.IDisposable
     {
         public Chart() { }
-        public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.AntiAliasingStyles AntiAliasing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Image BackgroundImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderlineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderlineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderlineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BuildNumber { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartAreaCollection ChartAreas { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.DataManipulator DataManipulator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object DataSource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.AntiAliasingStyles AntiAliasing { get { throw null; } set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Drawing.Image BackgroundImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public System.Drawing.Color BorderlineColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderlineDashStyle { get { throw null; } set { } }
+        public int BorderlineWidth { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public string BuildNumber { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartAreaCollection ChartAreas { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.DataManipulator DataManipulator { get { throw null; } }
+        public object DataSource { get { throw null; } set { } }
         protected override System.Drawing.Size DefaultSize { get { throw null; } }
-        public override System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.NamedImagesCollection Images { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsSoftShadows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendCollection Legends { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color[] PaletteCustomColors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.PrintingManager Printing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double RenderingDpiX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double RenderingDpiY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartSerializer Serializer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.SeriesCollection Series { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool SuppressExceptions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality TextAntiAliasingQuality { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TitleCollection Titles { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public override System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.NamedImagesCollection Images { get { throw null; } }
+        public bool IsSoftShadows { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendCollection Legends { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { get { throw null; } set { } }
+        public System.Drawing.Color[] PaletteCustomColors { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.PrintingManager Printing { get { throw null; } }
+        public double RenderingDpiX { get { throw null; } set { } }
+        public double RenderingDpiY { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartSerializer Serializer { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.SeriesCollection Series { get { throw null; } }
+        public bool SuppressExceptions { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality TextAntiAliasingQuality { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TitleCollection Titles { get { throw null; } }
         public event System.EventHandler AnnotationPlaced { add { } remove { } }
         public event System.EventHandler AnnotationPositionChanged { add { } remove { } }
         public event System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs> AnnotationPositionChanging { add { } remove { } }
@@ -586,35 +586,35 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public ChartArea() { }
         public ChartArea(string name) { }
-        public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations AlignmentOrientation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles AlignmentStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string AlignWithChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea3DStyle Area3DStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Axis[] Axes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Axis AxisX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Axis AxisX2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Axis AxisY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Axis AxisY2 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Cursor CursorX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Cursor CursorY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ElementPosition InnerPlotPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsSameFontSizeForAllAxes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool Visible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations AlignmentOrientation { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles AlignmentStyle { get { throw null; } set { } }
+        public string AlignWithChartArea { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea3DStyle Area3DStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis[] Axes { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis AxisX { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis AxisX2 { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis AxisY { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis AxisY2 { get { throw null; } set { } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Cursor CursorX { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Cursor CursorY { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ElementPosition InnerPlotPosition { get { throw null; } set { } }
+        public bool IsSameFontSizeForAllAxes { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
+        public System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public int ShadowOffset { get { throw null; } set { } }
+        public virtual bool Visible { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
         [System.MonoTODOAttribute]
@@ -630,16 +630,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public ChartArea3DStyle() { }
         public ChartArea3DStyle(System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea) { }
-        public bool Enable3D { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int Inclination { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsClustered { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsRightAngleAxes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LightStyle LightStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int Perspective { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int PointDepth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int PointGapDepth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int Rotation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int WallWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Enable3D { get { throw null; } set { } }
+        public int Inclination { get { throw null; } set { } }
+        public bool IsClustered { get { throw null; } set { } }
+        public bool IsRightAngleAxes { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LightStyle LightStyle { get { throw null; } set { } }
+        public int Perspective { get { throw null; } set { } }
+        public int PointDepth { get { throw null; } set { } }
+        public int PointGapDepth { get { throw null; } set { } }
+        public int Rotation { get { throw null; } set { } }
+        public int WallWidth { get { throw null; } set { } }
     }
     public partial class ChartAreaCollection : System.Windows.Forms.DataVisualization.Charting.ChartNamedElementCollection<System.Windows.Forms.DataVisualization.Charting.ChartArea>
     {
@@ -675,7 +675,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         protected ChartElement() { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        public object Tag { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object Tag { get { throw null; } set { } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         public override bool Equals(object obj) { throw null; }
@@ -724,7 +724,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ChartGraphics : System.Windows.Forms.DataVisualization.Charting.ChartElement, System.IDisposable
     {
         internal ChartGraphics() { }
-        public System.Drawing.Graphics Graphics { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Graphics Graphics { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
         [System.MonoTODOAttribute]
@@ -837,13 +837,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public ChartNamedElement() { }
         public ChartNamedElement(string name) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        public virtual string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string Name { get { throw null; } set { } }
     }
     public partial class ChartNamedElementCollection<T> : System.Windows.Forms.DataVisualization.Charting.ChartElementCollection<T> where T : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         public ChartNamedElementCollection() { }
         public T this[string name] { get { throw null; } set { } }
-        protected virtual string NamePrefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        protected virtual string NamePrefix { get { throw null; } }
         [System.MonoTODOAttribute]
         public virtual T FindByName(string name) { throw null; }
         [System.MonoTODOAttribute]
@@ -862,21 +862,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ChartPaintEventArgs : System.EventArgs
     {
         internal ChartPaintEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.Chart Chart { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object ChartElement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartGraphics ChartGraphics { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.Chart Chart { get { throw null; } }
+        public object ChartElement { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartGraphics ChartGraphics { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } }
     }
     public partial class ChartSerializer
     {
         public ChartSerializer() { }
-        public System.Windows.Forms.DataVisualization.Charting.SerializationContents Content { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.SerializationFormat Format { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsResetWhenLoading { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsTemplateMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsUnknownAttributeIgnored { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string NonSerializableContent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SerializableContent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.SerializationContents Content { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.SerializationFormat Format { get { throw null; } set { } }
+        public bool IsResetWhenLoading { get { throw null; } set { } }
+        public bool IsTemplateMode { get { throw null; } set { } }
+        public bool IsUnknownAttributeIgnored { get { throw null; } set { } }
+        public string NonSerializableContent { get { throw null; } set { } }
+        public string SerializableContent { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected string GetContentString(System.Windows.Forms.DataVisualization.Charting.SerializationContents content, bool serializable) { throw null; }
         [System.MonoTODOAttribute]
@@ -925,21 +925,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class Cursor : System.IDisposable
     {
         public Cursor() { }
-        public bool AutoScroll { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisType AxisType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Interval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double IntervalOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsUserEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsUserSelectionEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color SelectionColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double SelectionEnd { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double SelectionStart { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoScroll { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisType AxisType { get { throw null; } set { } }
+        public double Interval { get { throw null; } set { } }
+        public double IntervalOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
+        public bool IsUserEnabled { get { throw null; } set { } }
+        public bool IsUserSelectionEnabled { get { throw null; } set { } }
+        public System.Drawing.Color LineColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public int LineWidth { get { throw null; } set { } }
+        public double Position { get { throw null; } set { } }
+        public System.Drawing.Color SelectionColor { get { throw null; } set { } }
+        public double SelectionEnd { get { throw null; } set { } }
+        public double SelectionStart { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void Dispose() { }
         [System.MonoTODOAttribute]
@@ -957,36 +957,36 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public CursorEventArgs(System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea, System.Windows.Forms.DataVisualization.Charting.Axis axis, double newPosition) { }
         public CursorEventArgs(System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea, System.Windows.Forms.DataVisualization.Charting.Axis axis, double newSelectionStart, double newSelectionEnd) { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double NewPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double NewSelectionEnd { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double NewSelectionStart { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } }
+        public double NewPosition { get { throw null; } set { } }
+        public double NewSelectionEnd { get { throw null; } set { } }
+        public double NewSelectionStart { get { throw null; } set { } }
     }
     public partial class CustomizeLegendEventArgs : System.EventArgs
     {
         public CustomizeLegendEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.LegendItemsCollection LegendItems { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string LegendName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendItemsCollection LegendItems { get { throw null; } }
+        public string LegendName { get { throw null; } }
     }
     public partial class CustomLabel : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         public CustomLabel() { }
         public CustomLabel(double fromPosition, double toPosition, string text, int labelRow, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle markStyle) { }
         public CustomLabel(double fromPosition, double toPosition, string text, int labelRow, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle markStyle, System.Windows.Forms.DataVisualization.Charting.GridTickTypes gridTick) { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double FromPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GridTickTypes GridTicks { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Image { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle LabelMark { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int RowIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double ToPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
+        public System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public double FromPosition { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GridTickTypes GridTicks { get { throw null; } set { } }
+        public string Image { get { throw null; } set { } }
+        public System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle LabelMark { get { throw null; } set { } }
+        public System.Drawing.Color MarkColor { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public int RowIndex { get { throw null; } set { } }
+        public string Text { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
+        public double ToPosition { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Windows.Forms.DataVisualization.Charting.CustomLabel Clone() { throw null; }
     }
@@ -1015,9 +1015,9 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class DataFormula
     {
         public DataFormula() { }
-        public bool IsEmptyPointIgnored { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsStartFromFirst { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.StatisticFormula Statistics { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsEmptyPointIgnored { get { throw null; } set { } }
+        public bool IsStartFromFirst { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.StatisticFormula Statistics { get { throw null; } }
         [System.MonoTODOAttribute]
         public void CopySeriesValues(string inputSeries, string outputSeries) { }
         [System.MonoTODOAttribute]
@@ -1036,8 +1036,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class DataManipulator : System.Windows.Forms.DataVisualization.Charting.DataFormula
     {
         public DataManipulator() { }
-        public bool FilterMatchedPoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool FilterSetEmptyPoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool FilterMatchedPoints { get { throw null; } set { } }
+        public bool FilterSetEmptyPoints { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Data.DataSet ExportSeriesValues() { throw null; }
         [System.MonoTODOAttribute]
@@ -1146,10 +1146,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public DataPoint(double xValue, string yValues) { }
         [System.MonoTODOAttribute]
         public DataPoint(System.Windows.Forms.DataVisualization.Charting.Series series) { }
-        public bool IsEmpty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double XValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double[] YValues { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsEmpty { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public double XValue { get { throw null; } set { } }
+        public double[] YValues { get { throw null; } set { } }
         public System.Windows.Forms.DataVisualization.Charting.DataPoint Clone() { throw null; }
         public double GetValueByName(string valueName) { throw null; }
         public void SetValueXY(object xValue, params object[] yValue) { }
@@ -1212,46 +1212,46 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class DataPointCustomProperties : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         public DataPointCustomProperties() { }
-        public virtual string AxisLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color Color { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string CustomProperties { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.CustomProperties CustomPropertiesExtended { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsValueShownAsLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsVisibleInLegend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string AxisLabel { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Drawing.Color Color { get { throw null; } set { } }
+        public string CustomProperties { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.CustomProperties CustomPropertiesExtended { get { throw null; } set { } }
+        public System.Drawing.Font Font { get { throw null; } set { } }
+        public bool IsValueShownAsLabel { get { throw null; } set { } }
+        public bool IsVisibleInLegend { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public string this[int idx] { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public string this[string name] { get { throw null; } set { } }
-        public virtual string Label { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LabelAngle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LabelBackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LabelBorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LabelBorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LabelBorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LabelForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string LabelFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string LabelToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string LegendText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string LegendToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkerBorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MarkerBorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkerColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string MarkerImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkerImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MarkerSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual string Label { get { throw null; } set { } }
+        public int LabelAngle { get { throw null; } set { } }
+        public System.Drawing.Color LabelBackColor { get { throw null; } set { } }
+        public System.Drawing.Color LabelBorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LabelBorderDashStyle { get { throw null; } set { } }
+        public int LabelBorderWidth { get { throw null; } set { } }
+        public System.Drawing.Color LabelForeColor { get { throw null; } set { } }
+        public string LabelFormat { get { throw null; } set { } }
+        public string LabelToolTip { get { throw null; } set { } }
+        public string LegendText { get { throw null; } set { } }
+        public string LegendToolTip { get { throw null; } set { } }
+        public System.Drawing.Color MarkerBorderColor { get { throw null; } set { } }
+        public int MarkerBorderWidth { get { throw null; } set { } }
+        public System.Drawing.Color MarkerColor { get { throw null; } set { } }
+        public string MarkerImage { get { throw null; } set { } }
+        public System.Drawing.Color MarkerImageTransparentColor { get { throw null; } set { } }
+        public int MarkerSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public virtual void DeleteCustomProperty(string name) { }
         [System.MonoTODOAttribute]
@@ -1301,14 +1301,14 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public ElementPosition() { }
         public ElementPosition(float x, float y, float width, float height) { }
-        public bool Auto { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Auto { get { throw null; } set { } }
         public float Bottom { get { throw null; } }
-        public float Height { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float Height { get { throw null; } set { } }
         public float Right { get { throw null; } }
         public System.Drawing.SizeF Size { get { throw null; } }
-        public float Width { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float X { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float Y { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float Width { get { throw null; } set { } }
+        public float X { get { throw null; } set { } }
+        public float Y { get { throw null; } set { } }
         public void FromRectangleF(System.Drawing.RectangleF rect) { }
         public System.Drawing.RectangleF ToRectangleF() { throw null; }
         public override string ToString() { throw null; }
@@ -1355,23 +1355,23 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class FormatNumberEventArgs : System.EventArgs
     {
         internal FormatNumberEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.ChartElementType ElementType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Format { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string LocalizedValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object SenderTag { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartValueType ValueType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartElementType ElementType { get { throw null; } }
+        public string Format { get { throw null; } }
+        public string LocalizedValue { get { throw null; } set { } }
+        public object SenderTag { get { throw null; } }
+        public double Value { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartValueType ValueType { get { throw null; } }
     }
     public partial class FTestResult
     {
         public FTestResult() { }
-        public double FCriticalValueOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FirstSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FirstSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ProbabilityFOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public double FCriticalValueOneTail { get { throw null; } }
+        public double FirstSeriesMean { get { throw null; } }
+        public double FirstSeriesVariance { get { throw null; } }
+        public double FValue { get { throw null; } }
+        public double ProbabilityFOneTail { get { throw null; } }
+        public double SecondSeriesMean { get { throw null; } }
+        public double SecondSeriesVariance { get { throw null; } }
     }
     public enum GradientStyle
     {
@@ -1387,14 +1387,14 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class Grid
     {
         public Grid() { }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Interval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double IntervalOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public double Interval { get { throw null; } set { } }
+        public double IntervalOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
+        public System.Drawing.Color LineColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public int LineWidth { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
     public enum GridTickTypes
@@ -1407,13 +1407,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class HitTestResult
     {
         public HitTestResult() { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartElementType ChartElementType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object Object { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int PointIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Series Series { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object SubObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartElementType ChartElementType { get { throw null; } set { } }
+        public object Object { get { throw null; } set { } }
+        public int PointIndex { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Series Series { get { throw null; } set { } }
+        public object SubObject { get { throw null; } set { } }
     }
     public partial class HorizontalLineAnnotation : System.Windows.Forms.DataVisualization.Charting.LineAnnotation
     {
@@ -1426,21 +1426,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ImageAnnotation : System.Windows.Forms.DataVisualization.Charting.Annotation
     {
         public ImageAnnotation() { }
-        public override System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Image { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode ImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public override System.Drawing.Font Font { get { throw null; } set { } }
+        public override System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public virtual string Image { get { throw null; } set { } }
+        public System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode ImageWrapMode { get { throw null; } set { } }
+        public override System.Drawing.Color LineColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public override int LineWidth { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
     }
     public enum IntervalAutoMode
     {
@@ -1506,70 +1506,70 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class LabelStyle : System.Windows.Forms.DataVisualization.Charting.ChartElement
     {
         public LabelStyle() { }
-        public int Angle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Format { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Interval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double IntervalOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsEndLabelVisible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsStaggered { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool TruncatedLabels { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Angle { get { throw null; } set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public System.Drawing.Font Font { get { throw null; } set { } }
+        public System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public string Format { get { throw null; } set { } }
+        public double Interval { get { throw null; } set { } }
+        public double IntervalOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
+        public bool IsEndLabelVisible { get { throw null; } set { } }
+        public bool IsStaggered { get { throw null; } set { } }
+        public bool TruncatedLabels { get { throw null; } set { } }
     }
     public partial class Legend : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         public Legend() { }
         public Legend(string name) { }
-        public System.Drawing.StringAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int AutoFitMinFontSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendCellColumnCollection CellColumns { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendItemsCollection CustomItems { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string DockedToChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Docking Docking { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle HeaderSeparator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color HeaderSeparatorColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string InsideChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool InterlacedRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color InterlacedRowsColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsDockedInsideChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsEquallySpacedItems { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsTextAutoFit { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle ItemColumnSeparator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ItemColumnSeparatorColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ItemColumnSpacing { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendItemOrder LegendItemOrder { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendStyle LegendStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public float MaximumAutoSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendTableStyle TableStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int TextWrapThreshold { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.StringAlignment TitleAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color TitleBackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font TitleFont { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color TitleForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle TitleSeparator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color TitleSeparatorColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.StringAlignment Alignment { get { throw null; } set { } }
+        public int AutoFitMinFontSize { get { throw null; } set { } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendCellColumnCollection CellColumns { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendItemsCollection CustomItems { get { throw null; } }
+        public string DockedToChartArea { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Docking Docking { get { throw null; } set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public System.Drawing.Font Font { get { throw null; } set { } }
+        public System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle HeaderSeparator { get { throw null; } set { } }
+        public System.Drawing.Color HeaderSeparatorColor { get { throw null; } set { } }
+        public string InsideChartArea { get { throw null; } set { } }
+        public bool InterlacedRows { get { throw null; } set { } }
+        public System.Drawing.Color InterlacedRowsColor { get { throw null; } set { } }
+        public bool IsDockedInsideChartArea { get { throw null; } set { } }
+        public bool IsEquallySpacedItems { get { throw null; } set { } }
+        public bool IsTextAutoFit { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle ItemColumnSeparator { get { throw null; } set { } }
+        public System.Drawing.Color ItemColumnSeparatorColor { get { throw null; } set { } }
+        public int ItemColumnSpacing { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendItemOrder LegendItemOrder { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendStyle LegendStyle { get { throw null; } set { } }
+        public float MaximumAutoSize { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
+        public System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public int ShadowOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendTableStyle TableStyle { get { throw null; } set { } }
+        public int TextWrapThreshold { get { throw null; } set { } }
+        public string Title { get { throw null; } set { } }
+        public System.Drawing.StringAlignment TitleAlignment { get { throw null; } set { } }
+        public System.Drawing.Color TitleBackColor { get { throw null; } set { } }
+        public System.Drawing.Font TitleFont { get { throw null; } set { } }
+        public System.Drawing.Color TitleForeColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle TitleSeparator { get { throw null; } set { } }
+        public System.Drawing.Color TitleSeparatorColor { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
     }
@@ -1579,22 +1579,22 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public LegendCell(string text) { }
         public LegendCell(System.Windows.Forms.DataVisualization.Charting.LegendCellType cellType, string text) { }
         public LegendCell(System.Windows.Forms.DataVisualization.Charting.LegendCellType cellType, string text, System.Drawing.ContentAlignment alignment) { }
-        public virtual System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int CellSpan { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellType CellType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Image { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Size ImageSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color ImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LegendItem LegendItem { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Margins Margins { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Size SeriesSymbolSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
+        public virtual int CellSpan { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellType CellType { get { throw null; } set { } }
+        public virtual System.Drawing.Font Font { get { throw null; } set { } }
+        public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public virtual string Image { get { throw null; } set { } }
+        public virtual System.Drawing.Size ImageSize { get { throw null; } set { } }
+        public virtual System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LegendItem LegendItem { get { throw null; } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Margins Margins { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public virtual System.Drawing.Size SeriesSymbolSize { get { throw null; } set { } }
+        public virtual string Text { get { throw null; } set { } }
+        public virtual string ToolTip { get { throw null; } set { } }
     }
     public partial class LegendCellCollection : System.Windows.Forms.DataVisualization.Charting.ChartNamedElementCollection<System.Windows.Forms.DataVisualization.Charting.LegendCell>
     {
@@ -1607,24 +1607,24 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class LegendCellColumn : System.Windows.Forms.DataVisualization.Charting.ChartNamedElement
     {
         public LegendCellColumn() { }
-        public virtual System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType ColumnType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.StringAlignment HeaderAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color HeaderBackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Font HeaderFont { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color HeaderForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string HeaderText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.Margins Margins { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int MaximumWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int MinimumWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Size SeriesSymbolSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType ColumnType { get { throw null; } set { } }
+        public virtual System.Drawing.Font Font { get { throw null; } set { } }
+        public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public System.Drawing.StringAlignment HeaderAlignment { get { throw null; } set { } }
+        public virtual System.Drawing.Color HeaderBackColor { get { throw null; } set { } }
+        public virtual System.Drawing.Font HeaderFont { get { throw null; } set { } }
+        public virtual System.Drawing.Color HeaderForeColor { get { throw null; } set { } }
+        public virtual string HeaderText { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.Margins Margins { get { throw null; } set { } }
+        public virtual int MaximumWidth { get { throw null; } set { } }
+        public virtual int MinimumWidth { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public virtual System.Drawing.Size SeriesSymbolSize { get { throw null; } set { } }
+        public virtual string Text { get { throw null; } set { } }
+        public virtual string ToolTip { get { throw null; } set { } }
     }
     public partial class LegendCellColumnCollection : System.Windows.Forms.DataVisualization.Charting.ChartNamedElementCollection<System.Windows.Forms.DataVisualization.Charting.LegendCellColumn>
     {
@@ -1657,34 +1657,34 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public LegendItem() { }
         public LegendItem(string name, System.Drawing.Color color, string image) { }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendCellCollection Cells { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color Color { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Image { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendImageStyle ImageStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Legend Legend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color MarkerBorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MarkerBorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkerColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string MarkerImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color MarkerImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MarkerSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color SeparatorColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle SeparatorType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SeriesName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int SeriesPointIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendCellCollection Cells { get { throw null; } }
+        public System.Drawing.Color Color { get { throw null; } set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public string Image { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendImageStyle ImageStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
+        public System.Drawing.Color MarkerBorderColor { get { throw null; } set { } }
+        public int MarkerBorderWidth { get { throw null; } set { } }
+        public System.Drawing.Color MarkerColor { get { throw null; } set { } }
+        public string MarkerImage { get { throw null; } set { } }
+        public System.Drawing.Color MarkerImageTransparentColor { get { throw null; } set { } }
+        public int MarkerSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public System.Drawing.Color SeparatorColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle SeparatorType { get { throw null; } set { } }
+        public string SeriesName { get { throw null; } set { } }
+        public int SeriesPointIndex { get { throw null; } set { } }
+        public System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public int ShadowOffset { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
     }
     public enum LegendItemOrder
     {
@@ -1746,33 +1746,33 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class LineAnnotation : System.Windows.Forms.DataVisualization.Charting.Annotation
     {
         public LineAnnotation() { }
-        public override System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.ContentAlignment AnchorAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsInfinitive { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override bool IsSizeAlwaysRelative { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { get { throw null; } set { } }
+        public override System.Drawing.Font Font { get { throw null; } set { } }
+        public override System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public virtual bool IsInfinitive { get { throw null; } set { } }
+        public override bool IsSizeAlwaysRelative { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
     }
     public partial class Margins
     {
         public Margins() { }
         public Margins(int top, int bottom, int left, int right) { }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        public int Bottom { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Bottom { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        public int Left { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Left { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        public int Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Right { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        public int Top { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Top { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         [System.MonoTODOAttribute]
         public override int GetHashCode() { throw null; }
@@ -1800,7 +1800,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public NamedImage() { }
         public NamedImage(string name, System.Drawing.Image image) { }
         [System.ComponentModel.BindableAttribute(false)]
-        public System.Drawing.Image Image { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Image Image { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         public override string Name { get { throw null; } set { } }
         protected override void Dispose(bool disposing) { }
@@ -1818,13 +1818,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Drawing.PointF PointF { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
-        public float X { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float X { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
-        public float Y { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float Y { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
-        public float Z { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float Z { get { throw null; } set { } }
     }
     public enum PointSortOrder
     {
@@ -1838,25 +1838,25 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class PolylineAnnotation : System.Windows.Forms.DataVisualization.Charting.Annotation
     {
         public PolylineAnnotation() { }
-        public override System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Drawing2D.GraphicsPath GraphicsPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AnnotationPathPointCollection GraphicsPathPoints { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual bool IsFreeDrawPlacement { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { get { throw null; } set { } }
+        public override System.Drawing.Font Font { get { throw null; } set { } }
+        public override System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public virtual System.Drawing.Drawing2D.GraphicsPath GraphicsPath { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AnnotationPathPointCollection GraphicsPathPoints { get { throw null; } }
+        public virtual bool IsFreeDrawPlacement { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
     }
     public partial class PrintingManager : System.IDisposable
     {
         public PrintingManager() { }
-        public System.Drawing.Printing.PrintDocument PrintDocument { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Printing.PrintDocument PrintDocument { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void Dispose() { }
         [System.MonoTODOAttribute]
@@ -1895,12 +1895,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ScrollBarEventArgs : System.EventArgs
     {
         public ScrollBarEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonType ButtonType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MousePositionX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int MousePositionY { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonType ButtonType { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } }
+        public bool IsHandled { get { throw null; } set { } }
+        public int MousePositionX { get { throw null; } }
+        public int MousePositionY { get { throw null; } }
     }
     public enum ScrollType
     {
@@ -1929,28 +1929,28 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Series() { }
         public Series(string name) { }
         public Series(string name, int yValues) { }
-        public override string AxisLabel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.SeriesChartType ChartType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ChartTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DataPointCustomProperties EmptyPointStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsXValueIndexed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Legend { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MarkerStep { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DataPointCollection Points { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.SmartLabelStyle SmartLabelStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisType XAxisType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string XValueMember { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartValueType XValueType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.AxisType YAxisType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string YValueMembers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int YValuesPerPoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartValueType YValueType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override string AxisLabel { get { throw null; } set { } }
+        public string ChartArea { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.SeriesChartType ChartType { get { throw null; } set { } }
+        public string ChartTypeName { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DataPointCustomProperties EmptyPointStyle { get { throw null; } set { } }
+        public bool Enabled { get { throw null; } set { } }
+        public bool IsXValueIndexed { get { throw null; } set { } }
+        public string Legend { get { throw null; } set { } }
+        public int MarkerStep { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DataPointCollection Points { get { throw null; } }
+        public System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public int ShadowOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.SmartLabelStyle SmartLabelStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisType XAxisType { get { throw null; } set { } }
+        public string XValueMember { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartValueType XValueType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.AxisType YAxisType { get { throw null; } set { } }
+        public string YValueMembers { get { throw null; } set { } }
+        public int YValuesPerPoint { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartValueType YValueType { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
         [System.MonoTODOAttribute]
@@ -2006,19 +2006,19 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class SmartLabelStyle
     {
         public SmartLabelStyle() { }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle AllowOutsidePlotArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color CalloutBackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutLineAnchorCapStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Drawing.Color CalloutLineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle CalloutLineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int CalloutLineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle CalloutStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool Enabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsMarkerOverlappingAllowed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsOverlappedHidden { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double MaxMovingDistance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual double MinMovingDistance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.Windows.Forms.DataVisualization.Charting.LabelAlignmentStyles MovingDirection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle AllowOutsidePlotArea { get { throw null; } set { } }
+        public virtual System.Drawing.Color CalloutBackColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutLineAnchorCapStyle { get { throw null; } set { } }
+        public virtual System.Drawing.Color CalloutLineColor { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle CalloutLineDashStyle { get { throw null; } set { } }
+        public virtual int CalloutLineWidth { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle CalloutStyle { get { throw null; } set { } }
+        public virtual bool Enabled { get { throw null; } set { } }
+        public virtual bool IsMarkerOverlappingAllowed { get { throw null; } set { } }
+        public virtual bool IsOverlappedHidden { get { throw null; } set { } }
+        public virtual double MaxMovingDistance { get { throw null; } set { } }
+        public virtual double MinMovingDistance { get { throw null; } set { } }
+        public virtual System.Windows.Forms.DataVisualization.Charting.LabelAlignmentStyles MovingDirection { get { throw null; } set { } }
     }
     public enum StartFromZero
     {
@@ -2071,31 +2071,31 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class StripLine : System.Windows.Forms.DataVisualization.Charting.ChartElement
     {
         public StripLine() { }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double Interval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double IntervalOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double StripWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType StripWidthType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.StringAlignment TextAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.StringAlignment TextLineAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public System.Drawing.Font Font { get { throw null; } set { } }
+        public System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public double Interval { get { throw null; } set { } }
+        public double IntervalOffset { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
+        public string Name { get { throw null; } }
+        public double StripWidth { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType StripWidthType { get { throw null; } set { } }
+        public string Text { get { throw null; } set { } }
+        public System.Drawing.StringAlignment TextAlignment { get { throw null; } set { } }
+        public System.Drawing.StringAlignment TextLineAlignment { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
     }
     public partial class StripLinesCollection : System.Windows.Forms.DataVisualization.Charting.ChartElementCollection<System.Windows.Forms.DataVisualization.Charting.StripLine>
     {
@@ -2105,16 +2105,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public TextAnnotation() { }
         public override string AnnotationType { get { throw null; } }
-        public override System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool IsMultiline { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Drawing.Color LineColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override int LineWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.Drawing.Color BackColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public override System.Drawing.Font Font { get { throw null; } set { } }
+        public virtual bool IsMultiline { get { throw null; } set { } }
+        public override System.Drawing.Color LineColor { get { throw null; } set { } }
+        public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
+        public override int LineWidth { get { throw null; } set { } }
+        public virtual string Text { get { throw null; } set { } }
     }
     public enum TextAntiAliasingQuality
     {
@@ -2141,8 +2141,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class TickMark : System.Windows.Forms.DataVisualization.Charting.Grid
     {
         public TickMark() { }
-        public float Size { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TickMarkStyle TickMarkStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float Size { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TickMarkStyle TickMarkStyle { get { throw null; } set { } }
     }
     public enum TickMarkStyle
     {
@@ -2157,33 +2157,33 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Title(string text) { }
         public Title(string text, System.Windows.Forms.DataVisualization.Charting.Docking docking) { }
         public Title(string text, System.Windows.Forms.DataVisualization.Charting.Docking docking, System.Drawing.Font font, System.Drawing.Color color) { }
-        public System.Drawing.ContentAlignment Alignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string BackImage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackImageTransparentColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BackSecondaryColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color BorderColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int BorderWidth { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DockedToChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.Docking Docking { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int DockingOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Font Font { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ForeColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsDockedInsideChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Drawing.Color ShadowColor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ShadowOffset { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ToolTip { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool Visible { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
+        public System.Drawing.Color BackColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
+        public string BackImage { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
+        public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
+        public System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
+        public System.Drawing.Color BorderColor { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
+        public int BorderWidth { get { throw null; } set { } }
+        public string DockedToChartArea { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Docking Docking { get { throw null; } set { } }
+        public int DockingOffset { get { throw null; } set { } }
+        public System.Drawing.Font Font { get { throw null; } set { } }
+        public System.Drawing.Color ForeColor { get { throw null; } set { } }
+        public bool IsDockedInsideChartArea { get { throw null; } set { } }
+        public override string Name { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
+        public System.Drawing.Color ShadowColor { get { throw null; } set { } }
+        public int ShadowOffset { get { throw null; } set { } }
+        public string Text { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
+        public string ToolTip { get { throw null; } set { } }
+        public virtual bool Visible { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void Dispose(bool disposing) { }
     }
@@ -2194,24 +2194,24 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ToolTipEventArgs : System.EventArgs
     {
         public ToolTipEventArgs(int x, int y, string text, System.Windows.Forms.DataVisualization.Charting.HitTestResult result) { }
-        public System.Windows.Forms.DataVisualization.Charting.HitTestResult HitTestResult { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int X { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int Y { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.HitTestResult HitTestResult { get { throw null; } }
+        public string Text { get { throw null; } set { } }
+        public int X { get { throw null; } }
+        public int Y { get { throw null; } }
     }
     public partial class TTestResult
     {
         public TTestResult() { }
-        public double DegreeOfFreedom { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FirstSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FirstSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ProbabilityTOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ProbabilityTTwoTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double TCriticalValueOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double TCriticalValueTwoTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double TValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public double DegreeOfFreedom { get { throw null; } }
+        public double FirstSeriesMean { get { throw null; } }
+        public double FirstSeriesVariance { get { throw null; } }
+        public double ProbabilityTOneTail { get { throw null; } }
+        public double ProbabilityTTwoTail { get { throw null; } }
+        public double SecondSeriesMean { get { throw null; } }
+        public double SecondSeriesVariance { get { throw null; } }
+        public double TCriticalValueOneTail { get { throw null; } }
+        public double TCriticalValueTwoTail { get { throw null; } }
+        public double TValue { get { throw null; } }
     }
     public partial class VerticalLineAnnotation : System.Windows.Forms.DataVisualization.Charting.LineAnnotation
     {
@@ -2220,23 +2220,23 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class ViewEventArgs : System.EventArgs
     {
         public ViewEventArgs() { }
-        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double NewPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public double NewSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType NewSizeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
+        public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } }
+        public double NewPosition { get { throw null; } set { } }
+        public double NewSize { get { throw null; } set { } }
+        public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType NewSizeType { get { throw null; } set { } }
     }
     public partial class ZTestResult
     {
         public ZTestResult() { }
-        public double FirstSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double FirstSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ProbabilityZOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ProbabilityZTwoTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesMean { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double SecondSeriesVariance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ZCriticalValueOneTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ZCriticalValueTwoTail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public double ZValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public double FirstSeriesMean { get { throw null; } }
+        public double FirstSeriesVariance { get { throw null; } }
+        public double ProbabilityZOneTail { get { throw null; } }
+        public double ProbabilityZTwoTail { get { throw null; } }
+        public double SecondSeriesMean { get { throw null; } }
+        public double SecondSeriesVariance { get { throw null; } }
+        public double ZCriticalValueOneTail { get { throw null; } }
+        public double ZCriticalValueTwoTail { get { throw null; } }
+        public double ZValue { get { throw null; } }
     }
 }

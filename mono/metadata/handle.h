@@ -294,13 +294,6 @@ mono_thread_info_push_stack_mark (MonoThreadInfo *info, void *mark)
 Handle macros/functions
 */
 
-#ifdef ENABLE_CHECKED_BUILD
-void mono_handle_verify (MonoRawHandle handle);
-#define HANDLE_INVARIANTS(H) mono_handle_verify((void*)(H))
-#else
-#define HANDLE_INVARIANTS(H) (0)
-#endif
-
 #define TYPED_HANDLE_PAYLOAD_NAME(TYPE) TYPE ## HandlePayload
 #define TYPED_HANDLE_NAME(TYPE) TYPE ## Handle
 #define TYPED_OUT_HANDLE_NAME(TYPE) TYPE ## HandleOut
@@ -349,7 +342,7 @@ void mono_handle_verify (MonoRawHandle handle);
 #define NULL_HANDLE mono_null_value_handle
 
 //XXX add functions to get/set raw, set field, set field to null, set array, set array to null
-#define MONO_HANDLE_RAW(HANDLE) (HANDLE_INVARIANTS (HANDLE), ((HANDLE)->__raw))
+#define MONO_HANDLE_RAW(HANDLE) ((HANDLE)->__raw)
 #define MONO_HANDLE_DCL(TYPE, NAME) TYPED_HANDLE_NAME(TYPE) NAME = MONO_HANDLE_NEW (TYPE, (NAME ## _raw))
 
 #ifndef MONO_HANDLE_TRACK_OWNER
@@ -392,11 +385,14 @@ This is why we evaluate index and value before any call to MONO_HANDLE_RAW or ot
 		MONO_HANDLE_SUPPRESS (*(gpointer*)&__dest->__raw = (gpointer)MONO_HANDLE_RAW (MONO_HANDLE_UNSUPPRESS (HANDLE))->FIELD); \
 	} while (0)
 
+// Get ((type)handle)->field as a handle.
 #define MONO_HANDLE_NEW_GET(TYPE,HANDLE,FIELD) (MONO_HANDLE_NEW(TYPE,MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (MONO_HANDLE_UNSUPPRESS (HANDLE))->FIELD)))
 
+// Get handle->field, where field is not a pointer (an integer or non-managed pointer).
 #define MONO_HANDLE_GETVAL(HANDLE, FIELD) MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (MONO_HANDLE_UNSUPPRESS (HANDLE))->FIELD)
 
-/* VS doesn't support typeof :( :( :( */
+// This would be easier to write with the gcc extension typeof,
+// but it is not widely enough implemented (i.e. Microsoft C).
 #define MONO_HANDLE_SETVAL(HANDLE, FIELD, TYPE, VALUE) do {	\
 		TYPE __val = (VALUE);	\
 		MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (MONO_HANDLE_UNSUPPRESS (HANDLE))->FIELD = __val); \
@@ -559,6 +555,12 @@ mono_context_get_handle (void);
 
 void
 mono_context_set_handle (MonoAppContextHandle new_context);
+
+static inline guint32
+mono_gchandle_new_weakref_from_handle (MonoObjectHandle handle)
+{
+	return mono_gchandle_new_weakref (MONO_HANDLE_SUPPRESS (MONO_HANDLE_RAW (handle)), FALSE);
+}
 
 G_END_DECLS
 

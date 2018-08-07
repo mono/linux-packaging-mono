@@ -6,7 +6,9 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
+#if !MONO
 [assembly: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAssembly]
+#endif
 
 namespace System.Xml.XmlDiff
 {

@@ -910,22 +910,14 @@ namespace System
             if (array.Length - index < length)
                 throw new ArgumentException(SR.Argument_InvalidOffLen);
 
-#if !MONO
             ref T p = ref Unsafe.As<byte, T>(ref array.GetRawSzArrayData());
-#endif
             int i = index;
             int j = index + length - 1;
             while (i < j)
             {
-#if MONO
-                T temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-#else
                 T temp = Unsafe.Add(ref p, i);
                 Unsafe.Add(ref p, i) = Unsafe.Add(ref p, j);
                 Unsafe.Add(ref p, j) = temp;
-#endif
                 i++;
                 j--;
             }

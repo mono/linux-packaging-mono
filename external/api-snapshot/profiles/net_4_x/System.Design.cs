@@ -2885,6 +2885,14 @@ namespace System.Web.UI.Design.WebControls
         public CheckBoxDesigner() { }
         public override string GetDesignTimeHtml() { throw null; }
     }
+    public partial class CompositeControlDesigner : System.Web.UI.Design.ControlDesigner
+    {
+        public CompositeControlDesigner() { }
+        protected virtual void CreateChildControls() { }
+        public override string GetDesignTimeHtml() { throw null; }
+        public override string GetDesignTimeHtml(System.Web.UI.Design.DesignerRegionCollection regions) { throw null; }
+        public override void Initialize(System.ComponentModel.IComponent component) { }
+    }
     public partial class DataBoundControlDesigner : System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner, System.Web.UI.Design.IDataBindingSchemaProvider, System.Web.UI.Design.IDataSourceProvider
     {
         [System.MonoNotSupportedAttribute("")]

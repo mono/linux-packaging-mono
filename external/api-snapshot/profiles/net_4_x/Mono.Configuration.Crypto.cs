@@ -32,11 +32,11 @@ namespace Mono.Configuration.Crypto
         public Key(string file, bool machineStore) { }
         public Key(string containerName, string keyValue, bool machineStore) { }
         public Key(string containerName, uint keySize, bool machineStore) { }
-        public string ContainerName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsValid { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string KeyValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ContainerName { get { throw null; } set { } }
+        public bool IsValid { get { throw null; } }
+        public string KeyValue { get { throw null; } set { } }
         public bool Local { get { throw null; } }
-        public int ProviderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int ProviderType { get { throw null; } set { } }
         public void Save() { }
     }
     public partial class KeyContainer : System.Collections.Generic.IEnumerable<Mono.Configuration.Crypto.Key>, System.Collections.IEnumerable
@@ -44,8 +44,8 @@ namespace Mono.Configuration.Crypto
         public KeyContainer(string name, bool machineStore) { }
         public int Count { get { throw null; } }
         public Mono.Configuration.Crypto.Key this[int index] { get { throw null; } }
-        public bool Local { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Local { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
         public void Add(Mono.Configuration.Crypto.Key key) { }
         public System.Collections.Generic.IEnumerator<Mono.Configuration.Crypto.Key> GetEnumerator() { throw null; }
         public static void RemoveFromDisk(string containerName, bool machineStore) { }

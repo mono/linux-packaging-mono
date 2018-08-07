@@ -80,12 +80,16 @@ namespace System.Json
         public JsonPrimitive(short value) { }
         public JsonPrimitive(int value) { }
         public JsonPrimitive(long value) { }
+        [System.CLSCompliantAttribute(false)]
         public JsonPrimitive(sbyte value) { }
         public JsonPrimitive(float value) { }
         public JsonPrimitive(string value) { }
         public JsonPrimitive(System.TimeSpan value) { }
+        [System.CLSCompliantAttribute(false)]
         public JsonPrimitive(ushort value) { }
+        [System.CLSCompliantAttribute(false)]
         public JsonPrimitive(uint value) { }
+        [System.CLSCompliantAttribute(false)]
         public JsonPrimitive(ulong value) { }
         public JsonPrimitive(System.Uri value) { }
         public override System.Json.JsonType JsonType { get { throw null; } }
@@ -131,20 +135,28 @@ namespace System.Json
         public static implicit operator short (System.Json.JsonValue value) { throw null; }
         public static implicit operator int (System.Json.JsonValue value) { throw null; }
         public static implicit operator long (System.Json.JsonValue value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator sbyte (System.Json.JsonValue value) { throw null; }
         public static implicit operator float (System.Json.JsonValue value) { throw null; }
         public static implicit operator string (System.Json.JsonValue value) { throw null; }
         public static implicit operator System.TimeSpan (System.Json.JsonValue value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator ushort (System.Json.JsonValue value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator uint (System.Json.JsonValue value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator ulong (System.Json.JsonValue value) { throw null; }
         public static implicit operator System.Uri (System.Json.JsonValue value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator System.Json.JsonValue (sbyte value) { throw null; }
         public static implicit operator System.Json.JsonValue (float value) { throw null; }
         public static implicit operator System.Json.JsonValue (string value) { throw null; }
         public static implicit operator System.Json.JsonValue (System.TimeSpan value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator System.Json.JsonValue (ushort value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator System.Json.JsonValue (uint value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
         public static implicit operator System.Json.JsonValue (ulong value) { throw null; }
         public static implicit operator System.Json.JsonValue (System.Uri value) { throw null; }
         public static System.Json.JsonValue Parse(string jsonString) { throw null; }

@@ -4,15 +4,21 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
-using System.Xml.Schema;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using System.Xml.Schema;
 
 using CultureInfo = System.Globalization.CultureInfo;
 using IEnumerable = System.Collections.IEnumerable;
 using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 using StringBuilder = System.Text.StringBuilder;
+
+#if MONO
+// remove it when StringBuilderCache moves back to System.IO
+using StringBuilderCache = System.Text.StringBuilderCache;
+#endif
 
 namespace System.Xml.Linq
 {
@@ -30,6 +36,9 @@ namespace System.Xml.Linq
     ///     <item><see cref="XProcessingInstruction"/></item>
     ///   </list>
     /// </remarks>
+#if MONO_HYBRID_SYSTEM_XML
+    [XmlTypeConvertor ("ConvertForAssignment")]
+#endif
     [XmlSchemaProvider(null, IsAny = true)]
     public class XElement : XContainer, IXmlSerializable
     {
@@ -1857,6 +1866,18 @@ namespace System.Xml.Linq
             if (element == null) return null;
             return XmlConvert.ToGuid(element.Value);
         }
+
+#if MONO_HYBRID_SYSTEM_XML
+        static object ConvertForAssignment (object value)
+        {
+            var node = value as XmlNode;
+            if (node == null)
+                return value;
+            var doc = new XmlDocument ();
+            doc.AppendChild (doc.ImportNode (node, true));
+            return XElement.Parse (doc.InnerXml);
+        }
+#endif
 
         /// <summary>
         /// This method is obsolete for the IXmlSerializable contract.

@@ -562,6 +562,29 @@ mono_profiler_enable_allocations (void)
 }
 
 /**
+ * mono_profiler_enable_clauses:
+ *
+ * Enables instrumentation of exception clauses. This is necessary so that CIL
+ * \c leave instructions can be instrumented with a call into the profiler API.
+ * Exception clauses will not be reported unless this function is called.
+ * Returns \c TRUE if exception clause instrumentation was enabled, or \c FALSE
+ * if the function was called too late for this to be possible.
+ *
+ * This function is \b not async safe.
+ *
+ * This function may \b only be called from a profiler's init function or prior
+ * to running managed code.
+ */
+mono_bool
+mono_profiler_enable_clauses (void)
+{
+	if (mono_profiler_state.startup_done)
+		return FALSE;
+
+	return mono_profiler_state.clauses = TRUE;
+}
+
+/**
  * mono_profiler_set_call_instrumentation_filter_callback:
  *
  * Sets a call instrumentation filter function. The profiler API will invoke
@@ -1019,7 +1042,7 @@ mono_profiler_install_thread (MonoLegacyProfileThreadFunc start, MonoLegacyProfi
 }
 
 static void
-gc_event_cb (MonoProfiler *prof, MonoProfilerGCEvent event, uint32_t generation)
+gc_event_cb (MonoProfiler *prof, MonoProfilerGCEvent event, uint32_t generation, gboolean is_serial)
 {
 	prof->gc_event (prof->profiler, event, generation);
 }

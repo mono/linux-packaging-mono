@@ -30,13 +30,33 @@ struct _MonoType {
 	} data;
 	unsigned int attrs    : 16; /* param attributes or field flags */
 	MonoTypeEnum type     : 8;
-	unsigned int num_mods : 6;  /* max 64 modifiers follow at the end */
+	unsigned int has_cmods : 1;  
 	unsigned int byref    : 1;
 	unsigned int pinned   : 1;  /* valid when included in a local var signature */
-	MonoCustomMod modifiers [MONO_ZERO_LEN_ARRAY]; /* this may grow */
 };
 
-#define MONO_SIZEOF_TYPE (offsetof (struct _MonoType, modifiers))
+typedef struct {
+	MonoType unmodified;
+	MonoCustomModContainer cmods;
+} MonoTypeWithModifiers;
+
+MonoCustomModContainer *
+mono_type_get_cmods (const MonoType *t);
+
+// Note: sizeof (MonoType) is dangerous. It can copy the num_mods
+// field without copying the variably sized array. This leads to
+// memory unsafety on the stack and/or heap, when we try to traverse
+// this array.
+//
+// Use mono_sizeof_monotype 
+// to get the size of the memory to copy.
+#define MONO_SIZEOF_TYPE sizeof (MonoType)
+
+size_t 
+mono_sizeof_type_with_mods (uint8_t num_mods);
+
+size_t 
+mono_sizeof_type (const MonoType *ty);
 
 #define MONO_SECMAN_FLAG_INIT(x)		(x & 0x2)
 #define MONO_SECMAN_FLAG_GET_VALUE(x)		(x & 0x1)
@@ -73,6 +93,26 @@ struct MonoTypeNameParse {
 	GList *nested;
 };
 
+
+typedef enum MonoAssemblyContextKind {
+	/* Default assembly context: Load(String) and assembly references */
+	MONO_ASMCTX_DEFAULT = 0,
+	/* Reflection-only only context: ReflectionOnlyLoad and ReeflectionOnlyLoadFrom */
+	MONO_ASMCTX_REFONLY = 1,
+	/* LoadFrom context: LoadFrom() and references */
+	MONO_ASMCTX_LOADFROM = 2,
+	/* Individual assembly context (.NET Framework docs call this "not in
+	 * any context"): LoadFile(String) and Load(byte[]) are here.
+	 */
+	MONO_ASMCTX_INDIVIDUAL = 3,
+
+	MONO_ASMCTX_LAST = 3
+} MonoAssemblyContextKind;
+
+typedef struct _MonoAssemblyContext {
+	MonoAssemblyContextKind kind;
+} MonoAssemblyContext;
+
 struct _MonoAssembly {
 	/* 
 	 * The number of appdomains which have this assembly loaded plus the number of 
@@ -91,7 +131,7 @@ struct _MonoAssembly {
 	guint8 in_gac;
 	guint8 dynamic;
 	guint8 corlib_internal;
-	gboolean ref_only;
+	MonoAssemblyContext context;
 	guint8 wrap_non_exception_throws;
 	guint8 wrap_non_exception_throws_inited;
 	guint8 jit_optimizer_disabled;
@@ -112,8 +152,7 @@ typedef struct {
 	GHashTable *delegate_invoke_cache;
 	GHashTable *delegate_begin_invoke_cache;
 	GHashTable *delegate_end_invoke_cache;
-	GHashTable *runtime_invoke_cache;
-	GHashTable *runtime_invoke_vtype_cache;
+	GHashTable *runtime_invoke_signature_cache;
 	GHashTable *runtime_invoke_sig_cache;
 
 	/*
@@ -125,7 +164,7 @@ typedef struct {
 	 * indexed by MonoMethod pointers
 	 * Protected by the marshal lock
 	 */
-	GHashTable *runtime_invoke_direct_cache;
+	GHashTable *runtime_invoke_method_cache;
 	GHashTable *managed_wrapper_cache;
 
 	GHashTable *native_wrapper_cache;
@@ -337,7 +376,6 @@ struct _MonoImage {
 	/*
 	 * indexed by MonoMethod pointers 
 	 */
-	GHashTable *runtime_invoke_vcall_cache;
 	GHashTable *wrapper_param_names;
 	GHashTable *array_accessor_cache;
 
@@ -728,6 +766,13 @@ mono_image_load_cli_header (MonoImage *image, MonoCLIImageInfo *iinfo);
 gboolean
 mono_image_load_metadata (MonoImage *image, MonoCLIImageInfo *iinfo);
 
+const char*
+mono_metadata_string_heap_checked (MonoImage *meta, uint32_t table_index, MonoError *error);
+const char*
+mono_metadata_blob_heap_checked (MonoImage *meta, uint32_t table_index, MonoError *error);
+gboolean
+mono_metadata_decode_row_checked (const MonoImage *image, const MonoTableInfo *t, int idx, uint32_t *res, int res_size, MonoError *error);
+
 MonoType*
 mono_metadata_get_shared_type (MonoType *type);
 
@@ -967,6 +1012,9 @@ mono_signature_get_managed_fmt_string (MonoMethodSignature *sig);
 
 gboolean
 mono_type_in_image (MonoType *type, MonoImage *image);
+
+MonoAssemblyContextKind
+mono_asmctx_get_kind (const MonoAssemblyContext *ctx);
 
 #endif /* __MONO_METADATA_INTERNALS_H__ */
 
