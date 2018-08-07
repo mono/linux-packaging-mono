@@ -1,3 +1,13 @@
+mono (5.16.0.100-0xamarin4) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [e01a811] Refreshed symbols [f80f34d] Include System.Native
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 07 Aug 2018 20:20:23 +0000
+
 mono (5.16.0.100-0xamarin3) preview; urgency=medium
 
   * Packaging bugfix:
