@@ -102,6 +102,9 @@ mono_domain_assembly_search (MonoAssemblyName *aname,
 static void
 mono_domain_fire_assembly_load (MonoAssembly *assembly, gpointer user_data);
 
+static gboolean
+mono_domain_asmctx_from_path (const char *fname, MonoAssembly *requesting_assembly, gpointer user_data, MonoAssemblyContextKind *out_asmctx);
+
 static void
 add_assemblies_to_domain (MonoDomain *domain, MonoAssembly *ass, GHashTable *hash);
 
@@ -280,6 +283,7 @@ mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoT
 	mono_install_assembly_postload_search_hook ((MonoAssemblySearchFunc)mono_domain_assembly_postload_search, GUINT_TO_POINTER (FALSE));
 	mono_install_assembly_postload_refonly_search_hook ((MonoAssemblySearchFunc)mono_domain_assembly_postload_search, GUINT_TO_POINTER (TRUE));
 	mono_install_assembly_load_hook (mono_domain_fire_assembly_load, NULL);
+	mono_install_assembly_asmctx_from_path_hook (mono_domain_asmctx_from_path, NULL);
 
 	mono_thread_init (start_cb, attach_cb);
 
@@ -962,7 +966,7 @@ ves_icall_System_AppDomain_getRootDomain (MonoError *error)
 }
 
 MonoBoolean
-ves_icall_System_CLRConfig_CheckThrowUnobservedTaskExceptions ()
+ves_icall_System_CLRConfig_CheckThrowUnobservedTaskExceptions (MonoError *error)
 {
 	MonoDomain *domain = mono_domain_get ();
 
@@ -1158,7 +1162,9 @@ ves_icall_System_AppDomain_GetAssemblies (MonoAppDomainHandle ad, MonoBoolean re
 	mono_domain_assemblies_lock (domain);
 	for (tmp = domain->domain_assemblies; tmp; tmp = tmp->next) {
 		ass = (MonoAssembly *)tmp->data;
-		if (refonly != ass->ref_only)
+		MonoBoolean ass_refonly = mono_asmctx_get_kind (&ass->context) == MONO_ASMCTX_REFONLY;
+		/* .NET Framework GetAssemblies() includes LoadFrom and Load(byte[]) assemblies, too */
+		if (refonly != ass_refonly)
 			continue;
 		if (ass->corlib_internal)
 			continue;
@@ -1228,7 +1234,7 @@ mono_try_assembly_resolve_handle (MonoDomain *domain, MonoStringHandle fname, Mo
 	}
 	ret = !MONO_HANDLE_IS_NULL (result) ? MONO_HANDLE_GETVAL (result, assembly) : NULL;
 
-	if (ret && !refonly && ret->ref_only) {
+	if (ret && !refonly && mono_asmctx_get_kind (&ret->context) == MONO_ASMCTX_REFONLY) {
 		/* .NET Framework throws System.IO.FileNotFoundException in this case */
 		mono_error_set_file_not_found (error, NULL, "AssemblyResolveEvent handlers cannot return Assemblies loaded for reflection only");
 		ret = NULL;
@@ -1352,6 +1358,21 @@ mono_domain_fire_assembly_load (MonoAssembly *assembly, gpointer user_data)
 	mono_error_cleanup (error);
 leave:
 	HANDLE_FUNCTION_RETURN ();
+}
+
+static gboolean
+mono_domain_asmctx_from_path (const char *fname, MonoAssembly *requesting_assembly, gpointer user_data, MonoAssemblyContextKind *out_asmctx)
+{
+	MonoDomain *domain = mono_domain_get ();
+	char **search_path = NULL;
+
+        for (search_path = domain->search_path; search_path && *search_path; search_path++) {
+		if (mono_path_filename_in_basedir (fname, *search_path)) {
+			*out_asmctx = MONO_ASMCTX_DEFAULT;
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /*
@@ -2033,7 +2054,7 @@ static gboolean
 try_load_from (MonoAssembly **assembly,
 	       const gchar *path1, const gchar *path2,
 	       const gchar *path3, const gchar *path4,
-	       gboolean refonly, gboolean is_private,
+	       MonoAssemblyContextKind asmctx, gboolean is_private,
 	       MonoAssemblyCandidatePredicate predicate, gpointer user_data)
 {
 	gchar *fullpath;
@@ -2053,14 +2074,14 @@ try_load_from (MonoAssembly **assembly,
 		found = g_file_test (fullpath, G_FILE_TEST_IS_REGULAR);
 	
 	if (found)
-		*assembly = mono_assembly_open_predicate (fullpath, refonly, FALSE, predicate, user_data, NULL);
+		*assembly = mono_assembly_open_predicate (fullpath, asmctx, predicate, user_data, NULL, NULL);
 
 	g_free (fullpath);
 	return (*assembly != NULL);
 }
 
 static MonoAssembly *
-real_load (gchar **search_path, const gchar *culture, const gchar *name, gboolean refonly, MonoAssemblyCandidatePredicate predicate, gpointer user_data)
+real_load (gchar **search_path, const gchar *culture, const gchar *name, MonoAssemblyContextKind asmctx, MonoAssemblyCandidatePredicate predicate, gpointer user_data)
 {
 	MonoAssembly *result = NULL;
 	gchar **path;
@@ -2087,22 +2108,22 @@ real_load (gchar **search_path, const gchar *culture, const gchar *name, gboolea
 		/* See test cases in bug #58992 and bug #57710 */
 		/* 1st try: [culture]/[name].dll (culture may be empty) */
 		strcpy (filename + len - 4, ".dll");
-		if (try_load_from (&result, *path, local_culture, "", filename, refonly, is_private, predicate, user_data))
+		if (try_load_from (&result, *path, local_culture, "", filename, asmctx, is_private, predicate, user_data))
 			break;
 
 		/* 2nd try: [culture]/[name].exe (culture may be empty) */
 		strcpy (filename + len - 4, ".exe");
-		if (try_load_from (&result, *path, local_culture, "", filename, refonly, is_private, predicate, user_data))
+		if (try_load_from (&result, *path, local_culture, "", filename, asmctx, is_private, predicate, user_data))
 			break;
 
 		/* 3rd try: [culture]/[name]/[name].dll (culture may be empty) */
 		strcpy (filename + len - 4, ".dll");
-		if (try_load_from (&result, *path, local_culture, name, filename, refonly, is_private, predicate, user_data))
+		if (try_load_from (&result, *path, local_culture, name, filename, asmctx, is_private, predicate, user_data))
 			break;
 
 		/* 4th try: [culture]/[name]/[name].exe (culture may be empty) */
 		strcpy (filename + len - 4, ".exe");
-		if (try_load_from (&result, *path, local_culture, name, filename, refonly, is_private, predicate, user_data))
+		if (try_load_from (&result, *path, local_culture, name, filename, asmctx, is_private, predicate, user_data))
 			break;
 	}
 
@@ -2144,13 +2165,44 @@ mono_domain_assembly_preload (MonoAssemblyName *aname,
 			}
 			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_ASSEMBLY, "End of domain %s search path.", domain->friendly_name);			
 		}
-		result = real_load (domain->search_path, aname->culture, aname->name, refonly, predicate, predicate_ud);
+		result = real_load (domain->search_path, aname->culture, aname->name, refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT, predicate, predicate_ud);
 	}
 
 	if (result == NULL && assemblies_path && assemblies_path [0] != NULL) {
-		result = real_load (assemblies_path, aname->culture, aname->name, refonly, predicate, predicate_ud);
+		result = real_load (assemblies_path, aname->culture, aname->name, refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT, predicate, predicate_ud);
 	}
 
+	return result;
+}
+
+/**
+ * mono_assembly_load_from_assemblies_path:
+ *
+ * \param assemblies_path directories to search for given assembly name, terminated by NULL
+ * \param aname assembly name to look for
+ * \param asmctx assembly load context for this load operation
+ *
+ * Given a NULL-terminated array of paths, look for \c name.ext, \c name, \c
+ * culture/name.ext, \c culture/name/name.ext where \c ext is \c dll and \c
+ * exe and try to load it in the given assembly load context.
+ *
+ * \returns A \c MonoAssembly if probing was successful, or NULL otherwise.
+ */
+MonoAssembly*
+mono_assembly_load_from_assemblies_path (gchar **assemblies_path, MonoAssemblyName *aname, MonoAssemblyContextKind asmctx)
+{
+	MonoAssemblyCandidatePredicate predicate = NULL;
+	void* predicate_ud = NULL;
+#if !defined(DISABLE_DESKTOP_LOADER)
+	if (G_LIKELY (mono_loader_get_strict_strong_names ())) {
+		predicate = &mono_assembly_candidate_predicate_sn_same_name;
+		predicate_ud = aname;
+	}
+#endif
+	MonoAssembly *result = NULL;
+	if (assemblies_path && assemblies_path[0] != NULL) {
+		result = real_load (assemblies_path, aname->culture, aname->name, asmctx, predicate, predicate_ud);
+	}
 	return result;
 }
 
@@ -2165,12 +2217,19 @@ mono_domain_assembly_search (MonoAssemblyName *aname,
 	GSList *tmp;
 	MonoAssembly *ass;
 	gboolean refonly = GPOINTER_TO_UINT (user_data);
+	const gboolean strong_name = aname->public_key_token[0] != 0;
+	/* If it's not a strong name, any version that has the right simple
+	 * name is good enough to satisfy the request.  .NET Framework also
+	 * ignores case differences in this case. */
+	const MonoAssemblyNameEqFlags eq_flags = strong_name ? MONO_ANAME_EQ_IGNORE_CASE :
+		(MONO_ANAME_EQ_IGNORE_PUBKEY | MONO_ANAME_EQ_IGNORE_VERSION | MONO_ANAME_EQ_IGNORE_CASE);
 
 	mono_domain_assemblies_lock (domain);
 	for (tmp = domain->domain_assemblies; tmp; tmp = tmp->next) {
 		ass = (MonoAssembly *)tmp->data;
 		/* Dynamic assemblies can't match here in MS.NET */
-		if (assembly_is_dynamic (ass) || refonly != ass->ref_only || !mono_assembly_names_equal (aname, &ass->aname))
+		gboolean ass_ref_only = mono_asmctx_get_kind (&ass->context) == MONO_ASMCTX_REFONLY;
+		if (assembly_is_dynamic (ass) || refonly != ass_ref_only || !mono_assembly_names_equal_flags (aname, &ass->aname, eq_flags))
 			continue;
 
 		mono_domain_assemblies_unlock (domain);
@@ -2201,7 +2260,14 @@ ves_icall_System_Reflection_Assembly_LoadFrom (MonoStringHandle fname, MonoBoole
 	name = filename = mono_string_handle_to_utf8 (fname, error);
 	goto_if_nok (error, leave);
 	
-	MonoAssembly *ass = mono_assembly_open_predicate (filename, refOnly, TRUE, NULL, NULL, &status);
+	MonoAssembly *requesting_assembly = NULL;
+	if (!refOnly) {
+		MonoMethod *executing_method = mono_runtime_get_caller_no_system_or_reflection ();
+		MonoAssembly *executing_assembly = executing_method ? m_class_get_image (executing_method->klass)->assembly : NULL;
+		requesting_assembly = executing_assembly;
+	}
+
+	MonoAssembly *ass = mono_assembly_open_predicate (filename, refOnly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_LOADFROM, NULL, NULL, requesting_assembly, &status);
 	
 	if (!ass) {
 		if (status == MONO_IMAGE_IMAGE_INVALID)
@@ -2216,6 +2282,40 @@ ves_icall_System_Reflection_Assembly_LoadFrom (MonoStringHandle fname, MonoBoole
 leave:
 	g_free (name);
 	return result;
+}
+
+MonoReflectionAssemblyHandle
+ves_icall_System_Reflection_Assembly_LoadFile_internal (MonoStringHandle fname, MonoError *error)
+{
+	MonoDomain *domain = mono_domain_get ();
+	MonoReflectionAssemblyHandle result = MONO_HANDLE_CAST (MonoReflectionAssembly, NULL_HANDLE);
+	char *filename = NULL;
+	if (MONO_HANDLE_IS_NULL (fname)) {
+		mono_error_set_argument_null (error, "assemblyFile", "");
+		goto leave;
+	}
+
+	filename = mono_string_handle_to_utf8 (fname, error);
+	goto_if_nok (error, leave);
+
+	MonoImageOpenStatus status;
+
+	MonoMethod *executing_method = mono_runtime_get_caller_no_system_or_reflection ();
+	MonoAssembly *executing_assembly = executing_method ? m_class_get_image (executing_method->klass)->assembly : NULL;
+	MonoAssembly *ass = mono_assembly_open_predicate (filename, MONO_ASMCTX_INDIVIDUAL, NULL, NULL, executing_assembly, &status);
+	if (!ass) {
+		if (status == MONO_IMAGE_IMAGE_INVALID)
+			mono_error_set_bad_image_by_name (error, filename, "Invalid Image");
+		else
+			mono_error_set_file_not_found (error, filename, "Invalid Image");
+		goto leave;
+	}
+
+	result = mono_assembly_get_object_handle (domain, ass, error);
+leave:
+	g_free (filename);
+	return result;
+
 }
 
 MonoReflectionAssemblyHandle
@@ -2259,7 +2359,19 @@ ves_icall_System_AppDomain_LoadAssemblyRaw (MonoAppDomainHandle ad,
 		mono_gchandle_free (symbol_gchandle);
 	}
 
-	ass = mono_assembly_load_from_full (image, "", &status, refonly);
+	MonoAssembly* redirected_asm = NULL;
+	MonoImageOpenStatus new_status = MONO_IMAGE_OK;
+	if ((redirected_asm = mono_assembly_binding_applies_to_image (image, &new_status))) {
+		mono_image_close (image);
+		image = redirected_asm->image;
+		mono_image_addref (image); /* so that mono_image close, below, has something to do */
+	} else if (new_status != MONO_IMAGE_OK) {
+		mono_image_close (image);
+		mono_error_set_bad_image_by_name (error, "In Memory assembly", "0x%p was assembly binding redirected to another assembly that failed to load", assembly_data);
+		return refass;
+	}
+
+	ass = mono_assembly_load_from_predicate (image, "", refonly? MONO_ASMCTX_REFONLY : MONO_ASMCTX_INDIVIDUAL, NULL, NULL, &status);
 
 
 	if (!ass) {
@@ -2309,7 +2421,24 @@ ves_icall_System_AppDomain_LoadAssembly (MonoAppDomainHandle ad, MonoStringHandl
 		return refass;
 	}
 
-	ass = mono_assembly_load_full_nosearch (&aname, NULL, &status, refOnly);
+	MonoAssemblyContextKind asmctx = refOnly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT;
+	const char *basedir = NULL;
+	if (!refOnly) {
+		/* Determine if the current assembly is in LoadFrom context.
+		 * If it is, we must include the executing assembly's basedir
+		 * when probing for the given assembly name, and also load the
+		 * requested assembly in LoadFrom context.
+		 */
+		MonoMethod *executing_method = mono_runtime_get_caller_no_system_or_reflection ();
+		MonoAssembly *executing_assembly = executing_method ? m_class_get_image (executing_method->klass)->assembly : NULL;
+		if (executing_assembly && mono_asmctx_get_kind (&executing_assembly->context) == MONO_ASMCTX_LOADFROM) {
+			asmctx = MONO_ASMCTX_LOADFROM;
+			basedir = executing_assembly->basedir;
+		}
+	}
+
+
+	ass = mono_assembly_load_full_nosearch (&aname, basedir, asmctx, &status);
 	mono_assembly_name_free (&aname);
 
 	if (!ass) {

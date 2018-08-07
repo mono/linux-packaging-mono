@@ -722,6 +722,12 @@ mono_wasm_set_breakpoint (const char *assembly_name, int method_token, int il_of
 //trampoline
 
 void
+mono_sdb_single_step_trampoline (void)
+{
+	g_error ("mono_sdb_single_step_trampoline");
+}
+
+void
 mono_wasm_breakpoint_hit (void)
 {
 	mono_wasm_fire_bp ();
@@ -917,8 +923,7 @@ describe_variable (MonoStackFrameInfo *info, MonoContext *ctx, gpointer ud)
 			g_free (type_name);
 		}
 	}
-	if (header)
-		mono_metadata_free_mh (header);
+	mono_metadata_free_mh (header);
 
 	return TRUE;
 }

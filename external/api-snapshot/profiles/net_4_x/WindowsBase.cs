@@ -221,9 +221,9 @@ namespace System.ComponentModel
     public partial class ItemPropertyInfo
     {
         public ItemPropertyInfo(string name, System.Type type, object descriptor) { }
-        public object Descriptor { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type PropertyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object Descriptor { get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Type PropertyType { get { throw null; } }
     }
     public enum NewItemPlaceholderPosition
     {
@@ -378,7 +378,7 @@ namespace System.IO.Packaging
     {
         protected Package(System.IO.FileAccess openFileAccess) { }
         protected Package(System.IO.FileAccess openFileAccess, bool streaming) { }
-        public System.IO.FileAccess FileOpenAccess { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IO.FileAccess FileOpenAccess { get { throw null; } }
         public System.IO.Packaging.PackageProperties PackageProperties { get { throw null; } }
         public void Close() { }
         public System.IO.Packaging.PackagePart CreatePart(System.Uri partUri, string contentType) { throw null; }
@@ -461,10 +461,10 @@ namespace System.IO.Packaging
         protected PackagePart(System.IO.Packaging.Package package, System.Uri partUri) { }
         protected internal PackagePart(System.IO.Packaging.Package package, System.Uri partUri, string contentType) { }
         protected internal PackagePart(System.IO.Packaging.Package package, System.Uri partUri, string contentType, System.IO.Packaging.CompressionOption compressionOption) { }
-        public System.IO.Packaging.CompressionOption CompressionOption { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IO.Packaging.CompressionOption CompressionOption { get { throw null; } }
         public string ContentType { get { throw null; } }
-        public System.IO.Packaging.Package Package { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri Uri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IO.Packaging.Package Package { get { throw null; } }
+        public System.Uri Uri { get { throw null; } }
         public System.IO.Packaging.PackageRelationship CreateRelationship(System.Uri targetUri, System.IO.Packaging.TargetMode targetMode, string relationshipType) { throw null; }
         public System.IO.Packaging.PackageRelationship CreateRelationship(System.Uri targetUri, System.IO.Packaging.TargetMode targetMode, string relationshipType, string id) { throw null; }
         public void DeleteRelationship(string id) { }
@@ -509,12 +509,12 @@ namespace System.IO.Packaging
     public partial class PackageRelationship
     {
         internal PackageRelationship() { }
-        public string Id { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IO.Packaging.Package Package { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string RelationshipType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri SourceUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IO.Packaging.TargetMode TargetMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri TargetUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Id { get { throw null; } }
+        public System.IO.Packaging.Package Package { get { throw null; } }
+        public string RelationshipType { get { throw null; } }
+        public System.Uri SourceUri { get { throw null; } }
+        public System.IO.Packaging.TargetMode TargetMode { get { throw null; } }
+        public System.Uri TargetUri { get { throw null; } }
     }
     public partial class PackageRelationshipCollection : System.Collections.Generic.IEnumerable<System.IO.Packaging.PackageRelationship>, System.Collections.IEnumerable
     {
@@ -1009,13 +1009,13 @@ namespace System.Windows
     {
         internal DependencyProperty() { }
         public static readonly object UnsetValue;
-        public System.Windows.PropertyMetadata DefaultMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Windows.PropertyMetadata DefaultMetadata { get { throw null; } }
         public int GlobalIndex { get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type OwnerType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type PropertyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ReadOnly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.ValidateValueCallback ValidateValueCallback { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Type OwnerType { get { throw null; } }
+        public System.Type PropertyType { get { throw null; } }
+        public bool ReadOnly { get { throw null; } }
+        public System.Windows.ValidateValueCallback ValidateValueCallback { get { throw null; } }
         public System.Windows.DependencyProperty AddOwner(System.Type ownerType) { throw null; }
         public System.Windows.DependencyProperty AddOwner(System.Type ownerType, System.Windows.PropertyMetadata typeMetadata) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -1042,9 +1042,9 @@ namespace System.Windows
     public partial struct DependencyPropertyChangedEventArgs
     {
         public DependencyPropertyChangedEventArgs(System.Windows.DependencyProperty property, object oldValue, object newValue) { throw null;}
-        public object NewValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object OldValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Windows.DependencyProperty Property { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object NewValue { get { throw null; } }
+        public object OldValue { get { throw null; } }
+        public System.Windows.DependencyProperty Property { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Windows.DependencyPropertyChangedEventArgs args) { throw null; }
         public override int GetHashCode() { throw null; }

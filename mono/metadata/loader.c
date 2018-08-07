@@ -199,10 +199,8 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 
 	fname = mono_metadata_string_heap (image, cols [MONO_MEMBERREF_NAME]);
 
-	if (!mono_verifier_verify_memberref_field_signature (image, cols [MONO_MEMBERREF_SIGNATURE], NULL)) {
-		mono_error_set_bad_image (error, image, "Bad field '%u' signature 0x%08x", class_index, token);
+	if (!mono_verifier_verify_memberref_field_signature (image, cols [MONO_MEMBERREF_SIGNATURE], error))
 		return NULL;
-	}
 
 	switch (class_index) {
 	case MONO_MEMBERREF_PARENT_TYPEDEF:
@@ -416,8 +414,10 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 	FIXME we should better report this error to the caller
 	 */
 	if (!m_class_get_methods (klass) || mono_class_has_failure (klass)) {
-		mono_error_set_type_load_class (error, klass, "Could not find method due to a type load error"); //FIXME get the error from the class 
-
+		ERROR_DECL (cause_error);
+		mono_error_set_for_class_failure (cause_error, klass);
+		mono_error_set_type_load_class (error, klass, "Could not find method '%s' due to a type load error: %s", name, mono_error_get_message (cause_error));
+		mono_error_cleanup (cause_error);
 		return NULL;
 	}
 	int mcount = mono_class_get_method_count (klass);
@@ -701,14 +701,8 @@ mono_method_get_signature_checked (MonoMethod *method, MonoImage *image, guint32
 
 		sig = (MonoMethodSignature *)find_cached_memberref_sig (image, sig_idx);
 		if (!sig) {
-			if (!mono_verifier_verify_memberref_method_signature (image, sig_idx, NULL)) {
-				guint32 klass = cols [MONO_MEMBERREF_CLASS] & MONO_MEMBERREF_PARENT_MASK;
-				const char *fname = mono_metadata_string_heap (image, cols [MONO_MEMBERREF_NAME]);
-
-				//FIXME include the verification error
-				mono_error_set_bad_image (error, image, "Bad method signature class token 0x%08x field name %s token 0x%08x", klass, fname, token);
+			if (!mono_verifier_verify_memberref_method_signature (image, sig_idx, error))
 				return NULL;
-			}
 
 			ptr = mono_metadata_blob_heap (image, sig_idx);
 			mono_metadata_decode_blob_size (ptr, &ptr);
@@ -848,10 +842,8 @@ method_from_memberref (MonoImage *image, guint32 idx, MonoGenericContext *typesp
 
 	sig_idx = cols [MONO_MEMBERREF_SIGNATURE];
 
-	if (!mono_verifier_verify_memberref_method_signature (image, sig_idx, NULL)) {
-		mono_error_set_method_missing (error, klass, mname, NULL, "Verifier rejected method signature");
+	if (!mono_verifier_verify_memberref_method_signature (image, sig_idx, error))
 		goto fail;
-	}
 
 	ptr = mono_metadata_blob_heap (image, sig_idx);
 	mono_metadata_decode_blob_size (ptr, &ptr);
@@ -919,10 +911,8 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 	token = cols [MONO_METHODSPEC_METHOD];
 	nindex = token >> MONO_METHODDEFORREF_BITS;
 
-	if (!mono_verifier_verify_methodspec_signature (image, cols [MONO_METHODSPEC_SIGNATURE], NULL)) {
-		mono_error_set_bad_image (error, image, "Bad method signals signature 0x%08x", idx);
+	if (!mono_verifier_verify_methodspec_signature (image, cols [MONO_METHODSPEC_SIGNATURE], error))
 		return NULL;
-	}
 
 	ptr = mono_metadata_blob_heap (image, cols [MONO_METHODSPEC_SIGNATURE]);
 
@@ -2292,16 +2282,16 @@ async_stack_walk_adapter (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer 
 	case FRAME_TYPE_DEBUGGER_INVOKE:
 	case FRAME_TYPE_MANAGED_TO_NATIVE:
 	case FRAME_TYPE_TRAMPOLINE:
+	case FRAME_TYPE_INTERP_TO_MANAGED:
 		return FALSE;
 	case FRAME_TYPE_MANAGED:
+	case FRAME_TYPE_INTERP:
 		if (!frame->ji)
 			return FALSE;
-		if (frame->ji->async) {
-			return d->func (NULL, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
-		} else {
-			return d->func (frame->actual_method, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
-		}
-		break;
+
+		MonoMethod *method = frame->ji->async ? NULL : frame->actual_method;
+
+		return d->func (method, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
 	default:
 		g_assert_not_reached ();
 		return FALSE;
@@ -2687,10 +2677,8 @@ mono_method_get_header_internal (MonoMethod *method, MonoError *error)
 	idx = mono_metadata_token_index (method->token);
 	rva = mono_metadata_decode_row_col (&img->tables [MONO_TABLE_METHOD], idx - 1, MONO_METHOD_RVA);
 
-	if (!mono_verifier_verify_method_header (img, rva, NULL)) {
-		mono_error_set_bad_image (error, img, "Invalid method header, failed verification");
+	if (!mono_verifier_verify_method_header (img, rva, error))
 		return NULL;
-	}
 
 	loc = mono_image_rva_map (img, rva);
 	if (!loc) {

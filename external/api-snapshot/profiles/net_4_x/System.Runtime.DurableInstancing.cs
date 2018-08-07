@@ -170,7 +170,7 @@ namespace System.Runtime.DurableInstancing
     public sealed partial class InstanceHandle
     {
         internal InstanceHandle() { }
-        public bool IsValid { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsValid { get { throw null; } }
         public void Free() { }
     }
     [System.SerializableAttribute]
@@ -193,7 +193,7 @@ namespace System.Runtime.DurableInstancing
         public static System.Runtime.DurableInstancing.InstanceKey InvalidKey { get { throw null; } }
         public bool IsValid { get { throw null; } }
         public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> Metadata { get { throw null; } }
-        public System.Guid Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
@@ -208,8 +208,8 @@ namespace System.Runtime.DurableInstancing
         public InstanceKeyCollisionException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Runtime.DurableInstancing.InstanceKey instanceKey, System.Guid conflictingInstanceId) { }
         public InstanceKeyCollisionException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Runtime.DurableInstancing.InstanceKey instanceKey, System.Guid conflictingInstanceId, System.Exception innerException) { }
         public InstanceKeyCollisionException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Runtime.DurableInstancing.InstanceKey instanceKey, System.Guid conflictingInstanceId, string message, System.Exception innerException) { }
-        public System.Guid ConflictingInstanceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid ConflictingInstanceId { get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -224,7 +224,7 @@ namespace System.Runtime.DurableInstancing
         public InstanceKeyCompleteException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Runtime.DurableInstancing.InstanceKey instanceKey, string message, System.Exception innerException) { }
         public InstanceKeyCompleteException(System.Xml.Linq.XName commandName, System.Runtime.DurableInstancing.InstanceKey instanceKey) { }
         public InstanceKeyCompleteException(System.Xml.Linq.XName commandName, System.Runtime.DurableInstancing.InstanceKey instanceKey, System.Exception innerException) { }
-        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -239,7 +239,7 @@ namespace System.Runtime.DurableInstancing
         public InstanceKeyNotReadyException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Runtime.DurableInstancing.InstanceKey instanceKey, string message, System.Exception innerException) { }
         public InstanceKeyNotReadyException(System.Xml.Linq.XName commandName, System.Runtime.DurableInstancing.InstanceKey instanceKey) { }
         public InstanceKeyNotReadyException(System.Xml.Linq.XName commandName, System.Runtime.DurableInstancing.InstanceKey instanceKey, System.Exception innerException) { }
-        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceKey InstanceKey { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -252,10 +252,10 @@ namespace System.Runtime.DurableInstancing
     public sealed partial class InstanceKeyView
     {
         internal InstanceKeyView() { }
-        public System.Guid InstanceKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid InstanceKey { get { throw null; } }
         public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> InstanceKeyMetadata { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceKeyMetadataConsistency { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceKeyState InstanceKeyState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceKeyMetadataConsistency { get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceKeyState InstanceKeyState { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class InstanceLockedException : System.Runtime.DurableInstancing.InstancePersistenceCommandException
@@ -271,8 +271,8 @@ namespace System.Runtime.DurableInstancing
         public InstanceLockedException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Guid instanceOwnerId, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, object> serializableInstanceOwnerMetadata, System.Exception innerException) { }
         public InstanceLockedException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Guid instanceOwnerId, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, object> serializableInstanceOwnerMetadata, string message, System.Exception innerException) { }
         public InstanceLockedException(System.Xml.Linq.XName commandName, System.Guid instanceId, string message, System.Exception innerException) { }
-        public System.Guid InstanceOwnerId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, object> SerializableInstanceOwnerMetadata { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid InstanceOwnerId { get { throw null; } }
+        public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, object> SerializableInstanceOwnerMetadata { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -293,7 +293,7 @@ namespace System.Runtime.DurableInstancing
         public InstanceLockQueryResult() { }
         public InstanceLockQueryResult(System.Collections.Generic.IDictionary<System.Guid, System.Guid> instanceOwnerIds) { }
         public InstanceLockQueryResult(System.Guid instanceId, System.Guid instanceOwnerId) { }
-        public System.Collections.Generic.IDictionary<System.Guid, System.Guid> InstanceOwnerIds { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<System.Guid, System.Guid> InstanceOwnerIds { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class InstanceNotReadyException : System.Runtime.DurableInstancing.InstancePersistenceCommandException
@@ -310,7 +310,7 @@ namespace System.Runtime.DurableInstancing
     public sealed partial class InstanceOwner
     {
         internal InstanceOwner() { }
-        public System.Guid InstanceOwnerId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid InstanceOwnerId { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class InstanceOwnerException : System.Runtime.DurableInstancing.InstancePersistenceException
@@ -323,7 +323,7 @@ namespace System.Runtime.DurableInstancing
         public InstanceOwnerException(System.Xml.Linq.XName commandName, System.Guid instanceOwnerId) { }
         public InstanceOwnerException(System.Xml.Linq.XName commandName, System.Guid instanceOwnerId, System.Exception innerException) { }
         public InstanceOwnerException(System.Xml.Linq.XName commandName, System.Guid instanceOwnerId, string message, System.Exception innerException) { }
-        public System.Guid InstanceOwnerId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid InstanceOwnerId { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -332,14 +332,14 @@ namespace System.Runtime.DurableInstancing
         public InstanceOwnerQueryResult() { }
         public InstanceOwnerQueryResult(System.Collections.Generic.IDictionary<System.Guid, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue>> instanceOwners) { }
         public InstanceOwnerQueryResult(System.Guid instanceOwnerId, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> metadata) { }
-        public System.Collections.Generic.IDictionary<System.Guid, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue>> InstanceOwners { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<System.Guid, System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue>> InstanceOwners { get { throw null; } }
     }
     public abstract partial class InstancePersistenceCommand
     {
         protected InstancePersistenceCommand(System.Xml.Linq.XName name) { }
         protected internal virtual bool AutomaticallyAcquiringLock { get { throw null; } }
         protected internal virtual bool IsTransactionEnlistmentOptional { get { throw null; } }
-        public System.Xml.Linq.XName Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Xml.Linq.XName Name { get { throw null; } }
         protected internal virtual void Validate(System.Runtime.DurableInstancing.InstanceView view) { }
     }
     [System.SerializableAttribute]
@@ -356,16 +356,16 @@ namespace System.Runtime.DurableInstancing
         public InstancePersistenceCommandException(System.Xml.Linq.XName commandName, System.Guid instanceId, System.Exception innerException) { }
         public InstancePersistenceCommandException(System.Xml.Linq.XName commandName, System.Guid instanceId, string message, System.Exception innerException) { }
         public InstancePersistenceCommandException(System.Xml.Linq.XName commandName, string message, System.Exception innerException) { }
-        public System.Guid InstanceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Guid InstanceId { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public sealed partial class InstancePersistenceContext
     {
         internal InstancePersistenceContext() { }
-        public System.Runtime.DurableInstancing.InstanceHandle InstanceHandle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceHandle InstanceHandle { get { throw null; } }
         public long InstanceVersion { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceView InstanceView { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceView InstanceView { get { throw null; } }
         public System.Guid LockToken { get { throw null; } }
         public object UserContext { get { throw null; } }
         public void AssociatedInstanceKey(System.Guid key) { }
@@ -397,7 +397,7 @@ namespace System.Runtime.DurableInstancing
     public abstract partial class InstancePersistenceEvent : System.IEquatable<System.Runtime.DurableInstancing.InstancePersistenceEvent>
     {
         internal InstancePersistenceEvent() { }
-        public System.Xml.Linq.XName Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Xml.Linq.XName Name { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Runtime.DurableInstancing.InstancePersistenceEvent persistenceEvent) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -421,7 +421,7 @@ namespace System.Runtime.DurableInstancing
         public InstancePersistenceException(System.Xml.Linq.XName commandName, System.Exception innerException) { }
         public InstancePersistenceException(System.Xml.Linq.XName commandName, string message) { }
         public InstancePersistenceException(System.Xml.Linq.XName commandName, string message, System.Exception innerException) { }
-        public System.Xml.Linq.XName CommandName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Xml.Linq.XName CommandName { get { throw null; } }
         [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -435,7 +435,7 @@ namespace System.Runtime.DurableInstancing
     public abstract partial class InstanceStore
     {
         protected InstanceStore() { }
-        public System.Runtime.DurableInstancing.InstanceOwner DefaultInstanceOwner { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Runtime.DurableInstancing.InstanceOwner DefaultInstanceOwner { get { throw null; } set { } }
         public System.IAsyncResult BeginExecute(System.Runtime.DurableInstancing.InstanceHandle handle, System.Runtime.DurableInstancing.InstancePersistenceCommand command, System.TimeSpan timeout, System.AsyncCallback callback, object state) { throw null; }
         protected internal virtual System.IAsyncResult BeginTryCommand(System.Runtime.DurableInstancing.InstancePersistenceContext context, System.Runtime.DurableInstancing.InstancePersistenceCommand command, System.TimeSpan timeout, System.AsyncCallback callback, object state) { throw null; }
         public System.IAsyncResult BeginWaitForEvents(System.Runtime.DurableInstancing.InstanceHandle handle, System.TimeSpan timeout, System.AsyncCallback callback, object state) { throw null; }
@@ -467,8 +467,8 @@ namespace System.Runtime.DurableInstancing
         public InstanceValue(object value, System.Runtime.DurableInstancing.InstanceValueOptions options) { }
         public static System.Runtime.DurableInstancing.InstanceValue DeletedValue { get { throw null; } }
         public bool IsDeletedValue { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueOptions Options { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueOptions Options { get { throw null; } }
+        public object Value { get { throw null; } }
     }
     [System.FlagsAttribute]
     public enum InstanceValueConsistency
@@ -492,18 +492,18 @@ namespace System.Runtime.DurableInstancing
     {
         internal InstanceView() { }
         public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> InstanceData { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceDataConsistency { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Guid InstanceId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceDataConsistency { get { throw null; } }
+        public System.Guid InstanceId { get { throw null; } }
         public System.Collections.Generic.IDictionary<System.Guid, System.Runtime.DurableInstancing.InstanceKeyView> InstanceKeys { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceKeysConsistency { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceKeysConsistency { get { throw null; } }
         public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> InstanceMetadata { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceMetadataConsistency { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceOwner InstanceOwner { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceMetadataConsistency { get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceOwner InstanceOwner { get { throw null; } }
         public System.Collections.Generic.IDictionary<System.Xml.Linq.XName, System.Runtime.DurableInstancing.InstanceValue> InstanceOwnerMetadata { get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceOwnerMetadataConsistency { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Runtime.DurableInstancing.InstanceState InstanceState { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceValueConsistency InstanceOwnerMetadataConsistency { get { throw null; } }
+        public System.Runtime.DurableInstancing.InstanceState InstanceState { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Runtime.DurableInstancing.InstanceStoreQueryResult> InstanceStoreQueryResults { get { throw null; } }
-        public bool IsBoundToInstance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsBoundToInstance { get { throw null; } }
         public bool IsBoundToInstanceOwner { get { throw null; } }
         public bool IsBoundToLock { get { throw null; } }
     }

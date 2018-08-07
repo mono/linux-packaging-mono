@@ -4809,11 +4809,11 @@ namespace System.Data.Spatial
     {
         public DbGeographyWellKnownValue() { }
         [System.Runtime.Serialization.DataMemberAttribute(Order=1, IsRequired=false, EmitDefaultValue=false)]
-        public int CoordinateSystemId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int CoordinateSystemId { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(Order=3, IsRequired=false, EmitDefaultValue=false)]
-        public byte[] WellKnownBinary { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] WellKnownBinary { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(Order=2, IsRequired=false, EmitDefaultValue=false)]
-        public string WellKnownText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string WellKnownText { get { throw null; } set { } }
     }
     [System.ComponentModel.DataAnnotations.BindableTypeAttribute]
     [System.Runtime.Serialization.DataContractAttribute]
@@ -4898,11 +4898,11 @@ namespace System.Data.Spatial
     {
         public DbGeometryWellKnownValue() { }
         [System.Runtime.Serialization.DataMemberAttribute(Order=1, IsRequired=false, EmitDefaultValue=false)]
-        public int CoordinateSystemId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int CoordinateSystemId { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(Order=3, IsRequired=false, EmitDefaultValue=false)]
-        public byte[] WellKnownBinary { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] WellKnownBinary { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute(Order=2, IsRequired=false, EmitDefaultValue=false)]
-        public string WellKnownText { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string WellKnownText { get { throw null; } set { } }
     }
     public abstract partial class DbSpatialDataReader
     {

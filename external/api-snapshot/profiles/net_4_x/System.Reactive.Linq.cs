@@ -35,8 +35,8 @@ namespace System.Reactive
     public partial class EventPattern<TSender, TEventArgs> : System.IEquatable<System.Reactive.EventPattern<TSender, TEventArgs>>, System.Reactive.IEventPattern<TSender, TEventArgs> where TEventArgs : System.EventArgs
     {
         public EventPattern(TSender sender, TEventArgs e) { }
-        public TEventArgs EventArgs { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public TSender Sender { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public TEventArgs EventArgs { get { throw null; } }
+        public TSender Sender { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Reactive.EventPattern<TSender, TEventArgs> other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -99,9 +99,9 @@ namespace System.Reactive.Concurrency
     {
         protected VirtualTimeSchedulerBase() { }
         protected VirtualTimeSchedulerBase(TAbsolute initialClock, System.Collections.Generic.IComparer<TAbsolute> comparer) { }
-        public TAbsolute Clock { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        protected System.Collections.Generic.IComparer<TAbsolute> Comparer { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public TAbsolute Clock { get { throw null; } protected set { } }
+        protected System.Collections.Generic.IComparer<TAbsolute> Comparer { get { throw null; } }
+        public bool IsEnabled { get { throw null; } }
         public System.DateTimeOffset Now { get { throw null; } }
         protected abstract TAbsolute Add(TAbsolute absolute, TRelative relative);
         public void AdvanceBy(TRelative time) { }

@@ -34,18 +34,18 @@ namespace System.Web.ClientServices
     public partial class ClientFormsIdentity : System.IDisposable, System.Security.Principal.IIdentity
     {
         public ClientFormsIdentity(string name, string password, System.Web.Security.MembershipProvider provider, string authenticationType, bool isAuthenticated, System.Net.CookieContainer authenticationCookies) { }
-        public System.Net.CookieContainer AuthenticationCookies { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string AuthenticationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsAuthenticated { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.Security.MembershipProvider Provider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Net.CookieContainer AuthenticationCookies { get { throw null; } }
+        public string AuthenticationType { get { throw null; } }
+        public bool IsAuthenticated { get { throw null; } }
+        public string Name { get { throw null; } }
+        public System.Web.Security.MembershipProvider Provider { get { throw null; } }
         public void Dispose() { }
         public void RevalidateUser() { }
     }
     public partial class ClientRolePrincipal : System.Security.Principal.IPrincipal
     {
         public ClientRolePrincipal(System.Security.Principal.IIdentity identity) { }
-        public System.Security.Principal.IIdentity Identity { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Security.Principal.IIdentity Identity { get { throw null; } }
         public bool IsInRole(string role) { throw null; }
     }
     public static partial class ConnectivityStatus
@@ -58,9 +58,9 @@ namespace System.Web.ClientServices.Providers
     public partial class ClientFormsAuthenticationCredentials
     {
         public ClientFormsAuthenticationCredentials(string username, string password, bool rememberMe) { }
-        public string Password { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool RememberMe { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string UserName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Password { get { throw null; } set { } }
+        public bool RememberMe { get { throw null; } set { } }
+        public string UserName { get { throw null; } set { } }
     }
     public partial class ClientFormsAuthenticationMembershipProvider : System.Web.Security.MembershipProvider
     {
@@ -169,12 +169,12 @@ namespace System.Web.ClientServices.Providers
     public partial class SettingsSavedEventArgs : System.EventArgs
     {
         public SettingsSavedEventArgs(System.Collections.Generic.IEnumerable<string> failedSettingsList) { }
-        public System.Collections.ObjectModel.ReadOnlyCollection<string> FailedSettingsList { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<string> FailedSettingsList { get { throw null; } }
     }
     public partial class UserValidatedEventArgs : System.EventArgs
     {
         public UserValidatedEventArgs(string username) { }
-        public string UserName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string UserName { get { throw null; } }
     }
 }
 namespace System.Web.Configuration
@@ -285,8 +285,8 @@ namespace System.Web.DynamicData
     public partial class DynamicValidatorEventArgs : System.EventArgs
     {
         public DynamicValidatorEventArgs(System.Exception exception, System.Web.DynamicData.DynamicDataSourceOperation operation) { }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.DynamicData.DynamicDataSourceOperation Operation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
+        public System.Web.DynamicData.DynamicDataSourceOperation Operation { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -340,7 +340,7 @@ namespace System.Web.Query.Dynamic
     public partial class ParseException : System.Exception
     {
         public ParseException(string message, int position) { }
-        public int Position { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Position { get { throw null; } }
         public override string ToString() { throw null; }
     }
 }
@@ -466,7 +466,7 @@ namespace System.Web.UI
     public partial class CompositeScriptReferenceEventArgs : System.EventArgs
     {
         public CompositeScriptReferenceEventArgs(System.Web.UI.CompositeScriptReference compositeScript) { }
-        public System.Web.UI.CompositeScriptReference CompositeScript { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.CompositeScriptReference CompositeScript { get { throw null; } }
     }
     [System.ComponentModel.DefaultPropertyAttribute("TargetControlID")]
     [System.Web.UI.NonVisualControlAttribute]
@@ -808,11 +808,11 @@ namespace System.Web.UI
     public abstract partial class ScriptReferenceBase
     {
         protected ScriptReferenceBase() { }
-        public bool NotifyScriptLoaded { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool NotifyScriptLoaded { get { throw null; } set { } }
         public string Path { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
-        public string[] ResourceUICultures { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.UI.ScriptMode ScriptMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string[] ResourceUICultures { get { throw null; } set { } }
+        public System.Web.UI.ScriptMode ScriptMode { get { throw null; } set { } }
         protected internal abstract string GetUrl(System.Web.UI.ScriptManager scriptManager, bool zip);
         protected internal virtual bool IsAjaxFrameworkScript(System.Web.UI.ScriptManager scriptManager) { throw null; }
         [System.ObsoleteAttribute("Use IsAjaxFrameworkScript(ScriptManager)")]
@@ -1065,11 +1065,11 @@ namespace System.Web.UI.WebControls
     public partial class DataPagerCommandEventArgs : System.Web.UI.WebControls.CommandEventArgs
     {
         public DataPagerCommandEventArgs(System.Web.UI.WebControls.DataPagerField pagerField, int totalRowCount, System.Web.UI.WebControls.CommandEventArgs originalArgs, System.Web.UI.WebControls.DataPagerFieldItem item) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
-        public System.Web.UI.WebControls.DataPagerFieldItem Item { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int NewMaximumRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int NewStartRowIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.UI.WebControls.DataPagerField PagerField { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TotalRowCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.DataPagerFieldItem Item { get { throw null; } }
+        public int NewMaximumRows { get { throw null; } set { } }
+        public int NewStartRowIndex { get { throw null; } set { } }
+        public System.Web.UI.WebControls.DataPagerField PagerField { get { throw null; } }
+        public int TotalRowCount { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1126,16 +1126,16 @@ namespace System.Web.UI.WebControls
     public partial class DataPagerFieldCommandEventArgs : System.Web.UI.WebControls.CommandEventArgs
     {
         public DataPagerFieldCommandEventArgs(System.Web.UI.WebControls.DataPagerFieldItem item, object commandSource, System.Web.UI.WebControls.CommandEventArgs originalArgs) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
-        public object CommandSource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.UI.WebControls.DataPagerFieldItem Item { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object CommandSource { get { throw null; } }
+        public System.Web.UI.WebControls.DataPagerFieldItem Item { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class DataPagerFieldItem : System.Web.UI.Control, System.Web.UI.INamingContainer
     {
         public DataPagerFieldItem(System.Web.UI.WebControls.DataPagerField field, System.Web.UI.WebControls.DataPager pager) { }
-        public System.Web.UI.WebControls.DataPager Pager { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.UI.WebControls.DataPagerField PagerField { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.DataPager Pager { get { throw null; } }
+        public System.Web.UI.WebControls.DataPagerField PagerField { get { throw null; } }
         protected override bool OnBubbleEvent(object source, System.EventArgs e) { throw null; }
     }
     public enum InsertItemPosition
@@ -1176,7 +1176,7 @@ namespace System.Web.UI.WebControls
         public bool AutoSort { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute("")]
-        public string ContextTypeName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ContextTypeName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -1291,8 +1291,8 @@ namespace System.Web.UI.WebControls
     {
         public LinqDataSourceContextEventArgs() { }
         public LinqDataSourceContextEventArgs(System.Web.UI.DataSourceOperation operation) { }
-        public object ObjectInstance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Web.UI.DataSourceOperation Operation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object ObjectInstance { get { throw null; } set { } }
+        public System.Web.UI.DataSourceOperation Operation { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1300,16 +1300,16 @@ namespace System.Web.UI.WebControls
     {
         public LinqDataSourceDeleteEventArgs(object originalObject) { }
         public LinqDataSourceDeleteEventArgs(System.Web.UI.WebControls.LinqDataSourceValidationException exception) { }
-        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object OriginalObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public object OriginalObject { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class LinqDataSourceDisposeEventArgs : System.ComponentModel.CancelEventArgs
     {
         public LinqDataSourceDisposeEventArgs(object instance) { }
-        public object ObjectInstance { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object ObjectInstance { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1317,22 +1317,22 @@ namespace System.Web.UI.WebControls
     {
         public LinqDataSourceInsertEventArgs(object newObject) { }
         public LinqDataSourceInsertEventArgs(System.Web.UI.WebControls.LinqDataSourceValidationException exception) { }
-        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object NewObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public object NewObject { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class LinqDataSourceSelectEventArgs : System.ComponentModel.CancelEventArgs
     {
         public LinqDataSourceSelectEventArgs(System.Web.UI.DataSourceSelectArguments arguments, System.Collections.Generic.IDictionary<string, object> whereParameters, System.Collections.Specialized.IOrderedDictionary orderByParameters, System.Collections.Generic.IDictionary<string, object> groupByParameters, System.Collections.Generic.IDictionary<string, object> orderGroupsByParameters, System.Collections.Generic.IDictionary<string, object> selectParameters) { }
-        public System.Web.UI.DataSourceSelectArguments Arguments { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<string, object> GroupByParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Specialized.IOrderedDictionary OrderByParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<string, object> OrderGroupsByParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.IDictionary<string, object> SelectParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Collections.Generic.IDictionary<string, object> WhereParameters { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.DataSourceSelectArguments Arguments { get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, object> GroupByParameters { get { throw null; } }
+        public System.Collections.Specialized.IOrderedDictionary OrderByParameters { get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, object> OrderGroupsByParameters { get { throw null; } }
+        public object Result { get { throw null; } set { } }
+        public System.Collections.Generic.IDictionary<string, object> SelectParameters { get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, object> WhereParameters { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1341,10 +1341,10 @@ namespace System.Web.UI.WebControls
         public LinqDataSourceStatusEventArgs(System.Exception exception) { }
         public LinqDataSourceStatusEventArgs(object result) { }
         public LinqDataSourceStatusEventArgs(object result, int totalRowCount) { }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object Result { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int TotalRowCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public object Result { get { throw null; } }
+        public int TotalRowCount { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1352,10 +1352,10 @@ namespace System.Web.UI.WebControls
     {
         public LinqDataSourceUpdateEventArgs(object originalObject, object newObject) { }
         public LinqDataSourceUpdateEventArgs(System.Web.UI.WebControls.LinqDataSourceValidationException exception) { }
-        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public object NewObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object OriginalObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.LinqDataSourceValidationException Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public object NewObject { get { throw null; } }
+        public object OriginalObject { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1368,7 +1368,7 @@ namespace System.Web.UI.WebControls
         public LinqDataSourceValidationException(string message) { }
         public LinqDataSourceValidationException(string message, System.Collections.Generic.IDictionary<string, System.Exception> innerExceptions) { }
         public LinqDataSourceValidationException(string message, System.Exception innerException) { }
-        public System.Collections.Generic.IDictionary<string, System.Exception> InnerExceptions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, System.Exception> InnerExceptions { get { throw null; } }
         [System.MonoTODOAttribute]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -1379,13 +1379,13 @@ namespace System.Web.UI.WebControls
     {
         public LinqDataSourceView(System.Web.UI.WebControls.LinqDataSource owner, string name, System.Web.HttpContext context) : base (default(System.Web.UI.IDataSource), default(string)) { }
         [System.MonoTODOAttribute]
-        public bool AutoGenerateOrderByClause { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoGenerateOrderByClause { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool AutoGenerateWhereClause { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoGenerateWhereClause { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool AutoPage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoPage { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool AutoSort { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutoSort { get { throw null; } set { } }
         public override bool CanDelete { get { throw null; } }
         public override bool CanInsert { get { throw null; } }
         public override bool CanPage { get { throw null; } }
@@ -1396,35 +1396,35 @@ namespace System.Web.UI.WebControls
         public virtual string ContextTypeName { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         [System.MonoTODOAttribute]
-        public bool EnableDelete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool EnableDelete { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool EnableInsert { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool EnableInsert { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool EnableObjectTracking { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool EnableObjectTracking { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool EnableUpdate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool EnableUpdate { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string GroupBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string GroupBy { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection GroupByParameters { get { throw null; } }
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string OrderBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string OrderBy { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection OrderByParameters { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string OrderGroupsBy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string OrderGroupsBy { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection OrderGroupsByParameters { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string SelectNew { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string SelectNew { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection SelectNewParameters { get { throw null; } }
         [System.MonoTODOAttribute]
         public bool StoreOriginalValuesInViewState { get { throw null; } set { } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string TableName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TableName { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         [System.MonoTODOAttribute]
-        public string Where { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Where { get { throw null; } set { } }
         public System.Web.UI.WebControls.ParameterCollection WhereParameters { get { throw null; } }
         [System.MonoTODOAttribute]
         public event System.EventHandler<System.Web.UI.WebControls.LinqDataSourceStatusEventArgs> ContextCreated { add { } remove { } }
@@ -1607,10 +1607,10 @@ namespace System.Web.UI.WebControls
         public override System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public virtual System.Web.UI.WebControls.ListViewItem InsertItem { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual System.Web.UI.WebControls.ListViewItem InsertItem { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Default")]
         [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.InsertItemPosition)(0))]
-        public virtual System.Web.UI.WebControls.InsertItemPosition InsertItemPosition { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.UI.WebControls.InsertItemPosition InsertItemPosition { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
@@ -1650,7 +1650,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.ListViewDataItem), (System.ComponentModel.BindingDirection)(1))]
         public virtual System.Web.UI.ITemplate SelectedItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
         public object SelectedValue { get { throw null; } }
@@ -1776,8 +1776,8 @@ namespace System.Web.UI.WebControls
     public partial class ListViewCancelEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewCancelEventArgs(int itemIndex, System.Web.UI.WebControls.ListViewCancelMode cancelMode) { }
-        public System.Web.UI.WebControls.ListViewCancelMode CancelMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int ItemIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.ListViewCancelMode CancelMode { get { throw null; } }
+        public int ItemIndex { get { throw null; } }
     }
     public enum ListViewCancelMode
     {
@@ -1787,8 +1787,8 @@ namespace System.Web.UI.WebControls
     public partial class ListViewCommandEventArgs : System.Web.UI.WebControls.CommandEventArgs
     {
         public ListViewCommandEventArgs(System.Web.UI.WebControls.ListViewItem item, object commandSource, System.Web.UI.WebControls.CommandEventArgs originalArgs) : base (default(System.Web.UI.WebControls.CommandEventArgs)) { }
-        public object CommandSource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Web.UI.WebControls.ListViewItem Item { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public object CommandSource { get { throw null; } }
+        public System.Web.UI.WebControls.ListViewItem Item { get { throw null; } }
     }
     public partial class ListViewDataItem : System.Web.UI.WebControls.ListViewItem, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer
     {
@@ -1798,53 +1798,53 @@ namespace System.Web.UI.WebControls
     public partial class ListViewDeletedEventArgs : System.EventArgs
     {
         public ListViewDeletedEventArgs(int affectedRows, System.Exception exception) { }
-        public int AffectedRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int AffectedRows { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
         public System.Collections.Specialized.IOrderedDictionary Keys { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary Values { get { throw null; } }
     }
     public partial class ListViewDeleteEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewDeleteEventArgs(int itemIndex) { }
-        public int ItemIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int ItemIndex { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary Keys { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary Values { get { throw null; } }
     }
     public partial class ListViewEditEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewEditEventArgs(int newEditIndex) { }
-        public int NewEditIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int NewEditIndex { get { throw null; } }
     }
     public partial class ListViewInsertedEventArgs : System.EventArgs
     {
         public ListViewInsertedEventArgs(int affectedRows, System.Exception exception) { }
-        public int AffectedRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool KeepInInsertMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int AffectedRows { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public bool KeepInInsertMode { get { throw null; } set { } }
         public System.Collections.Specialized.IOrderedDictionary Values { get { throw null; } }
     }
     public partial class ListViewInsertEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewInsertEventArgs(System.Web.UI.WebControls.ListViewItem item) { }
-        public System.Web.UI.WebControls.ListViewItem Item { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.ListViewItem Item { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary Values { get { throw null; } }
     }
     [System.ComponentModel.ToolboxItemAttribute(false)]
     public partial class ListViewItem : System.Web.UI.Control, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer
     {
         public ListViewItem(System.Web.UI.WebControls.ListViewItemType itemType) { }
-        public virtual object DataItem { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual int DataItemIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public virtual int DisplayIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
-        public System.Web.UI.WebControls.ListViewItemType ItemType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public virtual object DataItem { get { throw null; } set { } }
+        public virtual int DataItemIndex { get { throw null; } protected set { } }
+        public virtual int DisplayIndex { get { throw null; } protected set { } }
+        public System.Web.UI.WebControls.ListViewItemType ItemType { get { throw null; } }
         protected override bool OnBubbleEvent(object source, System.EventArgs e) { throw null; }
     }
     public partial class ListViewItemEventArgs : System.EventArgs
     {
         public ListViewItemEventArgs(System.Web.UI.WebControls.ListViewItem item) { }
-        public System.Web.UI.WebControls.ListViewItem Item { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.UI.WebControls.ListViewItem Item { get { throw null; } }
     }
     public enum ListViewItemType
     {
@@ -1855,17 +1855,17 @@ namespace System.Web.UI.WebControls
     public partial class ListViewPagedDataSource : System.Collections.ICollection, System.Collections.IEnumerable, System.ComponentModel.ITypedList
     {
         public ListViewPagedDataSource() { }
-        public bool AllowServerPaging { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowServerPaging { get { throw null; } set { } }
         public int Count { get { throw null; } }
-        public System.Collections.IEnumerable DataSource { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.IEnumerable DataSource { get { throw null; } set { } }
         public int DataSourceCount { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }
         public bool IsServerPagingEnabled { get { throw null; } }
         public bool IsSynchronized { get { throw null; } }
-        public int MaximumRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int StartRowIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaximumRows { get { throw null; } set { } }
+        public int StartRowIndex { get { throw null; } set { } }
         public object SyncRoot { get { throw null; } }
-        public int TotalRowCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int TotalRowCount { get { throw null; } set { } }
         public void CopyTo(System.Array array, int index) { }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
         public System.ComponentModel.PropertyDescriptorCollection GetItemProperties(System.ComponentModel.PropertyDescriptor[] listAccessors) { throw null; }
@@ -1874,28 +1874,28 @@ namespace System.Web.UI.WebControls
     public partial class ListViewSelectEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewSelectEventArgs(int newSelectedIndex) { }
-        public int NewSelectedIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int NewSelectedIndex { get { throw null; } set { } }
     }
     public partial class ListViewSortEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewSortEventArgs(string sortExpression, System.Web.UI.WebControls.SortDirection sortDirection) { }
-        public System.Web.UI.WebControls.SortDirection SortDirection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SortExpression { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.UI.WebControls.SortDirection SortDirection { get { throw null; } set { } }
+        public string SortExpression { get { throw null; } set { } }
     }
     public partial class ListViewUpdatedEventArgs : System.EventArgs
     {
         public ListViewUpdatedEventArgs(int affectedRows, System.Exception exception) { }
-        public int AffectedRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Exception Exception { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool ExceptionHandled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool KeepInEditMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int AffectedRows { get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
+        public bool ExceptionHandled { get { throw null; } set { } }
+        public bool KeepInEditMode { get { throw null; } set { } }
         public System.Collections.Specialized.IOrderedDictionary NewValues { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary OldValues { get { throw null; } }
     }
     public partial class ListViewUpdateEventArgs : System.ComponentModel.CancelEventArgs
     {
         public ListViewUpdateEventArgs(int itemIndex) { }
-        public int ItemIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int ItemIndex { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary Keys { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary NewValues { get { throw null; } }
         public System.Collections.Specialized.IOrderedDictionary OldValues { get { throw null; } }
@@ -1962,8 +1962,8 @@ namespace System.Web.UI.WebControls
     public partial class PagePropertiesChangingEventArgs : System.EventArgs
     {
         public PagePropertiesChangingEventArgs(int startRowIndex, int maximumRows) { }
-        public int MaximumRows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public int StartRowIndex { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int MaximumRows { get { throw null; } }
+        public int StartRowIndex { get { throw null; } }
     }
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
@@ -1973,7 +1973,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataPagerFieldItem), (System.ComponentModel.BindingDirection)(1))]
-        public virtual System.Web.UI.ITemplate PagerTemplate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         public event System.EventHandler<System.Web.UI.WebControls.DataPagerCommandEventArgs> PagerCommand { add { } remove { } }
         protected override void CopyProperties(System.Web.UI.WebControls.DataPagerField newField) { }
         public override void CreateDataPagers(System.Web.UI.WebControls.DataPagerFieldItem container, int startRowIndex, int maximumRows, int totalRowCount, int fieldIndex) { }

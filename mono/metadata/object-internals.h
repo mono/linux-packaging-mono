@@ -47,15 +47,15 @@
        };				}G_STMT_END
 
 /* Use this as MONO_ARG_NULL (arg,) in functions returning void */
-#define MONO_CHECK_NULL(arg, retval)	    G_STMT_START{		  \
-		if (G_UNLIKELY (arg == NULL))						  \
-       {								  \
-		MonoException *ex;					  \
-		if (arg) {} /* check if the name exists */		  \
-		ex = mono_get_exception_null_reference ();		  \
-		mono_set_pending_exception (ex);					  \
-		return retval;										  \
-       };				}G_STMT_END
+#define MONO_CHECK_NULL(arg, retval) do { 			\
+	if (G_UNLIKELY (arg == NULL))				\
+	{							\
+		ERROR_DECL (error);				\
+		mono_error_set_null_reference (error);		\
+		mono_error_set_pending_exception (error);	\
+		return retval;					\
+	} 							\
+} while (0)
 
 #define mono_string_builder_capacity(sb) sb->chunkOffset + sb->chunkChars->max_length
 #define mono_string_builder_string_length(sb) sb->chunkOffset + sb->chunkLength
@@ -329,6 +329,8 @@ typedef struct {
 	MonoComObject *com_object;
 	gint32 ref_count;
 } MonoComInteropProxy;
+
+TYPED_HANDLE_DECL (MonoComInteropProxy);
 
 typedef struct {
 	MonoObject	 object;
@@ -616,7 +618,7 @@ typedef struct {
 	gpointer (*get_imt_trampoline) (MonoVTable *vtable, int imt_slot_index);
 	gboolean (*imt_entry_inited) (MonoVTable *vtable, int imt_slot_index);
 	void     (*set_cast_details) (MonoClass *from, MonoClass *to);
-	void     (*debug_log) (int level, MonoString *category, MonoString *message);
+	void     (*debug_log) (int level, MonoStringHandle category, MonoStringHandle message);
 	gboolean (*debug_log_is_enabled) (void);
 	void     (*init_delegate) (MonoDelegate *del);
 	MonoObject* (*runtime_invoke) (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
@@ -655,9 +657,6 @@ typedef struct {
 } MonoRuntimeExceptionHandlingCallbacks;
 
 MONO_COLD void mono_set_pending_exception (MonoException *exc);
-
-MONO_COLD void
-mono_set_pending_exception_handle (MonoExceptionHandle exc);
 
 /* remoting and async support */
 
@@ -800,6 +799,9 @@ struct _MonoDelegate {
 	 * the compiled code of the method, or NULL if it is not yet compiled.
 	 */
 	guint8 **method_code;
+	gpointer interp_method;
+	/* Interp method that is executed when invoking the delegate */
+	gpointer interp_invoke_impl;
 	MonoReflectionMethod *method_info;
 	MonoReflectionMethod *original_method_info;
 	MonoObject *data;
@@ -1987,5 +1989,8 @@ mono_runtime_object_init_handle (MonoObjectHandle this_obj, MonoError *error);
 /* GC write barriers support */
 void
 mono_gc_wbarrier_object_copy_handle (MonoObjectHandle obj, MonoObjectHandle src);
+
+MonoMethod*
+mono_class_get_virtual_method (MonoClass *klass, MonoMethod *method, gboolean is_proxy, MonoError *error);
 
 #endif /* __MONO_OBJECT_INTERNALS_H__ */

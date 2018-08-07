@@ -1,3 +1,8 @@
+include $(top_srcdir)/mk/common.mk
+
+# FIXME
+#SUBDIRS = test
+
 noinst_LTLIBRARIES = libeglib.la
 
 AM_CFLAGS = $(WERROR_CFLAGS)
@@ -53,12 +58,12 @@ libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
 AM_CPPFLAGS = -I$(srcdir)
 
 if HOST_ANDROID
-libeglib_la_LIBADD = -llog
+libeglib_la_LIBADD = -lm -llog
 else
 if HOST_WIN32
 libeglib_la_LIBADD = -lm -lpsapi $(LTLIBICONV)
 else
-libeglib_la_LIBADD = $(LTLIBICONV)
+libeglib_la_LIBADD = -lm $(LTLIBICONV)
 endif
 endif
 

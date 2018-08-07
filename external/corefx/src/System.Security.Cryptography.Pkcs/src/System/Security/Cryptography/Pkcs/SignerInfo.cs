@@ -71,6 +71,8 @@ namespace System.Security.Cryptography.Pkcs
             }
         }
 
+        internal ReadOnlyMemory<byte> GetSignatureMemory() => _signature;
+
         public byte[] GetSignature() => _signature.ToArray();
 
         public X509Certificate2 Certificate
@@ -310,7 +312,9 @@ namespace System.Security.Cryptography.Pkcs
                 {
                     writer.PushSetOf();
 
-                    AsnReader reader = new AsnReader(modifiedAttr.AttrValues, writer.RuleSet);
+                    AsnReader outerReader = new AsnReader(modifiedAttr.AttrValues, writer.RuleSet);
+                    AsnReader reader = outerReader.ReadSetOf();
+                    outerReader.ThrowIfNotEmpty();
 
                     int i = 0;
 
@@ -469,12 +473,17 @@ namespace System.Security.Cryptography.Pkcs
 
                     if (embeddedContent != null)
                     {
-                        hasher.AppendData(embeddedContent.Value.Span);
-                    }
+                        // Unwrap the OCTET STRING manually, because of PKCS#7 compatibility.
+                        // https://tools.ietf.org/html/rfc5652#section-5.2.1
+                        ReadOnlyMemory<byte> hashableContent = SignedCms.GetContent(
+                            embeddedContent.Value,
+                            documentData.EncapContentInfo.ContentType);
 
+                        hasher.AppendData(hashableContent.Span);
+                    }
                 }
 
-                hasher.AppendData(_document.GetContentSpan());
+                hasher.AppendData(_document.GetHashableContentSpan());
             }
             else
             {
@@ -511,7 +520,7 @@ namespace System.Security.Cryptography.Pkcs
 
                             var digestAttr = (Pkcs9MessageDigest)obj.Values[0];
 
-                            if (!contentDigest.AsSpan().SequenceEqual(digestAttr.MessageDigest.AsReadOnlySpan()))
+                            if (!contentDigest.AsSpan().SequenceEqual(digestAttr.MessageDigest))
                             {
                                 throw new CryptographicException(SR.Cryptography_BadHashValue);
                             }
@@ -620,7 +629,7 @@ namespace System.Security.Cryptography.Pkcs
             return Helpers.GetDigestAlgorithm(DigestAlgorithm.Value);
         }
 
-        private static CryptographicAttributeObjectCollection MakeAttributeCollection(AttributeAsn[] attributes)
+        internal static CryptographicAttributeObjectCollection MakeAttributeCollection(AttributeAsn[] attributes)
         {
             var coll = new CryptographicAttributeObjectCollection();
 

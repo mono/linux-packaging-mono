@@ -724,7 +724,7 @@ mono_compile_create_var_for_vreg (MonoCompile *cfg, MonoType *type, int opcode, 
 			tree->flags = MONO_INST_VOLATILE;
 		tree->inst_c0 = num;
 		tree->type = STACK_I4;
-		tree->inst_vtype = m_class_get_byval_arg (mono_defaults.int32_class);
+		tree->inst_vtype = mono_get_int32_type ();
 		tree->klass = mono_class_from_mono_type (tree->inst_vtype);
 
 		set_vreg_to_inst (cfg, MONO_LVREG_LS (inst->dreg), tree);
@@ -736,7 +736,7 @@ mono_compile_create_var_for_vreg (MonoCompile *cfg, MonoType *type, int opcode, 
 			tree->flags = MONO_INST_VOLATILE;
 		tree->inst_c0 = num;
 		tree->type = STACK_I4;
-		tree->inst_vtype = m_class_get_byval_arg (mono_defaults.int32_class);
+		tree->inst_vtype = mono_get_int32_type ();
 		tree->klass = mono_class_from_mono_type (tree->inst_vtype);
 
 		set_vreg_to_inst (cfg, MONO_LVREG_MS (inst->dreg), tree);
@@ -770,7 +770,7 @@ mini_get_int_to_float_spill_area (MonoCompile *cfg)
 {
 #ifdef TARGET_X86
 	if (!cfg->iconv_raw_var) {
-		cfg->iconv_raw_var = mono_compile_create_var (cfg, &mono_defaults.int32_class->byval_arg, OP_LOCAL);
+		cfg->iconv_raw_var = mono_compile_create_var (cfg, mono_get_int32_type (), OP_LOCAL);
 		cfg->iconv_raw_var->flags |= MONO_INST_VOLATILE; /*FIXME, use the don't regalloc flag*/
 	}
 	return cfg->iconv_raw_var;
@@ -815,9 +815,9 @@ static MonoType*
 type_from_stack_type (MonoInst *ins)
 {
 	switch (ins->type) {
-	case STACK_I4: return m_class_get_byval_arg (mono_defaults.int32_class);
+	case STACK_I4: return mono_get_int32_type ();
 	case STACK_I8: return m_class_get_byval_arg (mono_defaults.int64_class);
-	case STACK_PTR: return m_class_get_byval_arg (mono_defaults.int_class);
+	case STACK_PTR: return mono_get_int_type ();
 	case STACK_R8: return m_class_get_byval_arg (mono_defaults.double_class);
 	case STACK_MP:
 		/* 
@@ -835,7 +835,7 @@ type_from_stack_type (MonoInst *ins)
 		 */
 		if (ins->klass && !m_class_is_valuetype (ins->klass))
 			return m_class_get_byval_arg (ins->klass);
-		return m_class_get_byval_arg (mono_defaults.object_class);
+		return mono_get_object_type ();
 	case STACK_VTYPE: return m_class_get_byval_arg (ins->klass);
 	default:
 		g_error ("stack type %d to montype not handled\n", ins->type);
@@ -959,12 +959,12 @@ mono_get_array_new_va_signature (int arity)
 	res->call_convention = MONO_CALL_C;
 #endif
 
-	MonoType *int_type = m_class_get_byval_arg (mono_defaults.int_class);
+	MonoType *int_type = mono_get_int_type ();
 	res->params [0] = int_type;
 	for (i = 0; i < arity; i++)
 		res->params [i + 1] = int_type;
 
-	res->ret = m_class_get_byval_arg (mono_defaults.object_class);
+	res->ret = mono_get_object_type ();
 
 	g_hash_table_insert (sighash, GINT_TO_POINTER (arity), res);
 	mono_jit_unlock ();
@@ -1922,21 +1922,13 @@ mono_destroy_compile (MonoCompile *cfg)
 {
 	mono_empty_compile (cfg);
 
-	if (cfg->header)
-		mono_metadata_free_mh (cfg->header);
+	mono_metadata_free_mh (cfg->header);
 
-	if (cfg->spvars)
-		g_hash_table_destroy (cfg->spvars);
-	if (cfg->exvars)
-		g_hash_table_destroy (cfg->exvars);
-
+	g_hash_table_destroy (cfg->spvars);
+	g_hash_table_destroy (cfg->exvars);
 	g_list_free (cfg->ldstr_list);
-
-	if (cfg->token_info_hash)
-		g_hash_table_destroy (cfg->token_info_hash);
-
-	if (cfg->abs_patches)
-		g_hash_table_destroy (cfg->abs_patches);
+	g_hash_table_destroy (cfg->token_info_hash);
+	g_hash_table_destroy (cfg->abs_patches);
 
 	mono_debug_free_method (cfg);
 
@@ -2089,7 +2081,7 @@ mono_compile_create_vars (MonoCompile *cfg)
 #endif
 
 	if (cfg->method->save_lmf && cfg->create_lmf_var) {
-		MonoInst *lmf_var = mono_compile_create_var (cfg, m_class_get_byval_arg (mono_defaults.int_class), OP_LOCAL);
+		MonoInst *lmf_var = mono_compile_create_var (cfg, mono_get_int_type (), OP_LOCAL);
 		lmf_var->flags |= MONO_INST_VOLATILE;
 		lmf_var->flags |= MONO_INST_LMF;
 		cfg->lmf_var = lmf_var;
@@ -2218,7 +2210,7 @@ mono_codegen (MonoCompile *cfg)
 
 	code = mono_arch_emit_prolog (cfg);
 
-	cfg->code_len = code - cfg->native_code;
+	set_code_cursor (cfg, code);
 	cfg->prolog_end = cfg->code_len;
 	cfg->cfa_reg = cfg->cur_cfa_reg;
 	cfg->cfa_offset = cfg->cur_cfa_offset;
@@ -2242,7 +2234,7 @@ mono_codegen (MonoCompile *cfg)
 		if (bb->clause_holes) {
 			GList *tmp;
 			for (tmp = bb->clause_holes; tmp; tmp = tmp->prev)
-				mono_cfg_add_try_hole (cfg, (MonoExceptionClause *)tmp->data, cfg->native_code + bb->native_offset, bb);
+				mono_cfg_add_try_hole (cfg, ((MonoLeaveClause *) tmp->data)->clause, cfg->native_code + bb->native_offset, bb);
 		}
 	}
 
@@ -3021,14 +3013,14 @@ init_backend (MonoBackend *backend)
 #endif
 	if (MONO_ARCH_USE_FPSTACK)
 		backend->use_fpstack = 1;
-#ifdef MONO_ARCH_HAVE_OP_TAIL_CALL
-	backend->have_op_tail_call = 1;
-#endif
 // Does the ABI have a volatile non-parameter register, so tailcall
 // can pass context to generics or interfaces?
 	backend->have_volatile_non_param_register = MONO_ARCH_HAVE_VOLATILE_NON_PARAM_REGISTER;
-#ifdef MONO_ARCH_HAVE_OP_TAIL_CALL_MEMBASE
-	backend->have_op_tail_call_membase = 1;
+#ifdef MONO_ARCH_HAVE_OP_TAILCALL_MEMBASE
+	backend->have_op_tailcall_membase = 1;
+#endif
+#ifdef MONO_ARCH_HAVE_OP_TAILCALL_REG
+	backend->have_op_tailcall_reg = 1;
 #endif
 #ifndef MONO_ARCH_MONITOR_ENTER_ADJUSTMENT
 	backend->monitor_enter_adjustment = 1;
@@ -3714,7 +3706,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		mono_decompose_soft_float (cfg);
 #endif
 	MONO_TIME_TRACK (mono_jit_stats.jit_decompose_vtype_opts, mono_decompose_vtype_opts (cfg));
-	if (cfg->flags & MONO_CFG_HAS_ARRAY_ACCESS) {
+	if (cfg->flags & MONO_CFG_NEEDS_DECOMPOSE) {
 		MONO_TIME_TRACK (mono_jit_stats.jit_decompose_array_access_opts, mono_decompose_array_access_opts (cfg));
 		mono_cfg_dump_ir (cfg, "decompose_array_access_opts");
 	}
@@ -3817,7 +3809,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 			cfg->disable_llvm = TRUE;
 		}
 
-		if (cfg->flags & MONO_CFG_HAS_ARRAY_ACCESS)
+		if (cfg->flags & MONO_CFG_NEEDS_DECOMPOSE)
 			mono_decompose_array_access_opts (cfg);
 
 		if (!cfg->disable_llvm)
@@ -4265,13 +4257,26 @@ mono_add_patch_info (MonoCompile *cfg, int ip, MonoJumpInfoType type, gconstpoin
 	g_assert_not_reached ();
 }
 
+#else // DISABLE_JIT
+
+guint8*
+mini_realloc_code_slow (MonoCompile *cfg, int size)
+{
+	const int EXTRA_CODE_SPACE = 16;
+
+	if (cfg->code_len + size > (cfg->code_size - EXTRA_CODE_SPACE)) {
+		while (cfg->code_len + size > (cfg->code_size - EXTRA_CODE_SPACE))
+			cfg->code_size = cfg->code_size * 2 + EXTRA_CODE_SPACE;
+		cfg->native_code = g_realloc (cfg->native_code, cfg->code_size);
+		cfg->stat_code_reallocs++;
+	}
+	return cfg->native_code + cfg->code_len;
+}
+
 #endif /* DISABLE_JIT */
 
 gboolean
 mini_class_is_system_array (MonoClass *klass)
 {
-	if (m_class_get_parent (klass) == mono_defaults.array_class)
-		return TRUE;
-	else
-		return FALSE;
+	return m_class_get_parent (klass) == mono_defaults.array_class;
 }

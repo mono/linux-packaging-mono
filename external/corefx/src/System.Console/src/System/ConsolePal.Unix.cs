@@ -4,6 +4,7 @@
 
 using Microsoft.Win32.SafeHandles;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -98,6 +99,16 @@ namespace System
 
             bool previouslyProcessed;
             ConsoleKeyInfo keyInfo = StdInReader.ReadKey(out previouslyProcessed);
+
+            // Replace the '\n' char for Enter by '\r' to match Windows behavior.
+            if (keyInfo.Key == ConsoleKey.Enter && keyInfo.KeyChar == '\n')
+            {
+                bool shift   = (keyInfo.Modifiers & ConsoleModifiers.Shift)   != 0;
+                bool alt     = (keyInfo.Modifiers & ConsoleModifiers.Alt)     != 0;
+                bool control = (keyInfo.Modifiers & ConsoleModifiers.Control) != 0;
+                keyInfo = new ConsoleKeyInfo('\r', keyInfo.Key, shift, alt, control);
+            }
+
             if (!intercept && !previouslyProcessed) Console.Write(keyInfo.KeyChar);
             return keyInfo;
         }
@@ -666,7 +677,7 @@ namespace System
                     // signal handlers, etc.
                     if (!Interop.Sys.InitializeConsole())
                     {
-                        throw Interop.GetExceptionForIoErrno(Interop.Sys.GetLastErrorInfo());
+                        throw new Win32Exception();
                     }
 
                     // Provide the native lib with the correct code from the terminfo to transition us into
@@ -1115,6 +1126,5 @@ namespace System
                 Interop.Sys.UnregisterForCtrl();
             }
         }
-
     }
 }

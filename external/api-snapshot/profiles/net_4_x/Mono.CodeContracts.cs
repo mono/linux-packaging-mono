@@ -24,19 +24,19 @@ namespace Mono.CodeContracts.Rewrite
     {
         public AssemblyRef(Mono.CodeContracts.Rewrite.AssemblyRef.TwoStreams streams) { throw null;}
         public AssemblyRef(string filename) { throw null;}
-        public string Filename { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Filename { get { throw null; } }
         public bool IsFilename { get { throw null; } }
         public bool IsSet { get { throw null; } }
         public bool IsStream { get { throw null; } }
-        public Mono.CodeContracts.Rewrite.AssemblyRef.TwoStreams Streams { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public Mono.CodeContracts.Rewrite.AssemblyRef.TwoStreams Streams { get { throw null; } }
         public static implicit operator Mono.CodeContracts.Rewrite.AssemblyRef (System.IO.Stream stream) { throw null; }
         public static implicit operator Mono.CodeContracts.Rewrite.AssemblyRef (string filename) { throw null; }
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct TwoStreams
         {
             public TwoStreams(System.IO.Stream assembly, System.IO.Stream symbols) { throw null;}
-            public System.IO.Stream Assembly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-            public System.IO.Stream Symbols { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+            public System.IO.Stream Assembly { get { throw null; } }
+            public System.IO.Stream Symbols { get { throw null; } }
         }
     }
     public partial class Rewriter
@@ -47,15 +47,15 @@ namespace Mono.CodeContracts.Rewrite
     public partial class RewriterOptions
     {
         public RewriterOptions() { }
-        public Mono.CodeContracts.Rewrite.AssemblyRef Assembly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool BreakIntoDebugger { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Debug { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ForceAssemblyRename { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int Level { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public Mono.CodeContracts.Rewrite.AssemblyRef OutputFile { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Rewrite { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ThrowOnFailure { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool WritePdbFile { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public Mono.CodeContracts.Rewrite.AssemblyRef Assembly { get { throw null; } set { } }
+        public bool BreakIntoDebugger { get { throw null; } set { } }
+        public bool Debug { get { throw null; } set { } }
+        public string ForceAssemblyRename { get { throw null; } set { } }
+        public int Level { get { throw null; } set { } }
+        public Mono.CodeContracts.Rewrite.AssemblyRef OutputFile { get { throw null; } set { } }
+        public bool Rewrite { get { throw null; } set { } }
+        public bool ThrowOnFailure { get { throw null; } set { } }
+        public bool WritePdbFile { get { throw null; } set { } }
     }
     public partial class RewriterResults
     {
@@ -76,9 +76,9 @@ namespace Mono.CodeContracts.Static
     public partial class CheckOptions
     {
         public CheckOptions() { }
-        public string Assembly { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Method { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ShowDebug { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Assembly { get { throw null; } set { } }
+        public string Method { get { throw null; } set { } }
+        public bool ShowDebug { get { throw null; } set { } }
     }
     public partial class CheckResults
     {
@@ -206,9 +206,9 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
         public bool IsFinite { get { throw null; } }
         public bool IsSinglePoint { get { throw null; } }
         public abstract bool IsTop { get; }
-        public TNumeric LowerBound { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public TNumeric LowerBound { get { throw null; } protected set { } }
         public abstract TInterval Top { get; }
-        public TNumeric UpperBound { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]protected set { } }
+        public TNumeric UpperBound { get { throw null; } protected set { } }
         public abstract TInterval Clone();
         public abstract void Dump(System.IO.TextWriter tw);
         public abstract TInterval ImmutableVersion();
@@ -411,7 +411,7 @@ namespace Mono.CodeContracts.Static.DataStructures.Patricia
         public LeafNode(int key, T value) { }
         public override int Count { get { throw null; } }
         public override int Key { get { throw null; } }
-        public T Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public T Value { get { throw null; } }
         public override Mono.CodeContracts.Static.DataStructures.IImmutableIntMap<T> Add(int key, T value) { throw null; }
         protected internal override void AppendToBuilder(System.Text.StringBuilder sb) { }
         public override bool Contains(int key) { throw null; }
@@ -426,7 +426,7 @@ namespace Mono.CodeContracts.Static.DataStructures.Patricia
     public abstract partial class PatriciaTrieNode<T> : Mono.CodeContracts.Static.DataStructures.IImmutableIntMap<T>
     {
         protected PatriciaTrieNode() { }
-        public T Any { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public T Any { get { throw null; } }
         public abstract int Count { get; }
         public T this[int key] { get { throw null; } }
         public abstract int Key { get; }

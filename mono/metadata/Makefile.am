@@ -1,3 +1,5 @@
+include $(top_srcdir)/mk/common.mk
+
 if HOST_WIN32
 win32_sources = \
 	console-win32.c \
@@ -58,6 +60,8 @@ unix_sources = \
 
 platform_sources = $(unix_sources)
 endif
+
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 
 if HOST_ANDROID
 platform_sources += ../../support/libm/complex.c
@@ -122,7 +126,7 @@ libmono_icall_table_la_SOURCES = \
 libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
 libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
 if BITCODE
-libmono_icall_table_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 endif
 endif
 
@@ -141,9 +145,44 @@ libmono_ilgen_la_SOURCES = \
 libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES)
 libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
 if BITCODE
-libmono_ilgen_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 endif
 endif
+
+if !HOST_WIN32
+if !HOST_WASM
+if !ENABLE_MONODROID
+if !ENABLE_MONOTOUCH
+lib_LTLIBRARIES += libmono-system-native.la
+endif
+endif
+endif
+endif
+
+libmono_system_native_la_SOURCES = \
+	pal_config.h \
+	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
+	../../external/corefx/src/Native/Unix/Common/pal_safecrt.h \
+	../../external/corefx/src/Native/Unix/Common/pal_types.h \
+	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_errno.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_errno.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
+
+libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition
 
 CLEANFILES = mono-bundle.stamp
 

@@ -227,8 +227,8 @@ namespace System.IdentityModel.Configuration
     public sealed partial class IdentityModelCaches
     {
         public IdentityModelCaches() { }
-        public System.IdentityModel.Tokens.SessionSecurityTokenCache SessionSecurityTokenCache { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.TokenReplayCache TokenReplayCache { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IdentityModel.Tokens.SessionSecurityTokenCache SessionSecurityTokenCache { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.TokenReplayCache TokenReplayCache { get { throw null; } set { } }
     }
 }
 namespace System.IdentityModel.Policy
@@ -268,9 +268,9 @@ namespace System.IdentityModel.Protocols.WSTrust
     {
         public BinaryExchange(byte[] binaryData, System.Uri valueType) { }
         public BinaryExchange(byte[] binaryData, System.Uri valueType, System.Uri encodingType) { }
-        public byte[] BinaryData { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri EncodingType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri ValueType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public byte[] BinaryData { get { throw null; } }
+        public System.Uri EncodingType { get { throw null; } }
+        public System.Uri ValueType { get { throw null; } }
     }
     public partial class EndpointReference
     {
@@ -295,14 +295,14 @@ namespace System.IdentityModel.Protocols.WSTrust
     {
         public Lifetime(System.DateTime created, System.DateTime expires) { }
         public Lifetime(System.Nullable<System.DateTime> created, System.Nullable<System.DateTime> expires) { }
-        public System.Nullable<System.DateTime> Created { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.DateTime> Expires { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.DateTime> Created { get { throw null; } set { } }
+        public System.Nullable<System.DateTime> Expires { get { throw null; } set { } }
     }
     public partial class ProtectedKey
     {
         public ProtectedKey(byte[] secret) { }
         public ProtectedKey(byte[] secret, System.IdentityModel.Tokens.EncryptingCredentials wrappingCredentials) { }
-        public System.IdentityModel.Tokens.EncryptingCredentials WrappingCredentials { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IdentityModel.Tokens.EncryptingCredentials WrappingCredentials { get { throw null; } }
         public byte[] GetKeyBytes() { throw null; }
     }
     public partial class RequestedProofToken
@@ -311,33 +311,33 @@ namespace System.IdentityModel.Protocols.WSTrust
         public RequestedProofToken(byte[] secret, System.IdentityModel.Tokens.EncryptingCredentials wrappingCredentials) { }
         public RequestedProofToken(System.IdentityModel.Protocols.WSTrust.ProtectedKey protectedKey) { }
         public RequestedProofToken(string computedKeyAlgorithm) { }
-        public string ComputedKeyAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IdentityModel.Protocols.WSTrust.ProtectedKey ProtectedKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string ComputedKeyAlgorithm { get { throw null; } }
+        public System.IdentityModel.Protocols.WSTrust.ProtectedKey ProtectedKey { get { throw null; } }
     }
     public partial class RequestedSecurityToken
     {
         public RequestedSecurityToken(System.IdentityModel.Tokens.SecurityToken token) { }
         public RequestedSecurityToken(System.Xml.XmlElement tokenAsXml) { }
-        public System.IdentityModel.Tokens.SecurityToken SecurityToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public virtual System.Xml.XmlElement SecurityTokenXml { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityToken SecurityToken { get { throw null; } }
+        public virtual System.Xml.XmlElement SecurityTokenXml { get { throw null; } }
     }
     public partial class RequestSecurityTokenResponse : System.IdentityModel.Protocols.WSTrust.WSTrustMessage
     {
         public RequestSecurityTokenResponse() { }
         public RequestSecurityTokenResponse(System.IdentityModel.Protocols.WSTrust.WSTrustMessage message) { }
-        public bool IsFinal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause RequestedAttachedReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.RequestedProofToken RequestedProofToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.RequestedSecurityToken RequestedSecurityToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool RequestedTokenCancelled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause RequestedUnattachedReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.Status Status { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsFinal { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause RequestedAttachedReference { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.RequestedProofToken RequestedProofToken { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.RequestedSecurityToken RequestedSecurityToken { get { throw null; } set { } }
+        public bool RequestedTokenCancelled { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause RequestedUnattachedReference { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.Status Status { get { throw null; } set { } }
     }
     public partial class Status
     {
         public Status(string code, string reason) { }
-        public string Code { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Reason { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Code { get { throw null; } set { } }
+        public string Reason { get { throw null; } set { } }
     }
     public partial class UseKey
     {
@@ -345,31 +345,31 @@ namespace System.IdentityModel.Protocols.WSTrust
         public UseKey(System.IdentityModel.Tokens.SecurityKeyIdentifier ski) { }
         public UseKey(System.IdentityModel.Tokens.SecurityKeyIdentifier ski, System.IdentityModel.Tokens.SecurityToken token) { }
         public UseKey(System.IdentityModel.Tokens.SecurityToken token) { }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifier SecurityKeyIdentifier { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IdentityModel.Tokens.SecurityToken Token { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifier SecurityKeyIdentifier { get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityToken Token { get { throw null; } }
     }
     public abstract partial class WSTrustMessage : System.IdentityModel.OpenObject
     {
         protected WSTrustMessage() { }
-        public bool AllowPostdating { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.EndpointReference AppliesTo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string AuthenticationType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.BinaryExchange BinaryExchange { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string CanonicalizationAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string EncryptionAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string EncryptWith { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.Entropy Entropy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> KeySizeInBits { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string KeyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string KeyWrapAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.Lifetime Lifetime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ReplyTo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string RequestType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SignatureAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SignWith { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string TokenType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.UseKey UseKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AllowPostdating { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.EndpointReference AppliesTo { get { throw null; } set { } }
+        public string AuthenticationType { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.BinaryExchange BinaryExchange { get { throw null; } set { } }
+        public string CanonicalizationAlgorithm { get { throw null; } set { } }
+        public string Context { get { throw null; } set { } }
+        public string EncryptionAlgorithm { get { throw null; } set { } }
+        public string EncryptWith { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.Entropy Entropy { get { throw null; } set { } }
+        public System.Nullable<int> KeySizeInBits { get { throw null; } set { } }
+        public string KeyType { get { throw null; } set { } }
+        public string KeyWrapAlgorithm { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.Lifetime Lifetime { get { throw null; } set { } }
+        public string ReplyTo { get { throw null; } set { } }
+        public string RequestType { get { throw null; } set { } }
+        public string SignatureAlgorithm { get { throw null; } set { } }
+        public string SignWith { get { throw null; } set { } }
+        public string TokenType { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.UseKey UseKey { get { throw null; } set { } }
     }
 }
 namespace System.IdentityModel.Selectors
@@ -626,15 +626,15 @@ namespace System.IdentityModel.Tokens
     {
         public AudienceRestriction() { }
         public AudienceRestriction(System.IdentityModel.Selectors.AudienceUriMode audienceMode) { }
-        public System.Collections.ObjectModel.Collection<System.Uri> AllowedAudienceUris { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IdentityModel.Selectors.AudienceUriMode AudienceMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.ObjectModel.Collection<System.Uri> AllowedAudienceUris { get { throw null; } }
+        public System.IdentityModel.Selectors.AudienceUriMode AudienceMode { get { throw null; } set { } }
     }
     public partial class AuthenticationContext
     {
         public AuthenticationContext() { }
-        public System.Collections.ObjectModel.Collection<string> Authorities { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string ContextClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContextDeclaration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.ObjectModel.Collection<string> Authorities { get { throw null; } }
+        public string ContextClass { get { throw null; } set { } }
+        public string ContextDeclaration { get { throw null; } set { } }
     }
     public abstract partial class BinaryKeyIdentifierClause : System.IdentityModel.Tokens.SecurityKeyIdentifierClause
     {
@@ -653,10 +653,10 @@ namespace System.IdentityModel.Tokens
         public BootstrapContext(System.IdentityModel.Tokens.SecurityToken token, System.IdentityModel.Tokens.SecurityTokenHandler tokenHandler) { }
         protected BootstrapContext(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public BootstrapContext(string token) { }
-        public System.IdentityModel.Tokens.SecurityToken SecurityToken { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.IdentityModel.Tokens.SecurityTokenHandler SecurityTokenHandler { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Token { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public byte[] TokenBytes { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityToken SecurityToken { get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityTokenHandler SecurityTokenHandler { get { throw null; } }
+        public string Token { get { throw null; } }
+        public byte[] TokenBytes { get { throw null; } }
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public sealed partial class EncryptedKeyIdentifierClause : System.IdentityModel.Tokens.BinaryKeyIdentifierClause
@@ -678,9 +678,9 @@ namespace System.IdentityModel.Tokens
     {
         public EncryptingCredentials() { }
         public EncryptingCredentials(System.IdentityModel.Tokens.SecurityKey key, System.IdentityModel.Tokens.SecurityKeyIdentifier keyIdentifier, string algorithm) { }
-        public string Algorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKey SecurityKey { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifier SecurityKeyIdentifier { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Algorithm { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKey SecurityKey { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifier SecurityKeyIdentifier { get { throw null; } set { } }
     }
     public partial class GenericXmlSecurityToken : System.IdentityModel.Tokens.SecurityToken
     {
@@ -1251,7 +1251,7 @@ namespace System.IdentityModel.Tokens
         public virtual bool CanCreateKey { get { throw null; } }
         public string ClauseType { get { throw null; } }
         public int DerivationLength { get { throw null; } }
-        public string Id { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Id { get { throw null; } set { } }
         public virtual System.IdentityModel.Tokens.SecurityKey CreateKey() { throw null; }
         public byte[] GetDerivationNonce() { throw null; }
         [System.MonoTODOAttribute]
@@ -1287,20 +1287,20 @@ namespace System.IdentityModel.Tokens
     public partial class SecurityTokenDescriptor
     {
         public SecurityTokenDescriptor() { }
-        public string AppliesToAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause AttachedReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Security.Claims.AuthenticationInformation AuthenticationInfo { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.EncryptingCredentials EncryptingCredentials { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Protocols.WSTrust.Lifetime Lifetime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.ProofDescriptor Proof { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string AppliesToAddress { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause AttachedReference { get { throw null; } set { } }
+        public System.Security.Claims.AuthenticationInformation AuthenticationInfo { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.EncryptingCredentials EncryptingCredentials { get { throw null; } set { } }
+        public System.IdentityModel.Protocols.WSTrust.Lifetime Lifetime { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.ProofDescriptor Proof { get { throw null; } set { } }
         public System.Collections.Generic.Dictionary<string, object> Properties { get { throw null; } }
-        public string ReplyToAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SigningCredentials SigningCredentials { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Security.Claims.ClaimsIdentity Subject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityToken Token { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string TokenIssuerName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string TokenType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause UnattachedReference { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ReplyToAddress { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SigningCredentials SigningCredentials { get { throw null; } set { } }
+        public System.Security.Claims.ClaimsIdentity Subject { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityToken Token { get { throw null; } set { } }
+        public string TokenIssuerName { get { throw null; } set { } }
+        public string TokenType { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityKeyIdentifierClause UnattachedReference { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public void AddAuthenticationClaims(string authType) { }
         [System.MonoTODOAttribute]
@@ -1328,8 +1328,8 @@ namespace System.IdentityModel.Tokens
         protected SecurityTokenHandler() { }
         public virtual bool CanValidateToken { get { throw null; } }
         public virtual bool CanWriteToken { get { throw null; } }
-        public System.IdentityModel.Tokens.SecurityTokenHandlerConfiguration Configuration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.SecurityTokenHandlerCollection ContainingCollection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.IdentityModel.Tokens.SecurityTokenHandlerConfiguration Configuration { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.SecurityTokenHandlerCollection ContainingCollection { get { throw null; } }
         public abstract System.Type TokenType { get; }
         public virtual bool CanReadKeyIdentifierClause(System.Xml.XmlReader reader) { throw null; }
         public virtual bool CanReadToken(string tokenString) { throw null; }
@@ -1423,19 +1423,19 @@ namespace System.IdentityModel.Tokens
         public static readonly System.TimeSpan DefaultTokenReplayCacheExpirationPeriod;
         public static readonly System.Security.Cryptography.X509Certificates.StoreLocation DefaultTrustedStoreLocation;
         public SecurityTokenHandlerConfiguration() { }
-        public System.IdentityModel.Tokens.AudienceRestriction AudienceRestriction { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Configuration.IdentityModelCaches Caches { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Security.X509CertificateValidationMode CertificateValidationMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Selectors.X509CertificateValidator CertificateValidator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool DetectReplayedTokens { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Tokens.IssuerNameRegistry IssuerNameRegistry { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Selectors.SecurityTokenResolver IssuerTokenResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.TimeSpan MaxClockSkew { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Security.Cryptography.X509Certificates.X509RevocationMode RevocationMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SaveBootstrapContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.IdentityModel.Selectors.SecurityTokenResolver ServiceTokenResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.TimeSpan TokenReplayCacheExpirationPeriod { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Security.Cryptography.X509Certificates.StoreLocation TrustedStoreLocation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IdentityModel.Tokens.AudienceRestriction AudienceRestriction { get { throw null; } set { } }
+        public System.IdentityModel.Configuration.IdentityModelCaches Caches { get { throw null; } set { } }
+        public System.ServiceModel.Security.X509CertificateValidationMode CertificateValidationMode { get { throw null; } set { } }
+        public System.IdentityModel.Selectors.X509CertificateValidator CertificateValidator { get { throw null; } set { } }
+        public bool DetectReplayedTokens { get { throw null; } set { } }
+        public System.IdentityModel.Tokens.IssuerNameRegistry IssuerNameRegistry { get { throw null; } set { } }
+        public System.IdentityModel.Selectors.SecurityTokenResolver IssuerTokenResolver { get { throw null; } set { } }
+        public System.TimeSpan MaxClockSkew { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.X509RevocationMode RevocationMode { get { throw null; } set { } }
+        public bool SaveBootstrapContext { get { throw null; } set { } }
+        public System.IdentityModel.Selectors.SecurityTokenResolver ServiceTokenResolver { get { throw null; } set { } }
+        public System.TimeSpan TokenReplayCacheExpirationPeriod { get { throw null; } set { } }
+        public System.Security.Cryptography.X509Certificates.StoreLocation TrustedStoreLocation { get { throw null; } set { } }
     }
     public partial class SecurityTokenNotYetValidException : System.IdentityModel.Tokens.SecurityTokenValidationException
     {
@@ -1479,18 +1479,18 @@ namespace System.IdentityModel.Tokens
         public SessionSecurityToken(System.Security.Claims.ClaimsPrincipal claimsPrincipal, System.Xml.UniqueId contextId, string context, string endpointId, System.DateTime validFrom, System.TimeSpan lifetime, System.IdentityModel.Tokens.SymmetricSecurityKey key) { }
         public SessionSecurityToken(System.Security.Claims.ClaimsPrincipal claimsPrincipal, System.Xml.UniqueId contextId, string context, string endpointId, System.Nullable<System.DateTime> validFrom, System.Nullable<System.DateTime> validTo, System.IdentityModel.Tokens.SymmetricSecurityKey key) { }
         public SessionSecurityToken(System.Security.Claims.ClaimsPrincipal claimsPrincipal, System.Xml.UniqueId contextId, string context, string endpointId, System.TimeSpan lifetime, System.IdentityModel.Tokens.SymmetricSecurityKey key) { }
-        public System.Security.Claims.ClaimsPrincipal ClaimsPrincipal { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Context { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.UniqueId ContextId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string EndpointId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Security.Claims.ClaimsPrincipal ClaimsPrincipal { get { throw null; } }
+        public string Context { get { throw null; } }
+        public System.Xml.UniqueId ContextId { get { throw null; } }
+        public string EndpointId { get { throw null; } }
         [System.MonoTODOAttribute]
         public override string Id { get { throw null; } }
-        public bool IsPersistent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IsReferenceMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.DateTime KeyEffectiveTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.DateTime KeyExpirationTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.UniqueId KeyGeneration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri SecureConversationVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsPersistent { get { throw null; } set { } }
+        public bool IsReferenceMode { get { throw null; } set { } }
+        public System.DateTime KeyEffectiveTime { get { throw null; } }
+        public System.DateTime KeyExpirationTime { get { throw null; } }
+        public System.Xml.UniqueId KeyGeneration { get { throw null; } }
+        public System.Uri SecureConversationVersion { get { throw null; } }
         public override System.Collections.ObjectModel.ReadOnlyCollection<System.IdentityModel.Tokens.SecurityKey> SecurityKeys { get { throw null; } }
         public override System.DateTime ValidFrom { get { throw null; } }
         public override System.DateTime ValidTo { get { throw null; } }
@@ -1512,10 +1512,10 @@ namespace System.IdentityModel.Tokens
     public partial class SessionSecurityTokenCacheKey
     {
         public SessionSecurityTokenCacheKey(string endpointId, System.Xml.UniqueId contextId, System.Xml.UniqueId keyGeneration) { }
-        public System.Xml.UniqueId ContextId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string EndpointId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IgnoreKeyGeneration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Xml.UniqueId KeyGeneration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Xml.UniqueId ContextId { get { throw null; } }
+        public string EndpointId { get { throw null; } }
+        public bool IgnoreKeyGeneration { get { throw null; } set { } }
+        public System.Xml.UniqueId KeyGeneration { get { throw null; } }
         [System.MonoTODOAttribute]
         public override bool Equals(object obj) { throw null; }
         [System.MonoTODOAttribute]
@@ -1539,9 +1539,9 @@ namespace System.IdentityModel.Tokens
         public virtual string CookieElementName { get { throw null; } }
         public virtual string CookieNamespace { get { throw null; } }
         public static System.TimeSpan DefaultTokenLifetime { get { throw null; } }
-        public virtual System.TimeSpan TokenLifetime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual System.TimeSpan TokenLifetime { get { throw null; } set { } }
         public override System.Type TokenType { get { throw null; } }
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.IdentityModel.CookieTransform> Transforms { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.IdentityModel.CookieTransform> Transforms { get { throw null; } }
         [System.MonoTODOAttribute]
         protected virtual byte[] ApplyTransforms(byte[] cookie, bool outbound) { throw null; }
         [System.MonoTODOAttribute]
@@ -1693,7 +1693,7 @@ namespace System.IdentityModel.Tokens
         public X509SigningCredentials(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.IdentityModel.Tokens.SecurityKeyIdentifier ski) : base (default(System.IdentityModel.Tokens.SecurityKey), default(string), default(string)) { }
         public X509SigningCredentials(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.IdentityModel.Tokens.SecurityKeyIdentifier ski, string signatureAlgorithm, string digestAlgorithm) : base (default(System.IdentityModel.Tokens.SecurityKey), default(string), default(string)) { }
         public X509SigningCredentials(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, string signatureAlgorithm, string digestAlgorithm) : base (default(System.IdentityModel.Tokens.SecurityKey), default(string), default(string)) { }
-        public System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate { get { throw null; } }
     }
     public partial class X509SubjectKeyIdentifierClause : System.IdentityModel.Tokens.BinaryKeyIdentifierClause
     {
@@ -1732,11 +1732,11 @@ namespace System.Security.Claims
     public partial class AuthenticationInformation
     {
         public AuthenticationInformation() { }
-        public string Address { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Address { get { throw null; } set { } }
         public System.Collections.ObjectModel.Collection<System.IdentityModel.Tokens.AuthenticationContext> AuthorizationContexts { get { throw null; } }
-        public string DnsName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.DateTime> NotOnOrAfter { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Session { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string DnsName { get { throw null; } set { } }
+        public System.Nullable<System.DateTime> NotOnOrAfter { get { throw null; } set { } }
+        public string Session { get { throw null; } set { } }
     }
     public static partial class AuthenticationTypes
     {

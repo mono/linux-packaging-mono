@@ -10,7 +10,7 @@ namespace System.Threading
     /// Simple wrapper around Monitor.Enter and Exit exposing interface as expected by 
     /// System.Private.InteropServices.__ComObject
     /// </summary>
-    public class Lock
+    public partial class Lock
     {
         private object _lock = new object();
         public void Acquire()

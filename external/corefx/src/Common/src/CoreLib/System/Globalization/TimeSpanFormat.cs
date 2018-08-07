@@ -4,6 +4,8 @@
 
 using System.Text;
 using System.Diagnostics;
+using System.Diagnostics.Private;
+using System.Runtime.InteropServices;
 
 namespace System.Globalization
 {
@@ -315,7 +317,17 @@ namespace System.Globalization
                         if (nextChar >= 0 && nextChar != (int)'%')
                         {
                             char nextCharChar = (char)nextChar;
-                            StringBuilder origStringBuilder = FormatCustomized(value, ReadOnlySpan<char>.DangerousCreate(null, ref nextCharChar, 1), dtfi, result);
+                            ReadOnlySpan<char> nextCharSpan;
+#if MONO
+                            // Remove once Mono switches to Fast Spans
+                            unsafe 
+                            {
+                                nextCharSpan = new ReadOnlySpan<char>(&nextCharChar, 1);
+                            }
+#else
+                            nextCharSpan = MemoryMarshal.CreateReadOnlySpan<char>(ref nextCharChar, 1);
+#endif
+                            StringBuilder origStringBuilder = FormatCustomized(value, nextCharSpan, dtfi, result);
                             Debug.Assert(ReferenceEquals(origStringBuilder, result));
                             tokenLen = 2;
                         }

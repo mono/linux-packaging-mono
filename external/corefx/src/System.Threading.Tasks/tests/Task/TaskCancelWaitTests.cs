@@ -12,7 +12,6 @@ namespace System.Threading.Tasks.Tests.CancelWait
         #region Test Methods
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "https://github.com/mono/mono/issues/6920")]
         public static void TaskCancelWait1()
         {
             TaskInfo node = new TaskInfo(null, "node", WorkloadType.Heavy, string.Empty, true);

@@ -33,7 +33,7 @@ COMMON_SRCS = \
 	AssemblyRef.cs
 
 DISTFILES = \
-	README.makefiles		\
+	README.makefiles.md		\
 	README.platforms		\
 	README.configury		\
 	config-default.make		\
@@ -41,6 +41,7 @@ DISTFILES = \
 	corcompare-api.xsl		\
 	executable.make			\
 	gensources.sh			\
+	gensources.cs			\
 	library.make			\
 	rules.make			\
 	tests.make			\

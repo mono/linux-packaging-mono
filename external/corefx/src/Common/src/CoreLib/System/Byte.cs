@@ -11,7 +11,9 @@ namespace System
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct Byte : IComparable, IConvertible, IFormattable, IComparable<Byte>, IEquatable<Byte>, ISpanFormattable
     {
         private byte m_value; // Do not rename (binary serialization)
@@ -191,10 +193,6 @@ namespace System
         {
             return Number.FormatInt32(m_value, format, provider);
         }
-
-        // TODO https://github.com/dotnet/corefx/issues/25337: Remove this overload once corefx is updated to target the new signatures
-        public bool TryFormat(Span<char> destination, out int charsWritten, string format, IFormatProvider provider) =>
-            TryFormat(destination, out charsWritten, (ReadOnlySpan<char>)format, provider);
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider provider = null)
         {

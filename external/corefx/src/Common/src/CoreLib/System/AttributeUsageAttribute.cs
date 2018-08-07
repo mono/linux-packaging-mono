@@ -17,6 +17,9 @@ namespace System
 {
     /* By default, attributes are inherited and multiple attributes are not allowed */
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+#if MONO
+    [Serializable]
+#endif
     public sealed class AttributeUsageAttribute : Attribute
     {
         private AttributeTargets _attributeTarget = AttributeTargets.All; // Defaults to all

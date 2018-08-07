@@ -33,7 +33,7 @@ namespace System.ServiceModel
         public bool BypassProxyOnLocal { get { throw null; } set { } }
         public System.ServiceModel.Channels.WebContentTypeMapper ContentTypeMapper { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool CrossDomainScriptAccessEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
         public System.ServiceModel.EnvelopeVersion EnvelopeVersion { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
@@ -66,7 +66,7 @@ namespace System.ServiceModel
     {
         public WebHttpSecurity() { }
         public System.ServiceModel.WebHttpSecurityMode Mode { get { throw null; } set { } }
-        public System.ServiceModel.HttpTransportSecurity Transport { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.HttpTransportSecurity Transport { get { throw null; } set { } }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
         public bool ShouldSerializeMode() { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
@@ -124,7 +124,7 @@ namespace System.ServiceModel.Channels
         [System.MonoTODOAttribute]
         public int MaxWritePoolSize { get { throw null; } set { } }
         public override System.ServiceModel.Channels.MessageVersion MessageVersion { get { throw null; } set { } }
-        public System.Xml.XmlDictionaryReaderQuotas ReaderQuotas { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Xml.XmlDictionaryReaderQuotas ReaderQuotas { get { throw null; } }
         public System.Text.Encoding WriteEncoding { get { throw null; } set { } }
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         public override System.ServiceModel.Channels.IChannelListener<TChannel> BuildChannelListener<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
@@ -320,12 +320,12 @@ namespace System.ServiceModel.Description
     public partial class WebHttpBehavior : System.ServiceModel.Description.IEndpointBehavior
     {
         public WebHttpBehavior() { }
-        public virtual bool AutomaticFormatSelectionEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.ServiceModel.Web.WebMessageBodyStyle DefaultBodyStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.ServiceModel.Web.WebMessageFormat DefaultOutgoingRequestFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool FaultExceptionEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public virtual bool HelpEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public virtual bool AutomaticFormatSelectionEnabled { get { throw null; } set { } }
+        public virtual System.ServiceModel.Web.WebMessageBodyStyle DefaultBodyStyle { get { throw null; } set { } }
+        public virtual System.ServiceModel.Web.WebMessageFormat DefaultOutgoingRequestFormat { get { throw null; } set { } }
+        public virtual System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { get { throw null; } set { } }
+        public virtual bool FaultExceptionEnabled { get { throw null; } set { } }
+        public virtual bool HelpEnabled { get { throw null; } set { } }
         public virtual void AddBindingParameters(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection bindingParameters) { }
         [System.MonoTODOAttribute]
         protected virtual void AddClientErrorInspector(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.ClientRuntime clientRuntime) { }
@@ -357,9 +357,9 @@ namespace System.ServiceModel.Description
     public sealed partial class WebScriptEnablingBehavior : System.ServiceModel.Description.WebHttpBehavior
     {
         public WebScriptEnablingBehavior() { }
-        public override System.ServiceModel.Web.WebMessageBodyStyle DefaultBodyStyle { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.ServiceModel.Web.WebMessageFormat DefaultOutgoingRequestFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public override System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.ServiceModel.Web.WebMessageBodyStyle DefaultBodyStyle { get { throw null; } set { } }
+        public override System.ServiceModel.Web.WebMessageFormat DefaultOutgoingRequestFormat { get { throw null; } set { } }
+        public override System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void AddClientErrorInspector(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Dispatcher.ClientRuntime clientRuntime) { }
         [System.MonoTODOAttribute]
@@ -446,17 +446,17 @@ namespace System.ServiceModel.Web
     public partial class OutgoingWebRequestContext
     {
         internal OutgoingWebRequestContext() { }
-        public string Accept { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public long ContentLength { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string ContentType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.WebHeaderCollection Headers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string IfMatch { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string IfModifiedSince { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string IfNoneMatch { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string IfUnmodifiedSince { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Method { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool SuppressEntityBody { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string UserAgent { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Accept { get { throw null; } set { } }
+        public long ContentLength { get { throw null; } set { } }
+        public string ContentType { get { throw null; } set { } }
+        public System.Net.WebHeaderCollection Headers { get { throw null; } }
+        public string IfMatch { get { throw null; } set { } }
+        public string IfModifiedSince { get { throw null; } set { } }
+        public string IfNoneMatch { get { throw null; } set { } }
+        public string IfUnmodifiedSince { get { throw null; } set { } }
+        public string Method { get { throw null; } set { } }
+        public bool SuppressEntityBody { get { throw null; } set { } }
+        public string UserAgent { get { throw null; } set { } }
     }
     public partial class OutgoingWebResponseContext
     {

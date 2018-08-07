@@ -8,6 +8,16 @@ namespace System.Security.Cryptography
 {
     internal sealed partial class RandomNumberGeneratorImplementation : RandomNumberGenerator
     {
+        // As long as each implementation can provide a static GetBytes(ref byte buf, int length)
+        // they can share this one implementation of FillSpan.
+        internal static unsafe void FillSpan(Span<byte> data)
+        {
+            if (data.Length > 0)
+            {
+                fixed (byte* ptr = data) GetBytes(ptr, data.Length);
+            }
+        }
+
         public override void GetBytes(byte[] data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -20,11 +30,11 @@ namespace System.Security.Cryptography
             GetBytes(new Span<byte>(data, offset, count));
         }
 
-        public override void GetBytes(Span<byte> data)
+        public override unsafe void GetBytes(Span<byte> data)
         {
             if (data.Length > 0)
             {
-                GetBytes(ref MemoryMarshal.GetReference(data), data.Length);
+                fixed (byte* ptr = data) GetBytes(ptr, data.Length);
             }
         }
 

@@ -453,7 +453,6 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
-		[Category ("NotWorkingRuntimeInterpreter")]
 		public void TestUndivisibleByPageSizeMaxStackSize ()
 		{
 			const int undivisible_stacksize = 1048573;
@@ -835,7 +834,6 @@ namespace MonoTests.System.Threading
 #endif
 
 		[Test]
-		[Category ("NotWorkingRuntimeInterpreter")]
 		public void Test_Interrupt ()
 		{
 			ManualResetEvent mre = new ManualResetEvent (false);

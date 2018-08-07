@@ -292,8 +292,8 @@ mono_gc_get_specific_write_barrier (gboolean is_concurrent)
 
 	/* Create the IL version of mono_gc_barrier_generic_store () */
 	sig = mono_metadata_signature_alloc (mono_defaults.corlib, 1);
-	sig->ret = m_class_get_byval_arg (mono_defaults.void_class);
-	sig->params [0] = m_class_get_byval_arg (mono_defaults.int_class);
+	sig->ret = mono_get_void_type ();
+	sig->params [0] = mono_get_int_type ();
 
 	if (is_concurrent)
 		mb = mono_mb_new (mono_defaults.object_class, "wbarrier_conc", MONO_WRAPPER_WRITE_BARRIER);
@@ -964,12 +964,12 @@ mono_gc_free_fixed (void* addr)
  * Managed allocator
  */
 
-#ifdef MANAGED_ALLOCATION
 static MonoMethod* alloc_method_cache [ATYPE_NUM];
 static MonoMethod* slowpath_alloc_method_cache [ATYPE_NUM];
 static MonoMethod* profiler_alloc_method_cache [ATYPE_NUM];
 static gboolean use_managed_allocator = TRUE;
 
+#ifdef MANAGED_ALLOCATION
 /* FIXME: Do this in the JIT, where specialized allocation sequences can be created
  * for each class. This is currently not easy to do, as it is hard to generate basic 
  * blocks + branches, but it is easy with the linear IL codebase.
@@ -1016,14 +1016,14 @@ create_allocator (int atype, ManagedAllocatorVariant variant)
 	else
 		num_params = 2;
 
-	MonoType *int_type = m_class_get_byval_arg (mono_defaults.int_class);
+	MonoType *int_type = mono_get_int_type ();
 	csig = mono_metadata_signature_alloc (mono_defaults.corlib, num_params);
 	if (atype == ATYPE_STRING) {
 		csig->ret = m_class_get_byval_arg (mono_defaults.string_class);
 		csig->params [0] = int_type;
-		csig->params [1] = m_class_get_byval_arg (mono_defaults.int32_class);
+		csig->params [1] = mono_get_int32_type ();
 	} else {
-		csig->ret = m_class_get_byval_arg (mono_defaults.object_class);
+		csig->ret = mono_get_object_type ();
 		for (i = 0; i < num_params; i++)
 			csig->params [i] = int_type;
 	}
@@ -2939,8 +2939,7 @@ sgen_client_binary_protocol_collection_begin (int minor_gc_count, int generation
 
 	MONO_GC_BEGIN (generation);
 
-	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_START, generation));
-	MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_START, generation, generation == GENERATION_OLD && sgen_concurrent_collection_in_progress));
+	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_START, generation, generation == GENERATION_OLD && sgen_concurrent_collection_in_progress));
 
 	if (!pseudo_roots_registered) {
 		pseudo_roots_registered = TRUE;
@@ -2962,8 +2961,7 @@ sgen_client_binary_protocol_collection_end (int minor_gc_count, int generation, 
 {
 	MONO_GC_END (generation);
 
-	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_END, generation));
-	MONO_PROFILER_RAISE (gc_event2, (MONO_GC_EVENT_END, generation, generation == GENERATION_OLD && sgen_concurrent_collection_in_progress));
+	MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_END, generation, generation == GENERATION_OLD && sgen_concurrent_collection_in_progress));
 }
 
 #ifdef HOST_WASM

@@ -891,8 +891,8 @@ namespace System
         public UriTemplate(string template, bool ignoreTrailingSlash) { }
         public UriTemplate(string template, bool ignoreTrailingSlash, System.Collections.Generic.IDictionary<string, string> additionalDefaults) { }
         public UriTemplate(string template, System.Collections.Generic.IDictionary<string, string> additionalDefaults) { }
-        public System.Collections.Generic.IDictionary<string, string> Defaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IgnoreTrailingSlash { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IDictionary<string, string> Defaults { get { throw null; } }
+        public bool IgnoreTrailingSlash { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<string> PathSegmentVariableNames { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<string> QueryValueVariableNames { get { throw null; } }
         public System.Uri BindByName(System.Uri baseAddress, System.Collections.Generic.IDictionary<string, string> parameters) { throw null; }
@@ -1180,23 +1180,23 @@ namespace System.ServiceModel
     {
         public CallbackBehaviorAttribute() { }
         [System.MonoTODOAttribute]
-        public bool AutomaticSessionShutdown { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutomaticSessionShutdown { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool IgnoreExtensionDataObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IgnoreExtensionDataObject { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool IncludeExceptionDetailInFaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IncludeExceptionDetailInFaults { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxItemsInObjectGraph { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxItemsInObjectGraph { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Transactions.IsolationLevel TransactionIsolationLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Transactions.IsolationLevel TransactionIsolationLevel { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string TransactionTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string TransactionTimeout { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool UseSynchronizationContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool UseSynchronizationContext { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ValidateMustUnderstand { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ValidateMustUnderstand { get { throw null; } set { } }
         void System.ServiceModel.Description.IEndpointBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection parameters) { }
         [System.MonoTODOAttribute]
         void System.ServiceModel.Description.IEndpointBehavior.ApplyClientBehavior(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Dispatcher.ClientRuntime behavior) { }
@@ -1361,7 +1361,7 @@ namespace System.ServiceModel
         protected partial class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
         {
             internal InvokeAsyncCompletedEventArgs() : base (default(System.Exception), default(bool), default(object)) { }
-            public object[] Results { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+            public object[] Results { get { throw null; } }
         }
     }
     [System.MonoTODOAttribute]
@@ -1611,15 +1611,15 @@ namespace System.ServiceModel
     {
         public ExceptionDetail(System.Exception exception) { }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public string HelpLink { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string HelpLink { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public System.ServiceModel.ExceptionDetail InnerException { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.ExceptionDetail InnerException { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public string Message { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Message { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public string StackTrace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string StackTrace { get { throw null; } set { } }
         [System.Runtime.Serialization.DataMemberAttribute]
-        public string Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Type { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
     public sealed partial class ExtensionCollection<T> : System.Collections.Generic.SynchronizedCollection<System.ServiceModel.IExtension<T>>, System.Collections.Generic.ICollection<System.ServiceModel.IExtension<T>>, System.Collections.Generic.IEnumerable<System.ServiceModel.IExtension<T>>, System.Collections.IEnumerable, System.ServiceModel.IExtensionCollection<T> where T : System.ServiceModel.IExtensibleObject<T>
@@ -1764,7 +1764,7 @@ namespace System.ServiceModel
         public long MaxReceivedMessageSize { get { throw null; } set { } }
         public System.Uri ProxyAddress { get { throw null; } set { } }
         public System.Xml.XmlDictionaryReaderQuotas ReaderQuotas { get { throw null; } set { } }
-        public override string Scheme { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public override string Scheme { get { throw null; } }
         bool System.ServiceModel.Channels.IBindingRuntimePreferences.ReceiveSynchronously { get { throw null; } }
         public System.Text.Encoding TextEncoding { get { throw null; } set { } }
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
@@ -1794,7 +1794,7 @@ namespace System.ServiceModel
         public HttpTransportSecurity() { }
         public System.ServiceModel.HttpClientCredentialType ClientCredentialType { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { get { throw null; } set { } }
         public System.ServiceModel.HttpProxyCredentialType ProxyCredentialType { get { throw null; } set { } }
         public string Realm { get { throw null; } set { } }
     }
@@ -1985,9 +1985,9 @@ namespace System.ServiceModel
         public MessageHeaderException(string message, string headerName, string ns, bool isDuplicate) { }
         public MessageHeaderException(string message, string headerName, string ns, bool isDuplicate, System.Exception innerException) { }
         public MessageHeaderException(string message, string headerName, string ns, System.Exception innerException) { }
-        public string HeaderName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string HeaderNamespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsDuplicate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string HeaderName { get { throw null; } }
+        public string HeaderNamespace { get { throw null; } }
+        public bool IsDuplicate { get { throw null; } }
     }
     public partial class MessageHeader<T>
     {
@@ -2037,11 +2037,11 @@ namespace System.ServiceModel
         internal MessageSecurityVersion() { }
         public abstract System.ServiceModel.Security.BasicSecurityProfileVersion BasicSecurityProfileVersion { get; }
         public static System.ServiceModel.MessageSecurityVersion Default { get { throw null; } }
-        public System.ServiceModel.Security.SecureConversationVersion SecureConversationVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Security.SecureConversationVersion SecureConversationVersion { get { throw null; } }
         public abstract System.ServiceModel.Security.SecurityPolicyVersion SecurityPolicyVersion { get; }
         public abstract System.IdentityModel.Selectors.SecurityTokenVersion SecurityTokenVersion { get; }
-        public System.ServiceModel.Security.SecurityVersion SecurityVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Security.TrustVersion TrustVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Security.SecurityVersion SecurityVersion { get { throw null; } }
+        public System.ServiceModel.Security.TrustVersion TrustVersion { get { throw null; } }
         public static System.ServiceModel.MessageSecurityVersion WSSecurity10WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10 { get { throw null; } }
         public static System.ServiceModel.MessageSecurityVersion WSSecurity10WSTrustFebruary2005WSSecureConversationFebruary2005WSSecurityPolicy11BasicSecurityProfile10 { get { throw null; } }
         public static System.ServiceModel.MessageSecurityVersion WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12 { get { throw null; } }
@@ -2115,7 +2115,7 @@ namespace System.ServiceModel
     public sealed partial class NamedPipeTransportSecurity
     {
         internal NamedPipeTransportSecurity() { }
-        public System.Net.Security.ProtectionLevel ProtectionLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Security.ProtectionLevel ProtectionLevel { get { throw null; } set { } }
     }
     [System.MonoTODOAttribute]
     public partial class NetHttpBinding : System.ServiceModel.HttpBindingBase
@@ -2124,10 +2124,10 @@ namespace System.ServiceModel
         public NetHttpBinding(System.ServiceModel.BasicHttpSecurityMode securityMode) { }
         public NetHttpBinding(System.ServiceModel.BasicHttpSecurityMode securityMode, bool reliableSessionEnabled) { }
         public NetHttpBinding(string configurationName) { }
-        public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.OptionalReliableSession ReliableSession { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { throw null; } set { } }
+        public System.ServiceModel.OptionalReliableSession ReliableSession { get { throw null; } set { } }
         public override string Scheme { get { throw null; } }
-        public System.ServiceModel.BasicHttpSecurity Security { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.BasicHttpSecurity Security { get { throw null; } set { } }
         public System.ServiceModel.Channels.WebSocketTransportSettings WebSocketSettings { get { throw null; } }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
         public bool ShouldSerializeReliableSession() { throw null; }
@@ -2146,10 +2146,10 @@ namespace System.ServiceModel
         public NetHttpsBinding(System.ServiceModel.BasicHttpsSecurityMode securityMode) { }
         public NetHttpsBinding(System.ServiceModel.BasicHttpsSecurityMode securityMode, bool reliableSessionEnabled) { }
         public NetHttpsBinding(string configurationName) { }
-        public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.OptionalReliableSession ReliableSession { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { throw null; } set { } }
+        public System.ServiceModel.OptionalReliableSession ReliableSession { get { throw null; } set { } }
         public override string Scheme { get { throw null; } }
-        public System.ServiceModel.BasicHttpsSecurity Security { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.BasicHttpsSecurity Security { get { throw null; } set { } }
         public System.ServiceModel.Channels.WebSocketTransportSettings WebSocketSettings { get { throw null; } }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
         public bool ShouldSerializeReliableSession() { throw null; }
@@ -2198,7 +2198,7 @@ namespace System.ServiceModel
         [System.MonoTODOAttribute]
         public int MaxBufferSize { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxConnections { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxConnections { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public long MaxReceivedMessageSize { get { throw null; } set { } }
         public System.Xml.XmlDictionaryReaderQuotas ReaderQuotas { get { throw null; } set { } }
@@ -2206,17 +2206,17 @@ namespace System.ServiceModel
         public System.ServiceModel.NetNamedPipeSecurity Security { get { throw null; } }
         bool System.ServiceModel.Channels.IBindingRuntimePreferences.ReceiveSynchronously { get { throw null; } }
         [System.MonoTODOAttribute]
-        public bool TransactionFlow { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TransactionFlow { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.TransactionProtocol TransactionProtocol { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.TransactionProtocol TransactionProtocol { get { throw null; } set { } }
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
     }
     public sealed partial class NetNamedPipeSecurity
     {
         internal NetNamedPipeSecurity() { }
-        public System.ServiceModel.NetNamedPipeSecurityMode Mode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.NamedPipeTransportSecurity Transport { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.NetNamedPipeSecurityMode Mode { get { throw null; } set { } }
+        public System.ServiceModel.NamedPipeTransportSecurity Transport { get { throw null; } }
     }
     public enum NetNamedPipeSecurityMode
     {
@@ -2314,7 +2314,7 @@ namespace System.ServiceModel
         public System.ServiceModel.Channels.MessageVersion IncomingMessageVersion { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.ServiceModel.InstanceContext InstanceContext { get { throw null; } }
-        public bool IsUserContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsUserContext { get { throw null; } }
         public System.ServiceModel.Channels.MessageHeaders OutgoingMessageHeaders { get { throw null; } }
         public System.ServiceModel.Channels.MessageProperties OutgoingMessageProperties { get { throw null; } }
         public System.ServiceModel.Channels.RequestContext RequestContext { get { throw null; } set { } }
@@ -2386,9 +2386,9 @@ namespace System.ServiceModel
     public abstract partial class PeerNode : System.ServiceModel.IOnlineStatus
     {
         internal PeerNode() { }
-        public bool IsOnline { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsOnline { get { throw null; } }
         public abstract System.ServiceModel.PeerMessagePropagationFilter MessagePropagationFilter { get; set; }
-        public int Port { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Port { get { throw null; } }
         public event System.EventHandler Offline { add { } remove { } }
         public event System.EventHandler Online { add { } remove { } }
         public void RefreshConnection() { }
@@ -2416,7 +2416,7 @@ namespace System.ServiceModel
     {
         public PeerSecuritySettings() { }
         public System.ServiceModel.SecurityMode Mode { get { throw null; } set { } }
-        public System.ServiceModel.PeerTransportSecuritySettings Transport { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.PeerTransportSecuritySettings Transport { get { throw null; } }
     }
     public enum PeerTransportCredentialType
     {
@@ -2426,7 +2426,7 @@ namespace System.ServiceModel
     public sealed partial class PeerTransportSecuritySettings
     {
         internal PeerTransportSecuritySettings() { }
-        public System.ServiceModel.PeerTransportCredentialType CredentialType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.PeerTransportCredentialType CredentialType { get { throw null; } set { } }
     }
     [System.SerializableAttribute]
     public partial class PoisonMessageException : System.SystemException
@@ -2490,8 +2490,8 @@ namespace System.ServiceModel
     {
         public ReliableSession() { }
         public ReliableSession(System.ServiceModel.Channels.ReliableSessionBindingElement reliableSessionBindingElement) { }
-        public System.TimeSpan InactivityTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool Ordered { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan InactivityTimeout { get { throw null; } set { } }
+        public bool Ordered { get { throw null; } set { } }
     }
     public partial class RsaEndpointIdentity : System.ServiceModel.EndpointIdentity
     {
@@ -2538,34 +2538,34 @@ namespace System.ServiceModel
     {
         public ServiceBehaviorAttribute() { }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.AddressFilterMode AddressFilterMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.AddressFilterMode AddressFilterMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool AutomaticSessionShutdown { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool AutomaticSessionShutdown { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string ConfigurationName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string ConfigurationName { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool IgnoreExtensionDataObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IncludeExceptionDetailInFaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.InstanceContextMode InstanceContextMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IgnoreExtensionDataObject { get { throw null; } set { } }
+        public bool IncludeExceptionDetailInFaults { get { throw null; } set { } }
+        public System.ServiceModel.InstanceContextMode InstanceContextMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxItemsInObjectGraph { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxItemsInObjectGraph { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Name { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public string Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Namespace { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ReleaseServiceInstanceOnTransactionComplete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ReleaseServiceInstanceOnTransactionComplete { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool TransactionAutoCompleteOnSessionClose { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TransactionAutoCompleteOnSessionClose { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Transactions.IsolationLevel TransactionIsolationLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Transactions.IsolationLevel TransactionIsolationLevel { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public string TransactionTimeout { get { throw null; } set { } }
-        public bool UseSynchronizationContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool UseSynchronizationContext { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ValidateMustUnderstand { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ValidateMustUnderstand { get { throw null; } set { } }
         public object GetWellKnownSingleton() { throw null; }
         public void SetWellKnownSingleton(object value) { }
         [System.MonoTODOAttribute]
@@ -2604,7 +2604,7 @@ namespace System.ServiceModel
     public abstract partial class ServiceHostBase : System.ServiceModel.Channels.CommunicationObject, System.IDisposable, System.ServiceModel.IExtensibleObject<System.ServiceModel.ServiceHostBase>
     {
         protected ServiceHostBase() { }
-        public System.ServiceModel.Description.ServiceAuthorizationBehavior Authorization { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Description.ServiceAuthorizationBehavior Authorization { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<System.Uri> BaseAddresses { get { throw null; } }
         public System.ServiceModel.Dispatcher.ChannelDispatcherCollection ChannelDispatchers { get { throw null; } }
         public System.TimeSpan CloseTimeout { get { throw null; } set { } }
@@ -2691,8 +2691,8 @@ namespace System.ServiceModel
     public sealed partial class TcpTransportSecurity
     {
         public TcpTransportSecurity() { }
-        public System.ServiceModel.TcpClientCredentialType ClientCredentialType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Net.Security.ProtectionLevel ProtectionLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.TcpClientCredentialType ClientCredentialType { get { throw null; } set { } }
+        public System.Net.Security.ProtectionLevel ProtectionLevel { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Security.Authentication.SslProtocols SslProtocols { get { throw null; } set { } }
     }
@@ -2700,7 +2700,7 @@ namespace System.ServiceModel
     public sealed partial class TransactionFlowAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public TransactionFlowAttribute(System.ServiceModel.TransactionFlowOption transactions) { }
-        public System.ServiceModel.TransactionFlowOption Transactions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.TransactionFlowOption Transactions { get { throw null; } }
         void System.ServiceModel.Description.IOperationBehavior.AddBindingParameters(System.ServiceModel.Description.OperationDescription description, System.ServiceModel.Channels.BindingParameterCollection parameters) { }
         [System.MonoTODOAttribute]
         void System.ServiceModel.Description.IOperationBehavior.ApplyClientBehavior(System.ServiceModel.Description.OperationDescription description, System.ServiceModel.Dispatcher.ClientOperation proxy) { }
@@ -2905,10 +2905,10 @@ namespace System.ServiceModel
     public sealed partial class XmlSerializerFormatAttribute : System.Attribute
     {
         public XmlSerializerFormatAttribute() { }
-        public System.ServiceModel.OperationFormatStyle Style { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.OperationFormatStyle Style { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool SupportFaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.OperationFormatUse Use { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool SupportFaults { get { throw null; } set { } }
+        public System.ServiceModel.OperationFormatUse Use { get { throw null; } set { } }
     }
 }
 namespace System.ServiceModel.Activation
@@ -2942,7 +2942,7 @@ namespace System.ServiceModel.Activation
     public sealed partial class VirtualPathExtension : System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>
     {
         internal VirtualPathExtension() { }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string VirtualPath { get { throw null; } }
         public void Attach(System.ServiceModel.ServiceHostBase owner) { }
         public void Detach(System.ServiceModel.ServiceHostBase owner) { }
     }
@@ -3433,16 +3433,16 @@ namespace System.ServiceModel.Channels
         public bool BypassProxyOnLocal { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.MonoTODOAttribute]
-        public bool DecompressionEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DecompressionEnabled { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool KeepAliveEnabled { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         [System.ObsoleteAttribute("Use ExtendedProtectionPolicy")]
-        public object LegacyExtendedProtectionPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public object LegacyExtendedProtectionPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(65536)]
         public int MaxBufferSize { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -3645,14 +3645,14 @@ namespace System.ServiceModel.Channels
         public int CookieRenewalThresholdPercentage { get { throw null; } set { } }
         public bool DetectReplays { get { throw null; } set { } }
         public System.ServiceModel.Security.IdentityVerifier IdentityVerifier { get { throw null; } set { } }
-        public System.TimeSpan MaxClockSkew { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan MaxClockSkew { get { throw null; } set { } }
         public System.TimeSpan MaxCookieCachingTime { get { throw null; } set { } }
         public bool ReconnectTransportOnFailure { get { throw null; } set { } }
         public int ReplayCacheSize { get { throw null; } set { } }
-        public System.TimeSpan ReplayWindow { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan ReplayWindow { get { throw null; } set { } }
         public System.TimeSpan SessionKeyRenewalInterval { get { throw null; } set { } }
         public System.TimeSpan SessionKeyRolloverInterval { get { throw null; } set { } }
-        public System.TimeSpan TimestampValidityDuration { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan TimestampValidityDuration { get { throw null; } set { } }
         [System.MonoTODOAttribute("What happens to IdentityVerifier?")]
         public System.ServiceModel.Channels.LocalClientSecuritySettings Clone() { throw null; }
     }
@@ -3684,7 +3684,7 @@ namespace System.ServiceModel.Channels
         public virtual bool IsEmpty { get { throw null; } }
         public virtual bool IsFault { get { throw null; } }
         public abstract System.ServiceModel.Channels.MessageProperties Properties { get; }
-        public System.ServiceModel.Channels.MessageState State { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Channels.MessageState State { get { throw null; } }
         public abstract System.ServiceModel.Channels.MessageVersion Version { get; }
         public void Close() { }
         public System.ServiceModel.Channels.MessageBuffer CreateBufferedCopy(int maxBufferSize) { throw null; }
@@ -3937,13 +3937,13 @@ namespace System.ServiceModel.Channels
         public System.ServiceModel.Channels.AddressingVersion Addressing { get { throw null; } }
         public static System.ServiceModel.Channels.MessageVersion Default { get { throw null; } }
         public System.ServiceModel.EnvelopeVersion Envelope { get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion None { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap11 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap11WSAddressing10 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap11WSAddressingAugust2004 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap12 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap12WSAddressing10 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Channels.MessageVersion Soap12WSAddressingAugust2004 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion None { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap11 { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap11WSAddressing10 { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap11WSAddressingAugust2004 { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap12 { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap12WSAddressing10 { get { throw null; } }
+        public static System.ServiceModel.Channels.MessageVersion Soap12WSAddressingAugust2004 { get { throw null; } }
         public static System.ServiceModel.Channels.MessageVersion CreateVersion(System.ServiceModel.EnvelopeVersion envelopeVersion) { throw null; }
         public static System.ServiceModel.Channels.MessageVersion CreateVersion(System.ServiceModel.EnvelopeVersion envelopeVersion, System.ServiceModel.Channels.AddressingVersion addressingVersion) { throw null; }
         public override bool Equals(object obj) { throw null; }
@@ -4074,7 +4074,7 @@ namespace System.ServiceModel.Channels
         public System.ServiceModel.EndpointAddress Address { get { throw null; } set { } }
         public System.ServiceModel.Channels.Binding Binding { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public override System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { get { throw null; } set { } }
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         public override System.ServiceModel.Channels.IChannelListener<TChannel> BuildChannelListener<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         public override bool CanBuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
@@ -4095,7 +4095,7 @@ namespace System.ServiceModel.Channels
     public sealed partial class PeerTransportBindingElement : System.ServiceModel.Channels.TransportBindingElement, System.ServiceModel.Description.IPolicyExportExtension, System.ServiceModel.Description.IWsdlExportExtension
     {
         public PeerTransportBindingElement() { }
-        public System.Net.IPAddress ListenIPAddress { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.IPAddress ListenIPAddress { get { throw null; } set { } }
         public override long MaxReceivedMessageSize { get { throw null; } set { } }
         public int Port { get { throw null; } set { } }
         public override string Scheme { get { throw null; } }
@@ -4117,7 +4117,7 @@ namespace System.ServiceModel.Channels
     public partial class PnrpPeerResolverBindingElement : System.ServiceModel.Channels.PeerResolverBindingElement
     {
         public PnrpPeerResolverBindingElement() { }
-        public override System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public override System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         [System.MonoTODOAttribute]
@@ -4133,9 +4133,9 @@ namespace System.ServiceModel.Channels
         public PrivacyNoticeBindingElement() { }
         public PrivacyNoticeBindingElement(System.ServiceModel.Channels.PrivacyNoticeBindingElement elementToBeCloned) { }
         [System.MonoTODOAttribute]
-        public System.Uri Url { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri Url { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int Version { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int Version { get { throw null; } set { } }
         public override System.ServiceModel.Channels.BindingElement Clone() { throw null; }
         public override T GetProperty<T>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         void System.ServiceModel.Description.IPolicyExportExtension.ExportPolicy(System.ServiceModel.Description.MetadataExporter exporter, System.ServiceModel.Description.PolicyConversionContext context) { }
@@ -4149,21 +4149,21 @@ namespace System.ServiceModel.Channels
         public ReliableSessionBindingElement() { }
         public ReliableSessionBindingElement(bool ordered) { }
         [System.MonoTODOAttribute]
-        public System.TimeSpan AcknowledgementInterval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan AcknowledgementInterval { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool FlowControlEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool FlowControlEnabled { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.TimeSpan InactivityTimeout { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.TimeSpan InactivityTimeout { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxPendingChannels { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxPendingChannels { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxRetryCount { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxRetryCount { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaxTransferWindowSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaxTransferWindowSize { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool Ordered { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool Ordered { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.ReliableMessagingVersion ReliableMessagingVersion { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.ReliableMessagingVersion ReliableMessagingVersion { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingContext context) { throw null; }
         [System.MonoTODOAttribute]
@@ -4185,9 +4185,9 @@ namespace System.ServiceModel.Channels
     public sealed partial class RemoteEndpointMessageProperty
     {
         public RemoteEndpointMessageProperty(string address, int port) { }
-        public string Address { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Address { get { throw null; } }
         public static string Name { get { throw null; } }
-        public int Port { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Port { get { throw null; } }
     }
     public abstract partial class RequestContext : System.IDisposable
     {
@@ -4209,9 +4209,9 @@ namespace System.ServiceModel.Channels
         internal SecurityBindingElement() { }
         public System.ServiceModel.Security.SecurityAlgorithmSuite DefaultAlgorithmSuite { get { throw null; } set { } }
         public System.ServiceModel.Security.Tokens.SupportingTokenParameters EndpointSupportingTokenParameters { get { throw null; } }
-        public bool IncludeTimestamp { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IncludeTimestamp { get { throw null; } set { } }
         public System.ServiceModel.Security.SecurityKeyEntropyMode KeyEntropyMode { get { throw null; } set { } }
-        public System.ServiceModel.Channels.LocalClientSecuritySettings LocalClientSettings { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Channels.LocalClientSecuritySettings LocalClientSettings { get { throw null; } }
         public System.ServiceModel.Channels.LocalServiceSecuritySettings LocalServiceSettings { get { throw null; } }
         public System.ServiceModel.MessageSecurityVersion MessageSecurityVersion { get { throw null; } set { } }
         public System.Collections.Generic.IDictionary<string, System.ServiceModel.Security.Tokens.SupportingTokenParameters> OperationSupportingTokenParameters { get { throw null; } }
@@ -4473,6 +4473,13 @@ namespace System.ServiceModel.Channels
         [System.MonoTODOAttribute]
         void System.ServiceModel.Description.IPolicyImportExtension.ImportPolicy(System.ServiceModel.Description.MetadataImporter importer, System.ServiceModel.Description.PolicyConversionContext context) { }
     }
+    public partial class TransactionMessageProperty
+    {
+        public TransactionMessageProperty(System.Transactions.Transaction tx, System.ServiceModel.Channels.Message msg) { }
+        public System.Transactions.Transaction Transaction { get { throw null; } }
+        [System.MonoTODOAttribute]
+        public static void Set(System.Transactions.Transaction tx, System.ServiceModel.Channels.Message msg) { }
+    }
     public enum TransferSession
     {
         None = 0,
@@ -4543,14 +4550,14 @@ namespace System.ServiceModel.Channels
         public const string SoapContentTypeHeader = null;
         public const string TextMessageReceivedAction = "http://schemas.microsoft.com/2011/02/websockets/ontextmessage";
         public WebSocketTransportSettings() { }
-        public bool CreateNotificationOnConnection { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool DisablePayloadMasking { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.TimeSpan KeepAliveInterval { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxPendingConnections { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int ReceiveBufferSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int SendBufferSize { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string SubProtocol { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Channels.WebSocketTransportUsage TransportUsage { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool CreateNotificationOnConnection { get { throw null; } set { } }
+        public bool DisablePayloadMasking { get { throw null; } set { } }
+        public System.TimeSpan KeepAliveInterval { get { throw null; } set { } }
+        public int MaxPendingConnections { get { throw null; } set { } }
+        public int ReceiveBufferSize { get { throw null; } set { } }
+        public int SendBufferSize { get { throw null; } set { } }
+        public string SubProtocol { get { throw null; } set { } }
+        public System.ServiceModel.Channels.WebSocketTransportUsage TransportUsage { get { throw null; } set { } }
         public bool Equals(System.ServiceModel.Channels.WebSocketTransportSettings other) { throw null; }
     }
     public enum WebSocketTransportUsage
@@ -4564,7 +4571,7 @@ namespace System.ServiceModel.Channels
     {
         public WindowsStreamSecurityBindingElement() { }
         public WindowsStreamSecurityBindingElement(System.ServiceModel.Channels.WindowsStreamSecurityBindingElement other) { }
-        public System.Net.Security.ProtectionLevel ProtectionLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.Security.ProtectionLevel ProtectionLevel { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         System.Net.Security.ProtectionLevel System.ServiceModel.Channels.ISecurityCapabilities.SupportedRequestProtectionLevel { get { throw null; } }
         [System.MonoTODOAttribute]
@@ -7669,10 +7676,10 @@ namespace System.ServiceModel.Description
         public DataContractSerializerOperationBehavior(System.ServiceModel.Description.OperationDescription operation) { }
         public DataContractSerializerOperationBehavior(System.ServiceModel.Description.OperationDescription operation, System.ServiceModel.DataContractFormatAttribute dataContractFormatAttribute) { }
         public System.ServiceModel.DataContractFormatAttribute DataContractFormatAttribute { get { throw null; } }
-        public System.Runtime.Serialization.DataContractResolver DataContractResolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IgnoreExtensionDataObject { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public int MaxItemsInObjectGraph { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Runtime.Serialization.DataContractResolver DataContractResolver { get { throw null; } set { } }
+        public System.Runtime.Serialization.IDataContractSurrogate DataContractSurrogate { get { throw null; } set { } }
+        public bool IgnoreExtensionDataObject { get { throw null; } set { } }
+        public int MaxItemsInObjectGraph { get { throw null; } set { } }
         public virtual System.Runtime.Serialization.XmlObjectSerializer CreateSerializer(System.Type type, string name, string ns, System.Collections.Generic.IList<System.Type> knownTypes) { throw null; }
         public virtual System.Runtime.Serialization.XmlObjectSerializer CreateSerializer(System.Type type, System.Xml.XmlDictionaryString name, System.Xml.XmlDictionaryString ns, System.Collections.Generic.IList<System.Type> knownTypes) { throw null; }
         void System.ServiceModel.Description.IOperationBehavior.AddBindingParameters(System.ServiceModel.Description.OperationDescription description, System.ServiceModel.Channels.BindingParameterCollection parameters) { }
@@ -7871,13 +7878,13 @@ namespace System.ServiceModel.Description
         [System.MonoTODOAttribute("MetadataExchangeClientMode is not considered")]
         public MetadataExchangeClient(System.Uri address, System.ServiceModel.Description.MetadataExchangeClientMode mode) { }
         [System.MonoTODOAttribute]
-        public System.Net.ICredentials HttpCredentials { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Net.ICredentials HttpCredentials { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public int MaximumResolvedReferences { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public int MaximumResolvedReferences { get { throw null; } set { } }
         public System.TimeSpan OperationTimeout { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ResolveMetadataReferences { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Description.ClientCredentials SoapCredentials { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ResolveMetadataReferences { get { throw null; } set { } }
+        public System.ServiceModel.Description.ClientCredentials SoapCredentials { get { throw null; } set { } }
         public System.IAsyncResult BeginGetMetadata(System.AsyncCallback callback, object asyncState) { throw null; }
         public System.IAsyncResult BeginGetMetadata(System.ServiceModel.EndpointAddress address, System.AsyncCallback callback, object asyncState) { throw null; }
         public System.IAsyncResult BeginGetMetadata(System.Uri address, System.ServiceModel.Description.MetadataExchangeClientMode mode, System.AsyncCallback callback, object asyncState) { throw null; }
@@ -8168,13 +8175,13 @@ namespace System.ServiceModel.Description
     public partial class ServiceDebugBehavior : System.ServiceModel.Description.IServiceBehavior
     {
         public ServiceDebugBehavior() { }
-        public System.ServiceModel.Channels.Binding HttpHelpPageBinding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HttpHelpPageEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri HttpHelpPageUrl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Channels.Binding HttpsHelpPageBinding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HttpsHelpPageEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri HttpsHelpPageUrl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool IncludeExceptionDetailInFaults { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Channels.Binding HttpHelpPageBinding { get { throw null; } set { } }
+        public bool HttpHelpPageEnabled { get { throw null; } set { } }
+        public System.Uri HttpHelpPageUrl { get { throw null; } set { } }
+        public System.ServiceModel.Channels.Binding HttpsHelpPageBinding { get { throw null; } set { } }
+        public bool HttpsHelpPageEnabled { get { throw null; } set { } }
+        public System.Uri HttpsHelpPageUrl { get { throw null; } set { } }
+        public bool IncludeExceptionDetailInFaults { get { throw null; } set { } }
         void System.ServiceModel.Description.IServiceBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceDescription description, System.ServiceModel.ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<System.ServiceModel.Description.ServiceEndpoint> endpoints, System.ServiceModel.Channels.BindingParameterCollection parameters) { }
         void System.ServiceModel.Description.IServiceBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceDescription description, System.ServiceModel.ServiceHostBase serviceHostBase) { }
         [System.MonoTODOAttribute]
@@ -8204,7 +8211,7 @@ namespace System.ServiceModel.Description
         public System.ServiceModel.Channels.Binding Binding { get { throw null; } set { } }
         public System.ServiceModel.Description.ContractDescription Contract { get { throw null; } set { } }
         public System.Collections.ObjectModel.KeyedCollection<System.Type, System.ServiceModel.Description.IEndpointBehavior> EndpointBehaviors { get { throw null; } }
-        public bool IsSystemEndpoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IsSystemEndpoint { get { throw null; } set { } }
         public System.Uri ListenUri { get { throw null; } set { } }
         public System.ServiceModel.Description.ListenUriMode ListenUriMode { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
@@ -8227,13 +8234,13 @@ namespace System.ServiceModel.Description
     {
         public const string MexContractName = "IMetadataExchange";
         public ServiceMetadataBehavior() { }
-        public System.Uri ExternalMetadataLocation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Channels.Binding HttpGetBinding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HttpGetEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri HttpGetUrl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Channels.Binding HttpsGetBinding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool HttpsGetEnabled { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri HttpsGetUrl { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri ExternalMetadataLocation { get { throw null; } set { } }
+        public System.ServiceModel.Channels.Binding HttpGetBinding { get { throw null; } set { } }
+        public bool HttpGetEnabled { get { throw null; } set { } }
+        public System.Uri HttpGetUrl { get { throw null; } set { } }
+        public System.ServiceModel.Channels.Binding HttpsGetBinding { get { throw null; } set { } }
+        public bool HttpsGetEnabled { get { throw null; } set { } }
+        public System.Uri HttpsGetUrl { get { throw null; } set { } }
         public System.ServiceModel.Description.MetadataExporter MetadataExporter { get { throw null; } set { } }
         void System.ServiceModel.Description.IServiceBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceDescription description, System.ServiceModel.ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<System.ServiceModel.Description.ServiceEndpoint> endpoints, System.ServiceModel.Channels.BindingParameterCollection parameters) { }
         void System.ServiceModel.Description.IServiceBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceDescription description, System.ServiceModel.ServiceHostBase serviceHostBase) { }
@@ -8496,14 +8503,14 @@ namespace System.ServiceModel.Dispatcher
     public sealed partial class ClientRuntime
     {
         internal ClientRuntime() { }
-        public System.Type CallbackClientType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Dispatcher.DispatchRuntime CallbackDispatchRuntime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Type CallbackClientType { get { throw null; } set { } }
+        public System.ServiceModel.Dispatcher.DispatchRuntime CallbackDispatchRuntime { get { throw null; } }
         public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IChannelInitializer> ChannelInitializers { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.Collections.Generic.ICollection<System.ServiceModel.Dispatcher.IClientMessageInspector> ClientMessageInspectors { get { throw null; } }
         [System.MonoTODOAttribute]
         public System.Collections.Generic.ICollection<System.ServiceModel.Dispatcher.ClientOperation> ClientOperations { get { throw null; } }
-        public System.Type ContractClientType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Type ContractClientType { get { throw null; } set { } }
         public string ContractName { get { throw null; } }
         public string ContractNamespace { get { throw null; } }
         public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IInteractiveChannelInitializer> InteractiveChannelInitializers { get { throw null; } }
@@ -8548,51 +8555,51 @@ namespace System.ServiceModel.Dispatcher
     {
         internal DispatchRuntime() { }
         [System.MonoTODOAttribute]
-        public bool AutomaticInputSessionShutdown { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Dispatcher.ClientRuntime CallbackClientRuntime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool AutomaticInputSessionShutdown { get { throw null; } set { } }
+        public System.ServiceModel.Dispatcher.ClientRuntime CallbackClientRuntime { get { throw null; } }
         public System.ServiceModel.Dispatcher.ChannelDispatcher ChannelDispatcher { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Dispatcher.EndpointDispatcher EndpointDispatcher { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.ConcurrencyMode ConcurrencyMode { get { throw null; } set { } }
+        public System.ServiceModel.Dispatcher.EndpointDispatcher EndpointDispatcher { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.Collections.ObjectModel.ReadOnlyCollection<System.IdentityModel.Policy.IAuthorizationPolicy> ExternalAuthorizationPolicies { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.ObjectModel.ReadOnlyCollection<System.IdentityModel.Policy.IAuthorizationPolicy> ExternalAuthorizationPolicies { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool IgnoreTransactionMessageProperty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool IgnoreTransactionMessageProperty { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ImpersonateCallerForAllOperations { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ImpersonateCallerForAllOperations { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IInputSessionShutdown> InputSessionShutdownHandlers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IInputSessionShutdown> InputSessionShutdownHandlers { get { throw null; } }
         [System.MonoTODOAttribute]
-        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IInstanceContextInitializer> InstanceContextInitializers { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.ServiceModel.Dispatcher.IInstanceContextProvider InstanceContextProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Dispatcher.IInstanceProvider InstanceProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IInstanceContextInitializer> InstanceContextInitializers { get { throw null; } }
+        public System.ServiceModel.Dispatcher.IInstanceContextProvider InstanceContextProvider { get { throw null; } set { } }
+        public System.ServiceModel.Dispatcher.IInstanceProvider InstanceProvider { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.AuditLevel MessageAuthenticationAuditLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IDispatchMessageInspector> MessageInspectors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.AuditLevel MessageAuthenticationAuditLevel { get { throw null; } set { } }
+        public System.Collections.Generic.SynchronizedCollection<System.ServiceModel.Dispatcher.IDispatchMessageInspector> MessageInspectors { get { throw null; } }
         public System.Collections.Generic.SynchronizedKeyedCollection<string, System.ServiceModel.Dispatcher.DispatchOperation> Operations { get { throw null; } }
-        public System.ServiceModel.Dispatcher.IDispatchOperationSelector OperationSelector { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Dispatcher.IDispatchOperationSelector OperationSelector { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.Description.PrincipalPermissionMode PrincipalPermissionMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Description.PrincipalPermissionMode PrincipalPermissionMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool ReleaseServiceInstanceOnTransactionComplete { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool ReleaseServiceInstanceOnTransactionComplete { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Web.Security.RoleProvider RoleProvider { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Web.Security.RoleProvider RoleProvider { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.AuditLogLocation SecurityAuditLogLocation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.AuditLogLocation SecurityAuditLogLocation { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.AuditLevel ServiceAuthorizationAuditLevel { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.AuditLevel ServiceAuthorizationAuditLevel { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.ServiceModel.ServiceAuthorizationManager ServiceAuthorizationManager { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.InstanceContext SingletonInstanceContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.ServiceAuthorizationManager ServiceAuthorizationManager { get { throw null; } set { } }
+        public System.ServiceModel.InstanceContext SingletonInstanceContext { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool SuppressAuditFailure { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool SuppressAuditFailure { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.Threading.SynchronizationContext SynchronizationContext { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public bool TransactionAutoCompleteOnSessionClose { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type Type { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Dispatcher.DispatchOperation UnhandledDispatchOperation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public bool ValidateMustUnderstand { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool TransactionAutoCompleteOnSessionClose { get { throw null; } set { } }
+        public System.Type Type { get { throw null; } set { } }
+        public System.ServiceModel.Dispatcher.DispatchOperation UnhandledDispatchOperation { get { throw null; } set { } }
+        public bool ValidateMustUnderstand { get { throw null; } set { } }
     }
     public partial class EndpointAddressMessageFilter : System.ServiceModel.Dispatcher.MessageFilter
     {
@@ -8616,7 +8623,7 @@ namespace System.ServiceModel.Dispatcher
         public System.ServiceModel.Dispatcher.DispatchRuntime DispatchRuntime { get { throw null; } }
         public System.ServiceModel.EndpointAddress EndpointAddress { get { throw null; } }
         public int FilterPriority { get { throw null; } set { } }
-        public bool IsSystemEndpoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsSystemEndpoint { get { throw null; } }
     }
     public abstract partial class ExceptionHandler
     {
@@ -8629,8 +8636,8 @@ namespace System.ServiceModel.Dispatcher
     public partial class FaultContractInfo
     {
         public FaultContractInfo(string action, System.Type detail) { }
-        public string Action { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Type Detail { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Action { get { throw null; } }
+        public System.Type Detail { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class FilterInvalidBodyAccessException : System.ServiceModel.Dispatcher.InvalidBodyAccessException
@@ -8999,25 +9006,25 @@ namespace System.ServiceModel.MsmqIntegration
     {
         public const string Name = "MsmqIntegrationMessageProperty";
         public MsmqIntegrationMessageProperty() { }
-        public System.Nullable<System.Messaging.AcknowledgeTypes> AcknowledgeType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.Messaging.Acknowledgment> Acknowledgment { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Uri AdministrationQueue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> AppSpecific { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.DateTime> ArrivedTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<bool> Authenticated { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public object Body { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<int> BodyType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string CorrelationId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri DestinationQueue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public byte[] Extension { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Id { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Label { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Nullable<System.Messaging.MessageType> MessageType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<System.Messaging.MessagePriority> Priority { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Uri ResponseQueue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public byte[] SenderId { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<System.DateTime> SentTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Nullable<System.TimeSpan> TimeToReachQueue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Nullable<System.Messaging.AcknowledgeTypes> AcknowledgeType { get { throw null; } set { } }
+        public System.Nullable<System.Messaging.Acknowledgment> Acknowledgment { get { throw null; } }
+        public System.Uri AdministrationQueue { get { throw null; } set { } }
+        public System.Nullable<int> AppSpecific { get { throw null; } set { } }
+        public System.Nullable<System.DateTime> ArrivedTime { get { throw null; } }
+        public System.Nullable<bool> Authenticated { get { throw null; } }
+        public object Body { get { throw null; } set { } }
+        public System.Nullable<int> BodyType { get { throw null; } set { } }
+        public string CorrelationId { get { throw null; } set { } }
+        public System.Uri DestinationQueue { get { throw null; } }
+        public byte[] Extension { get { throw null; } set { } }
+        public string Id { get { throw null; } }
+        public string Label { get { throw null; } set { } }
+        public System.Nullable<System.Messaging.MessageType> MessageType { get { throw null; } }
+        public System.Nullable<System.Messaging.MessagePriority> Priority { get { throw null; } set { } }
+        public System.Uri ResponseQueue { get { throw null; } set { } }
+        public byte[] SenderId { get { throw null; } }
+        public System.Nullable<System.DateTime> SentTime { get { throw null; } }
+        public System.Nullable<System.TimeSpan> TimeToReachQueue { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public static System.ServiceModel.MsmqIntegration.MsmqIntegrationMessageProperty Get(System.ServiceModel.Channels.Message message) { throw null; }
     }
@@ -9105,10 +9112,10 @@ namespace System.ServiceModel.PeerResolvers
     public partial class PeerCustomResolverSettings
     {
         public PeerCustomResolverSettings() { }
-        public System.ServiceModel.EndpointAddress Address { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Channels.Binding Binding { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.EndpointAddress Address { get { throw null; } set { } }
+        public System.ServiceModel.Channels.Binding Binding { get { throw null; } set { } }
         public bool IsBindingSpecified { get { throw null; } }
-        public System.ServiceModel.PeerResolver Resolver { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.PeerResolver Resolver { get { throw null; } set { } }
     }
     public enum PeerReferralPolicy
     {
@@ -9126,8 +9133,8 @@ namespace System.ServiceModel.PeerResolvers
     {
         public PeerResolverSettings() { }
         public System.ServiceModel.PeerResolvers.PeerCustomResolverSettings Custom { get { throw null; } }
-        public System.ServiceModel.PeerResolvers.PeerResolverMode Mode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.PeerResolvers.PeerResolverMode Mode { get { throw null; } set { } }
+        public System.ServiceModel.PeerResolvers.PeerReferralPolicy ReferralPolicy { get { throw null; } set { } }
     }
     [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
     public partial class RefreshInfo
@@ -9317,11 +9324,11 @@ namespace System.ServiceModel.Security
     {
         internal IssuedTokenServiceCredential() { }
         [System.MonoTODOAttribute]
-        public System.Collections.Generic.IList<string> AllowedAudienceUris { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.Generic.IList<string> AllowedAudienceUris { get { throw null; } }
         [System.MonoTODOAttribute]
         public bool AllowUntrustedRsaIssuers { get { throw null; } set { } }
         [System.MonoTODOAttribute]
-        public System.IdentityModel.Selectors.AudienceUriMode AudienceUriMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.IdentityModel.Selectors.AudienceUriMode AudienceUriMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.ServiceModel.Security.X509CertificateValidationMode CertificateValidationMode { get { throw null; } set { } }
         [System.MonoTODOAttribute]
@@ -9398,11 +9405,11 @@ namespace System.ServiceModel.Security
     public abstract partial class SecureConversationVersion
     {
         protected SecureConversationVersion() { }
-        public static System.ServiceModel.Security.SecureConversationVersion Default { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.XmlDictionaryString Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.XmlDictionaryString Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.SecureConversationVersion WSSecureConversation13 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.SecureConversationVersion WSSecureConversationFeb2005 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.ServiceModel.Security.SecureConversationVersion Default { get { throw null; } }
+        public System.Xml.XmlDictionaryString Namespace { get { throw null; } }
+        public System.Xml.XmlDictionaryString Prefix { get { throw null; } }
+        public static System.ServiceModel.Security.SecureConversationVersion WSSecureConversation13 { get { throw null; } }
+        public static System.ServiceModel.Security.SecureConversationVersion WSSecureConversationFeb2005 { get { throw null; } }
     }
     [System.SerializableAttribute]
     public partial class SecurityAccessDeniedException : System.ServiceModel.CommunicationException
@@ -9499,10 +9506,10 @@ namespace System.ServiceModel.Security
     public abstract partial class SecurityPolicyVersion
     {
         protected SecurityPolicyVersion() { }
-        public string Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public string Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.SecurityPolicyVersion WSSecurityPolicy11 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.SecurityPolicyVersion WSSecurityPolicy12 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Namespace { get { throw null; } }
+        public string Prefix { get { throw null; } }
+        public static System.ServiceModel.Security.SecurityPolicyVersion WSSecurityPolicy11 { get { throw null; } }
+        public static System.ServiceModel.Security.SecurityPolicyVersion WSSecurityPolicy12 { get { throw null; } }
     }
     public abstract partial class SecurityStateEncoder
     {
@@ -9559,11 +9566,11 @@ namespace System.ServiceModel.Security
     public abstract partial class TrustVersion
     {
         protected TrustVersion() { }
-        public static System.ServiceModel.Security.TrustVersion Default { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.XmlDictionaryString Namespace { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.Xml.XmlDictionaryString Prefix { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.TrustVersion WSTrust13 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public static System.ServiceModel.Security.TrustVersion WSTrustFeb2005 { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.ServiceModel.Security.TrustVersion Default { get { throw null; } }
+        public System.Xml.XmlDictionaryString Namespace { get { throw null; } }
+        public System.Xml.XmlDictionaryString Prefix { get { throw null; } }
+        public static System.ServiceModel.Security.TrustVersion WSTrust13 { get { throw null; } }
+        public static System.ServiceModel.Security.TrustVersion WSTrustFeb2005 { get { throw null; } }
     }
     public sealed partial class UserNamePasswordClientCredential
     {
@@ -10120,7 +10127,7 @@ namespace System.ServiceModel.Security.Tokens
 }
 namespace System.ServiceModel.Syndication
 {
-    [System.Xml.Serialization.XmlRootAttribute("feed", Namespace="http://www.w3.org/2005/Atom")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="feed", Namespace="http://www.w3.org/2005/Atom")]
     public partial class Atom10FeedFormatter : System.ServiceModel.Syndication.SyndicationFeedFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public Atom10FeedFormatter() { }
@@ -10138,19 +10145,18 @@ namespace System.ServiceModel.Syndication
         System.Xml.Schema.XmlSchema System.Xml.Serialization.IXmlSerializable.GetSchema() { throw null; }
         void System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader reader) { }
         void System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) { }
-        [System.MonoTODOAttribute("Find out how feedBaseUri is used")]
         protected virtual void WriteItem(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationItem item, System.Uri feedBaseUri) { }
         protected virtual void WriteItems(System.Xml.XmlWriter writer, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.SyndicationItem> items, System.Uri feedBaseUri) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("feed", Namespace="http://www.w3.org/2005/Atom")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="feed", Namespace="http://www.w3.org/2005/Atom")]
     public partial class Atom10FeedFormatter<TSyndicationFeed> : System.ServiceModel.Syndication.Atom10FeedFormatter where TSyndicationFeed : System.ServiceModel.Syndication.SyndicationFeed, new()
     {
         public Atom10FeedFormatter() { }
         public Atom10FeedFormatter(TSyndicationFeed feedToWrite) { }
         protected override System.ServiceModel.Syndication.SyndicationFeed CreateFeedInstance() { throw null; }
     }
-    [System.Xml.Serialization.XmlRootAttribute("entry", Namespace="http://www.w3.org/2005/Atom")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="entry", Namespace="http://www.w3.org/2005/Atom")]
     public partial class Atom10ItemFormatter : System.ServiceModel.Syndication.SyndicationItemFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public Atom10ItemFormatter() { }
@@ -10168,14 +10174,14 @@ namespace System.ServiceModel.Syndication
         void System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("entry", Namespace="http://www.w3.org/2005/Atom")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="entry", Namespace="http://www.w3.org/2005/Atom")]
     public partial class Atom10ItemFormatter<TSyndicationItem> : System.ServiceModel.Syndication.Atom10ItemFormatter where TSyndicationItem : System.ServiceModel.Syndication.SyndicationItem, new()
     {
         public Atom10ItemFormatter() { }
         public Atom10ItemFormatter(TSyndicationItem itemToWrite) { }
         protected override System.ServiceModel.Syndication.SyndicationItem CreateItemInstance() { throw null; }
     }
-    [System.Xml.Serialization.XmlRootAttribute("categories", Namespace="http://www.w3.org/2007/app")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="categories", Namespace="http://www.w3.org/2007/app")]
     public partial class AtomPub10CategoriesDocumentFormatter : System.ServiceModel.Syndication.CategoriesDocumentFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public AtomPub10CategoriesDocumentFormatter() { }
@@ -10191,7 +10197,7 @@ namespace System.ServiceModel.Syndication
         void System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("service", Namespace="http://www.w3.org/2007/app")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="service", Namespace="http://www.w3.org/2007/app")]
     public partial class AtomPub10ServiceDocumentFormatter : System.ServiceModel.Syndication.ServiceDocumentFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public AtomPub10ServiceDocumentFormatter() { }
@@ -10206,7 +10212,7 @@ namespace System.ServiceModel.Syndication
         void System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("service", Namespace="http://www.w3.org/2007/app")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="service", Namespace="http://www.w3.org/2007/app")]
     public partial class AtomPub10ServiceDocumentFormatter<TServiceDocument> : System.ServiceModel.Syndication.AtomPub10ServiceDocumentFormatter where TServiceDocument : System.ServiceModel.Syndication.ServiceDocument, new()
     {
         public AtomPub10ServiceDocumentFormatter() { }
@@ -10217,9 +10223,9 @@ namespace System.ServiceModel.Syndication
     {
         internal CategoriesDocument() { }
         public System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, string> AttributeExtensions { get { throw null; } }
-        public System.Uri BaseUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri BaseUri { get { throw null; } set { } }
         public System.ServiceModel.Syndication.SyndicationElementExtensionCollection ElementExtensions { get { throw null; } }
-        public string Language { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string Language { get { throw null; } set { } }
         public static System.ServiceModel.Syndication.InlineCategoriesDocument Create(System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationCategory> categories) { throw null; }
         public static System.ServiceModel.Syndication.InlineCategoriesDocument Create(System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationCategory> categories, bool isFixed, string scheme) { throw null; }
         public static System.ServiceModel.Syndication.ReferencedCategoriesDocument Create(System.Uri linkToCategoriesDocument) { throw null; }
@@ -10236,7 +10242,7 @@ namespace System.ServiceModel.Syndication
     {
         protected CategoriesDocumentFormatter() { }
         protected CategoriesDocumentFormatter(System.ServiceModel.Syndication.CategoriesDocument documentToWrite) { }
-        public System.ServiceModel.Syndication.CategoriesDocument Document { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Syndication.CategoriesDocument Document { get { throw null; } }
         public abstract string Version { get; }
         public abstract bool CanRead(System.Xml.XmlReader reader);
         protected virtual System.ServiceModel.Syndication.InlineCategoriesDocument CreateInlineCategoriesDocument() { throw null; }
@@ -10250,16 +10256,16 @@ namespace System.ServiceModel.Syndication
         public InlineCategoriesDocument() { }
         public InlineCategoriesDocument(System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.SyndicationCategory> categories) { }
         public InlineCategoriesDocument(System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.SyndicationCategory> categories, bool isFixed, string scheme) { }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationCategory> Categories { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public bool IsFixed { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Scheme { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationCategory> Categories { get { throw null; } }
+        public bool IsFixed { get { throw null; } set { } }
+        public string Scheme { get { throw null; } set { } }
         protected internal virtual System.ServiceModel.Syndication.SyndicationCategory CreateCategory() { throw null; }
     }
     public partial class ReferencedCategoriesDocument : System.ServiceModel.Syndication.CategoriesDocument
     {
         public ReferencedCategoriesDocument() { }
         public ReferencedCategoriesDocument(System.Uri link) { }
-        public System.Uri Link { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri Link { get { throw null; } set { } }
     }
     public partial class ResourceCollectionInfo
     {
@@ -10268,13 +10274,13 @@ namespace System.ServiceModel.Syndication
         public ResourceCollectionInfo(System.ServiceModel.Syndication.TextSyndicationContent title, System.Uri link, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.CategoriesDocument> categories, bool allowsNewEntries) { }
         public ResourceCollectionInfo(System.ServiceModel.Syndication.TextSyndicationContent title, System.Uri link, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.CategoriesDocument> categories, System.Collections.Generic.IEnumerable<string> accepts) { }
         public ResourceCollectionInfo(string title, System.Uri link) { }
-        public System.Collections.ObjectModel.Collection<string> Accepts { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Collections.ObjectModel.Collection<string> Accepts { get { throw null; } }
         public System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, string> AttributeExtensions { get { throw null; } }
-        public System.Uri BaseUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.CategoriesDocument> Categories { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Uri BaseUri { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.CategoriesDocument> Categories { get { throw null; } }
         public System.ServiceModel.Syndication.SyndicationElementExtensionCollection ElementExtensions { get { throw null; } }
-        public System.Uri Link { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.ServiceModel.Syndication.TextSyndicationContent Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri Link { get { throw null; } set { } }
+        public System.ServiceModel.Syndication.TextSyndicationContent Title { get { throw null; } set { } }
         protected internal virtual System.ServiceModel.Syndication.InlineCategoriesDocument CreateInlineCategoriesDocument() { throw null; }
         protected internal virtual System.ServiceModel.Syndication.ReferencedCategoriesDocument CreateReferencedCategoriesDocument() { throw null; }
         protected internal virtual bool TryParseAttribute(string name, string ns, string value, string version) { throw null; }
@@ -10282,7 +10288,7 @@ namespace System.ServiceModel.Syndication
         protected internal virtual void WriteAttributeExtensions(System.Xml.XmlWriter writer, string version) { }
         protected internal virtual void WriteElementExtensions(System.Xml.XmlWriter writer, string version) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("rss", Namespace="")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="rss", Namespace="")]
     public partial class Rss20FeedFormatter : System.ServiceModel.Syndication.SyndicationFeedFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public Rss20FeedFormatter() { }
@@ -10307,7 +10313,7 @@ namespace System.ServiceModel.Syndication
         protected virtual void WriteItems(System.Xml.XmlWriter writer, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.SyndicationItem> items, System.Uri feedBaseUri) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("rss", Namespace="")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="rss", Namespace="")]
     public partial class Rss20FeedFormatter<TSyndicationFeed> : System.ServiceModel.Syndication.Rss20FeedFormatter where TSyndicationFeed : System.ServiceModel.Syndication.SyndicationFeed, new()
     {
         public Rss20FeedFormatter() { }
@@ -10315,7 +10321,7 @@ namespace System.ServiceModel.Syndication
         public Rss20FeedFormatter(TSyndicationFeed feedToWrite, bool serializeExtensionsAsAtom) { }
         protected override System.ServiceModel.Syndication.SyndicationFeed CreateFeedInstance() { throw null; }
     }
-    [System.Xml.Serialization.XmlRootAttribute("item", Namespace="")]
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="item", Namespace="")]
     public partial class Rss20ItemFormatter : System.ServiceModel.Syndication.SyndicationItemFormatter, System.Xml.Serialization.IXmlSerializable
     {
         public Rss20ItemFormatter() { }
@@ -10335,8 +10341,8 @@ namespace System.ServiceModel.Syndication
         void System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter writer) { }
         public override void WriteTo(System.Xml.XmlWriter writer) { }
     }
-    [System.Xml.Serialization.XmlRootAttribute("item", Namespace="")]
-    public partial class Rss20ItemFormatter<TSyndicationItem> : System.ServiceModel.Syndication.Rss20ItemFormatter where TSyndicationItem : System.ServiceModel.Syndication.SyndicationItem, new()
+    [System.Xml.Serialization.XmlRootAttribute(ElementName="item", Namespace="")]
+    public partial class Rss20ItemFormatter<TSyndicationItem> : System.ServiceModel.Syndication.Rss20ItemFormatter, System.Xml.Serialization.IXmlSerializable where TSyndicationItem : System.ServiceModel.Syndication.SyndicationItem, new()
     {
         public Rss20ItemFormatter() { }
         public Rss20ItemFormatter(TSyndicationItem itemToWrite) { }
@@ -10348,10 +10354,10 @@ namespace System.ServiceModel.Syndication
         public ServiceDocument() { }
         public ServiceDocument(System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.Workspace> workspaces) { }
         public System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, string> AttributeExtensions { get { throw null; } }
-        public System.Uri BaseUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.Uri BaseUri { get { throw null; } set { } }
         public System.ServiceModel.Syndication.SyndicationElementExtensionCollection ElementExtensions { get { throw null; } }
-        public string Language { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.Workspace> Workspaces { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Language { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.Workspace> Workspaces { get { throw null; } }
         protected internal virtual System.ServiceModel.Syndication.Workspace CreateWorkspace() { throw null; }
         public System.ServiceModel.Syndication.ServiceDocumentFormatter GetFormatter() { throw null; }
         public static System.ServiceModel.Syndication.ServiceDocument Load(System.Xml.XmlReader reader) { throw null; }
@@ -10367,7 +10373,7 @@ namespace System.ServiceModel.Syndication
     {
         protected ServiceDocumentFormatter() { }
         protected ServiceDocumentFormatter(System.ServiceModel.Syndication.ServiceDocument documentToWrite) { }
-        public System.ServiceModel.Syndication.ServiceDocument Document { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.ServiceModel.Syndication.ServiceDocument Document { get { throw null; } }
         public abstract string Version { get; }
         public abstract bool CanRead(System.Xml.XmlReader reader);
         protected static System.ServiceModel.Syndication.SyndicationCategory CreateCategory(System.ServiceModel.Syndication.InlineCategoriesDocument inlineCategories) { throw null; }
@@ -10376,13 +10382,9 @@ namespace System.ServiceModel.Syndication
         protected static System.ServiceModel.Syndication.InlineCategoriesDocument CreateInlineCategories(System.ServiceModel.Syndication.ResourceCollectionInfo collection) { throw null; }
         protected static System.ServiceModel.Syndication.ReferencedCategoriesDocument CreateReferencedCategories(System.ServiceModel.Syndication.ResourceCollectionInfo collection) { throw null; }
         protected static System.ServiceModel.Syndication.Workspace CreateWorkspace(System.ServiceModel.Syndication.ServiceDocument document) { throw null; }
-        [System.MonoTODOAttribute("Use maxExtensionSize somewhere")]
         protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.CategoriesDocument categories, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("Use maxExtensionSize somewhere")]
         protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.ResourceCollectionInfo collection, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("Use maxExtensionSize somewhere")]
         protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.ServiceDocument document, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("Use maxExtensionSize somewhere")]
         protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.Workspace workspace, int maxExtensionSize) { }
         public abstract void ReadFrom(System.Xml.XmlReader reader);
         protected virtual void SetDocument(System.ServiceModel.Syndication.ServiceDocument document) { }
@@ -10464,15 +10466,12 @@ namespace System.ServiceModel.Syndication
         public void Add(string outerName, string outerNamespace, object dataContractExtension) { }
         public void Add(string outerName, string outerNamespace, object dataContractExtension, System.Runtime.Serialization.XmlObjectSerializer dataContractSerializer) { }
         public void Add(System.Xml.XmlReader xmlReader) { }
-        [System.MonoTODOAttribute("Find out what is expected here")]
         protected override void ClearItems() { }
-        [System.MonoTODOAttribute]
         public System.Xml.XmlReader GetReaderAtElementExtensions() { throw null; }
         protected override void InsertItem(int index, System.ServiceModel.Syndication.SyndicationElementExtension item) { }
         public System.Collections.ObjectModel.Collection<TExtension> ReadElementExtensions<TExtension>(string extensionName, string extensionNamespace) { throw null; }
         public System.Collections.ObjectModel.Collection<TExtension> ReadElementExtensions<TExtension>(string extensionName, string extensionNamespace, System.Runtime.Serialization.XmlObjectSerializer serializer) { throw null; }
         public System.Collections.ObjectModel.Collection<TExtension> ReadElementExtensions<TExtension>(string extensionName, string extensionNamespace, System.Xml.Serialization.XmlSerializer serializer) { throw null; }
-        [System.MonoTODOAttribute("Find out what is expected here")]
         protected override void RemoveItem(int index) { }
         protected override void SetItem(int index, System.ServiceModel.Syndication.SyndicationElementExtension item) { }
     }
@@ -10492,6 +10491,7 @@ namespace System.ServiceModel.Syndication
         public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationPerson> Contributors { get { throw null; } }
         public System.ServiceModel.Syndication.TextSyndicationContent Copyright { get { throw null; } set { } }
         public System.ServiceModel.Syndication.TextSyndicationContent Description { get { throw null; } set { } }
+        public System.ServiceModel.Syndication.SyndicationLink Documentation { get { throw null; } set { } }
         public System.ServiceModel.Syndication.SyndicationElementExtensionCollection ElementExtensions { get { throw null; } }
         public string Generator { get { throw null; } set { } }
         public string Id { get { throw null; } set { } }
@@ -10500,6 +10500,10 @@ namespace System.ServiceModel.Syndication
         public string Language { get { throw null; } set { } }
         public System.DateTimeOffset LastUpdatedTime { get { throw null; } set { } }
         public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.SyndicationLink> Links { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<string> SkipDays { get { throw null; } }
+        public System.Collections.ObjectModel.Collection<int> SkipHours { get { throw null; } }
+        public System.ServiceModel.Syndication.SyndicationTextInput TextInput { get { throw null; } set { } }
+        public System.Nullable<System.TimeSpan> TimeToLive { get { throw null; } set { } }
         public System.ServiceModel.Syndication.TextSyndicationContent Title { get { throw null; } set { } }
         public virtual System.ServiceModel.Syndication.SyndicationFeed Clone(bool cloneItems) { throw null; }
         protected internal virtual System.ServiceModel.Syndication.SyndicationCategory CreateCategory() { throw null; }
@@ -10523,7 +10527,9 @@ namespace System.ServiceModel.Syndication
     {
         protected SyndicationFeedFormatter() { }
         protected SyndicationFeedFormatter(System.ServiceModel.Syndication.SyndicationFeed feedToWrite) { }
+        public System.ServiceModel.Syndication.TryParseDateTimeCallback DateTimeParser { get { throw null; } set { } }
         public System.ServiceModel.Syndication.SyndicationFeed Feed { get { throw null; } }
+        public System.ServiceModel.Syndication.TryParseUriCallback UriParser { get { throw null; } set { } }
         public abstract string Version { get; }
         public abstract bool CanRead(System.Xml.XmlReader reader);
         protected internal static System.ServiceModel.Syndication.SyndicationCategory CreateCategory(System.ServiceModel.Syndication.SyndicationFeed feed) { throw null; }
@@ -10534,15 +10540,10 @@ namespace System.ServiceModel.Syndication
         protected internal static System.ServiceModel.Syndication.SyndicationLink CreateLink(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
         protected internal static System.ServiceModel.Syndication.SyndicationPerson CreatePerson(System.ServiceModel.Syndication.SyndicationFeed feed) { throw null; }
         protected internal static System.ServiceModel.Syndication.SyndicationPerson CreatePerson(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
         protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationCategory category, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
         protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationFeed feed, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
         protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
         protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationLink link, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
         protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationPerson person, int maxExtensionSize) { }
         public abstract void ReadFrom(System.Xml.XmlReader reader);
         protected internal virtual void SetFeed(System.ServiceModel.Syndication.SyndicationFeed feed) { }
@@ -10618,38 +10619,34 @@ namespace System.ServiceModel.Syndication
         public System.ServiceModel.Syndication.SyndicationItem Item { get { throw null; } }
         public abstract string Version { get; }
         public abstract bool CanRead(System.Xml.XmlReader reader);
-        protected internal static System.ServiceModel.Syndication.SyndicationCategory CreateCategory(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
+        protected static System.ServiceModel.Syndication.SyndicationCategory CreateCategory(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
         protected abstract System.ServiceModel.Syndication.SyndicationItem CreateItemInstance();
-        protected internal static System.ServiceModel.Syndication.SyndicationLink CreateLink(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
-        protected internal static System.ServiceModel.Syndication.SyndicationPerson CreatePerson(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
-        protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationCategory category, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
-        protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
-        protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationLink link, int maxExtensionSize) { }
-        [System.MonoTODOAttribute("use maxExtensionsSize parameter")]
-        protected internal static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationPerson person, int maxExtensionSize) { }
+        protected static System.ServiceModel.Syndication.SyndicationLink CreateLink(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
+        protected static System.ServiceModel.Syndication.SyndicationPerson CreatePerson(System.ServiceModel.Syndication.SyndicationItem item) { throw null; }
+        protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationCategory category, int maxExtensionSize) { }
+        protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, int maxExtensionSize) { }
+        protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationLink link, int maxExtensionSize) { }
+        protected static void LoadElementExtensions(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationPerson person, int maxExtensionSize) { }
         public abstract void ReadFrom(System.Xml.XmlReader reader);
         protected internal virtual void SetItem(System.ServiceModel.Syndication.SyndicationItem item) { }
         public override string ToString() { throw null; }
-        protected internal static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationCategory category, string version) { throw null; }
-        protected internal static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationItem item, string version) { throw null; }
-        protected internal static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationLink link, string version) { throw null; }
-        protected internal static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationPerson person, string version) { throw null; }
-        protected internal static bool TryParseContent(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, string contentType, string version, out System.ServiceModel.Syndication.SyndicationContent content) { content = default(System.ServiceModel.Syndication.SyndicationContent); throw null; }
-        protected internal static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationCategory category, string version) { throw null; }
-        protected internal static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, string version) { throw null; }
-        protected internal static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationLink link, string version) { throw null; }
-        protected internal static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationPerson person, string version) { throw null; }
-        protected internal static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationCategory category, string version) { }
-        protected internal static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationItem item, string version) { }
-        protected internal static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationLink link, string version) { }
-        protected internal static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationPerson person, string version) { }
-        protected internal void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationCategory category, string version) { }
-        protected internal static void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationItem item, string version) { }
-        protected internal void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationLink link, string version) { }
-        protected internal void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationPerson person, string version) { }
+        protected static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationCategory category, string version) { throw null; }
+        protected static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationItem item, string version) { throw null; }
+        protected static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationLink link, string version) { throw null; }
+        protected static bool TryParseAttribute(string name, string ns, string value, System.ServiceModel.Syndication.SyndicationPerson person, string version) { throw null; }
+        protected static bool TryParseContent(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, string contentType, string version, out System.ServiceModel.Syndication.SyndicationContent content) { content = default(System.ServiceModel.Syndication.SyndicationContent); throw null; }
+        protected static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationCategory category, string version) { throw null; }
+        protected static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationItem item, string version) { throw null; }
+        protected static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationLink link, string version) { throw null; }
+        protected static bool TryParseElement(System.Xml.XmlReader reader, System.ServiceModel.Syndication.SyndicationPerson person, string version) { throw null; }
+        protected static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationCategory category, string version) { }
+        protected static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationItem item, string version) { }
+        protected static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationLink link, string version) { }
+        protected static void WriteAttributeExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationPerson person, string version) { }
+        protected void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationCategory category, string version) { }
+        protected static void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationItem item, string version) { }
+        protected void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationLink link, string version) { }
+        protected void WriteElementExtensions(System.Xml.XmlWriter writer, System.ServiceModel.Syndication.SyndicationPerson person, string version) { }
         public abstract void WriteTo(System.Xml.XmlWriter writer);
     }
     public partial class SyndicationLink
@@ -10695,6 +10692,14 @@ namespace System.ServiceModel.Syndication
         protected internal virtual void WriteAttributeExtensions(System.Xml.XmlWriter writer, string version) { }
         protected internal virtual void WriteElementExtensions(System.Xml.XmlWriter writer, string version) { }
     }
+    public partial class SyndicationTextInput
+    {
+        public SyndicationTextInput() { }
+        public string Description { get { throw null; } set { } }
+        public System.ServiceModel.Syndication.SyndicationLink Link { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
+        public string Title { get { throw null; } set { } }
+    }
     public static partial class SyndicationVersions
     {
         public const string Atom10 = "Atom10";
@@ -10716,6 +10721,8 @@ namespace System.ServiceModel.Syndication
         Plaintext = 0,
         XHtml = 2,
     }
+    public delegate bool TryParseDateTimeCallback(System.ServiceModel.Syndication.XmlDateTimeData data, out System.DateTimeOffset dateTimeOffset);
+    public delegate bool TryParseUriCallback(System.ServiceModel.Syndication.XmlUriData data, out System.Uri uri);
     public partial class UrlSyndicationContent : System.ServiceModel.Syndication.SyndicationContent
     {
         protected UrlSyndicationContent(System.ServiceModel.Syndication.UrlSyndicationContent source) { }
@@ -10731,15 +10738,22 @@ namespace System.ServiceModel.Syndication
         public Workspace(System.ServiceModel.Syndication.TextSyndicationContent title, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.ResourceCollectionInfo> collections) { }
         public Workspace(string title, System.Collections.Generic.IEnumerable<System.ServiceModel.Syndication.ResourceCollectionInfo> collections) { }
         public System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, string> AttributeExtensions { get { throw null; } }
-        public System.Uri BaseUri { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.ResourceCollectionInfo> Collections { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Uri BaseUri { get { throw null; } set { } }
+        public System.Collections.ObjectModel.Collection<System.ServiceModel.Syndication.ResourceCollectionInfo> Collections { get { throw null; } }
         public System.ServiceModel.Syndication.SyndicationElementExtensionCollection ElementExtensions { get { throw null; } }
-        public System.ServiceModel.Syndication.TextSyndicationContent Title { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public System.ServiceModel.Syndication.TextSyndicationContent Title { get { throw null; } set { } }
         protected internal virtual System.ServiceModel.Syndication.ResourceCollectionInfo CreateResourceCollection() { throw null; }
         protected internal virtual bool TryParseAttribute(string name, string ns, string value, string version) { throw null; }
         protected internal virtual bool TryParseElement(System.Xml.XmlReader reader, string version) { throw null; }
         protected internal virtual void WriteAttributeExtensions(System.Xml.XmlWriter writer, string version) { }
         protected internal virtual void WriteElementExtensions(System.Xml.XmlWriter writer, string version) { }
+    }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct XmlDateTimeData
+    {
+        public XmlDateTimeData(string dateTimeString, System.Xml.XmlQualifiedName elementQualifiedName) { throw null;}
+        public string DateTimeString { get { throw null; } }
+        public System.Xml.XmlQualifiedName ElementQualifiedName { get { throw null; } }
     }
     public partial class XmlSyndicationContent : System.ServiceModel.Syndication.SyndicationContent
     {
@@ -10756,5 +10770,13 @@ namespace System.ServiceModel.Syndication
         public TContent ReadContent<TContent>(System.Runtime.Serialization.XmlObjectSerializer dataContractSerializer) { throw null; }
         public TContent ReadContent<TContent>(System.Xml.Serialization.XmlSerializer serializer) { throw null; }
         protected override void WriteContentsTo(System.Xml.XmlWriter writer) { }
+    }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct XmlUriData
+    {
+        public XmlUriData(string uriString, System.UriKind uriKind, System.Xml.XmlQualifiedName elementQualifiedName) { throw null;}
+        public System.Xml.XmlQualifiedName ElementQualifiedName { get { throw null; } }
+        public System.UriKind UriKind { get { throw null; } }
+        public string UriString { get { throw null; } }
     }
 }

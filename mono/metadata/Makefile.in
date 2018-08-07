@@ -80,13 +80,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
+	$(top_srcdir)/depcomp $(libmonoruntimeinclude_HEADERS)
 @HOST_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
 @HOST_WASM_TRUE@am__append_2 = threadpool-worker-wasm.c
 @HOST_WASM_FALSE@am__append_3 = threadpool-worker-default.c
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am__append_4 = libmono-system-native.la
 subdir = mono/metadata
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
-	$(libmonoruntimeinclude_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -131,7 +132,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libmonoruntimeincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	$(glib_libs) \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../sgen/libmonosgen.la \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	libmonoruntimesgen.la
@@ -149,7 +150,7 @@ libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
 @DISABLE_ICALL_TABLES_TRUE@	$(libdir)
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../eglib/libeglib.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	$(glib_libs) \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../sgen/libmonosgen.la \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	libmonoruntimesgen.la
@@ -167,6 +168,24 @@ libmono_ilgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_ilgen_la_CFLAGS) $(CFLAGS) \
 	$(libmono_ilgen_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_ILGEN_FALSE@am_libmono_ilgen_la_rpath = -rpath $(libdir)
+libmono_system_native_la_LIBADD =
+am__dirstamp = $(am__leading_dot)dirstamp
+am_libmono_system_native_la_OBJECTS = ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo
+libmono_system_native_la_OBJECTS =  \
+	$(am_libmono_system_native_la_OBJECTS)
+libmono_system_native_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmono_system_native_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am_libmono_system_native_la_rpath = -rpath \
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmonoruntime_config_la_LIBADD =
 am_libmonoruntime_config_la_OBJECTS =  \
 	libmonoruntime_config_la-mono-config-dirs.lo
@@ -251,7 +270,6 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32error-unix.lo
-am__dirstamp = $(am__leading_dot)dirstamp
 @HOST_ANDROID_TRUE@am__objects_2 = ../../support/libm/libmonoruntime_la-complex.lo
 @HOST_WASM_TRUE@am__objects_3 =  \
 @HOST_WASM_TRUE@	libmonoruntime_la-threadpool-worker-wasm.lo
@@ -569,10 +587,12 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmono_icall_table_la_SOURCES) \
 	$(libmono_ilgen_la_SOURCES) \
+	$(libmono_system_native_la_SOURCES) \
 	$(libmonoruntime_config_la_SOURCES) \
 	$(libmonoruntime_la_SOURCES) $(libmonoruntimesgen_la_SOURCES)
 DIST_SOURCES = $(am__libmono_icall_table_la_SOURCES_DIST) \
 	$(am__libmono_ilgen_la_SOURCES_DIST) \
+	$(libmono_system_native_la_SOURCES) \
 	$(libmonoruntime_config_la_SOURCES) \
 	$(am__libmonoruntime_la_SOURCES_DIST) \
 	$(am__libmonoruntimesgen_la_SOURCES_DIST)
@@ -656,26 +676,17 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
 GNUC_PRETTY = @GNUC_PRETTY@
 GNUC_UNUSED = @GNUC_UNUSED@
-GPOINTER_TO_INT = @GPOINTER_TO_INT@
-GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
 GSIZE = @GSIZE@
 GSIZE_FORMAT = @GSIZE_FORMAT@
+GSSIZE = @GSSIZE@
 GTKX11 = @GTKX11@
-GUINT_TO_POINTER = @GUINT_TO_POINTER@
-G_GINT32_FORMAT = @G_GINT32_FORMAT@
-G_GINT64_FORMAT = @G_GINT64_FORMAT@
-G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
-G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
-G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
@@ -842,6 +853,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @HOST_WIN32_TRUE@win32_sources = \
 @HOST_WIN32_TRUE@	console-win32.c \
 @HOST_WIN32_TRUE@	console-win32-internals.h \
@@ -896,13 +908,15 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@	w32file-unix-glob.h \
 @HOST_WIN32_FALSE@	w32error-unix.c
 
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @BITCODE_TRUE@libmonoldflags = -no-undefined
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonoruntimesgen.la
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
 @DISABLE_ICALL_TABLES_TRUE@icall_table_libraries = libmono-icall-table.la
 @ENABLE_ILGEN_FALSE@ilgen_libraries = libmono-ilgen.la
 noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
-lib_LTLIBRARIES = $(icall_table_libraries) $(ilgen_libraries)
+lib_LTLIBRARIES = $(icall_table_libraries) $(ilgen_libraries) \
+	$(am__append_4)
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
@@ -924,7 +938,7 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES)
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 
 #
 # This library contains code to generate IL at runtime
@@ -940,7 +954,31 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES)
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = ../eglib/libeglib.la ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+libmono_system_native_la_SOURCES = \
+	pal_config.h \
+	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
+	../../external/corefx/src/Native/Unix/Common/pal_safecrt.h \
+	../../external/corefx/src/Native/Unix/Common/pal_types.h \
+	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_errno.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_errno.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
+
+libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
@@ -1201,7 +1239,7 @@ all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -1222,6 +1260,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(top_srcdir)/mk/common.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -1283,6 +1322,31 @@ libmono-icall-table.la: $(libmono_icall_table_la_OBJECTS) $(libmono_icall_table_
 
 libmono-ilgen.la: $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_DEPENDENCIES) $(EXTRA_libmono_ilgen_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_ilgen_la_LINK) $(am_libmono_ilgen_la_rpath) $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_LIBADD) $(LIBS)
+../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp):
+	@$(MKDIR_P) ../../external/corefx/src/Native/Unix/System.Native
+	@: > ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)
+	@: > ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+
+libmono-system-native.la: $(libmono_system_native_la_OBJECTS) $(libmono_system_native_la_DEPENDENCIES) $(EXTRA_libmono_system_native_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_system_native_la_LINK) $(am_libmono_system_native_la_rpath) $(libmono_system_native_la_OBJECTS) $(libmono_system_native_la_LIBADD) $(LIBS)
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
@@ -1307,12 +1371,22 @@ libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f ../../external/corefx/src/Native/Unix/System.Native/*.$(OBJEXT)
+	-rm -f ../../external/corefx/src/Native/Unix/System.Native/*.lo
 	-rm -f ../../support/libm/*.$(OBJEXT)
 	-rm -f ../../support/libm/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_errno.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_maphardwaretype.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_memory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networking.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networkstatistics.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_random.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_tcpstate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntime_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/libm/$(DEPDIR)/libmonoruntimesgen_la-complex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
@@ -1592,6 +1666,62 @@ libmono_ilgen_la-sgen-mono-ilgen.lo: sgen-mono-ilgen.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-mono-ilgen.c' object='libmono_ilgen_la-sgen-mono-ilgen.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ilgen_la_CFLAGS) $(CFLAGS) -c -o libmono_ilgen_la-sgen-mono-ilgen.lo `test -f 'sgen-mono-ilgen.c' || echo '$(srcdir)/'`sgen-mono-ilgen.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_errno.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_errno.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_errno.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_errno.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_errno.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_errno.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_errno.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_errno.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_errno.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_errno.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_io.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_io.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_io.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_io.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_io.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_io.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_io.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_maphardwaretype.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_maphardwaretype.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_maphardwaretype.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_maphardwaretype.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_memory.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_memory.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_memory.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_memory.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networking.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networkstatistics.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networkstatistics.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_networkstatistics.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_tcpstate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_random.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_random.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_random.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_system_native_la-pal_random.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_random.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_system_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 
 libmonoruntime_config_la-mono-config-dirs.lo: mono-config-dirs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmonoruntime_config_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmonoruntime_config_la-mono-config-dirs.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_config_la-mono-config-dirs.Tpo -c -o libmonoruntime_config_la-mono-config-dirs.lo `test -f 'mono-config-dirs.c' || echo '$(srcdir)/'`mono-config-dirs.c
@@ -3159,6 +3289,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf ../../external/corefx/src/Native/Unix/System.Native/.libs ../../external/corefx/src/Native/Unix/System.Native/_libs
 	-rm -rf ../../support/libm/.libs ../../support/libm/_libs
 install-libmonoruntimeincludeHEADERS: $(libmonoruntimeinclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -3298,6 +3429,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp)
 	-rm -f ../../support/libm/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../../support/libm/$(am__dirstamp)
 
@@ -3310,7 +3443,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ../../support/libm/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR) ../../support/libm/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3356,7 +3489,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ../../support/libm/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR) ../../support/libm/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

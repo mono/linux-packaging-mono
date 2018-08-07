@@ -11,7 +11,9 @@ namespace System
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct Int16 : IComparable, IConvertible, IFormattable, IComparable<Int16>, IEquatable<Int16>, ISpanFormattable
     {
         private short m_value; // Do not rename (binary serialization)

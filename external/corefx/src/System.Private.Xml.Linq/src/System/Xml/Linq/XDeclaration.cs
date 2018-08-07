@@ -3,7 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
+using System.Text;
 using StringBuilder = System.Text.StringBuilder;
+
+#if MONO
+// remove it when StringBuilderCache moves back to System.IO
+using StringBuilderCache = System.Text.StringBuilderCache;
+#endif
 
 namespace System.Xml.Linq
 {

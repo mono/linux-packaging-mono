@@ -16,7 +16,9 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class TimeoutException : SystemException
     {
         public TimeoutException()

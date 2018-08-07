@@ -182,6 +182,20 @@ namespace Cairo
         public void UserToDevice(ref double x, ref double y) { }
         public void UserToDeviceDistance(ref double dx, ref double dy) { }
     }
+    public partial class Device : System.IDisposable
+    {
+        protected Device() { }
+        protected Device(System.IntPtr ptr) { }
+        protected Device(System.IntPtr handle, bool owner) { }
+        public System.IntPtr Handle { get { throw null; } }
+        public string Status { get { throw null; } }
+        public Cairo.Status Acquire() { throw null; }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        ~Device() { }
+        public void Release() { }
+        public void SetThreadAware(bool value) { }
+    }
     public partial class DirectFBSurface : Cairo.Surface
     {
         public DirectFBSurface(System.IntPtr dfb, System.IntPtr dfb_surface) { }
@@ -192,6 +206,10 @@ namespace Cairo
         public Distance(double dx, double dy) { throw null;}
         public double Dx { get { throw null; } set { } }
         public double Dy { get { throw null; } set { } }
+    }
+    public partial class EGLDevice : Cairo.Device
+    {
+        public EGLDevice(System.IntPtr dpy, System.IntPtr gl_ctx) { }
     }
     [System.SerializableAttribute]
     public enum Extend
@@ -300,6 +318,21 @@ namespace Cairo
     public partial class GlitzSurface : Cairo.Surface
     {
         public GlitzSurface(System.IntPtr glitz_surface) { }
+    }
+    public partial class GLSurface : Cairo.Surface
+    {
+        public GLSurface(Cairo.Device device, Cairo.Content content, uint tex, int width, int height) { }
+        public GLSurface(Cairo.EGLDevice device, System.IntPtr eglSurf, int width, int height) { }
+        public GLSurface(Cairo.GLXDevice device, System.IntPtr window, int width, int height) { }
+        public GLSurface(Cairo.WGLDevice device, System.IntPtr hdc, int width, int height) { }
+        public GLSurface(System.IntPtr ptr, bool own) { }
+        public void SwapBuffers() { }
+    }
+    public partial class GLXDevice : Cairo.Device
+    {
+        public GLXDevice(System.IntPtr dpy, System.IntPtr gl_ctx) { }
+        public System.IntPtr Context { get { throw null; } }
+        public System.IntPtr Display { get { throw null; } }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Glyph
@@ -667,15 +700,28 @@ namespace Cairo
     {
         BeOS = 8,
         DirectFB = 9,
+        Drm = 19,
+        GL = 18,
         Glitz = 5,
         Image = 0,
+        OS2 = 11,
         Pdf = 1,
         PS = 2,
+        Qt = 15,
         Quartz = 6,
+        QuartzImage = 13,
+        Recording = 16,
+        Script = 14,
+        Skia = 22,
+        SubSurface = 23,
         Svg = 10,
+        Tee = 20,
+        VG = 17,
         Win32 = 7,
+        Win32Printing = 12,
         Xcb = 4,
         Xlib = 3,
+        Xml = 21,
     }
     public partial class SvgSurface : Cairo.Surface
     {
@@ -701,6 +747,11 @@ namespace Cairo
         public override int GetHashCode() { throw null; }
         public static bool operator ==(Cairo.TextExtents extents, Cairo.TextExtents other) { throw null; }
         public static bool operator !=(Cairo.TextExtents extents, Cairo.TextExtents other) { throw null; }
+    }
+    public partial class WGLDevice : Cairo.Device
+    {
+        public WGLDevice(System.IntPtr hglrc) { }
+        public System.IntPtr Context { get { throw null; } }
     }
     public partial class Win32Surface : Cairo.Surface
     {

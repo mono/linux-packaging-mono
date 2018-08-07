@@ -15,13 +15,6 @@
 @SET_MAKE@
 
 #
-# Conditional submodule for jemalloc
-#
-# make reset-jemalloc will checkout a version of jemalloc which is suitable for this version of mono
-# into $top_srcdir/jemalloc/jemalloc.
-#
-
-#
 # This is a python script and a set of make targets to implement support for conditional submodules
 # Set the SUBMODULES_CONFIG_FILE make variable to the srcdir path of a SUBMODULES.json file which contains information about the submodules.
 #
@@ -90,7 +83,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-DIST_COMMON = $(top_srcdir)/scripts/submodules/versions.mk \
+DIST_COMMON = $(top_srcdir)/mk/common.mk \
+	$(top_srcdir)/scripts/submodules/versions.mk \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs
 subdir = mono/utils/jemalloc
@@ -182,26 +176,17 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
 GNUC_PRETTY = @GNUC_PRETTY@
 GNUC_UNUSED = @GNUC_UNUSED@
-GPOINTER_TO_INT = @GPOINTER_TO_INT@
-GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
 GSIZE = @GSIZE@
 GSIZE_FORMAT = @GSIZE_FORMAT@
+GSSIZE = @GSSIZE@
 GTKX11 = @GTKX11@
-GUINT_TO_POINTER = @GUINT_TO_POINTER@
-G_GINT32_FORMAT = @G_GINT32_FORMAT@
-G_GINT64_FORMAT = @G_GINT64_FORMAT@
-G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
-G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
-G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
@@ -368,6 +353,14 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
+
+#
+# Conditional submodule for jemalloc
+#
+# make reset-jemalloc will checkout a version of jemalloc which is suitable for this version of mono
+# into $top_srcdir/jemalloc/jemalloc.
+#
 JEMALLOC_PATH = jemalloc
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/mono/utils/jemalloc/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
@@ -376,7 +369,7 @@ EXTRA_DIST = SUBMODULES.json
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -397,7 +390,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/scripts/submodules/versions.mk:
+$(top_srcdir)/mk/common.mk $(top_srcdir)/scripts/submodules/versions.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

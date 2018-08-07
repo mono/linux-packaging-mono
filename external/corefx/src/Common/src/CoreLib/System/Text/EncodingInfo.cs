@@ -7,6 +7,9 @@ using System.Text;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     public sealed class EncodingInfo
     {
         private int iCodePage;          // Code Page #

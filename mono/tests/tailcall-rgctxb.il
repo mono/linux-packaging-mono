@@ -13,7 +13,12 @@ http://www.mono-project.com/docs/advanced/runtime/docs/generic-sharing/
 3. Generic methods need to be passed a pointer to the MRGCTX in the MONO_ARCH_RGCTX_REG register
 
 Test case 2b.
-This passes on desktop but not Mono, despite seeming like it is implemented.
+This passes on desktop but not Mono.
+
+It fails because Mono will not tailcall when "this" is a valuetype,
+in case it is in current frame. A range check could handle this.
+
+Another test tailcall-rgctxb-static should be provided.
 
 using System;
 using System.Runtime.CompilerServices;
@@ -66,7 +71,8 @@ unsafe class B
 */
 
 .assembly extern mscorlib { }
-.assembly tailcall_rgctxb { }
+
+.assembly 'tailcall-rgctxb' { }
 
 .class A`1<T>
 

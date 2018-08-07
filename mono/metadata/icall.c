@@ -190,6 +190,7 @@ ves_icall_System_Array_GetValue (MonoArray *arr, MonoArray *idxs)
 	MonoClass *ac, *ic;
 	MonoArray *io;
 	gint32 i, pos, *ind;
+	ERROR_DECL (error);
 
 	MONO_CHECK_ARG_NULL (idxs, NULL);
 
@@ -200,7 +201,8 @@ ves_icall_System_Array_GetValue (MonoArray *arr, MonoArray *idxs)
 
 	g_assert (m_class_get_rank (ic) == 1);
 	if (io->bounds != NULL || io->max_length !=  m_class_get_rank (ac)) {
-		mono_set_pending_exception (mono_get_exception_argument (NULL, NULL));
+		mono_error_set_argument (error, NULL, NULL);
+		mono_error_set_pending_exception (error);
 		return NULL;
 	}
 
@@ -208,7 +210,8 @@ ves_icall_System_Array_GetValue (MonoArray *arr, MonoArray *idxs)
 
 	if (arr->bounds == NULL) {
 		if (*ind < 0 || *ind >= arr->max_length) {
-			mono_set_pending_exception (mono_get_exception_index_out_of_range ());
+			mono_error_set_index_out_of_range (error);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 
@@ -218,7 +221,8 @@ ves_icall_System_Array_GetValue (MonoArray *arr, MonoArray *idxs)
 	for (i = 0; i < m_class_get_rank (ac); i++) {
 		if ((ind [i] < arr->bounds [i].lower_bound) ||
 		    (ind [i] >=  (mono_array_lower_bound_t)arr->bounds [i].length + arr->bounds [i].lower_bound)) {
-			mono_set_pending_exception (mono_get_exception_index_out_of_range ());
+			mono_error_set_index_out_of_range (error);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 	}
@@ -614,7 +618,8 @@ ves_icall_System_Array_CreateInstanceImpl (MonoReflectionType *type, MonoArray *
 
 	for (i = 0; i < mono_array_length (lengths); i++) {
 		if (mono_array_get (lengths, gint32, i) < 0) {
-			mono_set_pending_exception (mono_get_exception_argument_out_of_range (NULL));
+			mono_error_set_argument_out_of_range (error, NULL);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 	}
@@ -625,7 +630,8 @@ ves_icall_System_Array_CreateInstanceImpl (MonoReflectionType *type, MonoArray *
 		return NULL;
 
 	if (m_class_get_byval_arg (m_class_get_element_class (klass))->type == MONO_TYPE_VOID) {
-		mono_set_pending_exception (mono_get_exception_not_supported ("Arrays of System.Void are not supported."));
+		mono_error_set_not_supported (error, "Arrays of System.Void are not supported.");
+		mono_error_set_pending_exception (error);
 		return NULL;
 	}
 
@@ -672,7 +678,8 @@ ves_icall_System_Array_CreateInstanceImpl64 (MonoReflectionType *type, MonoArray
 	for (i = 0; i < mono_array_length (lengths); i++) {
 		if ((mono_array_get (lengths, gint64, i) < 0) ||
 		    (mono_array_get (lengths, gint64, i) > MONO_ARRAY_MAX_INDEX)) {
-			mono_set_pending_exception (mono_get_exception_argument_out_of_range (NULL));
+			mono_error_set_argument_out_of_range (error, NULL);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 	}
@@ -718,9 +725,11 @@ ves_icall_System_Array_GetLength (MonoArray *arr, gint32 dimension)
 {
 	gint32 rank = m_class_get_rank (mono_object_class (&arr->obj));
 	uintptr_t length;
+	ERROR_DECL (error);
 
 	if ((dimension < 0) || (dimension >= rank)) {
-		mono_set_pending_exception (mono_get_exception_index_out_of_range ());
+		mono_error_set_index_out_of_range (error);
+		mono_error_set_pending_exception (error);
 		return 0;
 	}
 	
@@ -731,7 +740,9 @@ ves_icall_System_Array_GetLength (MonoArray *arr, gint32 dimension)
 
 #ifdef MONO_BIG_ARRAYS
 	if (length > G_MAXINT32) {
-		mono_set_pending_exception (mono_get_exception_overflow ());
+		ERROR_DECL (error);
+		mono_error_set_overflow (error);
+		mono_error_set_pending_exception (error);
 		return 0;
 	}
 #endif
@@ -744,7 +755,9 @@ ves_icall_System_Array_GetLongLength (MonoArray *arr, gint32 dimension)
 	gint32 rank = m_class_get_rank (mono_object_class (&arr->obj));
 
 	if ((dimension < 0) || (dimension >= rank)) {
-		mono_set_pending_exception (mono_get_exception_index_out_of_range ());
+		ERROR_DECL (error);
+		mono_error_set_index_out_of_range (error);
+		mono_error_set_pending_exception (error);
 		return 0;
 	}
 	
@@ -760,7 +773,9 @@ ves_icall_System_Array_GetLowerBound (MonoArray *arr, gint32 dimension)
 	gint32 rank = m_class_get_rank (mono_object_class (&arr->obj));
 
 	if ((dimension < 0) || (dimension >= rank)) {
-		mono_set_pending_exception (mono_get_exception_index_out_of_range ());
+		ERROR_DECL (error);
+		mono_error_set_index_out_of_range (error);
+		mono_error_set_pending_exception (error);
 		return 0;
 	}
 	
@@ -882,6 +897,27 @@ ves_icall_System_Array_SetGenericValueImpl (MonoArray *arr, guint32 pos, gpointe
 		else
 			mono_gc_memmove_atomic (ea, value, esize);
 	}
+}
+
+ICALL_EXPORT void
+ves_icall_System_Runtime_RuntimeImports_Memmove (guint8 *destination, guint8 *source, guint byte_count)
+{
+	mono_gc_memmove_atomic (destination, source, byte_count);
+}
+
+ICALL_EXPORT void
+ves_icall_System_Runtime_RuntimeImports_Memmove_wbarrier (guint8 *destination, guint8 *source, guint len, MonoType *type)
+{
+	if (MONO_TYPE_IS_REFERENCE (type))
+		mono_gc_wbarrier_arrayref_copy (destination, source, len);
+	else
+		mono_gc_wbarrier_value_copy (destination, source, len, mono_class_from_mono_type (type));
+}
+
+ICALL_EXPORT void
+ves_icall_System_Runtime_RuntimeImports_ZeroMemory (guint8 *p, guint byte_length)
+{
+	memset (p, 0, byte_length);
 }
 
 ICALL_EXPORT void
@@ -1415,6 +1451,24 @@ get_caller_no_system_or_reflection (MonoMethod *m, gint32 no, gint32 ilo, gboole
 	return FALSE;
 }
 
+/**
+ * mono_runtime_get_caller_no_system_or_reflection:
+ *
+ * Walk the stack of the current thread and find the first managed method that
+ * is not in the mscorlib System or System.Reflection namespace.  This skips
+ * unmanaged callers and wrapper methods.
+ *
+ * \returns a pointer to the \c MonoMethod or NULL if we walked past all the
+ * callers.
+ */
+MonoMethod*
+mono_runtime_get_caller_no_system_or_reflection (void)
+{
+	MonoMethod *dest = NULL;
+	mono_stack_walk_no_il (get_caller_no_system_or_reflection, &dest);
+	return dest;
+}
+
 static MonoReflectionTypeHandle
 type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase, MonoAssembly **caller_assembly, MonoError *error)
 {
@@ -1447,7 +1501,7 @@ type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase, MonoAsse
 		 *
 		 * It would be nice if we had stack marks.
 		 */
-		mono_stack_walk_no_il (get_caller_no_system_or_reflection, &dest);
+		dest = mono_runtime_get_caller_no_system_or_reflection ();
 		if (!dest)
 			dest = m;
 	}
@@ -1570,30 +1624,27 @@ ves_icall_System_Type_internal_from_handle (MonoType *handle, MonoError *error)
 }
 
 ICALL_EXPORT MonoType*
-ves_icall_Mono_RuntimeClassHandle_GetTypeFromClass (MonoClass *klass)
+ves_icall_Mono_RuntimeClassHandle_GetTypeFromClass (MonoClass *klass, MonoError *error)
 {
 	return mono_class_get_type (klass);
 }
 
 ICALL_EXPORT void
-ves_icall_Mono_RuntimeGPtrArrayHandle_GPtrArrayFree (GPtrArray *ptr_array)
+ves_icall_Mono_RuntimeGPtrArrayHandle_GPtrArrayFree (GPtrArray *ptr_array, MonoError *error)
 {
 	g_ptr_array_free (ptr_array, TRUE);
 }
 
 ICALL_EXPORT void
-ves_icall_Mono_SafeStringMarshal_GFree (void *c_str)
+ves_icall_Mono_SafeStringMarshal_GFree (void *c_str, MonoError *error)
 {
 	g_free (c_str);
 }
 
 ICALL_EXPORT char*
-ves_icall_Mono_SafeStringMarshal_StringToUtf8 (MonoString *s)
+ves_icall_Mono_SafeStringMarshal_StringToUtf8 (MonoStringHandle s, MonoError *error)
 {
-	ERROR_DECL (error);
-	char *res = mono_string_to_utf8_checked (s, error);
-	mono_error_set_pending_exception (error);
-	return res;
+	return mono_string_handle_to_utf8 (s, error);
 }
 
 /* System.TypeCode */
@@ -2000,9 +2051,10 @@ ves_icall_MonoField_GetValueInternal (MonoReflectionField *field, MonoObject *ob
 	MonoClassField *cf = field->field;
 	MonoDomain *domain = mono_object_domain (field);
 
-	if (m_class_get_image (fklass)->assembly->ref_only) {
-		mono_set_pending_exception (mono_get_exception_invalid_operation (
-					"It is illegal to get the value on a field on a type loaded using the ReflectionOnly methods."));
+	if (mono_asmctx_get_kind (&m_class_get_image (fklass)->assembly->context) == MONO_ASMCTX_REFONLY) {
+		mono_error_set_invalid_operation (error,
+			"It is illegal to get the value on a field on a type loaded using the ReflectionOnly methods.");
+		mono_error_set_pending_exception (error);
 		return NULL;
 	}
 
@@ -2035,7 +2087,7 @@ ves_icall_MonoField_SetValueInternal (MonoReflectionFieldHandle field, MonoObjec
 	MonoClassField *cf = MONO_HANDLE_GETVAL (field, field);
 
 	MonoClass *field_klass = MONO_HANDLE_GETVAL (field, klass);
-	if (m_class_get_image (field_klass)->assembly->ref_only) {
+	if (mono_asmctx_get_kind (&m_class_get_image (field_klass)->assembly->context) == MONO_ASMCTX_REFONLY) {
 		mono_error_set_invalid_operation (error, "It is illegal to set the value on a field on a type loaded using the ReflectionOnly methods.");
 		return;
 	}
@@ -2226,7 +2278,8 @@ ves_icall_MonoField_GetRawConstantValue (MonoReflectionField *rfield)
 	}
 
 	if (!(t->attrs & FIELD_ATTRIBUTE_HAS_DEFAULT)) {
-		mono_set_pending_exception (mono_get_exception_invalid_operation (NULL));
+		mono_error_set_invalid_operation (error, NULL);
+		mono_error_set_pending_exception (error);
 		return NULL;
 	}
 
@@ -2240,14 +2293,16 @@ ves_icall_MonoField_GetRawConstantValue (MonoReflectionField *rfield)
 		def_value = def_values [fidx].data;
 
 		if (def_type == MONO_TYPE_END) {
-			mono_set_pending_exception (mono_get_exception_invalid_operation (NULL));
+			mono_error_set_invalid_operation (error, NULL);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 	} else {
 		def_value = mono_class_get_field_default_value (field, &def_type);
 		/* FIXME, maybe we should try to raise TLE if field->parent is broken */
 		if (!def_value) {
-			mono_set_pending_exception (mono_get_exception_invalid_operation (NULL));
+			mono_error_set_invalid_operation (error, NULL);
+			mono_error_set_pending_exception (error);
 			return NULL;
 		}
 	}
@@ -3115,7 +3170,7 @@ ICALL_EXPORT MonoBoolean
 ves_icall_System_RuntimeType_IsTypeExportedToWindowsRuntime (MonoError *error)
 {
 	error_init (error);
-	mono_error_set_not_implemented (error, "%s", "");
+	mono_error_set_not_implemented (error, "%s", "System.RuntimeType.IsTypeExportedToWindowsRuntime");
 	return FALSE;
 }
 
@@ -3123,7 +3178,7 @@ ICALL_EXPORT MonoBoolean
 ves_icall_System_RuntimeType_IsWindowsRuntimeObjectType (MonoError *error)
 {
 	error_init (error);
-	mono_error_set_not_implemented (error, "%s", "");
+	mono_error_set_not_implemented (error, "%s", "System.RuntimeType.IsWindowsRuntimeObjectType");
 	return FALSE;
 }
 
@@ -3369,7 +3424,7 @@ ves_icall_InternalInvoke (MonoReflectionMethod *method, MonoObject *this_arg, Mo
 	}
 
 	image = m_class_get_image (m->klass);
-	if (image->assembly->ref_only) {
+	if (mono_asmctx_get_kind (&image->assembly->context) == MONO_ASMCTX_REFONLY) {
 		mono_gc_wbarrier_generic_store (exc, (MonoObject*) mono_get_exception_invalid_operation ("It is illegal to invoke a method on a type loaded using the ReflectionOnly api."));
 		return NULL;
 	}
@@ -4668,15 +4723,12 @@ replace_shadow_path (MonoDomain *domain, gchar *dirname, gchar **filename)
 		content = NULL;
 		if (!g_file_get_contents (shadow_ini_file, &content, &len, NULL) ||
 			!g_file_test (content, G_FILE_TEST_IS_REGULAR)) {
-			if (content) {
-				g_free (content);
-				content = NULL;
-			}
+			g_free (content);
+			content = NULL;
 		}
 		g_free (shadow_ini_file);
 		if (content != NULL) {
-			if (*filename)
-				g_free (*filename);
+			g_free (*filename);
 			*filename = content;
 			return TRUE;
 		}
@@ -4768,7 +4820,7 @@ ves_icall_System_Reflection_Assembly_get_ReflectionOnly (MonoReflectionAssemblyH
 {
 	error_init (error);
 	MonoAssembly *assembly = MONO_HANDLE_GETVAL (assembly_h, assembly);
-	return assembly->ref_only;
+	return mono_asmctx_get_kind (&assembly->context) == MONO_ASMCTX_REFONLY;
 }
 
 ICALL_EXPORT MonoStringHandle
@@ -4860,7 +4912,8 @@ create_referenced_assembly_name (MonoDomain *domain, MonoImage *image, MonoTable
 	error_init (error);
 	MonoAssemblyName *aname = g_new0 (MonoAssemblyName, 1);
 
-	mono_assembly_get_assemblyref (image, i, aname);
+	mono_assembly_get_assemblyref_checked (image, i, aname, error);
+	return_val_if_nok (error, NULL);
 	aname->hash_alg = ASSEMBLY_HASH_SHA1 /* SHA1 (default) */;
 	/* name and culture are pointers into the image tables, but we need
 	 * real malloc'd strings (so that we can g_free() them later from
@@ -5721,7 +5774,7 @@ ves_icall_System_Reflection_Assembly_GetTypes (MonoReflectionAssemblyHandle asse
 }
 
 ICALL_EXPORT void
-ves_icall_Mono_RuntimeMarshal_FreeAssemblyName (MonoAssemblyName *aname, gboolean free_struct)
+ves_icall_Mono_RuntimeMarshal_FreeAssemblyName (MonoAssemblyName *aname, gboolean free_struct, MonoError *error)
 {
 	mono_assembly_name_free (aname);
 	if (free_struct)
@@ -6490,7 +6543,9 @@ ves_icall_System_Buffer_BlockCopyInternal (MonoArray *src, gint32 src_offset, Mo
 	guint8 *src_buf, *dest_buf;
 
 	if (count < 0) {
-		mono_set_pending_exception (mono_get_exception_argument ("count", "is negative"));
+		ERROR_DECL (error);
+		mono_error_set_argument (error, "count", "is negative");
+		mono_error_set_pending_exception (error);
 		return FALSE;
 	}
 
@@ -7379,13 +7434,13 @@ ves_icall_get_resources_ptr (MonoReflectionAssemblyHandle assembly, gpointer *re
 }
 
 ICALL_EXPORT MonoBoolean
-ves_icall_System_Diagnostics_Debugger_IsAttached_internal (void)
+ves_icall_System_Diagnostics_Debugger_IsAttached_internal (MonoError *error)
 {
 	return mono_is_debugger_attached ();
 }
 
 ICALL_EXPORT MonoBoolean
-ves_icall_System_Diagnostics_Debugger_IsLogging (void)
+ves_icall_System_Diagnostics_Debugger_IsLogging (MonoError *error)
 {
 	if (mono_get_runtime_callbacks ()->debug_log_is_enabled)
 		return mono_get_runtime_callbacks ()->debug_log_is_enabled ();
@@ -7394,7 +7449,7 @@ ves_icall_System_Diagnostics_Debugger_IsLogging (void)
 }
 
 ICALL_EXPORT void
-ves_icall_System_Diagnostics_Debugger_Log (int level, MonoString *category, MonoString *message)
+ves_icall_System_Diagnostics_Debugger_Log (int level, MonoStringHandle category, MonoStringHandle message, MonoError *error)
 {
 	if (mono_get_runtime_callbacks ()->debug_log)
 		mono_get_runtime_callbacks ()->debug_log (level, category, message);
@@ -7402,14 +7457,14 @@ ves_icall_System_Diagnostics_Debugger_Log (int level, MonoString *category, Mono
 
 #ifndef HOST_WIN32
 static inline void
-mono_icall_write_windows_debug_string (MonoString *message)
+mono_icall_write_windows_debug_string (const gunichar2 *message)
 {
 	g_warning ("WriteWindowsDebugString called and HOST_WIN32 not defined!\n");
 }
 #endif /* !HOST_WIN32 */
 
 ICALL_EXPORT void
-ves_icall_System_Diagnostics_DefaultTraceListener_WriteWindowsDebugString (MonoString *message)
+ves_icall_System_Diagnostics_DefaultTraceListener_WriteWindowsDebugString (const gunichar2 *message, MonoError *error)
 {
 	mono_icall_write_windows_debug_string (message);
 }
@@ -7589,6 +7644,7 @@ mono_TypedReference_MakeTypedReferenceInternal (MonoObject *target, MonoArray *f
 	MonoType *ftype = NULL;
 	guint8 *p = NULL;
 	int i;
+	ERROR_DECL (error);
 
 	memset (&res, 0, sizeof (res));
 
@@ -7599,14 +7655,8 @@ mono_TypedReference_MakeTypedReferenceInternal (MonoObject *target, MonoArray *f
 
 	for (i = 0; i < mono_array_length (fields); ++i) {
 		f = mono_array_get (fields, MonoReflectionField*, i);
-		if (f == NULL) {
-			mono_set_pending_exception (mono_get_exception_argument_null ("field"));
-			return res;
-		}
-		if (f->field->parent != klass) {
-			mono_set_pending_exception (mono_get_exception_argument ("field", ""));
-			return res;
-		}
+		g_assert (f);
+
 		if (i == 0)
 			p = (guint8*)target + f->field->offset;
 		else
@@ -7706,20 +7756,24 @@ type_array_from_modifiers (MonoImage *image, MonoType *type, int optional, MonoE
 	int i, count = 0;
 	MonoDomain *domain = mono_domain_get ();
 
+	MonoCustomModContainer *cmods = mono_type_get_cmods (type);
+	if (!cmods)
+		goto fail;
+
 	error_init (error);
-	for (i = 0; i < type->num_mods; ++i) {
-		if ((optional && !type->modifiers [i].required) || (!optional && type->modifiers [i].required))
+	for (i = 0; i < cmods->count; ++i) {
+		if ((optional && !cmods->modifiers [i].required) || (!optional && cmods->modifiers [i].required))
 			count++;
 	}
 	if (!count)
-		return MONO_HANDLE_NEW (MonoArray, NULL);
+		goto fail;
 
 	MonoArrayHandle res = mono_array_new_handle (domain, mono_defaults.systemtype_class, count, error);
 	goto_if_nok (error, fail);
 	count = 0;
-	for (i = 0; i < type->num_mods; ++i) {
-		if ((optional && !type->modifiers [i].required) || (!optional && type->modifiers [i].required)) {
-			if (!add_modifier_to_array (domain, image, &type->modifiers[i], res, count , error))
+	for (i = 0; i < cmods->count; ++i) {
+		if ((optional && !cmods->modifiers [i].required) || (!optional && cmods->modifiers [i].required)) {
+			if (!add_modifier_to_array (domain, image, &cmods->modifiers [i], res, count , error))
 				goto fail;
 			count++;
 		}
@@ -7834,7 +7888,8 @@ ves_icall_property_info_get_default_value (MonoReflectionProperty *property)
 	mono_class_init (prop->parent);
 
 	if (!(prop->attrs & PROPERTY_ATTRIBUTE_HAS_DEFAULT)) {
-		mono_set_pending_exception (mono_get_exception_invalid_operation (NULL));
+		mono_error_set_invalid_operation (error, NULL);
+		mono_error_set_pending_exception (error);
 		return NULL;
 	}
 
@@ -7915,19 +7970,19 @@ mono_icall_wait_for_input_idle (gpointer handle, gint32 milliseconds)
 #endif /* !HOST_WIN32 */
 
 ICALL_EXPORT gint32
-ves_icall_Microsoft_Win32_NativeMethods_WaitForInputIdle (gpointer handle, gint32 milliseconds)
+ves_icall_Microsoft_Win32_NativeMethods_WaitForInputIdle (gpointer handle, gint32 milliseconds, MonoError *error)
 {
 	return mono_icall_wait_for_input_idle (handle, milliseconds);
 }
 
 ICALL_EXPORT gint32
-ves_icall_Microsoft_Win32_NativeMethods_GetCurrentProcessId (void)
+ves_icall_Microsoft_Win32_NativeMethods_GetCurrentProcessId (MonoError *error)
 {
 	return mono_process_current_pid ();
 }
 
 ICALL_EXPORT MonoBoolean
-ves_icall_Mono_TlsProviderFactory_IsBtlsSupported (void)
+ves_icall_Mono_TlsProviderFactory_IsBtlsSupported (MonoError *error)
 {
 #if HAVE_BTLS
 	return TRUE;
@@ -7941,62 +7996,80 @@ ves_icall_Mono_TlsProviderFactory_IsBtlsSupported (void)
 ICALL_EXPORT int
 ves_icall_System_Runtime_InteropServices_Marshal_GetHRForException_WinRT(MonoException* ex)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.Marshal.GetHRForException_WinRT internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.Marshal.GetHRForException_WinRT internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return 0;
 }
 
 ICALL_EXPORT MonoObject*
 ves_icall_System_Runtime_InteropServices_Marshal_GetNativeActivationFactory(MonoObject* type)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.Marshal.GetNativeActivationFactory internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.Marshal.GetNativeActivationFactory internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return NULL;
 }
 
 ICALL_EXPORT void*
 ves_icall_System_Runtime_InteropServices_Marshal_GetRawIUnknownForComObjectNoAddRef(MonoObject* obj)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.Marshal.GetRawIUnknownForComObjectNoAddRef internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.Marshal.GetRawIUnknownForComObjectNoAddRef internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return NULL;
 }
 
 ICALL_EXPORT MonoObject*
 ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_GetRestrictedErrorInfo(void)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.GetRestrictedErrorInfo internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.GetRestrictedErrorInfo internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return NULL;
 }
 
 ICALL_EXPORT MonoBoolean
-ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_RoOriginateLanguageException(int error, MonoString* message, void* languageException)
+ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_RoOriginateLanguageException (int ierr, MonoString* message, void* languageException)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.RoOriginateLanguageException internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.RoOriginateLanguageException internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return FALSE;
 }
 
 ICALL_EXPORT void
-ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_RoReportUnhandledError(MonoObject* error)
+ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_RoReportUnhandledError (MonoObject* oerr)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.RoReportUnhandledError internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.RoReportUnhandledError internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 }
 
 ICALL_EXPORT int
 ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_WindowsCreateString(MonoString* sourceString, int length, void** hstring)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsCreateString internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsCreateString internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return 0;
 }
 
 ICALL_EXPORT int
 ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_WindowsDeleteString(void* hstring)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsDeleteString internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsDeleteString internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return 0;
 }
 
 ICALL_EXPORT mono_unichar2*
 ves_icall_System_Runtime_InteropServices_WindowsRuntime_UnsafeNativeMethods_WindowsGetStringRawBuffer(void* hstring, unsigned* length)
 {
-	mono_set_pending_exception(mono_get_exception_not_implemented("System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsGetStringRawBuffer internal call is not implemented."));
+	ERROR_DECL (error);
+	mono_error_set_not_implemented (error, "System.Runtime.InteropServices.WindowsRuntime.UnsafeNativeMethods.WindowsGetStringRawBuffer internal call is not implemented.");
+	mono_error_set_pending_exception (error);
 	return NULL;
 }
 

@@ -28,8 +28,8 @@ namespace System.Web.WebPages.Razor
     public partial class CompilingPathEventArgs : System.EventArgs
     {
         public CompilingPathEventArgs(string virtualPath, System.Web.WebPages.Razor.WebPageRazorHost host) { }
-        public System.Web.WebPages.Razor.WebPageRazorHost Host { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.Web.WebPages.Razor.WebPageRazorHost Host { get { throw null; } set { } }
+        public string VirtualPath { get { throw null; } }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public static partial class PreApplicationStartCode
@@ -69,12 +69,12 @@ namespace System.Web.WebPages.Razor
         public override System.Web.Razor.RazorCodeLanguage CodeLanguage { get { throw null; } protected set { } }
         public override string DefaultBaseClass { get { throw null; } set { } }
         public override string DefaultClassName { get { throw null; } set { } }
-        public bool DefaultDebugCompilation { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string DefaultPageBaseClass { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public bool DefaultDebugCompilation { get { throw null; } set { } }
+        public string DefaultPageBaseClass { get { throw null; } set { } }
         public override string InstrumentedSourceFilePath { get { throw null; } set { } }
         public bool IsSpecialPage { get { throw null; } }
         public string PhysicalPath { get { throw null; } set { } }
-        public string VirtualPath { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string VirtualPath { get { throw null; } }
         public static void AddGlobalImport(string ns) { }
         public override System.Web.Razor.Parser.ParserBase CreateMarkupParser() { throw null; }
         protected virtual string GetClassName(string virtualPath) { throw null; }

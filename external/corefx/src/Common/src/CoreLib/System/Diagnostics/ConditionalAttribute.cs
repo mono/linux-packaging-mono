@@ -4,6 +4,9 @@
 
 namespace System.Diagnostics
 {
+#if MONO
+    [Serializable]
+#endif
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class ConditionalAttribute : Attribute
     {

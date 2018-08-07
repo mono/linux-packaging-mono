@@ -840,7 +840,7 @@ do_load_header (MonoImage *image, MonoDotNetHeader *header, int offset)
 
 	memcpy (header, image->raw_data + offset, sizeof (MonoDotNetHeader));
 
-	if (header->pesig [0] != 'P' || header->pesig [1] != 'E')
+	if (header->pesig [0] != 'P' || header->pesig [1] != 'E' || header->pesig [2] || header->pesig [3])
 		return -1;
 
 	/* endian swap the fields common between PE and PE+ */
@@ -1309,9 +1309,9 @@ static MonoImage *
 do_mono_image_load (MonoImage *image, MonoImageOpenStatus *status,
 		    gboolean care_about_cli, gboolean care_about_pecoff)
 {
+	ERROR_DECL (error);
 	MonoCLIImageInfo *iinfo;
 	MonoDotNetHeader *header;
-	GSList *errors = NULL;
 	GSList *l;
 
 	MONO_PROFILER_RAISE (image_loading, (image));
@@ -1341,7 +1341,7 @@ do_mono_image_load (MonoImage *image, MonoImageOpenStatus *status,
 		if (care_about_pecoff == FALSE)
 			goto done;
 
-		if (image->loader == &pe_loader && !mono_verifier_verify_pe_data (image, &errors))
+		if (image->loader == &pe_loader && !mono_verifier_verify_pe_data (image, error))
 			goto invalid_image;
 
 		if (!mono_image_load_pe_data (image))
@@ -1354,7 +1354,7 @@ do_mono_image_load (MonoImage *image, MonoImageOpenStatus *status,
 		goto done;
 	}
 
-	if (image->loader == &pe_loader && !image->metadata_only && !mono_verifier_verify_cli_data (image, &errors))
+	if (image->loader == &pe_loader && !image->metadata_only && !mono_verifier_verify_cli_data (image, error))
 		goto invalid_image;
 
 	if (!mono_image_load_cli_data (image))
@@ -1370,7 +1370,7 @@ do_mono_image_load (MonoImage *image, MonoImageOpenStatus *status,
 		}
 	}
 
-	if (image->loader == &pe_loader && !image->metadata_only && !mono_verifier_verify_table_data (image, &errors))
+	if (image->loader == &pe_loader && !image->metadata_only && !mono_verifier_verify_table_data (image, error))
 		goto invalid_image;
 
 	mono_image_load_names (image);
@@ -1385,10 +1385,9 @@ done:
 	return image;
 
 invalid_image:
-	if (errors) {
-		MonoVerifyInfo *info = (MonoVerifyInfo *)errors->data;
-		g_warning ("Could not load image %s due to %s", image->name, info->message);
-		mono_free_verify_list (errors);
+	if (!is_ok (error)) {
+		mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_ASSEMBLY, "Could not load image %s due to %s", image->name, mono_error_get_message (error));
+		mono_error_cleanup (error);
 	}
 	MONO_PROFILER_RAISE (image_failed, (image));
 	mono_image_close (image);
@@ -1959,12 +1958,11 @@ mono_wrapper_caches_free (MonoWrapperCaches *cache)
 	free_hash (cache->delegate_invoke_cache);
 	free_hash (cache->delegate_begin_invoke_cache);
 	free_hash (cache->delegate_end_invoke_cache);
-	free_hash (cache->runtime_invoke_cache);
-	free_hash (cache->runtime_invoke_vtype_cache);
+	free_hash (cache->runtime_invoke_signature_cache);
 	
 	free_hash (cache->delegate_abstract_invoke_cache);
 
-	free_hash (cache->runtime_invoke_direct_cache);
+	free_hash (cache->runtime_invoke_method_cache);
 	free_hash (cache->managed_wrapper_cache);
 
 	free_hash (cache->native_wrapper_cache);
@@ -2134,7 +2132,6 @@ mono_image_close_except_pools (MonoImage *image)
 	}
 
 	free_hash (image->delegate_bound_static_invoke_cache);
-	free_hash (image->runtime_invoke_vcall_cache);
 	free_hash (image->ldfld_wrapper_cache);
 	free_hash (image->ldflda_wrapper_cache);
 	free_hash (image->stfld_wrapper_cache);
@@ -2184,17 +2181,14 @@ mono_image_close_except_pools (MonoImage *image)
 	if (image->image_info){
 		MonoCLIImageInfo *ii = (MonoCLIImageInfo *)image->image_info;
 
-		if (ii->cli_section_tables)
-			g_free (ii->cli_section_tables);
-		if (ii->cli_sections)
-			g_free (ii->cli_sections);
+		g_free (ii->cli_section_tables);
+		g_free (ii->cli_sections);
 		g_free (image->image_info);
 	}
 
 	mono_image_close_except_pools_all (image->files, image->file_count);
 	mono_image_close_except_pools_all (image->modules, image->module_count);
-	if (image->modules_loaded)
-		g_free (image->modules_loaded);
+	g_free (image->modules_loaded);
 
 	mono_os_mutex_destroy (&image->szarray_cache_lock);
 	mono_os_mutex_destroy (&image->lock);

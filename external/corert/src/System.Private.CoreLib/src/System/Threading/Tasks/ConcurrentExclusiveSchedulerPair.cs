@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Diagnostics.CodeAnalysis;
 
 namespace System.Threading.Tasks
@@ -712,7 +713,9 @@ namespace System.Threading.Tasks
         private static void ContractAssertMonitorStatus(Lock syncObj, bool held)
         {
             Debug.Assert(syncObj != null, "The Lock object to check must be provided.");
+#if !MONO
             Debug.Assert(syncObj.IsAcquired == held, "The locking scheme was not correctly followed.");
+#endif
         }
 
         /// <summary>Gets the options to use for tasks.</summary>

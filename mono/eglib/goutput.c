@@ -41,23 +41,27 @@ static void default_stdout_handler (const gchar *string);
 static void default_stderr_handler (const gchar *string);
 
 void
-g_print (const gchar *format, ...)
+g_printv (const gchar *format, va_list args)
 {
 	char *msg;
-	va_list args;
 
-	va_start (args, format);
-	if (g_vasprintf (&msg, format, args) < 0) {
-		va_end (args);
+	if (g_vasprintf (&msg, format, args) < 0)
 		return;
-	}
-	va_end (args);
 
 	if (!stdout_handler)
 		stdout_handler = default_stdout_handler;
 
 	stdout_handler (msg);
 	g_free (msg);
+}
+
+void
+g_print (const gchar *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	g_printv (format, args);
+	va_end (args);
 }
 
 void
@@ -101,19 +105,34 @@ g_log_set_fatal_mask (const gchar *log_domain, GLogLevelFlags fatal_mask)
 	return fatal_mask;
 }
 
-void
-g_logv (const gchar *log_domain, GLogLevelFlags log_level, const gchar *format, va_list args)
-{
-	char *msg;
+#define g_logstr monoeg_g_logstr
+#define g_logv_nofree monoeg_g_logv_nofree
 
+static void
+g_logstr (const gchar *log_domain, GLogLevelFlags log_level, const gchar *msg)
+{
 	if (!default_log_func)
 		default_log_func = g_log_default_handler;
 	
-	if (g_vasprintf (&msg, format, args) < 0)
-		return;
-
 	default_log_func (log_domain, log_level, msg, default_log_func_user_data);
-	g_free (msg);
+}
+
+static gchar*
+g_logv_nofree (const gchar *log_domain, GLogLevelFlags log_level, const gchar *format, va_list args)
+{
+	char *msg;
+
+	if (g_vasprintf (&msg, format, args) < 0)
+		return NULL;
+
+	g_logstr (log_domain, log_level, msg);
+	return msg;
+}
+
+void
+g_logv (const gchar *log_domain, GLogLevelFlags log_level, const gchar *format, va_list args)
+{
+	g_free (g_logv_nofree (log_domain, log_level, format, args));
 }
 
 void
@@ -140,10 +159,9 @@ g_assertion_message (const gchar *format, ...)
 	va_list args;
 
 	va_start (args, format);
-	g_vasprintf (&failure_assertion, format, args);
 
-	va_start (args, format);
-	g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR, format, args);
+	failure_assertion = g_logv_nofree (G_LOG_DOMAIN, G_LOG_LEVEL_ERROR, format, args);
+
 	va_end (args);
 	exit (0);
 }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -14,7 +15,9 @@ namespace System
     [StructLayout(LayoutKind.Sequential)]
     [Serializable]
     [Runtime.Versioning.NonVersionable] // This only applies to field layout
+#if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public partial struct Guid : IFormattable, IComparable, IComparable<Guid>, IEquatable<Guid>, ISpanFormattable
     {
         public static readonly Guid Empty = new Guid();
@@ -449,7 +452,7 @@ namespace System
             }
 
             // Check for braces
-            bool bracesExistInString = (guidString.IndexOf('{', 0) >= 0);
+            bool bracesExistInString = (guidString.IndexOf('{') >= 0);
 
             if (bracesExistInString)
             {
@@ -471,7 +474,7 @@ namespace System
             }
 
             // Check for parenthesis
-            bool parenthesisExistInString = (guidString.IndexOf('(', 0) >= 0);
+            bool parenthesisExistInString = (guidString.IndexOf('(') >= 0);
 
             if (parenthesisExistInString)
             {
@@ -548,7 +551,7 @@ namespace System
 
             // Find the end of this hex number (since it is not fixed length)
             numStart = 3;
-            numLen = guidString.IndexOf(',', numStart) - numStart;
+            numLen = guidString.Slice(numStart).IndexOf(',');
             if (numLen <= 0)
             {
                 result.SetFailure(ParseFailureKind.Format, nameof(SR.Format_GuidComma));
@@ -566,7 +569,7 @@ namespace System
             }
             // +3 to get by ',0x'
             numStart = numStart + numLen + 3;
-            numLen = guidString.IndexOf(',', numStart) - numStart;
+            numLen = guidString.Slice(numStart).IndexOf(',');
             if (numLen <= 0)
             {
                 result.SetFailure(ParseFailureKind.Format, nameof(SR.Format_GuidComma));
@@ -584,7 +587,7 @@ namespace System
             }
             // +3 to get by ',0x'
             numStart = numStart + numLen + 3;
-            numLen = guidString.IndexOf(',', numStart) - numStart;
+            numLen = guidString.Slice(numStart).IndexOf(',');
             if (numLen <= 0)
             {
                 result.SetFailure(ParseFailureKind.Format, nameof(SR.Format_GuidComma));
@@ -621,7 +624,7 @@ namespace System
                 // Calculate number length
                 if (i < 7)  // first 7 cases
                 {
-                    numLen = guidString.IndexOf(',', numStart) - numStart;
+                    numLen = guidString.Slice(numStart).IndexOf(',');
                     if (numLen <= 0)
                     {
                         result.SetFailure(ParseFailureKind.Format, nameof(SR.Format_GuidComma));
@@ -630,7 +633,7 @@ namespace System
                 }
                 else       // last case ends with '}', not ','
                 {
-                    numLen = guidString.IndexOf('}', numStart) - numStart;
+                    numLen = guidString.Slice(numStart).IndexOf('}');
                     if (numLen <= 0)
                     {
                         result.SetFailure(ParseFailureKind.Format, nameof(SR.Format_GuidBraceAfterLastNumber));
@@ -1232,7 +1235,7 @@ namespace System
             return (char)((a > 9) ? a - 10 + 0x61 : a + 0x30);
         }
 
-        unsafe private static int HexsToChars(char* guidChars, int a, int b)
+        private static unsafe int HexsToChars(char* guidChars, int a, int b)
         {
             guidChars[0] = HexToChar(a >> 4);
             guidChars[1] = HexToChar(a);
@@ -1243,7 +1246,7 @@ namespace System
             return 4;
         }
 
-        unsafe private static int HexsToCharsHexOutput(char* guidChars, int a, int b)
+        private static unsafe int HexsToCharsHexOutput(char* guidChars, int a, int b)
         {
             guidChars[0] = '0';
             guidChars[1] = 'x';
@@ -1300,7 +1303,18 @@ namespace System
             string guidString = string.FastAllocateString(guidSize);
 
             int bytesWritten;
-            bool result = TryFormat(new Span<char>(ref guidString.GetRawStringData(), guidString.Length), out bytesWritten, format);
+            bool result;
+#if MONO
+            // Span.Portable doesn't have Span(ref T[], int) constructor
+            // Remove it once Mono switches to Span.Fast
+            unsafe 
+            {
+                fixed (char* guidStringPtr = guidString)
+                    result = TryFormat(new Span<char>(guidStringPtr, guidString.Length), out bytesWritten, format);
+            }
+#else
+            result = TryFormat(new Span<char>(ref guidString.GetRawStringData(), guidString.Length), out bytesWritten, format);
+#endif
             Debug.Assert(result && bytesWritten == guidString.Length, "Formatting guid should have succeeded.");
 
             return guidString;

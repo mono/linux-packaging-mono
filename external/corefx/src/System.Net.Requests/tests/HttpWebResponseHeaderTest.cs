@@ -31,13 +31,7 @@ namespace System.Net.Tests
                 request.ContinueDelegate = continueDelegate;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
                 Assert.Equal(continueDelegate, request.ContinueDelegate);
             });
         }
@@ -52,13 +46,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
 
                 using (WebResponse response = await getResponse)
                 {
@@ -85,13 +73,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Type: application/json;charset=UTF-8\r\n" +
-                        "Content-Length: 5\r\n" +
-                        "\r\n" +
-                        "12345");
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Content-Type: application/json;charset=UTF-8\r\n", "12345");
                 WebResponse response = await getResponse;
                 HttpWebResponse httpResponse = (HttpWebResponse)response;
                 httpResponse.Close();
@@ -112,6 +94,40 @@ namespace System.Net.Tests
         }
 
         [Fact]
+        public async Task LastModified_ValidDate_Success()
+        {
+            DateTime expected = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2018, 4, 10, 3, 4, 5, DateTimeKind.Utc), TimeZoneInfo.Local);
+            await LoopbackServer.CreateServerAsync(async (server, url) =>
+            {
+                HttpWebRequest request = WebRequest.CreateHttp(url);
+                Task<WebResponse> getResponse = request.GetResponseAsync();
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Last-Modified: Tue, 10 Apr 2018 03:04:05 GMT\r\n", "12345");
+
+                using (HttpWebResponse response = (HttpWebResponse)(await getResponse))
+                {
+                    Assert.Equal(expected, response.LastModified);
+                }
+            });
+        }
+
+        [Fact]
+        public async Task LastModified_InvalidDate_Throws()
+        {
+            DateTime expected = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2018, 4, 10, 3, 4, 5, DateTimeKind.Utc), TimeZoneInfo.Local);
+            await LoopbackServer.CreateServerAsync(async (server, url) =>
+            {
+                HttpWebRequest request = WebRequest.CreateHttp(url);
+                Task<WebResponse> getResponse = request.GetResponseAsync();
+                await server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.OK, "Last-Modified: invalid date\r\n", "12345");
+
+                using (HttpWebResponse response = (HttpWebResponse)(await getResponse))
+                {
+                    Assert.Throws<ProtocolViolationException>(() => response.LastModified);
+                }
+            });
+        }
+
+        [Fact]
         public async Task HttpWebResponse_Serialize_ExpectedResult()
         {
             await LoopbackServer.CreateServerAsync(async (server, url) =>
@@ -120,11 +136,7 @@ namespace System.Net.Tests
                 request.Method = HttpMethod.Get.Method;
                 Task<WebResponse> getResponse = request.GetResponseAsync();
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                await LoopbackServer.ReadRequestAndSendResponseAsync(server,
-                        $"HTTP/1.1 200 OK\r\n" +
-                        $"Date: {utcNow:R}\r\n" +
-                        "Content-Length: 0\r\n" +
-                        "\r\n");
+                await server.AcceptConnectionSendResponseAndCloseAsync();
 
                 using (WebResponse response = await getResponse)
                 {
@@ -146,6 +158,6 @@ namespace System.Net.Tests
                     }
                 }
             });
-        } 
+        }
     }
 }

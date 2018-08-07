@@ -145,13 +145,15 @@ typedef struct {
 	InterpFrame *handler_frame;
 	/* IP to resume execution at */
 	gpointer handler_ip;
+	/* Clause that we are resuming to */
+	MonoJitExceptionInfo *handler_ei;
 } ThreadContext;
 
 extern int mono_interp_traceopt;
 extern GSList *mono_interp_jit_classes;
 
-MonoException *
-mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, InterpFrame *frame);
+void
+mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, MonoError *error);
 
 void
 mono_interp_transform_init (void);

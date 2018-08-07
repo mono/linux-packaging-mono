@@ -309,6 +309,12 @@ typedef struct {
 	unsigned int token    : 31;
 } MonoCustomMod;
 
+typedef struct _MonoCustomModContainer {
+	uint8_t count; /* max 64 modifiers follow at the end */
+	MonoImage *image; /* Image containing types in modifiers array */
+	MonoCustomMod modifiers [1]; /* Actual length is count */
+} MonoCustomModContainer;
+
 struct _MonoArrayType {
 	MonoClass *eklass;
 	// Number of dimensions of the array
@@ -482,10 +488,10 @@ mono_type_to_unmanaged (MonoType *type, MonoMarshalSpec *mspec,
  /*
  * Returns the index that a token refers to
  */
-#define mono_metadata_token_index(token) ((token & 0xffffff))
+#define mono_metadata_token_index(token) ((token) & 0xffffff)
 
 
-#define mono_metadata_token_code(token) ((token & 0xff000000))
+#define mono_metadata_token_code(token) ((token) & 0xff000000)
 
 MONO_API uint32_t mono_metadata_token_from_dor (uint32_t dor_index);
 

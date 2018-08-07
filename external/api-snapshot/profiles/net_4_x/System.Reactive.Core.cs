@@ -470,7 +470,7 @@ namespace System.Reactive.PlatformServices
     {
         public SystemClockChangedEventArgs() { }
         public SystemClockChangedEventArgs(System.DateTimeOffset oldTime, System.DateTimeOffset newTime) { }
-        public System.DateTimeOffset NewTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
-        public System.DateTimeOffset OldTime { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public System.DateTimeOffset NewTime { get { throw null; } }
+        public System.DateTimeOffset OldTime { get { throw null; } }
     }
 }

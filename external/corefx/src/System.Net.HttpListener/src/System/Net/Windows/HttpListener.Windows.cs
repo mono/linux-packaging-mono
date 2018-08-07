@@ -23,10 +23,6 @@ namespace System.Net
     {
         public static bool IsSupported => Interop.HttpApi.s_supported;
 
-        private static readonly Type s_channelBindingStatusType = typeof(Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS);
-        private static readonly int s_requestChannelBindStatusSize =
-            Marshal.SizeOf(typeof(Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS));
-
         // Windows 8 fixed a bug in Http.sys's HttpReceiveClientCertificate method.
         // Without this fix IOCP callbacks were not being called although ERROR_IO_PENDING was
         // returned from HttpReceiveClientCertificate when using the 
@@ -851,7 +847,7 @@ namespace System.Net
                             NetEventSource.Info(this, $"authenticationScheme: {authenticationScheme}");
                         }
                         SendError(requestId, HttpStatusCode.InternalServerError, null);
-                        httpContext.Close();
+                        FreeContext(ref httpContext, memoryBlob);
                         return null;
                     }
                 }
@@ -935,9 +931,7 @@ namespace System.Net
                     }
 
                     httpError = HttpStatusCode.Unauthorized;
-                    httpContext.Request.DetachBlob(memoryBlob);
-                    httpContext.Close();
-                    httpContext = null;
+                    FreeContext(ref httpContext, memoryBlob);
                 }
                 else
                 {
@@ -1010,7 +1004,10 @@ namespace System.Net
 
                             if (decodedOutgoingBlob != null)
                             {
-                                outBlob = Convert.ToBase64String(decodedOutgoingBlob);
+                                // Prefix SPNEGO token/NTLM challenge with scheme per RFC 4559, MS-NTHT
+                                outBlob = string.Format("{0} {1}",
+                                    headerScheme == AuthenticationSchemes.Ntlm ? NegotiationInfoClass.NTLM : NegotiationInfoClass.Negotiate,
+                                    Convert.ToBase64String(decodedOutgoingBlob));
                             }
 
                             if (!error)
@@ -1101,12 +1098,9 @@ namespace System.Net
                                 {
                                     // auth incomplete
                                     newContext = context;
-
-                                    challenge = (headerScheme == AuthenticationSchemes.Ntlm ? NegotiationInfoClass.NTLM : NegotiationInfoClass.Negotiate);
-                                    if (!String.IsNullOrEmpty(outBlob))
-                                    {
-                                        challenge += " " + outBlob;
-                                    }
+                                    challenge = string.IsNullOrEmpty(outBlob)
+                                        ? headerScheme == AuthenticationSchemes.Ntlm ? NegotiationInfoClass.NTLM : NegotiationInfoClass.Negotiate
+                                        : outBlob;
                                 }
                             }
                             break;
@@ -1161,9 +1155,7 @@ namespace System.Net
                             NetEventSource.Info(this, "Handshake has failed.");
                         }
 
-                        httpContext.Request.DetachBlob(memoryBlob);
-                        httpContext.Close();
-                        httpContext = null;
+                        FreeContext(ref httpContext, memoryBlob);
                     }
                 }
 
@@ -1240,8 +1232,7 @@ namespace System.Net
 
                         if (NetEventSource.IsEnabled) NetEventSource.Info(this, "connectionId:" + connectionId + " because of failed HttpWaitForDisconnect");
                         SendError(requestId, HttpStatusCode.InternalServerError, null);
-                        httpContext.Request.DetachBlob(memoryBlob);
-                        httpContext.Close();
+                        FreeContext(ref httpContext, memoryBlob);
                         return null;
                     }
                 }
@@ -1282,11 +1273,7 @@ namespace System.Net
             }
             catch
             {
-                if (httpContext != null)
-                {
-                    httpContext.Request.DetachBlob(memoryBlob);
-                    httpContext.Close();
-                }
+                FreeContext(ref httpContext, memoryBlob);
                 if (newContext != null)
                 {
                     if (newContext == context)
@@ -1339,6 +1326,16 @@ namespace System.Net
                         disconnectResult.FinishOwningDisconnectHandling();
                     }
                 }
+            }
+        }
+        
+        private static void FreeContext(ref HttpListenerContext httpContext, RequestContextBase memoryBlob)
+        {
+            if (httpContext != null)
+            {
+                httpContext.Request.DetachBlob(memoryBlob);
+                httpContext.Close();
+                httpContext = null;
             }
         }
 
@@ -1779,16 +1776,16 @@ namespace System.Net
         private static unsafe int GetTokenOffsetFromBlob(IntPtr blob)
         {
             Debug.Assert(blob != IntPtr.Zero);
-            IntPtr tokenPointer = Marshal.ReadIntPtr((IntPtr)blob, (int)Marshal.OffsetOf(s_channelBindingStatusType, "ChannelToken"));
+            IntPtr tokenPointer = ((Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS*)blob)->ChannelToken;
 
             Debug.Assert(tokenPointer != IntPtr.Zero);
-            return (int)((long)tokenPointer - (long)blob);
+            return (int)((byte*)tokenPointer - (byte*)blob);
         }
 
         private static unsafe int GetTokenSizeFromBlob(IntPtr blob)
         {
             Debug.Assert(blob != IntPtr.Zero);
-            return Marshal.ReadInt32(blob, (int)Marshal.OffsetOf(s_channelBindingStatusType, "ChannelTokenSize"));
+            return (int)((Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS*)blob)->ChannelTokenSize;
         }
 
         internal ChannelBinding GetChannelBindingFromTls(ulong connectionId)
@@ -1797,7 +1794,7 @@ namespace System.Net
 
             // +128 since a CBT is usually <128 thus we need to call HRCC just once. If the CBT
             // is >128 we will get ERROR_MORE_DATA and call again
-            int size = s_requestChannelBindStatusSize + 128;
+            int size = sizeof(Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS) + 128;
 
             Debug.Assert(size > 0);
 
@@ -1841,7 +1838,7 @@ namespace System.Net
                         int tokenSize = GetTokenSizeFromBlob((IntPtr)blobPtr);
                         Debug.Assert(tokenSize < Int32.MaxValue);
 
-                        size = s_requestChannelBindStatusSize + tokenSize;
+                        size = sizeof(Interop.HttpApi.HTTP_REQUEST_CHANNEL_BIND_STATUS) + tokenSize;
                     }
                     else if (statusCode == Interop.HttpApi.ERROR_INVALID_PARAMETER)
                     {

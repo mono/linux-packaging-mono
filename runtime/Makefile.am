@@ -6,8 +6,11 @@ etctmp = etc
 symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config etc/mono/2.0/web.config etc/mono/browscap.ini etc/mono/2.0/Browsers/Compat.browser
 
 if INSTALL_4_x
-symlinks += etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
+symlinks += etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
 endif
+
+# This is needed at least to build configure --with-runtime-preset=fullaot.
+symlinks += etc/mono/4.5/machine.config
 
 etc/mono/2.0/machine.config: $(top_srcdir)/data/net_2_0/machine.config
 etc/mono/2.0/web.config: $(top_srcdir)/data/net_2_0/web.config
@@ -113,8 +116,14 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 mcs-do-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' test-profiles
 
+mcs-do-xunit-test-profiles:
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' xunit-test-profiles
+
 mcs-do-run-test-profiles: test-support-files
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' run-test-profiles
+
+mcs-do-xunit-run-test-profiles: test-support-files
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' run-xunit-test-profiles
 
 if HOST_WIN32
 if CROSS_COMPILING
@@ -172,25 +181,45 @@ mcs-compileall: mono-wrapper etc/mono/config
 	if [ "$$ok" = "false" ]; then echo "<?xml version='1.0' encoding='utf-8'?><test-results failures='1' total='1' not-run='0' name='verify' date='$$(date +%F)' time='$$(date +%T)'><test-suite name='mcs-compileall' success='False' time='0'><results><test-case name='fail' executed='True' success='False' time='0'><failure><message>Verifying framework assemblies failed. Check the log for more details.</message><stack-trace></stack-trace></failure></test-case></results></test-suite></test-results>" > TestResult-verify.xml; fi; \
 	$$ok
 
-check-local: mcs-compileall mcs-do-test-profiles
-	$(MAKE) mcs-do-run-test-profiles
+check-local: mcs-compileall mcs-do-test-profiles mcs-do-xunit-test-profiles
+	$(MAKE) mcs-do-run-test-profiles mcs-do-run-xunit-test-profiles
 
 # Compile all mcs tests
 test: mcs-do-test-profiles
+xunit-test: mcs-do-xunit-test-profiles
 
 CLEANFILES = etc/mono/config
 
 # depend on $(symlinks) to ensure 'etc/mono' directory exists
 etc/mono/config: ../data/config Makefile $(symlinks)
-	d=`cd ../support && pwd`; \
-	sed 's,target="$$mono_libdir/libMonoPosixHelper$(libsuffix)",target="'$$d'/libMonoPosixHelper.la",' ../data/config > $@t
-	d=`cd ../mono/btls/build-shared && pwd`; \
-	sed 's,target="$$mono_libdir/libmono-btls-shared$(libsuffix)",target="'$$d'/libmono-btls-shared$(libsuffix)",' $@t > $@tt
-	if test -z "$(libgdiplus_loc)"; then :; else \
-	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@tt > $@ttt; \
-	  mv -f $@ttt $@tt; fi
-	mv -f $@tt $@
-	rm -f $@t
+	cp $< $@
+	if test -d "$(abs_top_builddir)/support"; then \
+		sed 's,target="$$mono_libdir/libMonoPosixHelper$(libsuffix)",target="$(abs_top_builddir)/support/libMonoPosixHelper.la",' $@ > $@.tmp \
+		 && mv $@.tmp $@ \
+		 ; \
+	else \
+		echo "Unknown directory '$(abs_top_builddir)/support'" && false; \
+	fi
+	if test -d "$(abs_top_builddir)/mono/metadata"; then \
+		sed 's,target="$$mono_libdir/libmono-system-native$(libsuffix)",target="$(abs_top_builddir)/mono/metadata/libmono-system-native.la",' $@ > $@.tmp \
+		 && mv $@.tmp $@ \
+		 ; \
+	else \
+		echo "Unknown directory '$(abs_top_builddir)/mono/metadata'" && false; \
+	fi
+	if test -d "$(abs_top_builddir)/mono/btls/build-shared"; then \
+		sed 's,target="$$mono_libdir/libmono-btls-shared$(libsuffix)",target="$(abs_top_builddir)/mono/btls/build-shared/libmono-btls-shared$(libsuffix)",' $@ > $@.tmp \
+		 && mv $@.tmp $@ \
+		 ; \
+	else \
+		echo "Unknown directory '$(abs_top_builddir)/mono/btls/build-shared'"; \
+	fi
+	if test -n "$(libgdiplus_loc)"; then \
+		sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@ > $@.tmp \
+		 && mv $@.tmp $@ \
+		 ; \
+	fi
+	cat $@
 
 $(tmpinst)/bin/mono: mono-wrapper etc/mono/config
 	$(mkinstalldirs) $(tmpinst)/bin

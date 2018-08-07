@@ -101,14 +101,7 @@ PROGRAMS = $(bin_PROGRAMS)
 monograph_SOURCES = monograph.c
 monograph_OBJECTS = monograph.$(OBJEXT)
 am__DEPENDENCIES_1 =
-@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntimesgen.la \
-@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la \
-@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1)
-@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
-@DISABLE_EXECUTABLES_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
-@DISABLE_EXECUTABLES_TRUE@	$(am__DEPENDENCIES_2)
-monograph_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
+monograph_DEPENDENCIES = $(runtime_lib) $(glib_libs) \
 	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -228,26 +221,17 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
 GNUC_PRETTY = @GNUC_PRETTY@
 GNUC_UNUSED = @GNUC_UNUSED@
-GPOINTER_TO_INT = @GPOINTER_TO_INT@
-GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
 GSIZE = @GSIZE@
 GSIZE_FORMAT = @GSIZE_FORMAT@
+GSSIZE = @GSSIZE@
 GTKX11 = @GTKX11@
-GUINT_TO_POINTER = @GUINT_TO_POINTER@
-G_GINT32_FORMAT = @G_GINT32_FORMAT@
-G_GINT64_FORMAT = @G_GINT64_FORMAT@
-G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
-G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
-G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
@@ -414,13 +398,14 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @DISABLE_EXECUTABLES_FALSE@runtime_lib = $(static_libs)
 @DISABLE_EXECUTABLES_TRUE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_FALSE@static_libs = \
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen.la	\
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la	\
 @DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@DISABLE_EXECUTABLES_FALSE@	$(GLIB_LIBS)
+@DISABLE_EXECUTABLES_FALSE@	$(glib_libs)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)			\
@@ -428,9 +413,8 @@ AM_CPPFLAGS = \
 
 monograph_LDADD = \
 	$(runtime_lib)			\
-	$(GLIB_LIBS)			\
-	$(LLVM_LIBS)			\
-	-lm
+	$(glib_libs)			\
+	$(LLVM_LIBS)
 
 @HOST_DARWIN_TRUE@monograph_LDFLAGS = -framework CoreFoundation -framework Foundation
 GRAPHS = System.Object System.Enum System.Attribute System.ValueType System.Reflection.MemberInfo
