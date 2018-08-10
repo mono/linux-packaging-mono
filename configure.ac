@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.17.0.535],
+AC_INIT(mono, [5.19.0.41],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -46,7 +46,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=40525B4A-F860-49BF-936E-6B29CBBF357C
+MONO_CORLIB_VERSION=2EB20924-0AB7-455D-BCFB-0E4A886B6EF8
 
 #
 # Put a quoted #define in config.h.
@@ -1002,6 +1002,7 @@ fi
 
 AC_ARG_WITH(crash-privacy,       [  --with-crash_privacy=yes,no         If you want your crashes to not include names of symbols present in the binary. ], [], [with_crash_privacy=no])
 AC_ARG_WITH(structured-crashes,  [  --with-structured_crashes=yes,no    If you want your unmanaged crashes to result in a small crash dump file. ],        [], [with_structured_crashes=yes])
+AC_ARG_ENABLE(crash-reporting,  [  --disable-crash-reporting            Enable or Disable crash reporting subsystem],        [crash_reporting=$enableval], [crash_reporting=yes])
 
 if test "x$with_crash_privacy" = "xno"; then
 AC_DEFINE(MONO_PRIVATE_CRASHES,1,[Do not include names of unmanaged functions in the crash dump])
@@ -1009,6 +1010,15 @@ fi
 
 if test "x$with_structured_crashes" = "xno"; then
 AC_DEFINE(DISABLE_STRUCTURED_CRASH,1,[Do not create structured crash files during unmanaged crashes])
+fi
+
+if test "x$host_win32" = "xyes"; then
+crash_reporting=no
+fi
+
+if test "x$crash_reporting" != "xyes"; then
+CFLAGS="$CFLAGS -DDISABLE_CRASH_REPORTING=1"
+CXXFLAGS="$CXXFLAGS -DDISABLE_CRASH_REPORTING=1"
 fi
 
 AC_ARG_ENABLE(monodroid, [ --enable-monodroid Enable runtime support for Monodroid (Xamarin.Android)], enable_monodroid=$enableval, enable_monodroid=no)
@@ -4997,6 +5007,31 @@ AC_ARG_WITH(lazy_gc_thread_creation, [  --with-lazy-gc-thread-creation=yes|no   
 	fi
 ], [with_lazy_gc_thread_creation=no])
 
+dnl *****************************
+dnl *** Thread suspend policy ***
+dnl *****************************
+
+dnl Set a default hybrid or cooperative suspend on some platforms
+
+dnl Coop default is set by the bitcode preset.
+
+dnl If coop isn't on by default, maybe hybrid should be?
+if test x$enable_cooperative_suspend_default != xyes; then
+	case $HOST in
+	X86 | AMD64)
+		dnl Some host/target confusion, there's no host_osx (and
+		dnl host_darwin would be true on iOS not just macOS).
+		if test x$target_osx = xyes; then
+			enable_hybrid_suspend_default=yes
+		elif test x$host_linux = xyes -o x$host_win32 = xyes; then
+			enable_hybrid_suspend_default=yes
+		fi
+		;;
+	esac
+fi
+
+dnl Now check if there were flags overriding the defaults
+
 AC_ARG_WITH(cooperative_gc,        [  --with-cooperative-gc=yes|no        Enable cooperative stop-the-world garbage collection (sgen only) (defaults to no)], [AC_MSG_WARN([--with-cooperative-gc is deprecated, use --enable-cooperative-suspend instead])], [with_cooperative_gc=default])
 AC_ARG_ENABLE(cooperative_suspend, [  --enable-cooperative-suspend      Enable cooperative stop-the-world garbage collection (sgen only) (defaults to no)], [], [enable_cooperative_suspend=default])
 
@@ -5030,6 +5065,12 @@ fi
 
 AM_CONDITIONAL([ENABLE_HYBRID_SUSPEND], [test x$enable_hybrid_suspend != xno])
 
+dnl End of thread suspend policy
+
+dnl **********************
+dnl *** checked builds ***
+dnl **********************
+
 AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread, private_types],[
 
 	if test x$enable_checked_build != x ; then
@@ -5062,6 +5103,8 @@ AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable check
 		AC_DEFINE(ENABLE_CHECKED_BUILD_PRIVATE_TYPES, 1, [Enable private types checked build])
 	fi
 ], [])
+
+dnl End of checked builds
 
 AC_CHECK_HEADER([malloc.h], 
 		[AC_DEFINE([HAVE_USR_INCLUDE_MALLOC_H], [1], 
@@ -5492,6 +5535,7 @@ mono/arch/arm64/Makefile
 mono/arch/mips/Makefile
 mono/sgen/Makefile
 mono/tests/Makefile
+mono/tests/assembly-load-reference/Makefile
 mono/tests/tests-config
 mono/tests/gc-descriptors/Makefile
 mono/tests/testing_gac/Makefile
@@ -5687,9 +5731,9 @@ fi
 
 thread_suspend_msg=
 if test x$buildsgen = xyes; then
-	if test x$enable_cooperative_suspend = xyes; then
+	if test x$enable_cooperative_suspend != xno; then
 		thread_suspend_msg="Suspend:       Cooperative"
-	elif test x$enable_hybrid_suspend = xyes; then
+	elif test x$enable_hybrid_suspend != xno; then
 		thread_suspend_msg="Suspend:       Hybrid"
 	else
 		thread_suspend_msg="Suspend:       Preemptive"
@@ -5730,6 +5774,7 @@ echo "
 	zlib:            $zlib_msg
 	BTLS:            $enable_btls$btls_platform_string
 	jemalloc:        $with_jemalloc (always use: $with_jemalloc_always)
+	crash reporting: $crash_reporting
 	$disabled
 "
 if test x$with_static_mono = xno -a "x$host_win32" != "xyes"; then

@@ -3417,7 +3417,7 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 	 */
 	nargs = (sig->param_count * 16) + sig->hasthis + vretaddr + call->rgctx_reg + call->imt_arg_reg;
 	len = sizeof (LLVMValueRef) * nargs;
-	args = (LLVMValueRef*)alloca (len);
+	args = g_newa (LLVMValueRef, nargs);
 	memset (args, 0, len);
 	l = call->out_ireg_args;
 
@@ -5474,7 +5474,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 			/* llvm.fabs not supported on all platforms */
 			args [0] = convert (ctx, lhs, LLVMDoubleType ());
 			values [ins->dreg] = LLVMBuildCall (builder, get_intrinsic (ctx, "fabs"), args, 1, dname);
-			values [ins->dreg] = convert (ctx, lhs, LLVMFloatType ());
+			values [ins->dreg] = convert (ctx, values [ins->dreg], LLVMFloatType ());
 #endif
 			break;
 		}
