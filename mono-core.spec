@@ -29,10 +29,10 @@
 %define sgen yes
 
 Name:           mono-core
-%define __majorver 5.17.0
-%define __minorver 535
+%define __majorver 5.19.0
+%define __minorver 41
 Version:	%{__majorver}.%{__minorver}
-Release:	0.nightly.5
+Release:	0.nightly.1
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
