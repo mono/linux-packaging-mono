@@ -975,6 +975,9 @@
 /* Define to 1 if the system has the type `struct flock'. */
 #undef HAVE_STRUCT_FLOCK
 
+/* Define to 1 if the system has the type `struct flock64'. */
+#undef HAVE_STRUCT_FLOCK64
+
 /* Define to 1 if the system has the type `struct iovec'. */
 #undef HAVE_STRUCT_IOVEC
 
