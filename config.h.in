@@ -623,9 +623,6 @@
 /* Define to 1 if you have the <linux/serial.h> header file. */
 #undef HAVE_LINUX_SERIAL_H
 
-/* Define to 1 if you have the <localcharset.h> header file. */
-#undef HAVE_LOCALCHARSET_H
-
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
@@ -694,6 +691,9 @@
 
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
+
+/* Define to 1 if you have the `nl_langinfo' function. */
+#undef HAVE_NL_LANGINFO
 
 /* _NSGetEnviron */
 #undef HAVE_NSGETENVIRON
