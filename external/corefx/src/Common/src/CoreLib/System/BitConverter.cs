@@ -380,6 +380,22 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(length), SR.Format(SR.ArgumentOutOfRange_LengthTooLarge, (int.MaxValue / 3)));
             }
 
+#if __MonoCS__ //use old impl for mcs
+            const string HexValues = "0123456789ABCDEF";
+            int chArrayLength = length * 3;
+
+            char[] chArray = new char[chArrayLength];
+            int i = 0;
+            int index = startIndex;
+            for (i = 0; i < chArrayLength; i += 3)
+            {
+                byte b = value[index++];
+                chArray[i] = HexValues[b >> 4];
+                chArray[i + 1] = HexValues[b & 0xF];
+                chArray[i + 2] = '-';
+            }
+            return new String(chArray, 0, chArray.Length - 1);
+#else
             return string.Create(length * 3 - 1, (value, startIndex, length), (dst, state) =>
             {
                 const string HexValues = "0123456789ABCDEF";
@@ -401,6 +417,7 @@ namespace System
                     dst[j++] = HexValues[b & 0xF];
                 }
             });
+#endif
         }
 
         // Converts an array of bytes into a String.  

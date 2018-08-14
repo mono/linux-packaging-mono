@@ -150,6 +150,7 @@ inline void SafeStringCopy(char* destination, int32_t destinationSize, const cha
 }
 
 #endif // __cplusplus
+#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
 
 /**
 * Converts an intptr_t to a file descriptor.

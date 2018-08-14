@@ -274,14 +274,13 @@ namespace Mono.Linker.Steps {
 
 		protected virtual bool IsUserDependencyMarker (TypeReference type)
 		{
-			return type.Name == "PreserveDependencyAttribute" &&
-				       type.Namespace == "System.Runtime.CompilerServices";
+			return PreserveDependencyLookupStep.IsPreserveDependencyAttribute (type);
 		}
 
 		protected virtual void MarkUserDependency (MethodReference context, CustomAttribute ca)
 		{
-			var args = ca.ConstructorArguments;
-			if (args.Count == 2 && args[1].Value is string condition) {
+			if (ca.HasProperties && ca.Properties [0].Name == "Condition") {
+				var condition = ca.Properties [0].Argument.Value as string;
 				switch (condition) {
 				case "":
 				case null:
@@ -297,57 +296,51 @@ namespace Mono.Linker.Steps {
 				}
 			}
 
-			if (args.Count >= 1 && args[0].Value is string dependency) {
-				string member = null;
-				string type = null;
-				string[] signature = null;
-				TypeDefinition td = null;
-
-				var sign_start = dependency.IndexOf ('(');
-				var sign_end = dependency.LastIndexOf (')');
-				if (sign_start > 0 && sign_end > sign_start) {
-					var parameters = dependency.Substring (sign_start + 1, sign_end - sign_start - 1).Replace (" ", "");
-					signature = string.IsNullOrEmpty (parameters) ? Array.Empty<string> () : parameters.Split (',');
-					var idx = dependency.LastIndexOf ('.', sign_start);
-					if (idx > 0) {
-						member = dependency.Substring (idx + 1, sign_start - idx - 1).TrimEnd ();
-						type = dependency.Substring (0, idx);
-					} else {
-						member = dependency.Substring (0, sign_start - 1);
-						td = context.DeclaringType.Resolve ();
-					}
-				} else if (sign_start < 0) {
-					var idx = dependency.LastIndexOf ('.');
-					if (idx > 0) {
-						member = dependency.Substring (idx + 1);
-						type = dependency.Substring (0, idx);
-					} else {
-						member = dependency;
-						td = context.DeclaringType.Resolve ();
-					}
+			AssemblyDefinition assembly;
+			var args = ca.ConstructorArguments;
+			if (args.Count >= 3 && args [2].Value is string assemblyName) {
+				if (!_context.Resolver.AssemblyCache.TryGetValue (assemblyName, out assembly)) {
+					_context.Logger.LogMessage (MessageImportance.Low, $"Could not resolve '{assemblyName}' assembly dependency");
+					return;
 				}
+			} else {
+				assembly = null;
+			}
+
+			TypeDefinition td = null;
+			if (args.Count >= 2 && args [1].Value is string typeName) {
+				td = FindType (assembly ?? context.Module.Assembly, typeName);
 
 				if (td == null) {
-					if (type == null) {
-						_context.Logger.LogMessage (MessageImportance.Low, $"Could not resolve '{dependency}' dependency");
-						return;
-					}
-
-					td = FindType (context.Module.Assembly, type);
-					if (td == null) {
-						_context.Logger.LogMessage (MessageImportance.Low, $"Could not find '{dependency}' dependency");
-						return;
-					}
+					_context.Logger.LogMessage (MessageImportance.Low, $"Could not resolve '{typeName}' type dependency");
+					return;
 				}
-
-				if (MarkDependencyMethod (td, member, signature))
-					return;
-
-				if (MarkDependencyField (td, member))
-					return;
-
-				_context.Logger.LogMessage (MessageImportance.High, $"Could not resolve dependency member '{member}' declared in type '{dependency}'");
+			} else {
+				td = context.DeclaringType.Resolve ();
 			}
+
+			string member = null;
+			string[] signature = null;
+			if (args.Count >= 1 && args [0].Value is string memberSignature) {
+				memberSignature = memberSignature.Replace (" ", "");
+				var sign_start = memberSignature.IndexOf ('(');
+				var sign_end = memberSignature.LastIndexOf (')');
+				if (sign_start > 0 && sign_end > sign_start) {
+					var parameters = memberSignature.Substring (sign_start + 1, sign_end - sign_start - 1);
+					signature = string.IsNullOrEmpty (parameters) ? Array.Empty<string> () : parameters.Split (',');
+					member = memberSignature.Substring (0, sign_start);
+				} else {
+					member = memberSignature;
+				}
+			}
+
+			if (MarkDependencyMethod (td, member, signature))
+				return;
+
+			if (MarkDependencyField (td, member))
+				return;
+
+			_context.Logger.LogMessage (MessageImportance.High, $"Could not resolve dependency member '{member}' declared in type '{td.FullName}'");
 		}
 
 		static TypeDefinition FindType (AssemblyDefinition assembly, string fullName)
@@ -460,6 +453,9 @@ namespace Mono.Linker.Steps {
 				case "System.ThreadStaticAttribute":
 				case "System.ContextStaticAttribute":
 					return true;
+				case "System.Runtime.InteropServices.InterfaceTypeAttribute":
+				case "System.Runtime.InteropServices.GuidAttribute":
+					return !_context.IsFeatureExcluded ("com");
 				}
 				
 				if (!Annotations.IsMarked (attr_type.Resolve ()))
@@ -1856,7 +1852,6 @@ namespace Mono.Linker.Steps {
 				if (!CheckReflectionMethod (instruction, reflectionMethod))
 					continue;
 
-				_context.Tracer.Push ($"Reflection-{instruction.Operand as MethodReference}");
 				var nameOfThingUsedViaReflection = OperandOfNearestInstructionBefore<string> (i, OpCodes.Ldstr, instructions);
 				var bindingFlags = (BindingFlags) OperandOfNearestInstructionBefore<sbyte> (i, OpCodes.Ldc_I4_S, instructions);
 
@@ -1868,7 +1863,6 @@ namespace Mono.Linker.Steps {
 					if (typeDefinition != null)
 						markMethod (instructions, nameOfThingUsedViaReflection, typeDefinition, bindingFlags);
 				}
-				_context.Tracer.Pop ();
 			}
 		}
 
@@ -1880,32 +1874,44 @@ namespace Mono.Linker.Steps {
 				if (!CheckReflectionMethod (instruction, "GetType"))
 					continue;
 
-				_context.Tracer.Push ($"Reflection-{instruction.Operand as MethodReference}");
 				var typeAssemblyQualifiedName = OperandOfNearestInstructionBefore<string> (i, OpCodes.Ldstr, instructions);
 
 				if (!TypeNameParser.TryParseTypeAssemblyQualifiedName (typeAssemblyQualifiedName, out string typeName, out string assemblyName))
 					continue;
 
+				TypeDefinition foundType = null;
 				foreach (var assemblyDefinition in _context.GetAssemblies ()) {
 					if (assemblyName != null && assemblyDefinition.Name.Name != assemblyName)
 						continue;
 
-					var type = assemblyDefinition.MainModule.GetType (typeName);
-					if (type != null)
-					{
-						MarkType(type);
+					foundType = assemblyDefinition.MainModule.GetType (typeName);
+					if (foundType != null)
 						break;
-					}
 				}
-				_context.Tracer.Pop ();
+
+				if (foundType == null)
+					continue;
+				
+				_context.Tracer.Push ($"Reflection-{foundType}");
+				try {
+					MarkType (foundType);
+				} finally {
+					_context.Tracer.Pop ();
+				}
 			}
 		}
 
 		void MarkConstructorsUsedViaReflection (Collection<Instruction> instructions, string unused, TypeDefinition declaringType, BindingFlags bindingFlags)
 		{
 			foreach (var method in declaringType.Methods) {
-				if ((bindingFlags == BindingFlags.Default || bindingFlags.IsSet(BindingFlags.Public) == method.IsPublic) && method.Name == ".ctor")
-					MarkMethod (method);
+				if ((bindingFlags == BindingFlags.Default || bindingFlags.IsSet(BindingFlags.Public) == method.IsPublic) && method.Name == ".ctor") {
+					Tracer.Push ($"Reflection-{method}");
+					try {
+						MarkMethod (method);
+					} finally {
+						Tracer.Pop ();
+					}
+				}
 			}
 		}
 
@@ -1916,8 +1922,14 @@ namespace Mono.Linker.Steps {
 
 			foreach (var method in declaringType.Methods) {
 				if ((bindingFlags == BindingFlags.Default || bindingFlags.IsSet(BindingFlags.Public) == method.IsPublic && bindingFlags.IsSet(BindingFlags.Static) == method.IsStatic)
-					&& method.Name == name)
-					MarkMethod (method);
+					&& method.Name == name) {
+					Tracer.Push ($"Reflection-{method}");
+					try {
+						MarkMethod (method);
+					} finally {
+						Tracer.Pop ();
+					}
+				}
 			}
 		}
 
@@ -1928,11 +1940,16 @@ namespace Mono.Linker.Steps {
 
 			foreach (var property in declaringType.Properties) {
 				if (property.Name == name) {
-					// It is not easy to reliably detect in the IL code whether the getter or setter (or both) are used.
-					// Be conservative and mark everything for the property.
-					MarkProperty (property);
-					MarkMethodIfNotNull (property.GetMethod);
-					MarkMethodIfNotNull (property.SetMethod);
+					Tracer.Push ($"Reflection-{property}");
+					try {
+						// It is not easy to reliably detect in the IL code whether the getter or setter (or both) are used.
+						// Be conservative and mark everything for the property.
+						MarkProperty (property);
+						MarkMethodIfNotNull (property.GetMethod);
+						MarkMethodIfNotNull (property.SetMethod);
+					} finally {
+						Tracer.Pop ();
+					}
 				}
 			}
 		}
@@ -1943,8 +1960,14 @@ namespace Mono.Linker.Steps {
 				return;
 
 			foreach (var field in declaringType.Fields) {
-				if (field.Name == name)
-					MarkField (field);
+				if (field.Name == name) {
+					Tracer.Push ($"Reflection-{field}");
+					try {
+						MarkField (field);
+					} finally {
+						Tracer.Pop ();
+					}
+				}
 			}
 		}
 
@@ -1954,8 +1977,14 @@ namespace Mono.Linker.Steps {
 				return;
 
 			foreach (var eventInfo in declaringType.Events) {
-				if (eventInfo.Name == name)
-					MarkEvent (eventInfo);
+				if (eventInfo.Name == name) {
+					Tracer.Push ($"Reflection-{eventInfo}");
+					try {
+						MarkEvent (eventInfo);
+					} finally {
+						Tracer.Pop ();
+					}
+				}
 			}
 		}
 
