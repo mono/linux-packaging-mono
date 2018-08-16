@@ -7,6 +7,9 @@ using System.Globalization;
 
 namespace System.Reflection
 {
+#if MONO
+    [Serializable]
+#endif    
     public abstract partial class ConstructorInfo : MethodBase
     {
         protected ConstructorInfo() { }

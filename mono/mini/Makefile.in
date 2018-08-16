@@ -508,7 +508,9 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
+
+# Per-library because linking doesn't like -xc++, it treats libraries as C++.
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -803,16 +805,19 @@ noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_8)
 mono_boehm_SOURCES = \
 	main.c
 
-mono_CFLAGS = $(AM_CFLAGS) $(am__append_6)
-mono_boehm_CFLAGS = $(AM_CFLAGS)
+mono_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@ $(am__append_6)
+mono_boehm_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
+
+# These files are stuck as C for now, because -xc++
+# can only be used when compiling, not linking.
 mono_sgen_SOURCES = \
 	main-sgen.c
 
 mono_SOURCES = \
 	main-sgen.c
 
-mono_sgen_CFLAGS = $(AM_CFLAGS)
+mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 @DTRACE_G_REQUIRED_FALSE@LIBMONO_DTRACE_OBJECT = 
 @DTRACE_G_REQUIRED_TRUE@LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
 @DTRACE_G_REQUIRED_FALSE@MONO_DTRACE_OBJECT = 
@@ -1142,12 +1147,12 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @HOST_SIGPOSIX_TRUE@monobin_platform_ldflags = 
 @HOST_WIN32_TRUE@monobin_platform_ldflags = 
 libmono_ee_interp_la_SOURCES = $(interp_sources)
-libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
+libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS) @CXX_ADD_CFLAGS@
 @BITCODE_TRUE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
 @WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
 libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
-libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
+libmono_dbg_la_CFLAGS = $(mono_CFLAGS) @CXX_ADD_CFLAGS@
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
 dbg_libs = libmono-dbg.la
 @DISABLE_DEBUGGER_AGENT_FALSE@dbg_libs_with_mini = $(dbg_libs)
@@ -1157,13 +1162,13 @@ dbg_libs = libmono-dbg.la
 # compile time dependencies on boehm/sgen.
 #
 libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
-libmini_la_CFLAGS = $(mono_CFLAGS)
+libmini_la_CFLAGS = $(mono_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoboehm_2_0_la_SOURCES = 
-libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
+libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonosgen_2_0_la_SOURCES = 
-libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
+libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
