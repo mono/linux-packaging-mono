@@ -577,7 +577,7 @@ namespace System.Numerics.Tests
 
         [Fact]
         [OuterLoop]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void RunDoubleExplicitCastFromLargeBigIntegerTests()
         {
             DoubleExplicitCastFromLargeBigIntegerTests(0, 4, 32, 3);

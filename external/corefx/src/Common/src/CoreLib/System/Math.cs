@@ -644,6 +644,7 @@ namespace System
             return decimal.Round(d, decimals, mode);
         }
 
+#if !MONO
         [Intrinsic]
         public static double Round(double a)
         {
@@ -672,6 +673,10 @@ namespace System
 
             return copysign(flrTempVal, a);
         }
+#else
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern double Round(double a);
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Round(double value, int digits)

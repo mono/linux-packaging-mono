@@ -10836,18 +10836,12 @@ namespace System.Reflection
         Standard = 1,
         VarArgs = 2,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ConstructorInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public abstract partial class ConstructorInfo : System.Reflection.MethodBase, System.Runtime.InteropServices._ConstructorInfo
+    public abstract partial class ConstructorInfo : System.Reflection.MethodBase
     {
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public static readonly string ConstructorName;
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public static readonly string TypeConstructorName;
         protected ConstructorInfo() { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public override System.Reflection.MemberTypes MemberType { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -10857,15 +10851,6 @@ namespace System.Reflection
         public abstract object Invoke(System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture);
         public static bool operator ==(System.Reflection.ConstructorInfo left, System.Reflection.ConstructorInfo right) { throw null; }
         public static bool operator !=(System.Reflection.ConstructorInfo left, System.Reflection.ConstructorInfo right) { throw null; }
-        void System.Runtime.InteropServices._ConstructorInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._ConstructorInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._ConstructorInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._ConstructorInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._ConstructorInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
-        object System.Runtime.InteropServices._ConstructorInfo.Invoke_2(object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture) { throw null; }
-        object System.Runtime.InteropServices._ConstructorInfo.Invoke_3(object obj, object[] parameters) { throw null; }
-        object System.Runtime.InteropServices._ConstructorInfo.Invoke_4(System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture) { throw null; }
-        object System.Runtime.InteropServices._ConstructorInfo.Invoke_5(object[] parameters) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -11189,7 +11174,6 @@ namespace System.Reflection
         public virtual System.Type LocalType { get { throw null; } }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class ManifestResourceInfo
     {
         public ManifestResourceInfo(System.Reflection.Assembly containingAssembly, string containingFileName, System.Reflection.ResourceLocation resourceLocation) { }
@@ -11673,8 +11657,6 @@ namespace System.Reflection
         Public = 1,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ResourceLocation
     {
         ContainedInAnotherAssembly = 2,

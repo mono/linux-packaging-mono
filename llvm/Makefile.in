@@ -363,6 +363,8 @@ EXTRA_DIST = SUBMODULES.json build.mk build_llvm_config.sh
 NINJA := $(shell which ninja)
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/llvm/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
+@TARGET_WASM_FALSE@EXTRA_LLVM_ARGS = 
+@TARGET_WASM_TRUE@EXTRA_LLVM_ARGS = -DLLVM_BUILD_32_BITS=On -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="WebAssembly"
 all: all-am
 
 .SUFFIXES:
@@ -735,6 +737,7 @@ $(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(LLVM_PATH)/CMakeLists.txt |
 		-DLLVM_INCLUDE_EXAMPLES=Off \
 		-DLLVM_TOOLS_TO_BUILD="opt;llc;llvm-config;llvm-dis" \
 		-DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" \
+		$(EXTRA_LLVM_ARGS)	\
 		-DLLVM_ENABLE_ASSERTIONS=$(if $(INTERNAL_LLVM_ASSERTS),On,Off) \
 		$(LLVM_CMAKE_ARGS) \
 		$(dir $<)
