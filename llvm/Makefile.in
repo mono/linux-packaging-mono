@@ -20,6 +20,9 @@
 # make reset-llvm will checkout a version of llvm which is suitable for this version of mono
 # into $top_srcdir/llvm/llvm.
 #
+# Input variables
+# - LLVM_TARGET: if set to wasm32 will trigger a 32bits build that enable the experimental WebAssembly backend
+#
 
 #
 # This is a python script and a set of make targets to implement support for conditional submodules
@@ -360,11 +363,12 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = SUBMODULES.json build.mk build_llvm_config.sh
+@TARGET_WASM_FALSE@LLVM_TARGET = 
+@TARGET_WASM_TRUE@LLVM_TARGET = wasm32
 NINJA := $(shell which ninja)
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/llvm/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
-@TARGET_WASM_FALSE@EXTRA_LLVM_ARGS = 
-@TARGET_WASM_TRUE@EXTRA_LLVM_ARGS = -DLLVM_BUILD_32_BITS=On -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="WebAssembly"
+EXTRA_LLVM_ARGS = $(if $(filter $(LLVM_TARGET),wasm32), -DLLVM_BUILD_32_BITS=On -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="WebAssembly",)
 all: all-am
 
 .SUFFIXES:
