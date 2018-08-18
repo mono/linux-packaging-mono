@@ -244,6 +244,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # and the runtime errors out with "File does not contain a valid CIL image."
 
 # Tests which have no way of finding AOT images because they use Assembly.Load(byte[])
+
+# Tests which require AOT of a multi-netmodule assemblies
 @FULL_AOT_TESTS_TRUE@am__append_25 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
@@ -252,6 +254,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	generic-type-load-exception.2.exe \
 @FULL_AOT_TESTS_TRUE@	invalid-token.exe call_missing_method.exe \
 @FULL_AOT_TESTS_TRUE@	call_missing_class.exe \
+@FULL_AOT_TESTS_TRUE@	custom-attr-errors.exe \
 @FULL_AOT_TESTS_TRUE@	ldfld_missing_field.exe \
 @FULL_AOT_TESTS_TRUE@	ldfld_missing_class.exe \
 @FULL_AOT_TESTS_TRUE@	vt-sync-method.exe \
@@ -310,7 +313,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
 @FULL_AOT_TESTS_TRUE@	reference-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assembly-load-bytes.exe \
-@FULL_AOT_TESTS_TRUE@	assembly-load-bytes-bindingredirect.exe
+@FULL_AOT_TESTS_TRUE@	assembly-load-bytes-bindingredirect.exe \
+@FULL_AOT_TESTS_TRUE@	test-multi-netmodule-4-exe.exe
 
 # Tests which depend on a case-insensitive filesystem when using AOT
 @FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@am__append_26 = \
@@ -2219,7 +2223,7 @@ test-multi-netmodule-4-exe.exe: test-multi-netmodule-4-exe.cs test-multi-netmodu
 	$(Q) $(MCS) -r:test-multi-netmodule-2-dll1.dll -out:$@ $<
 
 test-multi-netmodule: test-multi-netmodule-4-exe.exe
-	$(Q) $(RUNTIME) test-multi-netmodule-4-exe.exe > test-multi-netmodule-4-exe.exe.stdout 2> test-multi-netmodule-4-exe.exe.stderr
+	$(Q) $(TOOLS_RUNTIME) $(TEST_RUNNER) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" $<
 
 custom-attr-errors.exe custom-attr-errors-lib.dll: custom-attr-errors.cs custom-attr-errors-lib.cs $(TEST_DRIVER_DEPEND)
 	$(Q) $(MCS) /t:library -D:WITH_MEMBERS custom-attr-errors-lib.cs
@@ -2227,7 +2231,7 @@ custom-attr-errors.exe custom-attr-errors-lib.dll: custom-attr-errors.cs custom-
 	$(Q) $(MCS) /t:library custom-attr-errors-lib.cs
 
 test-cattr-type-load: custom-attr-errors.exe
-	$(Q) $(RUNTIME) custom-attr-errors.exe > custom-attr-errors.exe.stdout 2> custom-attr-errors.exe.stderr
+	$(Q) $(TOOLS_RUNTIME) $(TEST_RUNNER) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" $<
 
 reflection-load-with-context-second-lib.dll: reflection-load-with-context-second-lib.cs
 	$(Q) $(MCS) /t:library -out:$@ $<
