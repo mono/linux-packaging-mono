@@ -11455,8 +11455,6 @@ namespace System.Reflection
         void System.Runtime.InteropServices._Module.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public delegate System.Reflection.Module ModuleResolveEventHandler(object sender, System.ResolveEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false, Inherited=false)]
     public sealed partial class ObfuscateAssemblyAttribute : System.Attribute

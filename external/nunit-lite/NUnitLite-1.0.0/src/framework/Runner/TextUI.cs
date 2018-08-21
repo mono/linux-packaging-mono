@@ -212,10 +212,12 @@ namespace NUnitLite.Runner
                 }
                 catch (FileNotFoundException ex)
                 {
+                    Failure = true;
                     writer.WriteLine(ex.Message);
                 }
                 catch (Exception ex)
                 {
+                    Failure = true;
                     writer.WriteLine(ex.ToString());
                 }
                 finally
