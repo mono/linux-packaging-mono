@@ -11366,8 +11366,6 @@ namespace System.Reflection
         public virtual System.Type ResolveType(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public delegate System.Reflection.Module ModuleResolveEventHandler(object sender, System.ResolveEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false, Inherited=false)]
     public sealed partial class ObfuscateAssemblyAttribute : System.Attribute
