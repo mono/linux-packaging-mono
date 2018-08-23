@@ -11537,16 +11537,11 @@ namespace System.Reflection
         public bool this[int index] { get { throw null; } set { } }
     }
     [System.CLSCompliantAttribute(false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class Pointer : System.Runtime.Serialization.ISerializable
     {
         internal Pointer() { }
-        [System.Security.SecurityCriticalAttribute]
         public unsafe static object Box(void* ptr, System.Type type) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        [System.Security.SecurityCriticalAttribute]
         public unsafe static void* Unbox(object ptr) { throw null; }
     }
     [System.FlagsAttribute]

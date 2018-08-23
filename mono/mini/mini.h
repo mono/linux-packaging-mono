@@ -42,6 +42,11 @@
 #include <mono/utils/mono-signal-handler.h>
 #include <mono/metadata/icalls.h>
 
+// Forward declare so that mini-*.h can have pointers to them.
+// CallInfo is presently architecture specific.
+typedef struct MonoInst MonoInst;
+typedef struct CallInfo CallInfo;
+
 #include "mini-arch.h"
 #include "regalloc.h"
 #include "mini-unwind.h"
@@ -332,7 +337,6 @@ enum {
 #endif
 
 typedef struct MonoInstList MonoInstList;
-typedef struct MonoInst MonoInst;
 typedef struct MonoCallInst MonoCallInst;
 typedef struct MonoCallArgParm MonoCallArgParm;
 typedef struct MonoMethodVar MonoMethodVar;
@@ -2127,6 +2131,9 @@ gpointer*         mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot
 MonoFtnDesc      *mini_create_llvmonly_ftndesc (MonoDomain *domain, gpointer addr, gpointer arg);
 
 void*             mono_global_codeman_reserve (int size);
+
+#define mono_global_codeman_reserve(size) (g_cast (mono_global_codeman_reserve ((size))))
+
 void              mono_global_codeman_foreach (MonoCodeManagerFunc func, void *user_data);
 const char       *mono_regname_full (int reg, int bank);
 gint32*           mono_allocate_stack_slots (MonoCompile *cfg, gboolean backward, guint32 *stack_size, guint32 *stack_align);

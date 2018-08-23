@@ -479,6 +479,9 @@
 /* Have getprotobyname */
 #undef HAVE_GETPROTOBYNAME
 
+/* Have getprotobyname_r */
+#undef HAVE_GETPROTOBYNAME_R
+
 /* Define to 1 if you have the `getpwent' function. */
 #undef HAVE_GETPWENT
 
