@@ -207,7 +207,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
-	-nowarn:0197 -langversion:7.3 $(PROFILE_MCS_FLAGS)
+	-nowarn:0197 -langversion:latest $(PROFILE_MCS_FLAGS)
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 
 MCS = $(MCS_NO_LIB)
@@ -1498,10 +1498,7 @@ CI_PR_DISABLED_TESTS = \
 	appdomain-threadpool-unload.exe
 
 # FIXME Hybrid Suspend - see https://github.com/mono/mono/issues/9959
-CI_PR_DISABLED_TESTS += sgen-new-threads-collect.exe
-
-# see https://github.com/mono/mono/issues/10031
-CI_PR_DISABLED_TESTS += unhandled-exception-2.exe unhandled-exception-4.exe
+# CI_PR_DISABLED_TESTS += sgen-new-threads-collect.exe
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 LLVM_DISABLED_TESTS = \

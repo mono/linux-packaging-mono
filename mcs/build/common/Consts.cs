@@ -34,11 +34,11 @@ static class Consts
 	// Use these assembly version constants to make code more maintainable.
 	//
 
-	public const string MonoVersion = "5.19.0.139";
+	public const string MonoVersion = "5.19.0.169";
 	public const string MonoCompany = "Mono development team";
 	public const string MonoProduct = "Mono Common Language Infrastructure";
 	public const string MonoCopyright = "(c) Various Mono authors";
-	public const string MonoCorlibVersion = "E3B08C49-2D68-4693-AF9C-639F3ED0395F";
+	public const string MonoCorlibVersion = "67C68E7F-E554-4766-A151-8B94F457A035";
 
 #if MOBILE
 	// Versions of .NET Framework for Silverlight 4.0
