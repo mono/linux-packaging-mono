@@ -2802,7 +2802,7 @@ patch-automake:
 tags:
 	etags -o TAGS `find .. -name "*.h" -o -name "*.c"`
 
-@HAS_EXTENSION_MODULE_FALSE@Makefile.am: Makefile.am.in $(llvm_makefile_dep)
+@HAS_EXTENSION_MODULE_FALSE@Makefile.am: Makefile.am.in
 @HAS_EXTENSION_MODULE_FALSE@	echo "##################### Generated from Makefile.am.in, do not modify ##########################" > $@
 @HAS_EXTENSION_MODULE_FALSE@	cat $< >> $@
 
