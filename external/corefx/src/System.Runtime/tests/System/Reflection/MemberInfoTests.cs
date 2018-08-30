@@ -44,7 +44,7 @@ namespace System.Reflection.Tests
             Assert.Null(p.SetMethod);
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue #10276")]
         public static void TestGenericMethodsInheritTheReflectedTypeOfTheirTemplate()
         {
             Type t = typeof(Derived);
@@ -89,7 +89,7 @@ namespace System.Reflection.Tests
             Assert.Equal(t, setter.ReflectedType);
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue #10277")]
         public static void TestInheritedEventAccessors()
         {
             Type t = typeof(Derived);

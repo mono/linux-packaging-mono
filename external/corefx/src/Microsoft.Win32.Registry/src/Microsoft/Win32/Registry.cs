@@ -13,7 +13,7 @@ namespace Microsoft.Win32
 #else
     internal
 #endif
-    static class Registry
+    static partial class Registry
     {
         /// <summary>Current User Key. This key should be used as the root for all user specific settings.</summary>
         public static readonly RegistryKey CurrentUser = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);

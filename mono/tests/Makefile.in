@@ -421,6 +421,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # as long as "in" does not expand parameter stack size, which it should never do.
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@am__append_28 = tailcall-interface-conservestack.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail.exe \
+@FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/20.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/26.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/31.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/33.exe \
@@ -733,6 +734,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@

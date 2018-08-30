@@ -120,17 +120,6 @@ c_static_assert(PAL_SEEK_SET == SEEK_SET);
 c_static_assert(PAL_SEEK_CUR == SEEK_CUR);
 c_static_assert(PAL_SEEK_END == SEEK_END);
 
-// Validate our PollFlags enum values are correct for the platform
-// HACK: AIX values are different; we convert them between PAL_POLL and POLL now
-#ifndef _AIX
-c_static_assert(PAL_POLLIN == POLLIN);
-c_static_assert(PAL_POLLPRI == POLLPRI);
-c_static_assert(PAL_POLLOUT == POLLOUT);
-c_static_assert(PAL_POLLERR == POLLERR);
-c_static_assert(PAL_POLLHUP == POLLHUP);
-c_static_assert(PAL_POLLNVAL == POLLNVAL);
-#endif
-
 // Validate our FileAdvice enum values are correct for the platform
 #if HAVE_POSIX_ADVISE
 c_static_assert(PAL_POSIX_FADV_NORMAL == POSIX_FADV_NORMAL);
@@ -883,6 +872,7 @@ int32_t SystemNative_MAdvise(void* address, uint64_t length, int32_t advice)
 
 int32_t SystemNative_MLock(void* address, uint64_t length)
 {
+#if !defined (__HAIKU__)
     if (length > SIZE_MAX)
     {
         errno = ERANGE;
@@ -890,10 +880,15 @@ int32_t SystemNative_MLock(void* address, uint64_t length)
     }
 
     return mlock(address, (size_t)length);
+#else
+    errno = ENOSYS;
+    return -1;
+#endif
 }
 
 int32_t SystemNative_MUnlock(void* address, uint64_t length)
 {
+#if !defined (__HAIKU__)
     if (length > SIZE_MAX)
     {
         errno = ERANGE;
@@ -901,6 +896,10 @@ int32_t SystemNative_MUnlock(void* address, uint64_t length)
     }
 
     return munlock(address, (size_t)length);
+#else
+    errno = ENOSYS;
+    return -1;
+#endif
 }
 
 int32_t SystemNative_MProtect(void* address, uint64_t length, int32_t protection)
