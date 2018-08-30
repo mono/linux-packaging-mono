@@ -46,8 +46,6 @@ namespace Microsoft.Win32
         public static void SetValue(string keyName, string valueName, object value) { }
         public static void SetValue(string keyName, string valueName, object value, Microsoft.Win32.RegistryValueKind valueKind) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum RegistryHive
     {
         ClassesRoot = -2147483648,
@@ -111,13 +109,11 @@ namespace Microsoft.Win32
         ReadWriteSubTree = 2,
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum RegistryOptions
     {
         None = 0,
         Volatile = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum RegistryValueKind
     {
         Binary = 3,
@@ -135,7 +131,6 @@ namespace Microsoft.Win32
         DoNotExpandEnvironmentNames = 1,
         None = 0,
     }
-    [System.SerializableAttribute]
     public enum RegistryView
     {
         Default = 0,
@@ -3273,28 +3268,25 @@ namespace System
     {
         public const double E = 2.7182818284590451;
         public const double PI = 3.1415926535897931;
-        public static decimal Abs(decimal value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Abs(double value) { throw null; }
-        public static short Abs(short value) { throw null; }
-        public static int Abs(int value) { throw null; }
-        public static long Abs(long value) { throw null; }
-        [System.CLSCompliantAttribute(false)]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Abs(decimal value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Abs(double value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static short Abs(short value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int Abs(int value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long Abs(long value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
         public static sbyte Abs(sbyte value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static float Abs(float value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Acos(double d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Asin(double d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Atan(double d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Atan2(double y, double x) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static float Abs(float value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Acos(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Acosh(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Asin(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Asinh(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Atan(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Atan2(double y, double x) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Atanh(double d) { throw null; }
         public static long BigMul(int a, int b) { throw null; }
-        public static decimal Ceiling(decimal d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Ceiling(double a) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Cbrt(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Ceiling(decimal d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Ceiling(double a) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static byte Clamp(byte value, byte min, byte max) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Clamp(decimal value, decimal min, decimal max) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static double Clamp(double value, double min, double max) { throw null; }
@@ -3310,106 +3302,70 @@ namespace System
         public static uint Clamp(uint value, uint min, uint max) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
         public static ulong Clamp(ulong value, ulong min, ulong max) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Cos(double d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Cosh(double value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Cos(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Cosh(double value) { throw null; }
         public static int DivRem(int a, int b, out int result) { result = default(int); throw null; }
         public static long DivRem(long a, long b, out long result) { result = default(long); throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Exp(double d) { throw null; }
-        public static decimal Floor(decimal d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Floor(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Exp(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Floor(decimal d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Floor(double d) { throw null; }
         public static double IEEERemainder(double x, double y) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Log(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Log(double d) { throw null; }
         public static double Log(double a, double newBase) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Log10(double d) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Log10(double d) { throw null; }
         public static byte Max(byte val1, byte val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
-        public static decimal Max(decimal val1, decimal val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Max(decimal val1, decimal val2) { throw null; }
         public static double Max(double val1, double val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static short Max(short val1, short val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static int Max(int val1, int val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static long Max(long val1, long val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static sbyte Max(sbyte val1, sbyte val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static float Max(float val1, float val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static ushort Max(ushort val1, ushort val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static uint Max(uint val1, uint val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static ulong Max(ulong val1, ulong val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static byte Min(byte val1, byte val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
-        public static decimal Min(decimal val1, decimal val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Min(decimal val1, decimal val2) { throw null; }
         public static double Min(double val1, double val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static short Min(short val1, short val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static int Min(int val1, int val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static long Min(long val1, long val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static sbyte Min(sbyte val1, sbyte val2) { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static float Min(float val1, float val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static ushort Min(ushort val1, ushort val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static uint Min(uint val1, uint val2) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public static ulong Min(ulong val1, ulong val2) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Pow(double x, double y) { throw null; }
-        public static decimal Round(decimal d) { throw null; }
-        public static decimal Round(decimal d, int decimals) { throw null; }
-        public static decimal Round(decimal d, int decimals, System.MidpointRounding mode) { throw null; }
-        public static decimal Round(decimal d, System.MidpointRounding mode) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Round(double a) { throw null; }
-        public static double Round(double value, int digits) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Pow(double x, double y) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Round(decimal d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Round(decimal d, int decimals) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Round(decimal d, int decimals, System.MidpointRounding mode) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Round(decimal d, System.MidpointRounding mode) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Round(double a) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static double Round(double value, int digits) { throw null; }
         public static double Round(double value, int digits, System.MidpointRounding mode) { throw null; }
-        public static double Round(double value, System.MidpointRounding mode) { throw null; }
-        public static int Sign(decimal value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static double Round(double value, System.MidpointRounding mode) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int Sign(decimal value) { throw null; }
         public static int Sign(double value) { throw null; }
-        public static int Sign(short value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int Sign(short value) { throw null; }
         public static int Sign(int value) { throw null; }
         public static int Sign(long value) { throw null; }
-        [System.CLSCompliantAttribute(false)]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)][System.CLSCompliantAttribute(false)]
         public static int Sign(sbyte value) { throw null; }
         public static int Sign(float value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Sin(double a) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Sinh(double value) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
-        [System.Security.SecuritySafeCriticalAttribute]
-        public static double Sqrt(double d) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Tan(double a) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static double Tanh(double value) { throw null; }
-        public static decimal Truncate(decimal d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Sin(double a) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Sinh(double value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Sqrt(double d) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Tan(double a) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static double Tanh(double value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static decimal Truncate(decimal d) { throw null; }
         public static double Truncate(double d) { throw null; }
     }
     public static partial class MathF
@@ -10596,6 +10552,12 @@ namespace System.Reflection
         public AssemblyDescriptionAttribute(string description) { }
         public string Description { get { throw null; } }
     }
+    public static partial class AssemblyExtensions
+    {
+        public static System.Type[] GetExportedTypes(System.Reflection.Assembly assembly) { throw null; }
+        public static System.Reflection.Module[] GetModules(System.Reflection.Assembly assembly) { throw null; }
+        public static System.Type[] GetTypes(System.Reflection.Assembly assembly) { throw null; }
+    }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), Inherited=false)]
     public sealed partial class AssemblyFileVersionAttribute : System.Attribute
     {
@@ -10929,6 +10891,15 @@ namespace System.Reflection
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public virtual void RemoveEventHandler(object target, System.Delegate handler) { }
     }
+    public static partial class EventInfoExtensions
+    {
+        public static System.Reflection.MethodInfo GetAddMethod(System.Reflection.EventInfo eventInfo) { throw null; }
+        public static System.Reflection.MethodInfo GetAddMethod(System.Reflection.EventInfo eventInfo, bool nonPublic) { throw null; }
+        public static System.Reflection.MethodInfo GetRaiseMethod(System.Reflection.EventInfo eventInfo) { throw null; }
+        public static System.Reflection.MethodInfo GetRaiseMethod(System.Reflection.EventInfo eventInfo, bool nonPublic) { throw null; }
+        public static System.Reflection.MethodInfo GetRemoveMethod(System.Reflection.EventInfo eventInfo) { throw null; }
+        public static System.Reflection.MethodInfo GetRemoveMethod(System.Reflection.EventInfo eventInfo, bool nonPublic) { throw null; }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial class ExceptionHandlingClause
@@ -11102,18 +11073,14 @@ namespace System.Reflection
         public virtual System.Reflection.ResourceLocation ResourceLocation { get { throw null; } }
     }
     public delegate bool MemberFilter(System.Reflection.MemberInfo m, object filterCriteria);
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MemberInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
     [System.SerializableAttribute]
-    public abstract partial class MemberInfo : System.Reflection.ICustomAttributeProvider, System.Runtime.InteropServices._MemberInfo
+    public abstract partial class MemberInfo : System.Reflection.ICustomAttributeProvider
     {
         protected MemberInfo() { }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes { get { throw null; } }
         public abstract System.Type DeclaringType { get; }
         public abstract System.Reflection.MemberTypes MemberType { get; }
-        public virtual int MetadataToken { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]get { throw null; } }
+        public virtual int MetadataToken { get { throw null; } }
         public virtual System.Reflection.Module Module { get { throw null; } }
         public abstract string Name { get; }
         public abstract System.Type ReflectedType { get; }
@@ -11122,14 +11089,15 @@ namespace System.Reflection
         public abstract object[] GetCustomAttributes(System.Type attributeType, bool inherit);
         public virtual System.Collections.Generic.IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() { throw null; }
         public override int GetHashCode() { throw null; }
+        public virtual bool HasSameMetadataDefinitionAs(System.Reflection.MemberInfo other) { throw null; }
         public abstract bool IsDefined(System.Type attributeType, bool inherit);
         public static bool operator ==(System.Reflection.MemberInfo left, System.Reflection.MemberInfo right) { throw null; }
         public static bool operator !=(System.Reflection.MemberInfo left, System.Reflection.MemberInfo right) { throw null; }
-        void System.Runtime.InteropServices._MemberInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._MemberInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._MemberInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._MemberInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._MemberInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
+    }
+    public static partial class MemberInfoExtensions
+    {
+        public static int GetMetadataToken(this System.Reflection.MemberInfo member) { throw null; }
+        public static bool HasMetadataToken(this System.Reflection.MemberInfo member) { throw null; }
     }
     [System.FlagsAttribute]
     public enum MemberTypes
@@ -11298,6 +11266,10 @@ namespace System.Reflection
         public static bool operator ==(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
         public static bool operator !=(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
     }
+    public static partial class MethodInfoExtensions
+    {
+        public static System.Reflection.MethodInfo GetBaseDefinition(System.Reflection.MethodInfo method) { throw null; }
+    }
     public sealed partial class Missing : System.Runtime.Serialization.ISerializable
     {
         internal Missing() { }
@@ -11365,6 +11337,11 @@ namespace System.Reflection
         public System.Type ResolveType(int metadataToken) { throw null; }
         public virtual System.Type ResolveType(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
         public override string ToString() { throw null; }
+    }
+    public static partial class ModuleExtensions
+    {
+        public static System.Guid GetModuleVersionId(this System.Reflection.Module module) { throw null; }
+        public static bool HasModuleVersionId(this System.Reflection.Module module) { throw null; }
     }
     public delegate System.Reflection.Module ModuleResolveEventHandler(object sender, System.ResolveEventArgs e);
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false, Inherited=false)]
@@ -11526,6 +11503,15 @@ namespace System.Reflection
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public virtual void SetValue(object obj, object value, object[] index) { }
         public abstract void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] index, System.Globalization.CultureInfo culture);
+    }
+    public static partial class PropertyInfoExtensions
+    {
+        public static System.Reflection.MethodInfo[] GetAccessors(System.Reflection.PropertyInfo property) { throw null; }
+        public static System.Reflection.MethodInfo[] GetAccessors(System.Reflection.PropertyInfo property, bool nonPublic) { throw null; }
+        public static System.Reflection.MethodInfo GetGetMethod(System.Reflection.PropertyInfo property) { throw null; }
+        public static System.Reflection.MethodInfo GetGetMethod(System.Reflection.PropertyInfo property, bool nonPublic) { throw null; }
+        public static System.Reflection.MethodInfo GetSetMethod(System.Reflection.PropertyInfo property) { throw null; }
+        public static System.Reflection.MethodInfo GetSetMethod(System.Reflection.PropertyInfo property, bool nonPublic) { throw null; }
     }
     public abstract partial class ReflectionContext
     {
@@ -11698,6 +11684,42 @@ namespace System.Reflection
         protected override bool IsPointerImpl() { throw null; }
         protected override bool IsPrimitiveImpl() { throw null; }
         protected override bool IsValueTypeImpl() { throw null; }
+    }
+    public static partial class TypeExtensions
+    {
+        public static System.Reflection.ConstructorInfo GetConstructor(System.Type type, System.Type[] types) { throw null; }
+        public static System.Reflection.ConstructorInfo[] GetConstructors(System.Type type) { throw null; }
+        public static System.Reflection.ConstructorInfo[] GetConstructors(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.MemberInfo[] GetDefaultMembers(System.Type type) { throw null; }
+        public static System.Reflection.EventInfo GetEvent(System.Type type, string name) { throw null; }
+        public static System.Reflection.EventInfo GetEvent(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.EventInfo[] GetEvents(System.Type type) { throw null; }
+        public static System.Reflection.EventInfo[] GetEvents(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.FieldInfo GetField(System.Type type, string name) { throw null; }
+        public static System.Reflection.FieldInfo GetField(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.FieldInfo[] GetFields(System.Type type) { throw null; }
+        public static System.Reflection.FieldInfo[] GetFields(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Type[] GetGenericArguments(System.Type type) { throw null; }
+        public static System.Type[] GetInterfaces(System.Type type) { throw null; }
+        public static System.Reflection.MemberInfo[] GetMember(System.Type type, string name) { throw null; }
+        public static System.Reflection.MemberInfo[] GetMember(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.MemberInfo[] GetMembers(System.Type type) { throw null; }
+        public static System.Reflection.MemberInfo[] GetMembers(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.MethodInfo GetMethod(System.Type type, string name) { throw null; }
+        public static System.Reflection.MethodInfo GetMethod(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.MethodInfo GetMethod(System.Type type, string name, System.Type[] types) { throw null; }
+        public static System.Reflection.MethodInfo[] GetMethods(System.Type type) { throw null; }
+        public static System.Reflection.MethodInfo[] GetMethods(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Type GetNestedType(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Type[] GetNestedTypes(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.PropertyInfo[] GetProperties(System.Type type) { throw null; }
+        public static System.Reflection.PropertyInfo[] GetProperties(System.Type type, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.PropertyInfo GetProperty(System.Type type, string name) { throw null; }
+        public static System.Reflection.PropertyInfo GetProperty(System.Type type, string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public static System.Reflection.PropertyInfo GetProperty(System.Type type, string name, System.Type returnType) { throw null; }
+        public static System.Reflection.PropertyInfo GetProperty(System.Type type, string name, System.Type returnType, System.Type[] types) { throw null; }
+        public static bool IsAssignableFrom(System.Type type, System.Type c) { throw null; }
+        public static bool IsInstanceOfType(System.Type type, object o) { throw null; }
     }
     public delegate bool TypeFilter(System.Type m, object filterCriteria);
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]

@@ -143,7 +143,7 @@ namespace System.Reflection.Tests
             Assert.False(tginst1.HasSameMetadataDefinitionAs(tnong));
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue #10127")]
         public static void HasSameMetadataDefinitionAs_GenericTypeParameters()
         {
             Type theT = typeof(GenericTestClass<>).GetTypeInfo().GenericTypeParameters[0];
@@ -264,7 +264,7 @@ namespace System.Reflection.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue #10129")]
         public static void HasSameMetadataDefinitionAs__CornerCase_HasElementTypes()
         {
             // HasSameMetadataDefinitionAs on an array/byref/pointer type is uninteresting (they'll never be an actual member of a type)
@@ -337,7 +337,7 @@ namespace System.Reflection.Tests
             );
         }
 
-        [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono issue #10159")]
         [PlatformSpecific(TestPlatforms.Windows)]
         public static void HasSameMetadataDefinitionAs_CornerCase_CLSIDConstructor()
         {
