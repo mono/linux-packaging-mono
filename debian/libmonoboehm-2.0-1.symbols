@@ -1827,7 +1827,5 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_try_realloc@Base 5.7.0.181
  monoeg_unichar_break_type@Base 5.7.0.181
  monoeg_unichar_isspace@Base 5.7.0.181
- monoeg_utf8_find_prev_char@Base 5.7.0.181
  monoeg_utf8_get_char_validated@Base 5.7.0.181
- monoeg_utf8_prev_char@Base 5.7.0.181
  monoeg_utf8_to_ucs4@Base 5.7.0.181
