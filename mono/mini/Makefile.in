@@ -184,12 +184,11 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
 	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
 	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
-	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
-	exceptions-wasm.c tramp-wasm.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c
+	mini-wasm.h debugger-engine.c exceptions-wasm.c tramp-wasm.c \
+	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
+	mini-x86-gsharedvt.c tramp-x86-gsharedvt.c mini-darwin.c \
+	mini-posix.c mini-windows.c mini-windows.h \
+	mini-windows-dllmain.c mini-windows-dlldac.c
 am__objects_1 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -240,8 +239,7 @@ am__objects_9 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
 am__objects_10 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_11 = libmini_la-mini-wasm.lo \
-	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
+am__objects_11 = libmini_la-mini-wasm.lo libmini_la-debugger-engine.lo \
 	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
 am__objects_12 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
@@ -852,7 +850,6 @@ mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags
 wasm_sources = \
 	mini-wasm.c		\
 	mini-wasm.h		\
-	mini-wasm-debugger.c	\
 	debugger-engine.c	\
 	exceptions-wasm.c	\
 	tramp-wasm.c
@@ -1471,7 +1468,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-trampolines.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-wasm-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dlldac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dllmain.Plo@am__quote@
@@ -2063,13 +2059,6 @@ libmini_la-mini-wasm.lo: mini-wasm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-wasm.c' object='libmini_la-mini-wasm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-wasm.lo `test -f 'mini-wasm.c' || echo '$(srcdir)/'`mini-wasm.c
-
-libmini_la-mini-wasm-debugger.lo: mini-wasm-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-wasm-debugger.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-wasm-debugger.Tpo -c -o libmini_la-mini-wasm-debugger.lo `test -f 'mini-wasm-debugger.c' || echo '$(srcdir)/'`mini-wasm-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-wasm-debugger.Tpo $(DEPDIR)/libmini_la-mini-wasm-debugger.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-wasm-debugger.c' object='libmini_la-mini-wasm-debugger.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-wasm-debugger.lo `test -f 'mini-wasm-debugger.c' || echo '$(srcdir)/'`mini-wasm-debugger.c
 
 libmini_la-debugger-engine.lo: debugger-engine.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-debugger-engine.lo -MD -MP -MF $(DEPDIR)/libmini_la-debugger-engine.Tpo -c -o libmini_la-debugger-engine.lo `test -f 'debugger-engine.c' || echo '$(srcdir)/'`debugger-engine.c
