@@ -11020,11 +11020,8 @@ namespace System.Reflection
         SpecialName = 512,
         Static = 16,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._FieldInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public abstract partial class FieldInfo : System.Reflection.MemberInfo, System.Runtime.InteropServices._FieldInfo
+    public abstract partial class FieldInfo : System.Reflection.MemberInfo
     {
         protected FieldInfo() { }
         public abstract System.Reflection.FieldAttributes Attributes { get; }
@@ -11065,11 +11062,6 @@ namespace System.Reflection
         public abstract void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Globalization.CultureInfo culture);
         [System.CLSCompliantAttribute(false)]
         public virtual void SetValueDirect(System.TypedReference obj, object value) { }
-        void System.Runtime.InteropServices._FieldInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._FieldInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._FieldInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._FieldInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._FieldInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.FlagsAttribute]
     public enum GenericParameterAttributes
@@ -11360,6 +11352,11 @@ namespace System.Reflection
         internal Missing() { }
         public static readonly System.Reflection.Missing Value;
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public sealed partial class MissingMetadataException : System.TypeAccessException
+    {
+        public MissingMetadataException() { }
+        public MissingMetadataException(string message) { }
     }
     [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
     [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._Module))]

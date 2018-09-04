@@ -143,12 +143,12 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	freebsd-elf32.h freebsd-elf64.h freebsd-dwarf.h dtrace.h \
 	gc_wrapper.h mono-error.c mono-error-internals.h monobitset.h \
 	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
-	mono-machine.h mono-math.h mono-membar.h mono-path.h \
-	mono-poll.h mono-uri.h mono-stdlib.h valgrind.h mach-support.h \
-	memcheck.h mono-context.c mono-context.h \
-	mono-stack-unwinding.h hazard-pointer.c hazard-pointer.h \
-	lock-free-queue.c lock-free-queue.h lock-free-alloc.c \
-	lock-free-alloc.h lock-free-array-queue.c \
+	mono-forward-internal.h mono-machine.h mono-math.h \
+	mono-membar.h mono-path.h mono-poll.h mono-uri.h mono-stdlib.h \
+	valgrind.h mach-support.h memcheck.h mono-context.c \
+	mono-context.h mono-stack-unwinding.h hazard-pointer.c \
+	hazard-pointer.h lock-free-queue.c lock-free-queue.h \
+	lock-free-alloc.c lock-free-alloc.h lock-free-array-queue.c \
 	lock-free-array-queue.h mono-linked-list-set.c \
 	mono-linked-list-set.h mono-threads.c \
 	mono-threads-state-machine.c mono-threads-posix.c \
@@ -745,6 +745,7 @@ monoutils_sources = \
 	mono-counters.h	\
 	mono-digest.h	\
 	mono-error.h	\
+	mono-forward-internal.h	\
 	mono-machine.h	\
 	mono-math.h	\
 	mono-membar.h	\
@@ -836,7 +837,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
 	$(am__append_16) $(am__append_17)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
-libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS)
+libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
 
@@ -846,6 +847,7 @@ libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
 libmonoutilsinclude_HEADERS = \
 	mono-logger.h		\
 	mono-error.h		\
+	mono-forward.h	\
 	mono-publib.h		\
 	mono-jemalloc.h		\
 	mono-dl-fallback.h	\
