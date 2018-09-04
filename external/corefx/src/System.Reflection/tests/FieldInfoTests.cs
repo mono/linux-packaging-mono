@@ -533,7 +533,7 @@ namespace System.Reflection.Tests
             public object field;
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue #10372")]
         [InlineData(222)]
         [InlineData("new value")]
         [InlineData('A')]

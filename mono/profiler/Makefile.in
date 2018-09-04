@@ -234,6 +234,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
 mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_2)
+mprof_report_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(mprof_report_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -632,6 +635,7 @@ libmono_profiler_coverage_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
 mprof_report_SOURCES = mprof-report.c
 mprof_report_LDADD = $(glib_libs) $(zlib_dep)
+mprof_report_LDFLAGS = -no-undefined
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \
@@ -797,7 +801,7 @@ clean-binPROGRAMS:
 
 mprof-report$(EXEEXT): $(mprof_report_OBJECTS) $(mprof_report_DEPENDENCIES) $(EXTRA_mprof_report_DEPENDENCIES) 
 	@rm -f mprof-report$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(mprof_report_OBJECTS) $(mprof_report_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(mprof_report_LINK) $(mprof_report_OBJECTS) $(mprof_report_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

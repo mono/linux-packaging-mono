@@ -139,7 +139,7 @@ class DarwinProfile (UnixProfile):
             package.local_ld_flags = ['-arch i386', '-m32']
             package.local_gcc_flags = ['-arch i386', '-m32']
             package.local_configure_flags = [
-                '--build=i386-apple-darwin11.2.0', '--disable-dependency-tracking']
+                '--build=i386-apple-darwin13.0.0', '--disable-dependency-tracking']
         elif arch == 'darwin-64':
             package.local_ld_flags = ['-arch x86_64 -m64']
             package.local_gcc_flags = ['-arch x86_64 -m64']
