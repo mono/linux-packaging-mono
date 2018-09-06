@@ -21,7 +21,9 @@ namespace System.Runtime.InteropServices
 {
     // Exception for COM Interop errors where we don't recognize the HResult.
     [Serializable]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class COMException : ExternalException
     {
         internal COMException(int hr)

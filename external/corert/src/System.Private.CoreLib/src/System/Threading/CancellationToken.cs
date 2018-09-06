@@ -10,7 +10,6 @@
 
 
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 

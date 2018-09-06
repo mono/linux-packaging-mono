@@ -27,6 +27,15 @@ namespace System.Reflection
 
             Value = (value == null) ? null : CanonicalizeValue(value);
             ArgumentType = argumentType;
+#if MONO
+            if (value is Array a) {
+                Type etype = a.GetType().GetElementType();
+                CustomAttributeTypedArgument[] new_value = new CustomAttributeTypedArgument[a.GetLength(0)];
+                for (int i = 0; i < new_value.Length; ++i)
+                    new_value[i] = new CustomAttributeTypedArgument(etype, a.GetValue(i));
+                Value = new System.Collections.ObjectModel.ReadOnlyCollection <CustomAttributeTypedArgument>(new_value);
+            }
+#endif
         }
 
         public Type ArgumentType { get; }

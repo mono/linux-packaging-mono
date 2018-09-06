@@ -4275,6 +4275,8 @@ namespace System
         public static System.String Concat(object arg0) { throw null; }
         public static System.String Concat(object arg0, object arg1) { throw null; }
         public static System.String Concat(object arg0, object arg1, object arg2) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static System.String Concat(object arg0, object arg1, object arg2, object arg3, __arglist) { throw null; }
         public static System.String Concat(params object[] args) { throw null; }
         public static System.String Concat(System.String str0, System.String str1) { throw null; }
         public static System.String Concat(System.String str0, System.String str1, System.String str2) { throw null; }
@@ -10897,8 +10899,6 @@ namespace System.Reflection
         public static bool operator !=(System.Reflection.CustomAttributeNamedArgument left, System.Reflection.CustomAttributeNamedArgument right) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeTypedArgument
     {

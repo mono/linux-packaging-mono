@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.19.0.290],
+AC_INIT(mono, [5.19.0.317],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3843,7 +3843,7 @@ if test "x$internal_llvm" != "xno"; then
 fi
 
 AM_CONDITIONAL(INTERNAL_LLVM_ASSERTS, [test "x$enable_llvm_asserts" != "xno"])
-if test "x$internal_llvm_asserts" != "xno"; then
+if test "x$enable_llvm_asserts" != "xno"; then
    AC_DEFINE(INTERNAL_LLVM_ASSERTS, 1, [Build LLVM with assertions])
 fi
 
