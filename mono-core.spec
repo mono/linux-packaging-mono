@@ -30,7 +30,7 @@
 
 Name:           mono-core
 %define __majorver 5.16.0
-%define __minorver 144
+%define __minorver 147
 Version:	%{__majorver}.%{__minorver}
 Release:	0.xamarin.1
 Summary:        Cross-platform, Open Source, .NET development framework
