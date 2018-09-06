@@ -176,7 +176,11 @@ namespace System.Globalization
                     nameof(name), name, SR.Argument_CultureNotSupported);
 
             _name = _cultureData.CultureName;
+#if MONO
+            _isInherited = (this.GetType() != typeof(System.Globalization.CultureInfo));
+#else
             _isInherited = !this.EETypePtr.FastEquals(EETypePtr.EETypePtrOf<CultureInfo>());
+#endif
         }
 
         private CultureInfo(CultureData cultureData, bool isReadOnly = false)

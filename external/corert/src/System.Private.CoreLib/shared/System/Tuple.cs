@@ -4,9 +4,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
-#if MONO
-using System.Diagnostics.Private;
-#endif
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
