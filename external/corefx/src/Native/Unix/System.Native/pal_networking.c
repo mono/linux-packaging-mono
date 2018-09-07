@@ -1711,6 +1711,7 @@ int32_t SystemNative_GetSockOpt(
                 return Error_EINVAL;
             }
 
+#ifdef SO_REUSEPORT
             socklen_t optLen = (socklen_t)*optionLen;
             // On Unix, SO_REUSEPORT controls the ability to bind multiple sockets to the same address.
             int err = getsockopt(fd, SOL_SOCKET, SO_REUSEPORT, optionValue, &optLen);
@@ -1731,7 +1732,9 @@ int32_t SystemNative_GetSockOpt(
                 value = value == 0 ? 1 : 0;
             }
             *(int32_t*)optionValue = value;
-
+#else
+            *optionValue = 0;
+#endif
             return Error_SUCCESS;
         }
     }
@@ -1790,6 +1793,7 @@ SystemNative_SetSockOpt(intptr_t socket, int32_t socketOptionLevel, int32_t sock
         // We make both SocketOptionName_SO_REUSEADDR and SocketOptionName_SO_EXCLUSIVEADDRUSE control SO_REUSEPORT.
         if (socketOptionName == SocketOptionName_SO_EXCLUSIVEADDRUSE || socketOptionName == SocketOptionName_SO_REUSEADDR)
         {
+#ifdef SO_REUSEPORT
             if (optionLen != sizeof(int32_t))
             {
                 return Error_EINVAL;
@@ -1812,6 +1816,9 @@ SystemNative_SetSockOpt(intptr_t socket, int32_t socketOptionLevel, int32_t sock
 
             int err = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &value, (socklen_t)optionLen);
             return err == 0 ? Error_SUCCESS : SystemNative_ConvertErrorPlatformToPal(errno);
+#else
+            return Error_SUCCESS;
+#endif
         }
     }
 #ifdef IP_MTU_DISCOVER
