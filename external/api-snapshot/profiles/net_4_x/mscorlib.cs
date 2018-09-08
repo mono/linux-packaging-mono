@@ -1004,19 +1004,13 @@ namespace System
     public static partial class BitConverter
     {
         public static readonly bool IsLittleEndian;
-        [System.Security.SecuritySafeCriticalAttribute]
-        public static long DoubleToInt64Bits(double value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static long DoubleToInt64Bits(double value) { throw null; }
         public static byte[] GetBytes(bool value) { throw null; }
         public static byte[] GetBytes(char value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static byte[] GetBytes(double value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static byte[] GetBytes(short value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static byte[] GetBytes(int value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static byte[] GetBytes(long value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static byte[] GetBytes(float value) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public static byte[] GetBytes(ushort value) { throw null; }
@@ -1025,27 +1019,29 @@ namespace System
         [System.CLSCompliantAttribute(false)]
         public static byte[] GetBytes(ulong value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static float Int32BitsToSingle(int value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
-        public static double Int64BitsToDouble(long value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static double Int64BitsToDouble(long value) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int SingleToInt32Bits(float value) { throw null; }
         public static bool ToBoolean(byte[] value, int startIndex) { throw null; }
+        public static bool ToBoolean(System.ReadOnlySpan<byte> value) { throw null; }
         public static char ToChar(byte[] value, int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public static char ToChar(System.ReadOnlySpan<byte> value) { throw null; }
         public static double ToDouble(byte[] value, int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public static double ToDouble(System.ReadOnlySpan<byte> value) { throw null; }
         public static short ToInt16(byte[] value, int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public static short ToInt16(System.ReadOnlySpan<byte> value) { throw null; }
         public static int ToInt32(byte[] value, int startIndex) { throw null; }
         public static int ToInt32(System.ReadOnlySpan<byte> value) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static long ToInt64(byte[] value, int startIndex) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public static long ToInt64(System.ReadOnlySpan<byte> value) { throw null; }
         public static float ToSingle(byte[] value, int startIndex) { throw null; }
+        public static float ToSingle(System.ReadOnlySpan<byte> value) { throw null; }
         public static string ToString(byte[] value) { throw null; }
         public static string ToString(byte[] value, int startIndex) { throw null; }
         public static string ToString(byte[] value, int startIndex, int length) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public static ushort ToUInt16(byte[] value, int startIndex) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static ushort ToUInt16(System.ReadOnlySpan<byte> value) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public static uint ToUInt32(byte[] value, int startIndex) { throw null; }
         [System.CLSCompliantAttribute(false)]
@@ -1054,6 +1050,19 @@ namespace System
         public static ulong ToUInt64(byte[] value, int startIndex) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public static ulong ToUInt64(System.ReadOnlySpan<byte> value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, bool value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, char value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, double value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, short value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, int value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, long value) { throw null; }
+        public static bool TryWriteBytes(System.Span<byte> destination, float value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static bool TryWriteBytes(System.Span<byte> destination, ushort value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static bool TryWriteBytes(System.Span<byte> destination, uint value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static bool TryWriteBytes(System.Span<byte> destination, ulong value) { throw null; }
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -2024,6 +2033,17 @@ namespace System
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate void CrossAppDomainDelegate();
     [System.SerializableAttribute]
+    public sealed partial class CultureAwareComparer : System.StringComparer, System.Runtime.Serialization.ISerializable
+    {
+        internal CultureAwareComparer() { }
+        public override int Compare(string x, string y) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public override bool Equals(string x, string y) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public override int GetHashCode(string obj) { throw null; }
+        public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    [System.SerializableAttribute]
     public sealed partial class DataMisalignedException : System.SystemException
     {
         public DataMisalignedException() { }
@@ -2246,13 +2266,11 @@ namespace System
         Tuesday = 2,
         Wednesday = 3,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class DBNull : System.IConvertible, System.Runtime.Serialization.ISerializable
     {
         internal DBNull() { }
         public static readonly System.DBNull Value;
-        [System.Security.SecurityCriticalAttribute]
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public System.TypeCode GetTypeCode() { throw null; }
         bool System.IConvertible.ToBoolean(System.IFormatProvider provider) { throw null; }
@@ -3244,8 +3262,7 @@ namespace System
         public InvalidProgramException(string message) { }
         public InvalidProgramException(string message, System.Exception inner) { }
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class InvalidTimeZoneException : System.Exception
     {
@@ -3745,7 +3762,6 @@ namespace System
         public NotImplementedException(string message) { }
         public NotImplementedException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class NotSupportedException : System.SystemException
     {
@@ -3845,6 +3861,16 @@ namespace System
         public OperationCanceledException(string message, System.Threading.CancellationToken token) { }
         public OperationCanceledException(System.Threading.CancellationToken token) { }
         public System.Threading.CancellationToken CancellationToken { get { throw null; } }
+    }
+    [System.SerializableAttribute]
+    public partial class OrdinalComparer : System.StringComparer
+    {
+        internal OrdinalComparer() { }
+        public override int Compare(string x, string y) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public override bool Equals(string x, string y) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public override int GetHashCode(string obj) { throw null; }
     }
     [System.SerializableAttribute]
     public partial class OutOfMemoryException : System.SystemException
@@ -4114,7 +4140,6 @@ namespace System
         public object GetObject() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4124), Inherited=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class SerializableAttribute : System.Attribute
     {
         public SerializableAttribute() { }
@@ -4420,7 +4445,6 @@ namespace System
         public System.String TrimStart(char trimChar) { throw null; }
         public System.String TrimStart(params char[] trimChars) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class StringComparer : System.Collections.Generic.IComparer<string>, System.Collections.Generic.IEqualityComparer<string>, System.Collections.IComparer, System.Collections.IEqualityComparer
     {
@@ -4434,6 +4458,7 @@ namespace System
         public int Compare(object x, object y) { throw null; }
         public abstract int Compare(string x, string y);
         public static System.StringComparer Create(System.Globalization.CultureInfo culture, bool ignoreCase) { throw null; }
+        public static System.StringComparer Create(System.Globalization.CultureInfo culture, System.Globalization.CompareOptions options) { throw null; }
         public new bool Equals(object x, object y) { throw null; }
         public abstract bool Equals(string x, string y);
         public static System.StringComparer FromComparison(System.StringComparison comparisonType) { throw null; }
@@ -4655,8 +4680,7 @@ namespace System
             void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         }
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class TimeZoneNotFoundException : System.Exception
     {
@@ -5581,7 +5605,6 @@ namespace System
         public override int GetHashCode() { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class Version : System.ICloneable, System.IComparable, System.IComparable<System.Version>, System.IEquatable<System.Version>
     {
@@ -5608,9 +5631,13 @@ namespace System
         public static bool operator !=(System.Version v1, System.Version v2) { throw null; }
         public static bool operator <(System.Version v1, System.Version v2) { throw null; }
         public static bool operator <=(System.Version v1, System.Version v2) { throw null; }
+        public static System.Version Parse(System.ReadOnlySpan<char> input) { throw null; }
         public static System.Version Parse(string input) { throw null; }
         public override string ToString() { throw null; }
         public string ToString(int fieldCount) { throw null; }
+        public bool TryFormat(System.Span<char> destination, int fieldCount, out int charsWritten) { charsWritten = default(int); throw null; }
+        public bool TryFormat(System.Span<char> destination, out int charsWritten) { charsWritten = default(int); throw null; }
+        public static bool TryParse(System.ReadOnlySpan<char> input, out System.Version result) { result = default(System.Version); throw null; }
         public static bool TryParse(string input, out System.Version result) { result = default(System.Version); throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
@@ -7094,8 +7121,6 @@ namespace System.Configuration.Assemblies
         [System.ObsoleteAttribute]
         public void SetValue(byte[] value) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum AssemblyHashAlgorithm
     {
         MD5 = 32771,
@@ -7105,8 +7130,6 @@ namespace System.Configuration.Assemblies
         SHA384 = 32781,
         SHA512 = 32782,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum AssemblyVersionCompatibility
     {
         SameDomain = 3,
@@ -7144,7 +7167,6 @@ namespace System.Deployment.Internal
 namespace System.Diagnostics
 {
     [System.AttributeUsageAttribute((System.AttributeTargets)(68), AllowMultiple=true)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class ConditionalAttribute : System.Attribute
     {
@@ -8031,7 +8053,6 @@ namespace System.Globalization
         public abstract System.DateTime ToDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
         public virtual int ToFourDigitYear(int year) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum CalendarAlgorithmType
     {
         LunarCalendar = 2,
@@ -8039,8 +8060,6 @@ namespace System.Globalization
         SolarCalendar = 1,
         Unknown = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CalendarWeekRule
     {
         FirstDay = 0,
@@ -8199,9 +8218,8 @@ namespace System.Globalization
         public static System.Globalization.CultureInfo ReadOnly(System.Globalization.CultureInfo ci) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public partial class CultureNotFoundException : System.ArgumentException, System.Runtime.Serialization.ISerializable
+    public partial class CultureNotFoundException : System.ArgumentException
     {
         public CultureNotFoundException() { }
         protected CultureNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -8215,12 +8233,9 @@ namespace System.Globalization
         public virtual System.Nullable<int> InvalidCultureId { get { throw null; } }
         public virtual string InvalidCultureName { get { throw null; } }
         public override string Message { get { throw null; } }
-        [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CultureTypes
     {
         AllCultures = 7,
@@ -8290,8 +8305,6 @@ namespace System.Globalization
         public void SetAllDateTimePatterns(string[] patterns, char format) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum DateTimeStyles
     {
         AdjustToUniversal = 16,
@@ -8305,7 +8318,6 @@ namespace System.Globalization
         None = 0,
         RoundtripKind = 128,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class DaylightTime
     {
@@ -8314,8 +8326,6 @@ namespace System.Globalization
         public System.DateTime End { get { throw null; } }
         public System.DateTime Start { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum DigitShapes
     {
         Context = 0,
@@ -8644,8 +8654,6 @@ namespace System.Globalization
         public static System.Globalization.NumberFormatInfo ReadOnly(System.Globalization.NumberFormatInfo nfi) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum NumberStyles
     {
         AllowCurrencySymbol = 256,
@@ -8930,8 +8938,6 @@ namespace System.Globalization
         public override System.DateTime ToDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) { throw null; }
         public override int ToFourDigitYear(int year) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum UnicodeCategory
     {
         ClosePunctuation = 21,
@@ -9170,7 +9176,6 @@ namespace System.IO
         public void SetAccessControl(System.Security.AccessControl.DirectorySecurity directorySecurity) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class DirectoryNotFoundException : System.IO.IOException
     {
@@ -9199,7 +9204,6 @@ namespace System.IO
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class DriveNotFoundException : System.IO.IOException
     {
@@ -9208,8 +9212,6 @@ namespace System.IO
         public DriveNotFoundException(string message) { }
         public DriveNotFoundException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum DriveType
     {
         CDRom = 5,
@@ -9220,7 +9222,6 @@ namespace System.IO
         Removable = 2,
         Unknown = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class EndOfStreamException : System.IO.IOException
     {
@@ -9294,8 +9295,6 @@ namespace System.IO
         public static void WriteAllText(string path, string contents, System.Text.Encoding encoding) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FileAccess
     {
         Read = 1,
@@ -9380,8 +9379,6 @@ namespace System.IO
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FileMode
     {
         Append = 6,
@@ -9391,7 +9388,6 @@ namespace System.IO
         OpenOrCreate = 4,
         Truncate = 5,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class FileNotFoundException : System.IO.IOException
     {
@@ -9402,15 +9398,12 @@ namespace System.IO
         public FileNotFoundException(string message, string fileName) { }
         public FileNotFoundException(string message, string fileName, System.Exception innerException) { }
         public string FileName { get { throw null; } }
-        public string FusionLog { [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(96))]get { throw null; } }
+        public string FusionLog { get { throw null; } }
         public override string Message { get { throw null; } }
-        [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FileOptions
     {
         Asynchronous = 1073741824,
@@ -9422,8 +9415,6 @@ namespace System.IO
         WriteThrough = -2147483648,
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FileShare
     {
         Delete = 4,
@@ -9599,7 +9590,6 @@ namespace System.IO
         public static bool HasExtension(string path) { throw null; }
         public static bool IsPathRooted(string path) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class PathTooLongException : System.IO.IOException
     {
@@ -9608,15 +9598,11 @@ namespace System.IO
         public PathTooLongException(string message) { }
         public PathTooLongException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum SearchOption
     {
         AllDirectories = 1,
         TopDirectoryOnly = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum SeekOrigin
     {
         Begin = 0,
@@ -10098,7 +10084,6 @@ namespace System.IO
 }
 namespace System.IO.IsolatedStorage
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface INormalizeForIsolatedStorage
     {
         object Normalize();
@@ -10263,8 +10248,6 @@ namespace System.IO.IsolatedStorage
         public override void WriteByte(byte value) { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum IsolatedStorageScope
     {
         Application = 32,
@@ -10882,8 +10865,6 @@ namespace System.Reflection
         public CustomAttributeFormatException(string message) { }
         public CustomAttributeFormatException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeNamedArgument
     {
@@ -12835,11 +12816,9 @@ namespace System.Reflection.Emit
         public static readonly System.Reflection.Emit.OpCode Xor;
         public static bool TakesSingleByteArgument(System.Reflection.Emit.OpCode inst) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum OpCodeType
     {
-        [System.ObsoleteAttribute("This API has been deprecated.")]
+        [System.ObsoleteAttribute("This API has been deprecated. http://go.microsoft.com/fwlink/?linkid=14202")]
         Annotation = 0,
         Macro = 1,
         Nternal = 2,
@@ -12847,8 +12826,6 @@ namespace System.Reflection.Emit
         Prefix = 4,
         Primitive = 5,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum OperandType
     {
         InlineBrTarget = 0,
@@ -12857,7 +12834,7 @@ namespace System.Reflection.Emit
         InlineI8 = 3,
         InlineMethod = 4,
         InlineNone = 5,
-        [System.ObsoleteAttribute("This API has been deprecated.")]
+        [System.ObsoleteAttribute("This API has been deprecated. http://go.microsoft.com/fwlink/?linkid=14202")]
         InlinePhi = 6,
         InlineR = 7,
         InlineSig = 9,
@@ -12871,8 +12848,6 @@ namespace System.Reflection.Emit
         ShortInlineR = 17,
         ShortInlineVar = 18,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PackingSize
     {
         Size1 = 1,
@@ -13033,8 +13008,6 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.SignatureToken a, System.Reflection.Emit.SignatureToken b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.SignatureToken a, System.Reflection.Emit.SignatureToken b) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum StackBehaviour
     {
         Pop0 = 0,
@@ -13251,13 +13224,11 @@ namespace System.Reflection.Metadata
 }
 namespace System.Resources
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IResourceReader : System.Collections.IEnumerable, System.IDisposable
     {
         void Close();
         new System.Collections.IDictionaryEnumerator GetEnumerator();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IResourceWriter : System.IDisposable
     {
         void AddResource(string name, byte[] value);
@@ -13266,7 +13237,6 @@ namespace System.Resources
         void Close();
         void Generate();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class MissingManifestResourceException : System.SystemException
     {
@@ -13275,7 +13245,6 @@ namespace System.Resources
         public MissingManifestResourceException(string message) { }
         public MissingManifestResourceException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class MissingSatelliteAssemblyException : System.SystemException
     {
@@ -13287,7 +13256,6 @@ namespace System.Resources
         public string CultureName { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class NeutralResourcesLanguageAttribute : System.Attribute
     {
         public NeutralResourcesLanguageAttribute(string cultureName) { }
@@ -13389,14 +13357,11 @@ namespace System.Resources
         public void Generate() { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class SatelliteContractVersionAttribute : System.Attribute
     {
         public SatelliteContractVersionAttribute(string version) { }
         public string Version { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum UltimateResourceFallbackLocation
     {
         MainAssembly = 0,
@@ -14094,14 +14059,12 @@ namespace System.Runtime.CompilerServices
 }
 namespace System.Runtime.ConstrainedExecution
 {
-    [System.SerializableAttribute]
     public enum Cer
     {
         MayFail = 1,
         None = 0,
         Success = 2,
     }
-    [System.SerializableAttribute]
     public enum Consistency
     {
         MayCorruptAppDomain = 1,
@@ -14109,13 +14072,9 @@ namespace System.Runtime.ConstrainedExecution
         MayCorruptProcess = 0,
         WillNotCorruptState = 3,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     public abstract partial class CriticalFinalizerObject
     {
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         protected CriticalFinalizerObject() { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         ~CriticalFinalizerObject() { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(96), Inherited=false)]
@@ -14144,7 +14103,7 @@ namespace System.Runtime.ExceptionServices
     public partial class FirstChanceExceptionEventArgs : System.EventArgs
     {
         public FirstChanceExceptionEventArgs(System.Exception exception) { }
-        public System.Exception Exception { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]get { throw null; } }
+        public System.Exception Exception { get { throw null; } }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=false)]
     public sealed partial class HandleProcessCorruptedStateExceptionsAttribute : System.Attribute
@@ -14247,15 +14206,9 @@ namespace System.Runtime.InteropServices
         public int grfFlags;
         public int grfMode;
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class BStrWrapper
     {
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
         public BStrWrapper(object value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
         public BStrWrapper(string value) { }
         public string WrappedObject { get { throw null; } }
     }
@@ -14284,8 +14237,6 @@ namespace System.Runtime.InteropServices
         ThisCall = 4,
         Winapi = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CharSet
     {
         Ansi = 2,
@@ -14361,7 +14312,6 @@ namespace System.Runtime.InteropServices
         [System.MonoTODOAttribute]
         public static System.Delegate Remove(object rcw, System.Guid iid, int dispid, System.Delegate d) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class COMException : System.Runtime.InteropServices.ExternalException
     {
@@ -14388,8 +14338,6 @@ namespace System.Runtime.InteropServices
         InterfaceIsIInspectable = 3,
         InterfaceIsIUnknown = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ComMemberType
     {
         Method = 0,
@@ -14462,8 +14410,6 @@ namespace System.Runtime.InteropServices
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public void SetHandleAsInvalid() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class CurrencyWrapper
     {
         public CurrencyWrapper(decimal obj) { }
@@ -14575,12 +14521,8 @@ namespace System.Runtime.InteropServices
             public System.Runtime.InteropServices.PARAMDESC paramdesc;
         }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class ErrorWrapper
     {
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
         public ErrorWrapper(System.Exception e) { }
         public ErrorWrapper(int errorCode) { }
         public ErrorWrapper(object errorCode) { }
@@ -14616,7 +14558,6 @@ namespace System.Runtime.InteropServices
         internal ExtensibleClassFactory() { }
         public static void RegisterObjectCreationCallback(System.Runtime.InteropServices.ObjectCreationDelegate callback) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class ExternalException : System.SystemException
     {
@@ -14708,8 +14649,6 @@ namespace System.Runtime.InteropServices
         public static bool operator !=(System.Runtime.InteropServices.GCHandle a, System.Runtime.InteropServices.GCHandle b) { throw null; }
         public static System.IntPtr ToIntPtr(System.Runtime.InteropServices.GCHandle value) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum GCHandleType
     {
         Normal = 2,
@@ -14724,7 +14663,6 @@ namespace System.Runtime.InteropServices
         public GuidAttribute(string guid) { }
         public string Value { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct HandleRef
     {
@@ -14734,18 +14672,15 @@ namespace System.Runtime.InteropServices
         public static explicit operator System.IntPtr (System.Runtime.InteropServices.HandleRef value) { throw null; }
         public static System.IntPtr ToIntPtr(System.Runtime.InteropServices.HandleRef value) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICustomAdapter
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.IUnknown)]
         object GetUnderlyingObject();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICustomFactory
     {
         System.MarshalByRefObject CreateInstance(System.Type serverType);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICustomMarshaler
     {
         void CleanUpManagedData(object ManagedObj);
@@ -14835,7 +14770,6 @@ namespace System.Runtime.InteropServices
         public InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType interfaceType) { }
         public System.Runtime.InteropServices.ComInterfaceType Value { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class InvalidComObjectException : System.SystemException
     {
@@ -14844,7 +14778,6 @@ namespace System.Runtime.InteropServices
         public InvalidComObjectException(string message) { }
         public InvalidComObjectException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class InvalidOleVariantTypeException : System.SystemException
     {
@@ -14917,8 +14850,6 @@ namespace System.Runtime.InteropServices
         void ReportEvent(System.Runtime.InteropServices.ImporterEventKind eventKind, int eventCode, string eventMsg);
         System.Reflection.Assembly ResolveRef([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]object typeLib);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum LayoutKind
     {
         Auto = 3,
@@ -15232,7 +15163,6 @@ namespace System.Runtime.InteropServices
         public MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType unmanagedType) { }
         public System.Runtime.InteropServices.UnmanagedType Value { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class MarshalDirectiveException : System.SystemException
     {
@@ -15418,7 +15348,6 @@ namespace System.Runtime.InteropServices
         public static System.Runtime.InteropServices.Architecture ProcessArchitecture { get { throw null; } }
         public static bool IsOSPlatform(System.Runtime.InteropServices.OSPlatform osPlatform) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class SafeArrayRankMismatchException : System.SystemException
     {
@@ -15427,7 +15356,6 @@ namespace System.Runtime.InteropServices
         public SafeArrayRankMismatchException(string message) { }
         public SafeArrayRankMismatchException(string message, System.Exception inner) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class SafeArrayTypeMismatchException : System.SystemException
     {
@@ -15499,7 +15427,6 @@ namespace System.Runtime.InteropServices
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public void SetHandleAsInvalid() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class SEHException : System.Runtime.InteropServices.ExternalException
     {
@@ -15991,8 +15918,6 @@ namespace System.Runtime.InteropServices
         bool IsName([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string szNameBuf, int lHashVal);
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]void ReleaseTLibAttr(System.IntPtr pTLibAttr);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public sealed partial class UnknownWrapper
     {
         public UnknownWrapper(object obj) { }
@@ -16142,7 +16067,6 @@ namespace System.Runtime.InteropServices
         VARFLAG_FSOURCE = (short)2,
         VARFLAG_FUIDEFAULT = (short)512,
     }
-    [System.SerializableAttribute]
     public sealed partial class VariantWrapper
     {
         public VariantWrapper(object obj) { }
@@ -19118,7 +19042,6 @@ namespace System.Runtime.Remoting.Services
 namespace System.Runtime.Serialization
 {
     [System.CLSCompliantAttribute(false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class Formatter : System.Runtime.Serialization.IFormatter
     {
@@ -19156,7 +19079,6 @@ namespace System.Runtime.Serialization
         protected abstract void WriteUInt64(ulong val, string name);
         protected abstract void WriteValueType(object obj, string name, System.Type memberType);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class FormatterConverter : System.Runtime.Serialization.IFormatterConverter
     {
         public FormatterConverter() { }
@@ -19204,7 +19126,6 @@ namespace System.Runtime.Serialization
         [System.Security.SecurityCriticalAttribute]
         public static object PopulateObjectMembers(object obj, System.Reflection.MemberInfo[] members, object[] data) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IDeserializationCallback
     {
         void OnDeserialization(object sender);
@@ -19219,7 +19140,6 @@ namespace System.Runtime.Serialization
         void Serialize(System.IO.Stream serializationStream, object graph);
     }
     [System.CLSCompliantAttribute(false)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IFormatterConverter
     {
         object Convert(object value, System.Type type);
@@ -19240,38 +19160,27 @@ namespace System.Runtime.Serialization
         uint ToUInt32(object value);
         ulong ToUInt64(object value);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IObjectReference
     {
-        [System.Security.SecurityCriticalAttribute]
         object GetRealObject(System.Runtime.Serialization.StreamingContext context);
     }
     public partial interface ISafeSerializationData
     {
         void CompleteDeserialization(object deserialized);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISerializable
     {
-        [System.Security.SecurityCriticalAttribute]
         void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISerializationSurrogate
     {
-        [System.Security.SecurityCriticalAttribute]
         void GetObjectData(object obj, System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context);
-        [System.Security.SecurityCriticalAttribute]
         object SetObjectData(object obj, System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context, System.Runtime.Serialization.ISurrogateSelector selector);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISurrogateSelector
     {
-        [System.Security.SecurityCriticalAttribute]
         void ChainSelector(System.Runtime.Serialization.ISurrogateSelector selector);
-        [System.Security.SecurityCriticalAttribute]
         System.Runtime.Serialization.ISurrogateSelector GetNextSelector();
-        [System.Security.SecurityCriticalAttribute]
         System.Runtime.Serialization.ISerializationSurrogate GetSurrogate(System.Type type, System.Runtime.Serialization.StreamingContext context, out System.Runtime.Serialization.ISurrogateSelector selector);
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -19342,7 +19251,6 @@ namespace System.Runtime.Serialization
         public System.Runtime.Serialization.StreamingContext StreamingContext { get { throw null; } }
         public void AddSerializedState(System.Runtime.Serialization.ISafeSerializationData serializedState) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public abstract partial class SerializationBinder
     {
@@ -19350,7 +19258,6 @@ namespace System.Runtime.Serialization
         public virtual void BindToName(System.Type serializedType, out string assemblyName, out string typeName) { assemblyName = default(string); typeName = default(string); }
         public abstract System.Type BindToType(string assemblyName, string typeName);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SerializationEntry
     {
@@ -19358,7 +19265,7 @@ namespace System.Runtime.Serialization
         public System.Type ObjectType { get { throw null; } }
         public object Value { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
+    public delegate void SerializationEventHandler(System.Runtime.Serialization.StreamingContext context);
     [System.SerializableAttribute]
     public partial class SerializationException : System.SystemException
     {
@@ -19425,7 +19332,6 @@ namespace System.Runtime.Serialization
         [System.Security.SecuritySafeCriticalAttribute]
         public void SetType(System.Type type) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class SerializationInfoEnumerator : System.Collections.IEnumerator
     {
         internal SerializationInfoEnumerator() { }
@@ -19441,7 +19347,6 @@ namespace System.Runtime.Serialization
     {
         public SerializationObjectManager(System.Runtime.Serialization.StreamingContext context) { }
         public void RaiseOnSerializedEvent() { }
-        [System.Security.SecurityCriticalAttribute]
         public void RegisterObject(object obj) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -19487,26 +19392,21 @@ namespace System.Runtime.Serialization
 }
 namespace System.Runtime.Serialization.Formatters
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FormatterAssemblyStyle
     {
         Full = 1,
         Simple = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FormatterTypeStyle
     {
         TypesAlways = 1,
         TypesWhenNeeded = 0,
         XsdString = 2,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IFieldInfo
     {
-        string[] FieldNames { [System.Security.SecurityCriticalAttribute]get; [System.Security.SecurityCriticalAttribute]set; }
-        System.Type[] FieldTypes { [System.Security.SecurityCriticalAttribute]get; [System.Security.SecurityCriticalAttribute]set; }
+        string[] FieldNames { get; set; }
+        System.Type[] FieldTypes { get; set; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Security.SecurityCriticalAttribute]
@@ -19578,7 +19478,6 @@ namespace System.Runtime.Serialization.Formatters
         public object[] ParamValues { get { throw null; } set { } }
         public string XmlNameSpace { get { throw null; } set { } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum TypeFilterLevel
     {
         Full = 3,
@@ -19628,7 +19527,6 @@ namespace System.Runtime.Versioning
         public System.Runtime.Versioning.ComponentGuaranteesOptions Guarantees { get { throw null; } }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum ComponentGuaranteesOptions
     {
         Exchange = 1,
@@ -19762,12 +19660,10 @@ namespace System.Security
         HostResolvePolicy = 16,
         None = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IEvidenceFactory
     {
         System.Security.Policy.Evidence Evidence { get; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IPermission : System.Security.ISecurityEncodable
     {
         System.Security.IPermission Copy();
@@ -19776,19 +19672,16 @@ namespace System.Security
         bool IsSubsetOf(System.Security.IPermission target);
         System.Security.IPermission Union(System.Security.IPermission target);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISecurityEncodable
     {
         void FromXml(System.Security.SecurityElement e);
         System.Security.SecurityElement ToXml();
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ISecurityPolicyEncodable
     {
         void FromXml(System.Security.SecurityElement e, System.Security.Policy.PolicyLevel level);
         System.Security.SecurityElement ToXml(System.Security.Policy.PolicyLevel level);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IStackWalk
     {
         void Assert();
@@ -19865,8 +19758,6 @@ namespace System.Security
         public virtual System.Security.SecurityElement ToXml() { throw null; }
         public System.Security.PermissionSet Union(System.Security.PermissionSet other) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PolicyLevelType
     {
         AppDomain = 3,
@@ -20066,8 +19957,6 @@ namespace System.Security
     {
         public SecurityTreatAsSafeAttribute() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum SecurityZone
     {
         Internet = 3,
@@ -20089,7 +19978,6 @@ namespace System.Security
     {
         public UnverifiableCodeAttribute() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class VerificationException : System.SystemException
     {
@@ -20098,7 +19986,6 @@ namespace System.Security
         public VerificationException(string message) { }
         public VerificationException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public sealed partial class XmlSyntaxException : System.SystemException
     {
@@ -20791,7 +20678,6 @@ namespace System.Security.AccessControl
         public PrivilegeNotHeldException(string privilege) { }
         public PrivilegeNotHeldException(string privilege, System.Exception inner) { }
         public string PrivilegeName { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]
@@ -21600,7 +21486,6 @@ namespace System.Security.Cryptography
         int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset);
         byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface ICspAsymmetricAlgorithm
     {
         System.Security.Cryptography.CspKeyContainerInfo CspKeyContainerInfo { get; }
@@ -21617,8 +21502,6 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.KeyedHashAlgorithm Create(string algName) { throw null; }
         protected override void Dispose(bool disposing) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum KeyNumber
     {
         Exchange = 1,
@@ -22337,8 +22220,6 @@ namespace System.Security.Permissions
         public override System.Security.IPermission Union(System.Security.IPermission target) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum FileDialogPermissionAccess
     {
         None = 0,
@@ -22461,8 +22342,6 @@ namespace System.Security.Permissions
         public override System.Security.IPermission CreatePermission() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum HostProtectionResource
     {
         All = 511,
@@ -22477,8 +22356,6 @@ namespace System.Security.Permissions
         Synchronization = 1,
         UI = 128,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum IsolatedStorageContainment
     {
         AdministerIsolatedStorageByUser = 112,
@@ -22536,7 +22413,6 @@ namespace System.Security.Permissions
         public System.Security.Permissions.IsolatedStorageContainment UsageAllowed { get { throw null; } set { } }
         public long UserQuota { get { throw null; } set { } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IUnrestrictedPermission
     {
         bool IsUnrestricted();
@@ -22651,8 +22527,6 @@ namespace System.Security.Permissions
         public override System.Security.IPermission CreatePermission() { throw null; }
         public System.Security.PermissionSet CreatePermissionSet() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PermissionState
     {
         None = 0,
@@ -22746,19 +22620,16 @@ namespace System.Security.Permissions
         public override System.Security.IPermission CreatePermission() { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ReflectionPermissionFlag
     {
-        [System.ObsoleteAttribute]
+        [System.ObsoleteAttribute("This permission has been deprecated. Use PermissionState.Unrestricted to get full access.")]
         AllFlags = 7,
         MemberAccess = 2,
         NoFlags = 0,
-        [System.ObsoleteAttribute]
+        [System.ObsoleteAttribute("This permission is no longer used by the CLR.")]
         ReflectionEmit = 4,
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         RestrictedMemberAccess = 8,
-        [System.ObsoleteAttribute("not used anymore")]
+        [System.ObsoleteAttribute("This API has been deprecated. http://go.microsoft.com/fwlink/?linkid=14202")]
         TypeInformation = 1,
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -22782,8 +22653,6 @@ namespace System.Security.Permissions
         public override System.Security.IPermission Union(System.Security.IPermission other) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum RegistryPermissionAccess
     {
         AllAccess = 7,
@@ -22984,16 +22853,12 @@ namespace System.Security.Permissions
         public System.Security.Permissions.UIPermissionWindow Window { get { throw null; } set { } }
         public override System.Security.IPermission CreatePermission() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum UIPermissionClipboard
     {
         AllClipboard = 2,
         NoClipboard = 0,
         OwnClipboard = 1,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum UIPermissionWindow
     {
         AllWindows = 3,
@@ -23157,7 +23022,6 @@ namespace System.Security.Policy
         public bool MoveNext() { throw null; }
         public void Reset() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public enum ApplicationVersionMatch
     {
         MatchAllVersions = 1,
@@ -23340,12 +23204,10 @@ namespace System.Security.Policy
     {
         System.Security.Policy.ApplicationTrust DetermineApplicationTrust(System.ActivationContext activationContext, System.Security.Policy.TrustManagerContext context);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IIdentityPermissionFactory
     {
         System.Security.IPermission CreateIdentityPermission(System.Security.Policy.Evidence evidence);
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IMembershipCondition : System.Security.ISecurityEncodable, System.Security.ISecurityPolicyEncodable
     {
         bool Check(System.Security.Policy.Evidence evidence);
@@ -23451,8 +23313,6 @@ namespace System.Security.Policy
         public System.Security.SecurityElement ToXml(System.Security.Policy.PolicyLevel level) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PolicyStatementAttribute
     {
         All = 3,
@@ -23637,14 +23497,11 @@ namespace System.Security.Policy
 }
 namespace System.Security.Principal
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class GenericIdentity : System.Security.Claims.ClaimsIdentity
     {
         protected GenericIdentity(System.Security.Principal.GenericIdentity identity) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public GenericIdentity(string name) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public GenericIdentity(string name, string type) { }
         public override string AuthenticationType { get { throw null; } }
         public override System.Collections.Generic.IEnumerable<System.Security.Claims.Claim> Claims { get { throw null; } }
@@ -23702,14 +23559,12 @@ namespace System.Security.Principal
         public System.Security.Principal.IdentityReferenceCollection Translate(System.Type targetType) { throw null; }
         public System.Security.Principal.IdentityReferenceCollection Translate(System.Type targetType, bool forceSuccess) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IIdentity
     {
         string AuthenticationType { get; }
         bool IsAuthenticated { get; }
         string Name { get; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial interface IPrincipal
     {
         System.Security.Principal.IIdentity Identity { get; }
@@ -23729,8 +23584,6 @@ namespace System.Security.Principal
         public override string ToString() { throw null; }
         public override System.Security.Principal.IdentityReference Translate(System.Type targetType) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum PrincipalPolicy
     {
         NoPrincipal = 1,
@@ -23764,8 +23617,6 @@ namespace System.Security.Principal
         public override System.Security.Principal.IdentityReference Translate(System.Type targetType) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum TokenAccessLevels
     {
         AdjustDefault = 128,
@@ -23782,8 +23633,6 @@ namespace System.Security.Principal
         Read = 131080,
         Write = 131296,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum TokenImpersonationLevel
     {
         Anonymous = 1,
@@ -24541,7 +24390,6 @@ namespace System.Text
 }
 namespace System.Threading
 {
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.SerializableAttribute]
     public partial class AbandonedMutexException : System.SystemException
     {
@@ -24555,8 +24403,6 @@ namespace System.Threading
         public System.Threading.Mutex Mutex { get { throw null; } }
         public int MutexIndex { get { throw null; } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ApartmentState
     {
         MTA = 1,
@@ -24585,12 +24431,9 @@ namespace System.Threading
     public sealed partial class AsyncLocal<T>
     {
         public AsyncLocal() { }
-        [System.Security.SecurityCriticalAttribute]
         public AsyncLocal(System.Action<System.Threading.AsyncLocalValueChangedArgs<T>> valueChangedHandler) { }
-        public T Value { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecuritySafeCriticalAttribute]set { } }
+        public T Value { get { throw null; } set { } }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public sealed partial class AutoResetEvent : System.Threading.EventWaitHandle
     {
         public AutoResetEvent(bool initialState) : base (default(bool), default(System.Threading.EventResetMode)) { }
@@ -24665,8 +24508,6 @@ namespace System.Threading
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate void ContextCallback(object state);
     [System.Diagnostics.DebuggerDisplayAttribute("Initial Count={InitialCount}, Current Count={CurrentCount}")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public partial class CountdownEvent : System.IDisposable
     {
         public CountdownEvent(int initialCount) { }
@@ -24691,7 +24532,6 @@ namespace System.Threading
         public bool Wait(System.TimeSpan timeout) { throw null; }
         public bool Wait(System.TimeSpan timeout, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public enum EventResetMode
     {
         AutoReset = 0,
@@ -24811,7 +24651,6 @@ namespace System.Threading
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Security.SecurityCriticalAttribute]
     public unsafe delegate void IOCompletionCallback(uint errorCode, uint numBytes, System.Threading.NativeOverlapped* pOVERLAP);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public static partial class LazyInitializer
     {
         public static T EnsureInitialized<T>(ref T target) where T : class { throw null; }
@@ -24848,8 +24687,6 @@ namespace System.Threading
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public void Dispose() { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Threading.LockHolder Hold(System.Threading.Lock l) { throw null; }
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Core, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     [System.SerializableAttribute]
     public partial class LockRecursionException : System.Exception
     {
@@ -24858,8 +24695,6 @@ namespace System.Threading
         public LockRecursionException(string message) { }
         public LockRecursionException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public sealed partial class ManualResetEvent : System.Threading.EventWaitHandle
     {
         public ManualResetEvent(bool initialState) : base (default(bool), default(System.Threading.EventResetMode)) { }
@@ -24940,7 +24775,6 @@ namespace System.Threading
         public static bool TryOpenExisting(string name, System.Security.AccessControl.MutexRights rights, out System.Threading.Mutex result) { result = default(System.Threading.Mutex); throw null; }
         public static bool TryOpenExisting(string name, out System.Threading.Mutex result) { result = default(System.Threading.Mutex); throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct NativeOverlapped
     {
@@ -24984,7 +24818,6 @@ namespace System.Threading
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public unsafe System.Threading.NativeOverlapped* UnsafePack(System.Threading.IOCompletionCallback iocb, object userData) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public delegate void ParameterizedThreadStart(object obj);
     public sealed partial class PreAllocatedOverlapped : System.IDisposable
     {
@@ -25022,8 +24855,7 @@ namespace System.Threading
         [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public bool Unregister(System.Threading.WaitHandle waitObject) { throw null; }
     }
-    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=2.0.0.0, Culture=Neutral, PublicKeyToken=b77a5c561934e089")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class SemaphoreFullException : System.SystemException
     {
@@ -25116,7 +24948,6 @@ namespace System.Threading
         [System.Security.SecurityCriticalAttribute]
         protected static int WaitHelper(System.IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class SynchronizationLockException : System.SystemException
     {
@@ -25372,8 +25203,6 @@ namespace System.Threading
         [System.CLSCompliantAttribute(false)]
         public unsafe static object GetNativeOverlappedState(System.Threading.NativeOverlapped* overlapped) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ThreadPriority
     {
         AboveNormal = 3,
@@ -25382,7 +25211,6 @@ namespace System.Threading
         Lowest = 0,
         Normal = 2,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate void ThreadStart();
     [System.SerializableAttribute]
     public sealed partial class ThreadStartException : System.SystemException
@@ -25390,8 +25218,6 @@ namespace System.Threading
         internal ThreadStartException() { }
     }
     [System.FlagsAttribute]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum ThreadState
     {
         Aborted = 256,
@@ -25405,7 +25231,6 @@ namespace System.Threading
         Unstarted = 8,
         WaitSleepJoin = 32,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class ThreadStateException : System.SystemException
     {
@@ -25414,11 +25239,9 @@ namespace System.Threading
         public ThreadStateException(string message) { }
         public ThreadStateException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public static partial class Timeout
     {
         public const int Infinite = -1;
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public static readonly System.TimeSpan InfiniteTimeSpan;
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -25552,7 +25375,6 @@ namespace System.Threading
         public virtual bool WaitOne(System.TimeSpan timeout) { throw null; }
         public virtual bool WaitOne(System.TimeSpan timeout, bool exitContext) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.SerializableAttribute]
     public partial class WaitHandleCannotBeOpenedException : System.ApplicationException
     {

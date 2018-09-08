@@ -366,6 +366,8 @@ top_srcdir = @top_srcdir@
 EXTRA_DIST = SUBMODULES.json build.mk build_llvm_config.sh
 @ENABLE_LLVM_TRUE@@HOST_WIN32_FALSE@llvm_config = llvm-config
 @ENABLE_LLVM_TRUE@@HOST_WIN32_TRUE@llvm_config = llvm-config.exe
+@ENABLE_LLVM_TRUE@@HAVE_ZLIB_FALSE@llvm_extra_libs = 
+@ENABLE_LLVM_TRUE@@HAVE_ZLIB_TRUE@llvm_extra_libs = -lz
 @TARGET_WASM_FALSE@LLVM_TARGET = 
 @TARGET_WASM_TRUE@LLVM_TARGET = wasm32
 
@@ -572,14 +574,14 @@ uninstall-am:
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@clean-local: clean-llvm clean-llvm-config
 
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@$(mono_build_root)/llvm/llvm_config.mk: install-llvm
-@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@	$(top_srcdir)/llvm/build_llvm_config.sh $(top_srcdir)/llvm/usr/bin/$(llvm_config) $(LLVM_CODEGEN_LIBS) > $@
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@	$(top_srcdir)/llvm/build_llvm_config.sh "$(top_srcdir)/llvm/usr/bin/$(llvm_config)" "$(LLVM_CODEGEN_LIBS)" "$(llvm_extra_libs)" > $@
 
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@all-local: llvm_config.mk
 
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@clean-local: clean-llvm-config
 
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@$(mono_build_root)/llvm/llvm_config.mk: $(top_srcdir)/llvm/Makefile.am
-@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@	$(top_srcdir)/llvm/build_llvm_config.sh $(EXTERNAL_LLVM_CONFIG) $(LLVM_CODEGEN_LIBS) > $@
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@	$(top_srcdir)/llvm/build_llvm_config.sh "$(EXTERNAL_LLVM_CONFIG)" "$(LLVM_CODEGEN_LIBS)" "$(llvm_extra_libs)" > $@
 
 @ENABLE_LLVM_TRUE@llvm_config.mk: $(mono_build_root)/llvm/llvm_config.mk
 

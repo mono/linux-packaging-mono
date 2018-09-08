@@ -85,11 +85,11 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 	$(top_srcdir)/depcomp $(libmonoruntimeinclude_HEADERS)
 @HOST_WASM_TRUE@am__append_1 = threadpool-worker-wasm.c
 @HOST_WASM_FALSE@am__append_2 = threadpool-worker-default.c
-@TARGET_WIN32_FALSE@@WASM_FALSE@am__append_3 = libmono-system-native.la
-@TARGET_OSX_TRUE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__append_4 = $(system_native_full_sources)
-@ENABLE_MONODROID_TRUE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__append_5 = $(system_native_android_sources)
-@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_TRUE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__append_6 = $(system_native_ios_sources)
-@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__append_7 = $(system_native_full_sources)
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am__append_3 = libmono-system-native.la
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_TRUE@am__append_4 = $(system_native_full_sources)
+@ENABLE_MONODROID_TRUE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__append_5 = $(system_native_android_sources)
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_TRUE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__append_6 = $(system_native_ios_sources)
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__append_7 = $(system_native_full_sources)
 subdir = mono/metadata
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
@@ -205,26 +205,26 @@ am__objects_2 = ../../external/corefx/src/Native/Unix/System.Native/libmono_syst
 	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_networkstatistics.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_system_native_la-pal_random.lo
-@TARGET_OSX_TRUE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__objects_3 = $(am__objects_2)
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_TRUE@am__objects_3 = $(am__objects_2)
 am__objects_4 = libmono_system_native_la-pal-android.lo
-@ENABLE_MONODROID_TRUE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__objects_5 = $(am__objects_4)
+@ENABLE_MONODROID_TRUE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__objects_5 = $(am__objects_4)
 am__objects_6 = libmono_system_native_la-pal-ios.lo
-@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_TRUE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__objects_7 = $(am__objects_6)
-@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@TARGET_OSX_FALSE@@TARGET_WIN32_FALSE@@WASM_FALSE@am__objects_8 = $(am__objects_2)
-@TARGET_WIN32_FALSE@@WASM_FALSE@am_libmono_system_native_la_OBJECTS =  \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__objects_1) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__objects_3) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__objects_5) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__objects_7) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__objects_8)
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_TRUE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__objects_7 = $(am__objects_6)
+@ENABLE_MONODROID_FALSE@@ENABLE_MONOTOUCH_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@@TARGET_OSX_FALSE@am__objects_8 = $(am__objects_2)
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am_libmono_system_native_la_OBJECTS =  \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__objects_1) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__objects_3) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__objects_5) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__objects_7) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__objects_8)
 libmono_system_native_la_OBJECTS =  \
 	$(am_libmono_system_native_la_OBJECTS)
 libmono_system_native_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_system_native_la_CFLAGS) $(CFLAGS) \
 	$(libmono_system_native_la_LDFLAGS) $(LDFLAGS) -o $@
-@TARGET_WIN32_FALSE@@WASM_FALSE@am_libmono_system_native_la_rpath =  \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	-rpath $(libdir)
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am_libmono_system_native_la_rpath =  \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	-rpath $(libdir)
 libmonoruntime_config_la_LIBADD =
 am_libmonoruntime_config_la_OBJECTS =  \
 	libmonoruntime_config_la-mono-config-dirs.lo
@@ -1030,11 +1030,11 @@ system_native_android_sources = \
 	pal-android.h \
 	pal-android.c
 
-@TARGET_WIN32_FALSE@@WASM_FALSE@libmono_system_native_la_SOURCES = $(system_native_common_sources) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__append_4) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__append_5) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__append_6) \
-@TARGET_WIN32_FALSE@@WASM_FALSE@	$(am__append_7)
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@libmono_system_native_la_SOURCES = $(system_native_common_sources) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__append_4) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__append_5) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__append_6) \
+@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	$(am__append_7)
 
 # Add back CXX_REMOVE_CFLAGS to keep this as C until/unless https://github.com/dotnet/corefx/pull/31342.
 libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition @CXX_REMOVE_CFLAGS@

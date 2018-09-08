@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace System.Threading
 {
     [Serializable]
-#if !MONO
+#if !MONO && !MOBILE
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
     public class LockRecursionException : System.Exception
