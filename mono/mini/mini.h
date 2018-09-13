@@ -647,6 +647,8 @@ typedef struct {
 	gboolean rgctx_arg;
 	/* Whenever there is an IMT argument */
 	gboolean imt_arg;
+	/* Whenever there is a dummy extra argument */
+	gboolean dummy_arg;
 	/* 
 	 * The position of the vret arg in the argument list.
 	 * Only if ret->storage == ArgVtypeRetAddr.
@@ -654,7 +656,7 @@ typedef struct {
 	 */
 	int vret_arg_index;
 	/* The indexes of various special arguments in the LLVM signature */
-	int vret_arg_pindex, this_arg_pindex, rgctx_arg_pindex, imt_arg_pindex;
+	int vret_arg_pindex, this_arg_pindex, rgctx_arg_pindex, imt_arg_pindex, dummy_arg_pindex;
 
 	/* Inline array of argument info */
 	/* args [0] is for the this argument if it exists */
@@ -2183,6 +2185,7 @@ MonoInst*         mini_emit_array_store (MonoCompile *cfg, MonoClass *klass, Mon
 MonoInst*         mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **args);
 MonoInst*         mini_emit_inst_for_ctor (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **args);
 MonoInst*         mini_emit_inst_for_sharable_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **args);
+MonoInst*         mini_emit_inst_for_field_load (MonoCompile *cfg, MonoClassField *field);
 MonoInst*         mini_handle_enum_has_flag (MonoCompile *cfg, MonoClass *klass, MonoInst *enum_this, int enum_val_reg, MonoInst *enum_flag);
 
 MonoMethod*       mini_get_memcpy_method (void);

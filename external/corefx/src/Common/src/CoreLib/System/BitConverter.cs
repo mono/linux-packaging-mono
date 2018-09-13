@@ -14,15 +14,17 @@ namespace System
     // converting an array of bytes to one of the base data 
     // types, as well as for converting a base data type to an
     // array of bytes.
-    public static class BitConverter
+    public static partial class BitConverter
     {
         // This field indicates the "endianess" of the architecture.
         // The value is set to true if the architecture is
         // little endian; false if it is big endian.
+#if !MONO
 #if BIGENDIAN
         public static readonly bool IsLittleEndian /* = false */;
 #else
         public static readonly bool IsLittleEndian = true;
+#endif
 #endif
 
         // Converts a Boolean into an array of bytes with length one.

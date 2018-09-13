@@ -11530,11 +11530,7 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._PropertyInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
-    public abstract partial class PropertyInfo : System.Reflection.MemberInfo, System.Runtime.InteropServices._PropertyInfo
+    public abstract partial class PropertyInfo : System.Reflection.MemberInfo
     {
         protected PropertyInfo() { }
         public abstract System.Reflection.PropertyAttributes Attributes { get; }
@@ -11574,11 +11570,6 @@ namespace System.Reflection
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public virtual void SetValue(object obj, object value, object[] index) { }
         public abstract void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] index, System.Globalization.CultureInfo culture);
-        void System.Runtime.InteropServices._PropertyInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._PropertyInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._PropertyInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._PropertyInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._PropertyInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     public static partial class PropertyInfoExtensions
     {
