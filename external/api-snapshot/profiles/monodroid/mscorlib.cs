@@ -11471,10 +11471,6 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._PropertyInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public abstract partial class PropertyInfo : System.Reflection.MemberInfo
     {
         protected PropertyInfo() { }

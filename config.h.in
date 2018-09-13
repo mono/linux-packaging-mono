@@ -653,7 +653,7 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Have mincore */
+/* Define to 1 if you have the `mincore' function. */
 #undef HAVE_MINCORE
 
 /* Define to 1 if you have the `mkdtemp' function. */
@@ -667,6 +667,9 @@
 
 /* mkstemps */
 #undef HAVE_MKSTEMPS
+
+/* Define to 1 if you have the `mlock' function. */
+#undef HAVE_MLOCK
 
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
@@ -682,6 +685,9 @@
 
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
+
+/* Define to 1 if you have the `munlock' function. */
+#undef HAVE_MUNLOCK
 
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
