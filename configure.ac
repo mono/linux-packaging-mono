@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.19.0.381],
+AC_INIT(mono, [5.19.0.397],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -423,6 +423,10 @@ fi
 
 if test x$host_darwin = xyes; then
    AC_DEFINE(HOST_DARWIN, 1, [Host Platform is Darwin])
+fi
+
+if test x$host_linux = xyes; then
+   AC_DEFINE(HOST_LINUX, 1, [Host Platform is Linux])
 fi
 
 # Defined for all targets/platforms using classic Windows API support.
