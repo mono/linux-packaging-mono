@@ -1305,6 +1305,9 @@
 /* Host Platform is Darwin */
 #undef HOST_DARWIN
 
+/* Host Platform is Linux */
+#undef HOST_LINUX
+
 /* ... */
 #undef HOST_MIPS
 
