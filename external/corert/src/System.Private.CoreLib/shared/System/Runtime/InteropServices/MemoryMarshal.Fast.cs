@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 using Internal.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices
@@ -15,8 +13,54 @@ namespace System.Runtime.InteropServices
     /// </summary>
     public static partial class MemoryMarshal
     {
+        /// <summary>
+        /// Casts a Span of one primitive type <typeparamref name="T"/> to Span of bytes.
+        /// That type may not contain pointers or references. This is checked at runtime in order to preserve type safety.
+        /// </summary>
+        /// <param name="span">The source slice, of type <typeparamref name="T"/>.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when <typeparamref name="T"/> contains pointers.
+        /// </exception>
+        /// <exception cref="System.OverflowException">
+        /// Thrown if the Length property of the new Span would exceed int.MaxValue.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<byte> AsBytes<T>(Span<T> span)
+            where T : struct
+        {
+            if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+                ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
+
+            return new Span<byte>(
+                ref Unsafe.As<T, byte>(ref GetReference(span)),
+                checked(span.Length * Unsafe.SizeOf<T>()));
+        }
+
+        /// <summary>
+        /// Casts a ReadOnlySpan of one primitive type <typeparamref name="T"/> to ReadOnlySpan of bytes.
+        /// That type may not contain pointers or references. This is checked at runtime in order to preserve type safety.
+        /// </summary>
+        /// <param name="span">The source slice, of type <typeparamref name="T"/>.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when <typeparamref name="T"/> contains pointers.
+        /// </exception>
+        /// <exception cref="System.OverflowException">
+        /// Thrown if the Length property of the new Span would exceed int.MaxValue.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<byte> AsBytes<T>(ReadOnlySpan<T> span)
+            where T : struct
+        {
+            if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+                ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
+
+            return new ReadOnlySpan<byte>(
+                ref Unsafe.As<T, byte>(ref GetReference(span)),
+                checked(span.Length * Unsafe.SizeOf<T>()));
+        }
+
         /// <summary>Creates a <see cref="Memory{T}"/> from a <see cref="ReadOnlyMemory{T}"/>.</summary>
-        /// <param name="readOnlyMemory">The <see cref="ReadOnlyMemory{T}"/>.</param>
+        /// <param name="memory">The <see cref="ReadOnlyMemory{T}"/>.</param>
         /// <returns>A <see cref="Memory{T}"/> representing the same memory as the <see cref="ReadOnlyMemory{T}"/>, but writable.</returns>
         /// <remarks>
         /// <see cref="AsMemory{T}(ReadOnlyMemory{T})"/> must be used with extreme caution.  <see cref="ReadOnlyMemory{T}"/> is used
@@ -24,33 +68,48 @@ namespace System.Runtime.InteropServices
         /// by <see cref="AsMemory{T}(ReadOnlyMemory{T})"/> should not be written to.  The method exists to enable variables typed
         /// as <see cref="Memory{T}"/> but only used for reading to store a <see cref="ReadOnlyMemory{T}"/>.
         /// </remarks>
-        public static Memory<T> AsMemory<T>(ReadOnlyMemory<T> readOnlyMemory) =>
-            Unsafe.As<ReadOnlyMemory<T>, Memory<T>>(ref readOnlyMemory);
+        public static Memory<T> AsMemory<T>(ReadOnlyMemory<T> memory) =>
+            Unsafe.As<ReadOnlyMemory<T>, Memory<T>>(ref memory);
 
         /// <summary>
         /// Returns a reference to the 0th element of the Span. If the Span is empty, returns a reference to the location where the 0th element
-        /// would have been stored. Such a reference can be used for pinning but must never be dereferenced.
+        /// would have been stored. Such a reference may or may not be null. It can be used for pinning but must never be dereferenced.
         /// </summary>
         public static ref T GetReference<T>(Span<T> span) => ref span._pointer.Value;
 
         /// <summary>
-        /// Returns a reference to the 0th element of the ReadOnlySpan. If the Span is empty, returns a reference to the location where the 0th element
-        /// would have been stored. Such a reference can be used for pinning but must never be dereferenced.
+        /// Returns a reference to the 0th element of the ReadOnlySpan. If the ReadOnlySpan is empty, returns a reference to the location where the 0th element
+        /// would have been stored. Such a reference may or may not be null. It can be used for pinning but must never be dereferenced.
         /// </summary>
         public static ref T GetReference<T>(ReadOnlySpan<T> span) => ref span._pointer.Value;
+
+        /// <summary>
+        /// Returns a reference to the 0th element of the Span. If the Span is empty, returns a reference to fake non-null pointer. Such a reference can be used
+        /// for pinning but must never be dereferenced. This is useful for interop with methods that do not accept null pointers for zero-sized buffers.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe ref T GetNonNullPinnableReference<T>(Span<T> span) => ref (span.Length != 0) ? ref span._pointer.Value : ref Unsafe.AsRef<T>((void*)1);
+
+        /// <summary>
+        /// Returns a reference to the 0th element of the ReadOnlySpan. If the ReadOnlySpan is empty, returns a reference to fake non-null pointer. Such a reference
+        /// can be used for pinning but must never be dereferenced. This is useful for interop with methods that do not accept null pointers for zero-sized buffers.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe ref T GetNonNullPinnableReference<T>(ReadOnlySpan<T> span) => ref (span.Length != 0) ? ref span._pointer.Value : ref Unsafe.AsRef<T>((void*)1);
 
         /// <summary>
         /// Casts a Span of one primitive type <typeparamref name="TFrom"/> to another primitive type <typeparamref name="TTo"/>.
         /// These types may not contain pointers or references. This is checked at runtime in order to preserve type safety.
         /// </summary>
         /// <remarks>
-        /// Supported only for platforms that support misaligned memory access.
+        /// Supported only for platforms that support misaligned memory access or when the memory block is aligned by other means.
         /// </remarks>
-        /// <param name="source">The source slice, of type <typeparamref name="TFrom"/>.</param>
+        /// <param name="span">The source slice, of type <typeparamref name="TFrom"/>.</param>
         /// <exception cref="System.ArgumentException">
         /// Thrown when <typeparamref name="TFrom"/> or <typeparamref name="TTo"/> contains pointers.
         /// </exception>
-        public static Span<TTo> Cast<TFrom, TTo>(Span<TFrom> source)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<TTo> Cast<TFrom, TTo>(Span<TFrom> span)
             where TFrom : struct
             where TTo : struct
         {
@@ -63,7 +122,7 @@ namespace System.Runtime.InteropServices
             // and checked casts are faster and smaller.
             uint fromSize = (uint)Unsafe.SizeOf<TFrom>();
             uint toSize = (uint)Unsafe.SizeOf<TTo>();
-            uint fromLength = (uint)source.Length;
+            uint fromLength = (uint)span.Length;
             int toLength;
             if (fromSize == toSize)
             {
@@ -89,7 +148,7 @@ namespace System.Runtime.InteropServices
             }
 
             return new Span<TTo>(
-                ref Unsafe.As<TFrom, TTo>(ref source._pointer.Value),
+                ref Unsafe.As<TFrom, TTo>(ref span._pointer.Value),
                 toLength);
         }
 
@@ -98,13 +157,14 @@ namespace System.Runtime.InteropServices
         /// These types may not contain pointers or references. This is checked at runtime in order to preserve type safety.
         /// </summary>
         /// <remarks>
-        /// Supported only for platforms that support misaligned memory access.
+        /// Supported only for platforms that support misaligned memory access or when the memory block is aligned by other means.
         /// </remarks>
-        /// <param name="source">The source slice, of type <typeparamref name="TFrom"/>.</param>
+        /// <param name="span">The source slice, of type <typeparamref name="TFrom"/>.</param>
         /// <exception cref="System.ArgumentException">
         /// Thrown when <typeparamref name="TFrom"/> or <typeparamref name="TTo"/> contains pointers.
         /// </exception>
-        public static ReadOnlySpan<TTo> Cast<TFrom, TTo>(ReadOnlySpan<TFrom> source)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<TTo> Cast<TFrom, TTo>(ReadOnlySpan<TFrom> span)
             where TFrom : struct
             where TTo : struct
         {
@@ -117,7 +177,7 @@ namespace System.Runtime.InteropServices
             // and checked casts are faster and smaller.
             uint fromSize = (uint)Unsafe.SizeOf<TFrom>();
             uint toSize = (uint)Unsafe.SizeOf<TTo>();
-            uint fromLength = (uint)source.Length;
+            uint fromLength = (uint)span.Length;
             int toLength;
             if (fromSize == toSize)
             {
@@ -143,7 +203,7 @@ namespace System.Runtime.InteropServices
             }
 
             return new ReadOnlySpan<TTo>(
-                ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(source)),
+                ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)),
                 toLength);
         }
 
@@ -154,6 +214,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         /// <param name="reference">A reference to data.</param>
         /// <param name="length">The number of <typeparamref name="T"/> elements the memory contains.</param>
+        /// <returns>The lifetime of the returned span will not be validated for safety by span-aware languages.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<T> CreateSpan<T>(ref T reference, int length) => new Span<T>(ref reference, length);
 
@@ -164,6 +225,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         /// <param name="reference">A reference to data.</param>
         /// <param name="length">The number of <typeparamref name="T"/> elements the memory contains.</param>
+        /// <returns>The lifetime of the returned span will not be validated for safety by span-aware languages.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<T> CreateReadOnlySpan<T>(ref T reference, int length) => new ReadOnlySpan<T>(ref reference, length);
     }

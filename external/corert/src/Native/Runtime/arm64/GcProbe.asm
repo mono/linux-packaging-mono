@@ -48,7 +48,7 @@ PROBE_FRAME_SIZE    field 0
     ;; Perform the parts of setting up a probe frame that can occur during the prolog (and indeed this macro
     ;; can only be called from within the prolog).
     MACRO
-        ALLOC_PROBE_FRAME $extraStackSpace
+        ALLOC_PROBE_FRAME $extraStackSpace, $saveFPRegisters
 
         ;; First create PInvokeTransitionFrame      
         PROLOG_SAVE_REG_PAIR   fp, lr, #-(PROBE_FRAME_SIZE + $extraStackSpace)!      ;; Push down stack pointer and store FP and LR
@@ -80,16 +80,18 @@ PROBE_FRAME_SIZE    field 0
 
         ;; Slot at [sp, #0x118] is reserved for NZCV
 
-        ; Save the floating return registers
-        PROLOG_NOP stp         d0, d1,   [sp, #0x120]
-        PROLOG_NOP stp         d2, d3,   [sp, #0x130]
+        ;; Save the floating return registers
+        IF $saveFPRegisters
+            PROLOG_NOP stp         d0, d1,   [sp, #0x120]
+            PROLOG_NOP stp         d2, d3,   [sp, #0x130]
+        ENDIF
 
     MEND
 
     ;; Undo the effects of an ALLOC_PROBE_FRAME. This may only be called within an epilog. Note that all
     ;; registers are restored (apart for sp and pc), even volatiles.
     MACRO
-        FREE_PROBE_FRAME $extraStackSpace
+        FREE_PROBE_FRAME $extraStackSpace, $restoreFPRegisters
 
         ;; Restore the scratch registers 
         PROLOG_NOP ldr          x0,       [sp, #0x78]
@@ -105,8 +107,10 @@ PROBE_FRAME_SIZE    field 0
         PROLOG_NOP ldr          lr,       [sp, #0x110]
 
         ; Restore the floating return registers
-        EPILOG_NOP ldp          d0, d1,   [sp, #0x120]
-        EPILOG_NOP ldp          d2, d3,   [sp, #0x130]
+        IF $restoreFPRegisters
+            EPILOG_NOP ldp          d0, d1,   [sp, #0x120]
+            EPILOG_NOP ldp          d2, d3,   [sp, #0x130]
+        ENDIF
 
         ;; Restore callee saved registers
         EPILOG_RESTORE_REG_PAIR x19, x20, #0x20
@@ -167,7 +171,7 @@ __PPF_ThreadReg SETS "$threadReg"
 
         ; Define the method prolog, allocating enough stack space for the PInvokeTransitionFrame and saving
         ; incoming register values into it.
-        ALLOC_PROBE_FRAME 0
+        ALLOC_PROBE_FRAME 0, {true}
 
         ; If the caller didn't provide a value for $threadReg then generate code to fetch the Thread* into x2.
         ; Record that x2 holds the Thread* in our local variable.
@@ -188,58 +192,64 @@ __PPF_ThreadReg SETS "x2"
     MACRO
         EPILOG_PROBE_FRAME
 
-        FREE_PROBE_FRAME 0
+        FREE_PROBE_FRAME 0, {true}
         EPILOG_RETURN
     MEND
 
-;; ALLOC_PROBE_FRAME will save the first 4 vfp registers, in order to avoid trashing VFP registers across the loop 
-;; hijack, we must save the rest -- d4-d31 (28).
-EXTRA_SAVE_SIZE equ (28*8)
+;; In order to avoid trashing VFP registers across the loop hijack we must save all user registers, so that 
+;; registers used by the loop being hijacked will not be affected. Unlike ARM32 where neon registers (NQ0, ..., NQ15) 
+;; are fully covered by the floating point registers D0 ... D31, we have 32 neon registers Q0, ... Q31 on ARM64 
+;; which are not fully covered by the register D0 ... D31. Therefore we must explicitly save all Q registers.
+EXTRA_SAVE_SIZE equ (32*16)
 
     MACRO
         ALLOC_LOOP_HIJACK_FRAME
 
         PROLOG_STACK_ALLOC EXTRA_SAVE_SIZE
 
-;;      save VFP registers that were not saved by the ALLOC_PROBE_FRAME
-        PROLOG_NOP stp         d4, d5,   [sp]
-        PROLOG_NOP stp         d6, d7,   [sp, #0x10]
-        PROLOG_NOP stp         d8, d9,   [sp, #0x20]
-        PROLOG_NOP stp         d10, d11, [sp, #0x30]
-        PROLOG_NOP stp         d12, d13, [sp, #0x40]
-        PROLOG_NOP stp         d14, d15, [sp, #0x50]
-        PROLOG_NOP stp         d16, d17, [sp, #0x60]
-        PROLOG_NOP stp         d18, d19, [sp, #0x70]
-        PROLOG_NOP stp         d20, d21, [sp, #0x80]
-        PROLOG_NOP stp         d22, d23, [sp, #0x90]
-        PROLOG_NOP stp         d24, d25, [sp, #0xA0]
-        PROLOG_NOP stp         d26, d27, [sp, #0xB0]
-        PROLOG_NOP stp         d28, d29, [sp, #0xC0]
-        PROLOG_NOP stp         d30, d31, [sp, #0xD0]
-
-        ALLOC_PROBE_FRAME 0
+        ;; Save all neon registers
+        PROLOG_NOP stp         q0, q1,   [sp]
+        PROLOG_NOP stp         q2, q3,   [sp, #0x20]
+        PROLOG_NOP stp         q4, q5,   [sp, #0x40]
+        PROLOG_NOP stp         q6, q7,   [sp, #0x60]
+        PROLOG_NOP stp         q8, q9,   [sp, #0x80]
+        PROLOG_NOP stp         q10, q11, [sp, #0xA0]
+        PROLOG_NOP stp         q12, q13, [sp, #0xC0]
+        PROLOG_NOP stp         q14, q15, [sp, #0xE0]
+        PROLOG_NOP stp         q16, q17, [sp, #0x100]
+        PROLOG_NOP stp         q18, q19, [sp, #0x120]
+        PROLOG_NOP stp         q20, q21, [sp, #0x140]
+        PROLOG_NOP stp         q22, q23, [sp, #0x160]
+        PROLOG_NOP stp         q24, q25, [sp, #0x180]
+        PROLOG_NOP stp         q26, q27, [sp, #0x1A0]
+        PROLOG_NOP stp         q28, q29, [sp, #0x1C0]
+        PROLOG_NOP stp         q30, q31, [sp, #0x1E0]
+        
+        ALLOC_PROBE_FRAME 0, {false}
     MEND
 
     MACRO
         FREE_LOOP_HIJACK_FRAME
 
-        FREE_PROBE_FRAME 0
+        FREE_PROBE_FRAME 0, {false}
 
-;;      restore VFP registers that will not be restored by the FREE_PROBE_FRAME
-        PROLOG_NOP ldp         d4, d5,   [sp]
-        PROLOG_NOP ldp         d6, d7,   [sp, #0x10]
-        PROLOG_NOP ldp         d8, d9,   [sp, #0x20]
-        PROLOG_NOP ldp         d10, d11, [sp, #0x30]
-        PROLOG_NOP ldp         d12, d13, [sp, #0x40]
-        PROLOG_NOP ldp         d14, d15, [sp, #0x50]
-        PROLOG_NOP ldp         d16, d17, [sp, #0x60]
-        PROLOG_NOP ldp         d18, d19, [sp, #0x70]
-        PROLOG_NOP ldp         d20, d21, [sp, #0x80]
-        PROLOG_NOP ldp         d22, d23, [sp, #0x90]
-        PROLOG_NOP ldp         d24, d25, [sp, #0xA0]
-        PROLOG_NOP ldp         d26, d27, [sp, #0xB0]
-        PROLOG_NOP ldp         d28, d29, [sp, #0xC0]
-        PROLOG_NOP ldp         d30, d31, [sp, #0xD0]
+        ;; restore all neon registers 
+        PROLOG_NOP ldp         q0, q1,   [sp]
+        PROLOG_NOP ldp         q2, q3,   [sp, #0x20]
+        PROLOG_NOP ldp         q4, q5,   [sp, #0x40]
+        PROLOG_NOP ldp         q6, q7,   [sp, #0x60]
+        PROLOG_NOP ldp         q8, q9,   [sp, #0x80]
+        PROLOG_NOP ldp         q10, q11, [sp, #0xA0]
+        PROLOG_NOP ldp         q12, q13, [sp, #0xC0]
+        PROLOG_NOP ldp         q14, q15, [sp, #0xE0]
+        PROLOG_NOP ldp         q16, q17, [sp, #0x100]
+        PROLOG_NOP ldp         q18, q19, [sp, #0x120]
+        PROLOG_NOP ldp         q20, q21, [sp, #0x140]
+        PROLOG_NOP ldp         q22, q23, [sp, #0x160]
+        PROLOG_NOP ldp         q24, q25, [sp, #0x180]
+        PROLOG_NOP ldp         q26, q27, [sp, #0x1A0]
+        PROLOG_NOP ldp         q28, q29, [sp, #0x1C0]
+        PROLOG_NOP ldp         q30, q31, [sp, #0x1E0]
 
         EPILOG_STACK_FREE EXTRA_SAVE_SIZE
     MEND
@@ -311,7 +321,7 @@ EXTRA_SAVE_SIZE equ (28*8)
         tst         w2, #TSF_SuppressGcStress__OR__TSF_DoNotTriggerGC
         bne         %ft0
 
-        ldr         x2, [x4, #OFFSETOF__Thread__m_pHackPInvokeTunnel]
+        ldr         x9, [x4, #OFFSETOF__Thread__m_pHackPInvokeTunnel]
         bl          RhpWaitForGCNoAbort
 0
     MEND
@@ -383,7 +393,6 @@ EXTRA_SAVE_SIZE equ (28*8)
 #endif ;; FEATURE_GC_STRESS
 
     LEAF_ENTRY RhpGcProbe
-        brk 0xf000 ;; TODO: remove after debugging/testing stub
         ldr         x3, =RhpTrapThreads
         ldr         w3, [x3]
         tbnz        x3, #TrapThreadsFlags_TrapThreads_Bit, RhpGcProbeRare
@@ -393,7 +402,6 @@ EXTRA_SAVE_SIZE equ (28*8)
     EXTERN RhpThrowHwEx
 
     NESTED_ENTRY RhpGcProbeRare
-        brk 0xf000 ;; TODO: remove after debugging/testing stub
         PROLOG_PROBE_FRAME x2, x3, x12, 
 
         mov         x4, x2
@@ -405,7 +413,7 @@ EXTRA_SAVE_SIZE equ (28*8)
         EPILOG_PROBE_FRAME
 
 1        
-        FREE_PROBE_FRAME 0
+        FREE_PROBE_FRAME 0, {true}
         EPILOG_NOP mov w0, #STATUS_REDHAWK_THREAD_ABORT
         EPILOG_NOP mov x1, lr ;; return address as exception PC
         EPILOG_NOP b RhpThrowHwEx
@@ -558,7 +566,7 @@ EXTRA_SAVE_SIZE equ (28*8)
         EPILOG_RESTORE_REG_PAIR     x27, x28, #0x60
         EPILOG_NOP     ldr          x9, [sp, #0x78]
         EPILOG_RESTORE_REG_PAIR     fp, lr, #(SIZEOF__PAL_LIMITED_CONTEXT + 0x20)!
-        EPILOG_NOP     ret x9
+        EPILOG_NOP     br           x9
 
     NESTED_END RhpHijackForGcStressLeaf
 
@@ -630,7 +638,7 @@ EXTRA_SAVE_SIZE equ (28*8)
         EHJumpProbeProlog
 
         PROLOG_NOP mov x0, x1  ; move the ex object reference into x0 so we can report it
-        ALLOC_PROBE_FRAME 0x10
+        ALLOC_PROBE_FRAME 0x10, {true}
         str         x2, [sp, #PROBE_FRAME_SIZE]
 
         ;; x2 <- GetThread(), TRASHES x1
@@ -665,9 +673,9 @@ EXTRA_SAVE_SIZE equ (28*8)
         EHJumpProbeEpilog
 
         ldr         x2, [sp, #PROBE_FRAME_SIZE]
-        FREE_PROBE_FRAME 0x10       ; This restores exception object back into x0
+        FREE_PROBE_FRAME 0x10, {true}       ; This restores exception object back into x0
         EPILOG_NOP  mov x1, x0      ; Move the Exception object back into x1 where the catch handler expects it
-        EPILOG_NOP  ret x2
+        EPILOG_NOP  br  x2
     MEND
 
 ;;
@@ -825,7 +833,7 @@ Success
 NoGcStress
 #endif ;; FEATURE_GC_STRESS
 
-        add         x2, sp, xzr ; sp is address of PInvokeTransitionFrame
+        mov         x9, sp ; sp is address of PInvokeTransitionFrame
         bl          RhpWaitForGCNoAbort
 
 DoneWaitingForGc
@@ -839,7 +847,7 @@ DoneWaitingForGc
 
         EPILOG_NOP ldr x1, [sp, #8]    ; hijack target address
         EPILOG_STACK_FREE 0x10 
-        EPILOG_NOP ret x1              ; jump to the hijack target
+        EPILOG_NOP br x1               ; jump to the hijack target
 
 Abort
         FREE_LOOP_HIJACK_FRAME
@@ -852,4 +860,123 @@ Abort
 
     INLINE_GETTHREAD_CONSTANT_POOL
 
+;; Trap to GC.
+;; Set up the P/Invoke transition frame with the return address as the safe point.
+;; All registers, both volatile and non-volatile, are preserved.
+;; The function should be called not jumped because it's expecting the return address
+    NESTED_ENTRY RhpTrapToGC, _TEXT
+;;
+        ;; What we want to get to: 
+        ;;
+        ;;   [sp +  ]   -> m_FramePointer                  -------|
+        ;;   [sp + 8]   -> m_RIP                                  |
+        ;;   [sp + 10]  -> m_pThread                              |
+        ;;   [sp + 18]  -> m_Flags / m_dwAlignPad2                |
+        ;;   [sp + 20]  -> x19 save                               |
+        ;;   [sp + 28]  -> x20 save                               |
+        ;;   [sp + 30]  -> x21 save                               |
+        ;;   [sp + 38]  -> x22 save                               |
+        ;;   [sp + 40]  -> x23 save                               |
+        ;;   [sp + 48]  -> x24 save                               | PInvokeTransitionFrame
+        ;;   [sp + 50]  -> x25 save                               |
+        ;;   [sp + 58]  -> x26 save                               |
+        ;;   [sp + 60]  -> x27 save                               |
+        ;;   [sp + 68]  -> x28 save                               |
+        ;;   [sp + 70]  -> sp save  ;caller sp                    |
+        ;;   [sp + 78]  -> x0 save                                |
+        ;;   [sp + 80]  -> x1 save                                |
+        ;;   [sp + 88]  -> x2 save                                |
+        ;;   [sp + 90]  -> x3 save                                |
+        ;;   [sp + 98]  -> x4 save                                |
+        ;;   [sp + a0]  -> x5 save                                |
+        ;;   [sp + a8]  -> x6 save                                |
+        ;;   [sp + b0]  -> x7 save                                |
+        ;;   [sp + b8]  -> x8 save                                |
+        ;;   [sp + c0]  -> x9 save                                |
+        ;;   [sp + c8]  -> x10 save                               |
+        ;;   [sp + d0]  -> x11 save                               |
+        ;;   [sp + d8]  -> x12 save                               |
+        ;;   [sp + e0]  -> x13 save                               |
+        ;;   [sp + e8]  -> x14 save                               |
+        ;;   [sp + f0]  -> x15 save                               |
+        ;;   [sp + f8]  -> x16 save                               |
+        ;;   [sp + 100]  -> x17 save                              |
+        ;;   [sp + 108]  -> x18 save                              |
+        ;;   [sp + 110]  -> lr save                        -------|
+        ;;
+        ;;   [sp + 118]  -> NZCV
+        ;;
+        ;;   [sp + 120]  -> not used 
+        ;;   [sp + 140]  -> q0 ... q31
+        ;;
+
+        ALLOC_LOOP_HIJACK_FRAME
+
+        ;; Slot at [sp, #0x118] is reserved for NZCV
+        mrs         x1, NZCV
+        str         x1, [sp, #m_SavedNZCV]
+
+        ;; x4 <- GetThread(), TRASHES x1
+        INLINE_GETTHREAD x4, x1
+        INIT_PROBE_FRAME x4, x1, #PROBE_SAVE_FLAGS_EVERYTHING, 0, (PROBE_FRAME_SIZE + EXTRA_SAVE_SIZE)
+        
+        ; Early out if GC stress is currently suppressed. Do this after we have computed the real address to
+        ; return to but before we link the transition frame onto m_pHackPInvokeTunnel (because hitting this
+        ; condition implies we're running restricted callouts during a GC itself and we could end up
+        ; overwriting a co-op frame set by the code that caused the GC in the first place, e.g. a GC.Collect
+        ; call).
+        ldr         w1, [x4, #OFFSETOF__Thread__m_ThreadStateFlags]
+        tst         w1, #TSF_SuppressGcStress__OR__TSF_DoNotTriggerGC
+        bne         DoNotTriggerGC
+
+        ; link the frame into the Thread
+        add         x1, sp, xzr
+        str         x1, [x4, #OFFSETOF__Thread__m_pHackPInvokeTunnel]
+
+        ;;
+        ;; Unhijack this thread, if necessary.
+        ;;
+        INLINE_THREAD_UNHIJACK x4, x1, x2       ;; trashes x1, x2
+
+#ifdef FEATURE_GC_STRESS
+
+        ldr         x1, =g_fGcStressStarted
+        ldr         w1, [x1]
+        cbnz        w1, SkipGcStress
+
+        mov         x1, x0
+        ldr         x0, =$g_pTheRuntimeInstance
+        ldr         x0, [x0]
+        bl          $RuntimeInstance__ShouldHijackLoopForGcStress
+        cbnz        x0, SkipGcStress
+
+        bl          $REDHAWKGCINTERFACE__STRESSGC
+SkipGcStress
+#endif ;; FEATURE_GC_STRESS
+
+        mov         x9, sp ; sp is address of PInvokeTransitionFrame
+        bl          RhpWaitForGCNoAbort
+
+DoNotTriggerGC
+        ldr         x1, [sp, #OFFSETOF__PInvokeTransitionFrame__m_Flags]
+        tbnz        x1, #PTFF_THREAD_ABORT_BIT, ToAbort
+        
+        ; restore condition codes
+        ldr         x1, [sp, #m_SavedNZCV]
+        msr         NZCV, x1
+
+        FREE_LOOP_HIJACK_FRAME
+        EPILOG_RETURN
+
+ToAbort
+        FREE_LOOP_HIJACK_FRAME
+        EPILOG_NOP mov w0, #STATUS_REDHAWK_THREAD_ABORT
+        EPILOG_NOP mov x1, lr    ; hijack target address as exception PC
+        EPILOG_NOP b RhpThrowHwEx
+
+    NESTED_END RhpTrapToGC
+
+    INLINE_GETTHREAD_CONSTANT_POOL
+
     end
+

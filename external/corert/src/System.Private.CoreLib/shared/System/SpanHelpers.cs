@@ -5,7 +5,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime;
-using System.Runtime.InteropServices;
 
 using Internal.Runtime.CompilerServices;
 
@@ -19,127 +18,6 @@ namespace System
 {
     internal static partial class SpanHelpers
     {
-        public static int IndexOfCultureHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(span.Length != 0);
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return CompareInfo.InvariantIndexOf(span, value, ignoreCase: false);
-            }
-
-            return compareInfo.IndexOf(span, value, CompareOptions.None);
-        }
-
-        public static int IndexOfCultureIgnoreCaseHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(span.Length != 0);
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return CompareInfo.InvariantIndexOf(span, value, ignoreCase: true);
-            }
-
-            return compareInfo.IndexOf(span, value, CompareOptions.IgnoreCase);
-        }
-
-        public static int IndexOfOrdinalHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, bool ignoreCase)
-        {
-            Debug.Assert(span.Length != 0);
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return CompareInfo.InvariantIndexOf(span, value, ignoreCase);
-            }
-
-            return CompareInfo.Invariant.IndexOfOrdinal(span, value, ignoreCase);
-        }
-
-        public static bool StartsWithCultureHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return span.StartsWith(value);
-            }
-            if (span.Length == 0)
-            {
-                return false;
-            }
-            return compareInfo.IsPrefix(span, value, CompareOptions.None);
-        }
-
-        public static bool StartsWithCultureIgnoreCaseHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return StartsWithOrdinalIgnoreCaseHelper(span, value);
-            }
-            if (span.Length == 0)
-            {
-                return false;
-            }
-            return compareInfo.IsPrefix(span, value, CompareOptions.IgnoreCase);
-        }
-
-        public static bool StartsWithOrdinalIgnoreCaseHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (span.Length < value.Length)
-            {
-                return false;
-            }
-            return CompareInfo.CompareOrdinalIgnoreCase(span.Slice(0, value.Length), value) == 0;
-        }
-
-        public static bool EndsWithCultureHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return span.EndsWith(value);
-            }
-            if (span.Length == 0)
-            {
-                return false;
-            }
-            return compareInfo.IsSuffix(span, value, CompareOptions.None);
-        }
-
-        public static bool EndsWithCultureIgnoreCaseHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value, CompareInfo compareInfo)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (GlobalizationMode.Invariant)
-            {
-                return EndsWithOrdinalIgnoreCaseHelper(span, value);
-            }
-            if (span.Length == 0)
-            {
-                return false;
-            }
-            return compareInfo.IsSuffix(span, value, CompareOptions.IgnoreCase);
-        }
-
-        public static bool EndsWithOrdinalIgnoreCaseHelper(ReadOnlySpan<char> span, ReadOnlySpan<char> value)
-        {
-            Debug.Assert(value.Length != 0);
-
-            if (span.Length < value.Length)
-            {
-                return false;
-            }
-            return (CompareInfo.CompareOrdinalIgnoreCase(span.Slice(span.Length - value.Length), value) == 0);
-        }
-
         public static unsafe void ClearWithoutReferences(ref byte b, nuint byteLength)
         {
             if (byteLength == 0)
@@ -355,13 +233,13 @@ namespace System
 
             nuint i = 0; // byte offset at which we're copying
 
-            if ((Unsafe.As<byte, int>(ref b) & 3) != 0)
+            if (((nuint)Unsafe.AsPointer(ref b) & 3) != 0)
             {
-                if ((Unsafe.As<byte, int>(ref b) & 1) != 0)
+                if (((nuint)Unsafe.AsPointer(ref b) & 1) != 0)
                 {
-                    Unsafe.AddByteOffset<byte>(ref b, i) = 0;
+                    b = 0;
                     i += 1;
-                    if ((Unsafe.As<byte, int>(ref b) & 2) != 0)
+                    if (((nuint)Unsafe.AsPointer(ref b) & 2) != 0)
                         goto IntAligned;
                 }
                 Unsafe.As<byte, short>(ref Unsafe.AddByteOffset<byte>(ref b, i)) = 0;
@@ -378,7 +256,7 @@ namespace System
             // The thing 1, 2, 3, and 4 have in common that the others don't is that if you
             // subtract one from them, their 3rd lsb will not be set. Hence, the below check.
 
-            if (((Unsafe.As<byte, int>(ref b) - 1) & 4) == 0)
+            if ((((nuint)Unsafe.AsPointer(ref b) - 1) & 4) == 0)
             {
                 Unsafe.As<byte, int>(ref Unsafe.AddByteOffset<byte>(ref b, i)) = 0;
                 i += 4;
@@ -461,43 +339,77 @@ namespace System
 
         public static unsafe void ClearWithReferences(ref IntPtr ip, nuint pointerSizeLength)
         {
-            if (pointerSizeLength == 0)
-                return;
+            Debug.Assert((int)Unsafe.AsPointer(ref ip) % sizeof(IntPtr) == 0, "Should've been aligned on natural word boundary.");
 
-            // TODO: Perhaps do switch casing to improve small size perf
+            // First write backward 8 natural words at a time.
+            // Writing backward allows us to get away with only simple modifications to the
+            // mov instruction's base and index registers between loop iterations.
 
-            nuint i = 0;
-            nuint n = 0;
-            while ((n = i + 8) <= (pointerSizeLength))
+            for (; pointerSizeLength >= 8; pointerSizeLength -= 8)
             {
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 0) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 1) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 2) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 3) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 4) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 5) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 6) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 7) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                i = n;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -1) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -2) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -3) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -4) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -5) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -6) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -7) = default;
+                Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -8) = default;
             }
-            if ((n = i + 4) <= (pointerSizeLength))
+
+            Debug.Assert(pointerSizeLength <= 7);
+
+            // The logic below works by trying to minimize the number of branches taken for any
+            // given range of lengths. For example, the lengths [ 4 .. 7 ] are handled by a single
+            // branch, [ 2 .. 3 ] are handled by a single branch, and [ 1 ] is handled by a single
+            // branch.
+            // 
+            // We can write both forward and backward as a perf improvement. For example,
+            // the lengths [ 4 .. 7 ] can be handled by zeroing out the first four natural
+            // words and the last 3 natural words. In the best case (length = 7), there are
+            // no overlapping writes. In the worst case (length = 4), there are three
+            // overlapping writes near the middle of the buffer. In perf testing, the
+            // penalty for performing duplicate writes is less expensive than the penalty
+            // for complex branching.
+
+            if (pointerSizeLength >= 4)
             {
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 0) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 1) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 2) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 3) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                i = n;
+                goto Write4To7;
             }
-            if ((n = i + 2) <= (pointerSizeLength))
+            else if (pointerSizeLength >= 2)
             {
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 0) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 1) * (nuint)sizeof(IntPtr)) = default(IntPtr);
-                i = n;
+                goto Write2To3;
             }
-            if ((i + 1) <= (pointerSizeLength))
+            else if (pointerSizeLength > 0)
             {
-                Unsafe.AddByteOffset<IntPtr>(ref ip, (i + 0) * (nuint)sizeof(IntPtr)) = default(IntPtr);
+                goto Write1;
             }
+            else
+            {
+                return; // nothing to write
+            }
+
+        Write4To7:
+            Debug.Assert(pointerSizeLength >= 4);
+
+            // Write first four and last three.
+            Unsafe.Add(ref ip, 2) = default;
+            Unsafe.Add(ref ip, 3) = default;
+            Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -3) = default;
+            Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -2) = default;
+
+        Write2To3:
+            Debug.Assert(pointerSizeLength >= 2);
+
+            // Write first two and last one.
+            Unsafe.Add(ref ip, 1) = default;
+            Unsafe.Add(ref Unsafe.Add(ref ip, (IntPtr)pointerSizeLength), -1) = default;
+
+        Write1:
+            Debug.Assert(pointerSizeLength >= 1);
+
+            // Write only element.
+            ip = default;
         }
     }
 }

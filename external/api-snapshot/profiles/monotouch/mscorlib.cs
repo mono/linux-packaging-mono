@@ -3552,7 +3552,7 @@ namespace System
         ToEven = 0,
     }
     [System.SerializableAttribute]
-    public partial class MissingFieldException : System.MissingMemberException
+    public partial class MissingFieldException : System.MissingMemberException, System.Runtime.Serialization.ISerializable
     {
         public MissingFieldException() { }
         protected MissingFieldException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -11358,9 +11358,6 @@ namespace System.Reflection
         ReservedMask = 61440,
         Retval = 8,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ParameterInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial class ParameterInfo : System.Reflection.ICustomAttributeProvider, System.Runtime.Serialization.IObjectReference
@@ -23114,6 +23111,7 @@ namespace System.Threading
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Threading.CancellationTokenRegistration left, System.Threading.CancellationTokenRegistration right) { throw null; }
         public static bool operator !=(System.Threading.CancellationTokenRegistration left, System.Threading.CancellationTokenRegistration right) { throw null; }
+        public bool Unregister() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
@@ -23341,8 +23339,6 @@ namespace System.Threading
         public ManualResetEvent(bool initialState) : base (default(bool), default(System.Threading.EventResetMode)) { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Set = {IsSet}")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public partial class ManualResetEventSlim : System.IDisposable
     {
         public ManualResetEventSlim() { }
@@ -23543,7 +23539,6 @@ namespace System.Threading
         public void TryEnter(int millisecondsTimeout, ref bool lockTaken) { }
         public void TryEnter(System.TimeSpan timeout, ref bool lockTaken) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SpinWait
     {
@@ -23551,6 +23546,7 @@ namespace System.Threading
         public bool NextSpinWillYield { get { throw null; } }
         public void Reset() { }
         public void SpinOnce() { }
+        public void SpinOnce(int sleep1Threshold) { }
         public static void SpinUntil(System.Func<bool> condition) { }
         public static bool SpinUntil(System.Func<bool> condition, int millisecondsTimeout) { throw null; }
         public static bool SpinUntil(System.Func<bool> condition, System.TimeSpan timeout) { throw null; }

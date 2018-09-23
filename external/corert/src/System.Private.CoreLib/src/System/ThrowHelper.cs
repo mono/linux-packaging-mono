@@ -203,6 +203,11 @@ namespace System
             throw new InvalidOperationException(SR.InvalidOperation_NoValue);
         }
 
+        internal static void ThrowInvalidOperationException_ConcurrentOperationsNotSupported()
+        {
+            throw new InvalidOperationException(SR.InvalidOperation_ConcurrentOperationsNotSupported);
+        }
+
         internal static void ThrowSerializationException(ExceptionResource resource)
         {
             throw new SerializationException(GetResourceString(resource));
@@ -321,6 +326,12 @@ namespace System
                     return "source";
                 case ExceptionArgument.state:
                     return "state";
+                case ExceptionArgument.length:
+                    return "length";
+                case ExceptionArgument.comparisonType:
+                    return "comparisonType";
+                case ExceptionArgument.manager:
+                    return "manager";
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionArgument Enum.");
                     return "";
@@ -369,6 +380,10 @@ namespace System
                     return SR.TaskCompletionSourceT_TrySetException_NullException;
                 case ExceptionResource.TaskCompletionSourceT_TrySetException_NoExceptions:
                     return SR.TaskCompletionSourceT_TrySetException_NoExceptions;
+                case ExceptionResource.NotSupported_StringComparison:
+                    return SR.NotSupported_StringComparison;
+                case ExceptionResource.ConcurrentCollection_SyncRoot_NotSupported:
+                    return SR.ConcurrentCollection_SyncRoot_NotSupported;
                 default:
                     Debug.Assert(false,
                         "The enum value is not defined, please check the ExceptionResource Enum.");
@@ -414,7 +429,10 @@ namespace System
         comparer,
         comparable,
         source,
-        state
+        state,
+        length,
+        comparisonType,
+        manager
     }
 
     //
@@ -441,5 +459,7 @@ namespace System
         TaskT_TransitionToFinal_AlreadyCompleted,
         TaskCompletionSourceT_TrySetException_NullException,
         TaskCompletionSourceT_TrySetException_NoExceptions,
+        NotSupported_StringComparison,
+        ConcurrentCollection_SyncRoot_NotSupported,
     }
 }

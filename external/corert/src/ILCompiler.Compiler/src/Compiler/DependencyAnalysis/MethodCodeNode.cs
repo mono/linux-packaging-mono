@@ -24,6 +24,7 @@ namespace ILCompiler.DependencyAnalysis
         private ObjectData _ehInfo;
         private DebugLocInfo[] _debugLocInfos;
         private DebugVarInfo[] _debugVarInfos;
+        private DebugEHClauseInfo[] _debugEHClauseInfos;
 
         public MethodCodeNode(MethodDesc method)
         {
@@ -140,6 +141,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public DebugLocInfo[] DebugLocInfos => _debugLocInfos;
         public DebugVarInfo[] DebugVarInfos => _debugVarInfos;
+        public DebugEHClauseInfo[] DebugEHClauseInfos => _debugEHClauseInfos;
 
         public void InitializeDebugLocInfos(DebugLocInfo[] debugLocInfos)
         {
@@ -153,18 +155,17 @@ namespace ILCompiler.DependencyAnalysis
             _debugVarInfos = debugVarInfos;
         }
 
-        protected internal override int ClassCode => 788492407;
-
-        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        public void InitializeDebugEHClauseInfos(DebugEHClauseInfo[] debugEHClauseInfos)
         {
-            return comparer.Compare(_method, ((MethodCodeNode)other)._method);
+            Debug.Assert(_debugEHClauseInfos == null);
+            _debugEHClauseInfos = debugEHClauseInfos;
         }
 
-        int ISortableSymbolNode.ClassCode => ClassCode;
+        public override int ClassCode => 788492407;
 
-        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        public override int CompareToImpl(ISortableNode other, CompilerComparer comparer)
         {
-            return CompareToImpl((ObjectNode)other, comparer);
+            return comparer.Compare(_method, ((MethodCodeNode)other)._method);
         }
     }
 }

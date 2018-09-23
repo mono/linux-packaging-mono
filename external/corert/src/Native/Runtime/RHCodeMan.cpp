@@ -891,7 +891,7 @@ bool EECodeManager::UnwindStackFrame(GCInfoHeader * pInfoHeader,
     {
         CalleeSavedRegMask regMask = pInfoHeader->GetSavedRegs();
         ASSERT_MSG(ebpFrame || !(regMask & CSR_MASK_RBP), "We should never use EBP as a preserved register");
-        ASSERT_MSG(!(regMask & CSR_MASK_RBX) || !pInfoHeader->HasDynamicAlignment(), "Can't have EBX as preserved regster and dynamic alignment frame pointer")
+        ASSERT_MSG(!(regMask & CSR_MASK_RBX) || !pInfoHeader->HasDynamicAlignment(), "Can't have EBX as preserved register and dynamic alignment frame pointer")
         if (regMask & CSR_MASK_RBX) { pContext->pRbx = (PTR_UIntNative)((PTR_UInt8)RSP - registerSaveDisplacement); ++RSP; } // registers saved at bottom of frame
         if (regMask & CSR_MASK_RSI) { pContext->pRsi = (PTR_UIntNative)((PTR_UInt8)RSP - registerSaveDisplacement); ++RSP; } // registers saved at bottom of frame
         if (regMask & CSR_MASK_RDI) { pContext->pRdi = (PTR_UIntNative)((PTR_UInt8)RSP - registerSaveDisplacement); ++RSP; } // registers saved at bottom of frame
@@ -1064,10 +1064,9 @@ bool EECodeManager::UnwindStackFrame(GCInfoHeader * pInfoHeader,
     // The compiler enforces that by placing an 8-byte padding between those areas if needed.
     // Account for that padding and ensure that the unwound SP is 16-byte aligned.
     RSP = dac_cast<PTR_UIntNative>((dac_cast<TADDR>(RSP) + 0xf) & ~0xf);
+
 #else
-
-#error NYI - For this arch
-
+#error Unexpected target architecture
 #endif
 
     pContext->SetSP((UIntNative) dac_cast<TADDR>(RSP));
@@ -1135,7 +1134,7 @@ UIntNative EECodeManager::GetConservativeUpperBoundForOutgoingArgs(GCInfoHeader 
             upperBound = pContext->GetFP() - pInfoHeader->GetFramePointerOffset();
 
 #else
-#error NYI - For this arch
+#error Unexpected target architecture
 #endif
         }
         else
@@ -1145,21 +1144,15 @@ UIntNative EECodeManager::GetConservativeUpperBoundForOutgoingArgs(GCInfoHeader 
             // Adding the frame size to the SP is guaranteed to yield an address above all outgoing
             // arguments.
             //
-            // If this frame contains one or more callee-saved register (guaranteed on ARM since at
+            // If this frame contains one or more callee-saved register (guaranteed on ARM/ARM64 since at
             // least LR is saved in all functions that contain callsites), then the computed address
             // will point at the lowest callee-saved register (or possibly above it in the x86 case
             // where registers are saved at the bottom of the frame).
             //
-            // If the frame contains no callee-saved registers (impossible on ARM), then the computed
+            // If the frame contains no callee-saved registers (impossible on ARM/ARM64), then the computed
             // address will point to the pushed return address.
 
             upperBound = pContext->GetSP() + pInfoHeader->GetFrameSize();
-
-#if defined(_TARGET_ARM_)
-            ASSERT(pInfoHeader->GetSavedRegs() != 0);
-#elif defined(_TARGET_ARM64_)
-            PORTABILITY_ASSERT("@TODO: FIXME:ARM64");
-#endif
         }
     }
 
@@ -1200,37 +1193,24 @@ PTR_PTR_VOID EECodeManager::GetReturnAddressLocationForHijack(
     }
 
 #ifdef _ARM_
-    // We cannot get the return address unless LR has 
-    // be saved in the prolog.
+    // We cannot get the return address unless LR has been saved in the prolog.
     if (!pHeader->IsRegSaved(CSR_MASK_LR))
         return NULL;
 #elif defined(_ARM64_)
-    // We can get return address if LR was saved either with FP or on its own:
-    bool ebpFrame = pHeader->HasFramePointer();
-    if (!ebpFrame && !pHeader->IsRegSaved(CSR_MASK_LR)) {
+    // We can get return address if LR was saved either with FP or on its own.
+    if (!pHeader->HasFramePointer() && !pHeader->IsRegSaved(CSR_MASK_LR))
         return NULL;
-    }
 #endif // _ARM_
-
-    void ** ppvResult;
 
     UInt32 epilogOffset = 0;
     UInt32 epilogSize = 0;
     if (GetEpilogOffset(pGCInfoHeader, cbMethodCodeSize, pbEpilogTable, codeOffset, &epilogOffset, &epilogSize)) 
     {
-#ifdef _ARM_
-        // Disable hijacking from epilogs on ARM until we implement GetReturnAddressLocationFromEpilog.
-        return NULL;
-#elif defined(_ARM64_)
-        // Disable hijacking from epilogs on ARM64:
+#if defined(_ARM_) || defined(_ARM64_)
+        // Disable hijacking from epilogs until we implement GetReturnAddressLocationFromEpilog.
         return NULL;
 #else
-        ppvResult = GetReturnAddressLocationFromEpilog(pHeader, pContext, epilogOffset, epilogSize);
-        // Early out if GetReturnAddressLocationFromEpilog indicates a non-hijackable epilog (e.g. exception
-        // throw epilog or tail call).
-        if (ppvResult == NULL)
-            return NULL;
-        goto Finished;
+        return GetReturnAddressLocationFromEpilog(pHeader, pContext, epilogOffset, epilogSize);
 #endif
     }
 
@@ -1238,11 +1218,7 @@ PTR_PTR_VOID EECodeManager::GetReturnAddressLocationForHijack(
     // ARM always sets up R11 as an OS frame chain pointer to enable fast ETW stack walking (except in the
     // case where LR is not pushed, but that was handled above). The protocol specifies that the return
     // address is pushed at [r11, #4].
-    ppvResult = (void **)((*pContext->pR11) + sizeof(void *));
-    goto Finished;
-#elif _ARM64_
-    ppvResult = (void **)(pContext->pLR);
-    goto Finished;
+    return (void **)((*pContext->pR11) + sizeof(void *));
 #else
 
     // We are in the body of the method, so just find the return address using the unwind info.
@@ -1254,8 +1230,7 @@ PTR_PTR_VOID EECodeManager::GetReturnAddressLocationForHijack(
             // In this case, we have the normal EBP frame pointer, but also an EBX frame pointer.  Use the EBX
             // one, because the return address associated with that frame pointer is the one we're actually 
             // going to return to.  The other one (next to EBP) is only for EBP-chain-walking.
-            ppvResult = (void **)((*pContext->pRbx) + sizeof(void *));
-            goto Finished;
+            return (void **)((*pContext->pRbx) + sizeof(void *));
         }
 #endif
 
@@ -1263,25 +1238,24 @@ PTR_PTR_VOID EECodeManager::GetReturnAddressLocationForHijack(
 #ifdef _AMD64_
         framePointerOffset = pHeader->GetFramePointerOffset();
 #endif
-        ppvResult = (void **)((*pContext->pRbp) + sizeof(void *) - framePointerOffset);
-        goto Finished;
+        return (void **)(pContext->GetFP() + sizeof(void *) - framePointerOffset);
     }
 
     {
         // We do not have a frame pointer, but we are also not in the prolog or epilog
 
-        UInt8 * RSP = (UInt8 *)pContext->GetSP();
-        RSP += pHeader->GetFrameSize();
+        UIntNative RSP = pContext->GetSP() + pHeader->GetFrameSize();
+#if _ARM64_
+        // LR is saved at the bottom of the preserved registers area
+        ASSERT(pHeader->IsRegSaved(CSR_MASK_LR));
+#else
         RSP += pHeader->GetPreservedRegsSaveSize();
-
-        // RSP should point to the return address now.
-        ppvResult = (void**)RSP;
-    }
-    goto Finished;
 #endif
 
-  Finished:
-    return ppvResult;
+        // RSP should point to the return address now.
+        return (void**)RSP;
+    }
+#endif
 }
 
 #endif
@@ -1350,6 +1324,9 @@ bool EECodeManager::GetEpilogOffset(
 
 #ifndef DACCESS_COMPILE
 
+// ARM64 epilogs have a window between loading the hijackable return address into LR and the RET instruction.
+// We cannot hijack or unhijack a thread while it is suspended in that window unless we implement hijacking
+// via LR register modification.
 void ** EECodeManager::GetReturnAddressLocationFromEpilog(GCInfoHeader * pInfoHeader, REGDISPLAY * pContext,
                                                           UInt32 epilogOffset, UInt32 epilogSize)
 {

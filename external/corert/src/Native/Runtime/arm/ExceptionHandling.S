@@ -109,7 +109,7 @@ NESTED_ENTRY RhpThrowEx, _TEXT, NoHandler
         // where the tail-calling thread had saved LR, which may not match where we have saved LR.
 
         ldr         r1, [r0, #OFFSETOF__Thread__m_pvHijackedReturnAddress]
-        cbz         r1, LOCAL_LABEL(NotHijacked)
+        cbz         r1, LOCAL_LABEL(NotHiJacked)
 
         ldr         r3, [r0, #OFFSETOF__Thread__m_ppvHijackedReturnAddressLocation]
 
@@ -206,6 +206,7 @@ NESTED_ENTRY RhpRethrow, _TEXT, NoHandler
 
         mov         r3, #0
         str         r3, [r1, #OFFSETOF__ExInfo__m_exception]         // init the exception object to null
+        strb        r3, [r1, #OFFSETOF__ExInfo__m_kind]              // init to a deterministic value (ExKind.None)
         mov         r3, #0xFFFFFFFF
         str         r3, [r1, #OFFSETOF__ExInfo__m_idxCurClause]
 

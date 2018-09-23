@@ -94,6 +94,14 @@ using std::nullptr_t;
 #endif
 #endif // __APPLE__
 
+#if defined(_ARM_) || defined(_ARM64_)
+#define SYSCONF_GET_NUMPROCS       _SC_NPROCESSORS_CONF
+#define SYSCONF_GET_NUMPROCS_NAME "_SC_NPROCESSORS_CONF"
+#else
+#define SYSCONF_GET_NUMPROCS       _SC_NPROCESSORS_ONLN
+#define SYSCONF_GET_NUMPROCS_NAME "_SC_NPROCESSORS_ONLN"
+#endif
+
 #define PalRaiseFailFastException RaiseFailFastException
 
 #define FATAL_ASSERT(e, msg) \
@@ -834,10 +842,10 @@ bool QueryCacheSize()
 bool QueryLogicalProcessorCount()
 {
 #if HAVE_SYSCONF
-    g_cLogicalCpus = sysconf(_SC_NPROCESSORS_ONLN);
+    g_cLogicalCpus = sysconf(SYSCONF_GET_NUMPROCS);
     if (g_cLogicalCpus < 1)
     {
-        ASSERT_UNCONDITIONALLY("sysconf failed for _SC_NPROCESSORS_ONLN\n");
+        ASSERT_UNCONDITIONALLY("sysconf failed for " SYSCONF_GET_NUMPROCS_NAME "\n");
         return false;
     }
 #elif HAVE_SYSCTL
@@ -1268,10 +1276,10 @@ bool InitializeSystemInfo()
     int nrcpus = 0;
 
 #if HAVE_SYSCONF
-    nrcpus = sysconf(_SC_NPROCESSORS_ONLN);
+    nrcpus = sysconf(SYSCONF_GET_NUMPROCS);
     if (nrcpus < 1)
     {
-        ASSERT_UNCONDITIONALLY("sysconf failed for _SC_NPROCESSORS_ONLN\n");
+        ASSERT_UNCONDITIONALLY("sysconf failed for " SYSCONF_GET_NUMPROCS_NAME "\n");
         return false;
     }
 #elif HAVE_SYSCTL

@@ -30,6 +30,13 @@ namespace Microsoft.Diagnostics.Tracing
 namespace System.Diagnostics.Tracing
 #endif
 {
+    internal enum EventProviderType
+    {
+        None = 0,
+        ETW,
+        EventPipe
+    };
+
     // New in CLR4.0
     internal enum ControllerCommand
     {
@@ -120,15 +127,28 @@ namespace System.Diagnostics.Tracing
         // it registers a callback from native code you MUST dispose it BEFORE shutdown, otherwise
         // you may get native callbacks during shutdown when we have destroyed the delegate.  
         // EventSource has special logic to do this, no one else should be calling EventProvider.  
-        internal EventProvider()
+        internal EventProvider(EventProviderType providerType)
         {
+            switch (providerType)
+            {
+                case EventProviderType.ETW:
 #if PLATFORM_WINDOWS
-            m_eventProvider = new EtwEventProvider();
-#elif FEATURE_PERFTRACING
-            m_eventProvider = new EventPipeEventProvider();
+                    m_eventProvider = new EtwEventProvider();
 #else
-            m_eventProvider = new NoOpEventProvider();
+                    m_eventProvider = new NoOpEventProvider();
 #endif
+                    break;
+                case EventProviderType.EventPipe:
+#if FEATURE_PERFTRACING
+                    m_eventProvider = new EventPipeEventProvider();
+#else
+                    m_eventProvider = new NoOpEventProvider();
+#endif
+                    break;
+                default:
+                    m_eventProvider = new NoOpEventProvider();
+                    break;
+            };
         }
 
         /// <summary>
@@ -331,7 +351,7 @@ namespace System.Diagnostics.Tracing
         protected EventKeywords MatchAnyKeyword { get { return (EventKeywords)m_anyKeywordMask; } set { m_anyKeywordMask = unchecked((long)value); } }
         protected EventKeywords MatchAllKeyword { get { return (EventKeywords)m_allKeywordMask; } set { m_allKeywordMask = unchecked((long)value); } }
 
-        static private int FindNull(byte[] buffer, int idx)
+        private static int FindNull(byte[] buffer, int idx)
         {
             while (idx < buffer.Length && buffer[idx] != 0)
                 idx++;
@@ -475,7 +495,7 @@ namespace System.Diagnostics.Tracing
                 var structBase = (byte*)providerInstance;
                 providerInstance = (UnsafeNativeMethods.ManifestEtw.TRACE_PROVIDER_INSTANCE_INFO*)&structBase[providerInstance->NextOffset];
             }
-#else 
+#else
 #if !ES_BUILD_PCL && PLATFORM_WINDOWS  // TODO command arguments don't work on PCL builds...
             // This code is only used in the Nuget Package Version of EventSource.  because
             // the code above is using APIs baned from UWP apps.     
@@ -761,10 +781,10 @@ namespace System.Diagnostics.Tracing
                 *uintptr = (uint)data;
                 dataDescriptor->Ptr = (ulong)uintptr;
             }
-            else if (data is UInt64)
+            else if (data is ulong)
             {
                 dataDescriptor->Size = (uint)sizeof(ulong);
-                UInt64* ulongptr = (ulong*)dataBuffer;
+                ulong* ulongptr = (ulong*)dataBuffer;
                 *ulongptr = (ulong)data;
                 dataDescriptor->Ptr = (ulong)ulongptr;
             }
@@ -863,25 +883,18 @@ namespace System.Diagnostics.Tracing
             {
                 if (data is System.Enum)
                 {
-                    Type underlyingType = Enum.GetUnderlyingType(data.GetType());
-                    if (underlyingType == typeof(int))
+                    try
                     {
-#if !ES_BUILD_PCL
-                        data = ((IConvertible)data).ToInt32(null);
-#else
-                        data = (int)data;
-#endif
+                        Type underlyingType = Enum.GetUnderlyingType(data.GetType());
+                        if (underlyingType == typeof(ulong))
+                            data = (ulong)data;
+                        else if (underlyingType == typeof(long))
+                            data = (long)data;
+                        else
+                            data = (int)Convert.ToInt64(data);  // This handles all int/uint or below (we treat them like 32 bit ints)   
                         goto Again;
                     }
-                    else if (underlyingType == typeof(long))
-                    {
-#if !ES_BUILD_PCL
-                        data = ((IConvertible)data).ToInt64(null);
-#else
-                        data = (long)data;
-#endif
-                        goto Again;
-                    }
+                    catch { }   // On wierd cases (e.g. enums of type double), give up and for compat simply tostring.  
                 }
 
                 // To our eyes, everything else is a just a string
@@ -959,7 +972,7 @@ namespace System.Diagnostics.Tracing
                     List<object> dataRefObj = new List<object>(s_etwAPIMaxRefObjCount);
                     EventData* userData = stackalloc EventData[2 * argCount];
                     for (int i = 0; i < 2 * argCount; i++)
-                        userData[i] = default(EventData);
+                        userData[i] = default;
                     EventData* userDataPtr = (EventData*)userData;
                     byte* dataBuffer = stackalloc byte[s_basicTypeAllocationBufferSize * 2 * argCount]; // Assume 16 chars for non-string argument
                     byte* currentBuffer = dataBuffer;
@@ -1133,7 +1146,7 @@ namespace System.Diagnostics.Tracing
         // <CallsSuppressUnmanagedCode Name="UnsafeNativeMethods.ManifestEtw.EventWrite(System.Int64,EventDescriptor&,System.UInt32,System.Void*):System.UInt32" />
         // </SecurityKernel>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference")]
-        internal unsafe protected bool WriteEvent(ref EventDescriptor eventDescriptor, IntPtr eventHandle, Guid* activityID, Guid* childActivityID, int dataCount, IntPtr data)
+        internal protected unsafe bool WriteEvent(ref EventDescriptor eventDescriptor, IntPtr eventHandle, Guid* activityID, Guid* childActivityID, int dataCount, IntPtr data)
         {
             if (childActivityID != null)
             {
@@ -1157,6 +1170,7 @@ namespace System.Diagnostics.Tracing
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference")]
         internal unsafe bool WriteEventRaw(
             ref EventDescriptor eventDescriptor,
+            IntPtr eventHandle,
             Guid* activityID,
             Guid* relatedActivityID,
             int dataCount,
@@ -1167,7 +1181,7 @@ namespace System.Diagnostics.Tracing
             status = m_eventProvider.EventWriteTransferWrapper(
                 m_regHandle,
                 ref eventDescriptor,
-                IntPtr.Zero,
+                eventHandle,
                 activityID,
                 relatedActivityID,
                 dataCount,
@@ -1269,14 +1283,13 @@ namespace System.Diagnostics.Tracing
         }
 
         // Define an EventPipeEvent handle.
-        unsafe IntPtr IEventProvider.DefineEventHandle(uint eventID, string eventName, Int64 keywords, uint eventVersion, uint level, byte *pMetadata, uint metadataLength)
+        unsafe IntPtr IEventProvider.DefineEventHandle(uint eventID, string eventName, long keywords, uint eventVersion, uint level, byte *pMetadata, uint metadataLength)
         {
             throw new System.NotSupportedException();
         }
     }
 
-#elif !FEATURE_PERFTRACING
-
+#endif
     internal sealed class NoOpEventProvider : IEventProvider
     {
         unsafe uint IEventProvider.EventRegister(
@@ -1311,12 +1324,10 @@ namespace System.Diagnostics.Tracing
         }
 
         // Define an EventPipeEvent handle.
-        unsafe IntPtr IEventProvider.DefineEventHandle(uint eventID, string eventName, Int64 keywords, uint eventVersion, uint level, byte *pMetadata, uint metadataLength)
+        unsafe IntPtr IEventProvider.DefineEventHandle(uint eventID, string eventName, long keywords, uint eventVersion, uint level, byte *pMetadata, uint metadataLength)
         {
-            throw new System.NotSupportedException();
+            return IntPtr.Zero;
         }
     }
-
-#endif
 }
 

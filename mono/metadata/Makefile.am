@@ -163,6 +163,18 @@ system_native_common_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h
 
+libmono_system_net_security_native_la_SOURCES = system_net_security_native_empty.c
+
+if ENABLE_GSS
+libmono_system_net_security_native_la_SOURCES += \
+	pal_config.h \
+	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
+	../../external/corefx/src/Native/Unix/Common/pal_types.h \
+	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
+	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
+	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
+endif
+
 system_native_full_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
@@ -186,6 +198,7 @@ system_native_android_sources = \
 if !HOST_WIN32
 if !HOST_WASM
 lib_LTLIBRARIES += libmono-system-native.la
+lib_LTLIBRARIES += libmono-system-net-security-native.la
 libmono_system_native_la_SOURCES = $(system_native_common_sources)
 if TARGET_OSX
 libmono_system_native_la_SOURCES += $(system_native_full_sources)
@@ -206,6 +219,8 @@ endif
 # Add back CXX_REMOVE_CFLAGS to keep this as C until/unless https://github.com/dotnet/corefx/pull/31342.
 libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition @CXX_REMOVE_CFLAGS@
 libmono_system_native_la_LDFLAGS = $(libmonoldflags)
+libmono_system_net_security_native_la_CFLAGS = $(libmono_system_native_la_CFLAGS)
+libmono_system_net_security_native_la_LDFLAGS = $(libmono_system_native_la_LDFLAGS)
 
 CLEANFILES = mono-bundle.stamp
 
@@ -383,6 +398,7 @@ common_sources = \
 	seq-points-data.h	\
 	seq-points-data.c	\
 	handle.c	\
+	handle-decl.h	\
 	handle.h	\
 	w32mutex.h	\
 	w32semaphore.h	\

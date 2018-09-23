@@ -47,7 +47,7 @@ namespace System.Runtime
 
             while (pCur != null)
             {
-                UInt16 implSlotNumber;
+                ushort implSlotNumber;
                 if (FindImplSlotForCurrentType(
                         pCur, pItfType, itfSlotNumber, &implSlotNumber))
                 {
@@ -76,8 +76,8 @@ namespace System.Runtime
 
         private static bool FindImplSlotForCurrentType(EEType* pTgtType,
                                         EEType* pItfType,
-                                        UInt16 itfSlotNumber,
-                                        UInt16* pImplSlotNumber)
+                                        ushort itfSlotNumber,
+                                        ushort* pImplSlotNumber)
         {
             bool fRes = false;
 
@@ -117,8 +117,8 @@ namespace System.Runtime
 
         private static bool FindImplSlotInSimpleMap(EEType* pTgtType,
                                      EEType* pItfType,
-                                     UInt32 itfSlotNumber,
-                                     UInt16* pImplSlotNumber,
+                                     uint itfSlotNumber,
+                                     ushort* pImplSlotNumber,
                                      bool actuallyCheckVariance)
         {
             Debug.Assert(pTgtType->HasDispatchMap, "Missing dispatch map");
@@ -226,7 +226,7 @@ namespace System.Runtime
                         // arity of both had better be the same.
                         Debug.Assert(itfArity == (int)pCurEntryType->GenericArity, "arity mismatch betweeen generic instantiations");
 
-                        if (TypeCast.TypeParametersAreCompatible(itfArity, pCurEntryInstantiation, pItfInstantiation, pItfVarianceInfo, fArrayCovariance))
+                        if (TypeCast.TypeParametersAreCompatible(itfArity, pCurEntryInstantiation, pItfInstantiation, pItfVarianceInfo, fArrayCovariance, null))
                         {
                             *pImplSlotNumber = i->_usImplMethodSlot;
                             return true;

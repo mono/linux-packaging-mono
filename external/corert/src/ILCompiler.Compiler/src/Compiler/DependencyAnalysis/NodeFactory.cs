@@ -14,7 +14,6 @@ using Internal.Text;
 using Internal.TypeSystem;
 using Internal.Runtime;
 using Internal.IL;
-using Internal.NativeFormat;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -50,6 +49,7 @@ namespace ILCompiler.DependencyAnalysis
             MetadataManager = metadataManager;
             LazyGenericsPolicy = lazyGenericsPolicy;
             _importedNodeProvider = importedNodeProvider;
+            InterfaceDispatchCellSection = new InterfaceDispatchCellSectionNode(this);
         }
 
         public void SetMarkingComplete()
@@ -282,9 +282,9 @@ namespace ILCompiler.DependencyAnalysis
                 return new PInvokeModuleFixupNode(name);
             });
 
-            _pInvokeMethodFixups = new NodeCache<Tuple<string, string>, PInvokeMethodFixupNode>((Tuple<string, string> key) =>
+            _pInvokeMethodFixups = new NodeCache<Tuple<string, string, PInvokeFlags>, PInvokeMethodFixupNode>((Tuple<string, string, PInvokeFlags> key) =>
             {
-                return new PInvokeMethodFixupNode(key.Item1, key.Item2);
+                return new PInvokeMethodFixupNode(key.Item1, key.Item2, key.Item3);
             });
 
             _methodEntrypoints = new NodeCache<MethodDesc, IMethodNode>(CreateMethodEntrypointNode);
@@ -379,7 +379,12 @@ namespace ILCompiler.DependencyAnalysis
 
             _interfaceDispatchMaps = new NodeCache<TypeDesc, InterfaceDispatchMapNode>((TypeDesc type) =>
             {
-                return new InterfaceDispatchMapNode(type);
+                return new InterfaceDispatchMapNode(this, type);
+            });
+
+            _sealedVtableNodes = new NodeCache<TypeDesc, SealedVTableNode>((TypeDesc type) =>
+            {
+                return new SealedVTableNode(type);
             });
 
             _runtimeMethodHandles = new NodeCache<MethodDesc, RuntimeMethodHandleNode>((MethodDesc method) =>
@@ -472,11 +477,6 @@ namespace ILCompiler.DependencyAnalysis
             _stringAllocators = new NodeCache<MethodDesc, IMethodNode>(constructor =>
             {
                 return new StringAllocatorMethodNode(constructor);
-            });
-
-            _defaultConstructorFromLazyNodes = new NodeCache<TypeDesc, DefaultConstructorFromLazyNode>(type =>
-            {
-                return new DefaultConstructorFromLazyNode(type);
             });
 
             NativeLayout = new NativeLayoutHelper(this);
@@ -641,6 +641,13 @@ namespace ILCompiler.DependencyAnalysis
             return _readOnlyDataBlobs.GetOrAdd(new ReadOnlyDataBlobKey(name, blobData, alignment));
         }
 
+        private NodeCache<TypeDesc, SealedVTableNode> _sealedVtableNodes;
+
+        internal SealedVTableNode SealedVTable(TypeDesc type)
+        {
+            return _sealedVtableNodes.GetOrAdd(type);
+        }
+
         private NodeCache<TypeDesc, InterfaceDispatchMapNode> _interfaceDispatchMaps;
 
         internal InterfaceDispatchMapNode InterfaceDispatchMap(TypeDesc type)
@@ -676,11 +683,11 @@ namespace ILCompiler.DependencyAnalysis
             return _pInvokeModuleFixups.GetOrAdd(moduleName);
         }
 
-        private NodeCache<Tuple<string, string>, PInvokeMethodFixupNode> _pInvokeMethodFixups;
+        private NodeCache<Tuple<string, string, PInvokeFlags>, PInvokeMethodFixupNode> _pInvokeMethodFixups;
 
-        public PInvokeMethodFixupNode PInvokeMethodFixup(string moduleName, string entryPointName)
+        public PInvokeMethodFixupNode PInvokeMethodFixup(string moduleName, string entryPointName, PInvokeFlags flags)
         {
-            return _pInvokeMethodFixups.GetOrAdd(new Tuple<string, string>(moduleName, entryPointName));
+            return _pInvokeMethodFixups.GetOrAdd(Tuple.Create(moduleName, entryPointName, flags));
         }
 
         private NodeCache<TypeDesc, VTableSliceNode> _vTableNodes;
@@ -786,12 +793,6 @@ namespace ILCompiler.DependencyAnalysis
         public IMethodNode RuntimeDeterminedMethod(MethodDesc method)
         {
             return _runtimeDeterminedMethods.GetOrAdd(method);
-        }
-
-        private NodeCache<TypeDesc, DefaultConstructorFromLazyNode> _defaultConstructorFromLazyNodes;
-        internal DefaultConstructorFromLazyNode DefaultConstructorFromLazy(TypeDesc type)
-        {
-            return _defaultConstructorFromLazyNodes.GetOrAdd(type);
         }
 
         private static readonly string[][] s_helperEntrypointNames = new string[][] {
@@ -911,6 +912,9 @@ namespace ILCompiler.DependencyAnalysis
 
         internal TypeMetadataNode TypeMetadata(MetadataType type)
         {
+            // These are only meaningful for UsageBasedMetadataManager. We should not have them
+            // in the dependency graph otherwise.
+            Debug.Assert(MetadataManager is UsageBasedMetadataManager);
             return _typesWithMetadata.GetOrAdd(type);
         }
 
@@ -918,6 +922,9 @@ namespace ILCompiler.DependencyAnalysis
 
         internal MethodMetadataNode MethodMetadata(MethodDesc method)
         {
+            // These are only meaningful for UsageBasedMetadataManager. We should not have them
+            // in the dependency graph otherwise.
+            Debug.Assert(MetadataManager is UsageBasedMetadataManager);
             return _methodsWithMetadata.GetOrAdd(method);
         }
 
@@ -925,6 +932,9 @@ namespace ILCompiler.DependencyAnalysis
 
         internal FieldMetadataNode FieldMetadata(FieldDesc field)
         {
+            // These are only meaningful for UsageBasedMetadataManager. We should not have them
+            // in the dependency graph otherwise.
+            Debug.Assert(MetadataManager is UsageBasedMetadataManager);
             return _fieldsWithMetadata.GetOrAdd(field);
         }
 
@@ -932,6 +942,9 @@ namespace ILCompiler.DependencyAnalysis
 
         internal ModuleMetadataNode ModuleMetadata(ModuleDesc module)
         {
+            // These are only meaningful for UsageBasedMetadataManager. We should not have them
+            // in the dependency graph otherwise.
+            Debug.Assert(MetadataManager is UsageBasedMetadataManager);
             return _modulesWithMetadata.GetOrAdd(module);
         }
 
@@ -1016,6 +1029,8 @@ namespace ILCompiler.DependencyAnalysis
             "__ImportTablesTableEnd",
             new SortableDependencyNode.ObjectNodeComparer(new CompilerComparer()));
 
+        public InterfaceDispatchCellSectionNode InterfaceDispatchCellSection { get; }
+
         public ReadyToRunHeaderNode ReadyToRunHeader;
 
         public Dictionary<ISymbolNode, string> NodeAliases = new Dictionary<ISymbolNode, string>();
@@ -1035,6 +1050,7 @@ namespace ILCompiler.DependencyAnalysis
             graph.AddRoot(TypeManagerIndirection, "TypeManagerIndirection is always generated");
             graph.AddRoot(DispatchMapTable, "DispatchMapTable is always generated");
             graph.AddRoot(FrozenSegmentRegion, "FrozenSegmentRegion is always generated");
+            graph.AddRoot(InterfaceDispatchCellSection, "Interface dispatch cell section is always generated");
             if (Target.IsWindows)
             {
                 // We need 2 delimiter symbols to bound the unboxing stubs region on Windows platforms (these symbols are
