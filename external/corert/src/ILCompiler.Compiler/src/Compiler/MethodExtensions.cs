@@ -30,6 +30,26 @@ namespace ILCompiler
             return null;
         }
 
+        public static string GetRuntimeImportDllName(this EcmaMethod This)
+        {
+            var decoded = This.GetDecodedCustomAttribute("System.Runtime", "RuntimeImportAttribute");
+            if (decoded == null)
+                return null;
+
+            var decodedValue = decoded.Value;
+
+            if (decodedValue.FixedArguments.Length == 2)
+                return (string)decodedValue.FixedArguments[0].Value;
+
+            foreach (var argument in decodedValue.NamedArguments)
+            {
+                if (argument.Name == "DllName")
+                    return (string)argument.Value;
+            }
+
+            return null;
+        }
+
         public static string GetRuntimeExportName(this EcmaMethod This)
         {
             var decoded = This.GetDecodedCustomAttribute("System.Runtime", "RuntimeExportAttribute");
@@ -112,6 +132,20 @@ namespace ILCompiler
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Determine whether a method can go into the sealed vtable of a type. Such method must be a sealed virtual 
+        /// method that is not overriding any method on a base type. 
+        /// Given that such methods can never be overridden in any derived type, we can 
+        /// save space in the vtable of a type, and all of its derived types by not emitting these methods in their vtables, 
+        /// and storing them in a separate table on the side. This is especially beneficial for all array types,
+        /// since all of their collection interface methods are sealed and implemented on the System.Array and 
+        /// System.Array&lt;T&gt; base types, and therefore we can minimize the vtable sizes of all derived array types.
+        /// </summary>
+        public static bool CanMethodBeInSealedVTable(this MethodDesc method)
+        {
+            return method.IsFinal && method.IsNewSlot;
         }
     }
 }

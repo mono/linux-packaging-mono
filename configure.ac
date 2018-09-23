@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.19.0.428],
+AC_INIT(mono, [5.19.0.459],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -46,7 +46,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=D5B35FED-5DF9-413F-8463-57269F340FA7
+MONO_CORLIB_VERSION=CBC2E3CC-A1C7-4BF9-B87C-F1DDF25E5E90
 
 #
 # Put a quoted #define in config.h.
@@ -1774,6 +1774,49 @@ AC_CHECK_FUNCS(signal)
 if test x$platform_android = xyes; then
 	AC_DEFINE(HAVE_SIGNAL,1)
 fi
+
+dnl ***********************************
+dnl *** Checks for availability of GSS dependencies (krb5, gss.framework, etc)
+dnl ***********************************
+enable_gss=no;
+AC_MSG_CHECKING(for GSS/GSS.h)
+AC_TRY_COMPILE([
+    #include <GSS/GSS.h>
+], [
+],[
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_GSSFW_HEADERS, 1, [GSS/GSS.h])
+    AC_DEFINE(HAVE_GSS_SPNEGO_MECHANISM, 1, [GSS_SPNEGO_MECHANISM])
+    enable_gss=yes
+], [
+    AC_MSG_RESULT(no)
+])
+
+AC_MSG_CHECKING(for gssapi/gssapi_ext.h)
+AC_TRY_COMPILE([
+    #include <gssapi/gssapi_ext.h>
+], [
+],[
+    AC_MSG_RESULT(yes)
+    enable_gss=yes
+], [
+    AC_MSG_RESULT(no)
+])
+
+AC_MSG_CHECKING(for GSS_SPNEGO_MECHANISM)
+AC_TRY_COMPILE([
+    #include <gssapi/gssapi_ext.h>
+    #include <gssapi/gssapi_krb5.h>
+    gss_OID_set_desc gss_mech_spnego_OID_set_desc = {.count = 1, .elements = GSS_SPNEGO_MECHANISM};
+], [
+],[
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_GSS_SPNEGO_MECHANISM, 1, [GSS_SPNEGO_MECHANISM])
+], [
+    AC_MSG_RESULT(no)
+])
+
+AM_CONDITIONAL(ENABLE_GSS, test x$enable_gss = xyes)
 
 if test x$host_win32 = xno; then
 	dnl *************************************

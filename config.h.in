@@ -509,6 +509,12 @@
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
 
+/* GSS/GSS.h */
+#undef HAVE_GSSFW_HEADERS
+
+/* GSS_SPNEGO_MECHANISM */
+#undef HAVE_GSS_SPNEGO_MECHANISM
+
 /* ICANON */
 #undef HAVE_ICANON
 

@@ -22,10 +22,7 @@ namespace System
             return (IndexOf(value, comparisonType) >= 0);
         }
 
-        public bool Contains(char value)
-        {
-            return IndexOf(value) != -1;
-        }
+        public bool Contains(char value) => SpanHelpers.Contains(ref _firstChar, value, Length);
 
         public bool Contains(char value, StringComparison comparisonType)
         {
@@ -35,10 +32,7 @@ namespace System
         // Returns the index of the first occurrence of a specified character in the current instance.
         // The search starts at startIndex and runs thorough the next count characters.
         //
-        public int IndexOf(char value)
-        {
-            return IndexOf(value, 0, this.Length);
-        }
+        public int IndexOf(char value) => SpanHelpers.IndexOf(ref _firstChar, value, Length);
 
         public int IndexOf(char value, int startIndex)
         {
@@ -50,19 +44,15 @@ namespace System
             switch (comparisonType)
             {
                 case StringComparison.CurrentCulture:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, CompareOptions.None);
-
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, CompareOptions.IgnoreCase);
+                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.InvariantCulture:
-                    return CompareInfo.Invariant.IndexOf(this, value, CompareOptions.None);
-
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.IndexOf(this, value, CompareOptions.IgnoreCase);
+                    return CompareInfo.Invariant.IndexOf(this, value, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.Ordinal:
-                    return CompareInfo.Invariant.IndexOf(this, value, CompareOptions.Ordinal);
+                    return IndexOf(value);
 
                 case StringComparison.OrdinalIgnoreCase:
                     return CompareInfo.Invariant.IndexOf(this, value, CompareOptions.OrdinalIgnoreCase);
@@ -80,115 +70,10 @@ namespace System
             if ((uint)count > (uint)(Length - startIndex))
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
 
-            fixed (char* pChars = &_firstChar)
-            {
-                char* pCh = pChars + startIndex;
-                char* pEndCh = pCh + count;
+            int result = SpanHelpers.IndexOf(ref Unsafe.Add(ref _firstChar, startIndex), value, count);
 
-                if (Vector.IsHardwareAccelerated && count >= Vector<ushort>.Count * 2)
-                {
-                    unchecked
-                    {
-                        const int elementsPerByte = sizeof(ushort) / sizeof(byte);
-                        int unaligned = ((int)pCh & (Vector<byte>.Count - 1)) / elementsPerByte;
-                        count = ((Vector<ushort>.Count - unaligned) & (Vector<ushort>.Count - 1));
-                    }
-                }
-            SequentialScan:
-                while (count >= 4)
-                {
-                    if (*pCh == value) goto ReturnIndex;
-                    if (*(pCh + 1) == value) goto ReturnIndex1;
-                    if (*(pCh + 2) == value) goto ReturnIndex2;
-                    if (*(pCh + 3) == value) goto ReturnIndex3;
-
-                    count -= 4;
-                    pCh += 4;
-                }
-
-                while (count > 0)
-                {
-                    if (*pCh == value)
-                        goto ReturnIndex;
-
-                    count--;
-                    pCh++;
-                }
-
-                if (pCh < pEndCh)
-                {
-                    count = (int)((pEndCh - pCh) & ~(Vector<ushort>.Count - 1));
-                    // Get comparison Vector
-                    Vector<ushort> vComparison = new Vector<ushort>(value);
-                    while (count > 0)
-                    {
-                        var vMatches = Vector.Equals(vComparison, Unsafe.ReadUnaligned<Vector<ushort>>(pCh));
-                        if (Vector<ushort>.Zero.Equals(vMatches))
-                        {
-                            pCh += Vector<ushort>.Count;
-                            count -= Vector<ushort>.Count;
-                            continue;
-                        }
-                        // Find offset of first match
-                        return (int)(pCh - pChars) + LocateFirstFoundChar(vMatches);
-                    }
-
-                    if (pCh < pEndCh)
-                    {
-                        unchecked
-                        {
-                            count = (int)(pEndCh - pCh);
-                        }
-                        goto SequentialScan;
-                    }
-                }
-
-                return -1;
-
-            ReturnIndex3: pCh++;
-            ReturnIndex2: pCh++;
-            ReturnIndex1: pCh++;
-            ReturnIndex:
-                return (int)(pCh - pChars);
-            }
+            return result == -1 ? result : result + startIndex;
         }
-
-        // Vector sub-search adapted from https://github.com/aspnet/KestrelHttpServer/pull/1138
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int LocateFirstFoundChar(Vector<ushort> match)
-        {
-            var vector64 = Vector.AsVectorUInt64(match);
-            ulong candidate = 0;
-            int i = 0;
-            // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
-            for (; i < Vector<ulong>.Count; i++)
-            {
-                candidate = vector64[i];
-                if (candidate != 0)
-                {
-                    break;
-                }
-            }
-
-            // Single LEA instruction with jitted const (using function result)
-            return i * 4 + LocateFirstFoundChar(candidate);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int LocateFirstFoundChar(ulong match)
-        {
-            unchecked
-            {
-                // Flag least significant power of two bit
-                var powerOfTwoFlag = match ^ (match - 1);
-                // Shift all powers of two into the high byte and extract
-                return (int)((powerOfTwoFlag * XorPowerOfTwoToHighChar) >> 49);
-            }
-        }
-
-        private const ulong XorPowerOfTwoToHighChar = (0x03ul |
-                                                       0x02ul << 16 |
-                                                       0x01ul << 32) + 1;
 
         // Returns the index of the first occurrence of any specified character in the current instance.
         // The search starts at startIndex and runs to startIndex + count - 1.
@@ -289,7 +174,7 @@ namespace System
         private unsafe int IndexOfCharArray(char[] anyOf, int startIndex, int count)
         {
             // use probabilistic map, see InitializeProbabilisticMap
-            ProbabilisticMap map = default(ProbabilisticMap);
+            ProbabilisticMap map = default;
             uint* charMap = (uint*)&map;
 
             InitializeProbabilisticMap(charMap, anyOf);
@@ -374,12 +259,12 @@ namespace System
             return false;
         }
 
-        private unsafe static bool IsCharBitSet(uint* charMap, byte value)
+        private static unsafe bool IsCharBitSet(uint* charMap, byte value)
         {
             return (charMap[value & PROBABILISTICMAP_BLOCK_INDEX_MASK] & (1u << (value >> PROBABILISTICMAP_BLOCK_INDEX_SHIFT))) != 0;
         }
 
-        private unsafe static void SetCharBit(uint* charMap, byte value)
+        private static unsafe void SetCharBit(uint* charMap, byte value)
         {
             charMap[value & PROBABILISTICMAP_BLOCK_INDEX_MASK] |= 1u << (value >> PROBABILISTICMAP_BLOCK_INDEX_SHIFT);
         }
@@ -434,22 +319,16 @@ namespace System
             switch (comparisonType)
             {
                 case StringComparison.CurrentCulture:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, startIndex, count, CompareOptions.None);
-
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase);
+                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.InvariantCulture:
-                    return CompareInfo.Invariant.IndexOf(this, value, startIndex, count, CompareOptions.None);
-
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.IndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase);
+                    return CompareInfo.Invariant.IndexOf(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.Ordinal:
-                    return CompareInfo.Invariant.IndexOfOrdinal(this, value, startIndex, count, ignoreCase: false);
-
                 case StringComparison.OrdinalIgnoreCase:
-                    return CompareInfo.Invariant.IndexOfOrdinal(this, value, startIndex, count, ignoreCase: true);
+                    return CompareInfo.Invariant.IndexOfOrdinal(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType) != CompareOptions.None);
 
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
@@ -461,10 +340,7 @@ namespace System
         // The character at position startIndex is included in the search.  startIndex is the larger
         // index within the string.
         //
-        public int LastIndexOf(char value)
-        {
-            return LastIndexOf(value, this.Length - 1, this.Length);
-        }
+        public int LastIndexOf(char value) => SpanHelpers.LastIndexOf(ref _firstChar, value, Length);
 
         public int LastIndexOf(char value, int startIndex)
         {
@@ -482,112 +358,10 @@ namespace System
             if ((uint)count > (uint)startIndex + 1)
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
 
-            fixed (char* pChars = &_firstChar)
-            {
-                char* pCh = pChars + startIndex;
-                char* pEndCh = pCh - count;
+            int startSearchAt = startIndex + 1 - count;
+            int result = SpanHelpers.LastIndexOf(ref Unsafe.Add(ref _firstChar, startSearchAt), value, count);
 
-                //We search [startIndex..EndIndex]
-                if (Vector.IsHardwareAccelerated && count >= Vector<ushort>.Count * 2)
-                {
-                    unchecked
-                    {
-                        const int elementsPerByte = sizeof(ushort) / sizeof(byte);
-                        count = (((int)pCh & (Vector<byte>.Count - 1)) / elementsPerByte) + 1;
-                    }
-                }
-            SequentialScan:
-                while (count >= 4)
-                {
-                    if (*pCh == value) goto ReturnIndex;
-                    if (*(pCh - 1) == value) goto ReturnIndex1;
-                    if (*(pCh - 2) == value) goto ReturnIndex2;
-                    if (*(pCh - 3) == value) goto ReturnIndex3;
-
-                    count -= 4;
-                    pCh -= 4;
-                }
-
-                while (count > 0)
-                {
-                    if (*pCh == value)
-                        goto ReturnIndex;
-
-                    count--;
-                    pCh--;
-                }
-
-                if (pCh > pEndCh)
-                {
-                    count = (int)((pCh - pEndCh) & ~(Vector<ushort>.Count - 1));
-
-                    // Get comparison Vector
-                    Vector<ushort> vComparison = new Vector<ushort>(value);
-                    while (count > 0)
-                    {
-                        char* pStart = pCh - Vector<ushort>.Count + 1;
-                        var vMatches = Vector.Equals(vComparison, Unsafe.ReadUnaligned<Vector<ushort>>(pStart));
-                        if (Vector<ushort>.Zero.Equals(vMatches))
-                        {
-                            pCh -= Vector<ushort>.Count;
-                            count -= Vector<ushort>.Count;
-                            continue;
-                        }
-                        // Find offset of last match
-                        return (int)(pStart - pChars) + LocateLastFoundChar(vMatches);
-                    }
-
-                    if (pCh > pEndCh)
-                    {
-                        unchecked
-                        {
-                            count = (int)(pCh - pEndCh);
-                        }
-                        goto SequentialScan;
-                    }
-                }
-                return -1;
-
-            ReturnIndex3: pCh--;
-            ReturnIndex2: pCh--;
-            ReturnIndex1: pCh--;
-            ReturnIndex:
-                return (int)(pCh - pChars);
-            }
-        }
-
-        // Vector sub-search adapted from https://github.com/aspnet/KestrelHttpServer/pull/1138
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int LocateLastFoundChar(Vector<ushort> match)
-        {
-            var vector64 = Vector.AsVectorUInt64(match);
-            ulong candidate = 0;
-            int i = Vector<ulong>.Count - 1;
-            // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
-            for (; i >= 0; i--)
-            {
-                candidate = vector64[i];
-                if (candidate != 0)
-                {
-                    break;
-                }
-            }
-
-            // Single LEA instruction with jitted const (using function result)
-            return i * 4 + LocateLastFoundChar(candidate);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int LocateLastFoundChar(ulong match)
-        {
-            // Find the most significant char that has its highest bit set
-            int index = 3;
-            while ((long)match > 0)
-            {
-                match = match << 16;
-                index--;
-            }
-            return index;
+            return result == -1 ? result : result + startSearchAt;
         }
 
         // Returns the index of the last occurrence of any specified character in the current instance.
@@ -640,7 +414,7 @@ namespace System
         private unsafe int LastIndexOfCharArray(char[] anyOf, int startIndex, int count)
         {
             // use probabilistic map, see InitializeProbabilisticMap
-            ProbabilisticMap map = default(ProbabilisticMap);
+            ProbabilisticMap map = default;
             uint* charMap = (uint*)&map;
 
             InitializeProbabilisticMap(charMap, anyOf);
@@ -735,22 +509,16 @@ namespace System
             switch (comparisonType)
             {
                 case StringComparison.CurrentCulture:
-                    return CultureInfo.CurrentCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, CompareOptions.None);
-
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase);
+                    return CultureInfo.CurrentCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.InvariantCulture:
-                    return CompareInfo.Invariant.LastIndexOf(this, value, startIndex, count, CompareOptions.None);
-
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.LastIndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase);
+                    return CompareInfo.Invariant.LastIndexOf(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.Ordinal:
-                    return CompareInfo.Invariant.LastIndexOfOrdinal(this, value, startIndex, count, ignoreCase: false);
-
                 case StringComparison.OrdinalIgnoreCase:
-                    return CompareInfo.Invariant.LastIndexOfOrdinal(this, value, startIndex, count, ignoreCase: true);
+                    return CompareInfo.Invariant.LastIndexOfOrdinal(this, value, startIndex, count, GetCaseCompareOfComparisonCulture(comparisonType) != CompareOptions.None);
 
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));

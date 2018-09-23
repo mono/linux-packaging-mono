@@ -10,6 +10,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Reflection;
 
 [assembly: TestAssembly]
@@ -43,6 +44,7 @@ internal class ReflectionTest
         TestCreateDelegate.Run();
         TestInstanceFields.Run();
         TestReflectionInvoke.Run();
+        TestByRefReturnInvoke.Run();
 
         return 100;
     }
@@ -89,9 +91,34 @@ internal class ReflectionTest
             {
                 return "Hello " + _world;
             }
+
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+#endif
+            public static unsafe string GetHelloPointer(char* ptr)
+            {
+                return "Hello " + unchecked((int)ptr);
+            }
+
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+#endif
+            public static unsafe string GetHelloPointerToo(char** ptr)
+            {
+                return "Hello " + unchecked((int)ptr);
+            }
+
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+#endif
+            public static unsafe bool* GetPointer(void* ptr, object dummyJustToMakeThisUseSharedThunk)
+            {
+                return (bool*)ptr;
+            }
+
         }
 
-        public static void Run()
+        public static unsafe void Run()
         {
             Console.WriteLine(nameof(TestReflectionInvoke));
 
@@ -102,6 +129,9 @@ internal class ReflectionTest
                 InvokeTests.GetHello(null);
                 InvokeTests.GetHelloGeneric<int>(0);
                 InvokeTests.GetHelloGeneric<double>(0);
+                InvokeTests.GetHelloPointer(null);
+                InvokeTests.GetHelloPointerToo(null);
+                InvokeTests.GetPointer(null, null);
                 string unused;
                 InvokeTests.GetHelloByRef(null, out unused);
                 unused.ToString();
@@ -126,6 +156,31 @@ internal class ReflectionTest
                 object[] args = new object[] { "world", null };
                 helloByRefMethod.Invoke(null, args);
                 if ((string)args[1] != "Hello world")
+                    throw new Exception();
+            }
+
+            {
+                MethodInfo helloPointerMethod = typeof(InvokeTests).GetTypeInfo().GetDeclaredMethod("GetHelloPointer");
+                string resultNull = (string)helloPointerMethod.Invoke(null, new object[] { null });
+                if (resultNull != "Hello 0")
+                    throw new Exception();
+
+                string resultVal = (string)helloPointerMethod.Invoke(null, new object[] { Pointer.Box((void*)42, typeof(char*)) });
+                if (resultVal != "Hello 42")
+                    throw new Exception();
+            }
+
+            {
+                MethodInfo helloPointerTooMethod = typeof(InvokeTests).GetTypeInfo().GetDeclaredMethod("GetHelloPointerToo");
+                string result = (string)helloPointerTooMethod.Invoke(null, new object[] { Pointer.Box((void*)85, typeof(char**)) });
+                if (result != "Hello 85")
+                    throw new Exception();
+            }
+
+            {
+                MethodInfo getPointerMethod = typeof(InvokeTests).GetTypeInfo().GetDeclaredMethod("GetPointer");
+                object result = getPointerMethod.Invoke(null, new object[] { Pointer.Box((void*)2018, typeof(void*)), null });
+                if (Pointer.Unbox(result) != (void*)2018)
                     throw new Exception();
             }
         }
@@ -384,7 +439,23 @@ internal class ReflectionTest
             }
         }
 
+        ref struct ByRefLike<T>
+        {
+            public readonly T Value;
+
+            public ByRefLike(T value)
+            {
+                Value = value;
+            }
+
+            public override string ToString()
+            {
+                return Value.ToString() + " " + typeof(T).ToString();
+            }
+        }
+
         delegate string ToStringDelegate(ref ByRefLike thisObj);
+        delegate string ToStringDelegate<T>(ref ByRefLike<T> thisObj);
 
         public static void Run()
         {
@@ -396,15 +467,40 @@ internal class ReflectionTest
                 default(ByRefLike).ToString();
                 ToStringDelegate s = null;
                 s = s.Invoke;
+                default(ByRefLike<object>).ToString();
+                ToStringDelegate<object> s2 = null;
+                s2 = s2.Invoke;
             }
 
-            Type byRefLikeType = GetTestType(nameof(TestByRefLikeTypeMethod), nameof(ByRefLike));
-            MethodInfo toStringMethod = byRefLikeType.GetMethod("ToString");
-            var toString = (ToStringDelegate)toStringMethod.CreateDelegate(typeof(ToStringDelegate));
+            {
+                Type byRefLikeType = GetTestType(nameof(TestByRefLikeTypeMethod), nameof(ByRefLike));
+                MethodInfo toStringMethod = byRefLikeType.GetMethod("ToString");
+                var toString = (ToStringDelegate)toStringMethod.CreateDelegate(typeof(ToStringDelegate));
 
-            ByRefLike foo = new ByRefLike(123);
-            if (toString(ref foo) != "123")
-                throw new Exception();
+                ByRefLike foo = new ByRefLike(123);
+                if (toString(ref foo) != "123")
+                    throw new Exception();
+            }
+
+            {
+                Type byRefLikeGenericType = typeof(ByRefLike<string>);
+                MethodInfo toStringGenericMethod = byRefLikeGenericType.GetMethod("ToString");
+                var toStringGeneric = (ToStringDelegate<string>)toStringGenericMethod.CreateDelegate(typeof(ToStringDelegate<string>));
+
+                ByRefLike<string> fooGeneric = new ByRefLike<string>("Hello");
+                if (toStringGeneric(ref fooGeneric) != "Hello System.String")
+                    throw new Exception();
+            }
+
+            {
+                Type byRefLikeGenericType = typeof(ByRefLike<object>);
+                MethodInfo toStringGenericMethod = byRefLikeGenericType.GetMethod("ToString");
+                var toStringGeneric = (ToStringDelegate<object>)toStringGenericMethod.CreateDelegate(typeof(ToStringDelegate<object>));
+
+                ByRefLike<object> fooGeneric = new ByRefLike<object>("Hello");
+                if (toStringGeneric(ref fooGeneric) != "Hello System.Object")
+                    throw new Exception();
+            }
         }
     }
 
@@ -501,6 +597,203 @@ internal class ReflectionTest
         }
     }
 
+    class TestByRefReturnInvoke
+    {
+        enum Mine { One = 2018 }
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct BigStruct { public ulong X, Y, Z, W, A, B, C, D; }
+
+        public ref struct ByRefLike { }
+
+        private sealed class TestClass<T>
+        {
+            private T _value;
+
+            public TestClass(T value) { _value = value; }
+            public ref T RefReturningProp
+            {
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
+                get => ref _value;
+            }
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
+            public static unsafe ref ByRefLike ByRefLikeRefReturningMethod(ByRefLike* a) => ref *a;
+        }
+
+        private sealed unsafe class TestClassIntPointer
+        {
+            private int* _value;
+
+            public TestClassIntPointer(int* value) { _value = value; }
+            public ref int* RefReturningProp
+            {
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
+                get => ref _value;
+            }
+            public unsafe ref int* NullRefReturningProp
+            {
+#if OPTIMIZED_MODE_WITHOUT_SCANNER
+            [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
+                get => ref *(int**)null;
+            }
+        }
+
+        public static void TestRefReturnPropertyGetValue()
+        {
+            TestRefReturnInvoke('a', (p, t) => p.GetValue(t));
+            TestRefReturnInvoke(Mine.One, (p, t) => p.GetValue(t));
+            TestRefReturnInvoke("Hello", (p, t) => p.GetValue(t));
+            TestRefReturnInvoke(new BigStruct { X = 123, D = 456 }, (p, t) => p.GetValue(t));
+            TestRefReturnInvoke(new object(), (p, t) => p.GetValue(t));
+            TestRefReturnInvoke((object)null, (p, t) => p.GetValue(t));
+        }
+
+        public static void TestRefReturnMethodInvoke()
+        {
+            TestRefReturnInvoke(Mine.One, (p, t) => p.GetGetMethod().Invoke(t, Array.Empty<object>()));
+            TestRefReturnInvoke("Hello", (p, t) => p.GetGetMethod().Invoke(t, Array.Empty<object>()));
+            TestRefReturnInvoke(new BigStruct { X = 123, D = 456 }, (p, t) => p.GetGetMethod().Invoke(t, Array.Empty<object>()));
+            TestRefReturnInvoke(new object(), (p, t) => p.GetGetMethod().Invoke(t, Array.Empty<object>()));
+            TestRefReturnInvoke((object)null, (p, t) => p.GetGetMethod().Invoke(t, Array.Empty<object>()));
+        }
+
+        public static void TestRefReturnNullable()
+        {
+            TestRefReturnInvokeNullable<int>(42);
+            TestRefReturnInvokeNullable<Mine>(Mine.One);
+            TestRefReturnInvokeNullable<BigStruct>(new BigStruct { X = 987, D = 543 });
+        }
+
+        public static void TestRefReturnNullableNoValue()
+        {
+            TestRefReturnInvokeNullable<int>(default(int?));
+            TestRefReturnInvokeNullable<Mine>(default(Mine?));
+            TestRefReturnInvokeNullable<BigStruct>(default(BigStruct?));
+        }
+
+        public static unsafe void TestRefReturnOfPointer()
+        {
+            int* expected = (int*)0x1122334455667788;
+            TestClassIntPointer tc = new TestClassIntPointer(expected);
+
+            if (string.Empty.Length > 0)
+            {
+                ((IntPtr)tc.RefReturningProp).ToString();
+            }
+
+            PropertyInfo p = typeof(TestClassIntPointer).GetProperty(nameof(TestClassIntPointer.RefReturningProp));
+            object rv = p.GetValue(tc);
+            Assert.True(rv is Pointer);
+            int* actual = (int*)(Pointer.Unbox(rv));
+            Assert.Equal((IntPtr)expected, (IntPtr)actual);
+        }
+
+        public static unsafe void TestNullRefReturnOfPointer()
+        {
+            TestClassIntPointer tc = new TestClassIntPointer(null);
+
+            if (string.Empty.Length > 0)
+            {
+                ((IntPtr)tc.NullRefReturningProp).ToString();
+            }
+
+            PropertyInfo p = typeof(TestClassIntPointer).GetProperty(nameof(TestClassIntPointer.NullRefReturningProp));
+            Assert.NotNull(p);
+            Assert.Throws<NullReferenceException>(() => p.GetValue(tc));
+        }
+
+        public static unsafe void TestByRefLikeRefReturn()
+        {
+            if (string.Empty.Length > 0)
+            {
+                TestClass<int>.ByRefLikeRefReturningMethod(null);
+            }
+
+            ByRefLike brl = new ByRefLike();
+            ByRefLike* pBrl = &brl;
+            MethodInfo mi = typeof(TestClass<int>).GetMethod(nameof(TestClass<int>.ByRefLikeRefReturningMethod));
+            try
+            {
+                // Don't use Assert.Throws because that will make a lambda and invalidate the pointer
+                object o = mi.Invoke(null, new object[] { Pointer.Box(pBrl, typeof(ByRefLike*)) });
+                Assert.Fail();
+            }
+            catch (NotSupportedException)
+            {
+            }
+        }
+
+        private static void TestRefReturnInvoke<T>(T value, Func<PropertyInfo, TestClass<T>, object> invoker)
+        {
+            TestClass<T> tc = new TestClass<T>(value);
+
+            if (String.Empty.Length > 0)
+            {
+                tc.RefReturningProp.ToString();
+            }
+
+            PropertyInfo p = typeof(TestClass<T>).GetProperty(nameof(TestClass<T>.RefReturningProp));
+            object rv = invoker(p, tc);
+            if (rv != null)
+            {
+                Assert.Equal(typeof(T), rv.GetType());
+            }
+
+            if (typeof(T).IsValueType)
+            {
+                Assert.Equal(value, rv);
+            }
+            else
+            {
+                Assert.Same(value, rv);
+            }
+        }
+
+        private static void TestRefReturnInvokeNullable<T>(T? nullable) where T : struct
+        {
+            TestClass<T?> tc = new TestClass<T?>(nullable);
+
+            if (string.Empty.Length > 0)
+            {
+                tc.RefReturningProp.ToString();
+            }
+
+            PropertyInfo p = typeof(TestClass<T?>).GetProperty(nameof(TestClass<T?>.RefReturningProp));
+            object rv = p.GetValue(tc);
+            if (rv != null)
+            {
+                Assert.Equal(typeof(T), rv.GetType());
+            }
+            if (nullable.HasValue)
+            {
+                Assert.Equal(nullable.Value, rv);
+            }
+            else
+            {
+                Assert.Null(rv);
+            }
+        }
+
+        public static void Run()
+        {
+            Console.WriteLine(nameof(TestByRefReturnInvoke));
+            TestRefReturnPropertyGetValue();
+            TestRefReturnMethodInvoke();
+            TestRefReturnNullable();
+            TestRefReturnNullableNoValue();
+            TestRefReturnOfPointer();
+            TestNullRefReturnOfPointer();
+            TestByRefLikeRefReturn();
+        }
+    }
+
     #region Helpers
 
     private static Type GetTestType(string testName, string typeName)
@@ -532,6 +825,66 @@ internal class ReflectionTest
             return false;
         }
         return true;
+    }
+
+    class Assert
+    {
+        public static void Equal<T>(T expected, T actual)
+        {
+            if (object.ReferenceEquals(expected, actual))
+                return;
+
+            if ((object)expected == null || (object)actual == null)
+                throw new Exception();
+
+            if (!expected.Equals(actual))
+                throw new Exception();
+        }
+
+        public static void Same<T>(T expected, T actual)
+        {
+            if (!object.ReferenceEquals(expected, actual))
+                throw new Exception();
+        }
+
+        public static void Null(object x)
+        {
+            if (x != null)
+                throw new Exception();
+        }
+
+        public static void NotNull(object x)
+        {
+            if (x == null)
+                throw new Exception();
+        }
+
+        public static void True(bool x)
+        {
+            if (!x)
+                throw new Exception();
+        }
+
+        public static void Fail()
+        {
+            throw new Exception();
+        }
+
+        public static void Throws<T>(Action a)
+        {
+            try
+            {
+                a();
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(T))
+                    throw new Exception();
+                return;
+            }
+
+            throw new Exception();
+        }
     }
 
     #endregion

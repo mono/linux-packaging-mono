@@ -9,13 +9,10 @@ using System.Text;
 
 using Internal.IL.Stubs;
 using Internal.TypeSystem;
-using Internal.TypeSystem.Ecma;
 using Internal.Metadata.NativeFormat.Writer;
 
 using ILCompiler.Metadata;
 using ILCompiler.DependencyAnalysis;
-
-using Debug = System.Diagnostics.Debug;
 
 namespace ILCompiler
 {
@@ -26,20 +23,16 @@ namespace ILCompiler
     {
         protected readonly string _metadataLogFile;
         protected readonly StackTraceEmissionPolicy _stackTraceEmissionPolicy;
-        private readonly Dictionary<DynamicInvokeMethodSignature, MethodDesc> _dynamicInvokeThunks;
         private readonly ModuleDesc _generatedAssembly;
 
-        public GeneratingMetadataManager(ModuleDesc generatedAssembly, CompilerTypeSystemContext typeSystemContext, MetadataBlockingPolicy blockingPolicy, string logFile, StackTraceEmissionPolicy stackTracePolicy)
-            : base(typeSystemContext, blockingPolicy)
+        public GeneratingMetadataManager(CompilerTypeSystemContext typeSystemContext, MetadataBlockingPolicy blockingPolicy,
+            ManifestResourceBlockingPolicy resourceBlockingPolicy, string logFile, StackTraceEmissionPolicy stackTracePolicy,
+            DynamicInvokeThunkGenerationPolicy invokeThunkGenerationPolicy)
+            : base(typeSystemContext, blockingPolicy, resourceBlockingPolicy, invokeThunkGenerationPolicy)
         {
             _metadataLogFile = logFile;
             _stackTraceEmissionPolicy = stackTracePolicy;
-            _generatedAssembly = generatedAssembly;
-
-            if (DynamicInvokeMethodThunk.SupportsThunks(typeSystemContext))
-            {
-                _dynamicInvokeThunks = new Dictionary<DynamicInvokeMethodSignature, MethodDesc>();
-            }
+            _generatedAssembly = typeSystemContext.GeneratedAssembly;
         }
 
         public sealed override bool WillUseMetadataTokenToReferenceMethod(MethodDesc method)
@@ -176,40 +169,13 @@ namespace ILCompiler
         protected abstract IEnumerable<FieldDesc> GetFieldsWithRuntimeMapping();
 
         /// <summary>
-        /// Is there a reflection invoke stub for a method that is invokable?
-        /// </summary>
-        public sealed override bool HasReflectionInvokeStubForInvokableMethod(MethodDesc method)
-        {
-            Debug.Assert(IsReflectionInvokable(method));
-
-            if (_dynamicInvokeThunks == null)
-                return false;
-
-            // Place an upper limit on how many parameters a method can have to still get a static stub.
-            // From the past experience, methods taking 8000+ parameters get a stub that can hit various limitations
-            // in the codegen. On Project N, we were limited to 256 parameters because of MDIL limitations.
-            // We don't have such limitations here, but it's a nice round number.
-            // Reflection invoke will still work, but will go through the calling convention converter.
-
-            return method.Signature.Length <= 256;
-        }
-
-        /// <summary>
         /// Gets a stub that can be used to reflection-invoke a method with a given signature.
         /// </summary>
         public sealed override MethodDesc GetCanonicalReflectionInvokeStub(MethodDesc method)
         {
-            TypeSystemContext context = method.Context;
-            var sig = method.Signature;
-
             // Get a generic method that can be used to invoke method with this shape.
-            MethodDesc thunk;
-            var lookupSig = new DynamicInvokeMethodSignature(sig);
-            if (!_dynamicInvokeThunks.TryGetValue(lookupSig, out thunk))
-            {
-                thunk = new DynamicInvokeMethodThunk(_generatedAssembly.GetGlobalModuleType(), lookupSig);
-                _dynamicInvokeThunks.Add(lookupSig, thunk);
-            }
+            var lookupSig = new DynamicInvokeMethodSignature(method.Signature);
+            MethodDesc thunk = _typeSystemContext.GetDynamicInvokeThunk(lookupSig);
 
             return InstantiateCanonicalDynamicInvokeMethodForMethod(thunk, method);
         }

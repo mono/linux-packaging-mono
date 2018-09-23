@@ -218,7 +218,7 @@ namespace ILCompiler.DependencyAnalysis
                 else
                 {
                     // Get the declaring method for slot on the instantiated declaring type
-                    int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, declaringMethodForSlot, factory.Target.Abi != TargetAbi.ProjectN);
+                    int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, declaringMethodForSlot, declaringMethodForSlot.OwningType, factory.Target.Abi != TargetAbi.ProjectN);
                     Debug.Assert(slot != -1);
 
                     vertex = writer.GetTuple(
@@ -242,6 +242,6 @@ namespace ILCompiler.DependencyAnalysis
         }
 
         protected internal override int Phase => (int)ObjectNodePhase.Ordered;
-        protected internal override int ClassCode => (int)ObjectNodeOrder.ReflectionVirtualInvokeMapNode;
+        public override int ClassCode => (int)ObjectNodeOrder.ReflectionVirtualInvokeMapNode;
     }
 }

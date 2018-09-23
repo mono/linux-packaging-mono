@@ -2909,7 +2909,7 @@ void gc_heap::fire_pevents()
                                   gc_data_global.condemned_generation, 
                                   gc_data_global.gen0_reduction_count, 
                                   gc_data_global.reason, 
-                                  gc_data_global.global_mechanims_p, 
+                                  gc_data_global.global_mechanisms_p, 
                                   GetClrInstanceId(),
                                   gc_data_global.pause_mode, 
                                   gc_data_global.mem_pressure);
@@ -5693,7 +5693,7 @@ void gc_mechanisms::record (gc_history_global* history)
     history->reason = reason;
     history->pause_mode = (int)pause_mode;
     history->mem_pressure = entry_memory_load;
-    history->global_mechanims_p = 0;
+    history->global_mechanisms_p = 0;
 
     // start setting the boolean values.
     if (concurrent)
@@ -9617,7 +9617,7 @@ void gc_heap::restart_vm()
 {
     //assert (generation_allocation_pointer (youngest_generation) == 0);
     dprintf (3, ("Restarting EE"));
-    STRESS_LOG0(LF_GC, LL_INFO10000, "Concurrent GC: Retarting EE\n");
+    STRESS_LOG0(LF_GC, LL_INFO10000, "Concurrent GC: Restarting EE\n");
     ee_proceed_event.Set();
 }
 
@@ -26667,7 +26667,7 @@ BOOL gc_heap::prepare_bgc_thread(gc_heap* gh)
     gh->bgc_threads_timeout_cs.Enter();
     if (!(gh->bgc_thread_running))
     {
-        dprintf (2, ("GC thread not runnning"));
+        dprintf (2, ("GC thread not running"));
         if ((gh->bgc_thread == 0) && create_bgc_thread(gh))
         {
             success = TRUE;
@@ -36708,7 +36708,7 @@ inline void testGCShadow(Object** ptr)
     if (*ptr != 0 && (uint8_t*) shadow < g_GCShadowEnd && *ptr != *shadow)
     {
 
-        // If you get this assertion, someone updated a GC poitner in the heap without
+        // If you get this assertion, someone updated a GC pointer in the heap without
         // using the write barrier.  To find out who, check the value of 
         // dd_collection_count (dynamic_data_of (0)). Also
         // note the value of 'ptr'.  Rerun the App that the previous GC just occurred.

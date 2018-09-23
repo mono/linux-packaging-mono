@@ -7,6 +7,8 @@
 
 #include <mono/utils/mono-forward-internal.h>
 #include <mono/metadata/object-forward.h>
+#include <mono/metadata/handle-decl.h>
+
 #include <mono/metadata/object.h>
 #include <mono/metadata/threads.h>
 #include <mono/metadata/reflection.h>
@@ -916,12 +918,12 @@ TYPED_HANDLE_DECL (MonoReflectionMonoEvent);
 
 typedef struct {
 	MonoObject object;
+	guint32 AttrsImpl;	
 	MonoReflectionType *ClassImpl;
 	MonoObject *DefaultValueImpl;
 	MonoObject *MemberImpl;
 	MonoString *NameImpl;
 	gint32 PositionImpl;
-	guint32 AttrsImpl;
 	MonoObject *MarshalAsImpl;
 } MonoReflectionParameter;
 
@@ -956,9 +958,6 @@ struct _MonoReflectionAssembly {
 	MonoBoolean from_byte_array;
 	MonoString *name;
 };
-
-/* Safely access System.Reflection.Assembly from native code */
-TYPED_HANDLE_DECL (MonoReflectionAssembly);
 
 typedef struct {
 	MonoReflectionType *utype;
@@ -1326,9 +1325,6 @@ struct _MonoReflectionTypeBuilder {
 	MonoReflectionType *created;
 	gint32 state;
 };
-
-/* Safely access System.Reflection.Emit.TypeBuilder from native code */
-TYPED_HANDLE_DECL (MonoReflectionTypeBuilder);
 
 typedef struct {
 	MonoReflectionType type;
@@ -1811,13 +1807,10 @@ mono_class_is_reflection_method_or_constructor (MonoClass *klass);
 MonoObject *
 mono_get_object_from_blob (MonoDomain *domain, MonoType *type, const char *blob, MonoError *error);
 
-MonoObjectHandle
-mono_class_get_ref_info (MonoClass *klass);
-
 gboolean
 mono_class_has_ref_info (MonoClass *klass);
 
-MonoObject*
+MonoReflectionTypeBuilder*
 mono_class_get_ref_info_raw (MonoClass *klass);
 
 void
@@ -2079,10 +2072,6 @@ ves_icall_CustomAttributeBuilder_GetBlob (MonoReflectionAssembly *assembly, Mono
 ICALL_EXPORT
 void
 ves_icall_DynamicMethod_create_dynamic_method (MonoReflectionDynamicMethodHandle mb, MonoError *error);
-
-ICALL_EXPORT
-MonoReflectionTypeHandle
-ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilderHandle tb, MonoError *error);
 
 ICALL_EXPORT
 void

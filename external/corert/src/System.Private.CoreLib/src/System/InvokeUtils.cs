@@ -12,6 +12,8 @@ using Internal.Reflection.Core.NonPortable;
 using Internal.Runtime.Augments;
 using Internal.Runtime.CompilerServices;
 
+using Interlocked = System.Threading.Interlocked;
+
 namespace System
 {
     [System.Runtime.CompilerServices.ReflectionBlocked]
@@ -39,7 +41,7 @@ namespace System
         // This method is targeted by the Delegate ILTransformer.
         //    
         //
-        public static Object CheckArgument(Object srcObject, RuntimeTypeHandle dstType, BinderBundle binderBundle)
+        public static object CheckArgument(object srcObject, RuntimeTypeHandle dstType, BinderBundle binderBundle)
         {
             EETypePtr dstEEType = dstType.ToEETypePtr();
             return CheckArgument(srcObject, dstEEType, CheckArgumentSemantics.DynamicInvoke, binderBundle, getExactTypeForCustomBinder: null);
@@ -53,12 +55,16 @@ namespace System
             SetFieldDirect,      // Throws ArgumentException - other than that, like DynamicInvoke except that enums and integers cannot be intermingled, and null cannot substitute for default(valuetype).
         }
 
-        internal static Object CheckArgument(Object srcObject, EETypePtr dstEEType, CheckArgumentSemantics semantics, BinderBundle binderBundle, Func<Type> getExactTypeForCustomBinder = null)
+        internal static object CheckArgument(object srcObject, EETypePtr dstEEType, CheckArgumentSemantics semantics, BinderBundle binderBundle, Func<Type> getExactTypeForCustomBinder = null)
         {
             if (srcObject == null)
             {
                 // null -> default(T) 
-                if (dstEEType.IsValueType && !dstEEType.IsNullable)
+                if (dstEEType.IsPointer)
+                {
+                    return default(IntPtr);
+                }
+                else if (dstEEType.IsValueType && !dstEEType.IsNullable)
                 {
                     if (semantics == CheckArgumentSemantics.SetFieldDirect)
                         throw CreateChangeTypeException(CommonRuntimeTypes.Object.TypeHandle.ToEETypePtr(), dstEEType, semantics);
@@ -412,9 +418,9 @@ namespace System
                 s_curIndex = 0;
                 s_targetMethodOrDelegate = targetMethodOrDelegate;
 
+                object result;
                 try
                 {
-                    object result = null;
                     if (invokeMethodHelperIsThisCall)
                     {
                         Debug.Assert(methodToCallIsThisCall == true);
@@ -434,8 +440,6 @@ namespace System
                             DebugAnnotations.PreviousCallContainsDebuggerStepInCode();
                         }
                     }
-
-                    return result;
                 }
                 catch (Exception e) when (wrapInTargetInvocationException && argSetupState.fComplete)
                 {
@@ -464,6 +468,11 @@ namespace System
                         }
                     }
                 }
+
+                if (result == NullByRefValueSentinel)
+                    throw new NullReferenceException(SR.NullReference_InvokeNullRefReturned);
+
+                return result;
             }
             finally
             {
@@ -730,6 +739,15 @@ namespace System
             return finalObjectToReturn;
         }
 
+        internal static object DynamicInvokeUnmanagedPointerReturn(out DynamicInvokeParamLookupType paramLookupType, object boxedPointerType, int index, RuntimeTypeHandle type, DynamicInvokeParamType paramType)
+        {
+            object finalObjectToReturn = boxedPointerType;
+
+            Debug.Assert(finalObjectToReturn is IntPtr);
+            paramLookupType = DynamicInvokeParamLookupType.ValuetypeObjectReturned;
+            return finalObjectToReturn;
+        }
+
         public static object DynamicInvokeParamHelperCore(RuntimeTypeHandle type, out DynamicInvokeParamLookupType paramLookupType, out int index, DynamicInvokeParamType paramType)
         {
             index = s_curIndex++;
@@ -790,9 +808,14 @@ namespace System
                 incomingParam = InvokeUtils.CheckArgument(incomingParam, type.ToEETypePtr(), InvokeUtils.CheckArgumentSemantics.DynamicInvoke, s_binderBundle, s_getExactTypeForCustomBinder);
                 if (s_binderBundle == null)
                 {
-                    System.Diagnostics.Debug.Assert(s_parameters[index] == null || Object.ReferenceEquals(incomingParam, s_parameters[index]));
+                    System.Diagnostics.Debug.Assert(s_parameters[index] == null || object.ReferenceEquals(incomingParam, s_parameters[index]));
                 }
                 return DynamicInvokeBoxedValuetypeReturn(out paramLookupType, incomingParam, index, type, paramType);
+            }
+            else if (type.ToEETypePtr().IsPointer)
+            {
+                incomingParam = InvokeUtils.CheckArgument(incomingParam, type.ToEETypePtr(), InvokeUtils.CheckArgumentSemantics.DynamicInvoke, s_binderBundle, s_getExactTypeForCustomBinder);
+                return DynamicInvokeUnmanagedPointerReturn(out paramLookupType, incomingParam, index, type, paramType);
             }
             else
             {
@@ -800,7 +823,7 @@ namespace System
                 paramLookupType = DynamicInvokeParamLookupType.IndexIntoObjectArrayReturned;
                 if (s_binderBundle == null)
                 {
-                    System.Diagnostics.Debug.Assert(Object.ReferenceEquals(incomingParam, s_parameters[index]));
+                    System.Diagnostics.Debug.Assert(object.ReferenceEquals(incomingParam, s_parameters[index]));
                     return s_parameters;
                 }
                 else
@@ -831,6 +854,19 @@ namespace System
                         }
                     }
                 }
+            }
+        }
+
+        private static volatile object _nullByRefValueSentinel;
+        public static object NullByRefValueSentinel
+        {
+            get
+            {
+                if (_nullByRefValueSentinel == null)
+                {
+                    Interlocked.CompareExchange(ref _nullByRefValueSentinel, new object(), null);
+                }
+                return _nullByRefValueSentinel;
             }
         }
     }

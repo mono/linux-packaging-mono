@@ -20,7 +20,7 @@ namespace ILCompiler.DependencyAnalysis
     /// method body, as if it was generated. The node acts as a symbol for the canonical
     /// method for convenience.
     /// </summary>
-    public class ShadowConcreteMethodNode : DependencyNodeCore<NodeFactory>, IMethodNode
+    public class ShadowConcreteMethodNode : DependencyNodeCore<NodeFactory>, IMethodNode, ISymbolNodeWithLinkage
     {
         /// <summary>
         /// Gets the canonical method body that defines the dependencies of this node.
@@ -51,6 +51,11 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(canonicalMethod.Method == method.GetCanonMethodTarget(CanonicalFormKind.Specific));
             Method = method;
             CanonicalMethodNode = canonicalMethod;
+        }
+
+        public ISymbolNode NodeForLinkage(NodeFactory factory)
+        {
+            return CanonicalMethodNode;
         }
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
@@ -99,9 +104,9 @@ namespace ILCompiler.DependencyAnalysis
         public sealed override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
         public sealed override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory factory) => null;
 
-        int ISortableSymbolNode.ClassCode => -1440570971;
+        int ISortableNode.ClassCode => -1440570971;
 
-        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        int ISortableNode.CompareToImpl(ISortableNode other, CompilerComparer comparer)
         {
             var compare = comparer.Compare(Method, ((ShadowConcreteMethodNode)other).Method);
             if (compare != 0)
