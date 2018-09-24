@@ -22,10 +22,6 @@
 %{!?ext_man: %define ext_man .gz}
 %endif
 %define llvm yes
-%global debug_package %{nil}
-%global _enable_debug_package %{nil}
-%global __debug_install_post %{nil}
-%global __debug_package %{nil}
 %define sgen yes
 
 Name:           mono-core
