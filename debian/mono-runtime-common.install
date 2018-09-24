@@ -7,6 +7,7 @@
 /usr/lib/libMonoPosixHelper.so
 /usr/lib/libMonoSupportW.so
 /usr/lib/libmono-system-native.so*
+/usr/lib/libmono-system-net-security-native.so*
 debian/mono-runtime-common.png /usr/share/pixmaps
 debian/mono-runtime-common.desktop /usr/share/applications
 debian/mono-runtime-terminal.desktop /usr/share/applications
