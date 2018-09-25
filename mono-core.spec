@@ -23,6 +23,7 @@
 %endif
 %define llvm yes
 %define sgen yes
+%undefine _missing_build_ids_terminate_build
 
 Name:           mono-core
 %define __majorver 5.16.0
