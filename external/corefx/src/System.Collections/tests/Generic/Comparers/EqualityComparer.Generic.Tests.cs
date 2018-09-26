@@ -57,7 +57,11 @@ namespace System.Collections.Generic.Tests
             Assert.Equal(comparer.GetHashCode(), comparer.GetHashCode());
         }
 
+#if MOBILE
+        [Fact(Skip="Mono issue #10807")]
+#else
         [Fact]
+#endif
         public void EqualityComparer_GetHashCodeShouldBeOverriddenAndBeTheSameAsLongAsTheTypeIsTheSame_cloned()
         {
             var comparer = EqualityComparer<T>.Default;
