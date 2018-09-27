@@ -188,9 +188,6 @@
 /* Have access */
 #undef HAVE_ACCESS
 
-/* Has the 'aintl' function */
-#undef HAVE_AINTL
-
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
 
@@ -380,9 +377,6 @@
 /* Define to 1 if you have the `fgetpwent' function. */
 #undef HAVE_FGETPWENT
 
-/* Define to 1 if you have the `finite' function. */
-#undef HAVE_FINITE
-
 /* struct flock64 */
 #undef HAVE_FLOCK64
 
@@ -521,9 +515,6 @@
 /* Define to 1 if you have the <iconv.h> header file. */
 #undef HAVE_ICONV_H
 
-/* Define to 1 if you have the <ieeefp.h> header file. */
-#undef HAVE_IEEEFP_H
-
 /* Have if_nametoindex */
 #undef HAVE_IF_NAMETOINDEX
 
@@ -589,12 +580,6 @@
 
 /* Have IP_PMTUDISC_DO */
 #undef HAVE_IP_PMTUDISC_DO
-
-/* Define to 1 if you have the `isfinite' function. */
-#undef HAVE_ISFINITE
-
-/* isinf available */
-#undef HAVE_ISINF
 
 /* Define to 1 if you have the `kill' function. */
 #undef HAVE_KILL
@@ -1236,9 +1221,6 @@
 /* Have tm_gmtoff */
 #undef HAVE_TM_GMTOFF
 
-/* Define to 1 if you have the `trunc' function. */
-#undef HAVE_TRUNC
-
 /* Define to 1 if you have the `ttyname_r' function. */
 #undef HAVE_TTYNAME_R
 
@@ -1292,9 +1274,6 @@
 
 /* Have system zlib */
 #undef HAVE_ZLIB
-
-/* Define to 1 if you have the `_finite' function. */
-#undef HAVE__FINITE
 
 /* ... */
 #undef HOST_AMD64

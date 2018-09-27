@@ -23,6 +23,7 @@
 
 using System;
 using NUnit.Framework.Api;
+using System.Reflection;
 
 namespace NUnit.Framework.Internal
 {
@@ -54,6 +55,13 @@ namespace NUnit.Framework.Internal
         /// The stacktrace at the point of failure
         /// </summary>
         private string stackTrace;
+
+#if MONO
+        /// <summary>
+        /// The exceptionType at the point of failure
+        /// </summary>
+        private string exceptionType;
+#endif
 
         /// <summary>
         /// Message giving the reason for failure, error or skipping the test
@@ -161,6 +169,17 @@ namespace NUnit.Framework.Internal
         {
             get { return stackTrace; }
         }
+
+#if MONO
+        /// <summary>
+        /// Gets any exception associated with an
+        /// error or failure.
+        /// </summary>
+        public virtual string ExceptionType
+        {
+            get { return exceptionType; }
+        }
+#endif
 
         /// <summary>
         /// Gets or sets the count of asserts executed
@@ -412,6 +431,10 @@ namespace NUnit.Framework.Internal
             if (ex is NUnitException)
                 ex = ex.InnerException;
 
+#if MONO
+            exceptionType = ex?.GetType().ToString();
+#endif
+
             if (ex is System.Threading.ThreadAbortException)
               SetResult(ResultState.Cancelled, "Test cancelled by user", ex.StackTrace);
             else if (ex is AssertionException)
@@ -422,10 +445,17 @@ namespace NUnit.Framework.Internal
               SetResult(ResultState.Inconclusive, ex.Message, StackFilter.Filter(ex.StackTrace));
             else if (ex is SuccessException)
               SetResult(ResultState.Success, ex.Message, StackFilter.Filter(ex.StackTrace));
-            else
-                SetResult(ResultState.Error,
+            else {
+              MethodInfo write = null;
+              if (Environment.GetEnvironmentVariable ("MONO_TEST_TELEMETRY") != null)
+                  write = Type.GetType ("Mono.Runtime", false).GetMethod ("WriteStateToDisk", BindingFlags.NonPublic | BindingFlags.Static);
+              if (write != null)
+                  write.Invoke (null, new object [] { ex });
+
+              SetResult(ResultState.Error,
                     ExceptionHelper.BuildMessage(ex),
                     ExceptionHelper.BuildStackTrace(ex));
+            }
         }
 
         #endregion
