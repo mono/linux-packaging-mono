@@ -52,6 +52,7 @@
 #include <mono/metadata/runtime.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/monitor.h>
+#define MONO_MATH_DECLARE_ALL 1
 #include <mono/utils/mono-math.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-counters.h>
@@ -3654,8 +3655,8 @@ mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr)
 	 * the CEE_MONO_CALLI_EXTRA_ARG implementation in the JIT depends on this.
 	 */
 	if (method->is_inflated && is_callee_gsharedvt_variable (method_ptr)) {
-		g_assert ((((mgreg_t)arg) & 1) == 0);
-		arg = (gpointer)(((mgreg_t)arg) | 1);
+		g_assert ((((gsize)arg) & 1) == 0);
+		arg = (gpointer)(((gsize)arg) | 1);
 	}
 	return arg;
 }
@@ -4657,7 +4658,7 @@ register_icalls (void)
 		register_icall (mono_fload_r4, "mono_fload_r4", "double ptr", FALSE);
 		register_icall (mono_fstore_r4, "mono_fstore_r4", "void double ptr", FALSE);
 		register_icall (mono_fload_r4_arg, "mono_fload_r4_arg", "uint32 double", FALSE);
-		register_icall (mono_isfinite, "mono_isfinite", "uint32 double", FALSE);
+		register_icall (mono_isfinite_double, "mono_isfinite_double", "int32 double", FALSE);
 	}
 #endif
 	register_icall (mono_ckfinite, "mono_ckfinite", "double double", FALSE);

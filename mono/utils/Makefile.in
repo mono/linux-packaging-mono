@@ -115,7 +115,18 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libmonoutils_la_LIBADD =
+libmonomath_la_LIBADD =
+am_libmonomath_la_OBJECTS = libmonomath_la-mono-math-c.lo
+libmonomath_la_OBJECTS = $(am_libmonomath_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+libmonomath_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmonomath_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
+	$@
+libmonoutils_la_DEPENDENCIES = mono-math-c.lo
 am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-os-wait-win32.c mono-md5.c mono-sha1.c mono-logger.c \
 	mono-logger-internals.h mono-codeman.c dlmalloc.h dlmalloc.c \
@@ -275,10 +286,6 @@ am__objects_22 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_20) $(am__objects_21)
 am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_22)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 libmonoutils_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoutils_la_CFLAGS) $(CFLAGS) $(libmonoutils_la_LDFLAGS) \
@@ -313,8 +320,9 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libmonoutils_la_SOURCES)
-DIST_SOURCES = $(am__libmonoutils_la_SOURCES_DIST)
+SOURCES = $(libmonomath_la_SOURCES) $(libmonoutils_la_SOURCES)
+DIST_SOURCES = $(libmonomath_la_SOURCES) \
+	$(am__libmonoutils_la_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -436,7 +444,7 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -642,7 +650,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-noinst_LTLIBRARIES = libmonoutils.la
+noinst_LTLIBRARIES = \
+	libmonomath.la \
+	libmonoutils.la
+
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@llvm_config = $(EXTERNAL_LLVM_CONFIG)
 @ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@llvm_config = $(monodir)/llvm/usr/bin/llvm-config
 @ENABLE_LLVM_TRUE@llvm_api_version_from_config = $(shell $(llvm_config) --mono-api-version 2>/dev/null)
@@ -840,6 +851,9 @@ libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
+libmonoutils_la_LIBADD = mono-math-c.lo
+libmonomath_la_SOURCES = mono-math-c.c
+libmonomath_la_CFLAGS = @CXX_REMOVE_CFLAGS@
 
 # These are public headers.
 # They should not use glib.h, G_BEGIN_DECLS, guint, etc.
@@ -904,6 +918,9 @@ clean-noinstLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
+libmonomath.la: $(libmonomath_la_OBJECTS) $(libmonomath_la_DEPENDENCIES) $(EXTRA_libmonomath_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmonomath_la_LINK)  $(libmonomath_la_OBJECTS) $(libmonomath_la_LIBADD) $(LIBS)
+
 libmonoutils.la: $(libmonoutils_la_OBJECTS) $(libmonoutils_la_DEPENDENCIES) $(EXTRA_libmonoutils_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoutils_la_LINK)  $(libmonoutils_la_OBJECTS) $(libmonoutils_la_LIBADD) $(LIBS)
 
@@ -913,6 +930,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonomath_la-mono-math-c.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-atomic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-bsearch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-checked-build.Plo@am__quote@
@@ -1036,6 +1054,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmonomath_la-mono-math-c.lo: mono-math-c.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonomath_la_CFLAGS) $(CFLAGS) -MT libmonomath_la-mono-math-c.lo -MD -MP -MF $(DEPDIR)/libmonomath_la-mono-math-c.Tpo -c -o libmonomath_la-mono-math-c.lo `test -f 'mono-math-c.c' || echo '$(srcdir)/'`mono-math-c.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonomath_la-mono-math-c.Tpo $(DEPDIR)/libmonomath_la-mono-math-c.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-math-c.c' object='libmonomath_la-mono-math-c.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonomath_la_CFLAGS) $(CFLAGS) -c -o libmonomath_la-mono-math-c.lo `test -f 'mono-math-c.c' || echo '$(srcdir)/'`mono-math-c.c
 
 libmonoutils_la-os-event-unix.lo: os-event-unix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-os-event-unix.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-os-event-unix.Tpo -c -o libmonoutils_la-os-event-unix.lo `test -f 'os-event-unix.c' || echo '$(srcdir)/'`os-event-unix.c

@@ -956,7 +956,6 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
 
 interp_sources = \
-	interp/hacks.h		\
 	interp/interp.h	\
 	interp/interp-internals.h	\
 	interp/interp.c	\

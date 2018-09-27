@@ -82,6 +82,17 @@ namespace NUnit.Framework.Api
             get;
         }
 
+#if MONO
+        /// <summary>
+        /// Gets any exception associated with an
+        /// error or failure.
+        /// </summary>
+        string ExceptionType
+        {
+            get;
+        }
+#endif
+
         /// <summary>
         /// Gets the number of asserts executed
         /// when running the test and all its children.
