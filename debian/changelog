@@ -1,3 +1,9 @@
+mono (5.19.0.528-0nightly1) nightly; urgency=medium
+
+  * New release - mono-5.19.0.528.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 29 Sep 2018 09:22:59 +0000
+
 mono (5.19.0.483-0nightly1) nightly; urgency=medium
 
   * New release - mono-5.19.0.483.tar.bz2
