@@ -876,9 +876,6 @@
 /* Define to 1 if you have the <signal.h> header file. */
 #undef HAVE_SIGNAL_H
 
-/* Have signbit */
-#undef HAVE_SIGNBIT
-
 /* Can get interface list */
 #undef HAVE_SIOCGIFCONF
 

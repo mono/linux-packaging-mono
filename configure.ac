@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.19.0.483],
+AC_INIT(mono, [5.19.0.528],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -2634,24 +2634,16 @@ if test x$host_win32 = xno; then
 		fi
 	fi
 
+	dnl *********************************
+	dnl *** Checks for math functions ***
+	dnl *********************************
+	AC_SEARCH_LIBS(sqrtf, m)
+
 	dnl ****************************************************************
 	dnl *** Checks for working poll() (macosx defines it but doesn't ***
 	dnl *** have it in the library (duh))                            ***
 	dnl ****************************************************************
 	AC_CHECK_FUNCS(poll)
-
-	dnl *************************
-	dnl *** Check for signbit ***
-	dnl *************************
-	AC_MSG_CHECKING(for signbit)
-	AC_TRY_LINK([#include <math.h>], [
-		int s = signbit(1.0);
-	], [
-		AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_SIGNBIT, 1, [Have signbit])
-	], [
-		AC_MSG_RESULT(no)
-	]) 
 
 	dnl **********************************
 	dnl *** epoll			   ***

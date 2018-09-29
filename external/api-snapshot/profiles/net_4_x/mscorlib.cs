@@ -10907,12 +10907,8 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._EventInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public abstract partial class EventInfo : System.Reflection.MemberInfo, System.Runtime.InteropServices._EventInfo
+    public abstract partial class EventInfo : System.Reflection.MemberInfo
     {
         protected EventInfo() { }
         public virtual System.Reflection.MethodInfo AddMethod { get { throw null; } }
@@ -10941,11 +10937,6 @@ namespace System.Reflection
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public virtual void RemoveEventHandler(object target, System.Delegate handler) { }
-        void System.Runtime.InteropServices._EventInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._EventInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._EventInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._EventInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._EventInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     public static partial class EventInfoExtensions
     {
