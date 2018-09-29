@@ -10866,11 +10866,7 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._EventInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public abstract partial class EventInfo : System.Reflection.MemberInfo
     {
         protected EventInfo() { }

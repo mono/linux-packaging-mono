@@ -2678,8 +2678,8 @@ mixedcheck: mono mixed.exe
 @ARM_TRUE@check-seq-points:
 @ARM_FALSE@check-seq-points: mono $(regtests)
 @ARM_FALSE@	rm -f TestResult-op_il_seq_point.xml
-@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 @ARM_FALSE@	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe
