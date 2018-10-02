@@ -253,8 +253,8 @@ namespace Mono.Linker.Steps {
 			Tracer.Push (provider);
 			try {
 				foreach (CustomAttribute ca in provider.CustomAttributes) {
-					if (IsUserDependencyMarker (ca.AttributeType)) {
-						MarkUserDependency (provider as MethodReference, ca);
+					if (IsUserDependencyMarker (ca.AttributeType) && provider is MemberReference mr) {
+						MarkUserDependency (mr, ca);
 						continue;
 					}
 
@@ -277,7 +277,7 @@ namespace Mono.Linker.Steps {
 			return PreserveDependencyLookupStep.IsPreserveDependencyAttribute (type);
 		}
 
-		protected virtual void MarkUserDependency (MethodReference context, CustomAttribute ca)
+		protected virtual void MarkUserDependency (MemberReference context, CustomAttribute ca)
 		{
 			if (ca.HasProperties && ca.Properties [0].Name == "Condition") {
 				var condition = ca.Properties [0].Argument.Value as string;
@@ -476,7 +476,7 @@ namespace Mono.Linker.Steps {
 			// then surely nothing is using this attribute and there is no need to mark it
 			if (!Annotations.IsMarked (resolvedConstructor.Module) && !Annotations.IsMarked (ca.AttributeType))
 				return false;
-			
+
 			if (ca.Constructor.DeclaringType.Namespace == "System.Diagnostics") {
 				string attributeName = ca.Constructor.DeclaringType.Name;
 				if (attributeName == "DebuggerDisplayAttribute" || attributeName == "DebuggerTypeProxyAttribute") {
@@ -811,6 +811,7 @@ namespace Mono.Linker.Steps {
 			MarkType (field.FieldType);
 			MarkCustomAttributes (field);
 			MarkMarshalSpec (field);
+			DoAdditionalFieldProcessing (field);
 
 			Annotations.Mark (field);
 		}
@@ -926,8 +927,23 @@ namespace Mono.Linker.Steps {
 		{
 		}
 
-		// Allow subclassers to mark additional things when marking a method
-		protected virtual void DoAdditionalTypeProcessing (TypeDefinition method)
+		// Allow subclassers to mark additional things
+		protected virtual void DoAdditionalTypeProcessing (TypeDefinition type)
+		{
+		}
+		
+		// Allow subclassers to mark additional things
+		protected virtual void DoAdditionalFieldProcessing (FieldDefinition field)
+		{
+		}
+
+		// Allow subclassers to mark additional things
+		protected virtual void DoAdditionalPropertyProcessing (PropertyDefinition property)
+		{
+		}
+
+		// Allow subclassers to mark additional things
+		protected virtual void DoAdditionalEventProcessing (EventDefinition evt)
 		{
 		}
 
@@ -1740,6 +1756,7 @@ namespace Mono.Linker.Steps {
 		protected void MarkProperty (PropertyDefinition prop)
 		{
 			MarkCustomAttributes (prop);
+			DoAdditionalPropertyProcessing (prop);
 		}
 
 		protected virtual void MarkEvent (EventDefinition evt)
@@ -1748,6 +1765,7 @@ namespace Mono.Linker.Steps {
 			MarkMethodIfNotNull (evt.AddMethod);
 			MarkMethodIfNotNull (evt.InvokeMethod);
 			MarkMethodIfNotNull (evt.RemoveMethod);
+			DoAdditionalEventProcessing (evt);
 		}
 
 		void MarkMethodIfNotNull (MethodReference method)
