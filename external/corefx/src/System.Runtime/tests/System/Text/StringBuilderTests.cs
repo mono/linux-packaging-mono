@@ -522,7 +522,9 @@ namespace System.Text.Tests
         }
 
         [Theory]
+#if !MOBILE
         [InlineData("Hello", '\0', 1, "Hello\0")]
+#endif
         [InlineData("Hello", 'a', 1, "Helloa")]
         [InlineData("", 'b', 1, "b")]
         [InlineData("Hello", 'c', 2, "Hellocc")]
@@ -1298,7 +1300,9 @@ namespace System.Text.Tests
         }
 
         [Theory]
+#if !MOBILE
         [InlineData("Hello", 0, "\0", "\0Hello")]
+#endif
         [InlineData("Hello", 3, "abc", "Helabclo")]
         [InlineData("Hello", 5, "def", "Hellodef")]
         [InlineData("Hello", 0, "", "Hello")]
@@ -1488,8 +1492,10 @@ namespace System.Text.Tests
         }
 
         [Theory]
+#if !MOBILE
         [InlineData("Hello", 0, "\0", 0, "Hello")]
         [InlineData("Hello", 0, "\0", 1, "\0Hello")]
+#endif
         [InlineData("Hello", 3, "abc", 1, "Helabclo")]
         [InlineData("Hello", 5, "def", 1, "Hellodef")]
         [InlineData("Hello", 0, "", 1, "Hello")]
