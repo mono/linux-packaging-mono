@@ -11723,11 +11723,9 @@ namespace System.Reflection
         public static bool IsInstanceOfType(System.Type type, object o) { throw null; }
     }
     public delegate bool TypeFilter(System.Type m, object filterCriteria);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public abstract partial class TypeInfo : System.Type, System.Reflection.IReflectableType
     {
-        internal TypeInfo() { }
+        protected TypeInfo() { }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.ConstructorInfo> DeclaredConstructors { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.EventInfo> DeclaredEvents { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.FieldInfo> DeclaredFields { get { throw null; } }
@@ -11750,11 +11748,8 @@ namespace System.Reflection
 }
 namespace System.Reflection.Emit
 {
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._AssemblyBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class AssemblyBuilder : System.Reflection.Assembly, System.Runtime.InteropServices._AssemblyBuilder
+    public sealed partial class AssemblyBuilder : System.Reflection.Assembly
     {
         internal AssemblyBuilder() { }
         public override string CodeBase { get { throw null; } }
@@ -11812,10 +11807,6 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod, System.Reflection.Emit.PEFileKinds fileKind) { }
-        void System.Runtime.InteropServices._AssemblyBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._AssemblyBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._AssemblyBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._AssemblyBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.FlagsAttribute]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -11828,11 +11819,8 @@ namespace System.Reflection.Emit
         RunAndSave = 3,
         Save = 2,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ConstructorBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class ConstructorBuilder : System.Reflection.ConstructorInfo, System.Runtime.InteropServices._ConstructorBuilder
+    public sealed partial class ConstructorBuilder : System.Reflection.ConstructorInfo
     {
         internal ConstructorBuilder() { }
         public override System.Reflection.MethodAttributes Attributes { get { throw null; } }
@@ -11867,26 +11855,15 @@ namespace System.Reflection.Emit
         public void SetMethodBody(byte[] il, int maxStack, byte[] localSignature, System.Collections.Generic.IEnumerable<System.Reflection.Emit.ExceptionHandler> exceptionHandlers, System.Collections.Generic.IEnumerable<int> tokenFixups) { }
         [System.MonoTODOAttribute]
         public void SetSymCustomAttribute(string name, byte[] data) { }
-        void System.Runtime.InteropServices._ConstructorBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._ConstructorBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._ConstructorBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._ConstructorBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._CustomAttributeBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial class CustomAttributeBuilder : System.Runtime.InteropServices._CustomAttributeBuilder
+    public partial class CustomAttributeBuilder
     {
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs) { }
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs, System.Reflection.FieldInfo[] namedFields, object[] fieldValues) { }
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs, System.Reflection.PropertyInfo[] namedProperties, object[] propertyValues) { }
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs, System.Reflection.PropertyInfo[] namedProperties, object[] propertyValues, System.Reflection.FieldInfo[] namedFields, object[] fieldValues) { }
-        void System.Runtime.InteropServices._CustomAttributeBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._CustomAttributeBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._CustomAttributeBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._CustomAttributeBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class DynamicILInfo
@@ -11960,10 +11937,7 @@ namespace System.Reflection.Emit
         public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._EnumBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public sealed partial class EnumBuilder : System.Reflection.TypeInfo, System.Runtime.InteropServices._EnumBuilder
+    public sealed partial class EnumBuilder : System.Reflection.TypeInfo
     {
         internal EnumBuilder() { }
         public override System.Reflection.Assembly Assembly { get { throw null; } }
@@ -12026,16 +12000,9 @@ namespace System.Reflection.Emit
         [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
-        void System.Runtime.InteropServices._EnumBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._EnumBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._EnumBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._EnumBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._EventBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class EventBuilder : System.Runtime.InteropServices._EventBuilder
+    public sealed partial class EventBuilder
     {
         internal EventBuilder() { }
         public void AddOtherMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
@@ -12046,10 +12013,6 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetRaiseMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
         public void SetRemoveOnMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
-        void System.Runtime.InteropServices._EventBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._EventBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._EventBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._EventBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -12082,11 +12045,8 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.ExceptionHandler left, System.Reflection.Emit.ExceptionHandler right) { throw null; }
         public static bool operator !=(System.Reflection.Emit.ExceptionHandler left, System.Reflection.Emit.ExceptionHandler right) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._FieldBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class FieldBuilder : System.Reflection.FieldInfo, System.Runtime.InteropServices._FieldBuilder
+    public sealed partial class FieldBuilder : System.Reflection.FieldInfo
     {
         internal FieldBuilder() { }
         public override System.Reflection.FieldAttributes Attributes { get { throw null; } }
@@ -12110,10 +12070,6 @@ namespace System.Reflection.Emit
         public void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
         public void SetOffset(int iOffset) { }
         public override void SetValue(object obj, object val, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Globalization.CultureInfo culture) { }
-        void System.Runtime.InteropServices._FieldBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._FieldBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._FieldBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._FieldBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -12226,11 +12182,8 @@ namespace System.Reflection.Emit
         public void SetInterfaceConstraints(params System.Type[] interfaceConstraints) { }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ILGenerator))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial class ILGenerator : System.Runtime.InteropServices._ILGenerator
+    public partial class ILGenerator
     {
         internal ILGenerator() { }
         public virtual int ILOffset { get { throw null; } }
@@ -12273,10 +12226,6 @@ namespace System.Reflection.Emit
         public virtual void EndScope() { }
         public virtual void MarkLabel(System.Reflection.Emit.Label loc) { }
         public virtual void MarkSequencePoint(System.Diagnostics.SymbolStore.ISymbolDocumentWriter document, int startLine, int startColumn, int endLine, int endColumn) { }
-        void System.Runtime.InteropServices._ILGenerator.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._ILGenerator.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._ILGenerator.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._ILGenerator.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public virtual void ThrowException(System.Type excType) { }
         [System.MonoTODOAttribute("Not implemented")]
         public virtual void UsingNamespace(string usingNamespace) { }
@@ -12292,11 +12241,8 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.Label a, System.Reflection.Emit.Label b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.Label a, System.Reflection.Emit.Label b) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._LocalBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class LocalBuilder : System.Reflection.LocalVariableInfo, System.Runtime.InteropServices._LocalBuilder
+    public sealed partial class LocalBuilder : System.Reflection.LocalVariableInfo
     {
         internal LocalBuilder() { }
         public override bool IsPinned { get { throw null; } }
@@ -12304,16 +12250,9 @@ namespace System.Reflection.Emit
         public override System.Type LocalType { get { throw null; } }
         public void SetLocalSymInfo(string name) { }
         public void SetLocalSymInfo(string name, int startOffset, int endOffset) { }
-        void System.Runtime.InteropServices._LocalBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._LocalBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._LocalBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._LocalBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MethodBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class MethodBuilder : System.Reflection.MethodInfo, System.Runtime.InteropServices._MethodBuilder
+    public sealed partial class MethodBuilder : System.Reflection.MethodInfo
     {
         internal MethodBuilder() { }
         public override System.Reflection.MethodAttributes Attributes { get { throw null; } }
@@ -12365,10 +12304,6 @@ namespace System.Reflection.Emit
         public void SetSignature(System.Type returnType, System.Type[] returnTypeRequiredCustomModifiers, System.Type[] returnTypeOptionalCustomModifiers, System.Type[] parameterTypes, System.Type[][] parameterTypeRequiredCustomModifiers, System.Type[][] parameterTypeOptionalCustomModifiers) { }
         [System.MonoTODOAttribute]
         public void SetSymCustomAttribute(string name, byte[] data) { }
-        void System.Runtime.InteropServices._MethodBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._MethodBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._MethodBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._MethodBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
@@ -12400,11 +12335,8 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.MethodToken a, System.Reflection.Emit.MethodToken b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.MethodToken a, System.Reflection.Emit.MethodToken b) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ModuleBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial class ModuleBuilder : System.Reflection.Module, System.Runtime.InteropServices._ModuleBuilder
+    public partial class ModuleBuilder : System.Reflection.Module
     {
         internal ModuleBuilder() { }
         public override System.Reflection.Assembly Assembly { get { throw null; } }
@@ -12484,10 +12416,6 @@ namespace System.Reflection.Emit
         public void SetSymCustomAttribute(string name, byte[] data) { }
         [System.MonoTODOAttribute]
         public void SetUserEntryPoint(System.Reflection.MethodInfo entryPoint) { }
-        void System.Runtime.InteropServices._ModuleBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._ModuleBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._ModuleBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._ModuleBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -12785,11 +12713,8 @@ namespace System.Reflection.Emit
         Size8 = 8,
         Unspecified = 0,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._ParameterBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial class ParameterBuilder : System.Runtime.InteropServices._ParameterBuilder
+    public partial class ParameterBuilder
     {
         internal ParameterBuilder() { }
         public virtual int Attributes { get { throw null; } }
@@ -12805,10 +12730,6 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         [System.ObsoleteAttribute("An alternate API is available: Emit the MarshalAs custom attribute instead.")]
         public virtual void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
-        void System.Runtime.InteropServices._ParameterBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._ParameterBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._ParameterBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._ParameterBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -12831,11 +12752,8 @@ namespace System.Reflection.Emit
         Dll = 1,
         WindowApplication = 3,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._PropertyBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class PropertyBuilder : System.Reflection.PropertyInfo, System.Runtime.InteropServices._PropertyBuilder
+    public sealed partial class PropertyBuilder : System.Reflection.PropertyInfo
     {
         internal PropertyBuilder() { }
         public override System.Reflection.PropertyAttributes Attributes { get { throw null; } }
@@ -12865,10 +12783,6 @@ namespace System.Reflection.Emit
         public void SetSetMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
         public override void SetValue(object obj, object value, object[] index) { }
         public override void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] index, System.Globalization.CultureInfo culture) { }
-        void System.Runtime.InteropServices._PropertyBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._PropertyBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._PropertyBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._PropertyBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -12977,11 +12891,8 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.StringToken a, System.Reflection.Emit.StringToken b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.StringToken a, System.Reflection.Emit.StringToken b) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._TypeBuilder))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public sealed partial class TypeBuilder : System.Reflection.TypeInfo, System.Runtime.InteropServices._TypeBuilder
+    public sealed partial class TypeBuilder : System.Reflection.TypeInfo
     {
         internal TypeBuilder() { }
         public const int UnspecifiedTypeSize = 0;
@@ -13102,10 +13013,6 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetParent(System.Type parent) { }
-        void System.Runtime.InteropServices._TypeBuilder.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._TypeBuilder.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._TypeBuilder.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._TypeBuilder.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]

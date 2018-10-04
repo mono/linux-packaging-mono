@@ -459,7 +459,12 @@ namespace System.Reflection.Tests
         [Fact]
         public void IsEnumDefined_Invalid()
         {
+#if MONO
+// https://github.com/dotnet/corefx/issues/32510
+            AssertExtensions.Throws<ArgumentException>("enumType", () => typeof(NonGenericClassWithNoInterfaces).GetTypeInfo().IsEnumDefined(10));
+#else
             AssertExtensions.Throws<ArgumentException>("", () => typeof(NonGenericClassWithNoInterfaces).GetTypeInfo().IsEnumDefined(10));
+#endif
             Assert.Throws<ArgumentNullException>(() => typeof(IntEnum).GetTypeInfo().IsEnumDefined(null));
             Assert.Throws<InvalidOperationException>(() => typeof(IntEnum).GetTypeInfo().IsEnumDefined(new NonGenericClassWithNoInterfaces()));
         }
@@ -474,7 +479,7 @@ namespace System.Reflection.Tests
         [InlineData(typeof(CompoundClass3<InheritedInteraface>), new Type[] { typeof(GenericInterface1<InheritedInteraface>), typeof(TI_NonGenericInterface1) })]
         [InlineData(typeof(CompoundClass4<>), new Type[] { typeof(GenericInterface1<string>), typeof(TI_NonGenericInterface1) })]
         [InlineData(typeof(CompoundClass4<string>), new Type[] { typeof(GenericInterface1<string>), typeof(TI_NonGenericInterface1) })]
-        public void ImplementedInterfaces(Type type, params Type[] expected)
+        public void ImplementedInterfaces(Type type, Type[] expected)
         {
             TypeInfo typeInfo = type.GetTypeInfo();
             Type[] implementedInterfaces = type.GetTypeInfo().ImplementedInterfaces.ToArray();
@@ -542,7 +547,10 @@ namespace System.Reflection.Tests
         [InlineData(typeof(InnerNamespace.AbstractBaseClass), typeof(InnerNamespace.AbstractSubSubClass), true)]
         [InlineData(typeof(InnerNamespace.AbstractSubClass), typeof(InnerNamespace.AbstractSubSubClass), true)]
         // T[] is assignable to IList<U> iff T[] is assignable to U[]
+#if !MONO
+// https://github.com/mono/mono/issues/10848
         [InlineData(typeof(TI_NonGenericInterface1[]), typeof(NonGenericStructWithNonGenericInterface[]), false)]
+#endif        
         [InlineData(typeof(TI_NonGenericInterface1[]), typeof(SubClassWithInterface1Interface2[]), true)]
         [InlineData(typeof(IList<TI_NonGenericInterface1>), typeof(NonGenericStructWithNonGenericInterface[]), false)]
         [InlineData(typeof(IList<TI_NonGenericInterface1>), typeof(SubClassWithInterface1Interface2[]), true)]
