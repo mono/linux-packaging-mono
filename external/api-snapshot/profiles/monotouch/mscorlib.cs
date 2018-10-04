@@ -11694,11 +11694,9 @@ namespace System.Reflection
         public static bool IsInstanceOfType(System.Type type, object o) { throw null; }
     }
     public delegate bool TypeFilter(System.Type m, object filterCriteria);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public abstract partial class TypeInfo : System.Type, System.Reflection.IReflectableType
     {
-        internal TypeInfo() { }
+        protected TypeInfo() { }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.ConstructorInfo> DeclaredConstructors { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.EventInfo> DeclaredEvents { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.FieldInfo> DeclaredFields { get { throw null; } }
@@ -11764,7 +11762,7 @@ namespace System.Reflection.Emit
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs, System.Reflection.PropertyInfo[] namedProperties, object[] propertyValues) { }
         public CustomAttributeBuilder(System.Reflection.ConstructorInfo con, object[] constructorArgs, System.Reflection.PropertyInfo[] namedProperties, object[] propertyValues, System.Reflection.FieldInfo[] namedFields, object[] fieldValues) { }
     }
-    public abstract partial class DynamicMethod : System.Reflection.MethodInfo, System.Reflection.ICustomAttributeProvider
+    public sealed partial class DynamicMethod : System.Reflection.MethodInfo
     {
         public DynamicMethod(string name, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes, System.Reflection.Module m, bool skipVisibility) { }
         public DynamicMethod(string name, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes, System.Type owner, bool skipVisibility) { }
@@ -11778,13 +11776,22 @@ namespace System.Reflection.Emit
         public override System.Reflection.CallingConventions CallingConvention { get { throw null; } }
         public override System.Type DeclaringType { get { throw null; } }
         public bool InitLocals { get { throw null; } set { } }
+        public override System.RuntimeMethodHandle MethodHandle { get { throw null; } }
         public override System.Reflection.MethodImplAttributes MethodImplementationFlags { get { throw null; } }
         public override string Name { get { throw null; } }
+        public override System.Type ReflectedType { get { throw null; } }
         public override System.Reflection.ParameterInfo ReturnParameter { get { throw null; } }
         public override System.Type ReturnType { get { throw null; } }
+        public override System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes { get { throw null; } }
+        public override System.Reflection.MethodInfo GetBaseDefinition() { throw null; }
+        public override object[] GetCustomAttributes(bool inherit) { throw null; }
+        public override object[] GetCustomAttributes(System.Type attributeType, bool inherit) { throw null; }
         public System.Reflection.Emit.ILGenerator GetILGenerator() { throw null; }
         public System.Reflection.Emit.ILGenerator GetILGenerator(int streamSize) { throw null; }
+        public override System.Reflection.MethodImplAttributes GetMethodImplementationFlags() { throw null; }
         public override System.Reflection.ParameterInfo[] GetParameters() { throw null; }
+        public override object Invoke(object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture) { throw null; }
+        public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
     }
     public abstract partial class EnumBuilder : System.Reflection.TypeInfo
     {
@@ -11931,8 +11938,6 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.Label a, System.Reflection.Emit.Label b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.Label a, System.Reflection.Emit.Label b) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public sealed partial class LocalBuilder : System.Reflection.LocalVariableInfo
     {
