@@ -1364,6 +1364,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
+ mono_regression_test_step@Base 5.21.0.52
  mono_reraise_exception@Base 5.4.0.199
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
@@ -1421,8 +1422,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_signature_is_instance@Base 4.1.0.1738
  mono_signature_param_is_out@Base 4.1.0.1738
  mono_signature_vararg_start@Base 4.1.0.1738
- mono_signbit_double@Base 4.1.0.1738
- mono_signbit_float@Base 4.1.0.1738
  mono_stack_walk@Base 4.1.0.1738
  mono_stack_walk_async_safe@Base 4.1.0.1738
  mono_stack_walk_no_il@Base 4.1.0.1738
