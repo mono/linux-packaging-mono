@@ -31,8 +31,11 @@ namespace System.Reflection
             if (value is Array a) {
                 Type etype = a.GetType().GetElementType();
                 CustomAttributeTypedArgument[] new_value = new CustomAttributeTypedArgument[a.GetLength(0)];
-                for (int i = 0; i < new_value.Length; ++i)
-                    new_value[i] = new CustomAttributeTypedArgument(etype, a.GetValue(i));
+                for (int i = 0; i < new_value.Length; ++i) {
+                    var val = a.GetValue (i);
+                    var elemType = etype == typeof (System.Object) && val != null ? val.GetType () : etype;
+                    new_value[i] = new CustomAttributeTypedArgument (elemType, val);
+                }
                 Value = new System.Collections.ObjectModel.ReadOnlyCollection <CustomAttributeTypedArgument>(new_value);
             }
 #endif

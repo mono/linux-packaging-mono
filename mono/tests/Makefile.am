@@ -307,6 +307,7 @@ TESTS_CS_SRC=		\
 	exception16.cs		\
 	exception17.cs		\
 	exception18.cs		\
+	exception-invokes.cs		\
 	exception19.cs		\
 	exception20.cs		\
 	typeload-unaligned.cs	\
@@ -690,7 +691,8 @@ TESTS_CS_SRC=		\
 	nested_type_visibility.cs	\
 	dynamic-method-churn.cs	\
 	verbose.cs \
-	generic-unmanaged-constraint.cs
+	generic-unmanaged-constraint.cs	\
+	bug-10834.cs
 
 # some tests fail to compile on mcs
 if CSC_IS_ROSLYN
