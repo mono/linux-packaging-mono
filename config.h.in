@@ -216,9 +216,6 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Supports C99 array initialization */
-#undef HAVE_ARRAY_ELEM_INIT
-
 /* Define to 1 if you have the <asm/sigcontext.h> header file. */
 #undef HAVE_ASM_SIGCONTEXT_H
 

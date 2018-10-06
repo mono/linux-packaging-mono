@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.52],
+AC_INIT(mono, [5.21.0.99],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -46,7 +46,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=BEAF66F4-BA36-44C5-974E-83C6F627DF8C
+MONO_CORLIB_VERSION=E06DCE2D-7852-4BBA-AD9F-54D67EEF1FF9
 
 #
 # Put a quoted #define in config.h.
@@ -3578,18 +3578,6 @@ ac_cv_c_socklen_t=yes
 	AC_DEFINE(HAVE_SOCKLEN_T, 1, [Have socklen_t])
 	AC_MSG_RESULT(yes)
 ],[
-	AC_MSG_RESULT(no)
-])
-
-AC_MSG_CHECKING(for array element initializer support)
-AC_TRY_COMPILE([#include <sys/socket.h>], [
-	const int array[] = {[1] = 2,};
-], [
-	# Yes, we have it...
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(HAVE_ARRAY_ELEM_INIT,1,[Supports C99 array initialization])
-], [
-	# We'll have to use signals
 	AC_MSG_RESULT(no)
 ])
 

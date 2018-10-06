@@ -268,6 +268,7 @@ struct _MonoException {
 	MonoObject *serialization_manager;
 	MonoObject *captured_traces;
 	MonoArray  *native_trace_ips;
+	gint32 caught_in_unmanaged;
 };
 
 typedef struct {
@@ -2033,7 +2034,7 @@ ves_icall_MonoMethod_MakeGenericMethod_impl (MonoReflectionMethodHandle rmethod,
 
 ICALL_EXPORT
 gint32
-ves_icall_ModuleBuilder_getToken (MonoReflectionModuleBuilderHandle mb, MonoObjectHandle obj, gboolean create_open_instance, MonoError *error);
+ves_icall_ModuleBuilder_getToken (MonoReflectionModuleBuilderHandle mb, MonoObjectHandle obj, MonoBoolean create_open_instance, MonoError *error);
 
 ICALL_EXPORT
 gint32
