@@ -37,6 +37,7 @@
 #include "mono/metadata/reflection-internals.h"
 #include "mono/metadata/threadpool.h"
 #include "mono/metadata/handle.h"
+#include "mono/metadata/custom-attrs-internals.h"
 #include "mono/utils/mono-counters.h"
 #include "mono/utils/mono-tls.h"
 #include "mono/utils/mono-memory-model.h"
@@ -65,13 +66,24 @@ static GENERATE_TRY_GET_CLASS_WITH_CACHE (icustom_marshaler, "System.Runtime.Int
 static MonoMethod *sh_dangerous_add_ref;
 static MonoMethod *sh_dangerous_release;
 
+static MonoMethod*
+get_method_nofail (MonoClass *klass, const char *method_name, int num_params, int flags)
+{
+	MonoMethod *method;
+	ERROR_DECL (error);
+	method = mono_class_get_method_from_name_checked (klass, method_name, num_params, flags, error);
+	mono_error_assert_ok (error);
+	g_assertf (method, "Could not lookup method %s in %s", method_name, m_class_get_name (klass));
+	return method;
+}
+
 static void
 init_safe_handle ()
 {
-	sh_dangerous_add_ref = mono_class_get_method_from_name (
-		mono_class_try_get_safehandle_class (), "DangerousAddRef", 1);
-	sh_dangerous_release = mono_class_get_method_from_name (
-		mono_class_try_get_safehandle_class (), "DangerousRelease", 0);
+	sh_dangerous_add_ref = get_method_nofail (
+		mono_class_try_get_safehandle_class (), "DangerousAddRef", 1, 0);
+	sh_dangerous_release = get_method_nofail (
+		mono_class_try_get_safehandle_class (), "DangerousRelease", 0, 0);
 }
 
 static MonoImage*
@@ -114,7 +126,7 @@ offset_of_first_nonstatic_field (MonoClass *klass)
 	MonoClassField *klass_fields = m_class_get_fields (klass);
 	for (i = 0; i < fcount; i++) {
 		if (!(klass_fields[i].type->attrs & FIELD_ATTRIBUTE_STATIC) && !mono_field_is_deleted (&klass_fields[i]))
-			return klass_fields[i].offset - sizeof (MonoObject);
+			return klass_fields[i].offset - MONO_ABI_SIZEOF (MonoObject);
 	}
 
 	return 0;
@@ -142,21 +154,18 @@ get_fixed_buffer_attr (MonoClassField *field, MonoType **out_etype, int *out_len
 		}
 	}
 	if (attr) {
-		MonoArray *typed_args, *named_args;
+		gpointer *typed_args, *named_args;
 		CattrNamedArg *arginfo;
-		MonoObject *o;
+		int num_named_args;
 
-		mono_reflection_create_custom_attr_data_args (mono_defaults.corlib, attr->ctor, attr->data, attr->data_size, &typed_args, &named_args, &arginfo, error);
+		mono_reflection_create_custom_attr_data_args_noalloc (mono_defaults.corlib, attr->ctor, attr->data, attr->data_size,
+															  &typed_args, &named_args, &num_named_args, &arginfo, error);
 		if (!is_ok (error))
 			return FALSE;
-		g_assert (mono_array_length (typed_args) == 2);
-
-		/* typed args */
-		o = mono_array_get (typed_args, MonoObject*, 0);
-		*out_etype = monotype_cast (o)->type;
-		o = mono_array_get (typed_args, MonoObject*, 1);
-		g_assert (o->vtable->klass == mono_defaults.int32_class);
-		*out_len = *(gint32*)mono_object_unbox (o);
+		*out_etype = typed_args [0];
+		*out_len = *(gint32*)typed_args [1];
+		g_free (typed_args);
+		g_free (named_args);
 		g_free (arginfo);
 	}
 	if (cinfo && !cinfo->cached)
@@ -471,7 +480,7 @@ emit_ptr_to_object_conv (MonoMethodBuilder *mb, MonoType *type, MonoMarshalConv 
 		/* dst = pointer to newly created object data */
 		mono_mb_emit_ldloc (mb, 1);
 		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_icon (mb, sizeof (MonoObject));
+		mono_mb_emit_icon (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_byte (mb, CEE_ADD);
 		mono_mb_emit_stloc (mb, 1); 
 
@@ -716,7 +725,7 @@ emit_object_to_ptr_conv (MonoMethodBuilder *mb, MonoType *type, MonoMarshalConv 
 		if (m_class_is_valuetype (eklass))
 			esize = mono_class_native_size (eklass, NULL);
 		else
-			esize = sizeof (gpointer);
+			esize = TARGET_SIZEOF_VOID_P;
 
 		mono_mb_emit_ldloc (mb, 0);
 		mono_mb_emit_byte (mb, CEE_LDIND_REF);
@@ -827,7 +836,7 @@ emit_object_to_ptr_conv (MonoMethodBuilder *mb, MonoType *type, MonoMarshalConv 
 		/* src = pointer to object data */
 		mono_mb_emit_ldloc (mb, 0);
 		mono_mb_emit_byte (mb, CEE_LDIND_I);		
-		mono_mb_emit_icon (mb, sizeof (MonoObject));
+		mono_mb_emit_icon (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_byte (mb, CEE_ADD);
 		mono_mb_emit_stloc (mb, 0); 
 
@@ -1054,9 +1063,9 @@ emit_struct_conv_full (MonoMethodBuilder *mb, MonoClass *klass, gboolean to_obje
 					static MonoMethod *get_object_for_native_variant = NULL;
 
 					if (!variant_clear)
-						variant_clear = mono_class_get_method_from_name (mono_class_get_variant_class (), "Clear", 0);
+						variant_clear = get_method_nofail (mono_class_get_variant_class (), "Clear", 0, 0);
 					if (!get_object_for_native_variant)
-						get_object_for_native_variant = mono_class_get_method_from_name (mono_defaults.marshal_class, "GetObjectForNativeVariant", 1);
+						get_object_for_native_variant = get_method_nofail (mono_defaults.marshal_class, "GetObjectForNativeVariant", 1, 0);
 					mono_mb_emit_ldloc (mb, 1);
 					mono_mb_emit_ldloc (mb, 0);
 					mono_mb_emit_managed_call (mb, get_object_for_native_variant, NULL);
@@ -1069,7 +1078,7 @@ emit_struct_conv_full (MonoMethodBuilder *mb, MonoClass *klass, gboolean to_obje
 					static MonoMethod *get_native_variant_for_object = NULL;
 
 					if (!get_native_variant_for_object)
-						get_native_variant_for_object = mono_class_get_method_from_name (mono_defaults.marshal_class, "GetNativeVariantForObject", 2);
+						get_native_variant_for_object = get_method_nofail (mono_defaults.marshal_class, "GetNativeVariantForObject", 2, 0);
 
 					mono_mb_emit_ldloc (mb, 0);
 					mono_mb_emit_byte(mb, CEE_LDIND_REF);
@@ -1207,7 +1216,7 @@ mono_mb_emit_save_args (MonoMethodBuilder *mb, MonoMethodSignature *sig, gboolea
 	tmp_var = mono_mb_add_local (mb, int_type);
 
 	/* alloate space on stack to store an array of pointers to the arguments */
-	mono_mb_emit_icon (mb, sizeof (gpointer) * (sig->param_count + 1));
+	mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P * (sig->param_count + 1));
 	mono_mb_emit_byte (mb, CEE_PREFIX1);
 	mono_mb_emit_byte (mb, CEE_LOCALLOC);
 	mono_mb_emit_stloc (mb, params_var);
@@ -1222,7 +1231,7 @@ mono_mb_emit_save_args (MonoMethodBuilder *mb, MonoMethodSignature *sig, gboolea
 		mono_mb_emit_byte (mb, CEE_STIND_I);
 		/* tmp = tmp + sizeof (gpointer) */
 		if (sig->param_count)
-			mono_mb_emit_add_to_local (mb, tmp_var, sizeof (gpointer));
+			mono_mb_emit_add_to_local (mb, tmp_var, TARGET_SIZEOF_VOID_P);
 
 	}
 
@@ -1232,7 +1241,7 @@ mono_mb_emit_save_args (MonoMethodBuilder *mb, MonoMethodSignature *sig, gboolea
 		mono_mb_emit_byte (mb, CEE_STIND_I);
 		/* tmp = tmp + sizeof (gpointer) */
 		if (i < (sig->param_count - 1))
-			mono_mb_emit_add_to_local (mb, tmp_var, sizeof (gpointer));
+			mono_mb_emit_add_to_local (mb, tmp_var, TARGET_SIZEOF_VOID_P);
 	}
 
 	return params_var;
@@ -1352,7 +1361,7 @@ emit_invoke_call (MonoMethodBuilder *mb, MonoMethod *method,
 
 		mono_mb_emit_ldarg (mb, 1);
 		if (i) {
-			mono_mb_emit_icon (mb, sizeof (gpointer) * i);
+			mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P * i);
 			mono_mb_emit_byte (mb, CEE_ADD);
 		}
 
@@ -1494,7 +1503,7 @@ handle_enum:
 		 */
 		if (t->byref && t->type == MONO_TYPE_GENERICINST && mono_class_is_nullable (mono_class_from_mono_type (t))) {
 			mono_mb_emit_ldarg (mb, 1);			
-			mono_mb_emit_icon (mb, sizeof (gpointer) * i);
+			mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P * i);
 			mono_mb_emit_byte (mb, CEE_ADD);
 
 			mono_mb_emit_ldloc (mb, tmp_nullable_locals [i]);
@@ -2183,7 +2192,7 @@ emit_marshal_array_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			label1 = mono_mb_emit_branch (mb, CEE_BRFALSE);
 
 			if (is_string)
-				esize = sizeof (gpointer);
+				esize = TARGET_SIZEOF_VOID_P;
 			else if (eklass == mono_defaults.char_class) /*can't call mono_marshal_type_size since it causes all sorts of asserts*/
 				esize = mono_pinvoke_is_unicode (m->piinfo) ? 2 : 1;
 			else
@@ -2299,7 +2308,7 @@ emit_marshal_array_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			int index_var, src_ptr, loc, esize;
 
 			if ((eklass == mono_defaults.stringbuilder_class) || (eklass == mono_defaults.string_class))
-				esize = sizeof (gpointer);
+				esize = TARGET_SIZEOF_VOID_P;
 			else if (eklass == mono_defaults.char_class)
 				esize = mono_pinvoke_is_unicode (m->piinfo) ? 2 : 1;
 			else
@@ -2483,7 +2492,7 @@ emit_marshal_array_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		mono_marshal_load_type_info (eklass);
 
 		if (is_string)
-			esize = sizeof (gpointer);
+			esize = TARGET_SIZEOF_VOID_P;
 		else
 			esize = mono_class_native_size (eklass, NULL);
 		src_ptr = mono_mb_add_local (mb, int_type);
@@ -2645,7 +2654,7 @@ emit_marshal_array_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		mono_marshal_load_type_info (eklass);
 
 		if (is_string)
-			esize = sizeof (gpointer);
+			esize = TARGET_SIZEOF_VOID_P;
 		else
 			esize = mono_class_native_size (eklass, NULL);
 
@@ -2738,7 +2747,7 @@ emit_marshal_array_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		}
 
 		if (is_string)
-			esize = sizeof (gpointer);
+			esize = TARGET_SIZEOF_VOID_P;
 		else if (eklass == mono_defaults.char_class)
 			esize = mono_pinvoke_is_unicode (m->piinfo) ? 2 : 1;
 		else
@@ -3264,7 +3273,7 @@ emit_virtual_stelemref_ilgen (MonoMethodBuilder *mb, const char **param_names, M
 		mono_mb_emit_byte (mb, CEE_LDIND_U2);
 		mono_mb_emit_icon (mb, 1);
 		mono_mb_emit_byte (mb, CEE_SUB);
-		mono_mb_emit_icon (mb, sizeof (void*));
+		mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P);
 		mono_mb_emit_byte (mb, CEE_MUL);
 		mono_mb_emit_byte (mb, CEE_ADD);
 		mono_mb_emit_byte (mb, CEE_LDIND_I);
@@ -3335,7 +3344,7 @@ emit_virtual_stelemref_ilgen (MonoMethodBuilder *mb, const char **param_names, M
 		mono_mb_emit_byte (mb, CEE_LDIND_U2);
 		mono_mb_emit_icon (mb, 1);
 		mono_mb_emit_byte (mb, CEE_SUB);
-		mono_mb_emit_icon (mb, sizeof (void*));
+		mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P);
 		mono_mb_emit_byte (mb, CEE_MUL);
 		mono_mb_emit_byte (mb, CEE_ADD);
 		mono_mb_emit_byte (mb, CEE_LDIND_I);
@@ -3551,7 +3560,7 @@ emit_stelemref_ilgen (MonoMethodBuilder *mb)
 	mono_mb_emit_byte (mb, CEE_LDIND_U2);
 	mono_mb_emit_icon (mb, 1);
 	mono_mb_emit_byte (mb, CEE_SUB);
-	mono_mb_emit_icon (mb, sizeof (void*));
+	mono_mb_emit_icon (mb, TARGET_SIZEOF_VOID_P);
 	mono_mb_emit_byte (mb, CEE_MUL);
 	mono_mb_emit_byte (mb, CEE_ADD);
 	mono_mb_emit_byte (mb, CEE_LDIND_I);
@@ -4017,7 +4026,7 @@ emit_unbox_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method)
 	MonoMethodSignature *sig = mono_method_signature (method);
 
 	mono_mb_emit_ldarg (mb, 0); 
-	mono_mb_emit_icon (mb, sizeof (MonoObject));
+	mono_mb_emit_icon (mb, MONO_ABI_SIZEOF (MonoObject));
 	mono_mb_emit_byte (mb, CEE_ADD);
 	for (int i = 0; i < sig->param_count; ++i)
 		mono_mb_emit_ldarg (mb, i + 1);
@@ -4196,13 +4205,13 @@ emit_marshal_custom_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			goto handle_exception;
 		}
 
-		cleanup_native = mono_class_get_method_from_name (klass, "CleanUpNativeData", 1);
+		cleanup_native = get_method_nofail (klass, "CleanUpNativeData", 1, 0);
 		g_assert (cleanup_native);
-		cleanup_managed = mono_class_get_method_from_name (klass, "CleanUpManagedData", 1);
+		cleanup_managed = get_method_nofail (klass, "CleanUpManagedData", 1, 0);
 		g_assert (cleanup_managed);
-		marshal_managed_to_native = mono_class_get_method_from_name (klass, "MarshalManagedToNative", 1);
+		marshal_managed_to_native = get_method_nofail (klass, "MarshalManagedToNative", 1, 0);
 		g_assert (marshal_managed_to_native);
-		marshal_native_to_managed = mono_class_get_method_from_name (klass, "MarshalNativeToManaged", 1);
+		marshal_native_to_managed = get_method_nofail (klass, "MarshalNativeToManaged", 1, 0);
 		g_assert (marshal_native_to_managed);
 
 		mono_memory_barrier ();
@@ -4221,7 +4230,8 @@ emit_marshal_custom_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 	if (!mono_class_is_assignable_from (ICustomMarshaler, mklass))
 		exception_msg = g_strdup_printf ("Custom marshaler '%s' does not implement the ICustomMarshaler interface.", m_class_get_name (mklass));
 
-	get_instance = mono_class_get_method_from_name_flags (mklass, "GetInstance", 1, METHOD_ATTRIBUTE_STATIC);
+	get_instance = mono_class_get_method_from_name_checked (mklass, "GetInstance", 1, METHOD_ATTRIBUTE_STATIC, error);
+	mono_error_assert_ok (error);
 	if (get_instance) {
 		MonoMethodSignature *get_sig = mono_method_signature (get_instance);
 		if ((get_sig->ret->type != MONO_TYPE_CLASS) ||
@@ -4550,7 +4560,7 @@ emit_marshal_vtype_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			static MonoMethod *to_oadate;
 
 			if (!to_oadate)
-				to_oadate = mono_class_get_method_from_name (date_time_class, "ToOADate", 0);
+				to_oadate = get_method_nofail (date_time_class, "ToOADate", 0, 0);
 			g_assert (to_oadate);
 
 			conv_arg = mono_mb_add_local (mb, double_type);
@@ -4656,7 +4666,7 @@ emit_marshal_vtype_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 			if (!((t->attrs & PARAM_ATTRIBUTE_IN) && !(t->attrs & PARAM_ATTRIBUTE_OUT))) {
 				if (!from_oadate)
-					from_oadate = mono_class_get_method_from_name (date_time_class, "FromOADate", 1);
+					from_oadate = get_method_nofail (date_time_class, "FromOADate", 1, 0);
 				g_assert (from_oadate);
 
 				mono_mb_emit_ldarg (mb, argnum);
@@ -4853,10 +4863,8 @@ emit_marshal_string_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		if (encoding == MONO_NATIVE_VBBYREFSTR) {
 			static MonoMethod *m;
 
-			if (!m) {
-				m = mono_class_get_method_from_name_flags (mono_defaults.string_class, "get_Length", -1, 0);
-				g_assert (m);
-			}
+			if (!m)
+				m = get_method_nofail (mono_defaults.string_class, "get_Length", -1, 0);
 
 			if (!t->byref) {
 				char *msg = g_strdup_printf ("VBByRefStr marshalling requires a ref parameter.", encoding);
@@ -5047,6 +5055,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			init_safe_handle ();
 
 		if (t->byref){
+			ERROR_DECL (error);
 			MonoMethod *ctor;
 			
 			/*
@@ -5058,9 +5067,10 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			 * but we do not support that mechanism (getting to the original
 			 * handle) and it makes no difference where we create this
 			 */
-			ctor = mono_class_get_method_from_name (t->data.klass, ".ctor", 0);
-			if (ctor == NULL){
+			ctor = mono_class_get_method_from_name_checked (t->data.klass, ".ctor", 0, 0, error);
+			if (ctor == NULL || !is_ok (error)){
 				mono_mb_emit_exception (mb, "MissingMethodException", "paramterless constructor required");
+				mono_error_cleanup (error);
 				break;
 			}
 			/* refval = new SafeHandleDerived ()*/
@@ -5085,6 +5095,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 	}
 		
 	case MARSHAL_ACTION_CONV_RESULT: {
+		ERROR_DECL (error);
 		MonoMethod *ctor = NULL;
 		int intptr_handle_slot;
 		
@@ -5094,8 +5105,9 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			break;
 		}
 
-		ctor = mono_class_get_method_from_name (t->data.klass, ".ctor", 0);
-		if (ctor == NULL){
+		ctor = mono_class_get_method_from_name_checked (t->data.klass, ".ctor", 0, 0, error);
+		if (ctor == NULL || !is_ok (error)){
+			mono_error_cleanup (error);
 			mono_mb_emit_byte (mb, CEE_POP);
 			mono_mb_emit_exception (mb, "MissingMethodException", "paramterless constructor required");
 			break;
@@ -5267,7 +5279,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			pos = mono_mb_emit_branch (mb, CEE_BRFALSE);
 
 			mono_mb_emit_ldarg (mb, argnum);
-			mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+			mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_stloc (mb, conv_arg);
 
 			mono_mb_patch_branch (mb, pos);
@@ -5310,7 +5322,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 			/* set the src_ptr */
 			mono_mb_emit_ldloc (mb, 0);
-			mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+			mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_stloc (mb, 0);
 
 			/* set dst_ptr */
@@ -5405,7 +5417,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 		if (t->byref || (t->attrs & PARAM_ATTRIBUTE_OUT)) {
 			mono_mb_emit_ldloc (mb, 1);
-			mono_mb_emit_icon (mb, sizeof (MonoObject));
+			mono_mb_emit_icon (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_byte (mb, CEE_ADD);
 			mono_mb_emit_stloc (mb, 1);
 			
@@ -5491,7 +5503,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			/* set dst  */
 	
 			mono_mb_emit_ldloc (mb, 3);
-			mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+			mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_stloc (mb, 1);
 								
 			/* emit conversion code */
@@ -5577,7 +5589,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		mono_mb_emit_op (mb, CEE_MONO_NEWOBJ, klass);	
 		mono_mb_emit_stloc (mb, conv_arg);
 		mono_mb_emit_ldloc (mb, conv_arg);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_stloc (mb, 1); 
 
 		/* emit valuetype conversion code */
@@ -5611,7 +5623,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 			
 			/* Set src */
 			mono_mb_emit_ldloc (mb, conv_arg);
-			mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+			mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_stloc (mb, 0);
 
 			/* Allocate and set dest */
@@ -5638,7 +5650,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 			/* Set src */
 			mono_mb_emit_ldloc (mb, conv_arg);
-			mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+			mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 			mono_mb_emit_stloc (mb, 0);
 
 			/* Set dest */
@@ -5675,7 +5687,7 @@ emit_marshal_object_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 		/* Set src */
 		mono_mb_emit_ldloc (mb, 0);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_stloc (mb, 0);
 
 		/* Allocate and set dest */
@@ -5713,11 +5725,11 @@ emit_marshal_variant_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 	MonoType *object_type = mono_get_object_type ();
 
 	if (!get_object_for_native_variant)
-		get_object_for_native_variant = mono_class_get_method_from_name (mono_defaults.marshal_class, "GetObjectForNativeVariant", 1);
+		get_object_for_native_variant = get_method_nofail (mono_defaults.marshal_class, "GetObjectForNativeVariant", 1, 0);
 	g_assert (get_object_for_native_variant);
 
 	if (!get_native_variant_for_object)
-		get_native_variant_for_object = mono_class_get_method_from_name (mono_defaults.marshal_class, "GetNativeVariantForObject", 2);
+		get_native_variant_for_object = get_method_nofail (mono_defaults.marshal_class, "GetNativeVariantForObject", 2, 0);
 	g_assert (get_native_variant_for_object);
 
 	switch (action) {
@@ -5744,7 +5756,7 @@ emit_marshal_variant_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		static MonoMethod *variant_clear = NULL;
 
 		if (!variant_clear)
-			variant_clear = mono_class_get_method_from_name (mono_class_get_variant_class (), "Clear", 0);
+			variant_clear = get_method_nofail (mono_class_get_variant_class (), "Clear", 0, 0);
 		g_assert (variant_clear);
 
 
@@ -5820,7 +5832,7 @@ static void
 emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_sig, MonoMarshalSpec **mspecs, EmitMarshalContext* m, MonoMethod *method, uint32_t target_handle)
 {
 	MonoMethodSignature *sig, *csig;
-	int i, *tmp_locals, ex_local, e_local, attach_cookie_local, attach_dummy_local;
+	int i, *tmp_locals, ex_local, e_local, orig_domain, attach_cookie;
 	gboolean closed = FALSE;
 
 	sig = m->sig;
@@ -5856,18 +5868,19 @@ emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_s
 	ex_local = mono_mb_add_local (mb, m_class_get_byval_arg (mono_defaults.uint32_class));
 	e_local = mono_mb_add_local (mb, m_class_get_byval_arg (mono_defaults.exception_class));
 
-	attach_cookie_local = mono_mb_add_local (mb, int_type);
-	attach_dummy_local = mono_mb_add_local (mb, int_type);
+	orig_domain = mono_mb_add_local (mb, int_type);
+	attach_cookie = mono_mb_add_local (mb, int_type);
 
 	/*
 	 * guint32 ex = -1;
 	 * // does (STARTING|RUNNING|BLOCKING) -> RUNNING + set/switch domain
-	 * mono_threads_attach_coop ();
+	 * intptr_t attach_cookie;
+	 * intptr_t orig_domain = mono_threads_attach_coop (domain, &attach_cookie);
 	 * <interrupt check>
 	 *
 	 * ret = method (...);
 	 * // does RUNNING -> (RUNNING|BLOCKING) + unset/switch domain
-	 * mono_threads_detach_coop ();
+	 * mono_threads_detach_coop (orig_domain, &attach_cookie);
 	 *
 	 * return ret;
 	 */
@@ -5879,21 +5892,18 @@ emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_s
 	mono_mb_emit_byte (mb, CEE_CONV_U4);
 	mono_mb_emit_stloc (mb, ex_local);
 
-	if (!mono_threads_is_blocking_transition_enabled ()) {
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_JIT_ATTACH);
-	} else {
-		/* mono_threads_attach_coop (); */
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_LDDOMAIN);
-		mono_mb_emit_ldloc_addr (mb, attach_dummy_local);
-		/*
-		 * This icall is special cased in the JIT so it works in native-to-managed wrappers in unattached threads.
-		 * Keep this in sync with the CEE_JIT_ICALL code in the JIT.
-		 */
-		mono_mb_emit_icall (mb, mono_threads_attach_coop);
-		mono_mb_emit_stloc (mb, attach_cookie_local);
-	}
+	/* orig_domain = mono_threads_attach_coop (domain, &attach_cookie); */
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_LDDOMAIN);
+	mono_mb_emit_ldloc_addr (mb, attach_cookie);
+	/*
+	 * This icall is special cased in the JIT so it works in native-to-managed wrappers in unattached threads.
+	 * Keep this in sync with the CEE_JIT_ICALL code in the JIT.
+	 *
+	 * Special cased in interpreter, keep in sync.
+	 */
+	mono_mb_emit_icall (mb, mono_threads_attach_coop);
+	mono_mb_emit_stloc (mb, orig_domain);
 
 	/* <interrupt check> */
 	emit_thread_interrupt_checkpoint (mb);
@@ -6036,15 +6046,11 @@ emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_s
 		}
 	}
 
-	if (!mono_threads_is_blocking_transition_enabled ()) {
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_JIT_DETACH);
-	} else {
-		/* mono_threads_detach_coop (); */
-		mono_mb_emit_ldloc (mb, attach_cookie_local);
-		mono_mb_emit_ldloc_addr (mb, attach_dummy_local);
-		mono_mb_emit_icall (mb, mono_threads_detach_coop);
-	}
+	/* mono_threads_detach_coop (orig_domain, &attach_cookie); */
+	mono_mb_emit_ldloc (mb, orig_domain);
+	mono_mb_emit_ldloc_addr (mb, attach_cookie);
+	/* Special cased in interpreter, keep in sync */
+	mono_mb_emit_icall (mb, mono_threads_detach_coop);
 
 	/* return ret; */
 	if (m->retobj_var) {
@@ -6070,7 +6076,7 @@ emit_struct_to_ptr_ilgen (MonoMethodBuilder *mb, MonoClass *klass)
 	if (m_class_is_blittable (klass)) {
 		mono_mb_emit_byte (mb, CEE_LDARG_1);
 		mono_mb_emit_byte (mb, CEE_LDARG_0);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_icon (mb, mono_class_value_size (klass, NULL));
 		mono_mb_emit_byte (mb, CEE_PREFIX1);
 		mono_mb_emit_byte (mb, CEE_CPBLK);
@@ -6087,7 +6093,7 @@ emit_struct_to_ptr_ilgen (MonoMethodBuilder *mb, MonoClass *klass)
 
 		/* initialize src_ptr to point to the start of object data */
 		mono_mb_emit_byte (mb, CEE_LDARG_0);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_stloc (mb, 0);
 
 		/* initialize dst_ptr */
@@ -6106,7 +6112,7 @@ emit_ptr_to_struct_ilgen (MonoMethodBuilder *mb, MonoClass *klass)
 	MonoType *int_type = mono_get_int_type ();
 	if (m_class_is_blittable (klass)) {
 		mono_mb_emit_byte (mb, CEE_LDARG_1);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_byte (mb, CEE_LDARG_0);
 		mono_mb_emit_icon (mb, mono_class_value_size (klass, NULL));
 		mono_mb_emit_byte (mb, CEE_PREFIX1);
@@ -6124,7 +6130,7 @@ emit_ptr_to_struct_ilgen (MonoMethodBuilder *mb, MonoClass *klass)
 
 		/* initialize dst_ptr */
 		mono_mb_emit_byte (mb, CEE_LDARG_1);
-		mono_mb_emit_ldflda (mb, sizeof (MonoObject));
+		mono_mb_emit_ldflda (mb, MONO_ABI_SIZEOF (MonoObject));
 		mono_mb_emit_stloc (mb, 1);
 
 		emit_struct_conv (mb, klass, TRUE);
@@ -6329,7 +6335,7 @@ emit_native_icall_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 		if (sig->hasthis) {
 			mono_mb_emit_byte (mb, CEE_LDARG_0);
 			/* TODO support adding wrappers to non-static struct methods */
-			g_assert (!mono_class_is_valuetype(mono_method_get_class (method)));
+			g_assert (!m_class_is_valuetype (mono_method_get_class (method)));
 			mono_mb_emit_icall (mb, mono_icall_handle_new);
 		}
 		for (int i = 0; i < sig->param_count; i++) {

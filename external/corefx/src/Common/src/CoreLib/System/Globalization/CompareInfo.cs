@@ -13,7 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 using System.Reflection;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Buffers;

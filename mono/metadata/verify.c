@@ -3741,7 +3741,7 @@ do_load_token (VerifyContext *ctx, int token)
 	} else {
 		ADD_VERIFY_ERROR2 (ctx, g_strdup_printf ("Invalid ldtoken type %x at 0x%04x", token, ctx->ip_offset), MONO_EXCEPTION_BAD_IMAGE);
 	}
-	stack_push_val (ctx, TYPE_COMPLEX, mono_class_get_type (handle_class));
+	stack_push_val (ctx, TYPE_COMPLEX, m_class_get_byval_arg (handle_class));
 }
 
 static void
@@ -4132,7 +4132,7 @@ do_newarr (VerifyContext *ctx, int token)
 	if (stack_slot_get_type (value) != TYPE_I4 && stack_slot_get_type (value) != TYPE_NATIVE_INT)
 		CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Array size type on stack (%s) is not a verifiable type at 0x%04x", stack_slot_get_name (value), ctx->ip_offset));
 
-	set_stack_value (ctx, stack_push (ctx), mono_class_get_type (mono_class_create_array (mono_class_from_mono_type (type), 1)), FALSE);
+	set_stack_value (ctx, stack_push (ctx), m_class_get_byval_arg (mono_class_create_array (mono_class_from_mono_type (type), 1)), FALSE);
 }
 
 /*FIXME handle arrays that are not 0-indexed*/
@@ -6207,9 +6207,9 @@ verify_class_for_overlapping_reference_fields (MonoClass *klass)
 
 
 	/*We must check for stuff overlapping reference fields.
-	  The outer loop uses mono_class_get_fields to ensure that MonoClass:fields get inited.
+	  The outer loop uses mono_class_get_fields_internal to ensure that MonoClass:fields get inited.
 	*/
-	while ((field = mono_class_get_fields (klass, &iter))) {
+	while ((field = mono_class_get_fields_internal (klass, &iter))) {
 		int fieldEnd = get_field_end (field);
 		gboolean is_valuetype = !MONO_TYPE_IS_REFERENCE (field->type);
 		++i;
@@ -6261,7 +6261,7 @@ verify_class_fields (MonoClass *klass)
 	if (mono_class_is_gtd (klass))
 		context = &mono_class_get_generic_container (klass)->context;
 
-	while ((field = mono_class_get_fields (klass, &iter)) != NULL) {
+	while ((field = mono_class_get_fields_internal (klass, &iter)) != NULL) {
 		if (!mono_type_is_valid_type_in_context (field->type, context)) {
 			g_hash_table_destroy (unique_fields);
 			return FALSE;
@@ -6306,7 +6306,7 @@ verify_valuetype_layout_with_target (MonoClass *klass, MonoClass *target_class)
 	if ((type >= MONO_TYPE_BOOLEAN && type <= MONO_TYPE_R8) || (type >= MONO_TYPE_I && type <= MONO_TYPE_U))
 		return TRUE;
 
-	while ((field = mono_class_get_fields (klass, &iter)) != NULL) {
+	while ((field = mono_class_get_fields_internal (klass, &iter)) != NULL) {
 		if (!field->type)
 			return FALSE;
 

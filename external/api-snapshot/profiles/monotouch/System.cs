@@ -8235,6 +8235,7 @@ namespace System.Net.Sockets
         public int Receive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public int Receive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { errorCode = default(System.Net.Sockets.SocketError); throw null; }
+        public int Receive(System.Span<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         public bool ReceiveAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public int ReceiveFrom(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
         public int ReceiveFrom(byte[] buffer, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
@@ -8255,6 +8256,7 @@ namespace System.Net.Sockets
         public int Send(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public int Send(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { errorCode = default(System.Net.Sockets.SocketError); throw null; }
+        public int Send(System.ReadOnlySpan<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         public bool SendAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public void SendFile(string fileName) { }
         public void SendFile(string fileName, byte[] preBuffer, byte[] postBuffer, System.Net.Sockets.TransmitFileOptions flags) { }
@@ -9365,14 +9367,13 @@ namespace System.Security.Cryptography.X509Certificates
         public int Version { get { throw null; } }
         [System.MonoTODOAttribute("X509ContentType.SerializedCert is not supported")]
         public override byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType, string password) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12, Pkcs7 and Unknown")]
+        [System.MonoTODOAttribute("Detection limited to Cert, Pfx/Pkcs12, Pkcs7 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(byte[] rawData) { throw null; }
         [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(string fileName) { throw null; }
         [System.MonoTODOAttribute("always return String.Empty for UpnName, DnsFromAlternativeName and UrlName")]
         public string GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType nameType, bool forIssuer) { throw null; }
         public override void Import(byte[] rawData) { }
-        [System.MonoTODOAttribute("SecureString is incomplete")]
         public override void Import(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }

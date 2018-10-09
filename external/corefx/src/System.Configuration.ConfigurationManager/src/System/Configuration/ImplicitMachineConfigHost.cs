@@ -51,17 +51,30 @@ namespace System.Configuration
 
         public override Stream OpenStreamForRead(string streamName)
         {
+#if MONO 
+            // if machine.config is embedded, use it instead of whatever is being requested
+            if ((s_embeddedMachineConfig != null) && (streamName == _machineStreamName)) 
+            {
+                return new MemoryStream(Encoding.UTF8.GetBytes(s_embeddedMachineConfig));
+            }
+#endif
+
             Stream stream = base.OpenStreamForRead(streamName);
 
             if (stream == null && streamName == _machineStreamName)
             {
+#if MONO
+                throw new ConfigurationException ("Cannot find " + streamName);
+#else
                 // We only want to inject if we aren't able to load
                 stream = new MemoryStream(Encoding.UTF8.GetBytes(s_implicitMachineConfig));
+#endif
             }
 
             return stream;
         }
 
+#if !MONO 
         private static string s_implicitMachineConfig =
 @"<configuration>
     <configSections>
@@ -83,5 +96,10 @@ namespace System.Configuration
         <add name = 'LocalSqlServer' connectionString='data source=.\SQLEXPRESS;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|aspnetdb.mdf;User Instance=true' providerName='System.Data.SqlClient' />
     </connectionStrings>
 </configuration>";
+
+#else
+        private static string s_embeddedMachineConfig = DefaultConfig.BundledMachineConfig;
+#endif
+
     }
 }

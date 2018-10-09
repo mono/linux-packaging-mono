@@ -31,11 +31,7 @@ namespace System.Collections.Generic.Tests
             Assert.False(comparer.Equals(EqualityComparer<Task<T>>.Default));
         }
 
-#if MOBILE
-        [Fact(Skip="Mono issue #10807")]
-#else
         [Fact]
-#endif
         public void EqualityComparer_EqualsShouldBeOverriddenAndWorkForDifferentInstances_cloned()
         {
             var comparer = EqualityComparer<T>.Default;

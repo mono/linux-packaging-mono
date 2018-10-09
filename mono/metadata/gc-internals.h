@@ -17,6 +17,7 @@
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/sgen/gc-internal-agnostic.h>
+#include <mono/metadata/icalls.h>
 
 #define mono_domain_finalizers_lock(domain) mono_os_mutex_lock (&(domain)->finalizable_objects_hash_lock);
 #define mono_domain_finalizers_unlock(domain) mono_os_mutex_unlock (&(domain)->finalizable_objects_hash_lock);
@@ -57,23 +58,57 @@
 #define IS_GC_REFERENCE(class,t) (mono_gc_is_moving () ? FALSE : ((t)->type == MONO_TYPE_U && (class)->image == mono_defaults.corlib))
 
 void   mono_object_register_finalizer               (MonoObject  *obj);
+
 void
 mono_object_register_finalizer_handle (MonoObjectHandle obj);
 
-void   ves_icall_System_GC_InternalCollect          (int          generation);
-gint64 ves_icall_System_GC_GetTotalMemory           (MonoBoolean  forceCollection);
-void   ves_icall_System_GC_KeepAlive                (MonoObject  *obj);
-void   ves_icall_System_GC_ReRegisterForFinalize    (MonoObject  *obj);
-void   ves_icall_System_GC_SuppressFinalize         (MonoObject  *obj);
-void   ves_icall_System_GC_WaitForPendingFinalizers (void);
+ICALL_EXPORT
+void
+ves_icall_System_GC_InternalCollect (int generation, MonoError *error);
 
-MonoObject *ves_icall_System_GCHandle_GetTarget (guint32 handle);
-guint32     ves_icall_System_GCHandle_GetTargetHandle (MonoObject *obj, guint32 handle, gint32 type);
-void        ves_icall_System_GCHandle_FreeHandle (guint32 handle);
-gpointer    ves_icall_System_GCHandle_GetAddrOfPinnedObject (guint32 handle);
-void        ves_icall_System_GC_register_ephemeron_array (MonoObject *array);
-MonoObject  *ves_icall_System_GC_get_ephemeron_tombstone (void);
+ICALL_EXPORT
+gint64
+ves_icall_System_GC_GetTotalMemory (MonoBoolean forceCollection, MonoError *error);
 
+ICALL_EXPORT
+void
+ves_icall_System_GC_KeepAlive (MonoObjectHandle obj, MonoError *error);
+
+ICALL_EXPORT
+void
+ves_icall_System_GC_ReRegisterForFinalize (MonoObjectHandle obj, MonoError *error);
+
+ICALL_EXPORT
+void
+ves_icall_System_GC_SuppressFinalize (MonoObjectHandle obj, MonoError *error);
+
+ICALL_EXPORT
+void
+ves_icall_System_GC_WaitForPendingFinalizers (MonoError *error);
+
+ICALL_EXPORT
+MonoObjectHandle
+ves_icall_System_GCHandle_GetTarget (guint32 handle, MonoError *error);
+
+ICALL_EXPORT
+guint32
+ves_icall_System_GCHandle_GetTargetHandle (MonoObjectHandle obj, guint32 handle, gint32 type, MonoError *error);
+
+ICALL_EXPORT
+void
+ves_icall_System_GCHandle_FreeHandle (guint32 handle, MonoError *error);
+
+ICALL_EXPORT
+gpointer
+ves_icall_System_GCHandle_GetAddrOfPinnedObject (guint32 handle, MonoError *error);
+
+ICALL_EXPORT
+void
+ves_icall_System_GC_register_ephemeron_array (MonoObjectHandle array, MonoError *error);
+
+ICALL_EXPORT
+MonoObjectHandle
+ves_icall_System_GC_get_ephemeron_tombstone (MonoError *error);
 
 extern void mono_gc_init (void);
 extern void mono_gc_base_init (void);
@@ -101,8 +136,9 @@ void mono_gchandle_set_target (guint32 gchandle, MonoObject *obj);
 /*Ephemeron functionality. Sgen only*/
 gboolean    mono_gc_ephemeron_array_add (MonoObject *obj);
 
+ICALL_EXPORT
 MonoBoolean
-mono_gc_GCHandle_CheckCurrentDomain (guint32 gchandle);
+ves_icall_System_GCHandle_CheckCurrentDomain (guint32 gchandle, MonoError *error);
 
 /* User defined marking function */
 /* It should work like this:
@@ -232,6 +268,7 @@ void* mono_gc_get_range_copy_func (void);
 
 
 /* helper for the managed alloc support */
+ICALL_EXPORT
 MonoString *
 ves_icall_string_alloc (int length);
 
@@ -315,6 +352,7 @@ void* mono_gc_invoke_with_gc_lock (MonoGCLockedCallbackFunc func, void *data);
 int mono_gc_get_los_limit (void);
 
 guint8* mono_gc_get_card_table (int *shift_bits, gpointer *card_mask);
+guint8* mono_gc_get_target_card_table (int *shift_bits, gpointer *card_mask);
 gboolean mono_gc_card_table_nursery_check (void);
 
 void* mono_gc_get_nursery (int *shift_bits, size_t *size);

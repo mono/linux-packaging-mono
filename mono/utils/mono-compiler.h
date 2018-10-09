@@ -89,7 +89,7 @@ typedef SSIZE_T ssize_t;
 
 #if !defined(_MSC_VER) && !defined(HOST_SOLARIS) && !defined(_WIN32) && !defined(__CYGWIN__) && !defined(MONOTOUCH) && HAVE_VISIBILITY_HIDDEN
 #if MONO_LLVM_LOADED
-#define MONO_LLVM_INTERNAL MONO_API
+#define MONO_LLVM_INTERNAL MONO_API_NO_EXTERN_C
 #else
 #define MONO_LLVM_INTERNAL
 #endif
@@ -99,6 +99,9 @@ typedef SSIZE_T ssize_t;
 
 /* Used to mark internal functions used by the profiler modules */
 #define MONO_PROFILER_API MONO_API
+
+/* Used to mark internal functions used by the CoreFX PAL library */
+#define MONO_PAL_API MONO_API
 
 #ifdef __GNUC__
 #define MONO_ALWAYS_INLINE __attribute__ ((__always_inline__))

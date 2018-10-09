@@ -11,9 +11,10 @@
 #include <config.h>
 #include <glib.h>
 #include <mono/utils/mono-state.h>
+#include <mono/utils/mono-threads-coop.h>
 #include <mono/metadata/object-internals.h>
 
-#ifdef TARGET_OSX
+#ifndef DISABLE_CRASH_REPORTING
 
 extern GCStats mono_gc_stats;
 
@@ -271,11 +272,11 @@ mono_native_state_add_version (JsonWriter *writer)
 
 	mono_json_writer_indent (writer);
 	mono_json_writer_object_key(writer, "tlc");
-#ifdef HAVE_KW_THREAD
+#ifdef MONO_KEYWORD_THREAD
 	mono_json_writer_printf (writer, "\"__thread\",\n");
 #else
 	mono_json_writer_printf (writer, "\"normal\",\n");
-#endif /* HAVE_KW_THREAD */
+#endif /* MONO_KEYWORD_THREAD */
 
 	mono_json_writer_indent (writer);
 	mono_json_writer_object_key(writer, "sigsgev");
@@ -339,11 +340,17 @@ mono_native_state_add_version (JsonWriter *writer)
 	mono_json_writer_object_key(writer, "llvm_support");
 #ifdef MONO_ARCH_LLVM_SUPPORTED
 #ifdef ENABLE_LLVM
-	mono_json_writer_printf (writer, "\"%s\"\n", LLVM_VERSION);
+	mono_json_writer_printf (writer, "\"%d\",\n", LLVM_API_VERSION);
 #else
-	mono_json_writer_printf (writer, "\"disabled\"\n");
+	mono_json_writer_printf (writer, "\"disabled\",\n");
 #endif
 #endif
+
+	const char *susp_policy = mono_threads_suspend_policy_name ();
+	mono_json_writer_indent (writer);
+	mono_json_writer_object_key (writer, "suspend");
+	mono_json_writer_printf (writer, "\"%s\"\n", susp_policy);
+
 
 	mono_json_writer_indent_pop (writer);
 	mono_json_writer_indent (writer);
@@ -426,11 +433,15 @@ mono_native_state_add_prologue (JsonWriter *writer)
 		mono_json_writer_indent (writer);
 		mono_json_writer_object_key(writer, "assertion_message");
 
-		char *pos;
+		size_t length;
+		const char *pos;
 		if ((pos = strchr (assertion_msg, '\n')) != NULL)
-			*pos = '\0';
+			length = (size_t)(pos - assertion_msg);
+		else
+			length = strlen (assertion_msg);
+		length = MIN (length, INT_MAX);
 
-		mono_json_writer_printf (writer, "\"%s\",\n", assertion_msg);
+		mono_json_writer_printf (writer, "\"%.*s\",\n", (int)length, assertion_msg);
 	}
 
 	// Start threads array
@@ -501,7 +512,6 @@ mono_summarize_native_state_add_thread (MonoThreadSummary *thread, MonoContext *
 	not_first_thread = TRUE;
 }
 
-
 void
 mono_crash_dump (const char *jsonFile, MonoStackHash *hashes)
 {
@@ -538,4 +548,4 @@ mono_crash_dump (const char *jsonFile, MonoStackHash *hashes)
 	return;
 }
 
-#endif // TARGET_OSX
+#endif // DISABLE_CRASH_REPORTING

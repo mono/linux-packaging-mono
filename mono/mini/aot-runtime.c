@@ -1350,19 +1350,24 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 		method_type = decode_value (p, &p);
 		switch (method_type) {
 		case 0:
-			ref->method = mono_class_get_method_from_name (klass, ".ctor", m_class_get_rank (klass));
+			ref->method = mono_class_get_method_from_name_checked (klass, ".ctor", m_class_get_rank (klass), 0, error);
+			return_val_if_nok (error, FALSE);
 			break;
 		case 1:
-			ref->method = mono_class_get_method_from_name (klass, ".ctor", m_class_get_rank (klass) * 2);
+			ref->method = mono_class_get_method_from_name_checked (klass, ".ctor", m_class_get_rank (klass) * 2, 0, error);
+			return_val_if_nok (error, FALSE);
 			break;
 		case 2:
-			ref->method = mono_class_get_method_from_name (klass, "Get", -1);
+			ref->method = mono_class_get_method_from_name_checked (klass, "Get", -1, 0, error);
+			return_val_if_nok (error, FALSE);
 			break;
 		case 3:
-			ref->method = mono_class_get_method_from_name (klass, "Address", -1);
+			ref->method = mono_class_get_method_from_name_checked (klass, "Address", -1, 0, error);
+			return_val_if_nok (error, FALSE);
 			break;
 		case 4:
-			ref->method = mono_class_get_method_from_name (klass, "Set", -1);
+			ref->method = mono_class_get_method_from_name_checked (klass, "Set", -1, 0, error);
+			return_val_if_nok (error, FALSE);
 			break;
 		default:
 			mono_error_set_bad_image_by_name (error, module->aot_name, "Invalid METHODREF_ARRAY method type %d", method_type);
@@ -2167,9 +2172,15 @@ if (container_assm_name && !container_amodule) {
 	/* Sanity check */
 	align_double = MONO_ABI_ALIGNOF (double);
 	align_int64 = MONO_ABI_ALIGNOF (gint64);
+	int card_table_shift_bits = 0;
+	gpointer card_table_mask = NULL;
+	mono_gc_get_card_table (&card_table_shift_bits, &card_table_mask);
+
 	g_assert (info->double_align == align_double);
 	g_assert (info->long_align == align_int64);
 	g_assert (info->generic_tramp_num == MONO_TRAMPOLINE_NUM);
+	g_assert (info->card_table_shift_bits == card_table_shift_bits);
+	g_assert (info->card_table_mask == GPOINTER_TO_UINT (card_table_mask));
 
 	amodule = g_new0 (MonoAotModule, 1);
 	amodule->aot_name = found_aot_name;
@@ -3884,7 +3895,6 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 		break;
 	}
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
-	case MONO_PATCH_INFO_JIT_THREAD_ATTACH:
 		break;
 	case MONO_PATCH_INFO_GET_TLS_TRAMP:
 	case MONO_PATCH_INFO_SET_TLS_TRAMP:
@@ -4677,7 +4687,8 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 				/* Avoid recursion */
 				return NULL;
 
-			m = mono_class_get_method_from_name (mono_defaults.array_class, "GetGenericValueImpl", 2);
+			m = mono_class_get_method_from_name_checked (mono_defaults.array_class, "GetGenericValueImpl", 2, 0, error);
+			mono_error_assert_ok (error);
 			g_assert (m);
 
 			memset (&ctx, 0, sizeof (ctx));
@@ -4755,7 +4766,8 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 					else
 						g_assert_not_reached ();
 					MonoClass *obj_array_class = mono_class_create_array (mono_defaults.object_class, rank);
-					MonoMethod *m = mono_class_get_method_from_name (obj_array_class, array_method->name, mono_method_signature (array_method)->param_count);
+					MonoMethod *m = mono_class_get_method_from_name_checked (obj_array_class, array_method->name, mono_method_signature (array_method)->param_count, 0, error);
+					mono_error_assert_ok (error);
 					g_assert (m);
 
 					m = mono_marshal_get_array_accessor_wrapper (m);
@@ -5744,7 +5756,6 @@ mono_aot_get_unbox_trampoline (MonoMethod *method)
 	gpointer code;
 	guint32 *ut, *ut_end, *entry;
 	int low, high, entry_index = 0;
-	gpointer symbol_addr;
 	MonoTrampInfo *tinfo;
 
 	if (method->is_inflated && !mono_method_is_generic_sharable_full (method, FALSE, FALSE, FALSE)) {
@@ -5798,7 +5809,7 @@ mono_aot_get_unbox_trampoline (MonoMethod *method)
 
 	tinfo = mono_tramp_info_create (NULL, (guint8 *)code, 0, NULL, NULL);
 
-	symbol_addr = read_unwind_info (amodule, tinfo, "unbox_trampoline_p");
+	gpointer const symbol_addr = read_unwind_info (amodule, tinfo, "unbox_trampoline_p");
 	if (!symbol_addr) {
 		mono_tramp_info_free (tinfo);
 		return FALSE;

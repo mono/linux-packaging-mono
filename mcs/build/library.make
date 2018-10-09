@@ -136,6 +136,7 @@ csproj-library:
 	echo $(thisdir):$$config_file >> $(topdir)/../msvc/scripts/order; \
 	(echo $(is_boot); \
 	echo $(USE_MCS_FLAGS) $(LIBRARY_FLAGS) $(LIB_MCS_FLAGS) $(KEYFILE_MCS_FLAGS); \
+	echo $(LIBRARY); \
 	echo $(LIBRARY_NAME); \
 	echo $(BUILT_SOURCES_cmdline); \
 	echo $(build_lib); \
@@ -236,11 +237,12 @@ ifdef RESOURCE_DEFS
 $(foreach pair,$(RESOURCE_DEFS), $(eval $(call RESOURCE_template,$(word 1, $(subst $(ccomma), ,$(pair))), $(word 2, $(subst $(ccomma), ,$(pair))))))
 endif
 
-DISTFILES = $(wildcard *$(LIBRARY)*.sources) $(EXTRA_DISTFILES) $(DIST_LISTED_RESOURCES)
+DISTFILES = $(wildcard *.sources) $(EXTRA_DISTFILES) $(DIST_LISTED_RESOURCES)
 
 ASSEMBLY      = $(LIBRARY)
 ASSEMBLY_EXT  = .dll
 the_assembly  = $(the_lib)
+
 include $(topdir)/build/tests.make
 
 ifdef HAVE_CS_TESTS
@@ -251,6 +253,7 @@ csproj-test:
 	echo $(thisdir):$$config_file >> $(topdir)/../msvc/scripts/order; \
 	(echo false; \
 	echo $(USE_MCS_FLAGS) -r:$(the_assembly) $(TEST_MCS_FLAGS); \
+	echo $(LIBRARY); \
 	echo $(test_lib); \
 	echo $(BUILT_SOURCES_cmdline); \
 	echo $(test_lib); \
@@ -295,22 +298,18 @@ endif
 # The library
 
 # If the directory contains the per profile include file, generate list file.
-PROFILE_sources := $(firstword $(if $(PROFILE_PLATFORM),$(wildcard $(PROFILE_PLATFORM)_$(PROFILE)_$(LIBRARY).sources)) $(wildcard $(PROFILE)_$(LIBRARY).sources) $(wildcard $(LIBRARY).sources))
-PROFILE_excludes = $(firstword $(if $(PROFILE_PLATFORM),$(wildcard $(PROFILE_PLATFORM)_$(PROFILE)_$(LIBRARY).exclude.sources)) $(wildcard $(PROFILE)_$(LIBRARY).exclude.sources))
+# TODO: depend on all *.sources for now and figure out how to list only needed files later
+PROFILE_sources = $(wildcard *.sources)
 
-gensources = $(topdir)/build/gensources.exe
-$(gensources): $(topdir)/build/gensources.cs
-	$(BOOTSTRAP_MCS) -noconfig -debug:portable -r:mscorlib.dll -r:System.dll -r:System.Core.dll -out:$(gensources) $(topdir)/build/gensources.cs
-
-ifdef PROFILE_RUNTIME
-GENSOURCES_RUNTIME = $(PROFILE_RUNTIME)
+ifneq "x" "x$(PROFILE_RUNTIME)"
+GENSOURCES_RUNTIME=$(PROFILE_RUNTIME)
 else
-GENSOURCES_RUNTIME = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH"  $(RUNTIME)
+GENSOURCES_RUNTIME=MONO_PATH="$(GENSOURCES_LIBDIR)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME)
 endif
 
 sourcefile = $(depsdir)/$(PROFILE_PLATFORM)_$(PROFILE)_$(LIBRARY_SUBDIR)_$(LIBRARY).sources
-$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(depsdir)/.stamp $(gensources)
-	$(GENSOURCES_RUNTIME) --debug $(gensources) "$@" "$(LIBRARY)" "$(PROFILE_PLATFORM)" "$(PROFILE)"
+$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(depsdir)/.stamp $(GENSOURCES_CS)
+	$(GENSOURCES_RUNTIME) --debug $(GENSOURCES_EXE) --strict "$@" "$(LIBRARY)" "$(PROFILE_PLATFORM)" "$(PROFILE)"
 
 library_CLEAN_FILES += $(sourcefile)
 

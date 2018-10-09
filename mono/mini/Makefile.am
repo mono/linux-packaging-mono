@@ -34,6 +34,21 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(glib_libs)
 
+if ENABLE_LLVM
+-include $(mono_build_root)/llvm/llvm_config.mk
+LLVM_CFLAGS=$(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)
+LLVM_CXXFLAGS=$(LLVM_CXXFLAGS_INTERNAL) $(LLVM_CXXFLAGS_EXTERNAL)
+LLVM_LDFLAGS=$(LLVM_LDFLAGS_INTERNAL) $(LLVM_LDFLAGS_EXTERNAL)
+LLVM_LIBS=$(LLVM_LIBS_INTERNAL) $(LLVM_LIBS_EXTERNAL)
+
+print-llvm-info:
+	echo "cflags: $(LLVM_CFLAGS)"
+	echo "cxxflags: $(LLVM_CXXFLAGS)"
+	echo "ldflags: $(LLVM_LDFLAGS)"
+	echo "libs: $(LLVM_LIBS)"
+endif
+
+
 if FULL_AOT_TESTS
 # if the tests are going to run with framework assemblies compiled with
 # -d:MOBILE, tell the runtime to remap framework assemblies using the mobile
@@ -158,8 +173,9 @@ if LOADED_LLVM
 lib_LTLIBRARIES += libmono-llvm.la
 libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
+
 if HOST_DARWIN
-libmono_llvm_la_LDFLAGS=-Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+libmono_llvm_la_LDFLAGS=-Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 endif
 endif
 
@@ -229,7 +245,7 @@ mono_boehm_LDADD = \
 	$(MONO_DTRACE_OBJECT)
 
 mono_boehm_LDFLAGS = \
-	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
@@ -238,7 +254,7 @@ mono_sgen_LDADD = \
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
-mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 if BITCODE
 libmonoldflags += -no-undefined
@@ -280,6 +296,7 @@ endif
 wasm_sources = \
 	mini-wasm.c		\
 	mini-wasm.h		\
+	mini-wasm-debugger.c	\
 	debugger-engine.c	\
 	exceptions-wasm.c	\
 	tramp-wasm.c
@@ -453,6 +470,7 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-engine.h	\
 	debugger-agent-stubs.c	\
+	debugger-state-machine.h	\
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
@@ -640,7 +658,7 @@ if !WASM
 extra_libmono_dbg_source = debugger-engine.c
 endif
 
-libmono_dbg_la_SOURCES = debugger-agent.c $(extra_libmono_dbg_source)
+libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
 libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
 if BITCODE
 if DISABLE_DEBUGGER_AGENT
@@ -669,15 +687,18 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES =
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 
 libmonosgen_2_0_la_SOURCES =
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 
+# These are public headers.
+# They should not use glib.h, G_BEGIN_DECLS, guint, etc.
+# They should be wrapped in MONO_BEGIN_DECLS / MONO_END_DECLS.
 libmonoinclude_HEADERS = jit.h
 
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
@@ -808,8 +829,9 @@ gsharedvtcheck:
 hybridcheck:
 	$(MAKE) fullaotcheck HYBRID=1
 
+# FIXME: force preemptive suspend while interpreter doesn't support coop/hybird suspend
 fullaotmixedcheck:
-	$(MAKE) fullaotcheck MIXED=1
+	$(MAKE) fullaotcheck MIXED=1 MONO_THREADS_SUSPEND=preemptive
 
 fullaot_regtests = $(regtests)
 fullaot_testing_deps = generics-variant-types.dll TestDriver.dll MemoryIntrinsics.dll
@@ -975,9 +997,16 @@ patch-automake:
 tags:
 	etags -o TAGS `find .. -name "*.h" -o -name "*.c"`
 
+if ENABLE_LLVM
+llvm_makefile_dep = $(mono_build_root)/llvm/llvm_config.mk
+endif
+
 if HAS_EXTENSION_MODULE
 else
 Makefile.am: Makefile.am.in
 	echo "##################### Generated from Makefile.am.in, do not modify ##########################" > $@
 	cat $< >> $@
+
 endif
+
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@

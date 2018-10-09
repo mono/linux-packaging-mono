@@ -192,13 +192,13 @@ emit_span_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature
 {
 	MonoInst *ins;
 
-	MonoClassField *ptr_field = mono_class_get_field_from_name (cmethod->klass, "_pointer");
+	MonoClassField *ptr_field = mono_class_get_field_from_name_full (cmethod->klass, "_pointer", NULL);
 	if (!ptr_field)
 		/* Portable Span<T> */
 		return NULL;
 
 	if (!strcmp (cmethod->name, "get_Item")) {
-		MonoClassField *length_field = mono_class_get_field_from_name (cmethod->klass, "_length");
+		MonoClassField *length_field = mono_class_get_field_from_name_full (cmethod->klass, "_length", NULL);
 
 		g_assert (length_field);
 
@@ -211,13 +211,13 @@ emit_span_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature
 		int span_reg = args [0]->dreg;
 		/* Load _pointer.Value */
 		int base_reg = alloc_preg (cfg);
-		EMIT_NEW_LOAD_MEMBASE (cfg, ins, OP_LOAD_MEMBASE, base_reg, span_reg, ptr_field->offset - sizeof (MonoObject));
+		EMIT_NEW_LOAD_MEMBASE (cfg, ins, OP_LOAD_MEMBASE, base_reg, span_reg, ptr_field->offset - MONO_ABI_SIZEOF (MonoObject));
 		/* Similar to mini_emit_ldelema_1_ins () */
 		int size = mono_class_array_element_size (param_class);
 
 		int index_reg = mini_emit_sext_index_reg (cfg, args [1]);
 
-		MONO_EMIT_BOUNDS_CHECK_OFFSET(cfg, span_reg, length_field->offset - sizeof (MonoObject), index_reg);
+		MONO_EMIT_BOUNDS_CHECK_OFFSET(cfg, span_reg, length_field->offset - MONO_ABI_SIZEOF (MonoObject), index_reg);
 
 		// FIXME: Sign extend index ?
 
@@ -231,7 +231,7 @@ emit_span_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature
 
 		return ins;
 	} else if (!strcmp (cmethod->name, "get_Length")) {
-		MonoClassField *length_field = mono_class_get_field_from_name (cmethod->klass, "_length");
+		MonoClassField *length_field = mono_class_get_field_from_name_full (cmethod->klass, "_length", NULL);
 		g_assert (length_field);
 
 		/*
@@ -241,7 +241,7 @@ emit_span_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature
 		MONO_INST_NEW (cfg, ins, OP_LDLEN);
 		ins->dreg = alloc_preg (cfg);
 		ins->sreg1 = args [0]->dreg;
-		ins->inst_imm = length_field->offset - sizeof (MonoObject);
+		ins->inst_imm = length_field->offset - MONO_ABI_SIZEOF (MonoObject);
 		ins->type = STACK_I4;
 		MONO_ADD_INS (cfg->cbb, ins);
 

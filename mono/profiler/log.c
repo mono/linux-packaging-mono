@@ -12,6 +12,7 @@
 
 #include <config.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/loader.h>
@@ -1678,8 +1679,8 @@ push_nesting (char *p, MonoClass *klass)
 		*p++ = '/';
 		*p = 0;
 	}
-	name = mono_class_get_name (klass);
-	nspace = mono_class_get_namespace (klass);
+	name = m_class_get_name (klass);
+	nspace = m_class_get_name_space (klass);
 	if (*nspace) {
 		strcpy (p, nspace);
 		p += strlen (nspace);
@@ -1759,9 +1760,9 @@ image_unloaded (MonoProfiler *prof, MonoImage *image)
 static void
 assembly_loaded (MonoProfiler *prof, MonoAssembly *assembly)
 {
-	char *name = mono_stringify_assembly_name (mono_assembly_get_name (assembly));
+	char *name = mono_stringify_assembly_name (mono_assembly_get_name_internal (assembly));
 	int nlen = strlen (name) + 1;
-	MonoImage *image = mono_assembly_get_image (assembly);
+	MonoImage *image = mono_assembly_get_image_internal (assembly);
 
 	ENTER_LOG (&assembly_loads_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
@@ -1786,9 +1787,9 @@ assembly_loaded (MonoProfiler *prof, MonoAssembly *assembly)
 static void
 assembly_unloaded (MonoProfiler *prof, MonoAssembly *assembly)
 {
-	char *name = mono_stringify_assembly_name (mono_assembly_get_name (assembly));
+	char *name = mono_stringify_assembly_name (mono_assembly_get_name_internal (assembly));
 	int nlen = strlen (name) + 1;
-	MonoImage *image = mono_assembly_get_image (assembly);
+	MonoImage *image = mono_assembly_get_image_internal (assembly);
 
 	ENTER_LOG (&assembly_unloads_ctr, logbuffer,
 		EVENT_SIZE /* event */ +
@@ -1816,7 +1817,7 @@ class_loaded (MonoProfiler *prof, MonoClass *klass)
 	char *name;
 
 	if (mono_atomic_load_i32 (&log_profiler.runtime_inited))
-		name = mono_type_get_name (mono_class_get_type (klass));
+		name = mono_type_get_name (m_class_get_byval_arg (klass));
 	else
 		name = type_name (klass);
 

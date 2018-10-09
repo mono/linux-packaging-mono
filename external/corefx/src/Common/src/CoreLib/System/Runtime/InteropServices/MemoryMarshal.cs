@@ -5,7 +5,7 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 
 #if !netstandard
 using Internal.Runtime.CompilerServices;

@@ -30,6 +30,7 @@
 #include <mono/utils/memcheck.h>
 
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/loader.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/class.h>
@@ -205,14 +206,18 @@ get_method_from_ip (void *ip)
 	}
 
 	method = jinfo_get_method (ji);
-	method_name = mono_method_full_name (method, TRUE);
-	/* FIXME: unused ? */
+	method_name = mono_method_get_name_full (method, TRUE, FALSE, MONO_TYPE_NAME_FORMAT_IL);
 	location = mono_debug_lookup_source_location (method, (guint32)((guint8*)ip - (guint8*)ji->code_start), domain);
 
-	res = g_strdup_printf (" %s {%p} + 0x%x (%p %p) [%p - %s]", method_name, method, (int)((char*)ip - (char*)ji->code_start), ji->code_start, (char*)ji->code_start + ji->code_size, domain, domain->friendly_name);
+	char *file_loc = NULL;
+	if (location)
+		file_loc = g_strdup_printf ("[%s :: %du]", location->source_file, location->row);
+
+	res = g_strdup_printf (" %s [{%p} + 0x%x] %s (%p %p) [%p - %s]", method_name, method, (int)((char*)ip - (char*)ji->code_start), file_loc ? file_loc : "", ji->code_start, (char*)ji->code_start + ji->code_size, domain, domain->friendly_name);
 
 	mono_debug_free_source_location (location);
 	g_free (method_name);
+	g_free (file_loc);
 
 	return res;
 }
@@ -830,6 +835,10 @@ mono_pop_lmf (MonoLMF *lmf)
  * Called by Xamarin.Mac and other products. Attach thread to runtime if
  * needed and switch to @domain.
  *
+ * This function is external only and @deprecated don't use it.  Use mono_threads_attach_coop ().
+ *
+ * If the thread is newly-attached, put into GC Safe mode.
+ *
  * @return the original domain which needs to be restored, or NULL.
  */
 MonoDomain*
@@ -852,6 +861,15 @@ mono_jit_thread_attach (MonoDomain *domain)
 
 		// #678164
 		mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
+
+		/* mono_jit_thread_attach is external-only and not called by
+		 * the runtime on any of our own threads.  So if we get here,
+		 * the thread is running native code - leave it in GC Safe mode
+		 * and leave it to the n2m invoke wrappers or MONO_API entry
+		 * points to switch to GC Unsafe.
+		 */
+		MONO_STACKDATA (stackdata);
+		mono_threads_enter_gc_safe_region_unbalanced_internal (&stackdata);
 	}
 
 	orig = mono_domain_get ();
@@ -1215,7 +1233,6 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_GOT_OFFSET:
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 	case MONO_PATCH_INFO_AOT_MODULE:
-	case MONO_PATCH_INFO_JIT_THREAD_ATTACH:
 	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT:
 	case MONO_PATCH_INFO_PROFILER_CLAUSE_COUNT:
 		return (ji->type << 8);
@@ -1397,7 +1414,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		break;
 	}
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
-		g_assert (mono_threads_are_safepoints_enabled ());
 		target = (gpointer)&mono_polling_required;
 		break;
 	case MONO_PATCH_INFO_SWITCH: {
@@ -1434,7 +1450,7 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		break;
 	case MONO_PATCH_INFO_ADJUSTED_IID:
 		mono_class_init (patch_info->data.klass);
-		target = GUINT_TO_POINTER ((guint32)(-((m_class_get_interface_id (patch_info->data.klass) + 1) * SIZEOF_VOID_P)));
+		target = GUINT_TO_POINTER ((guint32)(-((m_class_get_interface_id (patch_info->data.klass) + 1) * TARGET_SIZEOF_VOID_P)));
 		break;
 	case MONO_PATCH_INFO_VTABLE:
 		target = mono_class_vtable_checked (domain, patch_info->data.klass, error);
@@ -1637,12 +1653,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 	case MONO_PATCH_INFO_SET_TLS_TRAMP:
 		target = mono_tls_get_tls_setter (patch_info->data.index, FALSE);
 		break;
-	case MONO_PATCH_INFO_JIT_THREAD_ATTACH: {
-		MonoJitICallInfo *mi = mono_find_jit_icall_by_name ("mono_jit_thread_attach");
-		g_assert (mi);
-		target = mi->func;
-		break;
-	}
 	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT: {
 		target = (gpointer) &mono_profiler_state.gc_allocation_count;
 		break;
@@ -2262,7 +2272,7 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, gboolean jit_
 		}
 	}
 	if (use_interp) {
-		code = mini_get_interp_callbacks ()->create_method_pointer (method, error);
+		code = mini_get_interp_callbacks ()->create_method_pointer (method, TRUE, error);
 		if (code)
 			return code;
 	}
@@ -2377,11 +2387,13 @@ lookup_start:
 		code = compile_special (method, target_domain, error);
 
 	if (!jit_only && !code && mono_aot_only && mono_use_interpreter && method->wrapper_type != MONO_WRAPPER_UNKNOWN)
-		code = mini_get_interp_callbacks ()->create_method_pointer (method, error);
+		code = mini_get_interp_callbacks ()->create_method_pointer (method, TRUE, error);
 
 	if (!code) {
 		if (mono_class_is_open_constructed_type (m_class_get_byval_arg (method->klass))) {
-			mono_error_set_invalid_operation (error, "Could not execute the method because the containing type is not fully instantiated.");
+			char *full_name = mono_type_get_full_name (method->klass);
+			mono_error_set_invalid_operation (error, "Could not execute the method because the containing type '%s', is not fully instantiated.", full_name);
+			g_free (full_name);
 			return NULL;
 		}
 
@@ -2478,7 +2490,7 @@ static void
 mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 {
 	MonoJitDynamicMethodInfo *ji;
-	gboolean destroy = TRUE;
+	gboolean destroy = TRUE, removed;
 	GHashTableIter iter;
 	MonoJumpList *jlist;
 	MonoJitDomainInfo *info = domain_jit_info (domain);
@@ -2487,9 +2499,9 @@ mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 
 	if (mono_use_interpreter) {
 		mono_domain_jit_code_hash_lock (domain);
-		/* InterpMethod is allocated in the domain mempool */
-		if (mono_internal_hash_table_lookup (&info->interp_code_hash, method))
-			mono_internal_hash_table_remove (&info->interp_code_hash, method);
+		/* InterpMethod is allocated in the domain mempool. We might haven't
+		 * allocated an InterpMethod for this instance yet */
+		mono_internal_hash_table_remove (&info->interp_code_hash, method);
 		mono_domain_jit_code_hash_unlock (domain);
 	}
 
@@ -2506,7 +2518,8 @@ mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 	mono_domain_lock (domain);
 	g_hash_table_remove (info->dynamic_code_hash, method);
 	mono_domain_jit_code_hash_lock (domain);
-	mono_internal_hash_table_remove (&domain->jit_code_hash, method);
+	removed = mono_internal_hash_table_remove (&domain->jit_code_hash, method);
+	g_assert (removed);
 	mono_domain_jit_code_hash_unlock (domain);
 	g_hash_table_remove (info->jump_trampoline_hash, method);
 	g_hash_table_remove (info->seq_points, method);
@@ -3352,6 +3365,14 @@ MONO_SIG_HANDLER_FUNC (, mono_sigill_signal_handler)
 #define HAVE_SIG_INFO
 #endif
 
+static gboolean
+is_addr_implicit_null_check (void *addr)
+{
+	/* implicit null checks are only expected to work on the first page. larger
+	 * offsets are expected to have an explicit null check */
+	return addr <= GUINT_TO_POINTER (mono_target_pagesize ());
+}
+
 MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 {
 	MonoJitInfo *ji;
@@ -3426,7 +3447,11 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		if (!ji && mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
 
-		mono_arch_handle_altstack_exception (ctx, info, info->si_addr, FALSE);
+		if (is_addr_implicit_null_check (info->si_addr)) {
+			mono_arch_handle_altstack_exception (ctx, info, info->si_addr, FALSE);
+		} else {
+			mono_handle_native_crash ("SIGSEGV", ctx, info);
+		}
 	}
 #else
 
@@ -3442,7 +3467,11 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		}
 	}
 
-	mono_arch_handle_exception (ctx, NULL);
+	if (is_addr_implicit_null_check (fault_addr)) {
+		mono_arch_handle_exception (ctx, NULL);
+	} else {
+		mono_handle_native_crash ("SIGSEGV", ctx, info);
+	}
 #endif
 }
 
@@ -3628,7 +3657,7 @@ mono_get_delegate_virtual_invoke_impl_name (gboolean load_imt_reg, int offset)
 	abs_offset = offset;
 	if (abs_offset < 0)
 		abs_offset = - abs_offset;
-	return g_strdup_printf ("delegate_virtual_invoke%s_%s%d", load_imt_reg ? "_imt" : "", offset < 0 ? "m_" : "", abs_offset / SIZEOF_VOID_P);
+	return g_strdup_printf ("delegate_virtual_invoke%s_%s%d", load_imt_reg ? "_imt" : "", offset < 0 ? "m_" : "", abs_offset / TARGET_SIZEOF_VOID_P);
 }
 
 gpointer
@@ -3651,11 +3680,11 @@ mono_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *met
 	load_imt_reg = is_virtual_generic || is_interface;
 
 	if (is_interface)
-		offset = ((gint32)mono_method_get_imt_slot (method) - MONO_IMT_SIZE) * SIZEOF_VOID_P;
+		offset = ((gint32)mono_method_get_imt_slot (method) - MONO_IMT_SIZE) * TARGET_SIZEOF_VOID_P;
 	else
-		offset = G_STRUCT_OFFSET (MonoVTable, vtable) + ((mono_method_get_vtable_index (method)) * (SIZEOF_VOID_P));
+		offset = G_STRUCT_OFFSET (MonoVTable, vtable) + ((mono_method_get_vtable_index (method)) * (TARGET_SIZEOF_VOID_P));
 
-	idx = (offset / SIZEOF_VOID_P + MONO_IMT_SIZE) * 2 + (load_imt_reg ? 1 : 0);
+	idx = (offset / TARGET_SIZEOF_VOID_P + MONO_IMT_SIZE) * 2 + (load_imt_reg ? 1 : 0);
 	g_assert (idx >= 0);
 
 	/* Resize the cache to idx + 1 */
@@ -4463,7 +4492,6 @@ register_icalls (void)
 	register_icall (mono_trace_enter_method, "mono_trace_enter_method", NULL, TRUE);
 	register_icall (mono_trace_leave_method, "mono_trace_leave_method", NULL, TRUE);
 	register_icall (mono_get_lmf_addr, "mono_get_lmf_addr", "ptr", TRUE);
-	register_icall (mono_jit_thread_attach, "mono_jit_thread_attach", "ptr ptr", TRUE);
 	register_icall (mono_jit_set_domain, "mono_jit_set_domain", "void ptr", TRUE);
 	register_icall (mono_domain_get, "mono_domain_get", "ptr", TRUE);
 
@@ -4576,7 +4604,7 @@ register_icalls (void)
 		register_opcode_emulation (OP_FCONV_TO_U1, "__emul_fconv_to_u1", "uint8 double", mono_fconv_u1, "mono_fconv_u1", FALSE);
 		register_opcode_emulation (OP_FCONV_TO_U2, "__emul_fconv_to_u2", "uint16 double", mono_fconv_u2, "mono_fconv_u2", FALSE);
 
-#if SIZEOF_VOID_P == 4
+#if TARGET_SIZEOF_VOID_P == 4
 		register_opcode_emulation (OP_FCONV_TO_I, "__emul_fconv_to_i", "int32 double", mono_fconv_i4, "mono_fconv_i4", FALSE);
 #endif
 
@@ -4903,7 +4931,7 @@ static void
 mono_precompile_assembly (MonoAssembly *ass, void *user_data)
 {
 	GHashTable *assemblies = (GHashTable*)user_data;
-	MonoImage *image = mono_assembly_get_image (ass);
+	MonoImage *image = mono_assembly_get_image_internal (ass);
 	MonoMethod *method, *invoke;
 	int i, count = 0;
 

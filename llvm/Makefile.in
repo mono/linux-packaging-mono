@@ -90,7 +90,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-DIST_COMMON = $(top_srcdir)/scripts/submodules/versions.mk \
+DIST_COMMON = $(srcdir)/build.mk \
+	$(top_srcdir)/scripts/submodules/versions.mk \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs
 subdir = llvm
@@ -156,7 +157,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
-CMAKE = @CMAKE@
+CMAKE := $(or $(CMAKE),$(shell which cmake))
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -164,6 +165,8 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
+CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
@@ -179,6 +182,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -219,11 +223,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CFLAGS = @LLVM_CFLAGS@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_CXXFLAGS = @LLVM_CXXFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
+LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
@@ -359,14 +359,21 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-LLVM_PATH = llvm
+EXTRA_DIST = SUBMODULES.json build.mk build_llvm_config.sh
+@ENABLE_LLVM_TRUE@@HOST_WIN32_FALSE@llvm_config = llvm-config
+@ENABLE_LLVM_TRUE@@HOST_WIN32_TRUE@llvm_config = llvm-config.exe
+@ENABLE_LLVM_TRUE@@HAVE_ZLIB_FALSE@llvm_extra_libs = 
+@ENABLE_LLVM_TRUE@@HAVE_ZLIB_TRUE@llvm_extra_libs = -lz
+
+# FIXME: URL should be http://xamjenkinsartifact.blob.core.windows.net/build-package-osx-llvm-$(NEEDED_LLVM_BRANCH)/llvm-osx64-$(NEEDED_LLVM_VERSION).tar.gz
+LLVM_DOWNLOAD_LOCATION = "http://xamjenkinsartifact.blob.core.windows.net/build-package-osx-llvm-release60/llvm-osx64-$(NEEDED_LLVM_VERSION).tar.gz"
+NINJA := $(shell which ninja)
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/llvm/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
-EXTRA_DIST = SUBMODULES.json
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/build.mk $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -387,7 +394,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/scripts/submodules/versions.mk:
+$(srcdir)/build.mk $(top_srcdir)/scripts/submodules/versions.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -442,9 +449,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile
+all-am: Makefile all-local
 installdirs:
-install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -542,18 +548,51 @@ uninstall-am:
 
 .MAKE: install-am install-strip
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	clean-local cscopelist-am ctags-am distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am
+.PHONY: all all-am all-local check check-am clean clean-generic \
+	clean-libtool clean-local cscopelist-am ctags-am distclean \
+	distclean-generic distclean-libtool distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am
 
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@all-local: configure-llvm build-llvm install-llvm llvm_config.mk
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@clean-local: clean-llvm clean-llvm-config
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@$(mono_build_root)/llvm/llvm_config.mk: install-llvm
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@	$(top_srcdir)/llvm/build_llvm_config.sh "$(top_srcdir)/llvm/usr/bin/$(llvm_config)" "$(LLVM_CODEGEN_LIBS)" "$(llvm_extra_libs)" > $@
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@all-local: llvm_config.mk
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@clean-local: clean-llvm-config
+
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@$(mono_build_root)/llvm/llvm_config.mk: $(top_srcdir)/llvm/Makefile.am
+@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@	$(top_srcdir)/llvm/build_llvm_config.sh "$(EXTERNAL_LLVM_CONFIG)" "$(LLVM_CODEGEN_LIBS)" "$(llvm_extra_libs)" > $@
+
+@ENABLE_LLVM_TRUE@llvm_config.mk: $(mono_build_root)/llvm/llvm_config.mk
+
+@ENABLE_LLVM_TRUE@clean-llvm-config:
+@ENABLE_LLVM_TRUE@	- rm -rf llvm_config.mk
+
+@ENABLE_LLVM_FALSE@all-local: 
+
+@ENABLE_LLVM_FALSE@clean-local: 
+
+# Override this so we don't try to re-copy llvm when we install mono
+install:
+
+top_srcdir ?= $(abspath $(CURDIR)/..)
+
+LLVM_PATH ?= $(abspath $(top_srcdir)/external/llvm)
+LLVM_BUILD ?= $(abspath $(top_srcdir)/llvm/build)
+LLVM_PREFIX ?= $(abspath $(top_srcdir)/llvm/usr)
 
 # usage $(call ValidateVersionTemplate (name,MAKEFILE VAR,repo name))
 # usage $(call ValidateVersionTemplate (mono,MONO,mono))
@@ -621,7 +660,7 @@ reset-$(1)::
 			echo "*** git fetch `basename $$($(2)_PATH)`" && (cd $($(2)_PATH) && git fetch); \
 		fi;  \
 	else \
-		echo "*** git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2))" && (cd `dirname $($(2)_PATH)` && git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2)) || exit 1 ); \
+		echo "*** git clone $(MODULE_$(2)) -b $(NEEDED_$(2)_BRANCH) --recursive $(DIRECTORY_$(2))" && (cd `dirname $($(2)_PATH)` && git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2)) || exit 1 ); \
 	fi
 	@if test x$$(IGNORE_$(2)_VERSION) = "x"; then \
 		echo "*** [$(1)] git checkout -f" $(NEEDED_$(2)_BRANCH) && (cd $($(2)_PATH) ; git checkout -f $(NEEDED_$(2)_BRANCH) || git checkout -f -b $($(2)_BRANCH_AND_REMOTE)); \
@@ -685,8 +724,50 @@ bump-branch-llvm: __bump-branch-llvm
 # If COMMIT is 1, commit the change
 bump-current-llvm: __bump-current-version-llvm
 
-clean-local:
-	$(RM) -r $(LLVM_PATH)
+$(LLVM_BUILD) $(LLVM_PREFIX):
+	mkdir -p $@
+
+$(LLVM_PATH):
+	$(MAKE) -f build.mk reset-llvm
+
+$(LLVM_PATH)/CMakeLists.txt: | $(LLVM_PATH)
+
+$(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(LLVM_PATH)/CMakeLists.txt | $(LLVM_BUILD)
+	cd $(LLVM_BUILD) && $(CMAKE) \
+		$(if $(NINJA),-G Ninja) \
+		-DCMAKE_INSTALL_PREFIX="$(LLVM_PREFIX)" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DLLVM_BUILD_TESTS=Off \
+		-DLLVM_INCLUDE_TESTS=Off \
+		-DLLVM_BUILD_EXAMPLES=Off \
+		-DLLVM_INCLUDE_EXAMPLES=Off \
+		-DLLVM_TOOLS_TO_BUILD="opt;llc;llvm-config;llvm-dis" \
+		-DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" \
+		-DLLVM_ENABLE_ASSERTIONS=$(if $(INTERNAL_LLVM_ASSERTS),On,Off) \
+		$(LLVM_CMAKE_ARGS) \
+		$(dir $<)
+
+.PHONY: configure-llvm
+configure-llvm: $(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile)
+
+# The DESTDIR fix is to prevent the build from trying to install this out-of-build-tree
+# as the DESTDIR hasn't been created when we're building mono
+
+.PHONY: build-llvm
+build-llvm: configure-llvm
+	DESTDIR="" $(if $(NINJA),$(NINJA),$(MAKE)) -C $(LLVM_BUILD)
+
+.PHONY: install-llvm
+install-llvm: build-llvm | $(LLVM_PREFIX)
+	DESTDIR="" $(if $(NINJA),$(NINJA),$(MAKE)) -C $(LLVM_BUILD) install
+
+.PHONY: download-llvm
+download-llvm:
+	(wget --no-verbose -O - $(LLVM_DOWNLOAD_LOCATION) || curl -L $(LLVM_DOWNLOAD_LOCATION)) | tar -xzf - -C $(dir $(LLVM_PREFIX))
+
+.PHONY: clean-llvm
+clean-llvm:
+	$(RM) -r $(LLVM_BUILD) $(LLVM_PREFIX)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

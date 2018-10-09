@@ -21,7 +21,7 @@ bare/System_REFS := mscorlib
 bare/System.Xml_REFS := mscorlib bare/System
 
 mscorlib_CSC_ARGS := -runtimemetadataversion:v4.0.30319
-System_CSC_ARGS := ../../src/Mono/System.extra.cs
+System_CSC_ARGS := ../../src/mono/System.extra.cs
 
 ECMA_KEY := ../../../../../mono/mcs/class/ecma.pub         # Public Key Token: b77a5c561934e089
 

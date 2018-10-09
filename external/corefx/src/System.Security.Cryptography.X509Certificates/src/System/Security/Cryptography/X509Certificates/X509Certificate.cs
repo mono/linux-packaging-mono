@@ -443,14 +443,16 @@ namespace System.Security.Cryptography.X509Certificates
         public virtual byte[] GetSerialNumber()
         {
             ThrowIfInvalid();
-
-            return GetRawSerialNumber().CloneByteArray();
+            byte[] serialNumber = GetRawSerialNumber().CloneByteArray();
+            // PAL always returns big-endian, GetSerialNumber returns little-endian
+            Array.Reverse(serialNumber);
+            return serialNumber;
         }
 
         public virtual string GetSerialNumberString()
         {
             ThrowIfInvalid();
-
+            // PAL always returns big-endian, GetSerialNumberString returns big-endian too
             return GetRawSerialNumber().ToHexStringUpper();
         }
 
@@ -599,6 +601,9 @@ namespace System.Security.Cryptography.X509Certificates
 
             if (!culture.DateTimeFormat.Calendar.IsValidDay(date.Year, date.Month, date.Day, 0))
             {
+
+// This is unnecessary dependency we cannot easily remove by linker
+#if !MOBILE
                 // The most common case of culture failing to work is in the Um-AlQuara calendar. In this case,
                 // we can fall back to the Hijri calendar, otherwise fall back to the invariant culture.
                 if (culture.DateTimeFormat.Calendar is UmAlQuraCalendar)
@@ -607,6 +612,7 @@ namespace System.Security.Cryptography.X509Certificates
                     culture.DateTimeFormat.Calendar = new HijriCalendar();
                 }
                 else
+#endif
                 {
                     culture = CultureInfo.InvariantCulture;
                 }

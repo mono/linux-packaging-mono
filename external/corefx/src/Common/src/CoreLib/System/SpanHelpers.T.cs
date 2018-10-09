@@ -13,10 +13,6 @@ using Internal.Runtime.CompilerServices;
 using System.Numerics;
 #endif
 
-#if MONO
-using System.Diagnostics.Private;
-#endif
-
 namespace System
 {
     internal static partial class SpanHelpers

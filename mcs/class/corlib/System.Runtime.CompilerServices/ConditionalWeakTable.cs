@@ -227,7 +227,6 @@ namespace System.Runtime.CompilerServices
 					if (k == key) {
 						data [idx].key = GC.EPHEMERON_TOMBSTONE;
 						data [idx].value = null;
-						--size;
 						return true;
 					}
 					if (k == null)
@@ -327,7 +326,7 @@ namespace System.Runtime.CompilerServices
 			{
 				for (int i = 0; i < data.Length; i++)
 				{
-					data[i].key = GC.EPHEMERON_TOMBSTONE;
+					data[i].key = null;
 					data[i].value = null;
 				}
 
@@ -415,6 +414,9 @@ namespace System.Runtime.CompilerServices
 
 			public Enumerator(ConditionalWeakTable<TKey, TValue> table)
 			{
+				Debug.Assert(table != null, "Must provide a valid table");
+				Debug.Assert(Monitor.IsEntered(table._lock), "Must hold the _lock lock to construct the enumerator");
+
 				// Store a reference to the parent table and increase its active enumerator count.
 				_table = table;
 				_currentIndex = -1;

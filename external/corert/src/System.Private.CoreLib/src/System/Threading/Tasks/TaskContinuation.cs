@@ -11,7 +11,7 @@
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 using Internal.Runtime.Augments;

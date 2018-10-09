@@ -1124,7 +1124,7 @@ is_hfa (MonoType *t, int *out_nfields, int *out_esize, int *field_offsets)
 
 	klass = mono_class_from_mono_type (t);
 	iter = NULL;
-	while ((field = mono_class_get_fields (klass, &iter))) {
+	while ((field = mono_class_get_fields_internal (klass, &iter))) {
 		if (field->type->attrs & FIELD_ATTRIBUTE_STATIC)
 			continue;
 		ftype = mono_field_get_type (field);
@@ -1145,7 +1145,7 @@ is_hfa (MonoType *t, int *out_nfields, int *out_esize, int *field_offsets)
 			prev_ftype = ftype;
 			for (i = 0; i < nested_nfields; ++i) {
 				if (nfields + i < 4)
-					field_offsets [nfields + i] = field->offset - sizeof (MonoObject) + nested_field_offsets [i];
+					field_offsets [nfields + i] = field->offset - MONO_ABI_SIZEOF (MonoObject) + nested_field_offsets [i];
 			}
 			nfields += nested_nfields;
 		} else {
@@ -1155,7 +1155,7 @@ is_hfa (MonoType *t, int *out_nfields, int *out_esize, int *field_offsets)
 				return FALSE;
 			prev_ftype = ftype;
 			if (nfields < 4)
-				field_offsets [nfields] = field->offset - sizeof (MonoObject);
+				field_offsets [nfields] = field->offset - MONO_ABI_SIZEOF (MonoObject);
 			nfields ++;
 		}
 	}
@@ -2752,17 +2752,7 @@ mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 	}
 }
 
-static const gboolean debug_tailcall = FALSE;
-
-static gboolean
-is_supported_tailcall_helper (gboolean value, const char *svalue)
-{
-	if (!value && debug_tailcall)
-		g_print ("%s %s\n", __func__, svalue);
-	return value;
-}
-
-#define IS_SUPPORTED_TAILCALL(x) (is_supported_tailcall_helper((x), #x))
+#ifndef DISABLE_JIT
 
 gboolean
 mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig, MonoMethodSignature *callee_sig)
@@ -2793,6 +2783,8 @@ mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig,
 
 	return res;
 }
+
+#endif
 
 gboolean 
 mono_arch_is_inst_imm (int opcode, int imm_opcode, gint64 imm)

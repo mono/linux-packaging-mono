@@ -917,7 +917,7 @@ enum_parmtype:
 						decodeParmString ((MonoString *)obj);
 					} else if (klass == mono_defaults.int32_class) { 
 						fprintf (trFd, "[INT32:%p:%d]", 
-							obj, *(gint32 *)((char *)obj + sizeof (MonoObject)));
+							obj, *(gint32 *)((char *)obj + MONO_ABI_SIZEOF (MonoObject)));
 					} else
 						fprintf (trFd, "[%s.%s:%p]", 
 							m_class_get_name_space (klass), m_class_get_name (klass), obj);
@@ -1049,7 +1049,7 @@ enter_method (MonoMethod *method, RegParm *rParm, char *sp)
 		switch(m_class_get_this_arg (method->klass)->type) {
 		case MONO_TYPE_VALUETYPE:
 			if (obj) {
-				guint64 *value = (guint64 *) ((uintptr_t)this_arg + sizeof(MonoObject));
+				guint64 *value = (guint64 *) ((uintptr_t)this_arg + MONO_ABI_SIZEOF (MonoObject));
 				fprintf (trFd, "this:[value:%p:%016lx], ", this_arg, *value);
 			} else 
 				fprintf (trFd, "this:[NULL], ");
@@ -1228,11 +1228,11 @@ handle_enum:
 
 		if ((o) && (o->vtable)) {
 			if (o->vtable->klass == mono_defaults.boolean_class) {
-				fprintf (trFd, "[BOOLEAN:%p:%d]", o, *((guint8 *)o + sizeof (MonoObject)));		
+				fprintf (trFd, "[BOOLEAN:%p:%d]", o, *((guint8 *)o + MONO_ABI_SIZEOF (MonoObject)));		
 			} else if  (o->vtable->klass == mono_defaults.int32_class) {
-				fprintf (trFd, "[INT32:%p:%d]", o, *((gint32 *)((char *)o + sizeof (MonoObject))));	
+				fprintf (trFd, "[INT32:%p:%d]", o, *((gint32 *)((char *)o + MONO_ABI_SIZEOF (MonoObject))));	
 			} else if  (o->vtable->klass == mono_defaults.int64_class) {
-				fprintf (trFd, "[INT64:%p:%ld]", o, *((gint64 *)((char *)o + sizeof (MonoObject))));	
+				fprintf (trFd, "[INT64:%p:%ld]", o, *((gint64 *)((char *)o + MONO_ABI_SIZEOF (MonoObject))));	
 			} else
 				fprintf (trFd, "[%s.%s:%p]", m_class_get_name_space (o->vtable->klass), m_class_get_name (o->vtable->klass), o);
 		} else
@@ -7546,17 +7546,7 @@ mono_arch_opcode_supported (int opcode)
 /*                                                                  */
 /*------------------------------------------------------------------*/
 
-static const gboolean debug_tailcall = FALSE;
-
-static gboolean
-is_supported_tailcall_helper (gboolean value, const char *svalue)
-{
-	if (!value && debug_tailcall)
-		g_print ("%s %s\n", __func__, svalue);
-	return value;
-}
-
-#define IS_SUPPORTED_TAILCALL(x) (is_supported_tailcall_helper((x), #x))
+#ifndef DISABLE_JIT
 
 gboolean
 mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig, MonoMethodSignature *callee_sig)
@@ -7585,5 +7575,7 @@ mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig,
 
 	return res;
 }
+
+#endif
 
 /*========================= End of Function ========================*/

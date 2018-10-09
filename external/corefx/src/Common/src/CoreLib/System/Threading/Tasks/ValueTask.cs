@@ -8,10 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks.Sources;
 
-#if MONO
-using System.Diagnostics.Private;
-#endif
-
 #if !netstandard
 using Internal.Runtime.CompilerServices;
 #endif

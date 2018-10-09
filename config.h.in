@@ -410,6 +410,9 @@
 /* Define to 1 if you have the `futimes' function. */
 #undef HAVE_FUTIMES
 
+/* F_DUPFD_CLOEXEC */
+#undef HAVE_F_DUPFD_CLOEXEC
+
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
@@ -590,9 +593,6 @@
 /* kqueue */
 #undef HAVE_KQUEUE
 
-/* Have __thread keyword */
-#undef HAVE_KW_THREAD
-
 /* Have large file support */
 #undef HAVE_LARGE_FILE_SUPPORT
 
@@ -700,6 +700,9 @@
 
 /* No GC support. */
 #undef HAVE_NULL_GC
+
+/* O_CLOEXEC */
+#undef HAVE_O_CLOEXEC
 
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
@@ -1323,6 +1326,12 @@
 /* inotify_rm_watch with unsigned wd */
 #undef INOTIFY_RM_WATCH_WD_UNSIGNED
 
+/* LLVM used is being build during mono build */
+#undef INTERNAL_LLVM
+
+/* Build LLVM with assertions */
+#undef INTERNAL_LLVM_ASSERTS
+
 /* struct ipv6_mreq with unsigned ipv6mr_interface */
 #undef IPV6MR_INTERFACE_UNSIGNED
 
@@ -1334,9 +1343,6 @@
 
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION
-
-/* Full version of LLVM libraries */
-#undef LLVM_VERSION
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -1373,6 +1379,9 @@
 
 /* Enable jemalloc usage for mono */
 #undef MONO_JEMALLOC_ENABLED
+
+/* Have __thread keyword */
+#undef MONO_KEYWORD_THREAD
 
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED
@@ -1434,7 +1443,7 @@
 /* The size of `long long', as computed by sizeof. */
 #undef SIZEOF_LONG_LONG
 
-/* size of machine integer registers */
+/* size of target machine integer registers */
 #undef SIZEOF_REGISTER
 
 /* The size of `size_t', as computed by sizeof. */
@@ -1490,6 +1499,9 @@
 
 /* ... */
 #undef TARGET_S390X
+
+/* wordsize of target */
+#undef TARGET_SIZEOF_VOID_P
 
 /* ... */
 #undef TARGET_SPARC

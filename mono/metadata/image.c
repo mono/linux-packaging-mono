@@ -1150,7 +1150,7 @@ static const char *ignored_assemblies_file_names[] = {
 	"System.Threading.Overlapped.dll"
 };
 
-#define IGNORED_ASSEMBLY(HASH, NAME, GUID, VER_STR)	{ .hash = HASH, .assembly_name = NAME, .guid = GUID }
+#define IGNORED_ASSEMBLY(HASH, NAME, GUID, VER_STR) { HASH, NAME, GUID }
 
 static const IgnoredAssembly ignored_assemblies [] = {
 	IGNORED_ASSEMBLY (0x10CADA75, SYS_NET_HTTP, "EA2EC6DC-51DD-479C-BFC2-E713FB9E7E47", "4.1.1 net46"),
@@ -1220,7 +1220,7 @@ static const char *ignored_assemblies_names[] = {
 	"System.Threading.Overlapped"
 };
 
-#define IGNORED_ASM_VER(NAME, MAJOR, MINOR, BUILD, REVISION) { .assembly_name = NAME, .major = MAJOR, .minor = MINOR, .build = BUILD, .revision = REVISION }
+#define IGNORED_ASM_VER(NAME, MAJOR, MINOR, BUILD, REVISION) { NAME, MAJOR, MINOR, BUILD, REVISION }
 
 static const IgnoredAssemblyVersion ignored_assembly_versions [] = {
 	IGNORED_ASM_VER (SYS_GLOBALIZATION_EXT, 4, 0, 0, 0),
@@ -1552,6 +1552,9 @@ register_image (MonoImage *image)
 		g_hash_table_insert (loaded_images_by_name, (char *) image->assembly_name, image);
 	mono_images_unlock ();
 
+	if (mono_is_problematic_image (image)) {
+		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_ASSEMBLY, "Registering %s, problematic image '%s'", image->ref_only ? "REFONLY" : "default", image->name);
+	}
 	return image;
 }
 
@@ -1602,7 +1605,11 @@ mono_image_open_from_data_internal (char *data, guint32 data_len, gboolean need_
 MonoImage *
 mono_image_open_from_data_with_name (char *data, guint32 data_len, gboolean need_copy, MonoImageOpenStatus *status, gboolean refonly, const char *name)
 {
-	return mono_image_open_from_data_internal (data, data_len, need_copy, status, refonly, FALSE, name);
+	MonoImage *result;
+	MONO_ENTER_GC_UNSAFE;
+	result = mono_image_open_from_data_internal (data, data_len, need_copy, status, refonly, FALSE, name);
+	MONO_EXIT_GC_UNSAFE;
+	return result;
 }
 
 /**
@@ -1611,7 +1618,11 @@ mono_image_open_from_data_with_name (char *data, guint32 data_len, gboolean need
 MonoImage *
 mono_image_open_from_data_full (char *data, guint32 data_len, gboolean need_copy, MonoImageOpenStatus *status, gboolean refonly)
 {
-  return mono_image_open_from_data_with_name (data, data_len, need_copy, status, refonly, NULL);
+	MonoImage *result;
+	MONO_ENTER_GC_UNSAFE;
+	result = mono_image_open_from_data_internal (data, data_len, need_copy, status, refonly, FALSE, NULL);
+	MONO_EXIT_GC_UNSAFE;
+	return result;
 }
 
 /**
@@ -1620,7 +1631,11 @@ mono_image_open_from_data_full (char *data, guint32 data_len, gboolean need_copy
 MonoImage *
 mono_image_open_from_data (char *data, guint32 data_len, gboolean need_copy, MonoImageOpenStatus *status)
 {
-	return mono_image_open_from_data_full (data, data_len, need_copy, status, FALSE);
+	MonoImage *result;
+	MONO_ENTER_GC_UNSAFE;
+	result = mono_image_open_from_data_internal (data, data_len, need_copy, status, FALSE, FALSE, NULL);
+	MONO_EXIT_GC_UNSAFE;
+	return result;
 }
 
 #ifdef HOST_WIN32
@@ -1773,6 +1788,7 @@ mono_image_open_a_lot (const char *fname, MonoImageOpenStatus *status, gboolean 
 			//  to see it again when we go searching for an image
 			//  to load.
 			mono_images_unlock ();
+			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_ASSEMBLY, "Not returning problematic image '%s' refcount=%d", image->name, image->ref_count);
 			return NULL;
 		}
 		mono_image_addref (image);

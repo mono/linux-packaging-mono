@@ -239,7 +239,7 @@ namespace Novell.Directory.Ldap
         ServerBind = 512,
         Signing = 64,
     }
-    public delegate bool CertificateValidationCallback(System.Security.Cryptography.X509Certificates.X509Certificate certificate, int[] certificateErrors);
+    public delegate bool CertificateValidationCallback(System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Net.Security.SslPolicyErrors certificateErrors);
     public partial class InterThreadException : Novell.Directory.Ldap.LdapException
     {
         internal InterThreadException() { }

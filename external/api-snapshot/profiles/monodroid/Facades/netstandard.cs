@@ -711,7 +711,6 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.DivideByZeroException))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.DllNotFoundException))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Color))]
-[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Color.ColorType))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Point))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.PointF))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Rectangle))]

@@ -160,6 +160,8 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
+CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
@@ -175,6 +177,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -215,11 +218,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CFLAGS = @LLVM_CFLAGS@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_CXXFLAGS = @LLVM_CXXFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
+LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
@@ -2501,7 +2500,6 @@ CORECLR_COREMANGLIB_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleepsilon.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleequals1.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleequals2.cs	\
-	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doublegethashcode.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleiconvertibletoboolean.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleiconvertibletobyte.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/double/doubleiconvertibletodatetime.cs	\
@@ -3581,7 +3579,6 @@ CORECLR_COREMANGLIB_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/security/securityexception/securityexceptionctor3.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/security/securityexception/securityexceptiontostring.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/single/singleepsilon.cs	\
-	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/single/singlegethashcode.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/single/singleisinfinity.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/single/singleisnan.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/single/singleisnegativeinfinity.cs	\
@@ -5728,7 +5725,7 @@ reset-$(1)::
 			echo "*** git fetch `basename $$($(2)_PATH)`" && (cd $($(2)_PATH) && git fetch); \
 		fi;  \
 	else \
-		echo "*** git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2))" && (cd `dirname $($(2)_PATH)` && git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2)) || exit 1 ); \
+		echo "*** git clone $(MODULE_$(2)) -b $(NEEDED_$(2)_BRANCH) --recursive $(DIRECTORY_$(2))" && (cd `dirname $($(2)_PATH)` && git clone $(MODULE_$(2)) --recursive $(DIRECTORY_$(2)) || exit 1 ); \
 	fi
 	@if test x$$(IGNORE_$(2)_VERSION) = "x"; then \
 		echo "*** [$(1)] git checkout -f" $(NEEDED_$(2)_BRANCH) && (cd $($(2)_PATH) ; git checkout -f $(NEEDED_$(2)_BRANCH) || git checkout -f -b $($(2)_BRANCH_AND_REMOTE)); \

@@ -167,8 +167,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
-	xdebug.c mini-llvm.h mini-llvm-cpp.h llvm-jit.h \
-	alias-analysis.c mini-cross-helpers.c arch-stubs.c \
+	debugger-state-machine.h xdebug.c mini-llvm.h mini-llvm-cpp.h \
+	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
 	intrinsics.c mini-profiler.c interp-stubs.c aot-runtime.h ee.h \
 	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
@@ -184,11 +184,12 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
 	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
 	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
-	mini-wasm.h debugger-engine.c exceptions-wasm.c tramp-wasm.c \
-	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
-	mini-x86-gsharedvt.c tramp-x86-gsharedvt.c mini-darwin.c \
-	mini-posix.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c
+	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
+	exceptions-wasm.c tramp-wasm.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c
 am__objects_1 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -239,7 +240,8 @@ am__objects_9 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
 am__objects_10 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_11 = libmini_la-mini-wasm.lo libmini_la-debugger-engine.lo \
+am__objects_11 = libmini_la-mini-wasm.lo \
+	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
 	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
 am__objects_12 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
@@ -274,10 +276,11 @@ am__v_lt_1 =
 @SHARED_MONO_TRUE@am_libmini_la_rpath =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
-am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c debugger-engine.c
+am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
+	debugger-state-machine.c debugger-engine.c
 @WASM_FALSE@am__objects_18 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	$(am__objects_18)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_18)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -505,7 +508,7 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS = @CFLAGS@
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -515,6 +518,8 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
+CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
@@ -530,6 +535,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -570,11 +576,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CFLAGS = @LLVM_CFLAGS@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_CXXFLAGS = @LLVM_CXXFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
+LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@
@@ -736,6 +738,10 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(glib_libs)
 
+@ENABLE_LLVM_TRUE@LLVM_CFLAGS = $(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_CXXFLAGS = $(LLVM_CXXFLAGS_INTERNAL) $(LLVM_CXXFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_LDFLAGS = $(LLVM_LDFLAGS_INTERNAL) $(LLVM_LDFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@LLVM_LIBS = $(LLVM_LIBS_INTERNAL) $(LLVM_LIBS_EXTERNAL)
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
 # if the tests are going to run with framework assemblies compiled with
@@ -793,7 +799,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_2) \
 noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_8)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
-@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 mono_boehm_SOURCES = \
 	main.c
 
@@ -829,7 +835,7 @@ mono_boehm_LDADD = \
 	$(MONO_DTRACE_OBJECT)
 
 mono_boehm_LDFLAGS = \
-	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
@@ -838,7 +844,7 @@ mono_sgen_LDADD = \
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
-mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags)
+mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDADD = $(mono_sgen_LDADD)
 
 # Create monow.exe, linked for the 'windows' subsystem
@@ -850,6 +856,7 @@ mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags
 wasm_sources = \
 	mini-wasm.c		\
 	mini-wasm.h		\
+	mini-wasm-debugger.c	\
 	debugger-engine.c	\
 	exceptions-wasm.c	\
 	tramp-wasm.c
@@ -1011,6 +1018,7 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-engine.h	\
 	debugger-agent-stubs.c	\
+	debugger-state-machine.h	\
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
@@ -1138,7 +1146,7 @@ libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
 @BITCODE_TRUE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
 @WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
-libmono_dbg_la_SOURCES = debugger-agent.c $(extra_libmono_dbg_source)
+libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
 libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
 dbg_libs = libmono-dbg.la
@@ -1153,12 +1161,16 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
+
+# These are public headers.
+# They should not use glib.h, G_BEGIN_DECLS, guint, etc.
+# They should be wrapped in MONO_BEGIN_DECLS / MONO_END_DECLS.
 libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
 GENMDESC_OPTS = 
@@ -1213,6 +1225,7 @@ EXTRA_DIST = TestDriver.cs \
 	test_op_il_seq_point_headerfooter.sh	\
 	Makefile.am.in
 
+@ENABLE_LLVM_TRUE@llvm_makefile_dep = $(mono_build_root)/llvm/llvm_config.mk
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1468,6 +1481,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-trampolines.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-wasm-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dlldac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dllmain.Plo@am__quote@
@@ -1498,6 +1512,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-xdebug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-agent.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-engine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
@@ -2060,6 +2075,13 @@ libmini_la-mini-wasm.lo: mini-wasm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-wasm.lo `test -f 'mini-wasm.c' || echo '$(srcdir)/'`mini-wasm.c
 
+libmini_la-mini-wasm-debugger.lo: mini-wasm-debugger.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-wasm-debugger.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-wasm-debugger.Tpo -c -o libmini_la-mini-wasm-debugger.lo `test -f 'mini-wasm-debugger.c' || echo '$(srcdir)/'`mini-wasm-debugger.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-wasm-debugger.Tpo $(DEPDIR)/libmini_la-mini-wasm-debugger.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-wasm-debugger.c' object='libmini_la-mini-wasm-debugger.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-wasm-debugger.lo `test -f 'mini-wasm-debugger.c' || echo '$(srcdir)/'`mini-wasm-debugger.c
+
 libmini_la-debugger-engine.lo: debugger-engine.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-debugger-engine.lo -MD -MP -MF $(DEPDIR)/libmini_la-debugger-engine.Tpo -c -o libmini_la-debugger-engine.lo `test -f 'debugger-engine.c' || echo '$(srcdir)/'`debugger-engine.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-debugger-engine.Tpo $(DEPDIR)/libmini_la-debugger-engine.Plo
@@ -2157,6 +2179,13 @@ libmono_dbg_la-debugger-agent.lo: debugger-agent.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debugger-agent.c' object='libmono_dbg_la-debugger-agent.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -c -o libmono_dbg_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
+
+libmono_dbg_la-debugger-state-machine.lo: debugger-state-machine.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-state-machine.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Tpo -c -o libmono_dbg_la-debugger-state-machine.lo `test -f 'debugger-state-machine.c' || echo '$(srcdir)/'`debugger-state-machine.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Tpo $(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='debugger-state-machine.c' object='libmono_dbg_la-debugger-state-machine.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -c -o libmono_dbg_la-debugger-state-machine.lo `test -f 'debugger-state-machine.c' || echo '$(srcdir)/'`debugger-state-machine.c
 
 libmono_dbg_la-debugger-engine.lo: debugger-engine.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-engine.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-engine.Tpo -c -o libmono_dbg_la-debugger-engine.lo `test -f 'debugger-engine.c' || echo '$(srcdir)/'`debugger-engine.c
@@ -2504,6 +2533,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-libLTLIBRARIES uninstall-libmonoincludeHEADERS
 
 
+@ENABLE_LLVM_TRUE@-include $(mono_build_root)/llvm/llvm_config.mk
+
+@ENABLE_LLVM_TRUE@print-llvm-info:
+@ENABLE_LLVM_TRUE@	echo "cflags: $(LLVM_CFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "cxxflags: $(LLVM_CXXFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "ldflags: $(LLVM_LDFLAGS)"
+@ENABLE_LLVM_TRUE@	echo "libs: $(LLVM_LIBS)"
+
 @HOST_WIN32_TRUE@export HOST_CC
 
 @DISABLE_EXECUTABLES_FALSE@mono: mono-$(mono_bin_suffix)
@@ -2658,8 +2695,9 @@ gsharedvtcheck:
 hybridcheck:
 	$(MAKE) fullaotcheck HYBRID=1
 
+# FIXME: force preemptive suspend while interpreter doesn't support coop/hybird suspend
 fullaotmixedcheck:
-	$(MAKE) fullaotcheck MIXED=1
+	$(MAKE) fullaotcheck MIXED=1 MONO_THREADS_SUSPEND=preemptive
 
 # This currently only works on amd64/arm
 fullaotcheck: $(mono) $(fullaot_regtests) $(fullaot_testing_deps)
