@@ -46,7 +46,7 @@ using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 
 namespace System
 {
@@ -58,6 +58,8 @@ namespace System
 		char _firstChar;
 
 		public static readonly String Empty;
+
+		public int Length => _stringLength;
 
 		internal unsafe int IndexOfUnchecked (string value, int startIndex, int count)
 		{

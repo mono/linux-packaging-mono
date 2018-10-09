@@ -4,23 +4,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Internal.Cryptography
 {
-    internal static class Helpers
+    internal static partial class Helpers
     {
-        public static byte[] CloneByteArray(this byte[] src)
-        {
-            if (src == null)
-            {
-                return null;
-            }
-
-            return (byte[])(src.Clone());
-        }
-
         // Encode a byte array as an array of upper-case hex characters.
         public static char[] ToHexArrayUpper(this byte[] bytes)
         {

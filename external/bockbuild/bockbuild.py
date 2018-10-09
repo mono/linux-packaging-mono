@@ -207,6 +207,9 @@ class Bockbuild:
             elif not os.path.exists(package.build_artifact):
                 package.request_build('No artifact')
 
+            elif is_expired(package.build_artifact, config.artifact_lifespan_days):
+                package.request_build('Artifact expired (older than %d days)' % config.artifact_lifespan_days)
+
             elif is_changed(package.buildstring, package.buildstring_file):
                 package.request_build('Updated')
 

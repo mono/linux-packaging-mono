@@ -308,7 +308,7 @@ struct MonoJumpInfo {
 	MonoJumpInfoType type;
 	union {
 		gconstpointer   target;
-#if SIZEOF_VOID_P == 8
+#if TARGET_SIZEOF_VOID_P == 8
 		gint64          offset;
 #else
 		int             offset;
@@ -340,11 +340,11 @@ extern gboolean mono_compile_aot;
 extern gboolean mono_aot_only;
 extern gboolean mono_llvm_only;
 extern MonoAotMode mono_aot_mode;
-extern MONO_API const char *mono_build_date;
+MONO_API_DATA const char *mono_build_date;
 extern gboolean mono_do_signal_chaining;
 extern gboolean mono_do_crash_chaining;
-extern MONO_API gboolean mono_use_llvm;
-extern MONO_API gboolean mono_use_interpreter;
+MONO_API_DATA gboolean mono_use_llvm;
+MONO_API_DATA gboolean mono_use_interpreter;
 extern const char* mono_interp_opts_string;
 extern gboolean mono_do_single_method_regression;
 extern guint32 mono_single_method_regression_opt;
@@ -427,7 +427,8 @@ void      mono_set_lmf                      (MonoLMF *lmf);
 void      mono_push_lmf                     (MonoLMFExt *ext);
 void      mono_pop_lmf                      (MonoLMF *lmf);
 MonoJitTlsData* mono_get_jit_tls            (void);
-MONO_API MonoDomain* mono_jit_thread_attach (MonoDomain *domain);
+MONO_API MONO_RT_EXTERNAL_ONLY
+MonoDomain* mono_jit_thread_attach (MonoDomain *domain);
 MONO_API void      mono_jit_set_domain      (MonoDomain *domain);
 
 gboolean  mono_method_same_domain           (MonoJitInfo *caller, MonoJitInfo *callee);
@@ -481,16 +482,38 @@ gboolean mono_jit_map_is_enabled (void);
 /*
  * Per-OS implementation functions.
  */
-void mono_runtime_install_handlers (void);
-gboolean mono_runtime_install_custom_handlers (const char *handlers);
-void mono_runtime_install_custom_handlers_usage (void);
-void mono_runtime_cleanup_handlers (void);
-void mono_runtime_setup_stat_profiler (void);
-void mono_runtime_shutdown_stat_profiler (void);
-void mono_runtime_posix_install_handlers (void);
-void mono_gdb_render_native_backtraces (pid_t crashed_pid);
+void
+mono_runtime_install_handlers (void);
 
-void mono_cross_helpers_run (void);
+gboolean
+mono_runtime_install_custom_handlers (const char *handlers);
+
+void
+mono_runtime_install_custom_handlers_usage (void);
+
+void
+mono_runtime_cleanup_handlers (void);
+
+void
+mono_runtime_setup_stat_profiler (void);
+
+void
+mono_runtime_shutdown_stat_profiler (void);
+
+void
+mono_runtime_posix_install_handlers (void);
+
+void
+mono_gdb_render_native_backtraces (pid_t crashed_pid);
+
+void
+mono_cross_helpers_run (void);
+
+void
+mono_dump_native_crash_info (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info);
+
+void
+mono_post_native_crash_handler (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info, gboolean crash_chaining);
 
 /*
  * Signal handling
@@ -543,9 +566,7 @@ gboolean MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal);
 #define DISABLE_SDB 1
 #endif
 
-#ifdef TARGET_OSX
 void mini_register_sigterm_handler (void);
-#endif
 
 #endif /* __MONO_MINI_RUNTIME_H__ */
 

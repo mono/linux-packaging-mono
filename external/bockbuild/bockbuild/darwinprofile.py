@@ -122,11 +122,11 @@ class DarwinProfile (UnixProfile):
             self.gcc_flags.extend(['-O0', '-ggdb3'])
 
         if os.getenv('BOCKBUILD_USE_CCACHE') is None:
-            self.env.set('CC',  'xcrun gcc')
-            self.env.set('CXX', 'xcrun g++')
+            self.env.set('CC',  'xcrun clang')
+            self.env.set('CXX', 'xcrun clang++')
         else:
-            self.env.set('CC',  'ccache xcrun gcc')
-            self.env.set('CXX', 'ccache xcrun g++')
+            self.env.set('CC',  'ccache xcrun clang')
+            self.env.set('CXX', 'ccache xcrun clang++')
 
         if self.bockbuild.cmd_options.arch == 'default':
             self.bockbuild.cmd_options.arch = 'darwin-32'
@@ -139,7 +139,7 @@ class DarwinProfile (UnixProfile):
             package.local_ld_flags = ['-arch i386', '-m32']
             package.local_gcc_flags = ['-arch i386', '-m32']
             package.local_configure_flags = [
-                '--build=i386-apple-darwin11.2.0', '--disable-dependency-tracking']
+                '--build=i386-apple-darwin13.0.0', '--disable-dependency-tracking']
         elif arch == 'darwin-64':
             package.local_ld_flags = ['-arch x86_64 -m64']
             package.local_gcc_flags = ['-arch x86_64 -m64']

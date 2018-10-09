@@ -239,7 +239,7 @@ encode_reflection_type (MonoDynamicImage *assembly, MonoReflectionTypeHandle typ
 
 	error_init (error);
 
-	if (!type) {
+	if (MONO_HANDLE_IS_NULL (type)) {
 		sigbuffer_add_value (buf, MONO_TYPE_VOID);
 		return;
 	}
@@ -529,7 +529,7 @@ mono_dynimage_encode_constant (MonoDynamicImage *assembly, MonoObject *val, Mono
 		len = 4;
 		box_val = (char*)&dummy;
 	} else {
-		box_val = ((char*)val) + sizeof (MonoObject);
+		box_val = mono_object_get_data (val);
 		*ret_type = m_class_get_byval_arg (val->vtable->klass)->type;
 	}
 handle_enum:

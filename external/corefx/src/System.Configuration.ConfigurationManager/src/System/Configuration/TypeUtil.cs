@@ -7,9 +7,15 @@ using System.Reflection;
 
 namespace System.Configuration
 {
-    internal static class TypeUtil
+    internal static partial class TypeUtil
     {
+
+#if MONO
+        // Ensures we can load types from the old place.
+        internal const string ConfigurationManagerAssemblyName = "System.Configuration";
+#else
         internal const string ConfigurationManagerAssemblyName = "System.Configuration.ConfigurationManager";
+#endif
 
         // Deliberately not being explicit about the versions to make
         // things simpler for consumers of System.Configuration.

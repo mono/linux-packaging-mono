@@ -99,6 +99,12 @@ typedef guint32 gunichar;
 #define G_MAXUSHORT          USHRT_MAX
 #define G_MAXINT             INT_MAX
 #define G_MININT             INT_MIN
+#define G_MAXINT8            INT8_MAX
+#define G_MAXUINT8           UINT8_MAX
+#define G_MININT8            INT8_MIN
+#define G_MAXINT16           INT16_MAX
+#define G_MAXUINT16          UINT16_MAX
+#define G_MININT16           INT16_MIN
 #define G_MAXINT32           INT32_MAX
 #define G_MAXUINT32          UINT32_MAX
 #define G_MININT32           INT32_MIN
@@ -304,10 +310,7 @@ GString     *g_string_append_c      (GString *string, gchar c);
 GString     *g_string_append        (GString *string, const gchar *val);
 GString     *g_string_append_len    (GString *string, const gchar *val, gssize len);
 GString     *g_string_truncate      (GString *string, gsize len);
-GString     *g_string_prepend       (GString *string, const gchar *val);
-GString     *g_string_insert        (GString *string, gssize pos, const gchar *val);
 GString     *g_string_set_size      (GString *string, gsize len);
-GString     *g_string_erase         (GString *string, gssize pos, gssize len);
 
 #define g_string_sprintfa g_string_append_printf
 

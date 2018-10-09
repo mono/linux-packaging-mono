@@ -586,12 +586,12 @@ mono_decompose_op_imm (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins)
 
 		/* Load the 64bit constant using decomposed ops */
 		MONO_INST_NEW (cfg, temp, OP_ICONST);
-		temp->inst_c0 = ins->inst_ls_word;
+		temp->inst_c0 = ins_get_l_low (ins);
 		temp->dreg = MONO_LVREG_LS (dreg);
 		mono_bblock_insert_before_ins (bb, ins, temp);
 
 		MONO_INST_NEW (cfg, temp, OP_ICONST);
-		temp->inst_c0 = ins->inst_ms_word;
+		temp->inst_c0 = ins_get_l_high (ins);
 		temp->dreg = MONO_LVREG_MS (dreg);
 	} else {
 		dreg = mono_alloc_ireg (cfg);
@@ -1245,7 +1245,7 @@ mono_allocate_stack_slots2 (MonoCompile *cfg, gboolean backward, guint32 *stack_
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_I:
 		case MONO_TYPE_U:
-#if SIZEOF_VOID_P == 4
+#if TARGET_SIZEOF_VOID_P == 4
 		case MONO_TYPE_I4:
 #else
 		case MONO_TYPE_I8:
@@ -1543,7 +1543,7 @@ mono_allocate_stack_slots (MonoCompile *cfg, gboolean backward, guint32 *stack_s
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_I:
 		case MONO_TYPE_U:
-#if SIZEOF_VOID_P == 4
+#if TARGET_SIZEOF_VOID_P == 4
 		case MONO_TYPE_I4:
 #else
 		case MONO_TYPE_I8:
@@ -2920,6 +2920,17 @@ mono_insert_safepoints (MonoCompile *cfg)
 		}
 	}
 
+	if (cfg->method->wrapper_type == MONO_WRAPPER_UNKNOWN) {
+		WrapperInfo *info = mono_marshal_get_wrapper_info (cfg->method);
+
+		if (info && (info->subtype == WRAPPER_SUBTYPE_INTERP_IN || info->subtype == WRAPPER_SUBTYPE_INTERP_LMF)) {
+			/* These wrappers shouldn't do any icalls */
+			if (cfg->verbose_level > 1)
+				printf ("SKIPPING SAFEPOINTS for interp-in wrappers.\n");
+			return;
+		}
+	}
+
 	if (cfg->verbose_level > 1)
 		printf ("INSERTING SAFEPOINTS\n");
 	if (cfg->verbose_level > 2)
@@ -3361,7 +3372,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	if (!verbose_method_inited) {
 		char *env = g_getenv ("MONO_VERBOSE_METHOD");
 		if (env != NULL)
-			verbose_method_names = g_strsplit (env, ",", -1);
+			verbose_method_names = g_strsplit (env, ";", -1);
 		
 		verbose_method_inited = TRUE;
 	}
@@ -4279,4 +4290,23 @@ gboolean
 mini_class_is_system_array (MonoClass *klass)
 {
 	return m_class_get_parent (klass) == mono_defaults.array_class;
+}
+
+/*
+ * mono_target_pagesize:
+ *
+ *   query pagesize used to determine if an implicit NRE can be used
+ */
+int
+mono_target_pagesize (void)
+{
+	/* We could query the system's pagesize via mono_pagesize (), however there
+	 * are pitfalls: sysconf (3) is called on some posix like systems, and per
+	 * POSIX.1-2008 this function doesn't have to be async-safe. Since this
+	 * function can be called from a signal handler, we simplify things by
+	 * using 4k on all targets. Implicit null-checks with an offset larger than
+	 * 4k are _very_ uncommon, so we don't mind emitting an explicit null-check
+	 * for those cases.
+	 */
+	return 4 * 1024;
 }

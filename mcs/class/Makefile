@@ -10,6 +10,9 @@ endif
 
 # The minimal set of csc dependencies
 basic_SUBDIRS := \
+	Mono.Cecil \
+	$(MCS_MODE_dirs) \
+	../tools/cil-stringreplacer \
 	corlib \
 	Mono.Security \
 	System \
@@ -19,15 +22,15 @@ basic_SUBDIRS := \
 	System.ComponentModel.Composition.4.5 \
 	System.Numerics \
 	System.Xml.Linq \
-	Mono.Cecil \
-	$(MCS_MODE_dirs) \
 	Mono.CompilerServices.SymbolWriter	\
 	PEAPI \
-	../tools/cil-stringreplacer \
 	../ilasm \
 	corlib/il
 
 build_SUBDIRS :=  \
+	Mono.Cecil \
+	$(MCS_MODE_dirs) \
+	../tools/cil-stringreplacer \
 	corlib \
 	Mono.Security \
 	System \
@@ -41,11 +44,8 @@ build_SUBDIRS :=  \
 	System.Xml.Linq \
 	System.IO.Compression \
 	System.Drawing			\
-	Mono.Cecil \
-	$(MCS_MODE_dirs) \
 	Mono.CompilerServices.SymbolWriter	\
-	PEAPI \
-	../tools/cil-stringreplacer
+	PEAPI
 
 ifdef MCS_MODE
 basic_PARALLEL_SUBDIRS := ../mcs $(pcl_facade_dirs)
@@ -410,9 +410,15 @@ DISTFILES = \
 	doc/TemplateTest.cs	\
 	notes/BitVecto32.txt	\
 	MicrosoftAjaxLibrary/License.htm	\
-	test-helpers/NetworkHelpers.cs	\
-	test-helpers/SocketResponder.cs	\
-	$(foreach HOST_PLATFORM,darwin linux win32,lib/$(monolite_dir)/mcs.exe $(monolite_files))
+	test-helpers/AdminHelper.cs \
+	test-helpers/Configuration.Http.cs \
+	test-helpers/NetworkHelpers.cs \
+	test-helpers/NunitHelpers.cs \
+	test-helpers/PlatformDetection.cs \
+	test-helpers/RemoteExecutorTestBase.Mobile.cs \
+	test-helpers/RemoteExecutorTestBase.Mono.cs \
+	test-helpers/SocketResponder.cs \
+	$(foreach HOST_PLATFORM,macos linux win32 unix,lib/$(monolite_dir)/mcs.exe $(monolite_files))
 
 .PHONY: all-local $(STD_TARGETS:=-local)
 all-local $(STD_TARGETS:=-local):
@@ -457,9 +463,10 @@ $(build_files:%=lib/build-$(HOST_PLATFORM)/%):
 dist-monolite: $(monolite_files) lib/$(monolite_dir)/mcs.exe
 
 dist-monolite-all-platforms:
-	$(MAKE) dist-monolite HOST_PLATFORM=darwin
+	$(MAKE) dist-monolite HOST_PLATFORM=macos
 	$(MAKE) dist-monolite HOST_PLATFORM=linux
 	$(MAKE) dist-monolite HOST_PLATFORM=win32
+	$(MAKE) dist-monolite HOST_PLATFORM=unix
 
 package-monolite-latest:
 	MONOLITE=monolite-$(HOST_PLATFORM)-$(MONO_CORLIB_VERSION)-latest; \
@@ -467,9 +474,10 @@ package-monolite-latest:
 	tar zcvpf $$MONOLITE.tar.gz --directory=lib $$MONOLITE/
 
 package-monolite-latest-all-platforms:
-	$(MAKE) package-monolite-latest HOST_PLATFORM=darwin
+	$(MAKE) package-monolite-latest HOST_PLATFORM=macos
 	$(MAKE) package-monolite-latest HOST_PLATFORM=linux
 	$(MAKE) package-monolite-latest HOST_PLATFORM=win32
+	$(MAKE) package-monolite-latest HOST_PLATFORM=unix
 
 monolite_url = https://download.mono-project.com/monolite/monolite-$(BUILD_PLATFORM)-$(MONO_CORLIB_VERSION)-latest.tar.gz
 

@@ -30,6 +30,7 @@
 #include "metadata/sgen-mono-ilgen.h"
 #include "metadata/gc-internals.h"
 #include "metadata/handle.h"
+#include "metadata/abi-details.h"
 #include "utils/mono-memory-model.h"
 #include "utils/mono-logger-internals.h"
 #include "utils/mono-threads-coop.h"
@@ -118,7 +119,7 @@ mono_gc_wbarrier_value_copy (gpointer dest, gpointer src, int count, MonoClass *
 		int i;
 		for (i = 0; i < count; ++i) {
 			scan_object_for_binary_protocol_copy_wbarrier ((char*)dest + i * element_size,
-					(char*)src + i * element_size - sizeof (MonoObject),
+					(char*)src + i * element_size - MONO_ABI_SIZEOF (MonoObject),
 					(mword) klass->gc_descr);
 		}
 	}
@@ -142,8 +143,8 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
 	SGEN_ASSERT (6, !ptr_on_stack (obj), "Why is this called for a non-reference type?");
 	if (sgen_ptr_in_nursery (obj) || !SGEN_OBJECT_HAS_REFERENCES (src)) {
 		size = m_class_get_instance_size (mono_object_class (obj));
-		mono_gc_memmove_aligned ((char*)obj + sizeof (MonoObject), (char*)src + sizeof (MonoObject),
-				size - sizeof (MonoObject));
+		mono_gc_memmove_aligned ((char*)obj + MONO_ABI_SIZEOF (MonoObject), (char*)src + MONO_ABI_SIZEOF (MonoObject),
+				size - MONO_ABI_SIZEOF (MonoObject));
 		return;	
 	}
 
@@ -348,7 +349,7 @@ get_array_fill_vtable (void)
 
 		vtable->klass = klass;
 		bmap = 0;
-		vtable->gc_descr = mono_gc_make_descr_for_array (TRUE, &bmap, 0, 1);
+		vtable->gc_descr = mono_gc_make_descr_for_array (TRUE, &bmap, 0, 8);
 		vtable->rank = 1;
 
 		array_fill_vtable = vtable;
@@ -371,7 +372,9 @@ sgen_client_array_fill_range (char *start, size_t size)
 	/* Mark this as not a real object */
 	o->obj.synchronisation = (MonoThreadsSync *)GINT_TO_POINTER (-1);
 	o->bounds = NULL;
-	o->max_length = (mono_array_size_t)(size - MONO_SIZEOF_MONO_ARRAY);
+	/* We use array of int64 */
+	g_assert ((size - MONO_SIZEOF_MONO_ARRAY) % 8 == 0);
+	o->max_length = (mono_array_size_t)((size - MONO_SIZEOF_MONO_ARRAY) / 8);
 
 	return TRUE;
 }
@@ -1622,11 +1625,11 @@ report_handle_stack_root (gpointer *ptr, gpointer user_data)
 static void
 report_handle_stack_roots (GCRootReport *report, SgenThreadInfo *info, gboolean precise)
 {
-	ReportHandleStackRoot ud = {
-		.precise = precise,
-		.report = report,
-		.info = info,
-	};
+	ReportHandleStackRoot ud;
+	memset (&ud, 0, sizeof (ud));
+	ud.precise = precise;
+	ud.report = report;
+	ud.info = info;
 
 	mono_handle_stack_scan ((HandleStack *) info->client_info.info.handle_stack, report_handle_stack_root, &ud, ud.precise, FALSE);
 }
@@ -2246,9 +2249,10 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 			if (precise)
 				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, (GcScanFunc)ctx.ops->copy_or_mark_object, ctx.queue, precise, TRUE);
 			else {
-				PinHandleStackInteriorPtrData ud = { .start_nursery = start_nursery,
-								     .end_nursery = end_nursery,
-				};
+				PinHandleStackInteriorPtrData ud;
+				memset (&ud, 0, sizeof (ud));
+				ud.start_nursery = (void**)start_nursery;
+				ud.end_nursery = (void**)end_nursery;
 				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, pin_handle_stack_interior_ptrs, &ud, precise, FALSE);
 			}
 		}
@@ -2307,9 +2311,11 @@ mono_gc_pthread_create (pthread_t *new_thread, const pthread_attr_t *attr, void 
 {
 	int res;
 
+	MONO_ENTER_GC_SAFE;
 	mono_threads_join_lock ();
 	res = pthread_create (new_thread, attr, start_routine, arg);
 	mono_threads_join_unlock ();
+	MONO_EXIT_GC_SAFE;
 
 	return res;
 }
@@ -2420,7 +2426,9 @@ mono_gc_precise_stack_mark_enabled (void)
 void
 mono_gc_collect (int generation)
 {
+	MONO_ENTER_GC_UNSAFE;
 	sgen_gc_collect (generation);
+	MONO_EXIT_GC_UNSAFE;
 }
 
 int
@@ -2677,6 +2685,12 @@ guint8*
 mono_gc_get_card_table (int *shift_bits, gpointer *mask)
 {
 	return sgen_get_card_table_configuration (shift_bits, mask);
+}
+
+guint8*
+mono_gc_get_target_card_table (int *shift_bits, gpointer *mask)
+{
+	return sgen_get_target_card_table_configuration (shift_bits, mask);
 }
 
 gboolean

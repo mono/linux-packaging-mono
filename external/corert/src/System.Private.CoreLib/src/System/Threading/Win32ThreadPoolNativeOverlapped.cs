@@ -4,9 +4,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-#if MONO
-using System.Diagnostics.Private;
-#endif
 using System.Runtime.InteropServices;
 
 namespace System.Threading

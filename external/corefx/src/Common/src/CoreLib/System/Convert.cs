@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 
 namespace System
 {

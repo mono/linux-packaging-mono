@@ -18,7 +18,7 @@ class Autoconf (GnuPackage):
         elif arch == 'darwin-32':
             self.local_ld_flags = ['-arch i386', '-m32']
             self.local_gcc_flags = ['-arch i386', '-m32']
-            self.local_configure_flags = ['--build=i386-apple-darwin11.2.0']
+            self.local_configure_flags = ['--build=i386-apple-darwin13.0.0']
         elif arch == 'darwin-64':
             self.local_ld_flags = ['-arch x86_64 -m64']
             self.local_gcc_flags = ['-arch x86_64 -m64']

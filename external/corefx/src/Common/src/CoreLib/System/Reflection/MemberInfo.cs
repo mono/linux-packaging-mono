@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace System.Reflection
 {
+#if MONO
+    [Serializable]
+#endif
     public abstract partial class MemberInfo : ICustomAttributeProvider
     {
         protected MemberInfo() { }

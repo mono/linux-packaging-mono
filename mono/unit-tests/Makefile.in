@@ -127,12 +127,10 @@ am__test_conc_hashtable_SOURCES_DIST = test-conc-hashtable.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
 test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
 am__DEPENDENCIES_1 =
-@LOADED_LLVM_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
-@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_1)
-am__DEPENDENCIES_3 = libtestlib.la $(am__DEPENDENCIES_1) $(glib_libs) \
-	$(am__DEPENDENCIES_2)
+am__DEPENDENCIES_2 = libtestlib.la $(am__DEPENDENCIES_1) $(glib_libs) \
+	$(am__DEPENDENCIES_1)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
 test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_conc_hashtable_CFLAGS) $(CFLAGS) \
@@ -141,7 +139,7 @@ am__test_memfuncs_SOURCES_DIST = test-memfuncs.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_memfuncs_OBJECTS = test_memfuncs-test-memfuncs.$(OBJEXT)
 test_memfuncs_OBJECTS = $(am_test_memfuncs_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
 test_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_memfuncs_CFLAGS) \
 	$(CFLAGS) $(test_memfuncs_LDFLAGS) $(LDFLAGS) -o $@
@@ -156,7 +154,7 @@ am__test_mono_handle_SOURCES_DIST = test-mono-handle.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_handle_OBJECTS = test_mono_handle-test-mono-handle.$(OBJEXT)
 test_mono_handle_OBJECTS = $(am_test_mono_handle_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
 test_mono_handle_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_handle_CFLAGS) $(CFLAGS) \
@@ -167,7 +165,7 @@ am__test_mono_linked_list_set_SOURCES_DIST =  \
 test_mono_linked_list_set_OBJECTS =  \
 	$(am_test_mono_linked_list_set_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
 test_mono_linked_list_set_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_linked_list_set_CFLAGS) $(CFLAGS) \
@@ -176,7 +174,7 @@ am__test_mono_string_SOURCES_DIST = test-mono-string.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_string_OBJECTS = test_mono_string-test-mono-string.$(OBJEXT)
 test_mono_string_OBJECTS = $(am_test_mono_string_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(mini_libs) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(sgen_libs)
 test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -187,7 +185,7 @@ am__test_sgen_qsort_SOURCES_DIST = test-sgen-qsort.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
 test_sgen_qsort_OBJECTS = $(am_test_sgen_qsort_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_3)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
 test_sgen_qsort_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_sgen_qsort_CFLAGS) $(CFLAGS) $(test_sgen_qsort_LDFLAGS) \
@@ -500,6 +498,8 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
+CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
@@ -515,6 +515,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -555,11 +556,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CFLAGS = @LLVM_CFLAGS@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_CXXFLAGS = @LLVM_CXXFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
+LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
 LTCOMPILE = @LTCOMPILE@
 LTCXXCOMPILE = @LTCXXCOMPILE@

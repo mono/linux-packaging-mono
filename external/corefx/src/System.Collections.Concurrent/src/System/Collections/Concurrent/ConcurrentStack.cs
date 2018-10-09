@@ -12,7 +12,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Threading;
 
 namespace System.Collections.Concurrent

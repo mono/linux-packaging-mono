@@ -19,6 +19,7 @@
 #include "mono/metadata/debug-helpers.h"
 #include "mono/metadata/tabledefs.h"
 #include "mono/metadata/appdomain.h"
+#include "mono/metadata/abi-details.h"
 #ifdef MONO_CLASS_DEF_PRIVATE
 /* Rationale: we want the functions in this file to work even when everything
  * is broken.  They may be called from a debugger session, for example.  If
@@ -53,7 +54,7 @@ static const struct msgstr_t {
 #undef WRAPPER
 };
 static const gint16 opidx [] = {
-#define WRAPPER(a,b) [MONO_WRAPPER_ ## a] = offsetof (struct msgstr_t, MSGSTRFIELD(__LINE__)),
+#define WRAPPER(a,b) offsetof (struct msgstr_t, MSGSTRFIELD(__LINE__)),
 #include "wrapper-types.h"
 #undef WRAPPER
 };
@@ -966,7 +967,11 @@ mono_method_get_name_full (MonoMethod *method, gboolean signature, gboolean ret,
 char *
 mono_method_full_name (MonoMethod *method, gboolean signature)
 {
-	return mono_method_get_name_full (method, signature, FALSE, MONO_TYPE_NAME_FORMAT_IL);
+	char *res;
+	MONO_ENTER_GC_UNSAFE;
+	res = mono_method_get_name_full (method, signature, FALSE, MONO_TYPE_NAME_FORMAT_IL);
+	MONO_EXIT_GC_UNSAFE;
+	return res;
 }
 
 char *
@@ -1130,12 +1135,12 @@ objval_describe (MonoClass *klass, const char *addr)
 	gssize type_offset = 0;
 
 	if (klass->valuetype)
-		type_offset = -sizeof (MonoObject);
+		type_offset = - MONO_ABI_SIZEOF (MonoObject);
 
 	for (p = klass; p != NULL; p = p->parent) {
 		gpointer iter = NULL;
 		int printed_header = FALSE;
-		while ((field = mono_class_get_fields (p, &iter))) {
+		while ((field = mono_class_get_fields_internal (p, &iter))) {
 			if (field->type->attrs & (FIELD_ATTRIBUTE_STATIC | FIELD_ATTRIBUTE_HAS_FIELD_RVA))
 				continue;
 
@@ -1206,7 +1211,7 @@ mono_class_describe_statics (MonoClass* klass)
 
 	for (p = klass; p != NULL; p = p->parent) {
 		gpointer iter = NULL;
-		while ((field = mono_class_get_fields (p, &iter))) {
+		while ((field = mono_class_get_fields_internal (p, &iter))) {
 			if (field->type->attrs & FIELD_ATTRIBUTE_LITERAL)
 				continue;
 			if (!(field->type->attrs & (FIELD_ATTRIBUTE_STATIC | FIELD_ATTRIBUTE_HAS_FIELD_RVA)))

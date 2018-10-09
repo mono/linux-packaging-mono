@@ -52947,7 +52947,7 @@
   <test name="test-961.cs">
     <type name="B">
       <method name="Void Main()" attrs="150">
-        <size>2</size>
+        <size>10</size>
       </method>
       <method name="Void Foo(Int32)" attrs="145">
         <size>32</size>
@@ -52982,6 +52982,11 @@
       </method>
       <method name="Void .ctor(Int32)" attrs="6278">
         <size>8</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Void Bar(Int32)" attrs="150">
+        <size>2</size>
       </method>
     </type>
   </test>
@@ -68778,7 +68783,7 @@
   <test name="test-decl-expr-05.cs">
     <type name="X">
       <method name="Void Test(System.String)" attrs="129">
-        <size>29</size>
+        <size>62</size>
       </method>
       <method name="Boolean Call(System.String ByRef)" attrs="145">
         <size>17</size>
@@ -69311,6 +69316,21 @@
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-fixed-01.cs">
+    <type name="C">
+      <method name="Void Main()" attrs="150">
+        <size>39</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="C+Fixable">
+      <method name="Int32&amp; GetPinnableReference()" attrs="134">
+        <size>32</size>
       </method>
     </type>
   </test>
@@ -73679,7 +73699,7 @@
         <size>32</size>
       </method>
       <method name="Int32 Test()" attrs="134">
-        <size>10</size>
+        <size>2</size>
       </method>
       <method name="System.Object Foo()" attrs="129">
         <size>10</size>
@@ -73688,16 +73708,16 @@
         <size>23</size>
       </method>
       <method name="Void Test3(Int32 ByRef)" attrs="145">
-        <size>3</size>
+        <size>2</size>
       </method>
       <method name="Int32 get_Item(Int32)" attrs="2177">
-        <size>10</size>
+        <size>2</size>
       </method>
       <method name="Void add_Event(System.Action)" attrs="2182">
-        <size>3</size>
+        <size>2</size>
       </method>
       <method name="Void remove_Event(System.Action)" attrs="2182">
-        <size>3</size>
+        <size>2</size>
       </method>
       <method name="Void TestExpr_1(Boolean)" attrs="129">
         <size>21</size>
@@ -73724,7 +73744,7 @@
         <size>7</size>
       </method>
       <method name="Int32 TestExpr_6(Int32 ByRef)" attrs="145">
-        <size>10</size>
+        <size>2</size>
       </method>
       <method name="Int32 TestExpr_7(Int32 ByRef)" attrs="129">
         <size>15</size>

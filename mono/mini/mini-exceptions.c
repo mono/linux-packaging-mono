@@ -125,11 +125,10 @@ static void mono_runtime_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext
 static gboolean mono_current_thread_has_handle_block_guard (void);
 static gboolean mono_install_handler_block_guard (MonoThreadUnwindState *ctx);
 static void mono_uninstall_current_handler_block_guard (void);
+static gboolean mono_exception_walk_trace_internal (MonoException *ex, MonoExceptionFrameWalk func, gpointer user_data);
 
-#ifdef TARGET_OSX
 static void mono_summarize_stack (MonoDomain *domain, MonoThreadSummary *out, MonoContext *crash_ctx);
 static void mono_summarize_exception (MonoException *exc, MonoThreadSummary *out);
-#endif
 
 static gboolean
 first_managed (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer addr)
@@ -234,11 +233,8 @@ mono_exceptions_init (void)
 
 	cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
 	cbs.mono_walk_stack_with_state = mono_walk_stack_with_state;
-
-#ifdef TARGET_OSX
 	cbs.mono_summarize_stack = mono_summarize_stack;
 	cbs.mono_summarize_exception = mono_summarize_exception;
-#endif
 
 	if (mono_llvm_only) {
 		cbs.mono_raise_exception = mono_llvm_raise_exception;
@@ -466,7 +462,7 @@ find_jit_info (MonoDomain *domain, MonoJitTlsData *jit_tls, MonoJitInfo *res, Mo
 		 * Remove any unused lmf.
 		 * Mask out the lower bits which might be used to hold additional information.
 		 */
-		*lmf = (MonoLMF *)(((gsize)(*lmf)->previous_lmf) & ~(SIZEOF_VOID_P -1));
+		*lmf = (MonoLMF *)(((gsize)(*lmf)->previous_lmf) & ~(TARGET_SIZEOF_VOID_P -1));
 	}
 
 	/* Convert between the new and the old APIs */
@@ -630,7 +626,7 @@ mono_find_jit_info_ext (MonoDomain *domain, MonoJitTlsData *jit_tls,
 		 * Remove any unused lmf.
 		 * Mask out the lower bits which might be used to hold additional information.
 		 */
-		*lmf = (MonoLMF *)(((gsize)(*lmf)->previous_lmf) & ~(SIZEOF_VOID_P -1));
+		*lmf = (MonoLMF *)(((gsize)(*lmf)->previous_lmf) & ~(TARGET_SIZEOF_VOID_P -1));
 	}
 
 	if (frame->ji && !frame->ji->is_trampoline && !frame->ji->async)
@@ -896,6 +892,17 @@ get_method_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 gboolean
 mono_exception_walk_trace (MonoException *ex, MonoExceptionFrameWalk func, gpointer user_data)
 {
+	gboolean res;
+
+	MONO_ENTER_GC_UNSAFE;
+	res = mono_exception_walk_trace_internal (ex, func, user_data);
+	MONO_EXIT_GC_UNSAFE;
+	return res;
+}
+
+gboolean
+mono_exception_walk_trace_internal (MonoException *ex, MonoExceptionFrameWalk func, gpointer user_data)
+{
 	MONO_REQ_GC_UNSAFE_MODE;
 
 	MonoDomain *domain = mono_domain_get ();
@@ -921,7 +928,11 @@ mono_exception_walk_trace (MonoException *ex, MonoExceptionFrameWalk func, gpoin
 		}
 
 		if (ji == NULL) {
-			if (func (NULL, ip, 0, FALSE, user_data))
+			gboolean r;
+			MONO_ENTER_GC_SAFE;
+			r = func (NULL, ip, 0, FALSE, user_data);
+			MONO_EXIT_GC_SAFE;
+			if (r)
 				return TRUE;
 		} else {
 			MonoMethod *method = get_method_from_stack_frame (ji, generic_info);
@@ -1260,7 +1271,21 @@ next:
 	}
 }
 
-#ifdef TARGET_OSX
+#ifdef DISABLE_CRASH_REPORTING
+static void
+mono_summarize_stack (MonoDomain *domain, MonoThreadSummary *out, MonoContext *crash_ctx)
+{
+	return;
+}
+
+static void
+mono_summarize_exception (MonoException *exc, MonoThreadSummary *out)
+{
+	return;
+}
+
+#else
+
 typedef struct {
 	MonoFrameSummary *frames;
 	int num_frames;
@@ -2151,6 +2176,15 @@ interp_exit_finally_abort_blocks (MonoJitInfo *ji, int start_clause, int end_cla
 	}
 }
 
+static MonoException *
+mono_get_exception_runtime_wrapped_checked (MonoObject *wrapped_exception_raw, MonoError *error)
+{
+	HANDLE_FUNCTION_ENTER ();
+	MONO_HANDLE_DCL (MonoObject, wrapped_exception);
+	MonoExceptionHandle ret = mono_get_exception_runtime_wrapped_handle (wrapped_exception, error);
+	HANDLE_FUNCTION_RETURN_OBJ (ret);
+}
+
 /**
  * mono_handle_exception_internal:
  * \param ctx saved processor state
@@ -2173,7 +2207,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 	int frame_count = 0;
 	gint32 filter_idx, first_filter_idx = 0;
 	int i;
-	MonoObject *ex_obj;
+	MonoObject *ex_obj = NULL;
 	MonoObject *non_exception = NULL;
 	Unwinder unwinder;
 	gboolean in_interp;
@@ -2267,10 +2301,13 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 	if (!resume) {
 		MonoContext ctx_cp = *ctx;
 		if (mono_trace_is_enabled ()) {
-			MonoMethod *system_exception_get_message = mono_class_get_method_from_name (mono_defaults.exception_class, "get_Message", 0);
+			ERROR_DECL (error);
+			MonoMethod *system_exception_get_message = mono_class_get_method_from_name_checked (mono_defaults.exception_class, "get_Message", 0, 0, error);
+			mono_error_cleanup (error);
+			error_init (error);
 			MonoMethod *get_message = system_exception_get_message == NULL ? NULL : mono_object_get_virtual_method (obj, system_exception_get_message);
 			MonoObject *message;
-			const char *type_name = mono_class_get_name (mono_object_class (mono_ex));
+			const char *type_name = m_class_get_name (mono_object_class (mono_ex));
 			char *msg = NULL;
 			if (get_message == NULL) {
 				message = NULL;
@@ -2947,90 +2984,6 @@ print_stack_frame_to_string (StackFrameInfo *frame, MonoContext *ctx, gpointer d
 }
 
 #ifndef MONO_CROSS_COMPILE
-static gchar
-conv_ascii_char (gchar s)
-{
-	if (s < 0x20)
-		return '.';
-	if (s > 0x7e)
-		return '.';
-	return s;
-}
-
-static void
-xxd_mem (gpointer d, int len)
-{
-	guint8 *data = (guint8 *) d;
-
-	for (int off = 0; off < len; off += 0x10) {
-		gchar *line = g_strdup_printf ("%p  ", data + off);
-
-		for (int i = 0; i < 0x10; i++) {
-			if ((i + off) >= len)
-				line = g_strdup_printf ("%s   ", line);
-			else
-				line = g_strdup_printf ("%s%02x ", line, data [off + i]);
-		}
-
-		line = g_strdup_printf ("%s ", line);
-
-		for (int i = 0; i < 0x10; i++) {
-			if ((i + off) >= len)
-				line = g_strdup_printf ("%s ", line);
-			else
-				line = g_strdup_printf ("%s%c", line, conv_ascii_char (data [off + i]));
-		}
-
-		mono_runtime_printf_err ("%s", line);
-	}
-}
-
-static void
-dump_memory_around_ip (void *ctx)
-{
-#ifdef MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX
-	MonoContext mctx;
-	mono_sigctx_to_monoctx (ctx, &mctx);
-	gpointer native_ip = MONO_CONTEXT_GET_IP (&mctx);
-	if (native_ip) {
-		mono_runtime_printf_err ("Memory around native instruction pointer (%p):", native_ip);
-		xxd_mem (((guint8 *) native_ip) - 0x10, 0x40);
-	} else {
-		mono_runtime_printf_err ("instruction pointer is NULL, skip dumping");
-	}
-#endif
-}
-
-static void print_process_map (void)
-{
-#ifdef __linux__
-	FILE *fp = fopen ("/proc/self/maps", "r");
-	char line [256];
-
-	if (fp == NULL) {
-		mono_runtime_printf_err ("no /proc/self/maps, not on linux?\n");
-		return;
-	}
-
-	mono_runtime_printf_err ("/proc/self/maps:");
-	const int max_lines = 25;
-	int i = 0;
-
-	while (fgets (line, sizeof (line), fp) && i++ < max_lines) {
-		// strip newline
-		size_t len = strlen (line);
-		if (len > 0 && line [len - 1] == '\n')
-			line [len - 1] = '\0';
-
-		mono_runtime_printf_err ("%s", line);
-	}
-
-	fclose (fp);
-#else
-	/* do nothing */
-#endif
-}
-
 static gboolean handle_crash_loop = FALSE;
 
 /*
@@ -3042,9 +2995,6 @@ static gboolean handle_crash_loop = FALSE;
 void
 mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info)
 {
-#ifdef MONO_ARCH_USE_SIGACTION
-	struct sigaction sa;
-#endif
 	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
 
 	if (handle_crash_loop)
@@ -3052,14 +3002,10 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 
 	if (mini_get_debug_options ()->suspend_on_native_crash) {
 		mono_runtime_printf_err ("Received %s, suspending...", signal);
-#ifdef HOST_WIN32
-		while (1)
-			;
-#else
 		while (1) {
-			sleep (1);
+			// Sleep for 1 second.
+			g_usleep (1000 * 1000);
 		}
-#endif
 	}
 
 	/* prevent infinite loops in crash handling */
@@ -3073,132 +3019,7 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 		mono_walk_stack (print_stack_frame_to_stderr, MONO_UNWIND_LOOKUP_IL_OFFSET, NULL);
 	}
 
-	print_process_map ();
-
-	dump_memory_around_ip (ctx);
-
-#ifdef HAVE_BACKTRACE_SYMBOLS
- {
-	void *array [256];
-	char **names;
-	int i, size;
-
-	mono_runtime_printf_err ("\nNative stacktrace:\n");
-
-	size = backtrace (array, 256);
-	names = backtrace_symbols (array, size);
-	for (i =0; i < size; ++i) {
-		mono_runtime_printf_err ("\t%s", names [i]);
-	}
-	g_free (names);
-
-	/* Try to get more meaningful information using gdb */
-
-#if !defined(HOST_WIN32) && defined(HAVE_SYS_SYSCALL_H) && (defined(SYS_fork) || HAVE_FORK)
-	if (!mini_get_debug_options ()->no_gdb_backtrace) {
-		/* From g_spawn_command_line_sync () in eglib */
-		pid_t pid;
-		int status;
-		pid_t crashed_pid = getpid ();
-
-#if defined(TARGET_OSX)
-		MonoStackHash hashes;
-#endif
-		gchar *output = NULL;
-		MonoContext mctx;
-		if (ctx) {
-			gboolean leave = FALSE;
-			gboolean dump_for_merp = FALSE;
-#if defined(TARGET_OSX)
-			dump_for_merp = mono_merp_enabled ();
-#endif
-
-			if (!dump_for_merp) {
-#ifdef DISABLE_STRUCTURED_CRASH
-				leave = TRUE;
-#elif defined(TARGET_OSX)
-				mini_register_sigterm_handler ();
-#endif
-			}
-
-#ifdef TARGET_OSX
-			if (!leave) {
-				mono_sigctx_to_monoctx (ctx, &mctx);
-				// Do before forking
-				if (!mono_threads_summarize (&mctx, &output, &hashes))
-					g_assert_not_reached ();
-			}
-
-			// We want our crash, and don't have telemetry
-			// So we dump to disk
-			if (!leave && !dump_for_merp)
-				mono_crash_dump (output, &hashes);
-#endif
-		}
-
-		/*
-		 * glibc fork acquires some locks, so if the crash happened inside malloc/free,
-		 * it will deadlock. Call the syscall directly instead.
-		 */
-#if defined(HOST_ANDROID)
-		/* SYS_fork is defined to be __NR_fork which is not defined in some ndk versions */
-		g_assert_not_reached ();
-#elif !defined(HOST_DARWIN) && defined(SYS_fork)
-		pid = (pid_t) syscall (SYS_fork);
-#elif HAVE_FORK
-		pid = (pid_t) fork ();
-#else
-		g_assert_not_reached ();
-#endif
-
-#if defined (HAVE_PRCTL) && defined(PR_SET_PTRACER)
-		if (pid > 0) {
-			// Allow gdb to attach to the process even if ptrace_scope sysctl variable is set to
-			// a value other than 0 (the most permissive ptrace scope). Most modern Linux
-			// distributions set the scope to 1 which allows attaching only to direct children of
-			// the current process
-			prctl (PR_SET_PTRACER, pid, 0, 0, 0);
-		}
-#endif
-
-#if defined(TARGET_OSX)
-		if (mono_merp_enabled ()) {
-			if (pid == 0) {
-				if (!ctx) {
-					mono_runtime_printf_err ("\nMust always pass non-null context when using merp.\n");
-					exit (1);
-				}
-
-				mono_merp_invoke (crashed_pid, signal, output, &hashes);
-
-				exit (1);
-			}
-		}
-#endif
-
-		if (pid == 0) {
-			dup2 (STDERR_FILENO, STDOUT_FILENO);
-
-			mono_gdb_render_native_backtraces (crashed_pid);
-			exit (1);
-		}
-
-		mono_runtime_printf_err ("\nDebug info from gdb:\n");
-		waitpid (pid, &status, 0);
-	}
-#endif
- }
-#else
-#ifdef HOST_ANDROID
-	/* set DUMPABLE for this process so debuggerd can attach with ptrace(2), see:
-	 * https://android.googlesource.com/platform/bionic/+/151da681000c07da3c24cd30a3279b1ca017f452/linker/debugger.cpp#206
-	 * this has changed on later versions of Android.  Also, we don't want to
-	 * set this on start-up as DUMPABLE has security implications. */
-	prctl (PR_SET_DUMPABLE, 1);
-
-	mono_runtime_printf_err ("\nNo native Android stacktrace (see debuggerd output).\n");
-#endif
-#endif
+	mono_dump_native_crash_info (signal, ctx, info);
 
 	/*
 	 * A SIGSEGV indicates something went very wrong so we can no longer depend
@@ -3215,6 +3036,7 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 			signal);
 
 #ifdef MONO_ARCH_USE_SIGACTION
+	struct sigaction sa;
 	sa.sa_handler = SIG_DFL;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;
@@ -3227,14 +3049,7 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 	g_assert (sigaction (SIGILL, &sa, NULL) != -1);
 #endif
 
-	if (!mono_do_crash_chaining) {
-		/*Android abort is a fluke, it doesn't abort, it triggers another segv. */
-#if defined (HOST_ANDROID)
-		exit (-1);
-#else
-		abort ();
-#endif
-	}
+	mono_post_native_crash_handler (signal, ctx, info, mono_do_crash_chaining);
 }
 
 #else
