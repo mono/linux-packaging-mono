@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("0.10.0.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("0.10.1.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2018 Jb Evain")]
-[assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0")]
+[assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.1.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.1.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -1279,6 +1279,7 @@ namespace Mono.Cecil
     public sealed partial class ResolutionException : System.Exception
     {
         public ResolutionException(Mono.Cecil.MemberReference member) { }
+        public ResolutionException(Mono.Cecil.MemberReference member, System.Exception innerException) { }
         public Mono.Cecil.MemberReference Member { get { throw null; } }
         public Mono.Cecil.IMetadataScope Scope { get { throw null; } }
     }

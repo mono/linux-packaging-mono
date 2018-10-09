@@ -2406,6 +2406,9 @@ namespace Mono.Cecil {
 			if (token.TokenType != TokenType.Signature)
 				throw new NotSupportedException ();
 
+			if (token.RID == 0)
+				return null;
+
 			if (!MoveTo (Table.StandAloneSig, token.RID))
 				return null;
 
@@ -3763,8 +3766,10 @@ namespace Mono.Cecil {
 			if (length == 0)
 				return string.Empty;
 
-			var @string = Encoding.UTF8.GetString (buffer, position,
-				buffer [position + length - 1] == 0 ? length - 1 : length);
+			if (position + length >= buffer.Length)
+				return string.Empty;
+
+			var @string = Encoding.UTF8.GetString (buffer, position, length);
 
 			position += length;
 			return @string;
