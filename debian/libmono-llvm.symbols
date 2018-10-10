@@ -57,6 +57,7 @@
  mono_loader_lock@Base 5.15.0.231
  mono_loader_unlock@Base 5.15.0.231
  mono_marshal_find_nonzero_bit_offset@Base 5.15.0.231
+ mono_marshal_get_wrapper_info@Base 5.21.0.116
  mono_opcode_to_cond@Base 5.15.0.231
  mono_print_unwind_info@Base 5.15.0.231
  mono_resolve_patch_target@Base 5.15.0.231
