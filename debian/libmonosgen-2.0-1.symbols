@@ -24,8 +24,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_foreach@Base 4.1.0.1738
  mono_assembly_get_assemblyref@Base 4.1.0.1738
  mono_assembly_get_image@Base 4.1.0.1738
+ mono_assembly_get_image_internal@Base 5.18.0.143
  mono_assembly_get_main@Base 4.1.0.1738
  mono_assembly_get_name@Base 4.3.0.624
+ mono_assembly_get_name_internal@Base 5.18.0.143
  mono_assembly_get_object@Base 4.1.0.1738
  mono_assembly_getrootdir@Base 4.1.0.1738
  mono_assembly_invoke_load_hook@Base 4.1.0.1738
@@ -221,6 +223,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_free_locals@Base 4.1.0.1738
  mono_debug_free_method_jit_info@Base 4.1.0.1738
  mono_debug_free_source_location@Base 4.1.0.1738
+ mono_debug_get_handle@Base 5.18.0.143
  mono_debug_il_offset_from_address@Base 4.1.0.1738
  mono_debug_init@Base 4.1.0.1738
  mono_debug_lookup_locals@Base 4.1.0.1738
@@ -547,6 +550,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_lookup_pinvoke_call@Base 4.1.0.1738
  mono_main@Base 4.1.0.1738
  mono_marshal_ilgen_init@Base 5.12.0.220
+ mono_marshal_set_last_error@Base 5.18.0.143
  mono_marshal_string_to_utf16@Base 4.1.0.1738
  mono_md5_final@Base 4.1.0.1738
  mono_md5_get_digest@Base 4.1.0.1738
@@ -990,9 +994,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_info_get_flags@Base 5.14.0.78
  mono_thread_info_get_small_id@Base 5.8.0.22
  mono_thread_info_get_tools_data@Base 5.14.0.116
+ mono_thread_info_install_interrupt@Base 5.18.0.143
  mono_thread_info_register_small_id@Base 5.8.0.22
  mono_thread_info_set_flags@Base 5.14.0.78
  mono_thread_info_set_tools_data@Base 5.14.0.116
+ mono_thread_info_uninstall_interrupt@Base 5.18.0.143
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
  mono_thread_internal_current@Base 5.14.0.78
@@ -1284,12 +1290,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_string_append_printf@Base 5.8.0.22
  monoeg_g_string_append_unichar@Base 5.8.0.22
  monoeg_g_string_append_vprintf@Base 5.8.0.22
- monoeg_g_string_erase@Base 5.8.0.22
  monoeg_g_string_free@Base 5.8.0.22
- monoeg_g_string_insert@Base 5.8.0.22
  monoeg_g_string_new@Base 5.8.0.22
  monoeg_g_string_new_len@Base 5.8.0.22
- monoeg_g_string_prepend@Base 5.8.0.22
  monoeg_g_string_printf@Base 5.8.0.22
  monoeg_g_string_set_size@Base 5.8.0.22
  monoeg_g_string_sized_new@Base 5.8.0.22
