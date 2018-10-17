@@ -11,7 +11,7 @@ Build-Depends: debhelper (>= 7),
 	cmake (>= 2.8.10),
 	gcc (>= 4:4.7) | gcc-4.7 | gcc-mozilla (>= 4.7),
 	g++ (>= 4:4.7) | g++-4.7 | gcc-mozilla (>= 4.7),
-	mono-llvm-dev,
+	mono-llvm-dev [amd64 arm64 armhf i386 ppc64el],
 	tzdata,
 	libxml-dom-perl,
 	libxslt1-dev,
@@ -99,7 +99,7 @@ Description: Mono runtime - SGen
  collector.
 
 Package: mono-llvm-support
-Architecture: i386 amd64 armel armhf arm64
+Architecture: i386 amd64 armhf arm64
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          mono-llvm-tools,
@@ -192,7 +192,7 @@ Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 p
 Depends: ${misc:Depends},
          mono-runtime (= ${binary:Version}),
          mono-runtime-sgen (= ${binary:Version}) [amd64 armel arm64 armhf i386 kfreebsd-amd64 kfreebsd-i386 s390x],
-         mono-llvm-support (= ${binary:Version}) [amd64 armel arm64 armhf i386],
+         mono-llvm-support (= ${binary:Version}) [amd64 arm64 armhf i386],
          libmono-2.0-1 (= ${binary:Version}),
          libmono-profiler (= ${binary:Version}),
          mono-utils (= ${binary:Version}),
