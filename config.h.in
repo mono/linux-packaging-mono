@@ -146,6 +146,12 @@
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
 
+/* Enable feature experiments */
+#undef ENABLE_EXPERIMENTS
+
+/* Enable experiment 'null' */
+#undef ENABLE_EXPERIMENT_null
+
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
 
@@ -755,6 +761,9 @@
 
 /* Define to 1 if you have the `pthread_getattr_np' function. */
 #undef HAVE_PTHREAD_GETATTR_NP
+
+/* Define to 1 if you have the `pthread_getname_np' function. */
+#undef HAVE_PTHREAD_GETNAME_NP
 
 /* Define to 1 if you have the `pthread_get_stackaddr_np' function. */
 #undef HAVE_PTHREAD_GET_STACKADDR_NP

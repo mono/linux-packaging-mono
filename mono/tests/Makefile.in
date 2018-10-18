@@ -555,7 +555,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 subdir = mono/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -816,6 +817,21 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -1082,27 +1098,27 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	hashcode.cs delegate1.cs delegate2.cs delegate3.cs \
 	delegate5.cs delegate6.cs delegate7.cs delegate8.cs \
 	delegate10.cs delegate11.cs delegate12.cs delegate13.cs \
-	delegate14.cs delegate15.cs largeexp.cs largeexp2.cs \
-	marshalbyref1.cs static-ctor.cs inctest.cs bound.cs \
-	array-invoke.cs test-arr.cs decimal.cs decimal-array.cs \
-	marshal.cs marshal1.cs marshal2.cs marshal3.cs marshal5.cs \
-	marshal6.cs marshal7.cs marshal8.cs marshal9.cs marshalbool.cs \
-	test-byval-in-struct.cs thread.cs thread5.cs thread-static.cs \
-	thread-static-init.cs context-static.cs float-pop.cs \
-	interfacecast.cs array3.cs classinit.cs classinit2.cs \
-	classinit3.cs synchronized.cs async_read.cs threadpool.cs \
-	threadpool1.cs threadpool-exceptions1.cs \
-	threadpool-exceptions2.cs threadpool-exceptions3.cs \
-	threadpool-exceptions4.cs threadpool-exceptions5.cs \
-	threadpool-exceptions6.cs base-definition.cs bug-27420.cs \
-	bug-46781.cs bug-42136.cs bug-59286.cs bug-70561.cs \
-	bug-78311.cs bug-78653.cs bug-78656.cs bug-77127.cs \
-	bug-323114.cs bug-Xamarin-5278.cs interlocked.cs \
-	delegate-async-exit.cs delegate-delegate-exit.cs \
-	delegate-exit.cs delegate-disposed-hashcode.cs \
-	finalizer-abort.cs finalizer-exception.cs finalizer-exit.cs \
-	finalizer-thread.cs main-exit.cs \
-	main-returns-abort-resetabort.cs \
+	delegate14.cs delegate15.cs delegate16.cs largeexp.cs \
+	largeexp2.cs marshalbyref1.cs static-ctor.cs inctest.cs \
+	bound.cs array-invoke.cs test-arr.cs decimal.cs \
+	decimal-array.cs marshal.cs marshal1.cs marshal2.cs \
+	marshal3.cs marshal5.cs marshal6.cs marshal7.cs marshal8.cs \
+	marshal9.cs marshalbool.cs test-byval-in-struct.cs thread.cs \
+	thread5.cs thread-static.cs thread-static-init.cs \
+	context-static.cs float-pop.cs interfacecast.cs array3.cs \
+	classinit.cs classinit2.cs classinit3.cs synchronized.cs \
+	async_read.cs threadpool.cs threadpool1.cs \
+	threadpool-exceptions1.cs threadpool-exceptions2.cs \
+	threadpool-exceptions3.cs threadpool-exceptions4.cs \
+	threadpool-exceptions5.cs threadpool-exceptions6.cs \
+	base-definition.cs bug-27420.cs bug-46781.cs bug-42136.cs \
+	bug-59286.cs bug-70561.cs bug-78311.cs bug-78653.cs \
+	bug-78656.cs bug-77127.cs bug-323114.cs bug-Xamarin-5278.cs \
+	interlocked.cs delegate-async-exit.cs \
+	delegate-delegate-exit.cs delegate-exit.cs \
+	delegate-disposed-hashcode.cs finalizer-abort.cs \
+	finalizer-exception.cs finalizer-exit.cs finalizer-thread.cs \
+	main-exit.cs main-returns-abort-resetabort.cs \
 	main-returns-background-abort-resetabort.cs \
 	main-returns-background-resetabort.cs \
 	main-returns-background.cs main-returns-background-change.cs \
