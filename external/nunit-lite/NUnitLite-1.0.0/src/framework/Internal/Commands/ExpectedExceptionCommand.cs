@@ -64,7 +64,7 @@ namespace NUnit.Framework.Internal.Commands
             }
             catch (Exception ex)
             {
-#if !NETCF && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__
+#if !NETCF && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__ && !MONOTOUCH_TV && !MONOTOUCH_WATCH
                 if (ex is ThreadAbortException)
                     Thread.ResetAbort();
 #endif

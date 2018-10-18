@@ -306,7 +306,7 @@ namespace NUnit.Framework.Internal
             if (other == null)
                 return -1;
 
-            return this.FullName.CompareTo(other.FullName);
+            return String.CompareOrdinal (this.FullName, other.FullName);
         }
 
         #endregion

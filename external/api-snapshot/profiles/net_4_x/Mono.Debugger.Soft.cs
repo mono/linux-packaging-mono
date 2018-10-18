@@ -466,6 +466,7 @@ namespace Mono.Debugger.Soft
         public System.Guid ModuleVersionId { get { throw null; } }
         public string Name { get { throw null; } }
         public string ScopeName { get { throw null; } }
+        public string SourceLink { get { throw null; } }
     }
     public partial class ObjectCollectedException : System.Exception
     {

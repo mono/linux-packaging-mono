@@ -109,10 +109,6 @@ namespace NUnitLite.Runner
         /// <param name="args">An array of arguments</param>
         public void Execute(string[] args)
         {
-            // NOTE: Execute must be directly called from the
-            // test assembly in order for the mechanism to work.
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
-
             this.commandLineOptions = new CommandLineOptions();
             commandLineOptions.Parse(args);
 
@@ -163,8 +159,12 @@ namespace NUnitLite.Runner
 			}
                     }
 
-                    if (assemblies.Count == 0)
+                    if (assemblies.Count == 0) {
+                        // NOTE: Execute must be directly called from the
+                        // test assembly in order for the mechanism to work.
+                        Assembly callingAssembly = Assembly.GetCallingAssembly();
                         assemblies.Add(callingAssembly);
+                    }
 
                     // TODO: For now, ignore all but first assembly
                     Assembly assembly = assemblies[0] as Assembly;

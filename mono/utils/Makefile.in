@@ -102,7 +102,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
 subdir = mono/utils
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -133,10 +134,10 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-counters.c mono-compiler.h mono-complex.h mono-dl.c \
 	mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c \
 	mono-dl-wasm.c mono-dl.h mono-dl-windows-internals.h \
-	mono-log-windows.c mono-log-common.c mono-log-posix.c \
-	mono-log-android.c mono-log-darwin.c \
-	mono-log-flight-recorder.c mono-merp.c mono-merp.h \
-	mono-state.h mono-state.c mono-internal-hash.c \
+	mono-experiments.h mono-experiments.c mono-log-windows.c \
+	mono-log-common.c mono-log-posix.c mono-log-android.c \
+	mono-log-darwin.c mono-log-flight-recorder.c mono-merp.c \
+	mono-merp.h mono-state.h mono-state.c mono-internal-hash.c \
 	mono-internal-hash.h mono-io-portability.c \
 	mono-io-portability.h monobitset.c mono-filemap.c mono-mmap.c \
 	mono-mmap-windows.c mono-mmap.h mono-mmap-internals.h \
@@ -199,6 +200,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-dl-darwin.lo \
 	libmonoutils_la-mono-dl-posix.lo \
 	libmonoutils_la-mono-dl-wasm.lo \
+	libmonoutils_la-mono-experiments.lo \
 	libmonoutils_la-mono-log-windows.lo \
 	libmonoutils_la-mono-log-common.lo \
 	libmonoutils_la-mono-log-posix.lo \
@@ -527,6 +529,21 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -689,6 +706,8 @@ monoutils_sources = \
 	mono-dl-wasm.c	\
 	mono-dl.h		\
 	mono-dl-windows-internals.h	\
+	mono-experiments.h	\
+	mono-experiments.c	\
 	mono-log-windows.c	\
 	mono-log-common.c	\
 	mono-log-posix.c	\
@@ -866,7 +885,7 @@ libmonoutilsinclude_HEADERS = \
 	mono-dl-fallback.h	\
 	mono-counters.h
 
-EXTRA_DIST = mono-embed.h mono-embed.c ../../support/libm/complex.c
+EXTRA_DIST = mono-embed.h mono-embed.c ../../support/libm/complex.c mono-experiments.def
 DIST_SUBDIRS = jemalloc
 @MONO_JEMALLOC_ENABLED_TRUE@SUBDIRS = jemalloc
 all: $(BUILT_SOURCES)
@@ -955,6 +974,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-dl-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-dl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-experiments.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-filemap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-flight-recorder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-arm.Plo@am__quote@
@@ -1157,6 +1177,13 @@ libmonoutils_la-mono-dl-wasm.lo: mono-dl-wasm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-dl-wasm.c' object='libmonoutils_la-mono-dl-wasm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-dl-wasm.lo `test -f 'mono-dl-wasm.c' || echo '$(srcdir)/'`mono-dl-wasm.c
+
+libmonoutils_la-mono-experiments.lo: mono-experiments.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-experiments.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-experiments.Tpo -c -o libmonoutils_la-mono-experiments.lo `test -f 'mono-experiments.c' || echo '$(srcdir)/'`mono-experiments.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-experiments.Tpo $(DEPDIR)/libmonoutils_la-mono-experiments.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-experiments.c' object='libmonoutils_la-mono-experiments.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-experiments.lo `test -f 'mono-experiments.c' || echo '$(srcdir)/'`mono-experiments.c
 
 libmonoutils_la-mono-log-windows.lo: mono-log-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-log-windows.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-log-windows.Tpo -c -o libmonoutils_la-mono-log-windows.lo `test -f 'mono-log-windows.c' || echo '$(srcdir)/'`mono-log-windows.c
