@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace System.Text
 {
@@ -11,7 +12,12 @@ namespace System.Text
     // Latin1Encoding is a simple override to optimize the GetString version of Latin1Encoding.
     // because of the best fit cases we can't do this when encoding the string, only when decoding
     //
+#if MONO
+    [Serializable]
+    internal class Latin1Encoding : EncodingNLS, ISerializable
+#else
     internal class Latin1Encoding : EncodingNLS
+#endif
     {
         // Used by Encoding.Latin1 for lazy initialization
         // The initialization code will not be run until a static member of the class is referenced
@@ -21,6 +27,23 @@ namespace System.Text
         public Latin1Encoding() : base(Encoding.ISO_8859_1)
         {
         }
+
+#if MONO
+        // ISerializable implementation, serialize it as a CodePageEncoding
+        [System.Security.SecurityCritical]  // auto-generated_required
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // Make sure to get teh base stuff too This throws if info is null
+            SerializeEncoding(info, context);
+
+            // In Everett this is a CodePageEncoding, so it needs maxCharSize
+            info.AddValue("CodePageEncoding+maxCharSize", 1);
+
+            // And extras for Everett's wierdness
+            info.AddValue("CodePageEncoding+m_codePage", this.CodePage);
+            info.AddValue("CodePageEncoding+dataItem", null);
+        }
+#endif
 
         // GetByteCount
         // Note: We start by assuming that the output will be the same as count.  Having
