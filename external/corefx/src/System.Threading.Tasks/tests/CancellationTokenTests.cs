@@ -11,6 +11,42 @@ using Xunit;
 
 namespace System.Threading.Tasks.Tests
 {
+#if MONO
+	static class FinalizerHelpers {
+		private static IntPtr aptr;
+
+		private static unsafe void NoPinActionHelper (int depth, Action act)
+		{
+			// Avoid tail calls
+			int* values = stackalloc int [20];
+			aptr = new IntPtr (values);
+
+			if (depth <= 0) {
+				//
+				// When the action is called, this new thread might have not allocated
+				// anything yet in the nursery. This means that the address of the first
+				// object that would be allocated would be at the start of the tlab and
+				// implicitly the end of the previous tlab (address which can be in use
+				// when allocating on another thread, at checking if an object fits in
+				// this other tlab). We allocate a new dummy object to avoid this type
+				// of false pinning for most common cases.
+				//
+				new object ();
+				act ();
+			} else {
+				NoPinActionHelper (depth - 1, act);
+			}
+		}
+
+		public static void PerformNoPinAction (Action act)
+		{
+			Thread thr = new Thread (() => NoPinActionHelper (128, act));
+			thr.Start ();
+			thr.Join ();
+		}
+	}
+#endif
+
     public static partial class CancellationTokenTests
     {
         [Fact]
@@ -821,7 +857,13 @@ namespace System.Threading.Tasks.Tests
         [System.Runtime.CompilerServices.MethodImplAttribute(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         static void FinalizeHelper(DisposeTracker disposeTracker)
         {
-            new DerivedCTS(disposeTracker);
+#if MONO
+			FinalizerHelpers.PerformNoPinAction (delegate () {
+#endif
+				new DerivedCTS(disposeTracker);
+#if MONO
+			});
+#endif
         }
 
         // Several tests for deriving custom user types from CancellationTokenSource
