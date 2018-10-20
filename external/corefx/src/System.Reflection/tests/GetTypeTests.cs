@@ -12,6 +12,13 @@ namespace System.Reflection.Tests
         [Fact]
         public void GetType_EmptyString()
         {
+#if MONO
+            string exceptionParamName = "typeName";
+            string msg = "Name cannot be empty";
+#else
+            string exceptionParamName = "typeName@0";
+            string msg = null;
+#endif
             Assembly a = typeof(GetTypeTests).GetTypeInfo().Assembly;
             Module m = a.ManifestModule;
 
@@ -26,7 +33,7 @@ namespace System.Reflection.Tests
             Assert.Null(Type.GetType(aqn, throwOnError: false));
 
             Assert.Throws<TypeLoadException>(() => Type.GetType(typeName, throwOnError: true));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => Type.GetType(aqn, throwOnError: true));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => Type.GetType(aqn, throwOnError: true));
 
             Assert.Null(Type.GetType(typeName, throwOnError: false, ignoreCase: false));
             Assert.Null(Type.GetType(typeName, throwOnError: false, ignoreCase: true));
@@ -35,22 +42,22 @@ namespace System.Reflection.Tests
 
             Assert.Throws<TypeLoadException>(() => Type.GetType(typeName, throwOnError: true, ignoreCase: false));
             Assert.Throws<TypeLoadException>(() => Type.GetType(typeName, throwOnError: true, ignoreCase: true));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => Type.GetType(aqn, throwOnError: true, ignoreCase: false));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => Type.GetType(aqn, throwOnError: true, ignoreCase: true));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => Type.GetType(aqn, throwOnError: true, ignoreCase: false));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => Type.GetType(aqn, throwOnError: true, ignoreCase: true));
 
             // Assembly.GetType
-            AssertExtensions.Throws<ArgumentException>(null, () => a.GetType(typeName));
+            AssertExtensions.Throws<ArgumentException>(msg, () => a.GetType(typeName));
             Assert.Null(a.GetType(aqn));
 
-            AssertExtensions.Throws<ArgumentException>(null, () => a.GetType(typeName, throwOnError: false, ignoreCase: false));
-            AssertExtensions.Throws<ArgumentException>(null, () => a.GetType(typeName, throwOnError: false, ignoreCase: true));
+            AssertExtensions.Throws<ArgumentException>(msg, () => a.GetType(typeName, throwOnError: false, ignoreCase: false));
+            AssertExtensions.Throws<ArgumentException>(msg, () => a.GetType(typeName, throwOnError: false, ignoreCase: true));
             Assert.Null(a.GetType(aqn, throwOnError: false, ignoreCase: false));
             Assert.Null(a.GetType(aqn, throwOnError: false, ignoreCase: true));
 
-            AssertExtensions.Throws<ArgumentException>(null, () => a.GetType(typeName, throwOnError: true, ignoreCase: false));
-            AssertExtensions.Throws<ArgumentException>(null, () => a.GetType(typeName, throwOnError: true, ignoreCase: true));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => a.GetType(aqn, throwOnError: true, ignoreCase: false));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => a.GetType(aqn, throwOnError: true, ignoreCase: true));
+            AssertExtensions.Throws<ArgumentException>(msg, () => a.GetType(typeName, throwOnError: true, ignoreCase: false));
+            AssertExtensions.Throws<ArgumentException>(msg, () => a.GetType(typeName, throwOnError: true, ignoreCase: true));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => a.GetType(aqn, throwOnError: true, ignoreCase: false));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => a.GetType(aqn, throwOnError: true, ignoreCase: true));
 
             // Module.GetType
             AssertExtensions.Throws<ArgumentException>(null, () => m.GetType(typeName, throwOnError: false, ignoreCase: false));
@@ -60,8 +67,8 @@ namespace System.Reflection.Tests
 
             AssertExtensions.Throws<ArgumentException>(null, () => m.GetType(typeName, throwOnError: true, ignoreCase: false));
             AssertExtensions.Throws<ArgumentException>(null, () => m.GetType(typeName, throwOnError: true, ignoreCase: true));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => m.GetType(aqn, throwOnError: true, ignoreCase: false));
-            AssertExtensions.Throws<ArgumentException>("typeName@0", () => m.GetType(aqn, throwOnError: true, ignoreCase: true));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => m.GetType(aqn, throwOnError: true, ignoreCase: false));
+            AssertExtensions.Throws<ArgumentException>(exceptionParamName, () => m.GetType(aqn, throwOnError: true, ignoreCase: true));
         }
 
         public static IEnumerable<object[]> GetType_TestData()

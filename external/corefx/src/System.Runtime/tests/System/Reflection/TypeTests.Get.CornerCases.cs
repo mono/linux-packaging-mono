@@ -271,7 +271,7 @@ namespace System.Reflection.Tests
 
     public static class TypeTests_HiddenTestingOrder
     {
-        [Fact]
+        [Fact(Skip="Mono issue #11235")]
         public static void HideDetectionHappensBeforeBindingFlagChecks()
         {
             // Hiding members suppress results even if the hiding member itself is filtered out by the binding flags.
@@ -299,7 +299,7 @@ namespace System.Reflection.Tests
             Assert.Equal(nameof(Base.MyProp), properties[0].Name);
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue #11235")]
         public static void HideDetectionHappensBeforeStaticInNonFlattenedHierarchyChecks()
         {
             // Hiding members suppress results even if the hiding member is filtered out due to being a static member in a base class (and BindingFlags.FlattenHierarchy not being specified.)

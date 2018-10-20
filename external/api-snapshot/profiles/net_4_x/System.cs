@@ -8807,7 +8807,6 @@ namespace System.Net
         public System.Net.BindIPEndPoint BindIPEndPointDelegate { get { throw null; } set { } }
         public System.Security.Cryptography.X509Certificates.X509Certificate Certificate { get { throw null; } }
         public System.Security.Cryptography.X509Certificates.X509Certificate ClientCertificate { get { throw null; } }
-        [System.MonoTODOAttribute]
         public int ConnectionLeaseTimeout { get { throw null; } set { } }
         public int ConnectionLimit { get { throw null; } set { } }
         public string ConnectionName { get { throw null; } }
@@ -8816,7 +8815,6 @@ namespace System.Net
         public System.DateTime IdleSince { get { throw null; } }
         public int MaxIdleTime { get { throw null; } set { } }
         public virtual System.Version ProtocolVersion { get { throw null; } }
-        [System.MonoTODOAttribute]
         public int ReceiveBufferSize { get { throw null; } set { } }
         public bool SupportsPipelining { get { throw null; } }
         public bool UseNagleAlgorithm { get { throw null; } set { } }

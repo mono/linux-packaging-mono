@@ -26,6 +26,9 @@ using System.Runtime.Versioning;
 
 namespace System
 {
+#if MONO
+    [Serializable]
+#endif
     [Obsolete("System.CurrentSystemTimeZone has been deprecated.  Please investigate the use of System.TimeZoneInfo.Local instead.")]
     internal partial class CurrentSystemTimeZone : TimeZone
     {

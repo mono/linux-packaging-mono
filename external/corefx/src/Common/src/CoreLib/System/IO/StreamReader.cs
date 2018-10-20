@@ -1419,5 +1419,15 @@ namespace System.IO
                 return 0;
             }
         }
+#if MONO
+            //
+            // Used internally by our console, as it previously depended on Peek() being a
+            // routine that would not block.
+            //
+            internal bool DataAvailable ()
+            {
+                return _charPos < _charLen;
+            }
+#endif
     }
 }

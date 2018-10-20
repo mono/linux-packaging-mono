@@ -46,7 +46,11 @@ namespace System.IO
         private long _position;
         private long _offset;
         private FileAccess _access;
+#if MONO // Mono's HGlobalUnmanagedMemoryStream class uses this field
+        internal bool _isOpen;
+#else
         private bool _isOpen;
+#endif
         private Task<Int32> _lastReadTask; // The last successful task returned from ReadAsync 
 
         /// <summary>

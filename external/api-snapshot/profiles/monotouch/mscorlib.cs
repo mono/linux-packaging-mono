@@ -9887,9 +9887,7 @@ namespace System.IO
     public partial class UnmanagedMemoryAccessor : System.IDisposable
     {
         protected UnmanagedMemoryAccessor() { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public UnmanagedMemoryAccessor(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long capacity) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public UnmanagedMemoryAccessor(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long capacity, System.IO.FileAccess access) { }
         public bool CanRead { get { throw null; } }
         public bool CanWrite { get { throw null; } }
@@ -9897,123 +9895,80 @@ namespace System.IO
         protected bool IsOpen { get { throw null; } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
         protected void Initialize(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long capacity, System.IO.FileAccess access) { }
-        [System.Security.SecurityCriticalAttribute]
         public int ReadArray<T>(long position, T[] array, int offset, int count) where T : struct { throw null; }
         public bool ReadBoolean(long position) { throw null; }
         public byte ReadByte(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public char ReadChar(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public decimal ReadDecimal(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public double ReadDouble(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public short ReadInt16(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public int ReadInt32(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public long ReadInt64(long position) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public sbyte ReadSByte(long position) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public float ReadSingle(long position) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public ushort ReadUInt16(long position) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public uint ReadUInt32(long position) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public ulong ReadUInt64(long position) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public void Read<T>(long position, out T structure) where T : struct { structure = default(T); }
         public void Write(long position, bool value) { }
         public void Write(long position, byte value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, char value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, decimal value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, double value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, short value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, int value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, long value) { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, sbyte value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, float value) { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, ushort value) { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, uint value) { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecuritySafeCriticalAttribute]
         public void Write(long position, ulong value) { }
-        [System.Security.SecurityCriticalAttribute]
         public void WriteArray<T>(long position, T[] array, int offset, int count) where T : struct { }
-        [System.Security.SecurityCriticalAttribute]
         public void Write<T>(long position, ref T structure) where T : struct { }
     }
     public partial class UnmanagedMemoryStream : System.IO.Stream
     {
-        [System.Security.SecuritySafeCriticalAttribute]
         protected UnmanagedMemoryStream() { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe UnmanagedMemoryStream(byte* pointer, long length) { }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         public unsafe UnmanagedMemoryStream(byte* pointer, long length, long capacity, System.IO.FileAccess access) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public UnmanagedMemoryStream(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long length) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public UnmanagedMemoryStream(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long length, System.IO.FileAccess access) { }
         public override bool CanRead { get { throw null; } }
         public override bool CanSeek { get { throw null; } }
         public override bool CanWrite { get { throw null; } }
         public long Capacity { get { throw null; } }
         public override long Length { get { throw null; } }
-        public override long Position { get { throw null; } [System.Security.SecuritySafeCriticalAttribute]set { } }
+        public override long Position { get { throw null; } set { } }
         [System.CLSCompliantAttribute(false)]
-        public unsafe byte* PositionPointer { [System.Security.SecurityCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute]set { } }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public unsafe byte* PositionPointer { get { throw null; } set { } }
         protected override void Dispose(bool disposing) { }
         public override void Flush() { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public override System.Threading.Tasks.Task FlushAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        [System.Security.SecurityCriticalAttribute]
         protected unsafe void Initialize(byte* pointer, long length, long capacity, System.IO.FileAccess access) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         protected void Initialize(System.Runtime.InteropServices.SafeBuffer buffer, long offset, long length, System.IO.FileAccess access) { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        public override int Read([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out]byte[] buffer, int offset, int count) { buffer = default(byte[]); throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
+        public override int Read(byte[] buffer, int offset, int count) { throw null; }
+        public override int Read(System.Span<byte> buffer) { throw null; }
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin loc) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public override void SetLength(long value) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public override void Write(byte[] buffer, int offset, int count) { }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
+        public override void Write(System.ReadOnlySpan<byte> buffer) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
+        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public override void WriteByte(byte value) { }
     }
 }
@@ -14446,13 +14401,12 @@ namespace System.Runtime.InteropServices
         public SafeArrayTypeMismatchException(string message) { }
         public SafeArrayTypeMismatchException(string message, System.Exception inner) { }
     }
-    public abstract partial class SafeBuffer : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid, System.IDisposable
+    public abstract partial class SafeBuffer : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
         protected SafeBuffer(bool ownsHandle) : base (default(bool)) { }
         [System.CLSCompliantAttribute(false)]
         public ulong ByteLength { get { throw null; } }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public unsafe void AcquirePointer(ref byte* pointer) { }
         [System.CLSCompliantAttribute(false)]
         public void Initialize(uint numElements, uint sizeOfEachElement) { }
@@ -14461,18 +14415,13 @@ namespace System.Runtime.InteropServices
         [System.CLSCompliantAttribute(false)]
         public void Initialize<T>(uint numElements) where T : struct { }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public void ReadArray<T>(ulong byteOffset, T[] array, int index, int count) where T : struct { }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public T Read<T>(ulong byteOffset) where T : struct { throw null; }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
         public void ReleasePointer() { }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public void WriteArray<T>(ulong byteOffset, T[] array, int index, int count) where T : struct { }
         [System.CLSCompliantAttribute(false)]
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(1))]
         public void Write<T>(ulong byteOffset, T value) where T : struct { }
     }
     [System.Security.SecurityCriticalAttribute]

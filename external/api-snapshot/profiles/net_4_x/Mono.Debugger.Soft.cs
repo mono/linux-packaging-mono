@@ -114,6 +114,12 @@ namespace Mono.Debugger.Soft
         protected abstract void TransportSetTimeouts(int send_timeout, int receive_timeout);
         public long[] Type_GetMethodsByNameFlags(long id, string name, int flags, bool ignoreCase) { throw null; }
     }
+    public partial class CrashEvent : Mono.Debugger.Soft.Event
+    {
+        internal CrashEvent() { }
+        public string Dump { get { throw null; } }
+        public ulong Hash { get { throw null; } }
+    }
     public sealed partial class CustomAttributeDataMirror
     {
         internal CustomAttributeDataMirror() { }
@@ -210,6 +216,7 @@ namespace Mono.Debugger.Soft
         AssemblyLoad = 8,
         AssemblyUnload = 9,
         Breakpoint = 10,
+        Crash = 17,
         Exception = 13,
         KeepAlive = 14,
         MethodEntry = 6,
@@ -864,6 +871,12 @@ namespace Mono.Debugger.Soft
         public static Mono.Debugger.Soft.VirtualMachine Listen(System.Net.IPEndPoint dbg_ep) { throw null; }
         public static Mono.Debugger.Soft.VirtualMachine Listen(System.Net.IPEndPoint dbg_ep, System.Net.IPEndPoint con_ep) { throw null; }
         public static Mono.Debugger.Soft.VirtualMachine ListenInternal(System.Net.Sockets.Socket dbg_sock, System.Net.Sockets.Socket con_sock) { throw null; }
+    }
+    public partial class VMCrashException : Mono.Debugger.Soft.VMDisconnectedException
+    {
+        public readonly string Dump;
+        public readonly ulong Hash;
+        public VMCrashException(string dump, ulong hash) { }
     }
     public partial class VMDeathEvent : Mono.Debugger.Soft.Event
     {
