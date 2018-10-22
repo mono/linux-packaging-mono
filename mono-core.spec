@@ -473,6 +473,7 @@ Development files for libmono.
 %defattr(-, root, root)
 %{_bindir}/mono-gdb.py
 %{_includedir}/mono-2.0
+%{_datarootdir}/mono-2.0
 %{_libdir}/libmono-2.0.so
 %{_libdir}/pkgconfig/mono-2.pc
 
