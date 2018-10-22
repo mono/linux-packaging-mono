@@ -188,7 +188,6 @@ rm -f %{buildroot}%{_libdir}/libMonoPosixHelper.a
 rm -f %{buildroot}%{_libdir}/libikvm-native.a
 rm -f %{buildroot}%{_libdir}/libmono-llvm.a
 rm -f %{buildroot}%{_libdir}/libmono-system-native.a
-rm -f %{buildroot}%{_libdir}/libmono-system-security-native.a
 
 # remove libgc cruft
 rm -rf %{buildroot}%{_datadir}/libgc-mono
@@ -275,7 +274,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_libdir}/libMonoPosixHelper.so*
 %{_libdir}/libmono-btls-shared.so*
 %{_libdir}/libmono-system-native.so*
-%{_libdir}/libmono-system-security-native.so*
 %{_libdir}/libikvm-native.so
 %{_mandir}/man1/cert-sync.1%ext_man
 %{_mandir}/man1/certmgr.1%ext_man
