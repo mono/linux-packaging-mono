@@ -1,3 +1,9 @@
+mono (5.12.0.309-0xamarin1) vs; urgency=medium
+
+  * New release - mono-5.12.0.309.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 23 Oct 2018 16:20:50 +0000
+
 mono (5.12.0.301-0xamarin8) stable; urgency=medium
 
   * Packaging bugfix:
