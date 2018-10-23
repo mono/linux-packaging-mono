@@ -4590,8 +4590,8 @@ register_icalls (void)
 	register_icall (mono_profiler_raise_method_tail_call, "mono_profiler_raise_method_tail_call", "void ptr ptr", TRUE);
 	register_icall (mono_profiler_raise_exception_clause, "mono_profiler_raise_exception_clause", "void ptr int int object", TRUE);
 
-	register_icall (mono_trace_enter_method, "mono_trace_enter_method", NULL, TRUE);
-	register_icall (mono_trace_leave_method, "mono_trace_leave_method", NULL, TRUE);
+	register_icall (mono_trace_enter_method, "mono_trace_enter_method", "void ptr ptr", TRUE);
+	register_icall (mono_trace_leave_method, "mono_trace_leave_method", "void ptr ptr", TRUE);
 	register_icall (mono_get_lmf_addr, "mono_get_lmf_addr", "ptr", TRUE);
 	register_icall (mono_jit_set_domain, "mono_jit_set_domain", "void ptr", TRUE);
 	register_icall (mono_domain_get, "mono_domain_get", "ptr", TRUE);
@@ -4767,7 +4767,7 @@ register_icalls (void)
 	register_icall (mono_helper_ldstr, "mono_helper_ldstr", "object ptr int", FALSE);
 	register_icall (mono_helper_ldstr_mscorlib, "mono_helper_ldstr_mscorlib", "object int", FALSE);
 	register_icall (mono_helper_newobj_mscorlib, "mono_helper_newobj_mscorlib", "object int", FALSE);
-	register_icall (mono_value_copy, "mono_value_copy", "void ptr ptr ptr", FALSE);
+	register_icall (mono_value_copy_internal, "mono_value_copy_internal", "void ptr ptr ptr", FALSE);
 	register_icall (mono_object_castclass_unbox, "mono_object_castclass_unbox", "object object ptr", FALSE);
 	register_icall (mono_break, "mono_break", NULL, TRUE);
 	register_icall (mono_create_corlib_exception_0, "mono_create_corlib_exception_0", "object int", TRUE);

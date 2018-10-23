@@ -1368,6 +1368,9 @@
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
 
+/* Name of random device */
+#undef MONO_DEV_RANDOM
+
 /* Disable banned functions from being used by the runtime */
 #undef MONO_INSIDE_RUNTIME
 
