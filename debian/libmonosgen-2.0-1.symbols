@@ -650,6 +650,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_get_class@Base 4.1.0.1738
  mono_method_get_context@Base 4.9.0.1707
  mono_method_get_flags@Base 4.1.0.1738
+ mono_method_get_full_name@Base 5.21.0.247
  mono_method_get_generic_container@Base 4.1.0.1738
  mono_method_get_header@Base 4.1.0.1738
  mono_method_get_header_checked@Base 4.5.0.149
@@ -705,8 +706,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_get_class@Base 4.1.0.1738
  mono_object_get_domain@Base 4.1.0.1738
  mono_object_get_size@Base 4.1.0.1738
+ mono_object_get_size_internal@Base 5.21.0.247
  mono_object_get_virtual_method@Base 4.1.0.1738
  mono_object_get_vtable@Base 5.11.0.133
+ mono_object_get_vtable_internal@Base 5.21.0.247
  mono_object_hash@Base 4.1.0.1738
  mono_object_isinst@Base 4.1.0.1738
  mono_object_isinst_mbyref@Base 4.1.0.1738
@@ -1051,7 +1054,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_verify_corlib@Base 4.1.0.1738
  mono_vfree@Base 4.1.0.1738
  mono_vtable_class@Base 5.11.0.133
+ mono_vtable_class_internal@Base 5.21.0.247
  mono_vtable_domain@Base 5.11.0.133
+ mono_vtable_domain_internal@Base 5.21.0.247
  mono_vtable_get_static_field_data@Base 4.1.0.1738
  mono_win32_compat_CopyMemory@Base 4.1.0.1738
  mono_win32_compat_FillMemory@Base 4.1.0.1738
