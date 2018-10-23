@@ -231,7 +231,7 @@
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_raise_exception (MonoException *ex) 
+mono_raise_exception (MonoException *ex)
 
 </div>
             <p />
@@ -254,21 +254,20 @@ mono_raise_exception (MonoException *ex)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_unhandled_exception_checked (MonoObjectHandle exc, MonoError *error)
+mono_unhandled_exception (MonoObject *exc)
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>exc</i></td><td> exception thrown</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
-<p />
  This is a VM internal routine.
 <p />
  We call this function when we detect an unhandled exception
  in the default domain.
 <p />
- It invokes the * UnhandledException event in AppDomain or prints
- a warning to the console </div>
+ It invokes the <code>UnhandledException</code> event in <code>AppDomain</code> or prints
+ a warning to the console</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -283,7 +282,7 @@ mono_unhandled_exception_checked (MonoObjectHandle exc, MonoError *error)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_print_unhandled_exception (MonoObject *exc)
+mono_print_unhandled_exception_internal (MonoObject *exc)
 
 </div>
             <p />

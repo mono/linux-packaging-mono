@@ -198,7 +198,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
 	environment.h environment-internal.h exception.c exception.h \
-	exception-internals.h external-only.c w32file.c w32file.h \
+	exception-internals.h external-only.h w32file.c w32file.h \
 	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
 	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
 	icall-table.h image.c image-internals.h jit-info.c loader.c \
@@ -280,14 +280,12 @@ am__objects_6 = $(am__objects_5) libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-debug-mono-symfile.lo \
 	libmonoruntime_la-debug-mono-ppdb.lo \
 	libmonoruntime_la-environment.lo \
-	libmonoruntime_la-exception.lo \
-	libmonoruntime_la-external-only.lo \
-	libmonoruntime_la-w32file.lo libmonoruntime_la-filewatcher.lo \
-	libmonoruntime_la-icall.lo libmonoruntime_la-image.lo \
-	libmonoruntime_la-jit-info.lo libmonoruntime_la-loader.lo \
-	libmonoruntime_la-locales.lo libmonoruntime_la-lock-tracer.lo \
-	libmonoruntime_la-marshal.lo libmonoruntime_la-mempool.lo \
-	libmonoruntime_la-metadata.lo \
+	libmonoruntime_la-exception.lo libmonoruntime_la-w32file.lo \
+	libmonoruntime_la-filewatcher.lo libmonoruntime_la-icall.lo \
+	libmonoruntime_la-image.lo libmonoruntime_la-jit-info.lo \
+	libmonoruntime_la-loader.lo libmonoruntime_la-locales.lo \
+	libmonoruntime_la-lock-tracer.lo libmonoruntime_la-marshal.lo \
+	libmonoruntime_la-mempool.lo libmonoruntime_la-metadata.lo \
 	libmonoruntime_la-metadata-verify.lo \
 	libmonoruntime_la-method-builder.lo \
 	libmonoruntime_la-mono-basic-block.lo \
@@ -369,7 +367,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
 	environment.h environment-internal.h exception.c exception.h \
-	exception-internals.h external-only.c w32file.c w32file.h \
+	exception-internals.h external-only.h w32file.c w32file.h \
 	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
 	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
 	icall-table.h image.c image-internals.h jit-info.c loader.c \
@@ -457,7 +455,6 @@ am__objects_17 = $(am__objects_16) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-debug-mono-ppdb.lo \
 	libmonoruntimesgen_la-environment.lo \
 	libmonoruntimesgen_la-exception.lo \
-	libmonoruntimesgen_la-external-only.lo \
 	libmonoruntimesgen_la-w32file.lo \
 	libmonoruntimesgen_la-filewatcher.lo \
 	libmonoruntimesgen_la-icall.lo libmonoruntimesgen_la-image.lo \
@@ -674,6 +671,7 @@ GTKX11 = @GTKX11@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -1011,7 +1009,7 @@ common_sources = \
 	exception.c		\
 	exception.h		\
 	exception-internals.h	\
-	external-only.c		\
+	external-only.h		\
 	w32file.c		\
 	w32file.h		\
 	w32file-internals.h \
@@ -1214,6 +1212,7 @@ libmonoruntimeinclude_HEADERS = \
 	verify.h		
 
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
+		external-only.c \
 		threadpool-io-poll.c threadpool-io-epoll.c threadpool-io-kqueue.c sgen-dynarray.h
 
 all: all-am
@@ -1346,7 +1345,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-exception.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-external-only.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-fdhandle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-file-mmap-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-file-mmap-windows.Plo@am__quote@
@@ -1453,7 +1451,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-exception.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-external-only.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-fdhandle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-file-mmap-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-file-mmap-windows.Plo@am__quote@
@@ -1883,13 +1880,6 @@ libmonoruntime_la-exception.lo: exception.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exception.c' object='libmonoruntime_la-exception.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-exception.lo `test -f 'exception.c' || echo '$(srcdir)/'`exception.c
-
-libmonoruntime_la-external-only.lo: external-only.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-external-only.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-external-only.Tpo -c -o libmonoruntime_la-external-only.lo `test -f 'external-only.c' || echo '$(srcdir)/'`external-only.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-external-only.Tpo $(DEPDIR)/libmonoruntime_la-external-only.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='external-only.c' object='libmonoruntime_la-external-only.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-external-only.lo `test -f 'external-only.c' || echo '$(srcdir)/'`external-only.c
 
 libmonoruntime_la-w32file.lo: w32file.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-w32file.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-w32file.Tpo -c -o libmonoruntime_la-w32file.lo `test -f 'w32file.c' || echo '$(srcdir)/'`w32file.c
@@ -2639,13 +2629,6 @@ libmonoruntimesgen_la-exception.lo: exception.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exception.c' object='libmonoruntimesgen_la-exception.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-exception.lo `test -f 'exception.c' || echo '$(srcdir)/'`exception.c
-
-libmonoruntimesgen_la-external-only.lo: external-only.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-external-only.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-external-only.Tpo -c -o libmonoruntimesgen_la-external-only.lo `test -f 'external-only.c' || echo '$(srcdir)/'`external-only.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-external-only.Tpo $(DEPDIR)/libmonoruntimesgen_la-external-only.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='external-only.c' object='libmonoruntimesgen_la-external-only.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-external-only.lo `test -f 'external-only.c' || echo '$(srcdir)/'`external-only.c
 
 libmonoruntimesgen_la-w32file.lo: w32file.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-w32file.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-w32file.Tpo -c -o libmonoruntimesgen_la-w32file.lo `test -f 'w32file.c' || echo '$(srcdir)/'`w32file.c

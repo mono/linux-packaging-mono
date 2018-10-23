@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.228],
+AC_INIT(mono, [5.21.0.247],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -128,6 +128,7 @@ case "$host" in
 		libdl="-ldl"
 		libgc_threads=pthreads
 		platform_wasm=yes
+		MONO_DEV_RANDOM=/dev/mono_random
 		;;
 	*-mingw*|*-*-cygwin*)
 		AC_DEFINE(DISABLE_PORTABILITY,1,[Disable the io-portability layer])
@@ -3622,6 +3623,10 @@ esac
 
 AC_DEFINE_UNQUOTED(NAME_DEV_RANDOM, "$NAME_DEV_RANDOM", [Name of /dev/random])
 
+if test "x$MONO_DEV_RANDOM" != "x"; then
+   AC_DEFINE_UNQUOTED(MONO_DEV_RANDOM, "$MONO_DEV_RANDOM", [Name of random device])
+fi
+
 dnl Now check if the device actually exists
 
 if test "x$try_dev_random" = "xyes"; then
@@ -5157,6 +5162,10 @@ if test "x$enable_btls" = "xyes"; then
 	btls_cflags=
 	BTLS_CMAKE_ARGS=
 
+	if test "x$host_win32" = "xyes"; then
+		AC_CHECK_PROG(HAVE_YASM, yasm, yes, no)
+	fi
+
 	case "$BTLS_PLATFORM" in
 	i386)
 		btls_arch=i386
@@ -5166,8 +5175,10 @@ if test "x$enable_btls" = "xyes"; then
 				btls_cflags="$btls_cflags -arch i386"
 				;;
 			mingw*|cygwin*)
-				btls_cflags="$btls_cflags -DNOCRYPT $WIN32_CPPFLAGS"
-				BTLS_CMAKE_ARGS="-D OPENSSL_NO_ASM=1"
+				btls_cflags="-DNOCRYPT $WIN32_CPPFLAGS"
+				if test "x$HAVE_YASM" != "xyes"; then
+					BTLS_CMAKE_ARGS="-DOPENSSL_NO_ASM=1"
+				fi
 				;;
 		esac
 		;;
@@ -5175,8 +5186,10 @@ if test "x$enable_btls" = "xyes"; then
 		btls_arch=x86_64
 		case $host_os in
 			mingw*|cygwin*)
-				btls_cflags="$btls_cflags -DNOCRYPT $WIN32_CPPFLAGS"
-				BTLS_CMAKE_ARGS="-D OPENSSL_NO_ASM=1"
+				btls_cflags="-DNOCRYPT $WIN32_CPPFLAGS"
+				if test "x$HAVE_YASM" != "xyes"; then
+					BTLS_CMAKE_ARGS="-DOPENSSL_NO_ASM=1"
+				fi
 				;;
 		esac
 		;;

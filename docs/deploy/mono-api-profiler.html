@@ -722,13 +722,6 @@ mono_profiler_enable_call_context_introspection (void)
  introspection was enabled, or <code><code>FALSE</code></code> if the function was called too late for
  this to be possible.
 <p />
- Please note: Mono's LLVM backend does not support this feature. This means
- that methods with call context instrumentation will be handled by Mono's
- JIT even in LLVM mode. There is also a special case when Mono is compiling
- in LLVM-only mode: Since LLVM does not provide a way to implement call
- contexts, a <code><code>NULL</code></code> context will always be passed to enter/leave events even
- though this method returns <code><code>TRUE</code></code>.
-<p />
  This function is <strong>not</strong> async safe.
 <p />
  This function may <strong>only</strong> be called from a profiler's init function or prior

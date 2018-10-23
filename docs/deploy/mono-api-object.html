@@ -493,12 +493,12 @@ mono_object_get_domain (MonoObject *obj)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_object_get_virtual_method (MonoObject *obj_raw, MonoMethod *method)
+mono_object_get_virtual_method (MonoObject *obj, MonoMethod *method)
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> object to operate on.</td></tr><tr><td><i>method</i></td><td> method </td></tr></tbody></table>             <div class="mapi-section">Description</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> object to operate on.</td></tr><tr><td><i>method</i></td><td> method</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
  Retrieves the <code>MonoMethod</code> that would be called on <i>obj</i> if <i>obj</i> is passed as
  the instance of a callvirt of <i>method</i>.</div>
@@ -539,7 +539,7 @@ mono_object_isinst (MonoObject *obj_raw, MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> an object</td></tr><tr><td><i>klass</i></td><td> a pointer to a class </td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> an object</td></tr><tr><td><i>klass</i></td><td> a pointer to a class</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
              <div>	 <i>obj</i> if <i>obj</i> is derived from <i>klass</i> or <code>NULL</code> otherwise.
 </div>
         </div><!--mapi-description -->
@@ -555,7 +555,7 @@ mono_object_isinst (MonoObject *obj_raw, MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer
+            <div class="mapi-prototype">void*
 mono_object_unbox (MonoObject *obj)
 
 </div>
@@ -586,7 +586,7 @@ mono_object_castclass_mbyref (MonoObject *obj_raw, MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> an object</td></tr><tr><td><i>klass</i></td><td> a pointer to a class </td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> an object</td></tr><tr><td><i>klass</i></td><td> a pointer to a class</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
              <div>	 <i>obj</i> if <i>obj</i> is derived from <i>klass</i>, returns <code>NULL</code> otherwise.
 </div>
         </div><!--mapi-description -->
@@ -602,8 +602,8 @@ mono_object_castclass_mbyref (MonoObject *obj_raw, MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint
-mono_object_get_size (MonoObject* o)
+            <div class="mapi-prototype">unsigned
+mono_object_get_size (MonoObject *o)
 
 </div>
             <p />
@@ -711,7 +711,7 @@ mono_value_copy (gpointer dest, gpointer src, MonoClass *klass)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_value_copy_array (MonoArray *dest, int dest_idx, gpointer src, int count)
+mono_value_copy_array (MonoArray *dest, int dest_idx, void* src, int count)
 
 </div>
             <p />
@@ -893,7 +893,7 @@ mono_array_clone (MonoArray *array)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">Type mono_array_get (MonoArray *array, Type element_type, uintptr_t index)
+            <div class="mapi-prototype">Type mono_array_get_internal (MonoArray *array, Type element_type, uintptr_t index)
 
 </div>
             <p />
@@ -1218,7 +1218,7 @@ mono_field_get_value (MonoObject *obj, MonoClassField *field, void *value)
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoObject*
 mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObject *obj)
-	
+
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
@@ -1495,7 +1495,7 @@ mono_property_get_value (MonoProperty *prop, void *obj, void **params, MonoObjec
              <div class="mapi-section">Description</div>
              <div>
  Invokes the property's <code>get</code> method with the given arguments on the
- object instance <i>obj</i> (or <code>NULL</code> for static properties). 
+ object instance <i>obj</i> (or <code>NULL</code> for static properties).
 <p />
  You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to
  catch exceptions, otherwise, <code>*exc</code> will be set to the exception
@@ -1524,7 +1524,7 @@ mono_property_set_value (MonoProperty *prop, void *obj, void **params, MonoObjec
             <table class="mapi-parameters"><tbody><tr><td><i>prop</i></td><td> MonoProperty to set</td></tr><tr><td><i>obj</i></td><td> instance object on which to act</td></tr><tr><td><i>params</i></td><td> parameters to pass to the propery</td></tr><tr><td><i>exc</i></td><td> optional exception</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
  Invokes the property's set method with the given arguments on the
- object instance obj (or <code>NULL</code> for static properties). 
+ object instance obj (or <code>NULL</code> for static properties).
 <p />
  You can pass <code>NULL</code> as the exc argument if you don't want to
  catch exceptions, otherwise, <code>*exc</code> will be set to the exception
