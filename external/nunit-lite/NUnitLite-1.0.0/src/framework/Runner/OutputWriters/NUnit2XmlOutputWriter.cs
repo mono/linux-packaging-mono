@@ -249,6 +249,10 @@ namespace NUnitLite.Runner
 
             if (properties.ContainsKey(PropertyNames.Category))
             {
+#if MONO
+                if (properties[PropertyNames.Category].Count == 0)
+                    return;
+#endif
                 xmlWriter.WriteStartElement("categories");
 
                 foreach (string category in properties[PropertyNames.Category])
