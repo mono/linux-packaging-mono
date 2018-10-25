@@ -1018,7 +1018,11 @@ namespace System.IO
 
             CheckAsyncTaskInProgress();
 
+#if !__MonoCS__
             Task<int> task = ReadAsyncInternal(new Memory<char>(buffer, index, count), default).AsTask();
+#else
+            Task<int> task = ReadAsyncInternal(new Memory<char>(buffer, index, count), default);
+#endif
             _asyncReadTask = task;
 
             return task;
@@ -1044,10 +1048,18 @@ namespace System.IO
                 return new ValueTask<int>(Task.FromCanceled<int>(cancellationToken));
             }
 
+#if !__MonoCS__
             return ReadAsyncInternal(buffer, cancellationToken);
+#else
+            return new ValueTask<int>(ReadAsyncInternal(buffer, cancellationToken));
+#endif
         }
 
+#if !__MonoCS__
         internal override async ValueTask<int> ReadAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#else
+        internal override async Task<int> ReadAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#endif
         {
             if (_charPos == _charLen && (await ReadBufferAsync().ConfigureAwait(false)) == 0)
             {
@@ -1276,7 +1288,11 @@ namespace System.IO
                 return new ValueTask<int>(Task.FromCanceled<int>(cancellationToken));
             }
 
+#if !__MonoCS__
             ValueTask<int> vt = ReadBlockAsyncInternal(buffer, cancellationToken);
+#else
+            ValueTask<int> vt = new ValueTask<int> (ReadBlockAsyncInternal(buffer, cancellationToken));
+#endif
             if (vt.IsCompletedSuccessfully)
             {
                 return vt;

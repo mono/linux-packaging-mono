@@ -249,7 +249,11 @@ namespace System.IO
                 throw new ArgumentException(SR.Argument_InvalidOffLen);
             }
 
+#if !__MonoCS__
             return ReadAsyncInternal(new Memory<char>(buffer, index, count), default).AsTask();
+#else
+            return ReadAsyncInternal(new Memory<char>(buffer, index, count), default);
+#endif
         }
 
         public virtual ValueTask<int> ReadAsync(Memory<char> buffer, CancellationToken cancellationToken = default(CancellationToken)) =>
@@ -261,15 +265,29 @@ namespace System.IO
                     return t.Item1.Read(t.Item2.Span);
                 }, Tuple.Create(this, buffer), cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default));
 
+#if !__MonoCS__
         internal virtual ValueTask<int> ReadAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#else
+        internal virtual Task<int> ReadAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#endif
         {
             var tuple = new Tuple<TextReader, Memory<char>>(this, buffer);
+#if !__MonoCS__
             return new ValueTask<int>(Task<int>.Factory.StartNew(state =>
             {
                 var t = (Tuple<TextReader, Memory<char>>)state;
                 return t.Item1.Read(t.Item2.Span);
             },
             tuple, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default));
+#else
+            return Task<int>.Factory.StartNew(state =>
+            {
+                var t = (Tuple<TextReader, Memory<char>>)state;
+                return t.Item1.Read(t.Item2.Span);
+            },
+            tuple, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+#endif
+
         }
 
         public virtual Task<int> ReadBlockAsync(char[] buffer, int index, int count)
@@ -287,7 +305,11 @@ namespace System.IO
                 throw new ArgumentException(SR.Argument_InvalidOffLen);
             }
 
+#if !__MonoCS__
             return ReadBlockAsyncInternal(new Memory<char>(buffer, index, count), default).AsTask();
+#else
+            return ReadBlockAsyncInternal(new Memory<char>(buffer, index, count), default);
+#endif
         }
 
         public virtual ValueTask<int> ReadBlockAsync(Memory<char> buffer, CancellationToken cancellationToken = default(CancellationToken)) =>
@@ -299,7 +321,11 @@ namespace System.IO
                     return t.Item1.ReadBlock(t.Item2.Span);
                 }, Tuple.Create(this, buffer), cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default));
 
+#if !__MonoCS__
         internal async ValueTask<int> ReadBlockAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#else
+        internal async Task<int> ReadBlockAsyncInternal(Memory<char> buffer, CancellationToken cancellationToken)
+#endif
         {
             int n = 0, i;
             do
