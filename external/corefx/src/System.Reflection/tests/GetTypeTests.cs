@@ -88,7 +88,10 @@ namespace System.Reflection.Tests
 
             Type type = typeof(MyNamespace1.MynAmespace3.Goo<int>);
             yield return new object[] { type.FullName, type };
+// see issue https://github.com/mono/mono/issues/11269
+#if !MONO
             yield return new object[] { type.FullName.ToUpper(), type };
+#endif
             yield return new object[] { type.FullName.ToLower(), type };
         }
 
