@@ -585,7 +585,7 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # sampling infrastructure depends on signals being available.
 #
 # See: https://bugzilla.xamarin.com/show_bug.cgi?id=57011
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@ENABLE_HYBRID_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = testlog
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = testlog
 @BITCODE_FALSE@@HOST_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 
 # On Apple hosts, we want to allow undefined symbols when building the
@@ -1117,7 +1117,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	$(MCS) -out:$@ $<
 
 testlog: $(PLOG_TESTS)
-	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir)
+	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir) nunit TestResult-profiler.xml
 
 check-local: $(check_targets)
 

@@ -1390,7 +1390,6 @@ namespace System
         White = 15,
         Yellow = 14,
     }
-    [System.SerializableAttribute]
     public enum ConsoleKey
     {
         A = 65,
@@ -3323,8 +3322,6 @@ namespace System
         public T Value { get { throw null; } }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum LoaderOptimization
     {
         [System.ObsoleteAttribute("This method has been deprecated. Please use Assembly.Load() instead. http://go.microsoft.com/fwlink/?linkid=14202")]
@@ -3337,7 +3334,6 @@ namespace System
         SingleDomain = 1,
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class LoaderOptimizationAttribute : System.Attribute
     {
         public LoaderOptimizationAttribute(byte value) { }
@@ -10710,6 +10706,7 @@ namespace System.Reflection
         protected Binder() { }
         public abstract System.Reflection.FieldInfo BindToField(System.Reflection.BindingFlags bindingAttr, System.Reflection.FieldInfo[] match, object value, System.Globalization.CultureInfo culture);
         public abstract System.Reflection.MethodBase BindToMethod(System.Reflection.BindingFlags bindingAttr, System.Reflection.MethodBase[] match, ref object[] args, System.Reflection.ParameterModifier[] modifiers, System.Globalization.CultureInfo culture, string[] names, out object state);
+        public virtual bool CanChangeType(object value, System.Type type, System.Globalization.CultureInfo culture) { throw null; }
         public abstract object ChangeType(object value, System.Type type, System.Globalization.CultureInfo culture);
         public abstract void ReorderArgumentArray(ref object[] args, object state);
         public abstract System.Reflection.MethodBase SelectMethod(System.Reflection.BindingFlags bindingAttr, System.Reflection.MethodBase[] match, System.Type[] types, System.Reflection.ParameterModifier[] modifiers);

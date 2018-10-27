@@ -91,7 +91,7 @@ target_triplet = @target@
 @INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
 @INSTALL_ORBIS_TRUE@am__append_11 = orbis
 @INSTALL_UNREAL_TRUE@am__append_12 = unreal
-@INSTALL_WASM_TRUE@am__append_13 = wasm
+@INSTALL_WASM_TRUE@am__append_13 = wasm wasm_tools
 
 # Mono.WebBrowser.dll fails to verify on Windows
 @HOST_WIN32_TRUE@am__append_14 = Mono.WebBrowser.dll
@@ -402,7 +402,7 @@ build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
 	$(am__append_11) $(am__append_12) $(am__append_13)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
-test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
+test_profiles = $(filter-out binary_reference_assemblies monodroid_tools wasm_tools,$(build_profiles))
 MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .

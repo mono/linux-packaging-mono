@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.265],
+AC_INIT(mono, [5.21.0.297],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -128,7 +128,6 @@ case "$host" in
 		libdl="-ldl"
 		libgc_threads=pthreads
 		platform_wasm=yes
-		MONO_DEV_RANDOM=/dev/mono_random
 		;;
 	*-mingw*|*-*-cygwin*)
 		AC_DEFINE(DISABLE_PORTABILITY,1,[Disable the io-portability layer])
@@ -3622,10 +3621,6 @@ dnl Everywhere else, it's /dev/random
 esac
 
 AC_DEFINE_UNQUOTED(NAME_DEV_RANDOM, "$NAME_DEV_RANDOM", [Name of /dev/random])
-
-if test "x$MONO_DEV_RANDOM" != "x"; then
-   AC_DEFINE_UNQUOTED(MONO_DEV_RANDOM, "$MONO_DEV_RANDOM", [Name of random device])
-fi
 
 dnl Now check if the device actually exists
 
