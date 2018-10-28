@@ -335,6 +335,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	resolve_field_bug.2.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe bug-81691.exe \
 @FULL_AOT_TESTS_TRUE@	bug-327438.2.exe newobj-abstract.exe \
+@FULL_AOT_TESTS_TRUE@	invalid-isbyreflike.exe \
 @FULL_AOT_TESTS_TRUE@	context-static.exe bug-415577.exe \
 @FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	unhandled-exception-7.exe marshal.exe \
@@ -1109,9 +1110,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	context-static.cs float-pop.cs interfacecast.cs array3.cs \
 	classinit.cs classinit2.cs classinit3.cs synchronized.cs \
 	async_read.cs threadpool.cs threadpool1.cs \
-	threadpool-exceptions1.cs threadpool-exceptions2.cs \
-	threadpool-exceptions3.cs threadpool-exceptions4.cs \
-	threadpool-exceptions5.cs threadpool-exceptions6.cs \
+	threadpool-exceptions1.cs threadpool-exceptions3.cs \
+	threadpool-exceptions4.cs threadpool-exceptions6.cs \
 	base-definition.cs bug-27420.cs bug-46781.cs bug-42136.cs \
 	bug-59286.cs bug-70561.cs bug-78311.cs bug-78653.cs \
 	bug-78656.cs bug-77127.cs bug-323114.cs bug-Xamarin-5278.cs \
@@ -1447,7 +1447,8 @@ TESTS_IL_SRC = \
 	tailcall-return-valuetype.il \
 	tailcall-valuetype-parameter.il \
 	ldfldvt.il \
-	newobj-abstract.il
+	newobj-abstract.il \
+	invalid-isbyreflike.il
 
 
 # This test crashes the runtime, even with recent fixes.
@@ -1539,8 +1540,15 @@ CI_DISABLED_TESTS = \
 # https://github.com/mono/mono/issues/8997
 
 # https://github.com/mono/mono/issues/11392
+
+# https://github.com/mono/mono/issues/11415
+
+# https://github.com/mono/mono/issues/11420
+
+# https://github.com/mono/mono/issues/11417
 CI_PR_DISABLED_TESTS = finalizer-thread.exe \
-	appdomain-threadpool-unload.exe
+	appdomain-threadpool-unload.exe finalizer-abort.exe \
+	process-stress-2.exe process-stress-3.exe
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1992,7 +2000,9 @@ TESTS_UNHANDLED_EXCEPTION_255_SRC = \
 	unhandled-exception-5.cs	\
 	unhandled-exception-6.cs	\
 	unhandled-exception-7.cs	\
-	unhandled-exception-8.cs
+	unhandled-exception-8.cs	\
+	threadpool-exceptions2.cs	\
+	threadpool-exceptions5.cs
 
 TESTS_UNHANDLED_EXCEPTION_1 = $(filter-out $(DISABLED_TESTS),$(TESTS_UNHANDLED_EXCEPTION_1_SRC:.cs=.exe))
 TESTS_UNHANDLED_EXCEPTION_255 = $(filter-out $(DISABLED_TESTS),$(TESTS_UNHANDLED_EXCEPTION_255_SRC:.cs=.exe))
