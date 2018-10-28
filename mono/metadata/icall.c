@@ -2735,6 +2735,14 @@ ves_icall_RuntimeTypeHandle_IsByRef (MonoReflectionTypeHandle ref_type, MonoErro
 }
 
 MonoBoolean
+ves_icall_RuntimeTypeHandle_IsByRefLike (MonoReflectionTypeHandle ref_type, MonoError *error)
+{
+	MonoType *type = MONO_HANDLE_GETVAL (ref_type, type);
+	MonoClass *klass = mono_class_from_mono_type_internal (type);
+	return m_class_is_byreflike (klass);
+}
+
+MonoBoolean
 ves_icall_RuntimeTypeHandle_IsComObject (MonoReflectionTypeHandle ref_type, MonoError *error)
 {
 	MonoType *type = MONO_HANDLE_GETVAL (ref_type, type);
@@ -8710,7 +8718,7 @@ mono_register_jit_icall (gconstpointer func, const char *name, MonoMethodSignatu
 }
 
 int
-ves_icall_System_GC_GetCollectionCount (int generation, MonoError *error)
+ves_icall_System_GC_GetCollectionCount (int generation)
 {
 	return mono_gc_collection_count (generation);
 }
@@ -8722,13 +8730,13 @@ ves_icall_System_GC_GetGeneration (MonoObjectHandle object, MonoError *error)
 }
 
 int
-ves_icall_System_GC_GetMaxGeneration (MonoError *error)
+ves_icall_System_GC_GetMaxGeneration (void)
 {
 	return mono_gc_max_generation ();
 }
 
 void
-ves_icall_System_GC_RecordPressure (gint64 value, MonoError *error)
+ves_icall_System_GC_RecordPressure (gint64 value)
 {
 	mono_gc_add_memory_pressure (value);
 }
