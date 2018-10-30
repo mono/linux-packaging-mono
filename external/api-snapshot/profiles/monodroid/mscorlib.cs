@@ -7928,6 +7928,11 @@ namespace System.Diagnostics.Tracing
         public string LocalizationResources { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
     }
+    public partial class EventSourceCreatedEventArgs : System.EventArgs
+    {
+        public EventSourceCreatedEventArgs() { }
+        public System.Diagnostics.Tracing.EventSource EventSource { get { throw null; } }
+    }
     [System.SerializableAttribute]
     public partial class EventSourceException : System.Exception
     {
