@@ -428,6 +428,9 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
@@ -455,9 +458,13 @@ MONOTOUCH_SUBDIRS = $(libgc_dir) mono
 
 # Some tools might not build when cross-compiling
 @CROSS_COMPILING_TRUE@tools_dir = 
-SUBDIRS = mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) msvc $(docs_dir) acceptance-tests
+@ENABLE_MSVC_FALSE@build_with_msvc = 
+@ENABLE_MSVC_TRUE@build_with_msvc = msvc
+@ENABLE_MSVC_FALSE@build_without_msvc = msvc
+@ENABLE_MSVC_TRUE@build_without_msvc = 
+SUBDIRS = $(build_with_msvc) mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) $(build_without_msvc) $(docs_dir) acceptance-tests
 # Keep in sync with SUBDIRS
-DIST_SUBDIRS = m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
+DIST_SUBDIRS = $(build_with_msvc) m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools $(build_without_msvc) docs acceptance-tests
 SUBMODULE_ERROR = 'Could not recursively update all git submodules. You may experience compilation problems if some submodules are out of date'
 EXTRA_DIST = \
 	README.md 		\

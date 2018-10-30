@@ -343,6 +343,9 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
@@ -451,7 +454,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile
+@ENABLE_MSVC_FALSE@all-local:
+all-am: Makefile all-local
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -483,9 +487,11 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_FALSE@install-exec-local:
+@ENABLE_MSVC_FALSE@clean-local:
 clean: clean-am
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
@@ -509,7 +515,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-exec-local
 
 install-html: install-html-am
 
@@ -551,11 +557,12 @@ uninstall-am:
 
 .MAKE: install-am install-strip
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	cscopelist-am ctags-am distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
+.PHONY: all all-am all-local check check-am clean clean-generic \
+	clean-libtool clean-local cscopelist-am ctags-am distclean \
+	distclean-generic distclean-libtool distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-local install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
@@ -563,6 +570,24 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags-am uninstall uninstall-am
 
+
+@ENABLE_MSVC_TRUE@all-local:
+@ENABLE_MSVC_TRUE@	@echo "Building Mono runtime using Visual Studio."
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)"
+@ENABLE_MSVC_TRUE@	$(mono_msvc_build_bin_dir)/mono-sgen.exe --version
+
+@ENABLE_MSVC_TRUE@clean-local:
+@ENABLE_MSVC_TRUE@	@echo "Clean Visual Studio build Mono runtime."
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)"
+
+@ENABLE_MSVC_TRUE@install-exec-local:
+@ENABLE_MSVC_TRUE@	@echo "Install Visual Studio build Mono runtime."
+@ENABLE_MSVC_TRUE@	$(mkinstalldirs) "$(DESTDIR)$(libdir)"
+@ENABLE_MSVC_TRUE@	$(mkinstalldirs) "$(DESTDIR)$(bindir)"
+@ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_lib_dir)/*.lib "$(DESTDIR)$(libdir)"
+@ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.dll "$(DESTDIR)$(bindir)"
+@ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.exe "$(DESTDIR)$(bindir)"
+@ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.pdb "$(DESTDIR)$(bindir)"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
