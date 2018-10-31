@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.18.0.184],
+AC_INIT(mono, [5.18.0.188],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -5022,11 +5022,12 @@ if test x$enable_cooperative_suspend_default != xyes; then
 	X86 | AMD64)
 		dnl Some host/target confusion, there's no host_osx (and
 		dnl host_darwin would be true on iOS not just macOS).
-		if test x$target_osx = xyes; then
-			enable_hybrid_suspend_default=yes
-		elif test x$host_linux = xyes -o x$host_win32 = xyes; then
-			enable_hybrid_suspend_default=yes
-		fi
+		dnl if test x$target_osx = xyes; then
+		dnl 	enable_hybrid_suspend_default=yes
+		dnl elif test x$host_linux = xyes -o x$host_win32 = xyes; then
+		dnl 	enable_hybrid_suspend_default=yes
+		dnl fi
+		true
 		;;
 	esac
 fi
