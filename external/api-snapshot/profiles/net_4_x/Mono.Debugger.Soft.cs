@@ -268,6 +268,16 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.CustomAttributeDataMirror[] GetCustomAttributes(Mono.Debugger.Soft.TypeMirror attributeType, bool inherit) { throw null; }
         public Mono.Debugger.Soft.CustomAttributeDataMirror[] GetCustomAttributes(bool inherit) { throw null; }
     }
+    public partial interface IInvokable
+    {
+        System.IAsyncResult BeginInvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options, System.AsyncCallback callback, object state);
+        Mono.Debugger.Soft.Value EndInvokeMethod(System.IAsyncResult asyncResult);
+        Mono.Debugger.Soft.InvokeResult EndInvokeMethodWithResult(System.IAsyncResult asyncResult);
+        Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments);
+        Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options);
+        System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0));
+        System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0));
+    }
     public partial interface IInvokeAsyncResult : System.IAsyncResult
     {
         void Abort();
@@ -479,7 +489,7 @@ namespace Mono.Debugger.Soft
     {
         public ObjectCollectedException() { }
     }
-    public partial class ObjectMirror : Mono.Debugger.Soft.Value
+    public partial class ObjectMirror : Mono.Debugger.Soft.Value, Mono.Debugger.Soft.IInvokable
     {
         internal ObjectMirror() { }
         public long Address { get { throw null; } }
@@ -534,6 +544,8 @@ namespace Mono.Debugger.Soft
         public override int GetHashCode() { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class PropertyInfoMirror : Mono.Debugger.Soft.Mirror
@@ -621,7 +633,7 @@ namespace Mono.Debugger.Soft
         public string Value { get { throw null; } }
         public char[] GetChars(int index, int length) { throw null; }
     }
-    public partial class StructMirror : Mono.Debugger.Soft.Value
+    public partial class StructMirror : Mono.Debugger.Soft.Value, Mono.Debugger.Soft.IInvokable
     {
         internal StructMirror() { }
         public Mono.Debugger.Soft.Value[] Fields { get { throw null; } }
@@ -677,7 +689,7 @@ namespace Mono.Debugger.Soft
         public string[] TypeNameFilter { get { throw null; } set { } }
         public override void Enable() { }
     }
-    public partial class TypeMirror : Mono.Debugger.Soft.Mirror
+    public partial class TypeMirror : Mono.Debugger.Soft.Mirror, Mono.Debugger.Soft.IInvokable
     {
         internal TypeMirror() { }
         public Mono.Debugger.Soft.AssemblyMirror Assembly { get { throw null; } }
@@ -762,6 +774,7 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
         public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
         protected virtual bool IsArrayImpl() { throw null; }
         public virtual bool IsAssignableFrom(Mono.Debugger.Soft.TypeMirror c) { throw null; }
         protected virtual bool IsByRefImpl() { throw null; }

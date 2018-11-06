@@ -480,11 +480,32 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
+@AOT_FULL_INTERP_TESTS_TRUE@am__append_32 = \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-322722_dyn_method_throw.2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-70561.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	thread6.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	marshal2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	transparentproxy.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	remoting4.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions4.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions5.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe
+
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_32 = \
+@ARM_TRUE@am__append_33 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -538,14 +559,14 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_33 = \
+@ARM64_TRUE@am__append_34 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_34 = \
+@AMD64_TRUE@am__append_35 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -827,6 +848,7 @@ MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
 MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
 MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
 MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
 MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
 MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
 MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
@@ -1030,6 +1052,7 @@ MKBUNDLE = \
 	PKG_CONFIG_PATH=$(top_builddir):$(PKG_CONFIG_PATH) \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
+@AOT_FULL_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
@@ -1522,7 +1545,7 @@ PLATFORM_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
 	$(am__append_26) $(am__append_27) $(am__append_28) \
-	$(am__append_29) $(am__append_31)
+	$(am__append_29) $(am__append_31) $(am__append_32)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1757,8 +1780,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/6.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
-	tailcall/interface-conservestack/9.exe $(am__append_32) \
-	$(am__append_33) $(am__append_34)
+	tailcall/interface-conservestack/9.exe $(am__append_33) \
+	$(am__append_34) $(am__append_35)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1839,7 +1862,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
 	$(INTERNALSVISIBLETO_TEST_SRC) \
 	$(INTERNALSVISIBLETO_TEST_LIB_SRC) weakattribute.cs
-@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
+@AOT_FULL_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 @FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -2715,6 +2738,9 @@ testtrace:
 
 testinterp: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--interpreter" --testsuite-name "runtime-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
+
+testfullaotinterp: test-runner.exe compile-tests
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--full-aot-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
 
 testjitspeed: $(JITTEST_PROG) compile-tests
 	for i in $(TESTS_BENCH); do	\

@@ -80,6 +80,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @ENABLE_GSS_TRUE@am__append_1 = $(gss_sources)
+@ENABLE_GSS_TRUE@am__append_2 = $(gss_sources)
 subdir = mono/native
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/platform-type.c.in \
@@ -129,7 +130,8 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libmono_native_compat_la_LIBADD =
+am__DEPENDENCIES_1 =
+libmono_native_compat_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libmono_native_compat_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -168,12 +170,17 @@ am__objects_2 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
 am__objects_3 = $(am__objects_2)
-am__objects_4 =
-am__objects_5 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@am__objects_6 = $(am__objects_5)
-am__objects_7 = $(am__objects_2) $(am__objects_6)
+am__objects_4 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@am__objects_5 = $(am__objects_4)
+am__objects_6 = libmono_native_compat_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
+	$(am__objects_5)
+am__objects_7 = $(am__objects_2) $(am__objects_5)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_4)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_6)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_8 = $(am__objects_7)
 am_libmono_native_compat_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_8) \
@@ -190,7 +197,7 @@ libmono_native_compat_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_native_compat_la_LDFLAGS) $(LDFLAGS) -o $@
 @MONO_NATIVE_COMPAT_TRUE@am_libmono_native_compat_la_rpath = -rpath \
 @MONO_NATIVE_COMPAT_TRUE@	$(libdir)
-libmono_native_unified_la_LIBADD =
+libmono_native_unified_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -230,12 +237,18 @@ am__objects_10 = libmono_native_unified_la-pal-icalls.lo \
 am__objects_11 = $(am__objects_10)
 am__objects_12 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_13 = $(am__objects_12)
-am__objects_14 = $(am__objects_10) $(am__objects_13)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_15 = $(am__objects_11)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_15 = $(am__objects_4)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_15 = $(am__objects_14)
+am__objects_14 = libmono_native_unified_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
+	$(am__objects_13)
+am__objects_15 = $(am__objects_10) $(am__objects_13)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_16 = $(am__objects_11)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_16 = $(am__objects_14)
+@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_16 = $(am__objects_15)
 am_libmono_native_unified_la_OBJECTS = $(am__objects_9) \
-	$(am__objects_15) \
+	$(am__objects_16) \
 	libmono_native_unified_la-platform-type-unified.lo
 libmono_native_unified_la_OBJECTS =  \
 	$(am_libmono_native_unified_la_OBJECTS)
@@ -245,7 +258,7 @@ libmono_native_unified_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_native_unified_la_LDFLAGS) $(LDFLAGS) -o $@
 @MONO_NATIVE_COMPAT_TRUE@am_libmono_native_unified_la_rpath = -rpath \
 @MONO_NATIVE_COMPAT_TRUE@	$(libdir)
-libmono_native_la_LIBADD =
+libmono_native_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -272,24 +285,30 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type.c
-am__objects_16 = libmono_native_la-mono-native-platform.lo \
+am__objects_17 = libmono_native_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_errno.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_maphardwaretype.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_memory.lo
-am__objects_17 = libmono_native_la-pal-icalls.lo \
+am__objects_18 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
-am__objects_18 = $(am__objects_17)
-am__objects_19 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@am__objects_20 = $(am__objects_19)
-am__objects_21 = $(am__objects_17) $(am__objects_20)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_22 = $(am__objects_18)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_22 = $(am__objects_4)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_22 = $(am__objects_21)
-am_libmono_native_la_OBJECTS = $(am__objects_16) $(am__objects_22) \
+am__objects_19 = $(am__objects_18)
+am__objects_20 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@am__objects_21 = $(am__objects_20)
+am__objects_22 = libmono_native_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
+	$(am__objects_21)
+am__objects_23 = $(am__objects_18) $(am__objects_21)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_24 = $(am__objects_19)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_24 = $(am__objects_22)
+@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_24 = $(am__objects_23)
+am_libmono_native_la_OBJECTS = $(am__objects_17) $(am__objects_24) \
 	libmono_native_la-platform-type.lo
 am__EXTRA_libmono_native_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
@@ -503,6 +522,7 @@ MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
 MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
 MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
 MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
 MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
 MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
 MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
@@ -655,7 +675,16 @@ common_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h
 
 macos_sources = $(unix_sources) $(am__append_1)
-ios_sources = 
+ios_sources = pal-icalls.h pal-icalls.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+	$(am__append_2)
 linux_sources = $(unix_sources)
 unix_sources = \
 	pal-icalls.h \
@@ -676,10 +705,6 @@ gss_sources = \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
 EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(unix_sources) $(gss_sources)
-@MONO_NATIVE_COMPAT_FALSE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@BCL_PROFILE = net_4_x
-@MONO_NATIVE_COMPAT_TRUE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@BCL_PROFILE = xammac
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@BCL_PROFILE = net_4_x
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@BCL_PROFILE = monotouch
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(ios_sources)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@platform_sources = $(macos_sources)
@@ -691,16 +716,15 @@ common_cflags = \
 libmono_native_la_SOURCES = $(common_sources) $(platform_sources) platform-type.c
 libmono_native_la_CFLAGS = $(MONO_NATIVE_CFLAGS) $(common_cflags)
 libmono_native_la_LDFLAGS = $(MONO_NATIVE_LDFLAGS)
+libmono_native_la_LIBADD = $(MONO_NATIVE_LIBADD)
 libmono_native_compat_la_SOURCES = $(common_sources) $(platform_sources) platform-type-compat.c
 libmono_native_compat_la_CFLAGS = $(MONO_NATIVE_COMPAT_CFLAGS) $(common_cflags)
 libmono_native_compat_la_LDFLAGS = $(MONO_NATIVE_COMPAT_LDFLAGS)
+libmono_native_compat_la_LIBADD = $(MONO_NATIVE_LIBADD)
 libmono_native_unified_la_SOURCES = $(common_sources) $(platform_sources) platform-type-unified.c
 libmono_native_unified_la_CFLAGS = $(MONO_NATIVE_UNIFIED_CFLAGS) $(common_cflags)
 libmono_native_unified_la_LDFLAGS = $(MONO_NATIVE_UNIFIED_LDFLAGS)
-MONO = ../../runtime/mono-wrapper
-BCL_BUILD_DIR = ../../mcs/class
-BCL_OUTPUT_DIR = $(BCL_BUILD_DIR)/lib/$(BCL_PROFILE)
-bcs_libs = mscorlib.dll System.dll
+libmono_native_unified_la_LIBADD = $(MONO_NATIVE_LIBADD)
 all: all-am
 
 .SUFFIXES:

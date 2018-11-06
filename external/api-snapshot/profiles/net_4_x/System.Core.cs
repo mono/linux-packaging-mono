@@ -2268,6 +2268,17 @@ namespace System.Linq.Expressions
         public System.Linq.Expressions.UnaryExpression Update(System.Linq.Expressions.Expression operand) { throw null; }
     }
 }
+namespace System.Net.Sockets
+{
+    public sealed partial class UnixDomainSocketEndPoint : System.Net.EndPoint
+    {
+        public UnixDomainSocketEndPoint(string path) { }
+        public override System.Net.Sockets.AddressFamily AddressFamily { get { throw null; } }
+        public override System.Net.EndPoint Create(System.Net.SocketAddress socketAddress) { throw null; }
+        public override System.Net.SocketAddress Serialize() { throw null; }
+        public override string ToString() { throw null; }
+    }
+}
 namespace System.Runtime.CompilerServices
 {
     public partial class CallSite

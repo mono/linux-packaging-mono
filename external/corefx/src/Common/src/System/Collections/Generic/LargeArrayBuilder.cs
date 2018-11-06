@@ -263,7 +263,7 @@ namespace System.Collections.Generic
             T[] buffer = GetBuffer(row);
             int copied =
 #if __MonoCS__
-            CopyToCore(buffer, column, array, arrayIndex, count);
+            CopyToCore(buffer, column, array, ref arrayIndex, ref count);
 #else
             CopyToCore(buffer, column);
 #endif
@@ -278,7 +278,7 @@ namespace System.Collections.Generic
                 buffer = GetBuffer(++row);
                 copied =
 #if __MonoCS__
-                CopyToCore(buffer, 0, array, arrayIndex, count);
+                CopyToCore(buffer, 0, array, ref arrayIndex, ref count);
 #else
                 CopyToCore(buffer, 0);
 #endif
@@ -289,7 +289,7 @@ namespace System.Collections.Generic
 #if __MonoCS__
         }
 
-        static int CopyToCore(T[] sourceBuffer, int sourceIndex, T[] array, int arrayIndex, int count)
+        static int CopyToCore(T[] sourceBuffer, int sourceIndex, T[] array, ref int arrayIndex, ref int count)
 #else
             int CopyToCore(T[] sourceBuffer, int sourceIndex)
 #endif
