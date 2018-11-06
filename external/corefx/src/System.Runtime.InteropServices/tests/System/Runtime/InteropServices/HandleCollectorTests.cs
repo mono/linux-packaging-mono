@@ -121,6 +121,7 @@ namespace System.Runtime.InteropServices
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "GC has different behavior on Mono")]  // see https://github.com/mono/mono/issues/11132
         public static void TestHandleCollector()
         {
             (int gen0, int gen1, int gen2) initialGcState = (GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2));

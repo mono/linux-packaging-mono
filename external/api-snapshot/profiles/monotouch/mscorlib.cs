@@ -11183,11 +11183,6 @@ namespace System.Reflection
         Synchronized = 32,
         Unmanaged = 4,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MethodInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.SerializableAttribute]
     public abstract partial class MethodInfo : System.Reflection.MethodBase
     {
         protected MethodInfo() { }
@@ -11199,9 +11194,7 @@ namespace System.Reflection
         public virtual System.Delegate CreateDelegate(System.Type delegateType, object target) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public abstract System.Reflection.MethodInfo GetBaseDefinition();
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public override System.Type[] GetGenericArguments() { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public virtual System.Reflection.MethodInfo GetGenericMethodDefinition() { throw null; }
         public override int GetHashCode() { throw null; }
         public virtual System.Reflection.MethodInfo MakeGenericMethod(params System.Type[] typeArguments) { throw null; }
@@ -21685,6 +21678,7 @@ namespace System.Security.Policy
         [System.ObsoleteAttribute]
         public Evidence(object[] hostEvidence, object[] assemblyEvidence) { }
         public Evidence(System.Security.Policy.Evidence evidence) { }
+        public Evidence(System.Security.Policy.EvidenceBase[] hostEvidence, System.Security.Policy.EvidenceBase[] assemblyEvidence) { }
         [System.ObsoleteAttribute]
         public int Count { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }

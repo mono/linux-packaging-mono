@@ -11253,12 +11253,7 @@ namespace System.Reflection
         Synchronized = 32,
         Unmanaged = 4,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MethodInfo))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.SerializableAttribute]
-    public abstract partial class MethodInfo : System.Reflection.MethodBase, System.Runtime.InteropServices._MethodInfo
+    public abstract partial class MethodInfo : System.Reflection.MethodBase
     {
         protected MethodInfo() { }
         public override System.Reflection.MemberTypes MemberType { get { throw null; } }
@@ -11269,19 +11264,12 @@ namespace System.Reflection
         public virtual System.Delegate CreateDelegate(System.Type delegateType, object target) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public abstract System.Reflection.MethodInfo GetBaseDefinition();
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public override System.Type[] GetGenericArguments() { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public virtual System.Reflection.MethodInfo GetGenericMethodDefinition() { throw null; }
         public override int GetHashCode() { throw null; }
         public virtual System.Reflection.MethodInfo MakeGenericMethod(params System.Type[] typeArguments) { throw null; }
         public static bool operator ==(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
         public static bool operator !=(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
-        void System.Runtime.InteropServices._MethodInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._MethodInfo.GetType() { throw null; }
-        void System.Runtime.InteropServices._MethodInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._MethodInfo.GetTypeInfoCount(out uint pcTInfo) { pcTInfo = default(uint); }
-        void System.Runtime.InteropServices._MethodInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     public static partial class MethodInfoExtensions
     {
@@ -23014,6 +23002,7 @@ namespace System.Security.Policy
         [System.ObsoleteAttribute]
         public Evidence(object[] hostEvidence, object[] assemblyEvidence) { }
         public Evidence(System.Security.Policy.Evidence evidence) { }
+        public Evidence(System.Security.Policy.EvidenceBase[] hostEvidence, System.Security.Policy.EvidenceBase[] assemblyEvidence) { }
         [System.ObsoleteAttribute]
         public int Count { get { throw null; } }
         public bool IsReadOnly { get { throw null; } }

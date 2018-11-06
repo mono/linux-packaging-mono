@@ -85,21 +85,22 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
-@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_7 = testing_aot_hybrid
-@INSTALL_TESTING_AOT_FULL_TRUE@am__append_8 = testing_aot_full
-@INSTALL_WINAOT_TRUE@am__append_9 = winaot
-@INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
-@INSTALL_ORBIS_TRUE@am__append_11 = orbis
-@INSTALL_UNREAL_TRUE@am__append_12 = unreal
-@INSTALL_WASM_TRUE@am__append_13 = wasm wasm_tools
+@INSTALL_TESTING_AOT_FULL_INTERP_TRUE@am__append_7 = testing_aot_full_interp
+@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_8 = testing_aot_hybrid
+@INSTALL_TESTING_AOT_FULL_TRUE@am__append_9 = testing_aot_full
+@INSTALL_WINAOT_TRUE@am__append_10 = winaot
+@INSTALL_XAMMAC_TRUE@am__append_11 = xammac xammac_net_4_5
+@INSTALL_ORBIS_TRUE@am__append_12 = orbis
+@INSTALL_UNREAL_TRUE@am__append_13 = unreal
+@INSTALL_WASM_TRUE@am__append_14 = wasm wasm_tools
 
 # Mono.WebBrowser.dll fails to verify on Windows
-@HOST_WIN32_TRUE@am__append_14 = Mono.WebBrowser.dll
+@HOST_WIN32_TRUE@am__append_15 = Mono.WebBrowser.dll
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@am__append_15 = ilasm.exe
+@FULL_AOT_TESTS_TRUE@am__append_16 = ilasm.exe
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -258,6 +259,7 @@ MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
 MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
 MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
 MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
 MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
 MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
 MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
@@ -403,7 +405,8 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13)
+	$(am__append_11) $(am__append_12) $(am__append_13) \
+	$(am__append_14)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(filter-out binary_reference_assemblies monodroid_tools wasm_tools,$(build_profiles))
 MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
@@ -419,7 +422,7 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 
 # fails to verify with "VTable setup of type Xunit.NetCore.Extensions.SkippedTestCase failed", not sure why
 VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll \
-	$(am__append_14) Xunit.NetCore.Extensions.dll $(am__append_15)
+	$(am__append_15) Xunit.NetCore.Extensions.dll $(am__append_16)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
