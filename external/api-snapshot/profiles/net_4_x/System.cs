@@ -1970,6 +1970,7 @@ namespace System.Collections.Generic
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.QueueDebugView<T>")]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class Queue<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.ICollection, System.Collections.IEnumerable
     {
@@ -2235,6 +2236,7 @@ namespace System.Collections.Generic
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.StackDebugView<T>")]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class Stack<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.ICollection, System.Collections.IEnumerable
     {

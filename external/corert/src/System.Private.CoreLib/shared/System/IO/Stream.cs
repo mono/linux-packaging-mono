@@ -25,6 +25,9 @@ using System.Threading.Tasks;
 
 namespace System.IO
 {
+#if MONO
+    [Serializable]
+#endif
     public abstract partial class Stream : MarshalByRefObject, IDisposable
     {
         public static readonly Stream Null = new NullStream();
@@ -35,8 +38,14 @@ namespace System.IO
         private const int DefaultCopyBufferSize = 81920;
 
         // To implement Async IO operations on streams that don't support async IO
-
+#if MONO
+        [NonSerialized]
+#endif
         private ReadWriteTask _activeReadWriteTask;
+
+#if MONO
+        [NonSerialized]
+#endif
         private SemaphoreSlim _asyncActiveSemaphore;
 
         internal SemaphoreSlim EnsureAsyncActiveSemaphoreInitialized()
@@ -372,8 +381,9 @@ namespace System.IO
             else
             {
                 byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(buffer.Length);
-                return FinishReadAsync(ReadAsync(sharedBuffer, 0, buffer.Length, cancellationToken), sharedBuffer, buffer);
 
+#if !__MonoCS__
+                return FinishReadAsync(ReadAsync(sharedBuffer, 0, buffer.Length, cancellationToken), sharedBuffer, buffer);
                 async ValueTask<int> FinishReadAsync(Task<int> readTask, byte[] localBuffer, Memory<byte> localDestination)
                 {
                     try
@@ -387,9 +397,27 @@ namespace System.IO
                         ArrayPool<byte>.Shared.Return(localBuffer);
                     }
                 }
+#else
+                return new ValueTask<int> (FinishReadAsync(ReadAsync(sharedBuffer, 0, buffer.Length, cancellationToken), sharedBuffer, buffer));
+#endif
             }
         }
 
+#if __MonoCS__
+                internal async Task<int> FinishReadAsync(Task<int> readTask, byte[] localBuffer, Memory<byte> localDestination)
+                {
+                    try
+                    {
+                        int result = await readTask.ConfigureAwait(false);
+                        new Span<byte>(localBuffer, 0, result).CopyTo(localDestination.Span);
+                        return result;
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(localBuffer);
+                    }
+                }
+#endif
         private Task<int> BeginEndReadAsync(byte[] buffer, int offset, int count)
         {
             if (!HasOverriddenBeginEndRead())

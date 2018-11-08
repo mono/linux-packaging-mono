@@ -427,11 +427,12 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-DIST_SUBDIRS = x86 ppc sparc arm arm64 s390x amd64 mips
+DIST_SUBDIRS = x86 ppc sparc arm arm64 s390x amd64 mips riscv
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 
 # arm needs to build some stuff even in JIT mode
 @ARM_TRUE@SUBDIRS = arm
+@RISCV_TRUE@SUBDIRS = riscv
 all: all-recursive
 
 .SUFFIXES:

@@ -10,7 +10,9 @@ using System.Text;
 using System.Threading;
 using System.Security;
 
+#if !MONO
 using Internal.IO;
+#endif
 
 namespace System
 {
@@ -76,9 +78,12 @@ namespace System
             }
             _displayName = _standardDisplayName;
 
+#if !MONO
+            // .NET Core uses ICU to get nicer names for timezones, Mono doesn't use ICU so names from tzdata are enough
             GetDisplayName(Interop.Globalization.TimeZoneDisplayNameType.Generic, ref _displayName);
             GetDisplayName(Interop.Globalization.TimeZoneDisplayNameType.Standard, ref _standardDisplayName);
             GetDisplayName(Interop.Globalization.TimeZoneDisplayNameType.DaylightSavings, ref _daylightDisplayName);
+#endif
 
             // TZif supports seconds-level granularity with offsets but TimeZoneInfo only supports minutes since it aligns
             // with DateTimeOffset, SQL Server, and the W3C XML Specification
@@ -96,6 +101,7 @@ namespace System
             ValidateTimeZoneInfo(_id, _baseUtcOffset, _adjustmentRules, out _supportsDaylightSavingTime);
         }
 
+#if !MONO
         private void GetDisplayName(Interop.Globalization.TimeZoneDisplayNameType nameType, ref string displayName)
         {
             if (GlobalizationMode.Invariant)
@@ -124,6 +130,7 @@ namespace System
                 displayName = timeZoneDisplayName;
             }
         }
+#endif
 
         /// <summary>
         /// Returns a cloned array of AdjustmentRule objects
@@ -608,6 +615,9 @@ namespace System
 
         private static string GetTimeZoneDirectory()
         {
+#if MONO && MOBILE
+            return GetTimeZoneDirectoryMobile();
+#else
             string tzDirectory = Environment.GetEnvironmentVariable(TimeZoneDirectoryEnvironmentVariable);
 
             if (tzDirectory == null)
@@ -620,6 +630,7 @@ namespace System
             }
 
             return tzDirectory;
+#endif
         }
 
         /// <summary>

@@ -195,7 +195,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
 	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
 	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	exceptions-ppc.c tramp-ppc.c mini-riscv.c mini-riscv.h \
+	exceptions-riscv.c tramp-riscv.c mini-s390x.c mini-s390x.h \
 	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
 	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
 	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
@@ -250,38 +251,42 @@ am__objects_8 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
 	libmini_la-tramp-mips.lo
 am__objects_9 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
 	libmini_la-tramp-ppc.lo
-am__objects_10 = libmini_la-mini-s390x.lo \
+am__objects_10 = libmini_la-mini-riscv.lo \
+	libmini_la-exceptions-riscv.lo libmini_la-tramp-riscv.lo
+am__objects_11 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_11 = libmini_la-mini-sparc.lo \
+am__objects_12 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_12 = libmini_la-mini-wasm.lo \
+am__objects_13 = libmini_la-mini-wasm.lo \
 	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
 	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
-am__objects_13 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
+am__objects_14 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
 	libmini_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_14 = $(am__objects_13)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_14 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_14 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_14 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_14 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_14 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_14 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_14 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_14 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_14 = $(am__objects_6)
-@AMD64_TRUE@am__objects_14 = $(am__objects_5)
-am__objects_15 = libmini_la-mini-darwin.lo
-am__objects_16 = libmini_la-mini-posix.lo
-am__objects_17 = libmini_la-mini-windows.lo \
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_15 = $(am__objects_14)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_15 = $(am__objects_13)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_TRUE@am__objects_15 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_15 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_15 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_15 = $(am__objects_6)
+@AMD64_TRUE@am__objects_15 = $(am__objects_5)
+am__objects_16 = libmini_la-mini-darwin.lo
+am__objects_17 = libmini_la-mini-posix.lo
+am__objects_18 = libmini_la-mini-windows.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_18 = $(am__objects_17)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_18 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_16)
-@HOST_DARWIN_TRUE@am__objects_18 = $(am__objects_15) $(am__objects_16)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_19 = $(am__objects_18)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_19 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_17)
+@HOST_DARWIN_TRUE@am__objects_19 = $(am__objects_16) $(am__objects_17)
 am_libmini_la_OBJECTS = $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_14) $(am__objects_18)
+	$(am__objects_4) $(am__objects_15) $(am__objects_19)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -292,9 +297,9 @@ am__v_lt_1 =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@WASM_FALSE@am__objects_19 = libmono_dbg_la-debugger-engine.lo
+@WASM_FALSE@am__objects_20 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	libmono_dbg_la-debugger-state-machine.lo $(am__objects_19)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_20)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -306,10 +311,10 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_20 = interp/libmono_ee_interp_la-interp.lo \
+am__objects_21 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
 	interp/libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_20)
+am_libmono_ee_interp_la_OBJECTS = $(am__objects_21)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -394,11 +399,11 @@ mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_21 =
+am__objects_22 =
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_21)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_22)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_21)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_22)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
 	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
@@ -955,6 +960,12 @@ s390x_sources = \
 	exceptions-s390x.c	\
 	tramp-s390x.c
 
+riscv_sources = \
+	mini-riscv.c \
+	mini-riscv.h \
+	exceptions-riscv.c \
+	tramp-riscv.c
+
 darwin_sources = \
 	mini-darwin.c
 
@@ -1126,6 +1137,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_sources = $(mips_sources)
 @POWERPC64_TRUE@arch_sources = $(ppc_sources)
 @POWERPC_TRUE@arch_sources = $(ppc_sources)
+@RISCV32_TRUE@arch_sources = $(riscv_sources)
+@RISCV64_TRUE@arch_sources = $(riscv_sources)
 @S390X_TRUE@arch_sources = $(s390x_sources)
 @SPARC64_TRUE@arch_sources = $(sparc_sources)
 @SPARC_TRUE@arch_sources = $(sparc_sources)
@@ -1137,6 +1150,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_built = cpu-mips.h
 @POWERPC64_TRUE@arch_built = cpu-ppc64.h
 @POWERPC_TRUE@arch_built = cpu-ppc.h
+@RISCV32_TRUE@arch_built = cpu-riscv32.h
+@RISCV64_TRUE@arch_built = cpu-riscv64.h
 @S390X_TRUE@arch_built = cpu-s390x.h
 @SPARC64_TRUE@arch_built = cpu-sparc.h
 @SPARC_TRUE@arch_built = cpu-sparc.h
@@ -1148,6 +1163,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_define = __mips__
 @POWERPC64_TRUE@arch_define = __ppc64__
 @POWERPC_TRUE@arch_define = __ppc__
+@RISCV32_TRUE@arch_define = __riscv
+@RISCV64_TRUE@arch_define = __riscv
 @S390X_TRUE@arch_define = __s390__
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
@@ -1159,6 +1176,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@target_define = TARGET_MIPS
 @POWERPC64_TRUE@target_define = TARGET_POWERPC
 @POWERPC_TRUE@target_define = TARGET_POWERPC
+@RISCV32_TRUE@target_define = TARGET_RISCV32
+@RISCV64_TRUE@target_define = TARGET_RISCV64
 @S390X_TRUE@target_define = TARGET_S390X
 @SPARC64_TRUE@target_define = TARGET_SPARC
 @SPARC_TRUE@target_define = TARGET_SPARC
@@ -1252,6 +1271,7 @@ EXTRA_DIST = TestDriver.cs \
 	$(mips_sources) cpu-mips.md 		\
 	$(sparc_sources) cpu-sparc.md 		\
 	$(s390x_sources) cpu-s390x.md 		\
+	$(riscv_sources) cpu-riscv32.md cpu-riscv64.md \
 	$(windows_sources)			\
 	$(darwin_sources) Info.plist		\
 	$(posix_sources)					\
@@ -1486,6 +1506,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-wasm.Plo@am__quote@
@@ -1521,6 +1542,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-ppc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-sparc.Plo@am__quote@
@@ -1546,6 +1568,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-wasm.Plo@am__quote@
@@ -2092,6 +2115,27 @@ libmini_la-tramp-ppc.lo: tramp-ppc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-ppc.c' object='libmini_la-tramp-ppc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tramp-ppc.lo `test -f 'tramp-ppc.c' || echo '$(srcdir)/'`tramp-ppc.c
+
+libmini_la-mini-riscv.lo: mini-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-riscv.Tpo -c -o libmini_la-mini-riscv.lo `test -f 'mini-riscv.c' || echo '$(srcdir)/'`mini-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-riscv.Tpo $(DEPDIR)/libmini_la-mini-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-riscv.c' object='libmini_la-mini-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-riscv.lo `test -f 'mini-riscv.c' || echo '$(srcdir)/'`mini-riscv.c
+
+libmini_la-exceptions-riscv.lo: exceptions-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-exceptions-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-exceptions-riscv.Tpo -c -o libmini_la-exceptions-riscv.lo `test -f 'exceptions-riscv.c' || echo '$(srcdir)/'`exceptions-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-exceptions-riscv.Tpo $(DEPDIR)/libmini_la-exceptions-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-riscv.c' object='libmini_la-exceptions-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-exceptions-riscv.lo `test -f 'exceptions-riscv.c' || echo '$(srcdir)/'`exceptions-riscv.c
+
+libmini_la-tramp-riscv.lo: tramp-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-tramp-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-tramp-riscv.Tpo -c -o libmini_la-tramp-riscv.lo `test -f 'tramp-riscv.c' || echo '$(srcdir)/'`tramp-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-tramp-riscv.Tpo $(DEPDIR)/libmini_la-tramp-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-riscv.c' object='libmini_la-tramp-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tramp-riscv.lo `test -f 'tramp-riscv.c' || echo '$(srcdir)/'`tramp-riscv.c
 
 libmini_la-mini-s390x.lo: mini-s390x.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-s390x.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-s390x.Tpo -c -o libmini_la-mini-s390x.lo `test -f 'mini-s390x.c' || echo '$(srcdir)/'`mini-s390x.c
@@ -2667,6 +2711,12 @@ cpu-s390x.h: mini-ops.h cpu-s390x.md
 
 cpu-mips.h: mini-ops.h cpu-mips.md
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
+
+cpu-riscv32.h: cpu-riscv32.md
+	$(GENMDESC_PRG) cpu-riscv32.h riscv32_cpu_desc $(srcdir)/cpu-riscv32.md
+
+cpu-riscv64.h: cpu-riscv64.md
+	$(GENMDESC_PRG) cpu-riscv64.h riscv64_cpu_desc $(srcdir)/cpu-riscv64.md
 
 testi: mono test.exe
 	$(MINI_RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
