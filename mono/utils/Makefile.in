@@ -98,8 +98,9 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_16 = mono-hwcap-wasm.c
-@CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
+@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__append_16 = mono-hwcap-riscv.c
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_17 = mono-hwcap-wasm.c
+@CROSS_COMPILE_TRUE@am__append_18 = mono-hwcap-cross.c
 subdir = mono/utils
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -185,8 +186,8 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
 	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
 	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
-	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-wasm.c \
-	mono-hwcap-cross.c
+	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
+	mono-hwcap-wasm.c mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-os-event-win32.lo \
 @HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo
@@ -277,16 +278,17 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__objects_17 = libmonoutils_la-mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_18 = libmonoutils_la-mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_19 = libmonoutils_la-mono-hwcap-s390x.lo
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-wasm.lo
-@CROSS_COMPILE_TRUE@am__objects_21 =  \
+@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-riscv.lo
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_21 = libmonoutils_la-mono-hwcap-wasm.lo
+@CROSS_COMPILE_TRUE@am__objects_22 =  \
 @CROSS_COMPILE_TRUE@	libmonoutils_la-mono-hwcap-cross.lo
-am__objects_22 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
+am__objects_23 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
 	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21)
-am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_22)
+	$(am__objects_20) $(am__objects_21) $(am__objects_22)
+am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_23)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 libmonoutils_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -869,7 +871,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17)
+	$(am__append_16) $(am__append_17) $(am__append_18)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
@@ -987,6 +989,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-cross.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Plo@am__quote@
@@ -1763,6 +1766,13 @@ libmonoutils_la-mono-hwcap-s390x.lo: mono-hwcap-s390x.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-hwcap-s390x.c' object='libmonoutils_la-mono-hwcap-s390x.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-hwcap-s390x.lo `test -f 'mono-hwcap-s390x.c' || echo '$(srcdir)/'`mono-hwcap-s390x.c
+
+libmonoutils_la-mono-hwcap-riscv.lo: mono-hwcap-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-hwcap-riscv.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Tpo -c -o libmonoutils_la-mono-hwcap-riscv.lo `test -f 'mono-hwcap-riscv.c' || echo '$(srcdir)/'`mono-hwcap-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Tpo $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-hwcap-riscv.c' object='libmonoutils_la-mono-hwcap-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-hwcap-riscv.lo `test -f 'mono-hwcap-riscv.c' || echo '$(srcdir)/'`mono-hwcap-riscv.c
 
 libmonoutils_la-mono-hwcap-wasm.lo: mono-hwcap-wasm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-hwcap-wasm.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Tpo -c -o libmonoutils_la-mono-hwcap-wasm.lo `test -f 'mono-hwcap-wasm.c' || echo '$(srcdir)/'`mono-hwcap-wasm.c

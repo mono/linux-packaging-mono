@@ -526,7 +526,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	delegate-async-exit.exe \
 @ARM_TRUE@	delegate-delegate-exit.exe \
 @ARM_TRUE@	delegate-exit.exe \
-@ARM_TRUE@	delegate-with-null-target.exe \
 @ARM_TRUE@	delegate1.exe \
 @ARM_TRUE@	delegate3.exe \
 @ARM_TRUE@	delegate5.exe \
@@ -562,7 +561,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM64_TRUE@am__append_34 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
-@ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
@@ -571,7 +569,6 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
 @AMD64_TRUE@	cominterop.exe \
-@AMD64_TRUE@	delegate-with-null-target.exe \
 @AMD64_TRUE@	dim-diamondshape.exe \
 @AMD64_TRUE@	pinvoke3.exe
 

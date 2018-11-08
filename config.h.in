@@ -21,6 +21,9 @@
 /* Disable support for multiple appdomains. */
 #undef DISABLE_APPDOMAINS
 
+/* Disable assertion messages. */
+#undef DISABLE_ASSERT_MESSAGES
+
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
@@ -1305,6 +1308,15 @@
 /* ... */
 #undef HOST_POWERPC64
 
+/* Host is RISC-V */
+#undef HOST_RISCV
+
+/* Host is 32-bit RISC-V */
+#undef HOST_RISCV32
+
+/* Host is 64-bit RISC-V */
+#undef HOST_RISCV64
+
 /* ... */
 #undef HOST_S390X
 
@@ -1434,6 +1446,15 @@
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID
 
+/* RISC-V FPABI is double-precision */
+#undef RISCV_FPABI_DOUBLE
+
+/* RISC-V FPABI is single-precision */
+#undef RISCV_FPABI_SINGLE
+
+/* RISC-V FPABI is soft float */
+#undef RISCV_FPABI_SOFT
+
 /* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
@@ -1496,6 +1517,15 @@
 
 /* ... */
 #undef TARGET_PS4
+
+/* Target is RISC-V */
+#undef TARGET_RISCV
+
+/* Target is 32-bit RISC-V */
+#undef TARGET_RISCV32
+
+/* Target is 64-bit RISC-V */
+#undef TARGET_RISCV64
 
 /* ... */
 #undef TARGET_S390X

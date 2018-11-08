@@ -14,7 +14,7 @@ using FSEventStreamEventId = System.UInt64;
 using CFRunLoopRef = System.IntPtr;
 using Microsoft.Win32.SafeHandles;
 
-#if MONO
+#if MONO && !MOBILE
 
 using System;
 using System.IO;
