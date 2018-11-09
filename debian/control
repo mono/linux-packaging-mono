@@ -37,8 +37,8 @@ Conflicts: mono-common (<< 2.4),
            mono-1.0-runtime (<< 2.4),
            mono-2.0-runtime (<< 2.4),
            mono-runtime (<< 3.2.1)
-Suggests: xdg-utils | libgnome2-0 | konqueror
-Recommends: binfmt-support (>= 1.1.2), mono-llvm-support
+Suggests: xdg-utils | libgnome2-0 | konqueror, mono-llvm-support [armhf arm64]
+Recommends: binfmt-support (>= 1.1.2), mono-llvm-support [i386 amd64]
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          binutils,
@@ -192,7 +192,7 @@ Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 p
 Depends: ${misc:Depends},
          mono-runtime (= ${binary:Version}),
          mono-runtime-sgen (= ${binary:Version}) [amd64 armel arm64 armhf i386 kfreebsd-amd64 kfreebsd-i386 s390x],
-         mono-llvm-support (= ${binary:Version}) [amd64 arm64 armhf i386],
+         mono-llvm-support (= ${binary:Version}) [amd64 i386],
          libmono-2.0-1 (= ${binary:Version}),
          libmono-profiler (= ${binary:Version}),
          mono-utils (= ${binary:Version}),
@@ -209,6 +209,7 @@ Depends: ${misc:Depends},
          referenceassemblies-pcl,
          msbuild,
          ca-certificates-mono (= ${source:Version})
+Suggests: mono-llvm-support (= ${binary:Version}) [armhf arm64]
 Description: complete Mono runtime, development tools and all libraries
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
