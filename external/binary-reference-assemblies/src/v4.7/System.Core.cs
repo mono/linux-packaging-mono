@@ -169,6 +169,9 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -235,6 +238,8 @@ namespace System.Diagnostics.Eventing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Explicit, Size=16)]
     public partial struct EventDescriptor
     {
+        [System.Runtime.InteropServices.FieldOffsetAttribute(0)]
+        private int _dummyPrimitive;
         public EventDescriptor(int id, byte version, byte channel, byte level, byte opcode, int task, long keywords) { throw null;}
         public byte Channel { get { throw null; } }
         public int EventId { get { throw null; } }
@@ -3579,6 +3584,8 @@ namespace System.Security.Cryptography
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CngProperty : System.IEquatable<System.Security.Cryptography.CngProperty>
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public CngProperty(string name, byte[] value, System.Security.Cryptography.CngPropertyOptions options) { throw null;}
         public string Name { get { throw null; } }
         public System.Security.Cryptography.CngPropertyOptions Options { get { throw null; } }
@@ -3660,6 +3667,7 @@ namespace System.Security.Cryptography
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ECCurve
     {
+        private object _dummy;
         public byte[] A;
         public byte[] B;
         public byte[] Cofactor;

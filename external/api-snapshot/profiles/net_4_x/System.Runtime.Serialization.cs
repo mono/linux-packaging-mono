@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Runtime.Serialization.dll")]
@@ -20,11 +20,11 @@
 [assembly:System.Runtime.InteropServices.ComCompatibleVersionAttribute(1, 0, 3300, 0)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityCriticalAttribute((System.Security.SecurityCriticalScope)(0))]
+[assembly:System.Security.SecurityCriticalAttribute(System.Security.SecurityCriticalScope.Explicit)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.Runtime.Serialization
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(12), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
     public sealed partial class CollectionDataContractAttribute : System.Attribute
     {
         public CollectionDataContractAttribute() { }
@@ -41,14 +41,14 @@ namespace System.Runtime.Serialization
         public string Namespace { get { throw null; } set { } }
         public string ValueName { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(3), Inherited=false, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Module, Inherited=false, AllowMultiple=true)]
     public sealed partial class ContractNamespaceAttribute : System.Attribute
     {
         public ContractNamespaceAttribute(string contractNamespace) { }
         public string ClrNamespace { get { throw null; } set { } }
         public string ContractNamespace { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(28), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
     public sealed partial class DataContractAttribute : System.Attribute
     {
         public DataContractAttribute() { }
@@ -120,7 +120,7 @@ namespace System.Runtime.Serialization
         public System.Xml.XmlDictionaryString RootNamespace { get { throw null; } set { } }
         public bool SerializeReadOnlyTypes { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false, AllowMultiple=false)]
     public sealed partial class DataMemberAttribute : System.Attribute
     {
         public DataMemberAttribute() { }
@@ -144,7 +144,7 @@ namespace System.Runtime.Serialization
         AsNeeded = 0,
         Never = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(256), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field, Inherited=false, AllowMultiple=false)]
     public sealed partial class EnumMemberAttribute : System.Attribute
     {
         public EnumMemberAttribute() { }
@@ -176,7 +176,7 @@ namespace System.Runtime.Serialization
     {
         System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false, AllowMultiple=false)]
     public sealed partial class IgnoreDataMemberAttribute : System.Attribute
     {
         public IgnoreDataMemberAttribute() { }
@@ -208,7 +208,7 @@ namespace System.Runtime.Serialization
         object GetObjectToSerialize(object obj, System.Type targetType);
         System.Type GetSurrogateType(System.Type type);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(12), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct, Inherited=true, AllowMultiple=true)]
     public sealed partial class KnownTypeAttribute : System.Attribute
     {
         public KnownTypeAttribute(string methodName) { }
@@ -274,8 +274,8 @@ namespace System.Runtime.Serialization
     }
     public static partial class XPathQueryGenerator
     {
-        public static string CreateFromDataContractSerializer(System.Type type, System.Reflection.MemberInfo[] pathToMember, System.Text.StringBuilder rootElementXpath, out System.Xml.XmlNamespaceManager namespaces) { namespaces = default(System.Xml.XmlNamespaceManager); throw null; }
-        public static string CreateFromDataContractSerializer(System.Type type, System.Reflection.MemberInfo[] pathToMember, out System.Xml.XmlNamespaceManager namespaces) { namespaces = default(System.Xml.XmlNamespaceManager); throw null; }
+        public static string CreateFromDataContractSerializer(System.Type type, System.Reflection.MemberInfo[] pathToMember, System.Text.StringBuilder rootElementXpath, out System.Xml.XmlNamespaceManager namespaces) { throw null; }
+        public static string CreateFromDataContractSerializer(System.Type type, System.Reflection.MemberInfo[] pathToMember, out System.Xml.XmlNamespaceManager namespaces) { throw null; }
     }
     public partial class XsdDataContractExporter
     {
@@ -325,10 +325,10 @@ namespace System.Runtime.Serialization.Configuration
     {
         public DeclaredTypeElement() { }
         public DeclaredTypeElement(string typeName) { }
-        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Runtime.Serialization.Configuration.TypeElementCollection KnownTypes { get { throw null; } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(4))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey)]
         public string Type { get { throw null; } set { } }
         [System.Security.SecuritySafeCriticalAttribute]
         protected override void PostDeserialize() { }
@@ -364,7 +364,7 @@ namespace System.Runtime.Serialization.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("index", DefaultValue=0)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0)]
         public int Index { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Runtime.Serialization.Configuration.ParameterElementCollection Parameters { get { throw null; } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="")]
@@ -373,7 +373,7 @@ namespace System.Runtime.Serialization.Configuration
         protected override void PostDeserialize() { }
         protected override void PreSerialize(System.Xml.XmlWriter writer) { }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Runtime.Serialization.Configuration.ParameterElement), AddItemName="parameter", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Runtime.Serialization.Configuration.ParameterElement), AddItemName="parameter", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class ParameterElementCollection : System.Configuration.ConfigurationElementCollection
     {
         public ParameterElementCollection() { }
@@ -403,7 +403,7 @@ namespace System.Runtime.Serialization.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("index", DefaultValue=0)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0)]
         public int Index { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Runtime.Serialization.Configuration.ParameterElementCollection Parameters { get { throw null; } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="")]
@@ -411,7 +411,7 @@ namespace System.Runtime.Serialization.Configuration
         public string Type { get { throw null; } set { } }
         protected override void Reset(System.Configuration.ConfigurationElement parentElement) { }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Runtime.Serialization.Configuration.TypeElement), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Runtime.Serialization.Configuration.TypeElement), CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class TypeElementCollection : System.Configuration.ConfigurationElementCollection
     {
         public TypeElementCollection() { }
@@ -577,22 +577,22 @@ namespace System.Xml
         public override string ToString() { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
         public bool TryGetGuid(byte[] buffer, int offset) { throw null; }
-        public bool TryGetGuid(out System.Guid guid) { guid = default(System.Guid); throw null; }
+        public bool TryGetGuid(out System.Guid guid) { throw null; }
     }
     public partial class XmlBinaryReaderSession : System.Xml.IXmlDictionary
     {
         public XmlBinaryReaderSession() { }
         public System.Xml.XmlDictionaryString Add(int id, string value) { throw null; }
         public void Clear() { }
-        public bool TryLookup(int key, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
-        public bool TryLookup(string value, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
-        public bool TryLookup(System.Xml.XmlDictionaryString value, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
+        public bool TryLookup(int key, out System.Xml.XmlDictionaryString result) { throw null; }
+        public bool TryLookup(string value, out System.Xml.XmlDictionaryString result) { throw null; }
+        public bool TryLookup(System.Xml.XmlDictionaryString value, out System.Xml.XmlDictionaryString result) { throw null; }
     }
     public partial class XmlBinaryWriterSession
     {
         public XmlBinaryWriterSession() { }
         public void Reset() { }
-        public virtual bool TryAdd(System.Xml.XmlDictionaryString value, out int key) { key = default(int); throw null; }
+        public virtual bool TryAdd(System.Xml.XmlDictionaryString value, out int key) { throw null; }
     }
     public partial class XmlDictionary : System.Xml.IXmlDictionary
     {
@@ -600,9 +600,9 @@ namespace System.Xml
         public XmlDictionary(int capacity) { }
         public static System.Xml.IXmlDictionary Empty { get { throw null; } }
         public virtual System.Xml.XmlDictionaryString Add(string value) { throw null; }
-        public virtual bool TryLookup(int key, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
-        public virtual bool TryLookup(string value, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
-        public virtual bool TryLookup(System.Xml.XmlDictionaryString value, out System.Xml.XmlDictionaryString result) { result = default(System.Xml.XmlDictionaryString); throw null; }
+        public virtual bool TryLookup(int key, out System.Xml.XmlDictionaryString result) { throw null; }
+        public virtual bool TryLookup(string value, out System.Xml.XmlDictionaryString result) { throw null; }
+        public virtual bool TryLookup(System.Xml.XmlDictionaryString value, out System.Xml.XmlDictionaryString result) { throw null; }
     }
     public abstract partial class XmlDictionaryReader : System.Xml.XmlReader
     {
@@ -634,14 +634,14 @@ namespace System.Xml
         public static System.Xml.XmlDictionaryReader CreateTextReader(System.IO.Stream stream, System.Xml.XmlDictionaryReaderQuotas quotas) { throw null; }
         public virtual void EndCanonicalization() { }
         public virtual string GetAttribute(System.Xml.XmlDictionaryString localName, System.Xml.XmlDictionaryString namespaceUri) { throw null; }
-        public virtual void GetNonAtomizedNames(out string localName, out string namespaceUri) { localName = default(string); namespaceUri = default(string); }
+        public virtual void GetNonAtomizedNames(out string localName, out string namespaceUri) { throw null; }
         public virtual int IndexOfLocalName(string[] localNames, string namespaceUri) { throw null; }
         public virtual int IndexOfLocalName(System.Xml.XmlDictionaryString[] localNames, System.Xml.XmlDictionaryString namespaceUri) { throw null; }
         public virtual bool IsLocalName(string localName) { throw null; }
         public virtual bool IsLocalName(System.Xml.XmlDictionaryString localName) { throw null; }
         public virtual bool IsNamespaceUri(string namespaceUri) { throw null; }
         public virtual bool IsNamespaceUri(System.Xml.XmlDictionaryString namespaceUri) { throw null; }
-        public virtual bool IsStartArray(out System.Type type) { type = default(System.Type); throw null; }
+        public virtual bool IsStartArray(out System.Type type) { throw null; }
         public virtual bool IsStartElement(System.Xml.XmlDictionaryString localName, System.Xml.XmlDictionaryString namespaceUri) { throw null; }
         protected bool IsTextNode(System.Xml.XmlNodeType nodeType) { throw null; }
         public virtual void MoveToStartElement() { }
@@ -678,11 +678,11 @@ namespace System.Xml
         public override decimal ReadContentAsDecimal() { throw null; }
         public override float ReadContentAsFloat() { throw null; }
         public virtual System.Guid ReadContentAsGuid() { throw null; }
-        public virtual void ReadContentAsQualifiedName(out string localName, out string namespaceUri) { localName = default(string); namespaceUri = default(string); }
+        public virtual void ReadContentAsQualifiedName(out string localName, out string namespaceUri) { throw null; }
         public override string ReadContentAsString() { throw null; }
         protected string ReadContentAsString(int maxStringContentLength) { throw null; }
-        public virtual string ReadContentAsString(string[] strings, out int index) { index = default(int); throw null; }
-        public virtual string ReadContentAsString(System.Xml.XmlDictionaryString[] strings, out int index) { index = default(int); throw null; }
+        public virtual string ReadContentAsString(string[] strings, out int index) { throw null; }
+        public virtual string ReadContentAsString(System.Xml.XmlDictionaryString[] strings, out int index) { throw null; }
         public virtual System.TimeSpan ReadContentAsTimeSpan() { throw null; }
         public virtual System.Xml.UniqueId ReadContentAsUniqueId() { throw null; }
         public virtual System.DateTime[] ReadDateTimeArray(string localName, string namespaceUri) { throw null; }
@@ -725,11 +725,11 @@ namespace System.Xml
         public virtual System.TimeSpan[] ReadTimeSpanArray(System.Xml.XmlDictionaryString localName, System.Xml.XmlDictionaryString namespaceUri) { throw null; }
         public virtual int ReadValueAsBase64(byte[] buffer, int offset, int count) { throw null; }
         public virtual void StartCanonicalization(System.IO.Stream stream, bool includeComments, string[] inclusivePrefixes) { }
-        public virtual bool TryGetArrayLength(out int count) { count = default(int); throw null; }
-        public virtual bool TryGetBase64ContentLength(out int length) { length = default(int); throw null; }
-        public virtual bool TryGetLocalNameAsDictionaryString(out System.Xml.XmlDictionaryString localName) { localName = default(System.Xml.XmlDictionaryString); throw null; }
-        public virtual bool TryGetNamespaceUriAsDictionaryString(out System.Xml.XmlDictionaryString namespaceUri) { namespaceUri = default(System.Xml.XmlDictionaryString); throw null; }
-        public virtual bool TryGetValueAsDictionaryString(out System.Xml.XmlDictionaryString value) { value = default(System.Xml.XmlDictionaryString); throw null; }
+        public virtual bool TryGetArrayLength(out int count) { throw null; }
+        public virtual bool TryGetBase64ContentLength(out int length) { throw null; }
+        public virtual bool TryGetLocalNameAsDictionaryString(out System.Xml.XmlDictionaryString localName) { throw null; }
+        public virtual bool TryGetNamespaceUriAsDictionaryString(out System.Xml.XmlDictionaryString namespaceUri) { throw null; }
+        public virtual bool TryGetValueAsDictionaryString(out System.Xml.XmlDictionaryString value) { throw null; }
     }
     public sealed partial class XmlDictionaryReaderQuotas
     {

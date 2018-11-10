@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Core.dll")]
@@ -95,32 +95,32 @@ namespace System
     public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, in T7, in T8, in T9, in T10, in T11, in T12, in T13, in T14, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14);
     public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, in T7, in T8, in T9, in T10, in T11, in T12, in T13, in T14, in T15, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15);
     public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, in T7, in T8, in T9, in T10, in T11, in T12, in T13, in T14, in T15, in T16, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -171,12 +171,15 @@ namespace System.Collections.Generic
         System.Collections.Generic.IEnumerator<T> System.Collections.Generic.IEnumerable<T>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         public void TrimExcess() { }
-        public bool TryGetValue(T equalValue, out T actualValue) { actualValue = default(T); throw null; }
+        public bool TryGetValue(T equalValue, out T actualValue) { throw null; }
         public void UnionWith(System.Collections.Generic.IEnumerable<T> other) { }
         [System.SerializableAttribute]
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T _current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -298,18 +301,18 @@ namespace System.Dynamic
         protected DynamicObject() { }
         public virtual System.Collections.Generic.IEnumerable<string> GetDynamicMemberNames() { throw null; }
         public virtual System.Dynamic.DynamicMetaObject GetMetaObject(System.Linq.Expressions.Expression parameter) { throw null; }
-        public virtual bool TryBinaryOperation(System.Dynamic.BinaryOperationBinder binder, object arg, out object result) { result = default(object); throw null; }
-        public virtual bool TryConvert(System.Dynamic.ConvertBinder binder, out object result) { result = default(object); throw null; }
-        public virtual bool TryCreateInstance(System.Dynamic.CreateInstanceBinder binder, object[] args, out object result) { result = default(object); throw null; }
+        public virtual bool TryBinaryOperation(System.Dynamic.BinaryOperationBinder binder, object arg, out object result) { throw null; }
+        public virtual bool TryConvert(System.Dynamic.ConvertBinder binder, out object result) { throw null; }
+        public virtual bool TryCreateInstance(System.Dynamic.CreateInstanceBinder binder, object[] args, out object result) { throw null; }
         public virtual bool TryDeleteIndex(System.Dynamic.DeleteIndexBinder binder, object[] indexes) { throw null; }
         public virtual bool TryDeleteMember(System.Dynamic.DeleteMemberBinder binder) { throw null; }
-        public virtual bool TryGetIndex(System.Dynamic.GetIndexBinder binder, object[] indexes, out object result) { result = default(object); throw null; }
-        public virtual bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result) { result = default(object); throw null; }
-        public virtual bool TryInvoke(System.Dynamic.InvokeBinder binder, object[] args, out object result) { result = default(object); throw null; }
-        public virtual bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result) { result = default(object); throw null; }
+        public virtual bool TryGetIndex(System.Dynamic.GetIndexBinder binder, object[] indexes, out object result) { throw null; }
+        public virtual bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result) { throw null; }
+        public virtual bool TryInvoke(System.Dynamic.InvokeBinder binder, object[] args, out object result) { throw null; }
+        public virtual bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result) { throw null; }
         public virtual bool TrySetIndex(System.Dynamic.SetIndexBinder binder, object[] indexes, object value) { throw null; }
         public virtual bool TrySetMember(System.Dynamic.SetMemberBinder binder, object value) { throw null; }
-        public virtual bool TryUnaryOperation(System.Dynamic.UnaryOperationBinder binder, out object result) { result = default(object); throw null; }
+        public virtual bool TryUnaryOperation(System.Dynamic.UnaryOperationBinder binder, out object result) { throw null; }
     }
     public sealed partial class ExpandoObject : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.IEnumerable, System.ComponentModel.INotifyPropertyChanged, System.Dynamic.IDynamicMetaObjectProvider
     {
@@ -328,7 +331,7 @@ namespace System.Dynamic
         void System.Collections.Generic.IDictionary<System.String,System.Object>.Add(string key, object value) { }
         bool System.Collections.Generic.IDictionary<System.String,System.Object>.ContainsKey(string key) { throw null; }
         bool System.Collections.Generic.IDictionary<System.String,System.Object>.Remove(string key) { throw null; }
-        bool System.Collections.Generic.IDictionary<System.String,System.Object>.TryGetValue(string key, out object value) { value = default(object); throw null; }
+        bool System.Collections.Generic.IDictionary<System.String,System.Object>.TryGetValue(string key, out object value) { throw null; }
         System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         System.Dynamic.DynamicMetaObject System.Dynamic.IDynamicMetaObjectProvider.GetMetaObject(System.Linq.Expressions.Expression parameter) { throw null; }
@@ -510,7 +513,7 @@ namespace System.IO.MemoryMappedFiles
     {
         internal MemoryMappedViewAccessor() { }
         public long PointerOffset { get { throw null; } }
-        public Microsoft.Win32.SafeHandles.SafeMemoryMappedViewHandle SafeMemoryMappedViewHandle { [System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]get { throw null; } }
+        public Microsoft.Win32.SafeHandles.SafeMemoryMappedViewHandle SafeMemoryMappedViewHandle { [System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]get { throw null; } }
         [System.Security.SecuritySafeCriticalAttribute]
         protected override void Dispose(bool disposing) { }
         [System.Security.SecurityCriticalAttribute]
@@ -520,7 +523,7 @@ namespace System.IO.MemoryMappedFiles
     {
         internal MemoryMappedViewStream() { }
         public long PointerOffset { get { throw null; } }
-        public Microsoft.Win32.SafeHandles.SafeMemoryMappedViewHandle SafeMemoryMappedViewHandle { [System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]get { throw null; } }
+        public Microsoft.Win32.SafeHandles.SafeMemoryMappedViewHandle SafeMemoryMappedViewHandle { [System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]get { throw null; } }
         [System.Security.SecuritySafeCriticalAttribute]
         protected override void Dispose(bool disposing) { }
         [System.Security.SecurityCriticalAttribute]
@@ -593,7 +596,7 @@ namespace System.IO.Pipes
         public void EndWaitForConnection(System.IAsyncResult asyncResult) { }
         ~NamedPipeServerStream() { }
         public string GetImpersonationUserName() { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(512))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.ControlPrincipal)]
         public void RunAsClient(System.IO.Pipes.PipeStreamImpersonationWorker impersonationWorker) { }
         public void WaitForConnection() { }
         public System.Threading.Tasks.Task WaitForConnectionAsync() { throw null; }
@@ -699,7 +702,7 @@ namespace System.IO.Pipes
         public override int Read(byte[] buffer, int offset, int count) { throw null; }
         public override int Read(System.Span<byte> buffer) { throw null; }
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> buffer, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
         public void SetAccessControl(System.IO.Pipes.PipeSecurity pipeSecurity) { }
@@ -708,7 +711,7 @@ namespace System.IO.Pipes
         public override void Write(byte[] buffer, int offset, int count) { }
         public override void Write(System.ReadOnlySpan<byte> buffer) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
-        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
+        public override System.Threading.Tasks.ValueTask WriteAsync(System.ReadOnlyMemory<byte> buffer, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public override void WriteByte(byte value) { }
     }
     public delegate void PipeStreamImpersonationWorker();
@@ -1803,8 +1806,8 @@ namespace System.Linq.Expressions
         public static System.Linq.Expressions.TryExpression TryCatchFinally(System.Linq.Expressions.Expression body, System.Linq.Expressions.Expression @finally, params System.Linq.Expressions.CatchBlock[] handlers) { throw null; }
         public static System.Linq.Expressions.TryExpression TryFault(System.Linq.Expressions.Expression body, System.Linq.Expressions.Expression fault) { throw null; }
         public static System.Linq.Expressions.TryExpression TryFinally(System.Linq.Expressions.Expression body, System.Linq.Expressions.Expression @finally) { throw null; }
-        public static bool TryGetActionType(System.Type[] typeArgs, out System.Type actionType) { actionType = default(System.Type); throw null; }
-        public static bool TryGetFuncType(System.Type[] typeArgs, out System.Type funcType) { funcType = default(System.Type); throw null; }
+        public static bool TryGetActionType(System.Type[] typeArgs, out System.Type actionType) { throw null; }
+        public static bool TryGetFuncType(System.Type[] typeArgs, out System.Type funcType) { throw null; }
         public static System.Linq.Expressions.UnaryExpression TypeAs(System.Linq.Expressions.Expression expression, System.Type type) { throw null; }
         public static System.Linq.Expressions.TypeBinaryExpression TypeEqual(System.Linq.Expressions.Expression expression, System.Type type) { throw null; }
         public static System.Linq.Expressions.TypeBinaryExpression TypeIs(System.Linq.Expressions.Expression expression, System.Type type) { throw null; }
@@ -2276,41 +2279,41 @@ namespace System.Runtime.CompilerServices
     {
         public static bool IsInternalFrame(System.Reflection.MethodBase mb) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Diagnostics.DebuggerStepThroughAttribute]
     public static partial class CallSiteOps
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void AddRule<T>(System.Runtime.CompilerServices.CallSite<T> site, T rule) where T : class { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static T Bind<T>(System.Runtime.CompilerServices.CallSiteBinder binder, System.Runtime.CompilerServices.CallSite<T> site, object[] args) where T : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void ClearMatch(System.Runtime.CompilerServices.CallSite site) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static System.Runtime.CompilerServices.CallSite<T> CreateMatchmaker<T>(System.Runtime.CompilerServices.CallSite<T> site) where T : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static T[] GetCachedRules<T>(System.Runtime.CompilerServices.RuleCache<T> cache) where T : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static bool GetMatch(System.Runtime.CompilerServices.CallSite site) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static System.Runtime.CompilerServices.RuleCache<T> GetRuleCache<T>(System.Runtime.CompilerServices.CallSite<T> site) where T : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static T[] GetRules<T>(System.Runtime.CompilerServices.CallSite<T> site) where T : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void MoveRule<T>(System.Runtime.CompilerServices.RuleCache<T> cache, T rule, int i) where T : class { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static bool SetNotMatched(System.Runtime.CompilerServices.CallSite site) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void UpdateRules<T>(System.Runtime.CompilerServices.CallSite<T> @this, int matched) where T : class { }
     }
@@ -2321,7 +2324,7 @@ namespace System.Runtime.CompilerServices
         public T Update { get { throw null; } }
         public static System.Runtime.CompilerServices.CallSite<T> Create(System.Runtime.CompilerServices.CallSiteBinder binder) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Diagnostics.DebuggerStepThroughAttribute]
     public sealed partial class Closure
     {
@@ -2335,7 +2338,7 @@ namespace System.Runtime.CompilerServices
         public static System.Runtime.CompilerServices.DebugInfoGenerator CreatePdbGenerator() { throw null; }
         public abstract void MarkSequencePoint(System.Linq.Expressions.LambdaExpression method, int ilOffset, System.Linq.Expressions.DebugInfoExpression sequencePoint);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10636))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue | System.AttributeTargets.Struct)]
     public sealed partial class DynamicAttribute : System.Attribute
     {
         public DynamicAttribute() { }
@@ -2398,35 +2401,35 @@ namespace System.Runtime.CompilerServices
         public T[] ToArray() { throw null; }
         public System.Collections.ObjectModel.ReadOnlyCollection<T> ToReadOnlyCollection() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Diagnostics.DebuggerStepThroughAttribute]
     public partial class RuleCache<T> where T : class
     {
         internal RuleCache() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Diagnostics.DebuggerStepThroughAttribute]
     public static partial class RuntimeOps
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static System.Runtime.CompilerServices.IRuntimeVariables CreateRuntimeVariables() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static System.Runtime.CompilerServices.IRuntimeVariables CreateRuntimeVariables(object[] data, long[] indexes) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static bool ExpandoCheckVersion(System.Dynamic.ExpandoObject expando, object version) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void ExpandoPromoteClass(System.Dynamic.ExpandoObject expando, object oldClass, object newClass) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static bool ExpandoTryDeleteValue(System.Dynamic.ExpandoObject expando, object indexClass, int index, string name, bool ignoreCase) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
-        public static bool ExpandoTryGetValue(System.Dynamic.ExpandoObject expando, object indexClass, int index, string name, bool ignoreCase, out object value) { value = default(object); throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        public static bool ExpandoTryGetValue(System.Dynamic.ExpandoObject expando, object indexClass, int index, string name, bool ignoreCase, out object value) { throw null; }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object ExpandoTrySetValue(System.Dynamic.ExpandoObject expando, object indexClass, int index, object value, string name, bool ignoreCase) { throw null; }
     }
@@ -2648,7 +2651,7 @@ namespace System.Security.Cryptography
         public System.Security.Cryptography.CngPropertyCollection Parameters { [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]get { throw null; } }
         public System.IntPtr ParentWindowHandle { get { throw null; } [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]set { } }
         public System.Security.Cryptography.CngProvider Provider { get { throw null; } set { } }
-        public System.Security.Cryptography.CngUIPolicy UIPolicy { get { throw null; } [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.UIPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Window=(System.Security.Permissions.UIPermissionWindow)(1)), System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UI=true)]set { } }
+        public System.Security.Cryptography.CngUIPolicy UIPolicy { get { throw null; } [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.UIPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Window=System.Security.Permissions.UIPermissionWindow.SafeSubWindows), System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UI=true)]set { } }
     }
     [System.FlagsAttribute]
     public enum CngKeyHandleOpenOptions
@@ -2677,7 +2680,9 @@ namespace System.Security.Cryptography
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CngProperty : System.IEquatable<System.Security.Cryptography.CngProperty>
     {
-        public CngProperty(string name, byte[] value, System.Security.Cryptography.CngPropertyOptions options) { throw null;}
+        private object _dummy;
+        private int _dummyPrimitive;
+        public CngProperty(string name, byte[] value, System.Security.Cryptography.CngPropertyOptions options) { throw null; }
         public string Name { get { throw null; } }
         public System.Security.Cryptography.CngPropertyOptions Options { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -2739,6 +2744,7 @@ namespace System.Security.Cryptography
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ECCurve
     {
+        private object _dummy;
         public byte[] A;
         public byte[] B;
         public byte[] Cofactor;

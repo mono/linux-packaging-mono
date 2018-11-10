@@ -18,7 +18,7 @@ for i in *.dll Facades/*.dll; do
     if [[ "$i" = "Facades"* ]]; then outpath="$outpath/Facades"; fi
 
     echo "Processing $i"
-    mono "$REPODIR/../api-snapshot/tools/genapi/GenAPI.exe" -assembly:"$i" -out:"$outpath" -typeforwardedTo -assemblyVersion -assemblyAttributes -headerFile:"$REPODIR/../api-snapshot/profiles/license-header.txt" -libPath:"$NETFXSOURCE"
+    mono "$REPODIR/../api-snapshot/tools/genapi/Microsoft.DotNet.GenAPI.exe" -assembly:"$i" -out:"$outpath" -typeforwardedTo -assemblyVersion -assemblyAttributes -headerFile:"$REPODIR/../api-snapshot/profiles/license-header.txt" -libPath:"$NETFXSOURCE"
 done
 
 cd "$REPODIR/src/$NETFXPROFILE"

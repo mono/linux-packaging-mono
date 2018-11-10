@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("MONO development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2003-2004 Various Authors")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Mono.Security.dll")]
@@ -182,7 +182,7 @@ namespace Mono.Security
         public Mono.Security.ASN1 Add(Mono.Security.ASN1 asn1) { throw null; }
         public bool CompareValue(byte[] value) { throw null; }
         protected void Decode(byte[] asn1, ref int anPos, int anLength) { }
-        protected void DecodeTLV(byte[] asn1, ref int pos, out byte tag, out int length, out byte[] content) { tag = default(byte); length = default(int); content = default(byte[]); }
+        protected void DecodeTLV(byte[] asn1, ref int pos, out byte tag, out int length, out byte[] content) { throw null; }
         public Mono.Security.ASN1 Element(int index, byte anTag) { throw null; }
         public bool Equals(byte[] asn1) { throw null; }
         public virtual byte[] GetBytes() { throw null; }
@@ -1078,13 +1078,13 @@ namespace Mono.Security.Interface
         public abstract bool SupportsConnectionInfo { get; }
         public abstract bool SupportsMonoExtensions { get; }
         public abstract bool SupportsSslStream { get; }
-        public abstract Mono.Security.Interface.IMonoSslStream CreateSslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen, Mono.Security.Interface.MonoTlsSettings settings=null);
+        public abstract Mono.Security.Interface.IMonoSslStream CreateSslStream(System.IO.Stream innerStream, bool leaveInnerStreamOpen, Mono.Security.Interface.MonoTlsSettings settings = null);
     }
     public static partial class MonoTlsProviderFactory
     {
         public static bool IsInitialized { get { throw null; } }
-        public static System.Net.HttpListener CreateHttpListener(System.Security.Cryptography.X509Certificates.X509Certificate certificate, Mono.Security.Interface.MonoTlsProvider provider=null, Mono.Security.Interface.MonoTlsSettings settings=null) { throw null; }
-        public static System.Net.HttpWebRequest CreateHttpsRequest(System.Uri requestUri, Mono.Security.Interface.MonoTlsProvider provider, Mono.Security.Interface.MonoTlsSettings settings=null) { throw null; }
+        public static System.Net.HttpListener CreateHttpListener(System.Security.Cryptography.X509Certificates.X509Certificate certificate, Mono.Security.Interface.MonoTlsProvider provider = null, Mono.Security.Interface.MonoTlsSettings settings = null) { throw null; }
+        public static System.Net.HttpWebRequest CreateHttpsRequest(System.Uri requestUri, Mono.Security.Interface.MonoTlsProvider provider, Mono.Security.Interface.MonoTlsSettings settings = null) { throw null; }
         public static Mono.Security.Interface.IMonoSslStream GetMonoSslStream(System.Net.HttpListenerContext context) { throw null; }
         public static Mono.Security.Interface.IMonoSslStream GetMonoSslStream(System.Net.Security.SslStream stream) { throw null; }
         public static Mono.Security.Interface.MonoTlsProvider GetProvider() { throw null; }
@@ -1176,7 +1176,7 @@ namespace Mono.Security.Protocol.Ntlm
     }
     public static partial class ChallengeResponse2
     {
-        public static void Compute(Mono.Security.Protocol.Ntlm.Type2Message type2, Mono.Security.Protocol.Ntlm.NtlmAuthLevel level, string username, string password, string domain, out byte[] lm, out byte[] ntlm) { lm = default(byte[]); ntlm = default(byte[]); }
+        public static void Compute(Mono.Security.Protocol.Ntlm.Type2Message type2, Mono.Security.Protocol.Ntlm.NtlmAuthLevel level, string username, string password, string domain, out byte[] lm, out byte[] ntlm) { throw null; }
     }
     public abstract partial class MessageBase
     {
@@ -1560,7 +1560,7 @@ namespace Mono.Security.X509
         public Mono.Security.X509.X509CertificateCollection Chain { get { throw null; } }
         public Mono.Security.X509.X509Certificate Root { get { throw null; } }
         public Mono.Security.X509.X509ChainStatusFlags Status { get { throw null; } }
-        public Mono.Security.X509.X509CertificateCollection TrustAnchors { get { throw null; } [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(64))]set { } }
+        public Mono.Security.X509.X509CertificateCollection TrustAnchors { get { throw null; } [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.ControlPolicy)]set { } }
         public bool Build(Mono.Security.X509.X509Certificate leaf) { throw null; }
         public Mono.Security.X509.X509Certificate FindByIssuerName(string issuerName) { throw null; }
         public void LoadCertificate(Mono.Security.X509.X509Certificate x509) { }

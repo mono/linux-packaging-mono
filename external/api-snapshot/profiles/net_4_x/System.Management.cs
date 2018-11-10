@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Management.dll")]
@@ -15,37 +15,37 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Management.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -540,19 +540,19 @@ namespace System.Management
         public ManagementPath() { }
         [System.MonoTODOAttribute]
         public ManagementPath(string path) { }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string ClassName { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
         public static System.Management.ManagementPath DefaultPath { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
         public bool IsClass { [System.MonoTODOAttribute]get { throw null; } }
         public bool IsInstance { [System.MonoTODOAttribute]get { throw null; } }
         public bool IsSingleton { [System.MonoTODOAttribute]get { throw null; } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string NamespacePath { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Path { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string RelativePath { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Server { [System.MonoTODOAttribute]get { throw null; } [System.MonoTODOAttribute]set { } }
         [System.MonoTODOAttribute]
         public System.Management.ManagementPath Clone() { throw null; }
@@ -1054,7 +1054,7 @@ namespace System.Management
 }
 namespace System.Management.Instrumentation
 {
-    [System.Management.Instrumentation.InstrumentationClassAttribute((System.Management.Instrumentation.InstrumentationType)(1))]
+    [System.Management.Instrumentation.InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType.Event)]
     public abstract partial class BaseEvent : System.Management.Instrumentation.IEvent
     {
         [System.MonoTODOAttribute]
@@ -1071,7 +1071,7 @@ namespace System.Management.Instrumentation
     {
         void Fire();
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(448))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Method | System.AttributeTargets.Property)]
     public partial class IgnoreMemberAttribute : System.Attribute
     {
         [System.MonoTODOAttribute]
@@ -1081,7 +1081,7 @@ namespace System.Management.Instrumentation
     {
         bool Published { get; set; }
     }
-    [System.Management.Instrumentation.InstrumentationClassAttribute((System.Management.Instrumentation.InstrumentationType)(0))]
+    [System.Management.Instrumentation.InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType.Instance)]
     public abstract partial class Instance : System.Management.Instrumentation.IInstance
     {
         [System.MonoTODOAttribute]
@@ -1106,7 +1106,7 @@ namespace System.Management.Instrumentation
         [System.MonoTODOAttribute]
         public static void SetBatchSize(System.Type instrumentationClass, int batchSize) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(12))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct)]
     public partial class InstrumentationClassAttribute : System.Attribute
     {
         public InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType instrumentationType) { }
@@ -1120,7 +1120,7 @@ namespace System.Management.Instrumentation
         Event = 1,
         Instance = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     public partial class InstrumentedAttribute : System.Attribute
     {
         [System.MonoTODOAttribute]
@@ -1132,7 +1132,7 @@ namespace System.Management.Instrumentation
         public string NamespaceName { [System.MonoTODOAttribute]get { throw null; } }
         public string SecurityDescriptor { [System.MonoTODOAttribute]get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(460))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Field | System.AttributeTargets.Method | System.AttributeTargets.Property | System.AttributeTargets.Struct)]
     public partial class ManagedNameAttribute : System.Attribute
     {
         public ManagedNameAttribute(string name) { }

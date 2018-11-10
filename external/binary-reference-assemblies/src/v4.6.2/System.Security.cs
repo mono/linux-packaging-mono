@@ -926,6 +926,7 @@ namespace System.Security.Cryptography.Xml
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct X509IssuerSerial
     {
+        private object _dummy;
         public string IssuerName { get { throw null; } set { } }
         public string SerialNumber { get { throw null; } set { } }
     }

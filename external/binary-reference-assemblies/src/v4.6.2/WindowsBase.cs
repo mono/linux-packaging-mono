@@ -332,6 +332,8 @@ namespace System.ComponentModel
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SortDescription
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public SortDescription(string propertyName, System.ComponentModel.ListSortDirection direction) { throw null;}
         public System.ComponentModel.ListSortDirection Direction { get { throw null; } set { } }
         public bool IsSealed { get { throw null; } }
@@ -1121,6 +1123,8 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DependencyPropertyChangedEventArgs
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public DependencyPropertyChangedEventArgs(System.Windows.DependencyProperty property, object oldValue, object newValue) { throw null;}
         public object NewValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
         public object OldValue { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
@@ -1184,6 +1188,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Int32Rect : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Int32Rect(int x, int y, int width, int height) { throw null;}
         public static System.Windows.Int32Rect Empty { get { throw null; } }
         public bool HasArea { get { throw null; } }
@@ -1218,6 +1223,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct LocalValueEntry
     {
+        private object _dummy;
         public System.Windows.DependencyProperty Property { get { throw null; } }
         public object Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -1228,6 +1234,8 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct LocalValueEnumerator : System.Collections.IEnumerator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public int Count { get { throw null; } }
         public System.Windows.LocalValueEntry Current { get { throw null; } }
         object System.Collections.IEnumerator.Current { get { throw null; } }
@@ -1270,6 +1278,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Point : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Point(double x, double y) { throw null;}
         public double X { get { throw null; } set { } }
         public double Y { get { throw null; } set { } }
@@ -1324,6 +1333,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Rect : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Rect(double x, double y, double width, double height) { throw null;}
         public Rect(System.Windows.Point point1, System.Windows.Point point2) { throw null;}
         public Rect(System.Windows.Point location, System.Windows.Size size) { throw null;}
@@ -1391,6 +1401,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Size : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Size(double width, double height) { throw null;}
         public static System.Windows.Size Empty { get { throw null; } }
         public double Height { get { throw null; } set { } }
@@ -1435,6 +1446,7 @@ namespace System.Windows
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Vector : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Vector(double x, double y) { throw null;}
         public double Length { get { throw null; } }
         public double LengthSquared { get { throw null; } }
@@ -1933,6 +1945,7 @@ namespace System.Windows.Interop
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public partial struct MSG
     {
+        private int _dummyPrimitive;
         public System.IntPtr hwnd { [System.Security.SecurityCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute]set { } }
         public System.IntPtr lParam { [System.Security.SecurityCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute]set { } }
         public int message { [System.Security.SecurityCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute]set { } }
@@ -2023,6 +2036,7 @@ namespace System.Windows.Media
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Matrix : System.IFormattable
     {
+        private int _dummyPrimitive;
         public Matrix(double m11, double m12, double m21, double m22, double offsetX, double offsetY) { throw null;}
         public double Determinant { get { throw null; } }
         public bool HasInverse { get { throw null; } }
@@ -2257,10 +2271,14 @@ namespace System.Windows.Threading
     }
     public partial struct DispatcherPriorityAwaitable
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Windows.Threading.DispatcherPriorityAwaiter GetAwaiter() { throw null; }
     }
     public partial struct DispatcherPriorityAwaiter : System.Runtime.CompilerServices.INotifyCompletion
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public bool IsCompleted { get { throw null; } }
         public void GetResult() { }
         public void OnCompleted(System.Action continuation) { }
@@ -2268,6 +2286,7 @@ namespace System.Windows.Threading
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public partial struct DispatcherProcessingDisabled : System.IDisposable
     {
+        private object _dummy;
         public void Dispose() { }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }

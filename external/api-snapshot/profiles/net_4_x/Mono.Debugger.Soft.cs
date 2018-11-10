@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Mono Soft Debugger API library")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Debugger.Soft.dll")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -133,6 +133,7 @@ namespace Mono.Debugger.Soft
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeNamedArgumentMirror
     {
+        private object _dummy;
         public Mono.Debugger.Soft.FieldInfoMirror Field { get { throw null; } }
         public Mono.Debugger.Soft.PropertyInfoMirror Property { get { throw null; } }
         public Mono.Debugger.Soft.CustomAttributeTypedArgumentMirror TypedValue { get { throw null; } }
@@ -140,6 +141,7 @@ namespace Mono.Debugger.Soft
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeTypedArgumentMirror
     {
+        private object _dummy;
         public System.Type ArgumentType { get { throw null; } }
         public object Value { get { throw null; } }
         public override string ToString() { throw null; }
@@ -275,8 +277,8 @@ namespace Mono.Debugger.Soft
         Mono.Debugger.Soft.InvokeResult EndInvokeMethodWithResult(System.IAsyncResult asyncResult);
         Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments);
         Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options);
-        System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0));
-        System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0));
+        System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None);
+        System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None);
     }
     public partial interface IInvokeAsyncResult : System.IAsyncResult
     {
@@ -507,8 +509,8 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.Value[] GetValues(System.Collections.Generic.IList<Mono.Debugger.Soft.FieldInfoMirror> fields) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
         public void SetValue(Mono.Debugger.Soft.FieldInfoMirror field, Mono.Debugger.Soft.Value value) { }
         public void SetValues(System.Collections.Generic.IList<Mono.Debugger.Soft.FieldInfoMirror> fields, Mono.Debugger.Soft.Value[] values) { }
     }
@@ -544,8 +546,8 @@ namespace Mono.Debugger.Soft
         public override int GetHashCode() { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class PropertyInfoMirror : Mono.Debugger.Soft.Mirror
@@ -646,8 +648,8 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.InvokeResult EndInvokeMethodWithResult(System.IAsyncResult asyncResult) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
     }
     public enum SuspendPolicy
     {
@@ -773,8 +775,8 @@ namespace Mono.Debugger.Soft
         protected virtual bool HasElementTypeImpl() { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments) { throw null; }
         public Mono.Debugger.Soft.Value InvokeMethod(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
-        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options=(Mono.Debugger.Soft.InvokeOptions)(0)) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.Value> InvokeMethodAsync(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
+        public System.Threading.Tasks.Task<Mono.Debugger.Soft.InvokeResult> InvokeMethodAsyncWithResult(Mono.Debugger.Soft.ThreadMirror thread, Mono.Debugger.Soft.MethodMirror method, System.Collections.Generic.IList<Mono.Debugger.Soft.Value> arguments, Mono.Debugger.Soft.InvokeOptions options = Mono.Debugger.Soft.InvokeOptions.None) { throw null; }
         protected virtual bool IsArrayImpl() { throw null; }
         public virtual bool IsAssignableFrom(Mono.Debugger.Soft.TypeMirror c) { throw null; }
         protected virtual bool IsByRefImpl() { throw null; }
@@ -866,7 +868,7 @@ namespace Mono.Debugger.Soft
         public static System.IAsyncResult BeginLaunch(System.Diagnostics.ProcessStartInfo info, System.AsyncCallback callback, Mono.Debugger.Soft.LaunchOptions options) { throw null; }
         public static System.IAsyncResult BeginListen(System.Net.IPEndPoint dbg_ep, System.AsyncCallback callback) { throw null; }
         public static System.IAsyncResult BeginListen(System.Net.IPEndPoint dbg_ep, System.Net.IPEndPoint con_ep, System.AsyncCallback callback) { throw null; }
-        public static System.IAsyncResult BeginListen(System.Net.IPEndPoint dbg_ep, System.Net.IPEndPoint con_ep, System.AsyncCallback callback, out int dbg_port, out int con_port) { dbg_port = default(int); con_port = default(int); throw null; }
+        public static System.IAsyncResult BeginListen(System.Net.IPEndPoint dbg_ep, System.Net.IPEndPoint con_ep, System.AsyncCallback callback, out int dbg_port, out int con_port) { throw null; }
         public static void CancelConnection(System.IAsyncResult asyncResult) { }
         public static Mono.Debugger.Soft.VirtualMachine Connect(Mono.Debugger.Soft.Connection transport, System.IO.StreamReader standardOutput, System.IO.StreamReader standardError) { throw null; }
         public static Mono.Debugger.Soft.VirtualMachine Connect(System.Net.IPEndPoint endpoint) { throw null; }

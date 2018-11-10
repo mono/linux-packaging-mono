@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Web.dll")]
@@ -15,8 +15,8 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Web.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
-[assembly:System.Runtime.CompilerServices.DependencyAttribute("System", (System.Runtime.CompilerServices.LoadHint)(1))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
+[assembly:System.Runtime.CompilerServices.DependencyAttribute("System", System.Runtime.CompilerServices.LoadHint.Always)]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("Microsoft.Web.Infrastructure, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("net_4_x_System.Web_test, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Web.Extensions, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
@@ -24,7 +24,7 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(2), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level2, SkipVerificationInFullTrust=true)]
 [assembly:System.Web.UI.TagPrefixAttribute("System.Web.UI.WebControls", "asp")]
 [assembly:System.Web.UI.WebResourceAttribute("arrow_down.gif", "image/gif")]
 [assembly:System.Web.UI.WebResourceAttribute("arrow_minus.gif", "image/gif")]
@@ -123,32 +123,32 @@ namespace Mono.Web.Util
 }
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -244,39 +244,39 @@ namespace System.Web
         public override string ToString() { throw null; }
     }
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpApplication : System.ComponentModel.IComponent, System.IDisposable, System.Web.IHttpAsyncHandler, System.Web.IHttpHandler
     {
         public HttpApplication() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpContext Context { get { throw null; } }
         protected System.ComponentModel.EventHandlerList Events { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.HttpModuleCollection Modules { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.HttpModuleCollection Modules { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.ComponentModel.ISite Site { get { throw null; } set { } }
         bool System.Web.IHttpHandler.IsReusable { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Security.Principal.IPrincipal User { get { throw null; } }
         public event System.EventHandler AcquireRequestState { add { } remove { } }
         public event System.EventHandler AuthenticateRequest { add { } remove { } }
@@ -352,7 +352,7 @@ namespace System.Web
         void System.Web.IHttpAsyncHandler.EndProcessRequest(System.IAsyncResult result) { }
         void System.Web.IHttpHandler.ProcessRequest(System.Web.HttpContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpApplicationState : System.Collections.Specialized.NameObjectCollectionBase
     {
         internal HttpApplicationState() { }
@@ -430,8 +430,8 @@ namespace System.Web
         public override void Set(string name, object value) { }
         public override void UnLock() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpBrowserCapabilities : System.Web.Configuration.HttpCapabilitiesBase, System.Web.UI.IFilterResolutionService
     {
         public HttpBrowserCapabilities() { }
@@ -697,7 +697,7 @@ namespace System.Web
         ServerAndNoCache = 3,
         ServerAndPrivate = 5,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCachePolicy
     {
         internal HttpCachePolicy() { }
@@ -788,13 +788,13 @@ namespace System.Web
         ProxyCaches = 2,
     }
     public delegate void HttpCacheValidateHandler(System.Web.HttpContext context, object data, ref System.Web.HttpValidationStatus validationStatus);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCacheVaryByContentEncodings
     {
         public HttpCacheVaryByContentEncodings() { }
         public bool this[string contentEncoding] { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCacheVaryByHeaders
     {
         public HttpCacheVaryByHeaders() { }
@@ -805,15 +805,15 @@ namespace System.Web
         public bool UserLanguage { get { throw null; } set { } }
         public void VaryByUnspecifiedParameters() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCacheVaryByParams
     {
         public HttpCacheVaryByParams() { }
         public bool IgnoreParams { get { throw null; } set { } }
         public bool this[string header] { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpClientCertificate : System.Collections.Specialized.NameValueCollection
     {
         internal HttpClientCertificate() { }
@@ -836,7 +836,7 @@ namespace System.Web
         public System.DateTime ValidUntil { get { throw null; } }
         public override string Get(string field) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class HttpCompileException : System.Web.HttpException
     {
@@ -845,12 +845,12 @@ namespace System.Web
         public HttpCompileException(string message) { }
         public HttpCompileException(string message, System.Exception innerException) { }
         public override string Message { get { throw null; } }
-        public System.CodeDom.Compiler.CompilerResults Results { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
-        public string SourceCode { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        public System.CodeDom.Compiler.CompilerResults Results { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
+        public string SourceCode { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpContext : System.IServiceProvider
     {
         public HttpContext(System.Web.HttpRequest request, System.Web.HttpResponse response) { }
@@ -898,8 +898,8 @@ namespace System.Web
         object System.IServiceProvider.GetService(System.Type service) { throw null; }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HttpContextBase : System.IServiceProvider
     {
         protected HttpContextBase() { }
@@ -941,8 +941,8 @@ namespace System.Web
         public virtual void SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior sessionStateBehavior) { }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpContextWrapper : System.Web.HttpContextBase
     {
         public HttpContextWrapper(System.Web.HttpContext httpContext) { }
@@ -983,7 +983,7 @@ namespace System.Web
         public override void RewritePath(string filePath, string pathInfo, string queryString, bool setClientFilePath) { }
         public override void SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior sessionStateBehavior) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCookie
     {
         public HttpCookie(string name) { }
@@ -999,7 +999,7 @@ namespace System.Web
         public string Value { get { throw null; } set { } }
         public System.Collections.Specialized.NameValueCollection Values { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpCookieCollection : System.Collections.Specialized.NameObjectCollectionBase
     {
         public HttpCookieCollection() { }
@@ -1022,8 +1022,8 @@ namespace System.Web
         UseDeviceProfile = 3,
         UseUri = 0,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public partial class HttpException : System.Runtime.InteropServices.ExternalException
     {
@@ -1042,7 +1042,7 @@ namespace System.Web
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpFileCollection : System.Collections.Specialized.NameObjectCollectionBase
     {
         internal HttpFileCollection() { }
@@ -1072,8 +1072,8 @@ namespace System.Web
         public virtual System.Collections.Generic.IList<System.Web.HttpPostedFileBase> GetMultiple(string name) { throw null; }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpFileCollectionWrapper : System.Web.HttpFileCollectionBase
     {
         public HttpFileCollectionWrapper(System.Web.HttpFileCollection httpFileCollection) { }
@@ -1092,7 +1092,7 @@ namespace System.Web
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public override void OnDeserialization(object sender) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpModuleCollection : System.Collections.Specialized.NameObjectCollectionBase
     {
         internal HttpModuleCollection() { }
@@ -1104,7 +1104,7 @@ namespace System.Web
         public System.Web.IHttpModule Get(string name) { throw null; }
         public string GetKey(int index) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class HttpParseException : System.Web.HttpException
     {
@@ -1119,7 +1119,7 @@ namespace System.Web
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpPostedFile
     {
         internal HttpPostedFile() { }
@@ -1149,7 +1149,7 @@ namespace System.Web
         public override System.IO.Stream InputStream { get { throw null; } }
         public override void SaveAs(string filename) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpRequest
     {
         public HttpRequest(string filename, string url, string queryString) { }
@@ -1176,9 +1176,9 @@ namespace System.Web
         public bool IsAuthenticated { get { throw null; } }
         public bool IsLocal { get { throw null; } }
         public bool IsSecureConnection { get { throw null; } }
-        public string this[string key] { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public string this[string key] { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public System.Security.Principal.WindowsIdentity LogonUserIdentity { get { throw null; } }
-        public System.Collections.Specialized.NameValueCollection Params { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public System.Collections.Specialized.NameValueCollection Params { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public string Path { get { throw null; } }
         public string PathInfo { get { throw null; } }
         public string PhysicalApplicationPath { get { throw null; } }
@@ -1187,7 +1187,7 @@ namespace System.Web
         public string RawUrl { get { throw null; } }
         public System.Web.Routing.RequestContext RequestContext { get { throw null; } }
         public string RequestType { get { throw null; } set { } }
-        public System.Collections.Specialized.NameValueCollection ServerVariables { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public System.Collections.Specialized.NameValueCollection ServerVariables { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public System.Threading.CancellationToken TimedOutToken { get { throw null; } }
         public int TotalBytes { get { throw null; } }
         public System.Web.UnvalidatedRequestValues Unvalidated { get { throw null; } }
@@ -1201,9 +1201,9 @@ namespace System.Web
         public System.IO.Stream GetBufferedInputStream() { throw null; }
         public System.IO.Stream GetBufferlessInputStream() { throw null; }
         public System.IO.Stream GetBufferlessInputStream(bool disableMaxRequestLength) { throw null; }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public void InsertEntityBody() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public void InsertEntityBody(byte[] buffer, int offset, int count) { }
         public int[] MapImageCoordinates(string imageFieldName) { throw null; }
         public string MapPath(string virtualPath) { throw null; }
@@ -1276,7 +1276,7 @@ namespace System.Web
         public virtual void SaveAs(string filename, bool includeHeaders) { }
         public virtual void ValidateInput() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class HttpRequestValidationException : System.Web.HttpException
     {
@@ -1285,8 +1285,8 @@ namespace System.Web
         public HttpRequestValidationException(string message, System.Exception innerException) { }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpRequestWrapper : System.Web.HttpRequestBase
     {
         public HttpRequestWrapper(System.Web.HttpRequest httpRequest) { }
@@ -1346,7 +1346,7 @@ namespace System.Web
         public override void SaveAs(string filename, bool includeHeaders) { }
         public override void ValidateInput() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpResponse
     {
         public HttpResponse(System.IO.TextWriter writer) { }
@@ -1389,7 +1389,7 @@ namespace System.Web
         public void AddHeader(string name, string value) { }
         public void AppendCookie(System.Web.HttpCookie cookie) { }
         public void AppendHeader(string name, string value) { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public void AppendToLog(string param) { }
         public string ApplyAppPathModifier(string virtualPath) { throw null; }
         public void BinaryWrite(byte[] buffer) { }
@@ -1522,8 +1522,8 @@ namespace System.Web
     }
     public delegate string HttpResponseSubstitutionCallback(System.Web.HttpContext context);
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpResponseWrapper : System.Web.HttpResponseBase
     {
         public HttpResponseWrapper(System.Web.HttpResponse httpResponse) { }
@@ -1593,14 +1593,14 @@ namespace System.Web
         public override void WriteFile(string filename, long offset, long size) { }
         public override void WriteSubstitution(System.Web.HttpResponseSubstitutionCallback callback) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpRuntime
     {
         public HttpRuntime() { }
-        public static string AppDomainAppId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        public static string AppDomainAppId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         public static string AppDomainAppPath { get { throw null; } }
         public static string AppDomainAppVirtualPath { get { throw null; } }
-        public static string AppDomainId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        public static string AppDomainId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         [System.MonoDocumentationNoteAttribute("Currently returns path to the application root")]
         public static string AspClientScriptPhysicalPath { get { throw null; } }
         [System.MonoDocumentationNoteAttribute("Currently returns path to the application root")]
@@ -1611,26 +1611,26 @@ namespace System.Web
         public static string ClrInstallDirectory { get { throw null; } }
         public static string CodegenDir { get { throw null; } }
         public static System.Version IISVersion { get { throw null; } }
-        public static bool IsOnUNCShare { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public static bool IsOnUNCShare { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public static string MachineConfigurationDirectory { get { throw null; } }
         public static System.Version TargetFramework { get { throw null; } }
         public static bool UsingIntegratedPipeline { get { throw null; } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public static void Close() { }
         [System.MonoDocumentationNoteAttribute("Always returns null on Mono")]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
         public static System.Security.NamedPermissionSet GetNamedPermissionSet() { throw null; }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void ProcessRequest(System.Web.HttpWorkerRequest wr) { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public static void UnloadAppDomain() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpServerUtility
     {
         internal HttpServerUtility() { }
-        public string MachineName { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true), System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Read="COMPUTERNAME"), System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]get { throw null; } }
-        public int ScriptTimeout { get { throw null; } [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]set { } }
+        public string MachineName { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true), System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Read="COMPUTERNAME"), System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]get { throw null; } }
+        public int ScriptTimeout { get { throw null; } [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]set { } }
         public void ClearError() { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public object CreateObject(string progID) { throw null; }
@@ -1701,8 +1701,8 @@ namespace System.Web
         public virtual string UrlTokenEncode(byte[] input) { throw null; }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Abstractions, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HttpServerUtilityWrapper : System.Web.HttpServerUtilityBase
     {
         public HttpServerUtilityWrapper(System.Web.HttpServerUtility httpServerUtility) { }
@@ -1802,7 +1802,7 @@ namespace System.Web
         public override void RemoveAll() { }
         public override void RemoveAt(int index) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpStaticObjectsCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public HttpStaticObjectsCollection() { }
@@ -1853,13 +1853,13 @@ namespace System.Web
     {
         protected HttpTaskAsyncHandler() { }
         public virtual bool IsReusable { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void ProcessRequest(System.Web.HttpContext context) { }
         public abstract System.Threading.Tasks.Task ProcessRequestAsync(System.Web.HttpContext context);
         System.IAsyncResult System.Web.IHttpAsyncHandler.BeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback cb, object extraData) { throw null; }
         void System.Web.IHttpAsyncHandler.EndProcessRequest(System.IAsyncResult result) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class HttpUnhandledException : System.Web.HttpException
     {
@@ -1867,7 +1867,7 @@ namespace System.Web
         public HttpUnhandledException(string message) { }
         public HttpUnhandledException(string message, System.Exception innerException) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpUtility
     {
         public HttpUtility() { }
@@ -1909,8 +1909,8 @@ namespace System.Web
         Valid = 3,
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HttpWorkerRequest
     {
         public const int HeaderAccept = 20;
@@ -2044,7 +2044,7 @@ namespace System.Web
         public virtual void SetEndOfSendNotification(System.Web.HttpWorkerRequest.EndOfSendNotification callback, object extraData) { }
         public delegate void EndOfSendNotification(System.Web.HttpWorkerRequest wr, object extraData);
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpWriter : System.IO.TextWriter
     {
         internal HttpWriter() { }
@@ -2084,7 +2084,7 @@ namespace System.Web
         void Dispose();
         void Init(System.Web.HttpApplication context);
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public sealed partial class IisTraceListener : System.Diagnostics.TraceListener
     {
@@ -2141,15 +2141,15 @@ namespace System.Web
         public void Insert(int index, System.Web.ParserError value) { }
         public void Remove(System.Web.ParserError value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class PreApplicationStartMethodAttribute : System.Attribute
     {
         public PreApplicationStartMethodAttribute(System.Type type, string methodName) { }
         public string MethodName { get { throw null; } }
         public System.Type Type { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ProcessInfo
     {
         public ProcessInfo() { }
@@ -2163,16 +2163,16 @@ namespace System.Web
         public System.Web.ProcessStatus Status { get { throw null; } }
         public void SetAll(System.DateTime startTime, System.TimeSpan age, int processID, int requestCount, System.Web.ProcessStatus status, System.Web.ProcessShutdownReason shutdownReason, int peakMemoryUsed) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ProcessModelInfo
     {
         public ProcessModelInfo() { }
         [System.MonoTODOAttribute("Retrieve appropriate variables from worker")]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public static System.Web.ProcessInfo GetCurrentProcessInfo() { throw null; }
         [System.MonoTODOAttribute("Retrieve process information.")]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public static System.Web.ProcessInfo[] GetHistory(int numRecords) { throw null; }
     }
     public enum ProcessShutdownReason
@@ -2387,7 +2387,7 @@ namespace System.Web
         protected override void RemoveNode(System.Web.SiteMapNode node) { }
     }
     public delegate System.Threading.Tasks.Task TaskEventHandler(object sender, System.EventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class TraceContext
     {
         public TraceContext(System.Web.HttpContext context) { }
@@ -2407,7 +2407,7 @@ namespace System.Web
         public System.Collections.ICollection TraceRecords { get { throw null; } }
     }
     public delegate void TraceContextEventHandler(object sender, System.Web.TraceContextEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class TraceContextRecord
     {
         public TraceContextRecord(string category, string msg, bool isWarning, System.Exception errorInfo) { }
@@ -2480,8 +2480,8 @@ namespace System.Web
         public static string ToAppRelative(string virtualPath) { throw null; }
         public static string ToAppRelative(string virtualPath, string applicationPath) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
     public partial class WebPageTraceListener : System.Diagnostics.TraceListener
     {
@@ -2521,7 +2521,7 @@ namespace System.Web.Caching
         protected override void DependencyDispose() { }
         public override string GetUniqueID() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class Cache : System.Collections.IEnumerable
     {
         public static readonly System.DateTime NoAbsoluteExpiration;
@@ -2542,8 +2542,8 @@ namespace System.Web.Caching
         public object Remove(string key) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CacheDependency : System.IDisposable
     {
         protected CacheDependency() { }
@@ -2588,7 +2588,7 @@ namespace System.Web.Caching
         DependencyChanged = 2,
         Expired = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class DatabaseNotEnabledForNotificationException : System.SystemException
     {
@@ -2596,7 +2596,7 @@ namespace System.Web.Caching
         public DatabaseNotEnabledForNotificationException(string message) { }
         public DatabaseNotEnabledForNotificationException(string message, System.Exception innerException) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class FileResponseElement : System.Web.Caching.ResponseElement
     {
@@ -2617,7 +2617,7 @@ namespace System.Web.Caching
         System.Collections.Generic.List<System.Web.Caching.HeaderElement> HeaderElements { get; set; }
         System.Collections.Generic.List<System.Web.Caching.ResponseElement> ResponseElements { get; set; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class MemoryResponseElement : System.Web.Caching.ResponseElement
     {
@@ -2629,9 +2629,9 @@ namespace System.Web.Caching
     {
         public static string DefaultProviderName { get { throw null; } }
         public static System.Web.Caching.OutputCacheProviderCollection Providers { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public static object Deserialize(System.IO.Stream stream) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public static void Serialize(System.IO.Stream stream, object data) { }
     }
     public abstract partial class OutputCacheProvider : System.Configuration.Provider.ProviderBase
@@ -2654,7 +2654,7 @@ namespace System.Web.Caching
     {
         protected ResponseElement() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class SqlCacheDependency : System.Web.Caching.CacheDependency
     {
         [System.MonoTODOAttribute("What to do with the sqlCmd?")]
@@ -2666,7 +2666,7 @@ namespace System.Web.Caching
         protected override void DependencyDispose() { }
         public override string GetUniqueID() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public static partial class SqlCacheDependencyAdmin
     {
         public static void DisableNotifications(string connectionString) { }
@@ -2677,14 +2677,14 @@ namespace System.Web.Caching
         public static void EnableTableForNotifications(string connectionString, string[] tables) { }
         public static string[] GetTablesEnabledForNotifications(string connectionString) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class SubstitutionResponseElement : System.Web.Caching.ResponseElement
     {
         public SubstitutionResponseElement(System.Web.HttpResponseSubstitutionCallback callback) { }
         public System.Web.HttpResponseSubstitutionCallback Callback { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class TableNotEnabledForNotificationException : System.SystemException
     {
@@ -2785,7 +2785,7 @@ namespace System.Web.Compilation
         Resources = 4,
         Web = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class BuildProviderAppliesToAttribute : System.Attribute
     {
         public BuildProviderAppliesToAttribute(System.Web.Compilation.BuildProviderAppliesTo appliesTo) { }
@@ -2814,19 +2814,19 @@ namespace System.Web.Compilation
         public void CompileFile(string virtualPath, System.Web.Compilation.ClientBuildManagerCallback callback) { }
         public System.Web.Hosting.IRegisteredObject CreateObject(System.Type type, bool failIfExists) { throw null; }
         [System.MonoTODOAttribute("Currently does not return the GeneratedCode")]
-        public string GenerateCode(string virtualPath, string virtualFileString, out System.Collections.IDictionary linePragmasTable) { linePragmasTable = default(System.Collections.IDictionary); throw null; }
+        public string GenerateCode(string virtualPath, string virtualFileString, out System.Collections.IDictionary linePragmasTable) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, string virtualFileString, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); linePragmasTable = default(System.Collections.IDictionary); throw null; }
-        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); linePragmasTable = default(System.Collections.IDictionary); throw null; }
+        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, string virtualFileString, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { throw null; }
+        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { throw null; }
         public string[] GetAppDomainShutdownDirectories() { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public System.Collections.IDictionary GetBrowserDefinitions() { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public void GetCodeDirectoryInformation(string virtualCodeDir, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out string generatedFilesDir) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); generatedFilesDir = default(string); }
+        public void GetCodeDirectoryInformation(string virtualCodeDir, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out string generatedFilesDir) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public System.Type GetCompiledType(string virtualPath) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public void GetCompilerParameters(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); }
+        public void GetCompilerParameters(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public string GetGeneratedFileVirtualPath(string filePath) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
@@ -2881,7 +2881,7 @@ namespace System.Web.Compilation
         public static string GetConnectionStringProviderName(string connectionStringName) { throw null; }
         public override object ParseExpression(string expression, System.Type propertyType, System.Web.Compilation.ExpressionBuilderContext context) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DesignTimeResourceProviderFactoryAttribute : System.Attribute
     {
         public DesignTimeResourceProviderFactoryAttribute(string factoryTypeName) { }
@@ -2904,7 +2904,7 @@ namespace System.Web.Compilation
         public System.Web.UI.TemplateControl TemplateControl { get { throw null; } }
         public string VirtualPath { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class ExpressionEditorAttribute : System.Attribute
     {
         public ExpressionEditorAttribute(string typeName) { }
@@ -2913,7 +2913,7 @@ namespace System.Web.Compilation
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class ExpressionPrefixAttribute : System.Attribute
     {
         public ExpressionPrefixAttribute(string expressionPrefix) { }
@@ -2928,14 +2928,14 @@ namespace System.Web.Compilation
         None = 0,
         WebReferences = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class FolderLevelBuildProviderAppliesToAttribute : System.Attribute
     {
         public FolderLevelBuildProviderAppliesToAttribute(System.Web.Compilation.FolderLevelBuildProviderAppliesTo appliesTo) { }
         public System.Web.Compilation.FolderLevelBuildProviderAppliesTo AppliesTo { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public partial interface IAssemblyPostProcessor : System.IDisposable
     {
         void PostProcessAssembly(string path);
@@ -3018,7 +3018,7 @@ namespace System.Web.Compilation
         public override object EvaluateExpression(object target, System.Web.UI.BoundPropertyEntry entry, object parsedData, System.Web.Compilation.ExpressionBuilderContext context) { throw null; }
         public override System.CodeDom.CodeExpression GetCodeExpression(System.Web.UI.BoundPropertyEntry entry, object parsedData, System.Web.Compilation.ExpressionBuilderContext context) { throw null; }
         public static string GetRouteUrl(System.Web.UI.Control control, string expression) { throw null; }
-        public static bool TryParseRouteExpression(string expression, System.Web.Routing.RouteValueDictionary routeValues, out string routeName) { routeName = default(string); throw null; }
+        public static bool TryParseRouteExpression(string expression, System.Web.Routing.RouteValueDictionary routeValues, out string routeName) { throw null; }
     }
     [System.Web.Compilation.ExpressionEditorAttribute("System.Web.UI.Design.RouteValueExpressionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.Compilation.ExpressionPrefixAttribute("Routes")]
@@ -3066,7 +3066,7 @@ namespace System.Web.Configuration
         public bool Enabled { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AssemblyInfo), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AssemblyInfo), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class AssemblyCollection : System.Configuration.ConfigurationElementCollection
     {
         public AssemblyCollection() { }
@@ -3083,7 +3083,7 @@ namespace System.Web.Configuration
     public sealed partial class AssemblyInfo : System.Configuration.ConfigurationElement
     {
         public AssemblyInfo(string assemblyName) { }
-        [System.Configuration.ConfigurationPropertyAttribute("assembly", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("assembly", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Assembly { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
@@ -3150,7 +3150,7 @@ namespace System.Web.Configuration
         Allow = 1,
         Deny = 0,
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AuthorizationRule), AddItemName="allow,deny", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(2))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AuthorizationRule), AddItemName="allow,deny", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate)]
     public sealed partial class AuthorizationRuleCollection : System.Configuration.ConfigurationElementCollection
     {
         public AuthorizationRuleCollection() { }
@@ -3174,11 +3174,11 @@ namespace System.Web.Configuration
     {
         public AuthorizationSection() { }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.AuthorizationRuleCollection Rules { get { throw null; } }
         protected override void PostDeserialize() { }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.BufferModeSettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.BufferModeSettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class BufferModesCollection : System.Configuration.ConfigurationElementCollection
     {
         public BufferModesCollection() { }
@@ -3196,7 +3196,7 @@ namespace System.Web.Configuration
         public BufferModeSettings(string name, int maxBufferSize, int maxFlushSize, int urgentFlushThreshold, System.TimeSpan regularFlushInterval, System.TimeSpan urgentFlushInterval, int maxBufferThreads) { }
         protected internal override System.Configuration.ConfigurationElementProperty ElementProperty { get { throw null; } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteIntConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue="2147483647", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue="2147483647", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647)]
         public int MaxBufferSize { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteIntConverter))]
@@ -3204,39 +3204,39 @@ namespace System.Web.Configuration
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647)]
         public int MaxBufferThreads { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteIntConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("maxFlushSize", DefaultValue="2147483647", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxFlushSize", DefaultValue="2147483647", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647)]
         public int MaxFlushSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("regularFlushInterval", DefaultValue="00:00:01", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("regularFlushInterval", DefaultValue="00:00:01", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.TimeSpanValidatorAttribute(MinValueString="00:00:00", MaxValueString="10675199.02:48:05.4775807")]
         public System.TimeSpan RegularFlushInterval { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("urgentFlushInterval", DefaultValue="00:00:00", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("urgentFlushInterval", DefaultValue="00:00:00", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public System.TimeSpan UrgentFlushInterval { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteIntConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("urgentFlushThreshold", DefaultValue="2147483647", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("urgentFlushThreshold", DefaultValue="2147483647", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647)]
         public int UrgentFlushThreshold { get { throw null; } set { } }
     }
     public sealed partial class BuildProvider : System.Configuration.ConfigurationElement
     {
         public BuildProvider(string extension, string type) { }
-        [System.Configuration.ConfigurationPropertyAttribute("extension", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("extension", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Extension { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Type { get { throw null; } set { } }
         public override bool Equals(object provider) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.BuildProvider), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.BuildProvider), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class BuildProviderCollection : System.Configuration.ConfigurationElementCollection
     {
         public BuildProviderCollection() { }
@@ -3271,15 +3271,15 @@ namespace System.Web.Configuration
     public sealed partial class ClientTarget : System.Configuration.ConfigurationElement
     {
         public ClientTarget(string alias, string userAgent) { }
-        [System.Configuration.ConfigurationPropertyAttribute("alias", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("alias", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Alias { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("userAgent", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("userAgent", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string UserAgent { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ClientTarget), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ClientTarget), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class ClientTargetCollection : System.Configuration.ConfigurationElementCollection
     {
         public ClientTargetCollection() { }
@@ -3299,11 +3299,11 @@ namespace System.Web.Configuration
     public sealed partial class ClientTargetSection : System.Configuration.ConfigurationSection
     {
         public ClientTargetSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(3))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public System.Web.Configuration.ClientTargetCollection ClientTargets { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CodeSubDirectory), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CodeSubDirectory), CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CodeSubDirectoriesCollection : System.Configuration.ConfigurationElementCollection
     {
         public CodeSubDirectoriesCollection() { }
@@ -3322,7 +3322,7 @@ namespace System.Web.Configuration
     {
         public CodeSubDirectory(string directoryName) { }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.WhiteSpaceTrimStringConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("directoryName", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("directoryName", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string DirectoryName { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -3381,16 +3381,16 @@ namespace System.Web.Configuration
         public string CompilerOptions { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("extension", DefaultValue="")]
         public string Extension { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("language", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("language", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Language { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Type { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("warningLevel", DefaultValue="0")]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0, MaxValue=4)]
         public int WarningLevel { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.Compiler), AddItemName="compiler", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.Compiler), AddItemName="compiler", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CompilerCollection : System.Configuration.ConfigurationElementCollection
     {
         public CompilerCollection() { }
@@ -3410,16 +3410,16 @@ namespace System.Web.Configuration
     {
         public CustomError(int statusCode, string redirect) { }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("redirect", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("redirect", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Redirect { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("statusCode", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("statusCode", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=100, MaxValue=999)]
         public int StatusCode { get { throw null; } set { } }
         public override bool Equals(object customError) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CustomError), AddItemName="error", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CustomError), AddItemName="error", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CustomErrorCollection : System.Configuration.ConfigurationElementCollection
     {
         public CustomErrorCollection() { }
@@ -3456,12 +3456,12 @@ namespace System.Web.Configuration
         public CustomErrorsSection() { }
         [System.Configuration.ConfigurationPropertyAttribute("defaultRedirect")]
         public string DefaultRedirect { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.CustomErrorCollection Errors { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue="RemoteOnly")]
         public System.Web.Configuration.CustomErrorsMode Mode { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("redirectMode", DefaultValue=(System.Web.Configuration.CustomErrorsRedirectMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("redirectMode", DefaultValue=System.Web.Configuration.CustomErrorsRedirectMode.ResponseRedirect)]
         public System.Web.Configuration.CustomErrorsRedirectMode RedirectMode { get { throw null; } set { } }
         protected internal override void DeserializeSection(System.Xml.XmlReader reader) { }
         protected internal override void Reset(System.Configuration.ConfigurationElement parentElement) { }
@@ -3480,16 +3480,16 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("endEventCode", DefaultValue="2147483647")]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0, MaxValue=2147483647)]
         public int EndEventCode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("startEventCode", DefaultValue="0")]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0, MaxValue=2147483647)]
         public int StartEventCode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Type { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.EventMappingSettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.EventMappingSettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class EventMappingSettingsCollection : System.Configuration.ConfigurationElementCollection
     {
         public EventMappingSettingsCollection() { }
@@ -3510,15 +3510,15 @@ namespace System.Web.Configuration
     public sealed partial class ExpressionBuilder : System.Configuration.ConfigurationElement
     {
         public ExpressionBuilder(string expressionPrefix, string theType) { }
-        [System.Configuration.ConfigurationPropertyAttribute("expressionPrefix", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("expressionPrefix", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string ExpressionPrefix { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Type { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ExpressionBuilder), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ExpressionBuilder), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class ExpressionBuilderCollection : System.Configuration.ConfigurationElementCollection
     {
         public ExpressionBuilderCollection() { }
@@ -3574,22 +3574,22 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("passwordFormat", DefaultValue="SHA1")]
         public System.Web.Configuration.FormsAuthPasswordFormat PasswordFormat { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.FormsAuthenticationUserCollection Users { get { throw null; } }
     }
     public sealed partial class FormsAuthenticationUser : System.Configuration.ConfigurationElement
     {
         public FormsAuthenticationUser(string name, string password) { }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.Configuration.LowerCaseStringConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute]
         public string Name { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("password", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("password", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute]
         public string Password { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.FormsAuthenticationUser), AddItemName="user", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.FormsAuthenticationUser), AddItemName="user", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class FormsAuthenticationUserCollection : System.Configuration.ConfigurationElementCollection
     {
         public FormsAuthenticationUserCollection() { }
@@ -3853,17 +3853,17 @@ namespace System.Web.Configuration
     {
         public HttpHandlerAction(string path, string type, string verb) { }
         public HttpHandlerAction(string path, string type, string verb, bool validate) { }
-        [System.Configuration.ConfigurationPropertyAttribute("path", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("path", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Path { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Type { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("validate", DefaultValue=true)]
         public bool Validate { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("verb", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("verb", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Verb { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpHandlerAction), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(3))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpHandlerAction), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMapAlternate)]
     public sealed partial class HttpHandlerActionCollection : System.Configuration.ConfigurationElementCollection
     {
         public HttpHandlerActionCollection() { }
@@ -3883,7 +3883,7 @@ namespace System.Web.Configuration
     public sealed partial class HttpHandlersSection : System.Configuration.ConfigurationSection
     {
         public HttpHandlersSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.HttpHandlerActionCollection Handlers { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -3891,14 +3891,14 @@ namespace System.Web.Configuration
     {
         public HttpModuleAction(string name, string type) { }
         protected internal override System.Configuration.ConfigurationElementProperty ElementProperty { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Type { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpModuleAction), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpModuleAction), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class HttpModuleActionCollection : System.Configuration.ConfigurationElementCollection
     {
         public HttpModuleActionCollection() { }
@@ -3917,7 +3917,7 @@ namespace System.Web.Configuration
     public sealed partial class HttpModulesSection : System.Configuration.ConfigurationSection
     {
         public HttpModulesSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.HttpModuleActionCollection Modules { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -4108,7 +4108,7 @@ namespace System.Web.Configuration
         [System.Configuration.TimeSpanValidatorAttribute(MinValueString="00:01:00")]
         public System.TimeSpan UserIsOnlineTimeWindow { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.NamespaceInfo), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.NamespaceInfo), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class NamespaceCollection : System.Configuration.ConfigurationElementCollection
     {
         public NamespaceCollection() { }
@@ -4126,7 +4126,7 @@ namespace System.Web.Configuration
     public sealed partial class NamespaceInfo : System.Configuration.ConfigurationElement
     {
         public NamespaceInfo(string name) { }
-        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Namespace { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
@@ -4143,7 +4143,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("location")]
         public System.Web.UI.OutputCacheLocation Location { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.WhiteSpaceTrimStringConverter))]
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("noStore", DefaultValue="False")]
@@ -4162,7 +4162,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("varyByParam")]
         public string VaryByParam { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.OutputCacheProfile), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.OutputCacheProfile), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class OutputCacheProfileCollection : System.Configuration.ConfigurationElementCollection, System.Collections.ICollection, System.Collections.IEnumerable
     {
         public OutputCacheProfileCollection() { }
@@ -4225,9 +4225,9 @@ namespace System.Web.Configuration
         public bool AutoEventWireup { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("buffer", DefaultValue=true)]
         public bool Buffer { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("clientIDMode", DefaultValue=(System.Web.UI.ClientIDMode)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("clientIDMode", DefaultValue=System.Web.UI.ClientIDMode.Predictable)]
         public System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("compilationMode", DefaultValue=(System.Web.UI.CompilationMode)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("compilationMode", DefaultValue=System.Web.UI.CompilationMode.Always)]
         public System.Web.UI.CompilationMode CompilationMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("controlRenderingCompatibilityVersion", DefaultValue="4.0")]
         public System.Version ControlRenderingCompatibilityVersion { get { throw null; } set { } }
@@ -4266,7 +4266,7 @@ namespace System.Web.Configuration
         public string UserControlBaseType { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("validateRequest", DefaultValue=true)]
         public bool ValidateRequest { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("viewStateEncryptionMode", DefaultValue=(System.Web.UI.ViewStateEncryptionMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("viewStateEncryptionMode", DefaultValue=System.Web.UI.ViewStateEncryptionMode.Auto)]
         public System.Web.UI.ViewStateEncryptionMode ViewStateEncryptionMode { get { throw null; } set { } }
         protected internal override void DeserializeSection(System.Xml.XmlReader reader) { }
     }
@@ -4397,12 +4397,12 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("name", IsRequired=true, IsKey=true)]
         public string Name { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.ProfilePropertySettingsCollection PropertySettings { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfileGroupSettings), AddItemName="group", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfileGroupSettings), AddItemName="group", CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class ProfileGroupSettingsCollection : System.Configuration.ConfigurationElementCollection
     {
         public ProfileGroupSettingsCollection() { }
@@ -4440,7 +4440,7 @@ namespace System.Web.Configuration
         public string CustomProviderData { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("defaultValue", DefaultValue="")]
         public string DefaultValue { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("provider", DefaultValue="")]
@@ -4452,7 +4452,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="string")]
         public string Type { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfilePropertySettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfilePropertySettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public partial class ProfilePropertySettingsCollection : System.Configuration.ConfigurationElementCollection
     {
         public ProfilePropertySettingsCollection() { }
@@ -4510,12 +4510,12 @@ namespace System.Web.Configuration
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("minInterval", DefaultValue="00:00:00")]
         public System.TimeSpan MinInterval { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfileSettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfileSettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class ProfileSettingsCollection : System.Configuration.ConfigurationElementCollection
     {
         public ProfileSettingsCollection() { }
@@ -4585,7 +4585,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("providers")]
         public System.Configuration.ProviderSettingsCollection Providers { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfilePropertySettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.ProfilePropertySettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class RootProfilePropertySettingsCollection : System.Web.Configuration.ProfilePropertySettingsCollection
     {
         public RootProfilePropertySettingsCollection() { }
@@ -4609,7 +4609,7 @@ namespace System.Web.Configuration
         public RuleSettings(string name, string eventName, string provider, string profile, int minInstances, int maxLimit, System.TimeSpan minInterval, string custom) { }
         [System.Configuration.ConfigurationPropertyAttribute("custom", DefaultValue="")]
         public string Custom { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("eventName", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("eventName", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string EventName { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteIntConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("maxLimit", DefaultValue="2147483647")]
@@ -4621,7 +4621,7 @@ namespace System.Web.Configuration
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("minInterval", DefaultValue="00:00:00")]
         public System.TimeSpan MinInterval { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("profile", DefaultValue="")]
@@ -4630,7 +4630,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("provider", DefaultValue="")]
         public string Provider { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.RuleSettings), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.RuleSettings), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class RuleSettingsCollection : System.Configuration.ConfigurationElementCollection
     {
         public RuleSettingsCollection() { }
@@ -4652,7 +4652,7 @@ namespace System.Web.Configuration
     {
         public SecurityPolicySection() { }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.TrustLevelCollection TrustLevels { get { throw null; } }
     }
     public enum SerializationMode
@@ -4733,18 +4733,18 @@ namespace System.Web.Configuration
     {
         public SqlCacheDependencyDatabase(string name, string connectionStringName) { }
         public SqlCacheDependencyDatabase(string name, string connectionStringName, int pollTime) { }
-        [System.Configuration.ConfigurationPropertyAttribute("connectionStringName", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("connectionStringName", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string ConnectionStringName { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationElementProperty ElementProperty { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("pollTime", DefaultValue="60000")]
         public int PollTime { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.SqlCacheDependencyDatabase), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.SqlCacheDependencyDatabase), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class SqlCacheDependencyDatabaseCollection : System.Configuration.ConfigurationElementCollection
     {
         public SqlCacheDependencyDatabaseCollection() { }
@@ -4862,7 +4862,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("xhtmlConformance")]
         public System.Web.Configuration.XhtmlConformanceSection XhtmlConformance { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagMapInfo), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagMapInfo), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class TagMapCollection : System.Configuration.ConfigurationElementCollection
     {
         public TagMapCollection() { }
@@ -4881,14 +4881,14 @@ namespace System.Web.Configuration
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string MappedTagType { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("tagType", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("tagType", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string TagType { get { throw null; } set { } }
         public override bool Equals(object o) { throw null; }
         public override int GetHashCode() { throw null; }
         protected internal override bool SerializeElement(System.Xml.XmlWriter writer, bool serializeCollectionKey) { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagPrefixInfo), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagPrefixInfo), CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class TagPrefixCollection : System.Configuration.ConfigurationElementCollection
     {
         public TagPrefixCollection() { }
@@ -4918,7 +4918,7 @@ namespace System.Web.Configuration
         public string Source { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("tagName")]
         public string TagName { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("tagPrefix", DefaultValue="/", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("tagPrefix", DefaultValue="/", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string TagPrefix { get { throw null; } set { } }
         public override bool Equals(object prefix) { throw null; }
@@ -4957,17 +4957,17 @@ namespace System.Web.Configuration
     public sealed partial class TransformerInfo : System.Configuration.ConfigurationElement
     {
         public TransformerInfo(string name, string type) { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Type { get { throw null; } set { } }
         public override bool Equals(object o) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TransformerInfo), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TransformerInfo), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class TransformerInfoCollection : System.Configuration.ConfigurationElementCollection
     {
         public TransformerInfoCollection() { }
@@ -4983,10 +4983,10 @@ namespace System.Web.Configuration
     public sealed partial class TrustLevel : System.Configuration.ConfigurationElement
     {
         public TrustLevel(string name, string policyFile) { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="Full", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue="Full", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Name { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("policyFile", DefaultValue="internal", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("policyFile", DefaultValue="internal", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string PolicyFile { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -5013,7 +5013,7 @@ namespace System.Web.Configuration
     public sealed partial class TrustSection : System.Configuration.ConfigurationSection
     {
         public TrustSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("level", DefaultValue="Full", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("level", DefaultValue="Full", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Level { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("originUrl", DefaultValue="")]
@@ -5025,13 +5025,13 @@ namespace System.Web.Configuration
     public sealed partial class UrlMapping : System.Configuration.ConfigurationElement
     {
         public UrlMapping(string url, string mappedUrl) { }
-        [System.Configuration.ConfigurationPropertyAttribute("mappedUrl", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("mappedUrl", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string MappedUrl { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("url", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("url", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Url { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.UrlMapping), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(1))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.UrlMapping), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap)]
     public sealed partial class UrlMappingCollection : System.Configuration.ConfigurationElementCollection
     {
         public UrlMappingCollection() { }
@@ -5054,7 +5054,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("enabled", DefaultValue="True")]
         public bool IsEnabled { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.UrlMappingCollection UrlMappings { get { throw null; } }
     }
     public sealed partial class VirtualDirectoryMapping
@@ -5136,7 +5136,7 @@ namespace System.Web.Configuration
     public sealed partial class WebControlsSection : System.Configuration.ConfigurationSection
     {
         public WebControlsSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("clientScriptsLocation", DefaultValue="/aspnet_client/{0}/{1}/", Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("clientScriptsLocation", DefaultValue="/aspnet_client/{0}/{1}/", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string ClientScriptsLocation { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
@@ -5158,7 +5158,7 @@ namespace System.Web.Configuration
     {
         public WebPartsPersonalizationAuthorization() { }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.AuthorizationRuleCollection Rules { get { throw null; } }
     }
     public sealed partial class WebPartsSection : System.Configuration.ConfigurationSection
@@ -5205,8 +5205,8 @@ namespace System.Web.Handlers
         bool System.Web.IHttpHandler.IsReusable { get { throw null; } }
         void System.Web.IHttpHandler.ProcessRequest(System.Web.HttpContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TraceHandler : System.Web.IHttpHandler
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -5225,10 +5225,10 @@ namespace System.Web.Handlers
 }
 namespace System.Web.Hosting
 {
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class AppDomainFactory : System.Web.Hosting.IAppDomainFactory
     {
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public AppDomainFactory() { }
         [System.MonoTODOAttribute("Not implemented")]
@@ -5237,14 +5237,14 @@ namespace System.Web.Hosting
     public abstract partial class AppDomainProtocolHandler : System.MarshalByRefObject, System.Web.Hosting.IRegisteredObject
     {
         protected AppDomainProtocolHandler() { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(4096))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService() { throw null; }
         public abstract void StartListenerChannel(System.Web.Hosting.IListenerChannelCallback listenerChannelCallback);
         public virtual void Stop(bool immediate) { }
         public abstract void StopListenerChannel(int listenerChannelId, bool immediate);
         public abstract void StopProtocol(bool immediate);
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ApplicationHost
     {
         internal ApplicationHost() { }
@@ -5259,7 +5259,7 @@ namespace System.Web.Hosting
         public string PhysicalPath { get { throw null; } }
         public string VirtualPath { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ApplicationManager : System.MarshalByRefObject
     {
         internal ApplicationManager() { }
@@ -5286,8 +5286,8 @@ namespace System.Web.Hosting
         public object Create(string appId, string appPath) { throw null; }
         public void Stop() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public sealed partial class HostingEnvironment : System.MarshalByRefObject
     {
         public HostingEnvironment() { }
@@ -5323,7 +5323,7 @@ namespace System.Web.Hosting
         public static void UnregisterObject(System.Web.Hosting.IRegisteredObject obj) { }
     }
     [System.Runtime.InteropServices.GuidAttribute("e6e21054-a7dc-4378-877d-b7f4a2d7e8ba")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppDomainFactory
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]
@@ -5354,7 +5354,7 @@ namespace System.Web.Hosting
         void MessageReceived();
     }
     [System.Runtime.InteropServices.GuidAttribute("02998279-7175-4D59-AA5A-FB8E44D4CA9D")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppManagerAppDomainFactory
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]
@@ -5362,7 +5362,7 @@ namespace System.Web.Hosting
         void Stop();
     }
     [System.Runtime.InteropServices.GuidAttribute("08A2C56F-7C16-41C1-A8BE-432917A1A2D1")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IISAPIRuntime
     {
         void DoGCCollect();
@@ -5372,7 +5372,7 @@ namespace System.Web.Hosting
         void StopProcessing();
     }
     [System.Runtime.InteropServices.GuidAttribute("dc3b0a85-9da7-47e4-ba1b-e27da9db8a1e")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IListenerChannelCallback
     {
         void GetBlob([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPArray)]byte[] buffer, ref int bufferSize);
@@ -5387,7 +5387,7 @@ namespace System.Web.Hosting
         void Preload(string[] parameters);
     }
     [System.Runtime.InteropServices.GuidAttribute("35f9c4c1-3800-4d17-99bc-018a62243687")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     [System.Security.SuppressUnmanagedCodeSecurityAttribute]
     public partial interface IProcessHostSupportFunctions
     {
@@ -5415,7 +5415,7 @@ namespace System.Web.Hosting
         void MapPath([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string virtualPath, out string physicalPath);
     }
     [System.Runtime.InteropServices.GuidAttribute("f11dc4c9-ddd1-4566-ad53-cf6f3a28fefe")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessPingCallback
     {
         void Respond();
@@ -5426,7 +5426,7 @@ namespace System.Web.Hosting
     }
     public sealed partial class ISAPIRuntime : System.MarshalByRefObject, System.Web.Hosting.IISAPIRuntime, System.Web.Hosting.IRegisteredObject
     {
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public ISAPIRuntime() { }
         public void DoGCCollect() { }
@@ -5451,8 +5451,8 @@ namespace System.Web.Hosting
         System.Action Suspend();
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class SimpleWorkerRequest : System.Web.HttpWorkerRequest
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -5587,7 +5587,7 @@ namespace System.Web.Mail
         internal SmtpMail() { }
         public static string SmtpServer { get { throw null; } set { } }
         public static void Send(string from, string to, string subject, string messageText) { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void Send(System.Web.Mail.MailMessage message) { }
     }
 }
@@ -5601,7 +5601,7 @@ namespace System.Web.Management
         Urgent = 1,
     }
     [System.Runtime.InteropServices.GuidAttribute("C84F668A-CC3F-11D7-B79E-505054503030")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IRegiisUtility
     {
         void ProtectedConfigAction(long actionToPerform, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string firstArgument, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string secondArgument, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string providerName, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appPath, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string site, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string cspOrLocation, int keySize, out System.IntPtr exception);
@@ -5750,24 +5750,24 @@ namespace System.Web.ModelBinding
         Optional = 0,
         Required = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public partial class BindingBehaviorAttribute : System.Attribute
     {
         public BindingBehaviorAttribute(System.Web.ModelBinding.BindingBehavior behavior) { }
         public System.Web.ModelBinding.BindingBehavior Behavior { get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class BindNeverAttribute : System.Web.ModelBinding.BindingBehaviorAttribute
     {
         public BindNeverAttribute() : base (default(System.Web.ModelBinding.BindingBehavior)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class BindRequiredAttribute : System.Web.ModelBinding.BindingBehaviorAttribute
     {
         public BindRequiredAttribute() : base (default(System.Web.ModelBinding.BindingBehavior)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=false, Inherited=true)]
     public sealed partial class ExtensibleModelBinderAttribute : System.Attribute
     {
         public ExtensibleModelBinderAttribute(System.Type binderType) { }
@@ -5791,7 +5791,7 @@ namespace System.Web.ModelBinding
     {
         System.Web.ModelBinding.IValueProvider GetValueProvider(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class ModelBinderProviderOptionsAttribute : System.Attribute
     {
         public ModelBinderProviderOptionsAttribute() { }
@@ -5855,7 +5855,7 @@ namespace System.Web.ModelBinding
         public bool Remove(string key) { throw null; }
         public void SetModelValue(string key, System.Web.ModelBinding.ValueProviderResult value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Web.ModelBinding.ModelState value) { value = default(System.Web.ModelBinding.ModelState); throw null; }
+        public bool TryGetValue(string key, out System.Web.ModelBinding.ModelState value) { throw null; }
     }
     [System.SerializableAttribute]
     public partial class ValueProviderResult
@@ -5871,7 +5871,7 @@ namespace System.Web.ModelBinding
 }
 namespace System.Web.Profile
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class CustomProviderDataAttribute : System.Attribute
     {
         public CustomProviderDataAttribute(string customProviderData) { }
@@ -5968,13 +5968,13 @@ namespace System.Web.Profile
         public static int DeleteProfiles(string[] usernames) { throw null; }
         public static int DeleteProfiles(System.Web.Profile.ProfileInfoCollection profiles) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public static int GetNumberOfProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption) { throw null; }
     }
@@ -6007,7 +6007,7 @@ namespace System.Web.Profile
         public abstract System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords);
         public abstract int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class ProfileProviderAttribute : System.Attribute
     {
         public ProfileProviderAttribute(string providerName) { }
@@ -6019,7 +6019,7 @@ namespace System.Web.Profile
         public new System.Web.Profile.ProfileProvider this[string name] { get { throw null; } }
         public override void Add(System.Configuration.Provider.ProviderBase provider) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class SettingsAllowAnonymousAttribute : System.Attribute
     {
         public SettingsAllowAnonymousAttribute(bool allow) { }
@@ -6034,10 +6034,10 @@ namespace System.Web.Profile
         public override int DeleteInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public override int DeleteProfiles(string[] usernames) { throw null; }
         public override int DeleteProfiles(System.Web.Profile.ProfileInfoCollection profiles) { throw null; }
-        public override System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public override System.Configuration.SettingsPropertyValueCollection GetPropertyValues(System.Configuration.SettingsContext sc, System.Configuration.SettingsPropertyCollection properties) { throw null; }
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config) { }
@@ -6180,7 +6180,7 @@ namespace System.Web.Routing
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.Remove(System.Collections.Generic.KeyValuePair<string, object> item) { throw null; }
         System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out object value) { value = default(object); throw null; }
+        public bool TryGetValue(string key, out object value) { throw null; }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Routing, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
     public partial class StopRoutingHandler : System.Web.Routing.IRouteHandler
@@ -6268,17 +6268,17 @@ namespace System.Web.Security
         [System.MonoTODOAttribute("Not implemented")]
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public override bool DeleteUser(string username, bool deleteAllRelatedData) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public virtual string GeneratePassword() { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
-        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         public override int GetNumberOfUsersOnline() { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
@@ -6323,14 +6323,14 @@ namespace System.Web.Security
         None = 0,
         Validation = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DefaultAuthenticationEventArgs : System.EventArgs
     {
         public DefaultAuthenticationEventArgs(System.Web.HttpContext context) { }
         public System.Web.HttpContext Context { get { throw null; } }
     }
     public delegate void DefaultAuthenticationEventHandler(object sender, System.Web.Security.DefaultAuthenticationEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DefaultAuthenticationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6340,7 +6340,7 @@ namespace System.Web.Security
         public void Init(System.Web.HttpApplication app) { }
     }
     [System.MonoTODOAttribute("that's only a stub")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class FileAuthorizationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6351,7 +6351,7 @@ namespace System.Web.Security
         [System.MonoTODOAttribute("Not implemented")]
         public void Init(System.Web.HttpApplication app) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class FormsAuthentication
     {
         public FormsAuthentication() { }
@@ -6393,7 +6393,7 @@ namespace System.Web.Security
         public System.Security.Principal.IPrincipal User { get { throw null; } [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlPrincipal=true)]set { } }
     }
     public delegate void FormsAuthenticationEventHandler(object sender, System.Web.Security.FormsAuthenticationEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class FormsAuthenticationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6402,7 +6402,7 @@ namespace System.Web.Security
         public void Dispose() { }
         public void Init(System.Web.HttpApplication app) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class FormsAuthenticationTicket
     {
@@ -6418,7 +6418,7 @@ namespace System.Web.Security
         public string UserData { get { throw null; } }
         public int Version { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public partial class FormsIdentity : System.Security.Principal.IIdentity
     {
@@ -6459,17 +6459,17 @@ namespace System.Web.Security
         public static event System.Web.Security.MembershipValidatePasswordEventHandler ValidatingPassword { add { } remove { } }
         public static System.Web.Security.MembershipUser CreateUser(string username, string password) { throw null; }
         public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email) { throw null; }
-        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
-        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
+        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, out System.Web.Security.MembershipCreateStatus status) { throw null; }
         public static bool DeleteUser(string username) { throw null; }
         public static bool DeleteUser(string username, bool deleteAllRelatedData) { throw null; }
         public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch) { throw null; }
-        public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch) { throw null; }
-        public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static string GeneratePassword(int length, int numberOfNonAlphanumericCharacters) { throw null; }
         public static System.Web.Security.MembershipUserCollection GetAllUsers() { throw null; }
-        public static System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static int GetNumberOfUsersOnline() { throw null; }
         public static System.Web.Security.MembershipUser GetUser() { throw null; }
         public static System.Web.Security.MembershipUser GetUser(bool userIsOnline) { throw null; }
@@ -6481,7 +6481,7 @@ namespace System.Web.Security
         public static void UpdateUser(System.Web.Security.MembershipUser user) { }
         public static bool ValidateUser(string username, string password) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property, AllowMultiple=false)]
     public partial class MembershipPasswordAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public MembershipPasswordAttribute() { }
@@ -6505,7 +6505,7 @@ namespace System.Web.Security
     [System.ObsoleteAttribute("This type is obsolete. The Passport authentication product is no longer supported and has been superseded by Live ID.")]
     public delegate void PassportAuthenticationEventHandler(object sender, System.Web.Security.PassportAuthenticationEventArgs e);
     [System.ObsoleteAttribute("This type is obsolete. The Passport authentication product is no longer supported and has been superseded by Live ID.")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PassportAuthenticationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6518,7 +6518,7 @@ namespace System.Web.Security
     [System.MonoNotSupportedAttribute("")]
     [System.MonoTODOAttribute("Not implemented")]
     [System.ObsoleteAttribute("This type is obsolete. The Passport authentication product is no longer supported and has been superseded by Live ID.")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PassportIdentity : System.IDisposable, System.Security.Principal.IIdentity
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6633,7 +6633,7 @@ namespace System.Web.Security
         public void Dispose() { }
         public void Init(System.Web.HttpApplication app) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public partial class RolePrincipal : System.Security.Principal.IPrincipal
     {
@@ -6715,12 +6715,12 @@ namespace System.Web.Security
         public override bool RequiresUniqueEmail { get { throw null; } }
         public override bool ChangePassword(string username, string oldPassword, string newPassword) { throw null; }
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer) { throw null; }
-        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
         public override bool DeleteUser(string username, bool deleteAllRelatedData) { throw null; }
-        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public virtual string GeneratePassword() { throw null; }
-        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetNumberOfUsersOnline() { throw null; }
         public override string GetPassword(string username, string passwordAnswer) { throw null; }
         public override System.Web.Security.MembershipUser GetUser(object providerUserKey, bool userIsOnline) { throw null; }
@@ -6748,7 +6748,7 @@ namespace System.Web.Security
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames) { }
         public override bool RoleExists(string roleName) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class UrlAuthorizationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6765,7 +6765,7 @@ namespace System.Web.Security
         public System.Security.Principal.IPrincipal User { get { throw null; } [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlPrincipal=true)]set { } }
     }
     public delegate void WindowsAuthenticationEventHandler(object sender, System.Web.Security.WindowsAuthenticationEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class WindowsAuthenticationModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -6953,7 +6953,7 @@ namespace System.Web.Security.AntiXss
 }
 namespace System.Web.SessionState
 {
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HttpSessionState : System.Collections.ICollection, System.Collections.IEnumerable
     {
         internal HttpSessionState() { }
@@ -7066,7 +7066,7 @@ namespace System.Web.SessionState
         void RemoveAt(int index);
     }
     [System.Runtime.InteropServices.GuidAttribute("7297744b-e188-40bf-b7e9-56698d25cf44")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IStateRuntime
     {
         void ProcessRequest([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.SysInt)]System.IntPtr tracker, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int verb, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string uri, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int exclusive, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int extraFlags, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int timeout, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int lockCookieExists, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int lockCookie, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int contentLength, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.SysInt)]System.IntPtr content);
@@ -7082,9 +7082,9 @@ namespace System.Web.SessionState
         public virtual string Encode(string id) { throw null; }
         public string GetSessionID(System.Web.HttpContext context) { throw null; }
         public void Initialize() { }
-        public bool InitializeRequest(System.Web.HttpContext context, bool suppressAutoDetectRedirect, out bool supportSessionIDReissue) { supportSessionIDReissue = default(bool); throw null; }
+        public bool InitializeRequest(System.Web.HttpContext context, bool suppressAutoDetectRedirect, out bool supportSessionIDReissue) { throw null; }
         public void RemoveSessionID(System.Web.HttpContext context) { }
-        public void SaveSessionID(System.Web.HttpContext context, string id, out bool redirected, out bool cookieAdded) { redirected = default(bool); cookieAdded = default(bool); }
+        public void SaveSessionID(System.Web.HttpContext context, string id, out bool redirected, out bool cookieAdded) { throw null; }
         public virtual bool Validate(string id) { throw null; }
     }
     public enum SessionStateActions
@@ -7122,7 +7122,7 @@ namespace System.Web.SessionState
         SQLServer = 3,
         StateServer = 2,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class SessionStateModule : System.Web.IHttpModule
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -7164,17 +7164,17 @@ namespace System.Web.SessionState
         public static void RaiseSessionEnd(System.Web.SessionState.IHttpSessionState session, object eventSource, System.EventArgs eventArgs) { }
         public static void RemoveHttpSessionStateFromContext(System.Web.HttpContext context) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class StateRuntime : System.Web.SessionState.IStateRuntime
     {
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public StateRuntime() { }
         [System.MonoTODOAttribute("Not implemented")]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public void ProcessRequest(System.IntPtr tracker, int verb, string uri, int exclusive, int extraFlags, int timeout, int lockCookieExists, int lockCookie, int contentLength, System.IntPtr content) { }
         [System.MonoTODOAttribute("Not implemented")]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public void ProcessRequest(System.IntPtr tracker, int verb, string uri, int exclusive, int timeout, int lockCookieExists, int lockCookie, int contentLength, System.IntPtr content) { }
         [System.MonoTODOAttribute("Not implemented")]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -7183,7 +7183,7 @@ namespace System.Web.SessionState
 }
 namespace System.Web.UI
 {
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class AttributeCollection
     {
         public AttributeCollection(System.Web.UI.StateBag bag) { }
@@ -7199,15 +7199,15 @@ namespace System.Web.UI
         public void Remove(string key) { }
         public void Render(System.Web.UI.HtmlTextWriter writer) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class BaseParser
     {
         public BaseParser() { }
     }
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class BasePartialCachingControl : System.Web.UI.Control
     {
         protected BasePartialCachingControl() { }
@@ -7327,7 +7327,7 @@ namespace System.Web.UI
         public System.Collections.Specialized.IOrderedDictionary ExtractValues(System.Web.UI.Control container) { throw null; }
         public void InstantiateIn(System.Web.UI.Control container) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class CompiledTemplateBuilder : System.Web.UI.ITemplate
     {
         public CompiledTemplateBuilder(System.Web.UI.BuildTemplateMethod buildTemplateMethod) { }
@@ -7344,7 +7344,7 @@ namespace System.Web.UI
         CompareAllValues = 1,
         OverwriteChanges = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ConstructorNeedsTagAttribute : System.Attribute
     {
         public ConstructorNeedsTagAttribute() { }
@@ -7357,46 +7357,46 @@ namespace System.Web.UI
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.ControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.ComponentModel.DesignerCategoryAttribute("Code")]
     [System.ComponentModel.ToolboxItemAttribute("System.Web.UI.Design.WebControlToolboxItem, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", (System.ComponentModel.ToolboxItemFilterType)(3))]
+    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", System.ComponentModel.ToolboxItemFilterType.Require)]
     [System.Web.UI.ThemeableAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Control : System.ComponentModel.IComponent, System.IDisposable, System.Web.UI.IControlBuilderAccessor, System.Web.UI.IControlDesignerAccessor, System.Web.UI.IDataBindingsAccessor, System.Web.UI.IExpressionsAccessor, System.Web.UI.IParserAccessor, System.Web.UI.IUrlResolutionService
     {
         public Control() { }
         protected internal System.Web.UI.Adapters.ControlAdapter Adapter { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
-        public string AppRelativeTemplateSourceDirectory { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]set { } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public string AppRelativeTemplateSourceDirectory { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control BindingContainer { get { throw null; } }
         protected bool ChildControlsCreated { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string ClientID { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ClientIDMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ClientIDMode.Inherit)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
         protected char ClientIDSeparator { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected internal virtual System.Web.HttpContext Context { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control DataItemContainer { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control DataKeysContainer { get { throw null; } }
         [System.MonoTODOAttribute("revisit once we have a real design strategy")]
         protected internal bool DesignMode { get { throw null; } }
@@ -7421,23 +7421,23 @@ namespace System.Web.UI
         protected bool LoadViewStateByID { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Control NamingContainer { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Page Page { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Control Parent { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Version RenderingCompatibility { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.ComponentModel.ISite Site { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -7451,21 +7451,21 @@ namespace System.Web.UI
         bool System.Web.UI.IExpressionsAccessor.HasExpressions { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.UI.TemplateControl TemplateControl { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]set { } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.UI.TemplateControl TemplateControl { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string TemplateSourceDirectory { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string UniqueID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual System.Web.UI.StateBag ViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual bool ViewStateIgnoresCase { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ViewStateMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ViewStateMode.Inherit)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.ViewStateMode ViewStateMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -7479,7 +7479,7 @@ namespace System.Web.UI
         public event System.EventHandler Unload { add { } remove { } }
         protected internal virtual void AddedControl(System.Web.UI.Control control, int index) { }
         protected virtual void AddParsedSubObject(object obj) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void ApplyStyleSheetSkin(System.Web.UI.Page page) { }
         [System.MonoTODOAttribute]
         protected void BuildProfileTree(string parentId, bool calcViewState) { }
@@ -7530,7 +7530,7 @@ namespace System.Web.UI
         protected internal virtual object SaveControlState() { throw null; }
         protected virtual object SaveViewState() { throw null; }
         protected virtual void SetDesignModeState(System.Collections.IDictionary data) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void SetRenderMethodDelegate(System.Web.UI.RenderMethod renderMethod) { }
         System.Collections.IDictionary System.Web.UI.IControlDesignerAccessor.GetDesignModeState() { throw null; }
         void System.Web.UI.IControlDesignerAccessor.SetDesignModeState(System.Collections.IDictionary designData) { }
@@ -7538,8 +7538,8 @@ namespace System.Web.UI
         void System.Web.UI.IParserAccessor.AddParsedSubObject(object obj) { }
         protected virtual void TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ControlBuilder
     {
         public ControlBuilder() { }
@@ -7569,7 +7569,7 @@ namespace System.Web.UI
         public virtual void ProcessGeneratedCode(System.CodeDom.CodeCompileUnit codeCompileUnit, System.CodeDom.CodeTypeDeclaration baseType, System.CodeDom.CodeTypeDeclaration derivedType, System.CodeDom.CodeMemberMethod buildMethod, System.CodeDom.CodeMemberMethod dataBindingMethod) { }
         public virtual void SetTagInnerText(string text) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ControlBuilderAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ControlBuilderAttribute Default;
@@ -7593,8 +7593,8 @@ namespace System.Web.UI
         public void SetSlidingExpiration(bool useSlidingExpiration) { }
         public void SetVaryByCustom(string varyByCustom) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ControlCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public ControlCollection(System.Web.UI.Control owner) { }
@@ -7614,16 +7614,16 @@ namespace System.Web.UI
         public virtual void Remove(System.Web.UI.Control value) { }
         public virtual void RemoveAt(int index) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public partial class ControlSkin
     {
         public ControlSkin(System.Type controlType, System.Web.UI.ControlSkinDelegate themeDelegate) { }
         public System.Type ControlType { get { throw null; } }
         public void ApplySkin(System.Web.UI.Control control) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate System.Web.UI.Control ControlSkinDelegate(System.Web.UI.Control control);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class ControlValuePropertyAttribute : System.Attribute
     {
         public ControlValuePropertyAttribute(string name) { }
@@ -7634,12 +7634,12 @@ namespace System.Web.UI
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class CssClassPropertyAttribute : System.Attribute
     {
         public CssClassPropertyAttribute() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class CssStyleCollection
     {
         internal CssStyleCollection() { }
@@ -7654,20 +7654,20 @@ namespace System.Web.UI
         public void Remove(string key) { }
         public void Remove(System.Web.UI.HtmlTextWriterStyle key) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataBinder
     {
         public DataBinder() { }
         public static object Eval(object container, string expression) { throw null; }
         public static string Eval(object container, string expression, string format) { throw null; }
         public static object GetDataItem(object container) { throw null; }
-        public static object GetDataItem(object container, out bool foundDataItem) { foundDataItem = default(bool); throw null; }
+        public static object GetDataItem(object container, out bool foundDataItem) { throw null; }
         public static object GetIndexedPropertyValue(object container, string expr) { throw null; }
         public static string GetIndexedPropertyValue(object container, string propName, string format) { throw null; }
         public static object GetPropertyValue(object container, string propName) { throw null; }
         public static string GetPropertyValue(object container, string propName, string format) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataBinding
     {
         public DataBinding(string propertyName, System.Type propertyType, string expression) { }
@@ -7677,7 +7677,7 @@ namespace System.Web.UI
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataBindingCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DataBindingCollection() { }
@@ -7697,7 +7697,7 @@ namespace System.Web.UI
         public void Remove(string propertyName, bool addToRemovedList) { }
         public void Remove(System.Web.UI.DataBinding binding) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DataBindingHandlerAttribute : System.Attribute
     {
         public static readonly System.Web.UI.DataBindingHandlerAttribute Default;
@@ -7709,7 +7709,7 @@ namespace System.Web.UI
         public override int GetHashCode() { throw null; }
     }
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataBoundLiteralControl : System.Web.UI.Control, System.Web.UI.ITextControl
     {
         public DataBoundLiteralControl(int staticLiteralsCount, int dataBoundLiteralCount) { }
@@ -7722,7 +7722,7 @@ namespace System.Web.UI
         public void SetDataBoundString(int index, string s) { }
         public void SetStaticString(int index, string s) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DataKeyPropertyAttribute : System.Attribute
     {
         public DataKeyPropertyAttribute(string name) { }
@@ -7730,8 +7730,8 @@ namespace System.Web.UI
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataSourceCacheDurationConverter : System.ComponentModel.Int32Converter
     {
         public DataSourceCacheDurationConverter() { }
@@ -7763,39 +7763,39 @@ namespace System.Web.UI
     public abstract partial class DataSourceControl : System.Web.UI.Control, System.ComponentModel.IListSource, System.Web.UI.IDataSource
     {
         protected DataSourceControl() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         bool System.ComponentModel.IListSource.ContainsListCollection { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         event System.EventHandler System.Web.UI.IDataSource.DataSourceChanged { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("Not implemented")]
         public override void ApplyStyleSheetSkin(System.Web.UI.Page page) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("why override?")]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected abstract System.Web.UI.DataSourceView GetView(string viewName);
         protected virtual System.Collections.ICollection GetViewNames() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected virtual void RaiseDataSourceChangedEvent(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void RenderControl(System.Web.UI.HtmlTextWriter writer) { }
         System.Collections.IList System.ComponentModel.IListSource.GetList() { throw null; }
         System.Web.UI.DataSourceView System.Web.UI.IDataSource.GetView(string viewName) { throw null; }
@@ -7858,7 +7858,7 @@ namespace System.Web.UI
     public delegate void DataSourceViewSelectCallback(System.Collections.IEnumerable data);
     [System.ComponentModel.ToolboxItemAttribute(false)]
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.TextDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DesignerDataBoundLiteralControl : System.Web.UI.Control
     {
         public DesignerDataBoundLiteralControl() { }
@@ -7868,7 +7868,7 @@ namespace System.Web.UI
         protected internal override void Render(System.Web.UI.HtmlTextWriter output) { }
         protected override object SaveViewState() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DesignTimeParseData
     {
         public DesignTimeParseData(System.ComponentModel.Design.IDesignerHost designerHost, string parseText) { }
@@ -7881,7 +7881,7 @@ namespace System.Web.UI
         public bool ShouldApplyTheme { get { throw null; } set { } }
         public System.Collections.ICollection UserControlRegisterEntries { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public static partial class DesignTimeTemplateParser
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true, UnmanagedCode=true)]
@@ -7940,7 +7940,7 @@ namespace System.Web.UI
         public void Remove(System.Web.UI.ExpressionBinding binding) { }
     }
     public delegate System.Collections.Specialized.IOrderedDictionary ExtractTemplateValuesMethod(System.Web.UI.Control control);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class FileLevelControlBuilderAttribute : System.Attribute
     {
         public static readonly System.Web.UI.FileLevelControlBuilderAttribute Default;
@@ -7964,7 +7964,7 @@ namespace System.Web.UI
     {
         public FileLevelUserControlBuilder() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property)]
     public sealed partial class FilterableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.FilterableAttribute Default;
@@ -7979,8 +7979,8 @@ namespace System.Web.UI
         public static bool IsPropertyFilterable(System.ComponentModel.PropertyDescriptor propertyDescriptor) { throw null; }
         public static bool IsTypeFilterable(System.Type type) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HiddenFieldPageStatePersister : System.Web.UI.PageStatePersister
     {
         public HiddenFieldPageStatePersister(System.Web.UI.Page page) : base (default(System.Web.UI.Page)) { }
@@ -7996,27 +7996,27 @@ namespace System.Web.UI
         protected HierarchicalDataSourceControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         event System.EventHandler System.Web.UI.IHierarchicalDataSource.DataSourceChanged { add { } remove { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected abstract System.Web.UI.HierarchicalDataSourceView GetHierarchicalView(string viewPath);
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected virtual void OnDataSourceChanged(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void RenderControl(System.Web.UI.HtmlTextWriter writer) { }
         System.Web.UI.HierarchicalDataSourceView System.Web.UI.IHierarchicalDataSource.GetHierarchicalView(string viewPath) { throw null; }
     }
@@ -8025,8 +8025,8 @@ namespace System.Web.UI
         protected HierarchicalDataSourceView() { }
         public abstract System.Web.UI.IHierarchicalEnumerable Select();
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Html32TextWriter : System.Web.UI.HtmlTextWriter
     {
         public Html32TextWriter(System.IO.TextWriter writer) : base (default(System.IO.TextWriter)) { }
@@ -8049,8 +8049,8 @@ namespace System.Web.UI
         public override void RenderBeginTag(System.Web.UI.HtmlTextWriterTag tagKey) { }
         public override void RenderEndTag() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTextWriter : System.IO.TextWriter
     {
         public const string DefaultTabString = "\t";
@@ -8106,9 +8106,9 @@ namespace System.Web.UI
         protected virtual System.Web.UI.HtmlTextWriterTag GetTagKey(string tagName) { throw null; }
         protected virtual string GetTagName(System.Web.UI.HtmlTextWriterTag tagKey) { throw null; }
         protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key) { throw null; }
-        protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key, out string value) { value = default(string); throw null; }
+        protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key, out string value) { throw null; }
         protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key) { throw null; }
-        protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key, out string value) { value = default(string); throw null; }
+        protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key, out string value) { throw null; }
         public virtual bool IsValidFormAttribute(string attribute) { throw null; }
         protected virtual bool OnAttributeRender(string name, string value, System.Web.UI.HtmlTextWriterAttribute key) { throw null; }
         protected virtual bool OnStyleAttributeRender(string name, string value, System.Web.UI.HtmlTextWriterStyle key) { throw null; }
@@ -8442,7 +8442,7 @@ namespace System.Web.UI
     {
         object DataSourceViewSchema { get; set; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class IDReferencePropertyAttribute : System.Attribute
     {
         public IDReferencePropertyAttribute() { }
@@ -8582,8 +8582,8 @@ namespace System.Web.UI
         public static System.Collections.IList GetList(System.Web.UI.IDataSource dataSource) { throw null; }
     }
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class LiteralControl : System.Web.UI.Control, System.Web.UI.ITextControl
     {
         public LiteralControl() { }
@@ -8592,7 +8592,7 @@ namespace System.Web.UI
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected internal override void Render(System.Web.UI.HtmlTextWriter output) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class LosFormatter
     {
         public LosFormatter() { }
@@ -8610,17 +8610,17 @@ namespace System.Web.UI
     {
         public MasterPage() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal System.Collections.IList ContentPlaceHolders { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal System.Collections.IDictionary ContentTemplates { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.MasterPage Master { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string MasterPageFile { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal void AddContentTemplate(string templateName, System.Web.UI.ITemplate template) { }
         public void InstantiateInContentPlaceHolder(System.Web.UI.Control contentPlaceHolder, System.Web.UI.ITemplate template) { }
     }
@@ -8628,7 +8628,7 @@ namespace System.Web.UI
     {
         public MasterPageControlBuilder() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class NonVisualControlAttribute : System.Attribute
     {
         public static readonly System.Web.UI.NonVisualControlAttribute Default;
@@ -8676,7 +8676,7 @@ namespace System.Web.UI
         object System.Runtime.Serialization.IFormatter.Deserialize(System.IO.Stream serializationStream) { throw null; }
         void System.Runtime.Serialization.IFormatter.Serialize(System.IO.Stream serializationStream, object stateGraph) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ObjectTagBuilder : System.Web.UI.ControlBuilder
     {
         public ObjectTagBuilder() { }
@@ -8713,271 +8713,271 @@ namespace System.Web.UI
     [System.ComponentModel.DesignerAttribute("Microsoft.VisualStudio.Web.WebForms.WebFormDesigner, Microsoft.VisualStudio.Web, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.ComponentModel.Design.IRootDesigner))]
     [System.ComponentModel.DesignerCategoryAttribute("ASPXCodeBehind")]
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Page : System.Web.UI.TemplateControl, System.Web.IHttpHandler
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public const string postEventArgumentID = "__EVENTARGUMENT";
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public const string postEventSourceID = "__EVENTTARGET";
         public Page() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected bool AspCompatMode { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected bool AsyncMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.TimeSpan AsyncTimeout { get { throw null; } set { } }
         public System.Web.UI.Control AutoPostBackControl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool Buffer { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Caching.Cache Cache { get { throw null; } }
         public string ClientQueryString { get { throw null; } }
         public System.Web.UI.ClientScriptManager ClientScript { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string ClientTarget { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int CodePage { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string ContentType { get { throw null; } set { } }
         protected internal override System.Web.HttpContext Context { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string Culture { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("true")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual bool EnableEventValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override bool EnableViewState { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool EnableViewStateMac { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ErrorPage { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("The recommended alternative is HttpResponse.AddFileDependencies. http://go.microsoft.com/fwlink/?linkid=14202")]
         protected System.Collections.ArrayList FileDependencies { set { } }
         public System.Web.UI.HtmlControls.HtmlForm Form { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.HtmlControls.HtmlHead Header { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual new char IdSeparator { get { throw null; } }
         public bool IsAsync { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsCallback { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsCrossPagePostBack { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsPostBack { get { throw null; } }
         public bool IsPostBackEventControlRegistered { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool IsReusable { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsValid { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public System.Collections.IDictionary Items { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int LCID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool MaintainScrollPositionOnPostBack { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.MasterPage Master { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string MasterPageFile { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("Actually use the value in code.")]
         public int MaxPageStateFieldLength { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string MetaDescription { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string MetaKeywords { get { throw null; } set { } }
         public System.Web.UI.Adapters.PageAdapter PageAdapter { get { throw null; } }
         protected virtual System.Web.UI.PageStatePersister PageStatePersister { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Page PreviousPage { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string ResponseEncoding { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Routing.RouteData RouteData { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ObsoleteAttribute("The recommended alternative is Page.SetFocus and Page.MaintainScrollPositionOnPostBack. http://go.microsoft.com/fwlink/?linkid=14202")]
         [System.Web.UI.FilterableAttribute(false)]
         public bool SmartNavigation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         public virtual string StyleSheetTheme { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Theme { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.TraceContext Trace { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool TraceEnabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.TraceMode TraceModeValue { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected int TransactionMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string UICulture { get { throw null; } set { } }
         protected internal virtual string UniqueFilePathSuffix { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Security.Principal.IPrincipal User { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.ValidatorCollection Validators { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("0")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.ViewStateEncryptionMode ViewStateEncryptionMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.MonoTODOAttribute("Use this when encrypting/decrypting ViewState")]
         public string ViewStateUserKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override bool Visible { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler InitComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler LoadComplete { add { } remove { } }
         public event System.EventHandler PreInit { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler PreLoad { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler PreRenderComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler SaveStateComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected internal void AddContentTemplate(string templateName, System.Web.UI.ITemplate template) { }
         public void AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler beginHandler, System.Web.EndEventHandler endHandler) { }
         public void AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler beginHandler, System.Web.EndEventHandler endHandler, object state) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoDocumentationNoteAttribute("Does nothing. Used by .net aspx parser")]
         protected internal void AddWrappedFileDependencies(object virtualFileDependencies) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected System.IAsyncResult AspCompatBeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback cb, object extraData) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoNotSupportedAttribute("Mono does not support classic ASP compatibility mode.")]
         protected void AspCompatEndProcessRequest(System.IAsyncResult result) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected System.IAsyncResult AsyncPageBeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback callback, object extraData) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void AsyncPageEndProcessRequest(System.IAsyncResult result) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual System.Web.UI.HtmlTextWriter CreateHtmlTextWriter(System.IO.TextWriter tw) { throw null; }
         public static System.Web.UI.HtmlTextWriter CreateHtmlTextWriterFromType(System.IO.TextWriter tw, System.Type writerType) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void DesignerInitialize() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual System.Collections.Specialized.NameValueCollection DeterminePostBackMode() { throw null; }
         public void ExecuteRegisteredAsyncTasks() { }
         public override System.Web.UI.Control FindControl(string id) { throw null; }
         protected override void FrameworkInitialize() { }
         public object GetDataItem() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackClientEvent(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackClientHyperlink. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackClientHyperlink(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackEventReference(System.Web.UI.Control control) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackEventReference(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual int GetTypeHashCode() { throw null; }
         public System.Web.UI.ValidatorCollection GetValidators(string validationGroup) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoDocumentationNoteAttribute("Not implemented.  Only used by .net aspx parser")]
         protected object GetWrappedFileDependencies(string[] virtualFileDependencies) { throw null; }
         [System.MonoDocumentationNoteAttribute("Does nothing.  Used by .net aspx parser")]
         protected virtual void InitializeCulture() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("varyByContentEncoding is not currently used")]
         protected virtual void InitOutputCache(int duration, string varyByContentEncoding, string varyByHeader, string varyByCustom, System.Web.UI.OutputCacheLocation location, string varyByParam) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual void InitOutputCache(int duration, string varyByHeader, string varyByCustom, System.Web.UI.OutputCacheLocation location, string varyByParam) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("The following properties of OutputCacheParameters are silently ignored: CacheProfile, SqlDependency")]
         protected internal virtual void InitOutputCache(System.Web.UI.OutputCacheParameters cacheSettings) { }
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.IsClientScriptBlockRegistered(string key). http://go.microsoft.com/fwlink/?linkid=14202")]
         public bool IsClientScriptBlockRegistered(string key) { throw null; }
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.IsStartupScriptRegistered(string key). http://go.microsoft.com/fwlink/?linkid=14202")]
         public bool IsStartupScriptRegistered(string key) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual object LoadPageStateFromPersistenceMedium() { throw null; }
         public string MapPath(string virtualPath) { throw null; }
         protected internal override void OnInit(System.EventArgs e) { }
@@ -8987,46 +8987,46 @@ namespace System.Web.UI
         protected virtual void OnPreLoad(System.EventArgs e) { }
         protected virtual void OnPreRenderComplete(System.EventArgs e) { }
         protected virtual void OnSaveStateComplete(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void ProcessRequest(System.Web.HttpContext context) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void RaisePostBackEvent(System.Web.UI.IPostBackEventHandler sourceControl, string eventArgument) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterArrayDeclaration(string arrayName, string arrayValue). http://go.microsoft.com/fwlink/?linkid=14202")]
         public void RegisterArrayDeclaration(string arrayName, string arrayValue) { }
         public void RegisterAsyncTask(System.Web.UI.PageAsyncTask task) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterClientScriptBlock(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual void RegisterClientScriptBlock(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute]
         public virtual void RegisterHiddenField(string hiddenFieldName, string hiddenFieldInitialValue) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterOnSubmitStatement(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public void RegisterOnSubmitStatement(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterRequiresControlState(System.Web.UI.Control control) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterRequiresPostBack(System.Web.UI.Control control) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void RegisterRequiresRaiseEvent(System.Web.UI.IPostBackEventHandler control) { }
         public void RegisterRequiresViewStateEncryption() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterStartupScript(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual void RegisterStartupScript(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterViewStateHandler() { }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
         public bool RequiresControlState(System.Web.UI.Control control) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void SavePageStateToPersistenceMedium(object state) { }
         public void SetFocus(string clientID) { }
         public void SetFocus(System.Web.UI.Control control) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void UnregisterRequiresControlState(System.Web.UI.Control control) { }
         public virtual void Validate() { }
         public virtual void Validate(string validationGroup) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void VerifyRenderingInServerForm(System.Web.UI.Control control) { }
     }
     public sealed partial class PageAsyncTask
@@ -9045,7 +9045,7 @@ namespace System.Web.UI
         public virtual System.Web.IHttpHandler GetHandler(System.Web.HttpContext context, string requestType, string virtualPath, string path) { throw null; }
         public virtual void ReleaseHandler(System.Web.IHttpHandler handler) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PageParser : System.Web.UI.TemplateControlParser
     {
         public PageParser() { }
@@ -9091,7 +9091,7 @@ namespace System.Web.UI
         public abstract void Load();
         public abstract void Save();
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public abstract partial class PageTheme
     {
         protected PageTheme() { }
@@ -9119,8 +9119,8 @@ namespace System.Web.UI
         public Pair() { }
         public Pair(object x, object y) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ParseChildrenAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ParseChildrenAttribute Default;
@@ -9137,8 +9137,8 @@ namespace System.Web.UI
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PartialCachingAttribute : System.Attribute
     {
         public PartialCachingAttribute(int duration) { }
@@ -9153,14 +9153,14 @@ namespace System.Web.UI
         public string VaryByCustom { get { throw null; } }
         public string VaryByParams { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class PartialCachingControl : System.Web.UI.BasePartialCachingControl
     {
         internal PartialCachingControl() { }
         public System.Web.UI.Control CachedControl { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class PersistChildrenAttribute : System.Attribute
     {
         public static readonly System.Web.UI.PersistChildrenAttribute Default;
@@ -9181,8 +9181,8 @@ namespace System.Web.UI
         InnerDefaultProperty = 2,
         InnerProperty = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PersistenceModeAttribute : System.Attribute
     {
         public static readonly System.Web.UI.PersistenceModeAttribute Attribute;
@@ -9223,7 +9223,7 @@ namespace System.Web.UI
         [System.MonoTODOAttribute("Implement support for this in Page")]
         public string ValidationGroup { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public static partial class PropertyConverter
     {
         public static object EnumFromString(System.Type enumType, string value) { throw null; }
@@ -9240,8 +9240,8 @@ namespace System.Web.UI
         public System.Type Type { get { throw null; } set { } }
     }
     public delegate void RenderMethod(System.Web.UI.HtmlTextWriter output, System.Web.UI.Control container);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RootBuilder : System.Web.UI.TemplateBuilder
     {
         public RootBuilder() { }
@@ -9261,8 +9261,8 @@ namespace System.Web.UI
         public bool UseSetAttribute { get { throw null; } set { } }
         public object Value { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class SimpleWebHandlerParser
     {
         protected SimpleWebHandlerParser(System.Web.HttpContext context, string virtualPath, string physicalPath) { }
@@ -9274,7 +9274,7 @@ namespace System.Web.UI
         public SkinBuilder(System.Web.UI.ThemeProvider provider, System.Web.UI.Control control, System.Web.UI.ControlBuilder skinBuilder, string themePath) { }
         public System.Web.UI.Control ApplyTheme() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class StateBag : System.Collections.ICollection, System.Collections.IDictionary, System.Collections.IEnumerable, System.Web.UI.IStateManager
     {
         public StateBag() { }
@@ -9305,7 +9305,7 @@ namespace System.Web.UI
         object System.Web.UI.IStateManager.SaveViewState() { throw null; }
         void System.Web.UI.IStateManager.TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class StateItem
     {
         internal StateItem() { }
@@ -9349,8 +9349,8 @@ namespace System.Web.UI
         object System.Web.UI.IStateManager.SaveViewState() { throw null; }
         void System.Web.UI.IStateManager.TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class StaticPartialCachingControl : System.Web.UI.BasePartialCachingControl
     {
         public StaticPartialCachingControl(string ctrlID, string guid, int duration, string varyByParams, string varyByControls, string varyByCustom, string sqlDependency, System.Web.UI.BuildMethod buildMethod) { }
@@ -9361,21 +9361,21 @@ namespace System.Web.UI
         public static void BuildCachedControl(System.Web.UI.Control parent, string ctrlID, string guid, int duration, string varyByParams, string varyByControls, string varyByCustom, string sqlDependency, System.Web.UI.BuildMethod buildMethod, string providerName) { }
         public static void BuildCachedControl(System.Web.UI.Control parent, string ctrlID, string guid, int duration, string varyByParams, string varyByControls, string varyByCustom, System.Web.UI.BuildMethod buildMethod) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class SupportsEventValidationAttribute : System.Attribute
     {
         public SupportsEventValidationAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class TagPrefixAttribute : System.Attribute
     {
         public TagPrefixAttribute(string namespaceName, string tagPrefix) { }
         public string NamespaceName { get { throw null; } }
         public string TagPrefix { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TemplateBuilder : System.Web.UI.ControlBuilder, System.Web.UI.ITemplate
     {
         public TemplateBuilder() { }
@@ -9386,8 +9386,8 @@ namespace System.Web.UI
         public override bool NeedsTagInnerText() { throw null; }
         public override void SetTagInnerText(string text) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class TemplateContainerAttribute : System.Attribute
     {
         public TemplateContainerAttribute(System.Type containerType) { }
@@ -9400,16 +9400,16 @@ namespace System.Web.UI
         Complete = 0,
         Fragment = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class TemplateControl : System.Web.UI.Control, System.Web.UI.IFilterResolutionService, System.Web.UI.INamingContainer
     {
         protected TemplateControl() { }
         public string AppRelativeVirtualPath { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute]
         protected virtual int AutoHandlers { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual bool SupportAutoEvents { get { throw null; } }
         public event System.EventHandler AbortTransaction { add { } remove { } }
         public event System.EventHandler CommitTransaction { add { } remove { } }
@@ -9418,7 +9418,7 @@ namespace System.Web.UI
         protected System.Web.UI.LiteralControl CreateResourceBasedLiteralControl(int offset, int size, bool fAsciiOnly) { throw null; }
         protected internal object Eval(string expression) { throw null; }
         protected internal string Eval(string expression, string format) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual void FrameworkInitialize() { }
         protected object GetGlobalResourceObject(string className, string resourceKey) { throw null; }
         protected object GetGlobalResourceObject(string className, string resourceKey, System.Type objType, string propName) { throw null; }
@@ -9433,17 +9433,17 @@ namespace System.Web.UI
         public System.Web.UI.Control ParseControl(string content) { throw null; }
         [System.MonoTODOAttribute("Parser filters not implemented yet. Calls ParseControl (string) for now.")]
         public System.Web.UI.Control ParseControl(string content, bool ignoreParserFilter) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public object ReadStringResource() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static object ReadStringResource(System.Type t) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void SetStringResourcePointer(object stringResourcePointer, int maxResourceOffset) { }
         [System.MonoTODOAttribute("Not implemented")]
         int System.Web.UI.IFilterResolutionService.CompareFilters(string filter1, string filter2) { throw null; }
         [System.MonoTODOAttribute("Not implemented")]
         bool System.Web.UI.IFilterResolutionService.EvaluateFilter(string filterName) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void WriteUTF8ResourceString(System.Web.UI.HtmlTextWriter output, int offset, int size, bool fAsciiOnly) { }
         protected internal object XPath(string xPathExpression) { throw null; }
         protected internal string XPath(string xPathExpression, string format) { throw null; }
@@ -9452,8 +9452,8 @@ namespace System.Web.UI
         protected internal System.Collections.IEnumerable XPathSelect(string xPathExpression) { throw null; }
         protected internal System.Collections.IEnumerable XPathSelect(string xPathExpression, System.Xml.IXmlNamespaceResolver resolver) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class TemplateControlParser : System.Web.UI.BaseTemplateParser
     {
         protected TemplateControlParser() { }
@@ -9463,7 +9463,7 @@ namespace System.Web.UI
         Multiple = 0,
         Single = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class TemplateInstanceAttribute : System.Attribute
     {
         public static readonly System.Web.UI.TemplateInstanceAttribute Default;
@@ -9475,8 +9475,8 @@ namespace System.Web.UI
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class TemplateParser : System.Web.UI.BaseParser
     {
         internal TemplateParser() { }
@@ -9486,7 +9486,7 @@ namespace System.Web.UI
         public TemplatePropertyEntry() { }
         public bool BindableTemplate { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property)]
     public sealed partial class ThemeableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ThemeableAttribute Default;
@@ -9515,8 +9515,8 @@ namespace System.Web.UI
         [System.MonoTODOAttribute("Not implemented")]
         public System.Collections.ICollection GetSkinsForControl(System.Type type) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ToolboxDataAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ToolboxDataAttribute Default;
@@ -9526,7 +9526,7 @@ namespace System.Web.UI
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     [System.SerializableAttribute]
     public sealed partial class Triplet
     {
@@ -9542,7 +9542,7 @@ namespace System.Web.UI
         None = 0,
         WebForms = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class UrlPropertyAttribute : System.Attribute
     {
         public UrlPropertyAttribute() { }
@@ -9567,46 +9567,46 @@ namespace System.Web.UI
     [System.ComponentModel.ToolboxItemAttribute(false)]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.UserControlControlBuilder))]
     [System.Web.UI.ParseChildrenAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class UserControl : System.Web.UI.TemplateControl, System.Web.UI.IAttributeAccessor, System.Web.UI.IFilterResolutionService, System.Web.UI.INamingContainer, System.Web.UI.IUserControlDesignerAccessor
     {
         public UserControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Caching.Cache Cache { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.ControlCachePolicy CachePolicy { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsPostBack { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         string System.Web.UI.IUserControlDesignerAccessor.InnerText { get { throw null; } set { } }
         string System.Web.UI.IUserControlDesignerAccessor.TagName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.TraceContext Trace { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void DesignerInitialize() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void InitializeAsUserControl(System.Web.UI.Page page) { }
         protected override void LoadViewState(object savedState) { }
         public string MapPath(string virtualPath) { throw null; }
@@ -9619,8 +9619,8 @@ namespace System.Web.UI
         [System.MonoTODOAttribute("Not implemented")]
         bool System.Web.UI.IFilterResolutionService.EvaluateFilter(string filterName) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class UserControlControlBuilder : System.Web.UI.ControlBuilder
     {
         public UserControlControlBuilder() { }
@@ -9635,14 +9635,14 @@ namespace System.Web.UI
         Enabled = 2,
         Inherit = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ValidationPropertyAttribute : System.Attribute
     {
         public ValidationPropertyAttribute(string name) { }
         public string Name { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ValidatorCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public ValidatorCollection() { }
@@ -9657,7 +9657,7 @@ namespace System.Web.UI
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
         public void Remove(System.Web.UI.IValidator validator) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=true)]
     public sealed partial class VerificationAttribute : System.Attribute
     {
         public VerificationAttribute(string guideline, string checkpoint, System.Web.UI.VerificationReportLevel reportLevel, int priority, string message) { }
@@ -9717,7 +9717,7 @@ namespace System.Web.UI
         Enabled = 1,
         Inherit = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ViewStateModeByIdAttribute : System.Attribute
     {
         public ViewStateModeByIdAttribute() { }
@@ -9730,7 +9730,7 @@ namespace System.Web.UI
         SourceFile = 3,
         UserControl = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class WebResourceAttribute : System.Attribute
     {
         public WebResourceAttribute(string webResource, string contentType) { }
@@ -9738,8 +9738,8 @@ namespace System.Web.UI
         public bool PerformSubstitution { get { throw null; } set { } }
         public string WebResource { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class WebServiceParser : System.Web.UI.SimpleWebHandlerParser
     {
         internal WebServiceParser() : base (default(System.Web.HttpContext), default(string), default(string)) { }
@@ -9785,13 +9785,13 @@ namespace System.Web.UI.Adapters
         protected ControlAdapter() { }
         protected System.Web.HttpBrowserCapabilities Browser { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Control Control { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Page Page { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Adapters.PageAdapter PageAdapter { get { throw null; } }
         protected internal virtual void BeginRender(System.Web.UI.HtmlTextWriter writer) { }
         protected internal virtual void CreateChildControls() { }
@@ -9831,25 +9831,25 @@ namespace System.Web.UI.HtmlControls
 {
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlAnchor : System.Web.UI.HtmlControls.HtmlContainerControl, System.Web.UI.IPostBackEventHandler
     {
         public HtmlAnchor() { }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string HRef { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Target { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Title { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -9863,8 +9863,8 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlButton : System.Web.UI.HtmlControls.HtmlContainerControl, System.Web.UI.IPostBackEventHandler
     {
         public HtmlButton() { }
@@ -9879,17 +9879,17 @@ namespace System.Web.UI.HtmlControls
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
         void System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(string eventArgument) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HtmlContainerControl : System.Web.UI.HtmlControls.HtmlControl
     {
         protected HtmlContainerControl() { }
         public HtmlContainerControl(string tag) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string InnerHtml { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string InnerText { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected override void LoadViewState(object savedState) { }
@@ -9899,24 +9899,24 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.HtmlIntrinsicControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.ComponentModel.ToolboxItemAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HtmlControl : System.Web.UI.Control, System.Web.UI.IAttributeAccessor
     {
         protected HtmlControl() { }
         protected HtmlControl(string tag) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool Disabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.CssStyleCollection Style { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string TagName { get { throw null; } }
         protected override bool ViewStateIgnoresCase { get { throw null; } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
@@ -9928,15 +9928,15 @@ namespace System.Web.UI.HtmlControls
         string System.Web.UI.IAttributeAccessor.GetAttribute(string name) { throw null; }
         void System.Web.UI.IAttributeAccessor.SetAttribute(string name, string value) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HtmlEmptyTagControlBuilder : System.Web.UI.ControlBuilder
     {
         public HtmlEmptyTagControlBuilder() { }
         public override bool HasBody() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlForm : System.Web.UI.HtmlControls.HtmlContainerControl
     {
         public HtmlForm() { }
@@ -9946,18 +9946,18 @@ namespace System.Web.UI.HtmlControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DefaultFocus { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Enctype { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Method { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool SubmitDisabledControls { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Target { get { throw null; } set { } }
         public override string UniqueID { get { throw null; } }
         [System.MonoTODOAttribute("why override?")]
@@ -9971,18 +9971,18 @@ namespace System.Web.UI.HtmlControls
         public override void RenderControl(System.Web.UI.HtmlTextWriter writer) { }
     }
     [System.Web.UI.ConstructorNeedsTagAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlGenericControl : System.Web.UI.HtmlControls.HtmlContainerControl
     {
         public HtmlGenericControl() { }
         public HtmlGenericControl(string tag) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new string TagName { get { throw null; } set { } }
     }
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.HtmlControls.HtmlHeadBuilder))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HtmlHead : System.Web.UI.HtmlControls.HtmlGenericControl, System.Web.UI.IParserAccessor
     {
         public HtmlHead() { }
@@ -9996,8 +9996,8 @@ namespace System.Web.UI.HtmlControls
         protected internal override void RemovedControl(System.Web.UI.Control control) { }
         protected internal override void RenderChildren(System.Web.UI.HtmlTextWriter writer) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlHeadBuilder : System.Web.UI.ControlBuilder
     {
         public HtmlHeadBuilder() { }
@@ -10005,37 +10005,37 @@ namespace System.Web.UI.HtmlControls
         public override System.Type GetChildControlType(string tagName, System.Collections.IDictionary attribs) { throw null; }
     }
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.HtmlControls.HtmlEmptyTagControlBuilder))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlImage : System.Web.UI.HtmlControls.HtmlControl
     {
         public HtmlImage() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Alt { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Height { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Width { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
     }
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputButton : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackEventHandler
     {
         public HtmlInputButton() : base (default(string)) { }
@@ -10053,13 +10053,13 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputCheckBox : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputCheckBox() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool Checked { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
@@ -10072,39 +10072,39 @@ namespace System.Web.UI.HtmlControls
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
     }
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.HtmlControls.HtmlEmptyTagControlBuilder))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HtmlInputControl : System.Web.UI.HtmlControls.HtmlControl
     {
         protected HtmlInputControl(string type) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Type { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Value { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
     }
     [System.Web.UI.ValidationPropertyAttribute("Value")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputFile : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputFile() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Accept { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int MaxLength { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpPostedFile PostedFile { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("-1")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override string Value { get { throw null; } set { } }
@@ -10116,8 +10116,8 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputHidden : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputHidden() : base (default(string)) { }
@@ -10132,25 +10132,25 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputImage : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler, System.Web.UI.IPostBackEventHandler
     {
         public HtmlInputImage() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Alt { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("-1")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -10169,8 +10169,8 @@ namespace System.Web.UI.HtmlControls
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("Value")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputPassword : System.Web.UI.HtmlControls.HtmlInputText, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputPassword() { }
@@ -10180,13 +10180,13 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputRadioButton : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputRadioButton() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Checked { get { throw null; } set { } }
         public override string Name { get { throw null; } set { } }
         public override string Value { get { throw null; } set { } }
@@ -10201,26 +10201,26 @@ namespace System.Web.UI.HtmlControls
     }
     [System.ComponentModel.DefaultEventAttribute("")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputReset : System.Web.UI.HtmlControls.HtmlInputButton
     {
         public HtmlInputReset() { }
         public HtmlInputReset(string type) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ValidationGroup { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public new event System.EventHandler ServerClick { add { } remove { } }
     }
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputSubmit : System.Web.UI.HtmlControls.HtmlInputButton, System.Web.UI.IPostBackEventHandler
     {
         public HtmlInputSubmit() { }
@@ -10230,17 +10230,17 @@ namespace System.Web.UI.HtmlControls
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("Value")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlInputText : System.Web.UI.HtmlControls.HtmlInputControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlInputText() : base (default(string)) { }
         public HtmlInputText(string type) : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int MaxLength { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
         public override string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
@@ -10258,7 +10258,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlLink() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string Href { get { throw null; } set { } }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
@@ -10270,16 +10270,16 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlMeta() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Content { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string HttpEquiv { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Scheme { get { throw null; } set { } }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -10287,16 +10287,16 @@ namespace System.Web.UI.HtmlControls
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.HtmlControls.HtmlSelectBuilder))]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("Value")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlSelect : System.Web.UI.HtmlControls.HtmlContainerControl, System.Web.UI.IParserAccessor, System.Web.UI.IPostBackDataHandler
     {
         public HtmlSelect() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string DataMember { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string DataSourceID { get { throw null; } set { } }
@@ -10308,22 +10308,22 @@ namespace System.Web.UI.HtmlControls
         public override string InnerText { get { throw null; } set { } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.ListItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Multiple { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } set { } }
         protected bool RequiresDataBinding { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         protected virtual int[] SelectedIndices { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -10350,8 +10350,8 @@ namespace System.Web.UI.HtmlControls
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
         protected override void TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlSelectBuilder : System.Web.UI.ControlBuilder
     {
         public HtmlSelectBuilder() { }
@@ -10359,39 +10359,39 @@ namespace System.Web.UI.HtmlControls
         public override System.Type GetChildControlType(string tagName, System.Collections.IDictionary attribs) { throw null; }
     }
     [System.Web.UI.ParseChildrenAttribute(true, "Rows")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTable : System.Web.UI.HtmlControls.HtmlContainerControl
     {
         public HtmlTable() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         public override string InnerHtml { get { throw null; } set { } }
         public override string InnerText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.HtmlControls.HtmlTableRowCollection Rows { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Width { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected internal override void RenderChildren(System.Web.UI.HtmlTextWriter writer) { }
@@ -10404,43 +10404,43 @@ namespace System.Web.UI.HtmlControls
         }
     }
     [System.Web.UI.ConstructorNeedsTagAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTableCell : System.Web.UI.HtmlControls.HtmlContainerControl
     {
         public HtmlTableCell() { }
         public HtmlTableCell(string tagName) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int ColSpan { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool NoWrap { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int RowSpan { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string VAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Width { get { throw null; } set { } }
         protected override void RenderEndTag(System.Web.UI.HtmlTextWriter writer) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HtmlTableCellCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         internal HtmlTableCellCollection() { }
@@ -10458,30 +10458,30 @@ namespace System.Web.UI.HtmlControls
         public void RemoveAt(int index) { }
     }
     [System.Web.UI.ParseChildrenAttribute(true, "Cells")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTableRow : System.Web.UI.HtmlControls.HtmlContainerControl
     {
         public HtmlTableRow() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.HtmlControls.HtmlTableCellCollection Cells { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         public override string InnerHtml { get { throw null; } set { } }
         public override string InnerText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string VAlign { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected internal override void RenderChildren(System.Web.UI.HtmlTextWriter writer) { }
@@ -10493,7 +10493,7 @@ namespace System.Web.UI.HtmlControls
             public override void AddAt(int index, System.Web.UI.Control child) { }
         }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HtmlTableRowCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         internal HtmlTableRowCollection() { }
@@ -10513,22 +10513,22 @@ namespace System.Web.UI.HtmlControls
     [System.ComponentModel.DefaultEventAttribute("ServerChange")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("Value")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTextArea : System.Web.UI.HtmlControls.HtmlContainerControl, System.Web.UI.IPostBackDataHandler
     {
         public HtmlTextArea() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Cols { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Rows { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -10540,15 +10540,15 @@ namespace System.Web.UI.HtmlControls
         bool System.Web.UI.IPostBackDataHandler.LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection) { throw null; }
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HtmlTitle : System.Web.UI.HtmlControls.HtmlControl
     {
         public HtmlTitle() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
@@ -10559,39 +10559,39 @@ namespace System.Web.UI.WebControls
 {
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.AccessDataSourceDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Drawing.ToolboxBitmapAttribute("")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class AccessDataSource : System.Web.UI.WebControls.SqlDataSource
     {
         public AccessDataSource() { }
         public AccessDataSource(string dataFile, string selectCommand) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string ConnectionString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.MdbDataFileEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public string DataFile { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string ProviderName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.MonoTODOAttribute("AccessDataSource does not support SQL Cache Dependencies")]
         public override string SqlCacheDependency { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.SqlDataSourceView CreateDataSourceView(string viewName) { throw null; }
         [System.MonoTODOAttribute("why override?  maybe it doesn't call DbProviderFactories.GetFactory?")]
         protected override System.Data.Common.DbProviderFactory GetDbProviderFactory() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class AccessDataSourceView : System.Web.UI.WebControls.SqlDataSourceView
     {
         public AccessDataSourceView(System.Web.UI.WebControls.AccessDataSource owner, string name, System.Web.HttpContext context) : base (default(System.Web.UI.WebControls.SqlDataSource), default(string), default(System.Web.HttpContext)) { }
         [System.MonoTODOAttribute("Handle arguments")]
         protected internal override System.Collections.IEnumerable ExecuteSelect(System.Web.UI.DataSourceSelectArguments arguments) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class AdCreatedEventArgs : System.EventArgs
     {
         public AdCreatedEventArgs(System.Collections.IDictionary adProperties) { }
@@ -10605,8 +10605,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DefaultPropertyAttribute("AdvertisementFile")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.AdRotatorDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ToolboxDataAttribute("<{0}:AdRotator runat=\"server\"></{0}:AdRotator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class AdRotator : System.Web.UI.WebControls.DataBoundControl
     {
         public AdRotator() { }
@@ -10619,8 +10619,8 @@ namespace System.Web.UI.WebControls
         [System.MonoTODOAttribute("Not implemented")]
         public string AlternateTextField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("ImageUrl")]
         [System.MonoTODOAttribute("Not implemented")]
@@ -10695,9 +10695,9 @@ namespace System.Web.UI.WebControls
         Pager = 22,
         Search = 31,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class AutoGeneratedField : System.Web.UI.WebControls.BoundField
     {
         public AutoGeneratedField(string dataField) { }
@@ -10716,8 +10716,8 @@ namespace System.Web.UI.WebControls
         protected override void OnDataBindField(object sender, System.EventArgs e) { }
         public override void ValidateSupportsCallback() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class AutoGeneratedFieldProperties : System.Web.UI.IStateManager
     {
         public AutoGeneratedFieldProperties() { }
@@ -10730,8 +10730,8 @@ namespace System.Web.UI.WebControls
         object System.Web.UI.IStateManager.SaveViewState() { throw null; }
         void System.Web.UI.IStateManager.TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class BaseCompareValidator : System.Web.UI.WebControls.BaseValidator
     {
         protected BaseCompareValidator() { }
@@ -10739,7 +10739,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public bool CultureInvariantValues { get { throw null; } set { } }
         protected static int CutoffYear { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationDataType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationDataType.String)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.ValidationDataType Type { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -10747,22 +10747,22 @@ namespace System.Web.UI.WebControls
         public static bool CanConvert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant) { throw null; }
         protected static bool Compare(string leftText, bool cultureInvariantLeftText, string rightText, bool cultureInvariantRightText, System.Web.UI.WebControls.ValidationCompareOperator op, System.Web.UI.WebControls.ValidationDataType type) { throw null; }
         protected static bool Compare(string leftText, string rightText, System.Web.UI.WebControls.ValidationCompareOperator op, System.Web.UI.WebControls.ValidationDataType type) { throw null; }
-        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant, out object value) { value = default(object); throw null; }
-        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, out object value) { value = default(object); throw null; }
+        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant, out object value) { throw null; }
+        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, out object value) { throw null; }
         protected override bool DetermineRenderUplevel() { throw null; }
         protected static string GetDateElementOrder() { throw null; }
         protected static int GetFullYear(int shortYear) { throw null; }
     }
     [System.ComponentModel.DefaultPropertyAttribute("DataSourceID")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class BaseDataBoundControl : System.Web.UI.WebControls.WebControl
     {
         protected BaseDataBoundControl() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -10787,15 +10787,15 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DefaultEventAttribute("SelectedIndexChanged")]
     [System.ComponentModel.DefaultPropertyAttribute("DataSource")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.BaseDataListDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class BaseDataList : System.Web.UI.WebControls.WebControl
     {
         protected BaseDataList() { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
@@ -10807,7 +10807,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DataKeyField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DataKeyCollection DataKeys { get { throw null; } }
         protected System.Collections.ArrayList DataKeysArray { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -10815,17 +10815,17 @@ namespace System.Web.UI.WebControls
         public string DataMember { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DataSourceID { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         protected bool Initialized { get { throw null; } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
@@ -10855,20 +10855,20 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DefaultPropertyAttribute("ErrorMessage")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.BaseValidatorDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class BaseValidator : System.Web.UI.WebControls.Label, System.Web.UI.IValidator
     {
         protected BaseValidator() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AssociatedControlID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ValidatedControlConverter))]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.Control))]
         [System.Web.UI.ThemeableAttribute(false)]
         public string ControlToValidate { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidatorDisplay)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidatorDisplay.Static)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.ValidatorDisplay Display { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -10882,7 +10882,7 @@ namespace System.Web.UI.WebControls
         public override System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public bool IsValid { get { throw null; } set { } }
         protected bool PropertiesValid { get { throw null; } }
@@ -10892,7 +10892,7 @@ namespace System.Web.UI.WebControls
         public bool SetFocusOnError { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.MonoTODOAttribute("Why override?")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public override string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -10926,8 +10926,8 @@ namespace System.Web.UI.WebControls
         Ridge = 7,
         Solid = 4,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class BoundColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public static readonly string thisExpr;
@@ -10942,8 +10942,8 @@ namespace System.Web.UI.WebControls
         public override void Initialize() { }
         public override void InitializeCell(System.Web.UI.WebControls.TableCell cell, int columnIndex, System.Web.UI.WebControls.ListItemType itemType) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class BoundField : System.Web.UI.WebControls.DataControlField
     {
         public static readonly string ThisExpression;
@@ -10984,38 +10984,38 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DefaultPropertyAttribute("BulletStyle")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.BulletedListDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class BulletedList : System.Web.UI.WebControls.ListControl, System.Web.UI.IPostBackEventHandler
     {
         public BulletedList() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool AutoPostBack { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BulletImageUrl { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BulletStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BulletStyle.NotSet)]
         public virtual System.Web.UI.WebControls.BulletStyle BulletStyle { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BulletedListDisplayMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BulletedListDisplayMode.Text)]
         public virtual System.Web.UI.WebControls.BulletedListDisplayMode DisplayMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int FirstBulletNumber { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int SelectedIndex { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.ListItem SelectedItem { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SelectedValue { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.TargetConverter))]
         public virtual string Target { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string Text { get { throw null; } set { } }
         public event System.Web.UI.WebControls.BulletedListEventHandler Click { add { } remove { } }
         [System.MonoTODOAttribute("we are missing a new style enum, we should be using it")]
@@ -11058,8 +11058,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.TextDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ToolboxDataAttribute("<{0}:Button runat=\"server\" Text=\"Button\"></{0}:Button>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Button : System.Web.UI.WebControls.WebControl, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.IButtonControl
     {
         public Button() { }
@@ -11102,12 +11102,12 @@ namespace System.Web.UI.WebControls
         protected internal override void RenderContents(System.Web.UI.HtmlTextWriter writer) { }
         void System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(string eventArgument) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ButtonColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public ButtonColumn() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonColumnType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonColumnType.LinkButton)]
         public virtual System.Web.UI.WebControls.ButtonColumnType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
@@ -11131,8 +11131,8 @@ namespace System.Web.UI.WebControls
         LinkButton = 0,
         PushButton = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ButtonField : System.Web.UI.WebControls.ButtonFieldBase
     {
         public ButtonField() { }
@@ -11157,12 +11157,12 @@ namespace System.Web.UI.WebControls
         public override void InitializeCell(System.Web.UI.WebControls.DataControlFieldCell cell, System.Web.UI.WebControls.DataControlCellType cellType, System.Web.UI.WebControls.DataControlRowState rowState, int rowIndex) { }
         public override void ValidateSupportsCallback() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class ButtonFieldBase : System.Web.UI.WebControls.DataControlField
     {
         protected ButtonFieldBase() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Link)]
         public virtual System.Web.UI.WebControls.ButtonType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
@@ -11184,69 +11184,69 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ControlValuePropertyAttribute("SelectedDate", "1/1/0001 12:00:00 AM")]
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.WebControls.CalendarDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Calendar : System.Web.UI.WebControls.WebControl, System.Web.UI.IPostBackEventHandler
     {
         public Calendar() { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(2)]
         public int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle DayHeaderStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DayNameFormat)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DayNameFormat.Short)]
         public System.Web.UI.WebControls.DayNameFormat DayNameFormat { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle DayStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.FirstDayOfWeek)(7))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.FirstDayOfWeek.Default)]
         public System.Web.UI.WebControls.FirstDayOfWeek FirstDayOfWeek { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string NextMonthText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.NextPrevFormat)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.NextPrevFormat.CustomText)]
         public System.Web.UI.WebControls.NextPrevFormat NextPrevFormat { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle NextPrevStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle OtherMonthDayStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("&lt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string PrevMonthText { get { throw null; } set { } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute("1/1/0001 12:00:00 AM")]
         public System.DateTime SelectedDate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.SelectedDatesCollection SelectedDates { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectedDayStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.CalendarSelectionMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.CalendarSelectionMode.Day)]
         public System.Web.UI.WebControls.CalendarSelectionMode SelectionMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string SelectMonthText { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectorStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -11260,28 +11260,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ShowTitle { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TitleFormat)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TitleFormat.MonthYear)]
         public System.Web.UI.WebControls.TitleFormat TitleFormat { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TodayDayStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.DateTime TodaysDate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool UseAccessibleHeader { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("1/1/0001 12:00:00 AM")]
         public System.DateTime VisibleDate { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle WeekendDayStyle { get { throw null; } }
         public event System.Web.UI.WebControls.DayRenderEventHandler DayRender { add { } remove { } }
         public event System.EventHandler SelectionChanged { add { } remove { } }
@@ -11299,8 +11299,8 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(string eventArgument) { }
         protected override void TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CalendarDay
     {
         public CalendarDay(System.DateTime date, bool isWeekend, bool isToday, bool isSelected, bool isOtherMonth, string dayNumberText) { }
@@ -11342,13 +11342,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CancelButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CancelButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CancelButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CancelButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -11360,27 +11360,27 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ChangePasswordButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ChangePasswordButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ChangePasswordButtonType { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordFailureText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.ChangePassword))]
         public virtual System.Web.UI.ITemplate ChangePasswordTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control ChangePasswordTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordTitleText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string ConfirmNewPassword { get { throw null; } }
@@ -11395,13 +11395,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ContinueButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ContinueButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ContinueButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ContinueButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -11420,7 +11420,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CreateUserUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string CurrentPassword { get { throw null; } }
@@ -11438,9 +11438,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string EditProfileUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -11454,33 +11454,33 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string NewPassword { get { throw null; } }
@@ -11491,9 +11491,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string NewPasswordRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PasswordHintStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -11521,31 +11521,31 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SuccessPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.ChangePassword))]
         public virtual System.Web.UI.ITemplate SuccessTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control SuccessTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SuccessTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessTitleText { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string UserName { get { throw null; } set { } }
@@ -11554,9 +11554,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         public event System.EventHandler CancelButtonClick { add { } remove { } }
         public event System.EventHandler ChangedPassword { add { } remove { } }
@@ -11591,8 +11591,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ControlValuePropertyAttribute("Checked", null)]
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.TextDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CheckBox : System.Web.UI.WebControls.WebControl, System.Web.UI.ICheckBoxControl, System.Web.UI.IPostBackDataHandler
     {
         public CheckBox() { }
@@ -11602,21 +11602,21 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool Checked { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection InputAttributes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection LabelAttributes { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -11634,36 +11634,36 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
         protected override void TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CheckBoxField : System.Web.UI.WebControls.BoundField
     {
         public CheckBoxField() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool ApplyFormatInEditMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool ConvertEmptyStringToNull { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.DataSourceBooleanViewSchemaConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public override string DataField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string DataFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HtmlEncode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HtmlEncodeFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string NullDisplayText { get { throw null; } set { } }
         protected override bool SupportsHtmlEncode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -11677,8 +11677,8 @@ namespace System.Web.UI.WebControls
         protected override void OnDataBindField(object sender, System.EventArgs e) { }
         public override void ValidateSupportsCallback() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CheckBoxList : System.Web.UI.WebControls.ListControl, System.Web.UI.INamingContainer, System.Web.UI.IPostBackDataHandler, System.Web.UI.WebControls.IRepeatInfoUser
     {
         public CheckBoxList() { }
@@ -11691,16 +11691,16 @@ namespace System.Web.UI.WebControls
         protected virtual bool HasSeparators { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
         protected virtual int RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasFooter { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasHeader { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasSeparators { get { throw null; } }
         int System.Web.UI.WebControls.IRepeatInfoUser.RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
         protected override System.Web.UI.Control FindControl(string id, int pathOffset) { throw null; }
@@ -11735,8 +11735,8 @@ namespace System.Web.UI.WebControls
         public string CommandName { get { throw null; } }
     }
     public delegate void CommandEventHandler(object sender, System.Web.UI.WebControls.CommandEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CommandField : System.Web.UI.WebControls.ButtonFieldBase
     {
         public CommandField() { }
@@ -11800,8 +11800,8 @@ namespace System.Web.UI.WebControls
         public override void ValidateSupportsCallback() { }
     }
     [System.Web.UI.ToolboxDataAttribute("<{0}:CompareValidator runat=\"server\" ErrorMessage=\"CompareValidator\"></{0}:CompareValidator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CompareValidator : System.Web.UI.WebControls.BaseCompareValidator
     {
         public CompareValidator() { }
@@ -11809,7 +11809,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ValidatedControlConverter))]
         [System.Web.UI.ThemeableAttribute(false)]
         public string ControlToCompare { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationCompareOperator)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationCompareOperator.Equal)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.ValidationCompareOperator Operator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -11824,7 +11824,7 @@ namespace System.Web.UI.WebControls
     {
         public CompleteWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
@@ -11832,8 +11832,8 @@ namespace System.Web.UI.WebControls
         public override string Title { get { throw null; } set { } }
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.CompositeControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class CompositeControl : System.Web.UI.WebControls.WebControl, System.Web.UI.INamingContainer, System.Web.UI.WebControls.ICompositeControlDesignerAccessor
     {
         protected CompositeControl() { }
@@ -11863,22 +11863,22 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public string ContentPlaceHolderID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler DataBinding { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Disposed { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Init { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Load { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler PreRender { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Unload { add { } remove { } }
     }
     public enum ContentDirection
@@ -11888,8 +11888,8 @@ namespace System.Web.UI.WebControls
         RightToLeft = 2,
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.ContentPlaceHolderDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.ComponentModel.ToolboxItemFilterAttribute("Microsoft.VisualStudio.Web.WebForms.MasterPageWebFormDesigner", (System.ComponentModel.ToolboxItemFilterType)(3))]
-    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", (System.ComponentModel.ToolboxItemFilterType)(0))]
+    [System.ComponentModel.ToolboxItemFilterAttribute("Microsoft.VisualStudio.Web.WebForms.MasterPageWebFormDesigner", System.ComponentModel.ToolboxItemFilterType.Require)]
+    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", System.ComponentModel.ToolboxItemFilterType.Allow)]
     [System.Web.UI.ToolboxDataAttribute("<;{0}:ContentPlaceHolder runat=&quot;server&quot;></{0}:ContentPlaceHolder>")]
     public partial class ContentPlaceHolder : System.Web.UI.Control, System.Web.UI.INamingContainer
     {
@@ -11913,7 +11913,7 @@ namespace System.Web.UI.WebControls
         public ControlParameter(string name, System.TypeCode type, string controlID, string propertyName) { }
         protected ControlParameter(System.Web.UI.WebControls.ControlParameter original) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ControlIDConverter))]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.Control))]
         public string ControlID { get { throw null; } set { } }
@@ -11972,17 +11972,17 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool AutoGeneratePassword { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.CompleteWizardStep CompleteStep { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CompleteSuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CompleteSuccessTextStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string ConfirmPassword { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ConfirmPasswordCompareErrorMessage { get { throw null; } set { } }
@@ -11995,13 +11995,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ContinueButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ContinueButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ContinueButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ContinueButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -12013,16 +12013,16 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CreateUserButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CreateUserButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CreateUserButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CreateUserButtonType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.CreateUserWizardStep CreateUserStep { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -12053,9 +12053,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string EmailRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle ErrorMessageStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -12069,17 +12069,17 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InvalidAnswerErrorMessage { get { throw null; } set { } }
@@ -12091,28 +12091,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InvalidQuestionErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool LoginCreatedUser { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Password { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PasswordHintStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PasswordHintText { get { throw null; } set { } }
@@ -12139,14 +12139,14 @@ namespace System.Web.UI.WebControls
         [System.MonoTODOAttribute("doesnt work")]
         public override string SkipLinkText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UnknownErrorMessage { get { throw null; } set { } }
@@ -12157,9 +12157,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.CreateUserWizardStepCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public override System.Web.UI.WebControls.WizardStepCollection WizardSteps { get { throw null; } }
@@ -12193,10 +12193,10 @@ namespace System.Web.UI.WebControls
     {
         public CreateUserWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override bool AllowReturn { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
@@ -12205,8 +12205,8 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DefaultEventAttribute("ServerValidate")]
     [System.Web.UI.ToolboxDataAttribute("<{0}:CustomValidator runat=\"server\" ErrorMessage=\"CustomValidator\"></{0}:CustomValidator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class CustomValidator : System.Web.UI.WebControls.BaseValidator
     {
         public CustomValidator() { }
@@ -12223,8 +12223,8 @@ namespace System.Web.UI.WebControls
         protected virtual bool OnServerValidate(string value) { throw null; }
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.DataBoundControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class DataBoundControl : System.Web.UI.WebControls.BaseDataBoundControl
     {
         protected DataBoundControl() { }
@@ -12234,7 +12234,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
         public override string DataSourceID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IDataSource DataSourceObject { get { throw null; } }
         protected System.Web.UI.DataSourceSelectArguments SelectArguments { get { throw null; } }
         protected virtual System.Web.UI.DataSourceSelectArguments CreateDataSourceSelectArguments() { throw null; }
@@ -12261,7 +12261,7 @@ namespace System.Web.UI.WebControls
         Footer = 1,
         Header = 0,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataControlCommands
     {
         internal DataControlCommands() { }
@@ -12281,8 +12281,8 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DefaultPropertyAttribute("HeaderText")]
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class DataControlField : System.Web.UI.IDataSourceViewSchemaAccessor, System.Web.UI.IStateManager
     {
         protected DataControlField() { }
@@ -12292,13 +12292,13 @@ namespace System.Web.UI.WebControls
         public virtual string AccessibleHeaderText { get { throw null; } set { } }
         protected System.Web.UI.Control Control { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ControlStyle { get { throw null; } }
         protected bool DesignMode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -12308,8 +12308,8 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HeaderImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -12318,8 +12318,8 @@ namespace System.Web.UI.WebControls
         public virtual bool InsertVisible { get { throw null; } set { } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ShowHeader { get { throw null; } set { } }
@@ -12402,8 +12402,8 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.DataGridDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataGridComponentEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.ComponentModel.ComponentEditor))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataGrid : System.Web.UI.WebControls.BaseDataList, System.Web.UI.INamingContainer
     {
         public const string CancelCommandName = "Cancel";
@@ -12422,9 +12422,9 @@ namespace System.Web.UI.WebControls
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowSorting { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle AlternatingItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool AutoGenerateColumns { get { throw null; } set { } }
@@ -12435,40 +12435,40 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataGridColumnCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataGridColumnCollection Columns { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CurrentPageIndex { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditItemIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle EditItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataGridItemCollection Items { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int PageCount { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataGridPagerStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(10)]
         public virtual int PageSize { get { throw null; } set { } }
@@ -12476,11 +12476,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataGridItem SelectedItem { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SelectedItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ShowFooter { get { throw null; } set { } }
@@ -12488,7 +12488,7 @@ namespace System.Web.UI.WebControls
         public virtual bool ShowHeader { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int VirtualItemCount { get { throw null; } set { } }
         public event System.Web.UI.WebControls.DataGridCommandEventHandler CancelCommand { add { } remove { } }
         public event System.Web.UI.WebControls.DataGridCommandEventHandler DeleteCommand { add { } remove { } }
@@ -12521,15 +12521,15 @@ namespace System.Web.UI.WebControls
         protected override void TrackViewState() { }
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class DataGridColumn : System.Web.UI.IStateManager
     {
         protected DataGridColumn() { }
         protected bool DesignMode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string FooterText { get { throw null; } set { } }
@@ -12537,15 +12537,15 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HeaderImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string HeaderText { get { throw null; } set { } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         protected System.Web.UI.WebControls.DataGrid Owner { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -12598,8 +12598,8 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.DataGridItem Item { get { throw null; } }
     }
     public delegate void DataGridCommandEventHandler(object source, System.Web.UI.WebControls.DataGridCommandEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataGridItem : System.Web.UI.WebControls.TableRow, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer
     {
         public DataGridItem(int itemIndex, int dataSetIndex, System.Web.UI.WebControls.ListItemType itemType) { }
@@ -12613,8 +12613,8 @@ namespace System.Web.UI.WebControls
         protected override bool OnBubbleEvent(object source, System.EventArgs e) { throw null; }
         protected internal virtual void SetItemType(System.Web.UI.WebControls.ListItemType itemType) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataGridItemCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DataGridItemCollection(System.Collections.ArrayList items) { }
@@ -12639,11 +12639,11 @@ namespace System.Web.UI.WebControls
         public int NewPageIndex { get { throw null; } }
     }
     public delegate void DataGridPageChangedEventHandler(object source, System.Web.UI.WebControls.DataGridPageChangedEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataGridPagerStyle : System.Web.UI.WebControls.TableItemStyle
     {
         internal DataGridPagerStyle() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerMode.NextPrev)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerMode Mode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
@@ -12653,7 +12653,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(10)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int PageButtonCount { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerPosition)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerPosition.Bottom)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerPosition Position { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&lt;")]
@@ -12708,7 +12708,7 @@ namespace System.Web.UI.WebControls
         object System.Web.UI.IStateManager.SaveViewState() { throw null; }
         void System.Web.UI.IStateManager.TrackViewState() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataKeyCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DataKeyCollection(System.Collections.ArrayList keys) { }
@@ -12723,8 +12723,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.DataListDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataListComponentEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.ComponentEditor, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.Web.UI.ControlValuePropertyAttribute("SelectedValue")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataList : System.Web.UI.WebControls.BaseDataList, System.Web.UI.INamingContainer, System.Web.UI.WebControls.IRepeatInfoUser
     {
         public const string CancelCommandName = "Cancel";
@@ -12734,97 +12734,97 @@ namespace System.Web.UI.WebControls
         public const string UpdateCommandName = "Update";
         public DataList() { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle AlternatingItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditItemIndex { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle EditItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ExtractTemplateRows { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public override System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataListItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataListItem SelectedItem { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SelectedItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate SelectedItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.MonoTODOAttribute("incomplete")]
         public object SelectedValue { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SeparatorStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate SeparatorTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -12872,8 +12872,8 @@ namespace System.Web.UI.WebControls
     }
     public delegate void DataListCommandEventHandler(object source, System.Web.UI.WebControls.DataListCommandEventArgs e);
     [System.ComponentModel.ToolboxItemAttribute("")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DataListItem : System.Web.UI.WebControls.WebControl, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer
     {
         public DataListItem(int itemIndex, System.Web.UI.WebControls.ListItemType itemType) { }
@@ -12889,7 +12889,7 @@ namespace System.Web.UI.WebControls
         public virtual void RenderItem(System.Web.UI.HtmlTextWriter writer, bool extractRows, bool tableLayout) { }
         protected virtual void SetItemType(System.Web.UI.WebControls.ListItemType itemType) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class DataListItemCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public DataListItemCollection(System.Collections.ArrayList items) { }
@@ -12930,17 +12930,17 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.DataKeyPropertyAttribute("DataKey")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ToolboxDataAttribute("<{0}:DetailsView runat=\"server\" Width=\"125px\" Height=\"50px\"></{0}:DetailsView>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DetailsView : System.Web.UI.WebControls.CompositeDataBoundControl, System.Web.UI.ICallbackEventHandler, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.ICallbackContainer, System.Web.UI.WebControls.IDataBoundControl, System.Web.UI.WebControls.IDataBoundItemControl, System.Web.UI.WebControls.IFieldControl, System.Web.UI.WebControls.IPostBackContainer
     {
         public DetailsView() { }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle AlternatingRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AutoGenerateDeleteButton { get { throw null; } set { } }
@@ -12955,57 +12955,57 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CommandRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DetailsViewMode CurrentMode { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int DataItemCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int DataItemIndex { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey DataKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DetailsViewMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DetailsViewMode.ReadOnly)]
         public virtual System.Web.UI.WebControls.DetailsViewMode DefaultMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13016,89 +13016,89 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnablePagingCallbacks { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FieldHeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataControlFieldTypeEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataControlFieldCollection Fields { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FooterText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InsertRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(0))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.OneWay)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRowCollection Rows { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IAutoFieldGenerator RowsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object SelectedValue { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DataItemIndex { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DisplayIndex { get { throw null; } }
@@ -13107,7 +13107,7 @@ namespace System.Web.UI.WebControls
         System.Web.UI.IAutoFieldGenerator System.Web.UI.WebControls.IFieldControl.FieldsGenerator { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow TopPagerRow { get { throw null; } }
         public event System.Web.UI.WebControls.DetailsViewCommandEventHandler ItemCommand { add { } remove { } }
         public event System.EventHandler ItemCreated { add { } remove { } }
@@ -13236,15 +13236,15 @@ namespace System.Web.UI.WebControls
         public int NewPageIndex { get { throw null; } set { } }
     }
     public delegate void DetailsViewPageEventHandler(object sender, System.Web.UI.WebControls.DetailsViewPageEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DetailsViewPagerRow : System.Web.UI.WebControls.DetailsViewRow, System.Web.UI.INamingContainer
     {
         [System.MonoTODOAttribute("why this class exists at all?")]
         public DetailsViewPagerRow(int rowIndex, System.Web.UI.WebControls.DataControlRowType rowType, System.Web.UI.WebControls.DataControlRowState rowState) : base (default(int), default(System.Web.UI.WebControls.DataControlRowType), default(System.Web.UI.WebControls.DataControlRowState)) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DetailsViewRow : System.Web.UI.WebControls.TableRow
     {
         public DetailsViewRow(int rowIndex, System.Web.UI.WebControls.DataControlRowType rowType, System.Web.UI.WebControls.DataControlRowState rowState) { }
@@ -13288,8 +13288,8 @@ namespace System.Web.UI.WebControls
     public delegate void DetailsViewUpdateEventHandler(object sender, System.Web.UI.WebControls.DetailsViewUpdateEventArgs e);
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("SelectedItem")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class DropDownList : System.Web.UI.WebControls.ListControl, System.Web.UI.IPostBackDataHandler
     {
         public DropDownList() { }
@@ -13300,7 +13300,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override int SelectedIndex { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -13311,12 +13311,12 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
         protected internal override void VerifyMultiSelect() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class EditCommandColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public EditCommandColumn() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonColumnType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonColumnType.LinkButton)]
         public virtual System.Web.UI.WebControls.ButtonColumnType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13370,26 +13370,26 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("DesignerBaseTypeNameSystem.ComponentModel.Design.IDesignerDesignerTypeNameSystem.Web.UI.Design.WebControls.PreviewControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.ControlValuePropertyAttribute("FileBytes")]
     [System.Web.UI.ValidationPropertyAttribute("FileName")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200), Unrestricted=false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200), Unrestricted=false)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal, Unrestricted=false)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal, Unrestricted=false)]
     public partial class FileUpload : System.Web.UI.WebControls.WebControl
     {
         public FileUpload() { }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(0))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.OneWay)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public byte[] FileBytes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.IO.Stream FileContent { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string FileName { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasFile { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpPostedFile PostedFile { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected internal override void OnPreRender(System.EventArgs e) { }
@@ -13408,7 +13408,7 @@ namespace System.Web.UI.WebControls
         Wednesday = 3,
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class FontInfo
     {
         internal FontInfo() { }
@@ -13419,15 +13419,15 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public bool Italic { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Drawing.Design.FontNameEditor, System.Drawing.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.FontConverter.FontNameConverter))]
         public string Name { get { throw null; } set { } }
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.StringArrayEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.FontNamesConverter))]
         public string[] Names { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -13435,7 +13435,7 @@ namespace System.Web.UI.WebControls
         public bool Overline { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.FontUnit), "")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         public System.Web.UI.WebControls.FontUnit Size { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -13449,8 +13449,8 @@ namespace System.Web.UI.WebControls
         public bool ShouldSerializeNames() { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class FontNamesConverter : System.ComponentModel.TypeConverter
     {
         public FontNamesConverter() { }
@@ -13477,6 +13477,7 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FontUnit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.FontUnit Empty;
         public static readonly System.Web.UI.WebControls.FontUnit Large;
         public static readonly System.Web.UI.WebControls.FontUnit Larger;
@@ -13487,13 +13488,13 @@ namespace System.Web.UI.WebControls
         public static readonly System.Web.UI.WebControls.FontUnit XSmall;
         public static readonly System.Web.UI.WebControls.FontUnit XXLarge;
         public static readonly System.Web.UI.WebControls.FontUnit XXSmall;
-        public FontUnit(double value) { throw null;}
-        public FontUnit(double value, System.Web.UI.WebControls.UnitType type) { throw null;}
-        public FontUnit(int value) { throw null;}
-        public FontUnit(string value) { throw null;}
-        public FontUnit(string value, System.Globalization.CultureInfo culture) { throw null;}
-        public FontUnit(System.Web.UI.WebControls.FontSize type) { throw null;}
-        public FontUnit(System.Web.UI.WebControls.Unit value) { throw null;}
+        public FontUnit(double value) { throw null; }
+        public FontUnit(double value, System.Web.UI.WebControls.UnitType type) { throw null; }
+        public FontUnit(int value) { throw null; }
+        public FontUnit(string value) { throw null; }
+        public FontUnit(string value, System.Globalization.CultureInfo culture) { throw null; }
+        public FontUnit(System.Web.UI.WebControls.FontSize type) { throw null; }
+        public FontUnit(System.Web.UI.WebControls.Unit value) { throw null; }
         public bool IsEmpty { get { throw null; } }
         public System.Web.UI.WebControls.FontSize Type { get { throw null; } }
         public System.Web.UI.WebControls.Unit Unit { get { throw null; } }
@@ -13538,8 +13539,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ControlValuePropertyAttribute("SelectedValue")]
     [System.Web.UI.DataKeyPropertyAttribute("DataKey")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class FormView : System.Web.UI.WebControls.CompositeDataBoundControl, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.IDataBoundControl, System.Web.UI.WebControls.IDataBoundItemControl, System.Web.UI.WebControls.IPostBackContainer
     {
         public FormView() { }
@@ -13550,57 +13551,57 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.FormViewMode CurrentMode { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int DataItemCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int DataItemIndex { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey DataKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.FormViewMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.FormViewMode.ReadOnly)]
         public virtual System.Web.UI.WebControls.FormViewMode DefaultMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13609,95 +13610,95 @@ namespace System.Web.UI.WebControls
         [System.MonoTODOAttribute("Make use of it in the code")]
         public virtual bool EnableModelValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FooterText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate InsertItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InsertRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(0))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.OneWay)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView))]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool RenderOuterTable { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow Row { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object SelectedValue { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DataItemIndex { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DisplayIndex { get { throw null; } }
         System.Web.UI.WebControls.DataBoundControlMode System.Web.UI.WebControls.IDataBoundItemControl.Mode { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow TopPagerRow { get { throw null; } }
         public event System.Web.UI.WebControls.FormViewCommandEventHandler ItemCommand { add { } remove { } }
         public event System.EventHandler ItemCreated { add { } remove { } }
@@ -13818,8 +13819,8 @@ namespace System.Web.UI.WebControls
     {
         public FormViewPagerRow(int rowIndex, System.Web.UI.WebControls.DataControlRowType rowType, System.Web.UI.WebControls.DataControlRowState rowState) : base (default(int), default(System.Web.UI.WebControls.DataControlRowType), default(System.Web.UI.WebControls.DataControlRowState)) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class FormViewRow : System.Web.UI.WebControls.TableRow
     {
         public FormViewRow(int itemIndex, System.Web.UI.WebControls.DataControlRowType rowType, System.Web.UI.WebControls.DataControlRowState rowState) { }
@@ -13862,8 +13863,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ControlValuePropertyAttribute("SelectedValue")]
     [System.Web.UI.DataKeyPropertyAttribute("DataKey")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class GridView : System.Web.UI.WebControls.CompositeDataBoundControl, System.Web.UI.ICallbackEventHandler, System.Web.UI.IDataKeysControl, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.ICallbackContainer, System.Web.UI.WebControls.IDataBoundControl, System.Web.UI.WebControls.IDataBoundListControl, System.Web.UI.WebControls.IFieldControl, System.Web.UI.WebControls.IPersistedSelector, System.Web.UI.WebControls.IPostBackContainer
     {
         public GridView() { }
@@ -13871,9 +13872,9 @@ namespace System.Web.UI.WebControls
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowSorting { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle AlternatingRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool AutoGenerateColumns { get { throw null; } set { } }
@@ -13888,12 +13889,12 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
@@ -13903,37 +13904,37 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] ClientIDRowSuffix { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DataKeyArray ClientIDRowSuffixDataKeys { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataControlFieldTypeEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataControlFieldCollection Columns { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IAutoFieldGenerator ColumnsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKeyArray DataKeys { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.GridViewRow), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.GridViewRow), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13946,43 +13947,43 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableSortingAndPagingCallbacks { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.GridViewRow))]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(10)]
@@ -13990,28 +13991,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string RowHeaderColumn { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRowCollection Rows { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey SelectedDataKey { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.MonoTODOAttribute]
         public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow SelectedRow { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectedRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public object SelectedValue { get { throw null; } }
@@ -14022,35 +14023,35 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ShowHeaderWhenEmpty { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SortDirection)(0))]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SortDirection.Ascending)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.SortDirection SortDirection { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedAscendingCellStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedAscendingHeaderStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedDescendingCellStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedDescendingHeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string SortExpression { get { throw null; } }
         System.Web.UI.IAutoFieldGenerator System.Web.UI.WebControls.IFieldControl.FieldsGenerator { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         System.Web.UI.WebControls.DataKey System.Web.UI.WebControls.IPersistedSelector.DataKey { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow TopPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool UseAccessibleHeader { get { throw null; } set { } }
@@ -14171,8 +14172,8 @@ namespace System.Web.UI.WebControls
         public int NewPageIndex { get { throw null; } set { } }
     }
     public delegate void GridViewPageEventHandler(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class GridViewRow : System.Web.UI.WebControls.TableRow, System.Web.UI.IDataItemContainer, System.Web.UI.INamingContainer
     {
         public GridViewRow(int rowIndex, int dataItemIndex, System.Web.UI.WebControls.DataControlRowType rowType, System.Web.UI.WebControls.DataControlRowState rowState) { }
@@ -14250,17 +14251,17 @@ namespace System.Web.UI.WebControls
     {
         public HiddenField() { }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string Value { get { throw null; } set { } }
         public event System.EventHandler ValueChanged { add { } remove { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected virtual bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection) { throw null; }
         protected internal override void OnPreRender(System.EventArgs e) { }
@@ -14298,8 +14299,8 @@ namespace System.Web.UI.WebControls
         Right = 3,
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public abstract partial class HotSpot : System.Web.UI.IStateManager
     {
         protected HotSpot() { }
@@ -14311,7 +14312,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual string AlternateText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HotSpotMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HotSpotMode.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HotSpotMode HotSpotMode { get { throw null; } set { } }
         protected virtual bool IsTrackingViewState { get { throw null; } }
@@ -14334,7 +14335,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.TargetConverter))]
         public virtual string Target { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.StateBag ViewState { get { throw null; } }
         public abstract string GetCoordinates();
         protected virtual void LoadViewState(object savedState) { }
@@ -14346,7 +14347,7 @@ namespace System.Web.UI.WebControls
         protected virtual void TrackViewState() { }
     }
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.HotSpotCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class HotSpotCollection : System.Web.UI.StateManagedCollection
     {
         public HotSpotCollection() { }
@@ -14373,8 +14374,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.HyperLinkDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.ParseChildrenAttribute(false)]
     [System.Web.UI.ToolboxDataAttribute("<{0}:HyperLink runat=\"server\">HyperLink</{0}:HyperLink>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HyperLink : System.Web.UI.WebControls.WebControl
     {
         public HyperLink() { }
@@ -14395,7 +14396,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected override void AddParsedSubObject(object obj) { }
@@ -14403,8 +14404,8 @@ namespace System.Web.UI.WebControls
         protected override void LoadViewState(object savedState) { }
         protected internal override void RenderContents(System.Web.UI.HtmlTextWriter writer) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HyperLinkColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public HyperLinkColumn() { }
@@ -14437,8 +14438,8 @@ namespace System.Web.UI.WebControls
         public HyperLinkControlBuilder() { }
         public override bool AllowWhitespaceLiterals() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class HyperLinkField : System.Web.UI.WebControls.DataControlField
     {
         public HyperLinkField() { }
@@ -14517,8 +14518,8 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DefaultPropertyAttribute("ImageUrl")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.PreviewControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Image : System.Web.UI.WebControls.WebControl
     {
         public Image() { }
@@ -14531,15 +14532,15 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string DescriptionUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool GenerateEmptyAlternateText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ImageAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ImageAlign.NotSet)]
         public virtual System.Web.UI.WebControls.ImageAlign ImageAlign { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14566,8 +14567,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DefaultEventAttribute("Click")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.PreviewControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ImageButton : System.Web.UI.WebControls.Image, System.Web.UI.IPostBackDataHandler, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.IButtonControl
     {
         public ImageButton() { }
@@ -14584,11 +14585,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
         public virtual new bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool GenerateEmptyAlternateText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14602,7 +14603,7 @@ namespace System.Web.UI.WebControls
         public override bool SupportsDisabledAttribute { get { throw null; } }
         string System.Web.UI.WebControls.IButtonControl.Text { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         protected virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14623,8 +14624,8 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
         void System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(string eventArgument) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ImageField : System.Web.UI.WebControls.DataControlField
     {
         public static readonly string ThisExpression;
@@ -14670,19 +14671,19 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DefaultPropertyAttribute("HotSpots")]
     [System.Web.UI.ParseChildrenAttribute(true, "HotSpots")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ImageMap : System.Web.UI.WebControls.Image, System.Web.UI.IPostBackEventHandler
     {
         public ImageMap() { }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
         public override bool Enabled { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HotSpotMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HotSpotMode.NotSet)]
         public virtual System.Web.UI.WebControls.HotSpotMode HotSpotMode { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.HotSpotCollection HotSpots { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string Target { get { throw null; } set { } }
@@ -14727,8 +14728,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.TextDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.UI.ParseChildrenAttribute(false)]
     [System.Web.UI.ToolboxDataAttribute("<{0}:Label runat=\"server\" Text=\"Label\"></{0}:Label>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Label : System.Web.UI.WebControls.WebControl, System.Web.UI.ITextControl
     {
         public Label() { }
@@ -14742,7 +14743,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected override void AddParsedSubObject(object obj) { }
@@ -14762,8 +14763,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ParseChildrenAttribute(false)]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ToolboxDataAttribute("<{0}:LinkButton runat=\"server\">LinkButton</{0}:LinkButton>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class LinkButton : System.Web.UI.WebControls.WebControl, System.Web.UI.IPostBackEventHandler, System.Web.UI.WebControls.IButtonControl
     {
         public LinkButton() { }
@@ -14789,7 +14790,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -14815,8 +14816,8 @@ namespace System.Web.UI.WebControls
     }
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("SelectedItem")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ListBox : System.Web.UI.WebControls.ListControl, System.Web.UI.IPostBackDataHandler
     {
         public ListBox() { }
@@ -14828,7 +14829,7 @@ namespace System.Web.UI.WebControls
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(4)]
         public virtual int Rows { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ListSelectionMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ListSelectionMode.Single)]
         public virtual System.Web.UI.WebControls.ListSelectionMode SelectionMode { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         public virtual int[] GetSelectedIndices() { throw null; }
@@ -14867,28 +14868,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ListItemsCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.ListItemCollection Items { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.ListItem SelectedItem { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string SelectedValue { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14916,7 +14917,7 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.WebControls.ListItemControlBuilder))]
     [System.Web.UI.ParseChildrenAttribute(true, "Text")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ListItem : System.Web.UI.IAttributeAccessor, System.Web.UI.IParserAccessor, System.Web.UI.IStateManager
     {
         public ListItem() { }
@@ -14924,7 +14925,7 @@ namespace System.Web.UI.WebControls
         public ListItem(string text, string value) { }
         public ListItem(string text, string value, bool enabled) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool Enabled { get { throw null; } set { } }
@@ -14934,7 +14935,7 @@ namespace System.Web.UI.WebControls
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(3))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.EncodedInnerDefaultProperty)]
         public string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -14951,7 +14952,7 @@ namespace System.Web.UI.WebControls
         public override string ToString() { throw null; }
     }
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ListItemsCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class ListItemCollection : System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList, System.Web.UI.IStateManager
     {
         public ListItemCollection() { }
@@ -15014,12 +15015,12 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.LiteralDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.WebControls.LiteralControlBuilder))]
     [System.Web.UI.DataBindingHandlerAttribute("System.Web.UI.Design.TextDataBindingHandler, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Literal : System.Web.UI.Control, System.Web.UI.ITextControl
     {
         public Literal() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LiteralMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LiteralMode.Transform)]
         public System.Web.UI.WebControls.LiteralMode Mode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15027,7 +15028,7 @@ namespace System.Web.UI.WebControls
         public string Text { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -15053,8 +15054,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.BindableAttribute(false)]
     [System.ComponentModel.DefaultEventAttribute("Authenticate")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.LoginDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Login : System.Web.UI.WebControls.CompositeControl
     {
         public static readonly string LoginButtonCommandName;
@@ -15062,9 +15063,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int BorderPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CheckBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -15085,16 +15086,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool DisplayRememberMe { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginFailureAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginFailureAction.Refresh)]
         [System.MonoTODOAttribute("RedirectToLoginPage not yet implemented in FormsAuthentication")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.LoginFailureAction FailureAction { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FailureText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -15108,25 +15109,25 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Login))]
         public virtual System.Web.UI.ITemplate LayoutTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15134,21 +15135,21 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string LoginButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style LoginButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string LoginButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType LoginButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.Orientation)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.Orientation.Vertical)]
         public virtual System.Web.UI.WebControls.Orientation Orientation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Password { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PasswordLabelText { get { throw null; } set { } }
@@ -15174,18 +15175,18 @@ namespace System.Web.UI.WebControls
         public virtual bool RenderOuterTable { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginTextLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginTextLayout.TextOnLeft)]
         public virtual System.Web.UI.WebControls.LoginTextLayout TextLayout { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string TitleText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string UserName { get { throw null; } set { } }
@@ -15194,9 +15195,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -15235,8 +15236,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.BindableAttribute(false)]
     [System.ComponentModel.DefaultPropertyAttribute("FormatString")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.LoginNameDesigner,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class LoginName : System.Web.UI.WebControls.WebControl
     {
         public LoginName() { }
@@ -15252,8 +15253,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.BindableAttribute(false)]
     [System.ComponentModel.DefaultEventAttribute("LoggingOut")]
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.LoginStatusDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class LoginStatus : System.Web.UI.WebControls.CompositeControl
     {
         public LoginStatus() { }
@@ -15263,7 +15264,7 @@ namespace System.Web.UI.WebControls
         public virtual string LoginImageUrl { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string LoginText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LogoutAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LogoutAction.Refresh)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.LogoutAction LogoutAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15301,14 +15302,14 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false)]
     [System.Web.UI.ThemeableAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class LoginView : System.Web.UI.Control, System.Web.UI.INamingContainer
     {
         public LoginView() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public virtual System.Web.UI.ITemplate AnonymousTemplate { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
@@ -15316,12 +15317,12 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public virtual System.Web.UI.ITemplate LoggedInTemplate { get { throw null; } set { } }
         [System.ComponentModel.MergablePropertyAttribute(false)]
         [System.Web.UI.FilterableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.RoleGroupCollection RoleGroups { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
@@ -15330,7 +15331,7 @@ namespace System.Web.UI.WebControls
         public event System.EventHandler ViewChanging { add { } remove { } }
         protected internal override void CreateChildControls() { }
         public override void DataBind() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected internal override void LoadControlState(object savedState) { }
         protected internal override void OnInit(System.EventArgs e) { }
@@ -15363,7 +15364,7 @@ namespace System.Web.UI.WebControls
         public string CC { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.EmbeddedMailObjectsCollection EmbeddedObjects { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -15371,7 +15372,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public bool IsBodyHtml { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Net.Mail.MailPriority)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Net.Mail.MailPriority.Normal)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Net.Mail.MailPriority Priority { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15402,7 +15403,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuBindingsEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemBindingCollection DataBindings { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(500)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -15417,26 +15418,26 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int DynamicHorizontalOffset { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style DynamicHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DynamicItemFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer), System.ComponentModel.BindingDirection.OneWay)]
         public System.Web.UI.ITemplate DynamicItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle DynamicMenuItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyle DynamicMenuStyle { get { throw null; } }
         public string DynamicPopOutImageTextFormatString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15444,9 +15445,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string DynamicPopOutImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle DynamicSelectedStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -15460,30 +15461,30 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.MenuItemCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ItemWrap { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuItemStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyleCollection LevelMenuItemStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuItemStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyleCollection LevelSelectedStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.SubMenuStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyleCollection LevelSubMenuStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(3)]
         [System.Web.UI.ThemeableAttribute(true)]
         public int MaximumDynamicDisplayLevels { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.Orientation)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.Orientation.Vertical)]
         public System.Web.UI.WebControls.Orientation Orientation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute('/')]
         public char PathSeparator { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.MenuRenderingMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.MenuRenderingMode.Default)]
         public System.Web.UI.WebControls.MenuRenderingMode RenderingMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -15498,11 +15499,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string ScrollUpText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.MenuItem SelectedItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string SelectedValue { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public string SkipLinkText { get { throw null; } set { } }
@@ -15516,26 +15517,26 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool StaticEnableDefaultPopOutImage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StaticHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string StaticItemFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer), System.ComponentModel.BindingDirection.OneWay)]
         public System.Web.UI.ITemplate StaticItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle StaticMenuItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyle StaticMenuStyle { get { throw null; } }
         public string StaticPopOutImageTextFormatString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15543,9 +15544,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string StaticPopOutImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle StaticSelectedStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "16px")]
         [System.Web.UI.ThemeableAttribute(true)]
@@ -15609,21 +15610,21 @@ namespace System.Web.UI.WebControls
         public MenuItem(string text, string value, string imageUrl, string navigateUrl, string target) { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.MenuItemCollection ChildItems { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool DataBound { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         public object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DataPath { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Depth { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -15637,7 +15638,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NavigateUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.MenuItem Parent { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -15666,7 +15667,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Value { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ValuePath { get { throw null; } }
         object System.ICloneable.Clone() { throw null; }
         void System.Web.UI.IStateManager.LoadViewState(object savedState) { }
@@ -15870,7 +15871,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public virtual new bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.ViewCollection Views { get { throw null; } }
         public event System.EventHandler ActiveViewChanged { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -15902,8 +15903,8 @@ namespace System.Web.UI.WebControls
     [System.Drawing.ToolboxBitmapAttribute("bitmap file goes here")]
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ObjectDataSource : System.Web.UI.DataSourceControl
     {
         public ObjectDataSource() { }
@@ -15911,11 +15912,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.DataSourceCacheDurationConverter))]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyDependency { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ConflictOptions)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ConflictOptions.OverwriteChanges)]
         public System.Web.UI.ConflictOptions ConflictDetection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ConvertNullToDBNull { get { throw null; } set { } }
@@ -15926,7 +15927,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableCaching { get { throw null; } set { } }
@@ -15937,14 +15938,14 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string InsertMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("maximumRows")]
         public string MaximumRowsParameterName { get { throw null; } set { } }
@@ -15957,7 +15958,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection SelectParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SortParameterName { get { throw null; } set { } }
@@ -15973,7 +15974,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.ObjectDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.ObjectDataSourceMethodEventHandler Deleting { add { } remove { } }
@@ -16116,7 +16117,7 @@ namespace System.Web.UI.WebControls
         Horizontal = 0,
         Vertical = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PagedDataSource : System.Collections.ICollection, System.Collections.IEnumerable, System.ComponentModel.ITypedList
     {
         public PagedDataSource() { }
@@ -16163,7 +16164,7 @@ namespace System.Web.UI.WebControls
         TopAndBottom = 2,
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class PagerSettings : System.Web.UI.IStateManager
     {
         public PagerSettings() { }
@@ -16183,7 +16184,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("&gt;&gt;")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string LastPageText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerButtons)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerButtons.Numeric)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerButtons Mode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16197,7 +16198,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(10)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int PageButtonCount { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerPosition)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerPosition.Bottom)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerPosition Position { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16222,8 +16223,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.PanelDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ParseChildrenAttribute(false)]
     [System.Web.UI.PersistChildrenAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Panel : System.Web.UI.WebControls.WebControl
     {
         public Panel() { }
@@ -16234,14 +16235,14 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DefaultButton { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ContentDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ContentDirection.NotSet)]
         public virtual System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string GroupingText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ScrollBars)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ScrollBars.None)]
         public virtual System.Web.UI.WebControls.ScrollBars ScrollBars { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -16257,11 +16258,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ContentDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ContentDirection.NotSet)]
         public virtual System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ScrollBars)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ScrollBars.None)]
         public virtual System.Web.UI.WebControls.ScrollBars ScrollBars { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool Wrap { get { throw null; } set { } }
@@ -16281,7 +16282,7 @@ namespace System.Web.UI.WebControls
         protected Parameter(System.Web.UI.WebControls.Parameter original) { }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ConvertEmptyStringToNull { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.DbType)(13))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.DbType.Object)]
         public System.Data.DbType DbType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         public string DefaultValue { get { throw null; } set { } }
@@ -16293,10 +16294,10 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int Size { get { throw null; } set { } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.TypeCode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.TypeCode.Empty)]
         public System.TypeCode Type { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.StateBag ViewState { get { throw null; } }
         protected virtual System.Web.UI.WebControls.Parameter Clone() { throw null; }
         public static System.TypeCode ConvertDbTypeToTypeCode(System.Data.DbType dbType) { throw null; }
@@ -16351,7 +16352,7 @@ namespace System.Web.UI.WebControls
         public static readonly string SubmitButtonCommandName;
         public PasswordRecovery() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Answer { get { throw null; } }
@@ -16362,9 +16363,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int BorderPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string GeneralFailureText { get { throw null; } set { } }
@@ -16380,30 +16381,30 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Question { get { throw null; } }
@@ -16414,11 +16415,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string QuestionLabelText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate QuestionTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control QuestionTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string QuestionTitleText { get { throw null; } set { } }
@@ -16429,13 +16430,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SubmitButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SubmitButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SubmitButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType SubmitButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -16443,31 +16444,31 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SuccessPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate SuccessTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control SuccessTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SuccessTextStyle { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginTextLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginTextLayout.TextOnLeft)]
         public virtual System.Web.UI.WebControls.LoginTextLayout TextLayout { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -16481,18 +16482,18 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate UserNameTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control UserNameTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameTitleText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         public event System.EventHandler AnswerLookupError { add { } remove { } }
         public event System.Web.UI.WebControls.MailMessageEventHandler SendingMail { add { } remove { } }
@@ -16572,8 +16573,8 @@ namespace System.Web.UI.WebControls
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.CheckBoxDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RadioButton : System.Web.UI.WebControls.CheckBox, System.Web.UI.IPostBackDataHandler
     {
         public RadioButton() { }
@@ -16587,8 +16588,8 @@ namespace System.Web.UI.WebControls
     }
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("SelectedItem")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RadioButtonList : System.Web.UI.WebControls.ListControl, System.Web.UI.INamingContainer, System.Web.UI.IPostBackDataHandler, System.Web.UI.WebControls.IRepeatInfoUser
     {
         public RadioButtonList() { }
@@ -16601,16 +16602,16 @@ namespace System.Web.UI.WebControls
         protected virtual bool HasSeparators { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
         protected virtual int RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasFooter { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasHeader { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasSeparators { get { throw null; } }
         int System.Web.UI.WebControls.IRepeatInfoUser.RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
         protected override System.Web.UI.Control FindControl(string id, int pathOffset) { throw null; }
@@ -16625,8 +16626,8 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.WebControls.IRepeatInfoUser.RenderItem(System.Web.UI.WebControls.ListItemType itemType, int repeatIndex, System.Web.UI.WebControls.RepeatInfo repeatInfo, System.Web.UI.HtmlTextWriter writer) { }
     }
     [System.Web.UI.ToolboxDataAttribute("<{0}:RangeValidator runat=\"server\" ErrorMessage=\"RangeValidator\"></{0}:RangeValidator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RangeValidator : System.Web.UI.WebControls.BaseCompareValidator
     {
         public RangeValidator() { }
@@ -16655,8 +16656,8 @@ namespace System.Web.UI.WebControls
         public override string GetCoordinates() { throw null; }
     }
     [System.Web.UI.ToolboxDataAttribute("<{0}:RegularExpressionValidator runat=\"server\" ErrorMessage=\"RegularExpressionValidator\"></{0}:RegularExpressionValidator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RegularExpressionValidator : System.Web.UI.WebControls.BaseValidator
     {
         public RegularExpressionValidator() { }
@@ -16677,14 +16678,14 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.RepeaterDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Repeater : System.Web.UI.Control, System.Web.UI.INamingContainer
     {
         public Repeater() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
@@ -16692,7 +16693,7 @@ namespace System.Web.UI.WebControls
         public virtual string DataMember { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
@@ -16701,29 +16702,29 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         protected bool Initialized { get { throw null; } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.RepeaterItemCollection Items { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         protected bool RequiresDataBinding { get { throw null; } set { } }
         protected System.Web.UI.DataSourceSelectArguments SelectArguments { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate SeparatorTemplate { get { throw null; } set { } }
         public event System.Web.UI.WebControls.RepeaterCommandEventHandler ItemCommand { add { } remove { } }
@@ -16783,7 +16784,7 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.RepeaterItem Item { get { throw null; } }
     }
     public delegate void RepeaterItemEventHandler(object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e);
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class RepeatInfo
     {
         public RepeatInfo() { }
@@ -16804,8 +16805,8 @@ namespace System.Web.UI.WebControls
         UnorderedList = 2,
     }
     [System.Web.UI.ToolboxDataAttribute("<{0}:RequiredFieldValidator runat=\"server\" ErrorMessage=\"RequiredFieldValidator\"></{0}:RequiredFieldValidator>")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class RequiredFieldValidator : System.Web.UI.WebControls.BaseValidator
     {
         public RequiredFieldValidator() { }
@@ -16815,13 +16816,13 @@ namespace System.Web.UI.WebControls
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected override bool EvaluateIsValid() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class RoleGroup
     {
         public RoleGroup() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public System.Web.UI.ITemplate ContentTemplate { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
@@ -16830,7 +16831,7 @@ namespace System.Web.UI.WebControls
         public override string ToString() { throw null; }
     }
     [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.RoleGroupCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class RoleGroupCollection : System.Collections.CollectionBase
     {
         public RoleGroupCollection() { }
@@ -16866,7 +16867,7 @@ namespace System.Web.UI.WebControls
         None = 0,
         Vertical = 2,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public sealed partial class SelectedDatesCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public SelectedDatesCollection(System.Collections.ArrayList dateList) { }
@@ -16918,10 +16919,10 @@ namespace System.Web.UI.WebControls
     {
         public SiteMapDataSource() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool ContainsListCollection { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SiteMapProvider Provider { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ShowStartingNode { get { throw null; } set { } }
@@ -16989,57 +16990,57 @@ namespace System.Web.UI.WebControls
     {
         public SiteMapPath() { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CurrentNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate CurrentNodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style NodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate NodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int ParentLevelsDisplayed { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PathDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PathDirection.RootToCurrent)]
         public virtual System.Web.UI.WebControls.PathDirection PathDirection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(" > ")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PathSeparator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style PathSeparatorStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate PathSeparatorTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SiteMapProvider Provider { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool RenderCurrentNodeAsLink { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style RootNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate RootNodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -17085,28 +17086,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.DataSourceCacheDurationConverter")]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyDependency { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CancelSelectOnNullParameter { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ConflictOptions)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ConflictOptions.OverwriteChanges)]
         public System.Web.UI.ConflictOptions ConflictDetection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.SqlDataSourceConnectionStringEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
         public virtual string ConnectionString { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceMode.DataSet)]
         public System.Web.UI.WebControls.SqlDataSourceMode DataSourceMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DeleteCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType DeleteCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableCaching { get { throw null; } set { } }
@@ -17115,16 +17116,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string InsertCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType InsertCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("{0}")]
         public string OldValuesParameterFormatString { get { throw null; } set { } }
@@ -17133,12 +17134,12 @@ namespace System.Web.UI.WebControls
         public virtual string ProviderName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SelectCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType SelectCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection SelectParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SortParameterName { get { throw null; } set { } }
@@ -17147,12 +17148,12 @@ namespace System.Web.UI.WebControls
         public virtual string SqlCacheDependency { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string UpdateCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType UpdateCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.SqlDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.SqlDataSourceCommandEventHandler Deleting { add { } remove { } }
@@ -17228,18 +17229,18 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.SqlDataSourceCommandType DeleteCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         public string FilterExpression { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         public string InsertCommand { get { throw null; } set { } }
         public System.Web.UI.WebControls.SqlDataSourceCommandType InsertCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("{0}")]
@@ -17254,7 +17255,7 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.SqlDataSourceCommandType UpdateCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.SqlDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.SqlDataSourceCommandEventHandler Deleting { add { } remove { } }
@@ -17298,8 +17299,8 @@ namespace System.Web.UI.WebControls
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
     [System.ComponentModel.ToolboxItemAttribute("")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Style : System.ComponentModel.Component, System.Web.UI.IStateManager
     {
         public Style() { }
@@ -17312,7 +17313,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BorderStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BorderStyle.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
@@ -17322,7 +17323,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.Web.UI.CssClassPropertyAttribute]
         public string CssClass { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -17333,16 +17334,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool IsEmpty { get { throw null; } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string RegisteredCssClass { get { throw null; } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected internal System.Web.UI.StateBag ViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -17436,8 +17437,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.SubstitutionDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Substitution : System.Web.UI.Control
     {
         public Substitution() { }
@@ -17452,8 +17453,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.TableDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ParseChildrenAttribute(true, "Rows")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Table : System.Web.UI.WebControls.WebControl, System.Web.UI.IPostBackEventHandler
     {
         public Table() { }
@@ -17464,18 +17465,18 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.TableRowCollection Rows { get { throw null; } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -17506,8 +17507,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.ToolboxItemAttribute("")]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.WebControls.TableCellControlBuilder))]
     [System.Web.UI.ParseChildrenAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableCell : System.Web.UI.WebControls.WebControl
     {
         public TableCell() { }
@@ -17516,16 +17517,16 @@ namespace System.Web.UI.WebControls
         public virtual string[] AssociatedHeaderCellID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int ColumnSpan { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RowSpan { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool Wrap { get { throw null; } set { } }
@@ -17569,8 +17570,8 @@ namespace System.Web.UI.WebControls
     {
         public TableFooterRow() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableHeaderCell : System.Web.UI.WebControls.TableCell
     {
         public TableHeaderCell() { }
@@ -17579,7 +17580,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] CategoryText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableHeaderScope)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableHeaderScope.NotSet)]
         public virtual System.Web.UI.WebControls.TableHeaderScope Scope { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -17593,16 +17594,16 @@ namespace System.Web.UI.WebControls
         NotSet = 0,
         Row = 1,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableItemStyle : System.Web.UI.WebControls.Style
     {
         public TableItemStyle() { }
         public TableItemStyle(System.Web.UI.StateBag bag) { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -17618,20 +17619,20 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.PreviewControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.ComponentModel.ToolboxItemAttribute("")]
     [System.Web.UI.ParseChildrenAttribute(true, "Cells")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableRow : System.Web.UI.WebControls.WebControl
     {
         public TableRow() { }
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.TableCellCollection Cells { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableRowSection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableRowSection.TableBody)]
         public virtual System.Web.UI.WebControls.TableRowSection TableSection { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
@@ -17674,8 +17675,8 @@ namespace System.Web.UI.WebControls
         TableFooter = 2,
         TableHeader = 0,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableSectionStyle : System.Web.UI.WebControls.Style
     {
         public TableSectionStyle() { }
@@ -17683,8 +17684,8 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public bool Visible { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TableStyle : System.Web.UI.WebControls.Style
     {
         public TableStyle() { }
@@ -17699,10 +17700,10 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.MonoTODOAttribute("collapse style should be rendered only for browsers which support that.")]
@@ -17712,8 +17713,8 @@ namespace System.Web.UI.WebControls
         public override void MergeWith(System.Web.UI.WebControls.Style s) { }
         public override void Reset() { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TargetConverter : System.ComponentModel.StringConverter
     {
         public TargetConverter() { }
@@ -17726,22 +17727,22 @@ namespace System.Web.UI.WebControls
         public TemplateColumn() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         public override void InitializeCell(System.Web.UI.WebControls.TableCell cell, int columnIndex, System.Web.UI.WebControls.ListItemType itemType) { }
@@ -17757,63 +17758,63 @@ namespace System.Web.UI.WebControls
         public TemplatedWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate ContentTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control ContentTemplateContainer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate CustomNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control CustomNavigationTemplateContainer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.MonoTODOAttribute("Why override?")]
         public override string SkinID { get { throw null; } set { } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TemplateField : System.Web.UI.WebControls.DataControlField
     {
         public TemplateField() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ConvertEmptyStringToNull { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate InsertItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         protected override void CopyProperties(System.Web.UI.WebControls.DataControlField newField) { }
         protected override System.Web.UI.WebControls.DataControlField CreateField() { throw null; }
@@ -17835,12 +17836,12 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ParseChildrenAttribute(true, "Text")]
     [System.Web.UI.SupportsEventValidationAttribute]
     [System.Web.UI.ValidationPropertyAttribute("Text")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TextBox : System.Web.UI.WebControls.WebControl, System.Web.UI.IEditableTextControl, System.Web.UI.IPostBackDataHandler, System.Web.UI.ITextControl
     {
         public TextBox() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.AutoCompleteType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.AutoCompleteType.None)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.AutoCompleteType AutoCompleteType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -17862,13 +17863,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int Rows { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(3))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.EncodedInnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextBoxMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextBoxMode.SingleLine)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.TextBoxMode TextMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -17933,21 +17934,21 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.TreeNodeCollection ChildNodes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool DataBound { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         public object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DataPath { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Depth { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         public System.Nullable<bool> Expanded { get { throw null; } set { } }
@@ -17964,11 +17965,11 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NavigateUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNode Parent { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool PopulateOnDemand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeSelectAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeSelectAction.Select)]
         public System.Web.UI.WebControls.TreeNodeSelectAction SelectAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool Selected { get { throw null; } set { } }
@@ -17987,7 +17988,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Value { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ValuePath { get { throw null; } }
         public virtual object Clone() { throw null; }
         public void Collapse() { }
@@ -18039,7 +18040,7 @@ namespace System.Web.UI.WebControls
         public string NavigateUrlField { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool PopulateOnDemand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeSelectAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeSelectAction.Select)]
         public System.Web.UI.WebControls.TreeNodeSelectAction SelectAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public System.Nullable<bool> ShowCheckBox { get { throw null; } set { } }
@@ -18184,8 +18185,8 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.TreeViewDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ControlValuePropertyAttribute("SelectedValue")]
     [System.Web.UI.SupportsEventValidationAttribute]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class TreeView : System.Web.UI.WebControls.HierarchicalDataBoundControl, System.Web.UI.ICallbackEventHandler, System.Web.UI.IPostBackDataHandler, System.Web.UI.IPostBackEventHandler
     {
         public TreeView() { }
@@ -18193,7 +18194,7 @@ namespace System.Web.UI.WebControls
         [System.MonoTODOAttribute("Implement support for this")]
         public bool AutoGenerateDataBindings { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNodeCollection CheckedNodes { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public string CollapseImageToolTip { get { throw null; } set { } }
@@ -18204,7 +18205,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeViewBindingsEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeBindingCollection DataBindings { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -18219,20 +18220,20 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string ExpandImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style HoverNodeStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeViewImageSet)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeViewImageSet.Custom)]
         public System.Web.UI.WebControls.TreeViewImageSet ImageSet { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle LeafNodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeNodeStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyleCollection LevelStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string LineImagesFolder { get { throw null; } set { } }
@@ -18243,12 +18244,12 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeNodeCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeCollection Nodes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle NodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool NodeWrap { get { throw null; } set { } }
@@ -18257,32 +18258,32 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NoExpandImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle ParentNodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute('/')]
         public char PathSeparator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool PopulateNodesFromClient { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle RootNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNode SelectedNode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle SelectedNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string SelectedValue { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeTypes)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeTypes.None)]
         public System.Web.UI.WebControls.TreeNodeTypes ShowCheckBoxes { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ShowExpandCollapse { get { throw null; } set { } }
@@ -18361,12 +18362,13 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Unit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.Unit Empty;
-        public Unit(double value) { throw null;}
-        public Unit(double value, System.Web.UI.WebControls.UnitType type) { throw null;}
-        public Unit(int value) { throw null;}
-        public Unit(string value) { throw null;}
-        public Unit(string value, System.Globalization.CultureInfo culture) { throw null;}
+        public Unit(double value) { throw null; }
+        public Unit(double value, System.Web.UI.WebControls.UnitType type) { throw null; }
+        public Unit(int value) { throw null; }
+        public Unit(string value) { throw null; }
+        public Unit(string value, System.Globalization.CultureInfo culture) { throw null; }
         public bool IsEmpty { get { throw null; } }
         public System.Web.UI.WebControls.UnitType Type { get { throw null; } }
         public double Value { get { throw null; } }
@@ -18384,8 +18386,8 @@ namespace System.Web.UI.WebControls
         public string ToString(System.Globalization.CultureInfo culture) { throw null; }
         public string ToString(System.IFormatProvider formatProvider) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class UnitConverter : System.ComponentModel.TypeConverter
     {
         public UnitConverter() { }
@@ -18406,8 +18408,8 @@ namespace System.Web.UI.WebControls
         Pixel = 1,
         Point = 2,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ValidatedControlConverter : System.Web.UI.WebControls.ControlIDConverter
     {
         public ValidatedControlConverter() { }
@@ -18433,12 +18435,12 @@ namespace System.Web.UI.WebControls
         String = 0,
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.PreviewControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class ValidationSummary : System.Web.UI.WebControls.WebControl
     {
         public ValidationSummary() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationSummaryDisplayMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationSummaryDisplayMode.BulletList)]
         public System.Web.UI.WebControls.ValidationSummaryDisplayMode DisplayMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -18491,7 +18493,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override bool Visible { get { throw null; } set { } }
         public event System.EventHandler Activate { add { } remove { } }
         public event System.EventHandler Deactivate { add { } remove { } }
@@ -18514,8 +18516,8 @@ namespace System.Web.UI.WebControls
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false, false)]
     [System.Web.UI.ThemeableAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class WebControl : System.Web.UI.Control, System.Web.UI.IAttributeAccessor
     {
         protected WebControl() { }
@@ -18524,7 +18526,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string AccessKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
@@ -18532,16 +18534,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public virtual System.Drawing.Color BorderColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BorderStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BorderStyle.NotSet)]
         public virtual System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         public virtual System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.Style ControlStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ControlStyleCreated { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.CssClassPropertyAttribute]
@@ -18553,14 +18555,14 @@ namespace System.Web.UI.WebControls
         public virtual bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         public virtual new bool EnableTheming { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasAttributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         public virtual System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
@@ -18568,17 +18570,17 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.CssStyleCollection Style { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public virtual bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute((short)0)]
         public virtual short TabIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual string TagName { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -18628,7 +18630,7 @@ namespace System.Web.UI.WebControls
         public static readonly string WizardStepPlaceholderId;
         public Wizard() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WizardStepBase ActiveStep { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -18638,13 +18640,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CancelButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CancelButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CancelButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CancelButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -18666,13 +18668,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string FinishCompleteButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style FinishCompleteButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FinishCompleteButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType FinishCompleteButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -18681,125 +18683,125 @@ namespace System.Web.UI.WebControls
         public virtual string FinishDestinationPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate FinishNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string FinishPreviousButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style FinishPreviousButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FinishPreviousButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType FinishPreviousButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate LayoutTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style NavigationButtonStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle NavigationStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SideBarButtonStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SideBarStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate SideBarTemplate { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SkipLinkText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate StartNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StartNextButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StartNextButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StartNextButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StartNextButtonType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), (System.ComponentModel.BindingDirection)(0))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard), System.ComponentModel.BindingDirection.OneWay)]
         public virtual System.Web.UI.ITemplate StepNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StepNextButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StepNextButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StepNextButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StepNextButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StepPreviousButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StepPreviousButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StepPreviousButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StepPreviousButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle StepStyle { get { throw null; } }
         protected virtual new System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.WizardStepCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.WizardStepCollection WizardSteps { get { throw null; } }
         public event System.EventHandler ActiveStepChanged { add { } remove { } }
@@ -18862,15 +18864,15 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         public override string ID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WizardStepType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WizardStepType.Auto)]
         public virtual System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Web.UI.WebControls.Wizard Wizard { get { throw null; } }
         protected override void LoadViewState(object savedState) { }
         protected internal override void OnLoad(System.EventArgs e) { }
@@ -18919,23 +18921,23 @@ namespace System.Web.UI.WebControls
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.XmlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.ComponentModel.Design.IDesigner")]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.WebControls.XmlBuilder))]
     [System.Web.UI.PersistChildrenAttribute(true)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Xml : System.Web.UI.Control
     {
         public Xml() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("Anything else?")]
         public override string ClientID { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.MonoTODOAttribute("Anything else?")]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ObsoleteAttribute("Use the XPathNavigator property instead by creating an XPathDocument and calling CreateNavigator().")]
         public System.Xml.XmlDocument Document { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DocumentContent { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XmlUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -18944,34 +18946,34 @@ namespace System.Web.UI.WebControls
         public string DocumentSource { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.Xsl.XslTransform Transform { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.Xsl.XsltArgumentList TransformArgumentList { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XslUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.MonoLimitationAttribute("Absolute path to the file system is not supported; use a relative URI instead.")]
         public string TransformSource { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.XPath.XPathNavigator XPathNavigator { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         [System.MonoTODOAttribute("Always returns null")]
         protected override System.Collections.IDictionary GetDesignModeState() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected internal override void Render(System.Web.UI.HtmlTextWriter output) { }
     }
@@ -18989,15 +18991,15 @@ namespace System.Web.UI.WebControls
     [System.Drawing.ToolboxBitmapAttribute("")]
     [System.Web.UI.ParseChildrenAttribute(true)]
     [System.Web.UI.PersistChildrenAttribute(false)]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class XmlDataSource : System.Web.UI.HierarchicalDataSourceControl, System.ComponentModel.IListSource, System.Web.UI.IDataSource
     {
         public XmlDataSource() { }
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.DataSourceCacheDurationConverter))]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyContext { get { throw null; } set { } }
@@ -19006,7 +19008,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.MultilineStringConverter))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual string Data { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XmlDataFileEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -19018,7 +19020,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.MultilineStringConverter))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual string Transform { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public virtual System.Xml.Xsl.XsltArgumentList TransformArgumentList { get { throw null; } set { } }
@@ -19141,10 +19143,10 @@ namespace System.Web.UI.WebControls.WebParts
     {
         protected EditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool Display { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DisplayTitle { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPart WebPartToEdit { get { throw null; } }
         public abstract bool ApplyChanges();
@@ -19251,7 +19253,7 @@ namespace System.Web.UI.WebControls.WebParts
         TitleAndBorder = 1,
         TitleOnly = 3,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class PersonalizableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.PersonalizableAttribute Default;
@@ -19298,7 +19300,7 @@ namespace System.Web.UI.WebControls.WebParts
         public void CopyTo(System.Type[] array, int index) { }
         public int IndexOf(System.Type value) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class WebBrowsableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebBrowsableAttribute Default;
@@ -19311,7 +19313,7 @@ namespace System.Web.UI.WebControls.WebParts
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class WebDescriptionAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebDescriptionAttribute Default;
@@ -19323,7 +19325,7 @@ namespace System.Web.UI.WebControls.WebParts
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class WebDisplayNameAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebDisplayNameAttribute Default;
@@ -19433,7 +19435,7 @@ namespace System.Web.UI.WebControls.WebParts
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual bool Checked { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ClientClickHandler { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -19448,7 +19450,7 @@ namespace System.Web.UI.WebControls.WebParts
         public string ImageUrl { get { throw null; } set { } }
         protected virtual bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartEventHandler ServerClickHandler { get { throw null; } }
         [System.MonoTODOAttribute("Not implemented")]
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
@@ -19499,7 +19501,7 @@ namespace System.Web.Util
         public HttpEncoder() { }
         public static System.Web.Util.HttpEncoder Current { get { throw null; } set { } }
         public static System.Web.Util.HttpEncoder Default { get { throw null; } }
-        protected internal virtual void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) { encodedHeaderName = default(string); encodedHeaderValue = default(string); }
+        protected internal virtual void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) { throw null; }
         protected internal virtual void HtmlAttributeEncode(string value, System.IO.TextWriter output) { }
         protected internal virtual void HtmlDecode(string value, System.IO.TextWriter output) { }
         protected internal virtual void HtmlEncode(string value, System.IO.TextWriter output) { }
@@ -19530,11 +19532,11 @@ namespace System.Web.Util
     {
         public RequestValidator() { }
         public static System.Web.Util.RequestValidator Current { get { throw null; } set { } }
-        protected internal virtual bool IsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { validationFailureIndex = default(int); throw null; }
+        protected internal virtual bool IsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { throw null; }
     }
     public delegate void TransactedCallback();
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class Transactions
     {
         public Transactions() { }
@@ -19542,8 +19544,8 @@ namespace System.Web.Util
         [System.MonoTODOAttribute("Not implemented, not supported by Mono")]
         public static void InvokeTransacted(System.Web.Util.TransactedCallback callback, System.EnterpriseServices.TransactionOption mode, ref bool transactionAborted) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]
     public partial class WorkItem
     {
         public WorkItem() { }

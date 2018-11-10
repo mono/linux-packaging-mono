@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -60,7 +60,7 @@ namespace Newtonsoft.Json
         int LinePosition { get; }
         bool HasLineInfo();
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=false)]
     public sealed partial class JsonArrayAttribute : Newtonsoft.Json.JsonContainerAttribute
     {
         public JsonArrayAttribute() { }
@@ -68,12 +68,12 @@ namespace Newtonsoft.Json
         public JsonArrayAttribute(string id) { }
         public bool AllowNullItems { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Constructor, AllowMultiple=false)]
     public sealed partial class JsonConstructorAttribute : System.Attribute
     {
         public JsonConstructorAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=false)]
     public abstract partial class JsonContainerAttribute : System.Attribute
     {
         protected JsonContainerAttribute() { }
@@ -168,7 +168,7 @@ namespace Newtonsoft.Json
         public abstract object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer);
         public abstract void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(3484), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Field | System.AttributeTargets.Interface | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.Struct, AllowMultiple=false)]
     public sealed partial class JsonConverterAttribute : System.Attribute
     {
         public JsonConverterAttribute(System.Type converterType) { }
@@ -178,12 +178,12 @@ namespace Newtonsoft.Json
     {
         public JsonConverterCollection() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple=false)]
     public sealed partial class JsonIgnoreAttribute : System.Attribute
     {
         public JsonIgnoreAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1036), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Struct, AllowMultiple=false)]
     public sealed partial class JsonObjectAttribute : Newtonsoft.Json.JsonContainerAttribute
     {
         public JsonObjectAttribute() { }
@@ -191,7 +191,7 @@ namespace Newtonsoft.Json
         public JsonObjectAttribute(string id) { }
         public Newtonsoft.Json.MemberSerialization MemberSerialization { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property, AllowMultiple=false)]
     public sealed partial class JsonPropertyAttribute : System.Attribute
     {
         public JsonPropertyAttribute() { }
@@ -890,8 +890,9 @@ namespace Newtonsoft.Json.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct JEnumerable<T> : Newtonsoft.Json.Linq.IJEnumerable<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable where T : Newtonsoft.Json.Linq.JToken
     {
+        private object _dummy;
         public static readonly Newtonsoft.Json.Linq.JEnumerable<T> Empty;
-        public JEnumerable(System.Collections.Generic.IEnumerable<T> enumerable) { throw null;}
+        public JEnumerable(System.Collections.Generic.IEnumerable<T> enumerable) { throw null; }
         public Newtonsoft.Json.Linq.IJEnumerable<Newtonsoft.Json.Linq.JToken> this[object key] { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public System.Collections.Generic.IEnumerator<T> GetEnumerator() { throw null; }
@@ -944,7 +945,7 @@ namespace Newtonsoft.Json.Linq
         System.ComponentModel.PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties() { throw null; }
         System.ComponentModel.PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties(System.Attribute[] attributes) { throw null; }
         object System.ComponentModel.ICustomTypeDescriptor.GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) { throw null; }
-        public bool TryGetValue(string propertyName, out Newtonsoft.Json.Linq.JToken value) { value = default(Newtonsoft.Json.Linq.JToken); throw null; }
+        public bool TryGetValue(string propertyName, out Newtonsoft.Json.Linq.JToken value) { throw null; }
         public override void WriteTo(Newtonsoft.Json.JsonWriter writer, params Newtonsoft.Json.JsonConverter[] converters) { }
     }
     public partial class JProperty : Newtonsoft.Json.Linq.JContainer
@@ -1212,7 +1213,7 @@ namespace Newtonsoft.Json.Schema
     public static partial class Extensions
     {
         public static bool IsValid(this Newtonsoft.Json.Linq.JToken source, Newtonsoft.Json.Schema.JsonSchema schema) { throw null; }
-        public static bool IsValid(this Newtonsoft.Json.Linq.JToken source, Newtonsoft.Json.Schema.JsonSchema schema, out System.Collections.Generic.IList<string> errorMessages) { errorMessages = default(System.Collections.Generic.IList<string>); throw null; }
+        public static bool IsValid(this Newtonsoft.Json.Linq.JToken source, Newtonsoft.Json.Schema.JsonSchema schema, out System.Collections.Generic.IList<string> errorMessages) { throw null; }
         public static void Validate(this Newtonsoft.Json.Linq.JToken source, Newtonsoft.Json.Schema.JsonSchema schema) { }
         public static void Validate(this Newtonsoft.Json.Linq.JToken source, Newtonsoft.Json.Schema.JsonSchema schema, Newtonsoft.Json.Schema.ValidationEventHandler validationEventHandler) { }
     }
@@ -1350,7 +1351,7 @@ namespace Newtonsoft.Json.Serialization
     public partial class DefaultSerializationBinder : System.Runtime.Serialization.SerializationBinder
     {
         public DefaultSerializationBinder() { }
-        public override void BindToName(System.Type serializedType, out string assemblyName, out string typeName) { assemblyName = default(string); typeName = default(string); }
+        public override void BindToName(System.Type serializedType, out string assemblyName, out string typeName) { throw null; }
         public override System.Type BindToType(string assemblyName, string typeName) { throw null; }
     }
     public partial class DynamicValueProvider : Newtonsoft.Json.Serialization.IValueProvider
@@ -1485,7 +1486,7 @@ namespace Newtonsoft.Json.Serialization
         public JsonStringContract(System.Type underlyingType) : base (default(System.Type)) { }
     }
     public delegate object ObjectConstructor<T>(params object[] args);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false)]
     public sealed partial class OnErrorAttribute : System.Attribute
     {
         public OnErrorAttribute() { }
@@ -1499,7 +1500,7 @@ namespace Newtonsoft.Json.Serialization
 }
 namespace System.Net.Http
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpClientExtensions
     {
         public static System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> PostAsJsonAsync<T>(this System.Net.Http.HttpClient client, string requestUri, T value) { throw null; }
@@ -1519,7 +1520,7 @@ namespace System.Net.Http
         public static System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> PutAsync<T>(this System.Net.Http.HttpClient client, string requestUri, T value, System.Net.Http.Formatting.MediaTypeFormatter formatter, string mediaType, System.Threading.CancellationToken cancellationToken) { throw null; }
         public static System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> PutAsync<T>(this System.Net.Http.HttpClient client, string requestUri, T value, System.Net.Http.Formatting.MediaTypeFormatter formatter, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpContentCollectionExtensions
     {
         public static System.Collections.Generic.IEnumerable<System.Net.Http.HttpContent> FindAllContentType(this System.Collections.Generic.IEnumerable<System.Net.Http.HttpContent> contents, System.Net.Http.Headers.MediaTypeHeaderValue contentType) { throw null; }
@@ -1531,7 +1532,7 @@ namespace System.Net.Http
         public static System.Net.Http.HttpContent FirstStart(this System.Collections.Generic.IEnumerable<System.Net.Http.HttpContent> contents, string start) { throw null; }
         public static System.Net.Http.HttpContent FirstStartOrDefault(this System.Collections.Generic.IEnumerable<System.Net.Http.HttpContent> contents, string start) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpContentExtensions
     {
         public static System.Threading.Tasks.Task<object> ReadAsAsync(this System.Net.Http.HttpContent content, System.Type type) { throw null; }
@@ -1541,7 +1542,7 @@ namespace System.Net.Http
         public static System.Threading.Tasks.Task<T> ReadAsAsync<T>(this System.Net.Http.HttpContent content, System.Collections.Generic.IEnumerable<System.Net.Http.Formatting.MediaTypeFormatter> formatters) { throw null; }
         public static System.Threading.Tasks.Task<T> ReadAsAsync<T>(this System.Net.Http.HttpContent content, System.Collections.Generic.IEnumerable<System.Net.Http.Formatting.MediaTypeFormatter> formatters, System.Net.Http.Formatting.IFormatterLogger formatterLogger) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpContentMessageExtensions
     {
         public static bool IsHttpRequestMessageContent(this System.Net.Http.HttpContent content) { throw null; }
@@ -1552,7 +1553,7 @@ namespace System.Net.Http
         public static System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> ReadAsHttpResponseMessageAsync(this System.Net.Http.HttpContent content) { throw null; }
         public static System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> ReadAsHttpResponseMessageAsync(this System.Net.Http.HttpContent content, int bufferSize) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpContentMultipartExtensions
     {
         public static bool IsMimeMultipartContent(this System.Net.Http.HttpContent content) { throw null; }
@@ -1569,20 +1570,20 @@ namespace System.Net.Http
         public System.Net.Http.HttpResponseMessage HttpResponseMessage { get { throw null; } }
         protected override void Dispose(bool disposing) { }
         protected override System.Threading.Tasks.Task SerializeToStreamAsync(System.IO.Stream stream, System.Net.TransportContext context) { throw null; }
-        protected override bool TryComputeLength(out long length) { length = default(long); throw null; }
+        protected override bool TryComputeLength(out long length) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpRequestHeadersExtensions
     {
         public static System.Collections.ObjectModel.Collection<System.Net.Http.Headers.CookieHeaderValue> GetCookies(this System.Net.Http.Headers.HttpRequestHeaders headers) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpRequestMessageExtensions
     {
         public static System.Net.Http.HttpResponseMessage CreateResponse(this System.Net.Http.HttpRequestMessage request) { throw null; }
         public static System.Net.Http.HttpResponseMessage CreateResponse(this System.Net.Http.HttpRequestMessage request, System.Net.HttpStatusCode statusCode) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpResponseHeadersExtensions
     {
         public static void AddCookies(this System.Net.Http.Headers.HttpResponseHeaders headers, System.Collections.Generic.IEnumerable<System.Net.Http.Headers.CookieHeaderValue> cookies) { }
@@ -1615,20 +1616,20 @@ namespace System.Net.Http
         public System.Type ObjectType { get { throw null; } }
         public object Value { get { throw null; } set { } }
         protected override System.Threading.Tasks.Task SerializeToStreamAsync(System.IO.Stream stream, System.Net.TransportContext context) { throw null; }
-        protected override bool TryComputeLength(out long length) { length = default(long); throw null; }
+        protected override bool TryComputeLength(out long length) { throw null; }
     }
     public partial class ObjectContent<T> : System.Net.Http.ObjectContent
     {
         public ObjectContent(T value, System.Net.Http.Formatting.MediaTypeFormatter formatter) : base (default(System.Type), default(object), default(System.Net.Http.Formatting.MediaTypeFormatter)) { }
         public ObjectContent(T value, System.Net.Http.Formatting.MediaTypeFormatter formatter, string mediaType) : base (default(System.Type), default(object), default(System.Net.Http.Formatting.MediaTypeFormatter)) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class UriExtensions
     {
         public static System.Collections.Specialized.NameValueCollection ParseQueryString(this System.Uri address) { throw null; }
-        public static bool TryReadQueryAs(this System.Uri address, System.Type type, out object value) { value = default(object); throw null; }
-        public static bool TryReadQueryAsJson(this System.Uri address, out Newtonsoft.Json.Linq.JObject value) { value = default(Newtonsoft.Json.Linq.JObject); throw null; }
-        public static bool TryReadQueryAs<T>(this System.Uri address, out T value) { value = default(T); throw null; }
+        public static bool TryReadQueryAs(this System.Uri address, System.Type type, out object value) { throw null; }
+        public static bool TryReadQueryAsJson(this System.Uri address, out Newtonsoft.Json.Linq.JObject value) { throw null; }
+        public static bool TryReadQueryAs<T>(this System.Uri address, out T value) { throw null; }
     }
 }
 namespace System.Net.Http.Formatting
@@ -1743,7 +1744,7 @@ namespace System.Net.Http.Formatting
         public System.Net.Http.Formatting.MediaTypeFormatter FindWriter(System.Type type, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) { throw null; }
         public static bool IsTypeExcludedFromValidation(System.Type type) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class MediaTypeFormatterExtensions
     {
         public static void AddMediaRangeMapping(this System.Net.Http.Formatting.MediaTypeFormatter formatter, System.Net.Http.Headers.MediaTypeHeaderValue mediaRange, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) { }
@@ -1814,7 +1815,7 @@ namespace System.Net.Http.Headers
         public bool Secure { get { throw null; } set { } }
         public object Clone() { throw null; }
         public override string ToString() { throw null; }
-        public static bool TryParse(string input, out System.Net.Http.Headers.CookieHeaderValue parsedValue) { parsedValue = default(System.Net.Http.Headers.CookieHeaderValue); throw null; }
+        public static bool TryParse(string input, out System.Net.Http.Headers.CookieHeaderValue parsedValue) { throw null; }
     }
     public partial class CookieState : System.ICloneable
     {

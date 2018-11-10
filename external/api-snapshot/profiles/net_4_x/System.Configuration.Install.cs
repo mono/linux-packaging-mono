@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Configuration.Install.dll")]
@@ -21,32 +21,32 @@
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -81,7 +81,7 @@ namespace System.Configuration.Install
         public virtual bool IsEquivalentInstaller(System.Configuration.Install.ComponentInstaller otherInstaller) { throw null; }
     }
     [System.Runtime.InteropServices.GuidAttribute("1E233FE7-C16D-4512-8C3B-2E9988F08D38")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IManagedInstaller
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]
@@ -101,7 +101,7 @@ namespace System.Configuration.Install
     {
         public Installer() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Configuration.Install.InstallContext Context { get { throw null; } set { } }
         public virtual string HelpText { get { throw null; } }
         public System.Configuration.Install.InstallerCollection Installers { get { throw null; } }
@@ -207,7 +207,7 @@ namespace System.Diagnostics
         public string ParameterResourceFile { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.Diagnostics.Design.StringValueConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string Source { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Configuration.Install.UninstallAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Configuration.Install.UninstallAction.Remove)]
         public System.Configuration.Install.UninstallAction UninstallAction { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override void CopyFromComponent(System.ComponentModel.IComponent component) { }
@@ -228,12 +228,12 @@ namespace System.Diagnostics
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute("System.Diagnostics.Design.StringValueConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string CategoryName { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Diagnostics.PerformanceCounterCategoryType)(-1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Diagnostics.PerformanceCounterCategoryType.Unknown)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Diagnostics.PerformanceCounterCategoryType CategoryType { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public System.Diagnostics.CounterCreationDataCollection Counters { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Configuration.Install.UninstallAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Configuration.Install.UninstallAction.Remove)]
         public System.Configuration.Install.UninstallAction UninstallAction { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override void CopyFromComponent(System.ComponentModel.IComponent component) { }

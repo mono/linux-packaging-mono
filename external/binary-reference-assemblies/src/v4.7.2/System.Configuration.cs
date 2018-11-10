@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Configuration.dll")]
@@ -20,9 +20,9 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComCompatibleVersionAttribute(1, 0, 3300, 0)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.Configuration
 {
@@ -46,7 +46,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class CallbackValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public CallbackValidatorAttribute() { }
@@ -129,7 +129,7 @@ namespace System.Configuration
     public partial class ConfigurationBuilderSettings : System.Configuration.ConfigurationElement
     {
         public ConfigurationBuilderSettings() { }
-        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Configuration.ProviderSettingsCollection Builders { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -141,7 +141,7 @@ namespace System.Configuration
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         public System.Configuration.ConfigurationBuilder GetBuilderFromName(string builderName) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property)]
     public sealed partial class ConfigurationCollectionAttribute : System.Attribute
     {
         public ConfigurationCollectionAttribute(System.Type itemType) { }
@@ -343,7 +343,7 @@ namespace System.Configuration
         public override System.Security.SecurityElement ToXml() { throw null; }
         public override System.Security.IPermission Union(System.Security.IPermission target) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true, Inherited=false)]
     [System.SerializableAttribute]
     public sealed partial class ConfigurationPermissionAttribute : System.Security.Permissions.CodeAccessSecurityAttribute
     {
@@ -370,7 +370,7 @@ namespace System.Configuration
         public System.Type Type { get { throw null; } }
         public System.Configuration.ConfigurationValidatorBase Validator { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class ConfigurationPropertyAttribute : System.Attribute
     {
         public ConfigurationPropertyAttribute(string name) { }
@@ -486,7 +486,7 @@ namespace System.Configuration
         PerUserRoaming = 10,
         PerUserRoamingAndLocal = 20,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class ConfigurationValidatorAttribute : System.Attribute
     {
         protected ConfigurationValidatorAttribute() { }
@@ -505,9 +505,9 @@ namespace System.Configuration
         public ConnectionStringSettings() { }
         public ConnectionStringSettings(string name, string connectionString) { }
         public ConnectionStringSettings(string name, string connectionString, string providerName) { }
-        [System.Configuration.ConfigurationPropertyAttribute("connectionString", Options=(System.Configuration.ConfigurationPropertyOptions)(2), DefaultValue="")]
+        [System.Configuration.ConfigurationPropertyAttribute("connectionString", Options=System.Configuration.ConfigurationPropertyOptions.IsRequired, DefaultValue="")]
         public string ConnectionString { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", Options=(System.Configuration.ConfigurationPropertyOptions)(6), DefaultValue="")]
+        [System.Configuration.ConfigurationPropertyAttribute("name", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired, DefaultValue="")]
         public string Name { get { throw null; } set { } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("providerName", DefaultValue="System.Data.SqlClient")]
@@ -534,7 +534,7 @@ namespace System.Configuration
     public sealed partial class ConnectionStringsSection : System.Configuration.ConfigurationSection
     {
         public ConnectionStringsSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("", Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Configuration.ConnectionStringSettingsCollection ConnectionStrings { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         protected internal override object GetRuntimeObject() { throw null; }
@@ -635,7 +635,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class IntegerValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public IntegerValidatorAttribute() { }
@@ -662,7 +662,7 @@ namespace System.Configuration
     public partial class KeyValueConfigurationElement : System.Configuration.ConfigurationElement
     {
         public KeyValueConfigurationElement(string key, string value) { }
-        [System.Configuration.ConfigurationPropertyAttribute("key", Options=(System.Configuration.ConfigurationPropertyOptions)(4), DefaultValue="")]
+        [System.Configuration.ConfigurationPropertyAttribute("key", Options=System.Configuration.ConfigurationPropertyOptions.IsKey, DefaultValue="")]
         public string Key { get { throw null; } }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("value", DefaultValue="")]
@@ -677,7 +677,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class LongValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public LongValidatorAttribute() { }
@@ -721,7 +721,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class PositiveTimeSpanValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public PositiveTimeSpanValidatorAttribute() { }
@@ -795,7 +795,7 @@ namespace System.Configuration
     {
         public ProtectedProviderSettings() { }
         protected internal override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Configuration.ProviderSettingsCollection Providers { get { throw null; } }
     }
     public sealed partial class ProviderSettings : System.Configuration.ConfigurationElement
@@ -832,7 +832,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class RegexStringValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public RegexStringValidatorAttribute(string regex) { }
@@ -898,7 +898,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class StringValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public StringValidatorAttribute() { }
@@ -913,7 +913,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class SubclassTypeValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public SubclassTypeValidatorAttribute(System.Type baseClass) { }
@@ -952,7 +952,7 @@ namespace System.Configuration
         public override bool CanValidate(System.Type type) { throw null; }
         public override void Validate(object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class TimeSpanValidatorAttribute : System.Configuration.ConfigurationValidatorAttribute
     {
         public const string TimeSpanMaxValue = "10675199.02:48:05.4775807";
@@ -999,13 +999,13 @@ namespace System.Configuration.Internal
         public virtual string GetConfigPathFromLocationSubPath(string configPath, string locationSubPath) { throw null; }
         public virtual System.Type GetConfigType(string typeName, bool throwOnError) { throw null; }
         public virtual string GetConfigTypeName(System.Type t) { throw null; }
-        public virtual void GetRestrictedPermissions(System.Configuration.Internal.IInternalConfigRecord configRecord, out System.Security.PermissionSet permissionSet, out bool isHostReady) { permissionSet = default(System.Security.PermissionSet); isHostReady = default(bool); }
+        public virtual void GetRestrictedPermissions(System.Configuration.Internal.IInternalConfigRecord configRecord, out System.Security.PermissionSet permissionSet, out bool isHostReady) { throw null; }
         public virtual string GetStreamName(string configPath) { throw null; }
         public virtual string GetStreamNameForConfigSource(string streamName, string configSource) { throw null; }
         public virtual object GetStreamVersion(string streamName) { throw null; }
         public virtual System.IDisposable Impersonate() { throw null; }
         public virtual void Init(System.Configuration.Internal.IInternalConfigRoot configRoot, params object[] hostInitParams) { }
-        public virtual void InitForConfiguration(ref string locationSubPath, out string configPath, out string locationConfigPath, System.Configuration.Internal.IInternalConfigRoot configRoot, params object[] hostInitConfigurationParams) { configPath = default(string); locationConfigPath = default(string); }
+        public virtual void InitForConfiguration(ref string locationSubPath, out string configPath, out string locationConfigPath, System.Configuration.Internal.IInternalConfigRoot configRoot, params object[] hostInitConfigurationParams) { throw null; }
         public virtual bool IsAboveApplication(string configPath) { throw null; }
         public virtual bool IsConfigRecordRequired(string configPath) { throw null; }
         public virtual bool IsDefinitionAllowed(string configPath, System.Configuration.ConfigurationAllowDefinition allowDefinition, System.Configuration.ConfigurationAllowExeDefinition allowExeDefinition) { throw null; }

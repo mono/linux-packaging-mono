@@ -4,13 +4,13 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Data.Linq.dll")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("System.Data.Linq.dll")]
-[assembly:System.Reflection.AssemblyFileVersionAttribute("4.7.2558.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("4.7.2558.0")]
+[assembly:System.Reflection.AssemblyFileVersionAttribute("4.7.3062.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("4.7.3062.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono Common Language Infrastructure")]
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Data.Linq.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
@@ -19,9 +19,9 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 [assembly:System.Security.SecurityTransparentAttribute]
 namespace System.Data.Linq
 {
@@ -170,9 +170,11 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct EntityRef<TEntity> where TEntity : class
     {
-        public EntityRef(System.Collections.Generic.IEnumerable<TEntity> source) { throw null;}
-        public EntityRef(System.Data.Linq.EntityRef<TEntity> entityRef) { throw null;}
-        public EntityRef(TEntity entity) { throw null;}
+        private TEntity entity;
+        private object _dummy;
+        public EntityRef(System.Collections.Generic.IEnumerable<TEntity> source) { throw null; }
+        public EntityRef(System.Data.Linq.EntityRef<TEntity> entityRef) { throw null; }
+        public EntityRef(TEntity entity) { throw null; }
         public TEntity Entity { get { throw null; } set { } }
         public bool HasLoadedOrAssignedValue { get { throw null; } }
     }
@@ -262,9 +264,12 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Link<T>
     {
-        public Link(System.Collections.Generic.IEnumerable<T> source) { throw null;}
-        public Link(System.Data.Linq.Link<T> link) { throw null;}
-        public Link(T value) { throw null;}
+        private T underlyingValue;
+        private object _dummy;
+        private int _dummyPrimitive;
+        public Link(System.Collections.Generic.IEnumerable<T> source) { throw null; }
+        public Link(System.Data.Linq.Link<T> link) { throw null; }
+        public Link(T value) { throw null; }
         public bool HasLoadedOrAssignedValue { get { throw null; } }
         public bool HasValue { get { throw null; } }
         public T Value { get { throw null; } set { } }
@@ -284,6 +289,7 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ModifiedMemberInfo
     {
+        private object _dummy;
         public object CurrentValue { get { throw null; } }
         public System.Reflection.MemberInfo Member { get { throw null; } }
         public object OriginalValue { get { throw null; } }
@@ -350,7 +356,7 @@ namespace System.Data.Linq
 }
 namespace System.Data.Linq.Mapping
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple=false)]
     public sealed partial class AssociationAttribute : System.Data.Linq.Mapping.DataAttribute
     {
         public AssociationAttribute() { }
@@ -374,7 +380,7 @@ namespace System.Data.Linq.Mapping
         OnInsert = 3,
         OnUpdate = 4,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple=false)]
     public sealed partial class ColumnAttribute : System.Data.Linq.Mapping.DataAttribute
     {
         public ColumnAttribute() { }
@@ -394,20 +400,20 @@ namespace System.Data.Linq.Mapping
         public string Name { get { throw null; } set { } }
         public string Storage { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class DatabaseAttribute : System.Attribute
     {
         public DatabaseAttribute() { }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false)]
     public sealed partial class FunctionAttribute : System.Attribute
     {
         public FunctionAttribute() { }
         public bool IsComposable { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=true, Inherited=false)]
     public sealed partial class InheritanceMappingAttribute : System.Attribute
     {
         public InheritanceMappingAttribute() { }
@@ -566,27 +572,27 @@ namespace System.Data.Linq.Mapping
         public abstract System.Data.Linq.Mapping.MetaType GetInheritanceType(System.Type type);
         public abstract System.Data.Linq.Mapping.MetaType GetTypeForInheritanceCode(object code);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10240), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public sealed partial class ParameterAttribute : System.Attribute
     {
         public ParameterAttribute() { }
         public string DbType { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class ProviderAttribute : System.Attribute
     {
         public ProviderAttribute() { }
         public ProviderAttribute(System.Type type) { }
         public System.Type Type { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=true)]
     public sealed partial class ResultTypeAttribute : System.Attribute
     {
         public ResultTypeAttribute(System.Type type) { }
         public System.Type Type { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=false)]
     public sealed partial class TableAttribute : System.Attribute
     {
         public TableAttribute() { }

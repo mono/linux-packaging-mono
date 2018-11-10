@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Windows.Forms.DataVisualization.dll")]
@@ -19,10 +19,10 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 [assembly:System.Security.SecurityCriticalAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 namespace System.Windows.Forms.DataVisualization.Charting
 {
     [System.ComponentModel.DefaultPropertyAttribute("Name")]
@@ -46,67 +46,67 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.ContentAlignment), "BottomCenter")]
         public virtual System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AnchorPointUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AnchorPointValueConverter")]
         public virtual System.Windows.Forms.DataVisualization.Charting.DataPoint AnchorDataPoint { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string AnchorDataPointName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public virtual double AnchorOffsetX { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public virtual double AnchorOffsetY { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double AnchorX { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double AnchorY { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.AnnotationGroup AnnotationGroup { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public abstract string AnnotationType { get; }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AnnotationAxisUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AnnotationAxisValueConverter")]
         public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisX { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string AxisXName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AnnotationAxisUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AnnotationAxisValueConverter")]
         public virtual System.Windows.Forms.DataVisualization.Charting.Axis AxisY { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string AxisYName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -117,8 +117,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public virtual System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double Bottom { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("NotSet")]
@@ -131,7 +131,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -143,7 +143,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color LineColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int LineWidth { get { throw null; } set { } }
@@ -152,8 +152,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double Right { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "128,0,0,0")]
@@ -164,7 +164,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public virtual int ShadowOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public System.Windows.Forms.DataVisualization.Charting.AnnotationSmartLabelStyle SmartLabelStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Windows.Forms.DataVisualization.Charting.TextStyle), "Default")]
         public virtual System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
@@ -174,21 +174,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual bool Visible { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double Width { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double X { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public virtual double Y { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string YAxisName { get { throw null; } set { } }
         public virtual void BeginPlacement() { }
         public virtual void BringToFront() { }
@@ -222,13 +222,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override bool AllowSelecting { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public override bool AllowTextEditing { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AnnotationCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -237,12 +237,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -275,7 +275,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -289,7 +289,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(0)]
         public override int ShadowOffset { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
@@ -303,12 +303,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public AnnotationPathPoint(float x, float y, byte type) { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("PathPoint")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string Name { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(byte), "1")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public byte PointType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
@@ -328,14 +328,14 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public AnnotationPositionChangingEventArgs() { }
         public System.Windows.Forms.DataVisualization.Charting.Annotation Annotation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Drawing.PointF NewAnchorLocation { get { throw null; } set { } }
         public double NewAnchorLocationX { get { throw null; } set { } }
         public double NewAnchorLocationY { get { throw null; } set { } }
         public double NewLocationX { get { throw null; } set { } }
         public double NewLocationY { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Drawing.RectangleF NewPosition { get { throw null; } set { } }
         public double NewSizeHeight { get { throw null; } set { } }
         public double NewSizeWidth { get { throw null; } set { } }
@@ -349,30 +349,30 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Transparent")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color CalloutBackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(1))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.Arrow)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutLineAnchorCapStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Black")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color CalloutLineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle CalloutLineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(1)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int CalloutLineWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle)(1))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle.Underlined)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle CalloutStyle { get { throw null; } set { } }
     }
     public partial class AnovaResult
@@ -420,19 +420,19 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public ArrowAnnotation() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.ContentAlignment), "TopLeft")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(5)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual int ArrowSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ArrowStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ArrowStyle.Simple)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.ArrowStyle ArrowStyle { get { throw null; } set { } }
     }
@@ -448,13 +448,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Axis() { }
         public Axis(System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea, System.Windows.Forms.DataVisualization.Charting.AxisName axisTypeName) { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle.None)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.AxisArrowStyle ArrowStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Windows.Forms.DataVisualization.Charting.AxisName AxisName { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
@@ -462,7 +462,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisCrossingValueConverter")]
         public virtual double Crossing { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.CustomLabelsCollection CustomLabels { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -477,23 +477,23 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Drawing.Color InterlacedColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisIntervalValueConverter")]
         public double Interval { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.FixedCount)]
         public System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode IntervalAutoMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisIntervalValueConverter")]
         public double IntervalOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -502,7 +502,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool IsLabelAutoFit { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -527,20 +527,20 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(10)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int LabelAutoFitMaxFontSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(6)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int LabelAutoFitMinFontSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles)(79))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.DecreaseFont | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.IncreaseFont | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.LabelsAngleStep30 | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.StaggeredLabels | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.WordWrap)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.FlagsEnumUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles LabelAutoFitStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.LabelStyle LabelStyle { get { throw null; } set { } }
@@ -551,7 +551,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -563,12 +563,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public double LogarithmBase { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Grid MajorGrid { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.TickMark MajorTickMark { get { throw null; } set { } }
@@ -585,38 +585,38 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisMinMaxAutoValueConverter")]
         public double Minimum { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Grid MinorGrid { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.TickMark MinorTickMark { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string Name { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public virtual System.Windows.Forms.DataVisualization.Charting.AxisScaleBreakStyle ScaleBreakStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.AxisScaleView ScaleView { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.AxisScrollBar ScrollBar { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.StripLinesCollection StripLines { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.TextOrientation)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -672,7 +672,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class AxisScaleBreakStyle
     {
         public AxisScaleBreakStyle() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.BreakLineStyle)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.BreakLineStyle.Ragged)]
         public System.Windows.Forms.DataVisualization.Charting.BreakLineStyle BreakLineStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(25)]
         public int CollapsibleSpaceThreshold { get { throw null; } set { } }
@@ -683,7 +683,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color LineColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
         public int LineWidth { get { throw null; } set { } }
@@ -691,7 +691,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public int MaxNumberOfBreaks { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1.5)]
         public double Spacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.StartFromZero)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.StartFromZero.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.StartFromZero StartFromZero { get { throw null; } set { } }
     }
     [System.ComponentModel.DefaultPropertyAttribute("Position")]
@@ -700,14 +700,14 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public AxisScaleView() { }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsZoomed { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public double MinSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType MinSizeType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
@@ -720,21 +720,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleNanValueConverter")]
         public double Size { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SizeType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         public double SmallScrollMinSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollMinSizeType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisMinMaxAutoValueConverter")]
         public double SmallScrollSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType SmallScrollSizeType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public double ViewMaximum { get { throw null; } }
@@ -757,7 +757,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public AxisScrollBar() { }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -770,12 +770,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color ButtonColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.All)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.FlagsEnumUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles ButtonStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.ChartArea ChartArea { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -806,12 +806,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Border3DAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.LegendConverter")]
         public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { get { throw null; } set { } }
@@ -827,12 +827,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -842,7 +842,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -852,7 +852,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -868,7 +868,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -882,7 +882,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color PageColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle.None)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle SkinStyle { get { throw null; } set { } }
@@ -921,15 +921,15 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.ContentAlignment), "BottomLeft")]
         public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(3)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override double AnchorOffsetX { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(3)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override double AnchorOffsetY { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -938,12 +938,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -954,10 +954,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.Arrow)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutAnchorCap { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.CalloutStyle)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.CalloutStyle.Rectangle)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.CalloutStyle CalloutStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
@@ -966,7 +966,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -989,7 +989,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
     public partial class Chart : System.Windows.Forms.Control, System.ComponentModel.ISupportInitialize, System.IDisposable
     {
         public Chart() { }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AnnotationCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.AnnotationCollection Annotations { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1002,15 +1002,15 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Drawing.Image BackgroundImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1019,7 +1019,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1029,7 +1029,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1040,16 +1040,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "White")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(0))]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "White")]
@@ -1057,34 +1057,34 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderlineColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderlineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         public int BorderlineWidth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle)(0))]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle.None)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.LegendConverter")]
         public System.Windows.Forms.DataVisualization.Charting.BorderSkin BorderSkin { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string BuildNumber { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartAreaCollection ChartAreas { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.DataManipulator DataManipulator { get { throw null; } }
         [System.ComponentModel.AttributeProviderAttribute(typeof(System.ComponentModel.IListSource))]
         [System.ComponentModel.BindableAttribute(true)]
@@ -1094,8 +1094,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Font), "Microsoft Sans Serif, 8pt")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public new System.Drawing.Font Font { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -1105,39 +1105,39 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public System.Windows.Forms.DataVisualization.Charting.NamedImagesCollection Images { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool IsSoftShadows { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.LegendCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.LegendCollection Legends { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartColorPalette)(12))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.BrightPastel)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ColorPaletteEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ColorArrayConverter")]
         public System.Drawing.Color[] PaletteCustomColors { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.PrintingManager Printing { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(96)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public double RenderingDpiX { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(96)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public double RenderingDpiY { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.ChartSerializer Serializer { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.SeriesCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.SeriesCollection Series { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1148,7 +1148,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality), "High")]
         public System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality TextAntiAliasingQuality { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.TitleCollection Titles { get { throw null; } }
         public event System.EventHandler AnnotationPlaced { add { } remove { } }
@@ -1209,7 +1209,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         protected override void OnResize(System.EventArgs e) { }
         protected override void OnRightToLeftChanged(System.EventArgs e) { }
         protected override void OnSystemColorsChanged(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Refresh() { }
         public void ResetAutoValues() { }
         public void SaveImage(System.IO.Stream imageStream, System.Drawing.Imaging.ImageFormat format) { }
@@ -1225,11 +1225,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public ChartArea() { }
         public ChartArea(string name) { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.FlagsEnumUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations AlignmentOrientation { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles)(15))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.All)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.FlagsEnumUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles AlignmentStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1238,32 +1238,32 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public string AlignWithChartArea { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ChartArea3DStyle Area3DStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.AxesArrayEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxesArrayConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Axis[] Axes { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Axis AxisX { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Axis AxisX2 { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Axis AxisY { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Axis AxisY2 { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1273,12 +1273,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -1288,7 +1288,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1298,7 +1298,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1314,7 +1314,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1323,16 +1323,16 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public int BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Cursor CursorX { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.NoNameExpandableObjectConverter")]
         public System.Windows.Forms.DataVisualization.Charting.Cursor CursorY { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ElementPositionConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ElementPosition InnerPlotPosition { get { throw null; } set { } }
@@ -1344,7 +1344,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ElementPositionConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
@@ -1377,37 +1377,37 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public bool Enable3D { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(30)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Inclination { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool IsClustered { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool IsRightAngleAxes { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Windows.Forms.DataVisualization.Charting.LightStyle), "Simplistic")]
         public System.Windows.Forms.DataVisualization.Charting.LightStyle LightStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Perspective { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int PointDepth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int PointGapDepth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(30)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Rotation { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(7)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int WallWidth { get { throw null; } set { } }
     }
     public partial class ChartAreaCollection : System.Windows.Forms.DataVisualization.Charting.ChartNamedElementCollection<System.Windows.Forms.DataVisualization.Charting.ChartArea>
@@ -1445,7 +1445,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         protected ChartElement() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object Tag { get { throw null; } set { } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -1692,7 +1692,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool AutoScroll { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AxisType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AxisType.Primary)]
         public System.Windows.Forms.DataVisualization.Charting.AxisType AxisType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -1701,10 +1701,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(0)]
         public double IntervalOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -1718,7 +1718,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -1772,7 +1772,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public CustomLabel(double fromPosition, double toPosition, string text, int labelRow, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle markStyle) { }
         public CustomLabel(double fromPosition, double toPosition, string text, int labelRow, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle markStyle, System.Windows.Forms.DataVisualization.Charting.GridTickTypes gridTick) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.Axis Axis { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -1785,7 +1785,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisLabelDateValueConverter")]
         public double FromPosition { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GridTickTypes)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GridTickTypes.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.FlagsEnumUITypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.GridTickTypes GridTicks { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1800,7 +1800,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle.None)]
         public System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle LabelMark { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -1809,7 +1809,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("Custom LabelStyle")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.DesignOnlyAttribute(true)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1838,7 +1838,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public void Add(double labelsStep, System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType intervalType, string format) { }
         public void Add(double labelsStep, System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType intervalType, string format, int rowIndex, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle markStyle) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.CustomPropertiesTypeConverter")]
     public partial class CustomProperties
     {
@@ -1920,7 +1920,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public DataPoint() { }
         public DataPoint(double xValue, double yValue) { }
         public DataPoint(double xValue, double[] yValues) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public DataPoint(double xValue, string yValues) { }
         public DataPoint(System.Windows.Forms.DataVisualization.Charting.Series series) { }
         [System.ComponentModel.BindableAttribute(true)]
@@ -1928,17 +1928,17 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public bool IsEmpty { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(double), "0.0")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DataPointValueConverter")]
         public double XValue { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute(typeof(System.Drawing.Design.UITypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.DoubleArrayConverter")]
         public double[] YValues { get { throw null; } set { } }
         public System.Windows.Forms.DataVisualization.Charting.DataPoint Clone() { throw null; }
@@ -2030,12 +2030,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public string CustomProperties { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.DesignOnlyAttribute(true)]
         [System.ComponentModel.DisplayNameAttribute("CustomProperties")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.CustomProperties CustomPropertiesExtended { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         public System.Drawing.Font Font { get { throw null; } set { } }
@@ -2081,31 +2081,31 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public string LegendToolTip { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerBorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         public int MarkerBorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ImageValueEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string MarkerImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int MarkerSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.MarkerStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.KeywordsStringEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -2156,14 +2156,14 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool Auto { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public float Bottom { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public float Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public float Right { get { throw null; } }
@@ -2172,17 +2172,17 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public float Width { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public float X { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0f)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public float Y { get { throw null; } set { } }
         public void FromRectangleF(System.Drawing.RectangleF rect) { }
         public System.Drawing.RectangleF ToRectangleF() { throw null; }
@@ -2192,8 +2192,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public EllipseAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
     }
     public enum FinancialFormula
@@ -2270,17 +2270,17 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         public bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisElementIntervalValueConverter")]
         public double Interval { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisElementIntervalValueConverter")]
         public double IntervalOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Black")]
@@ -2288,7 +2288,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -2318,8 +2318,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public HorizontalLineAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
     }
     public partial interface IDataPointFilter
@@ -2333,8 +2333,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -2343,12 +2343,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -2376,7 +2376,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(4))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Scaled)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode ImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Black")]
@@ -2384,13 +2384,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         public override int LineWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
     }
     public enum IntervalAutoMode
@@ -2460,7 +2460,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public LabelStyle() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Angle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -2483,23 +2483,23 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public double Interval { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0.0 / 0.0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisElementIntervalValueConverter")]
         public double IntervalOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(10))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(10))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool IsEndLabelVisible { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool IsStaggered { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -2512,7 +2512,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Legend() { }
         public Legend(string name) { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Drawing.StringAlignment)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Drawing.StringAlignment.Near)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Drawing.StringAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(7)]
@@ -2524,12 +2524,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -2539,7 +2539,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -2549,7 +2549,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -2565,18 +2565,18 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int BorderWidth { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.LegendCellColumnCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.LegendCellColumnCollection CellColumns { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.LegendItemCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.LegendItemsCollection CustomItems { get { throw null; } }
@@ -2586,7 +2586,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.LegendAreaNameConverter")]
         public string DockedToChartArea { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.Docking)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.Docking.Right)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.Docking Docking { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -2613,8 +2613,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("NotSet")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.LegendAreaNameConverter")]
         public string InsideChartArea { get { throw null; } set { } }
@@ -2644,10 +2644,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Drawing.Color ItemColumnSeparatorColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(50)]
         public int ItemColumnSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LegendItemOrder)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LegendItemOrder.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.LegendItemOrder LegendItemOrder { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LegendStyle)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LegendStyle.Table)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.LegendStyle LegendStyle { get { throw null; } set { } }
@@ -2657,7 +2657,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ElementPositionConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
@@ -2672,7 +2672,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int ShadowOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LegendTableStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Auto)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.LegendTableStyle TableStyle { get { throw null; } set { } }
@@ -2706,7 +2706,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public LegendCell(string text) { }
         public LegendCell(System.Windows.Forms.DataVisualization.Charting.LegendCellType cellType, string text) { }
         public LegendCell(System.Windows.Forms.DataVisualization.Charting.LegendCellType cellType, string text, System.Drawing.ContentAlignment alignment) { }
-        [System.ComponentModel.DefaultValueAttribute((System.Drawing.ContentAlignment)(32))]
+        [System.ComponentModel.DefaultValueAttribute(System.Drawing.ContentAlignment.MiddleCenter)]
         public virtual System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -2714,7 +2714,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int CellSpan { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LegendCellType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LegendCellType.Text)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellType CellType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -2734,10 +2734,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color ImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LegendItem LegendItem { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Windows.Forms.DataVisualization.Charting.Margins), "0,0,15,15")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -2762,13 +2762,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public LegendCellColumn() { }
         public LegendCellColumn(string headerText, System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType columnType, string text) { }
         public LegendCellColumn(string headerText, System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType columnType, string text, System.Drawing.ContentAlignment alignment) { }
-        [System.ComponentModel.DefaultValueAttribute((System.Drawing.ContentAlignment)(32))]
+        [System.ComponentModel.DefaultValueAttribute(System.Drawing.ContentAlignment.MiddleCenter)]
         public virtual System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color BackColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType.Text)]
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LegendCellColumnType ColumnType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -2792,10 +2792,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Windows.Forms.DataVisualization.Charting.Margins), "0,0,15,15")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Windows.Forms.DataVisualization.Charting.Margins Margins { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
@@ -2814,7 +2814,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.KeywordsStringEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string ToolTip { get { throw null; } set { } }
         protected override void Dispose(bool disposing) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeMargins() { throw null; }
     }
     public partial class LegendCellColumnCollection : System.Windows.Forms.DataVisualization.Charting.ChartNamedElementCollection<System.Windows.Forms.DataVisualization.Charting.LegendCellColumn>
@@ -2850,11 +2850,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public LegendItem() { }
         public LegendItem(string name, System.Drawing.Color color, string image) { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -2874,12 +2874,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         public int BorderWidth { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.LegendCellCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.LegendCellCollection Cells { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -2902,12 +2902,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Windows.Forms.DataVisualization.Charting.LegendImageStyle ImageStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.DataVisualization.Charting.Legend Legend { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerBorderColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -2915,28 +2915,28 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ImageValueEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string MarkerImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartColorEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color MarkerImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(5)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int MarkerSize { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.MarkerStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.MarkerStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.MarkerStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.MarkerStyle MarkerStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -2950,11 +2950,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle SeparatorType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string SeriesName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int SeriesPointIndex { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "128,0,0,0")]
@@ -3029,12 +3029,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.ContentAlignment), "TopLeft")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Drawing.ContentAlignment AnchorAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -3043,12 +3043,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3058,7 +3058,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Font), "Microsoft Sans Serif, 8pt")]
@@ -3072,10 +3072,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public virtual bool IsInfinitive { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public override bool IsSizeAlwaysRelative { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
     }
     [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.MarginExpandableObjectConverter")]
@@ -3085,19 +3085,19 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Margins(int top, int bottom, int left, int right) { }
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Bottom { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Left { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Right { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int Top { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3160,8 +3160,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public PolygonAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -3170,12 +3170,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3186,10 +3186,10 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public override System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public override System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { get { throw null; } set { } }
     }
     public partial class PolylineAnnotation : System.Windows.Forms.DataVisualization.Charting.Annotation
@@ -3200,8 +3200,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -3210,12 +3210,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3225,7 +3225,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackSecondaryColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle EndCap { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Font), "Microsoft Sans Serif, 8pt")]
@@ -3237,18 +3237,18 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public override System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Drawing.Drawing2D.GraphicsPath GraphicsPath { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Windows.Forms.DataVisualization.Charting.AnnotationPathPointCollection GraphicsPathPoints { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool IsFreeDrawPlacement { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.None)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle StartCap { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
         protected override void Dispose(bool disposing) { }
         public override void EndPlacement() { }
@@ -3258,7 +3258,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public PrintingManager(System.ComponentModel.Design.IServiceContainer container) { }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Drawing.Printing.PrintDocument PrintDocument { get { throw null; } set { } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -3272,8 +3272,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public RectangleAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -3282,12 +3282,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3303,7 +3303,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -3373,21 +3373,21 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.SeriesAreaNameConverter")]
         public string ChartArea { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.SeriesChartType)(10))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartTypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.SeriesChartType ChartType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("Column")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ChartTypeEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ChartTypeConverter")]
         public string ChartTypeName { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public System.Windows.Forms.DataVisualization.Charting.DataPointCustomProperties EmptyPointStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -3407,11 +3407,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.BindableAttribute(true)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartColorPalette)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.ColorPaletteEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartColorPalette Palette { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.DataPointCollectionEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.DataPointCollection Points { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3422,20 +3422,20 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public int ShadowOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public System.Windows.Forms.DataVisualization.Charting.SmartLabelStyle SmartLabelStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AxisType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AxisType.Primary)]
         public System.Windows.Forms.DataVisualization.Charting.AxisType XAxisType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.SeriesDataSourceMemberConverter")]
         public string XValueMember { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartValueType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartValueType.Auto)]
         public System.Windows.Forms.DataVisualization.Charting.ChartValueType XValueType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.AxisType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.AxisType.Primary)]
         public System.Windows.Forms.DataVisualization.Charting.AxisType YAxisType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -3446,7 +3446,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(1)]
         public int YValuesPerPoint { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartValueType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartValueType.Auto)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.SeriesYValueTypeConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ChartValueType YValueType { get { throw null; } set { } }
         protected override void Dispose(bool disposing) { }
@@ -3503,7 +3503,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
     {
         public SmartLabelStyle() { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle.Partial)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle AllowOutsidePlotArea { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Transparent")]
@@ -3511,7 +3511,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color CalloutBackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle.Arrow)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LineAnchorCapStyle CalloutLineAnchorCapStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Black")]
@@ -3519,13 +3519,13 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public virtual System.Drawing.Color CalloutLineColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public virtual System.Windows.Forms.DataVisualization.Charting.ChartDashStyle CalloutLineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int CalloutLineWidth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle.Underlined)]
         public virtual System.Windows.Forms.DataVisualization.Charting.LabelCalloutStyle CalloutStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -3587,11 +3587,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3600,7 +3600,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3610,7 +3610,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3624,7 +3624,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -3641,31 +3641,31 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public double Interval { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.AxisLabelDateValueConverter")]
         public double IntervalOffset { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalOffsetType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType IntervalType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("StripLine")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public double StripWidth { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType)(0))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType StripWidthType { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -3680,7 +3680,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Drawing.StringAlignment TextLineAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.TextOrientation)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3697,8 +3697,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public TextAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -3707,12 +3707,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3732,7 +3732,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public override System.Drawing.Color LineColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         public override System.Windows.Forms.DataVisualization.Charting.ChartDashStyle LineDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(1)]
@@ -3773,7 +3773,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.DefaultValueAttribute(1f)]
         public float Size { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.TickMarkStyle)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.TickMarkStyle.OutsideArea)]
         public System.Windows.Forms.DataVisualization.Charting.TickMarkStyle TickMarkStyle { get { throw null; } set { } }
     }
     public enum TickMarkStyle
@@ -3790,7 +3790,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public Title(string text, System.Windows.Forms.DataVisualization.Charting.Docking docking) { }
         public Title(string text, System.Windows.Forms.DataVisualization.Charting.Docking docking, System.Drawing.Font font, System.Drawing.Color color) { }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Drawing.ContentAlignment)(32))]
+        [System.ComponentModel.DefaultValueAttribute(System.Drawing.ContentAlignment.MiddleCenter)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Drawing.ContentAlignment Alignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3800,12 +3800,12 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.GradientStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.GradientStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.GradientEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.GradientStyle BackGradientStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle.None)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.DataVisualization.Charting.HatchStyleEditor, System.Windows.Forms.DataVisualization.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartHatchStyle BackHatchStyle { get { throw null; } set { } }
@@ -3815,7 +3815,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string BackImage { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.TopLeft)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle BackImageAlignment { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3825,7 +3825,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BackImageTransparentColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode.Tile)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartImageWrapMode BackImageWrapMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3841,7 +3841,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)(5))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.ChartDashStyle BorderDashStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3854,7 +3854,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.LegendAreaNameConverter")]
         public string DockedToChartArea { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.Docking)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.Docking.Top)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.Docking Docking { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3879,7 +3879,7 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public override string Name { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Windows.Forms.DataVisualization.Charting.ElementPositionConverter")]
         public System.Windows.Forms.DataVisualization.Charting.ElementPosition Position { get { throw null; } set { } }
@@ -3899,11 +3899,11 @@ namespace System.Windows.Forms.DataVisualization.Charting
         [System.ComponentModel.ParenthesizePropertyNameAttribute(true)]
         public string Text { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.TextOrientation)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.TextOrientation TextOrientation { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Windows.Forms.DataVisualization.Charting.TextStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Windows.Forms.DataVisualization.Charting.TextStyle.Default)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Windows.Forms.DataVisualization.Charting.TextStyle TextStyle { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -3946,8 +3946,8 @@ namespace System.Windows.Forms.DataVisualization.Charting
         public VerticalLineAnnotation() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AnnotationType { get { throw null; } }
     }
     public partial class ViewEventArgs : System.EventArgs

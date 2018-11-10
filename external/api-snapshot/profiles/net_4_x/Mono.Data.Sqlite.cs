@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("http://sqlite.phxsoftware.com")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Public Domain")]
@@ -15,10 +15,10 @@
 [assembly:System.Reflection.AssemblyTrademarkAttribute("")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
-[assembly:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+[assembly:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1))]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace Mono.Data.Sqlite
 {
@@ -31,6 +31,7 @@ namespace Mono.Data.Sqlite
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CollationSequence
     {
+        private object _dummy;
         public Mono.Data.Sqlite.CollationEncodingEnum Encoding;
         public string Name;
         public Mono.Data.Sqlite.CollationTypeEnum Type;
@@ -66,12 +67,12 @@ namespace Mono.Data.Sqlite
         public SqliteCommand(string commandText, Mono.Data.Sqlite.SqliteConnection connection, Mono.Data.Sqlite.SqliteTransaction transaction) { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.Data.SQL.Design.SqlCommandTextEditor, Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override string CommandText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(30)]
         public override int CommandTimeout { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.CommandType)(1))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.CommandType.Text)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override System.Data.CommandType CommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.Data.Design.DbConnectionEditor, Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -82,14 +83,14 @@ namespace Mono.Data.Sqlite
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.DesignOnlyAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool DesignTimeVisible { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public new Mono.Data.Sqlite.SqliteParameterCollection Parameters { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new Mono.Data.Sqlite.SqliteTransaction Transaction { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.UpdateRowSource)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.UpdateRowSource.None)]
         public override System.Data.UpdateRowSource UpdatedRowSource { get { throw null; } set { } }
         public override void Cancel() { }
         public object Clone() { throw null; }
@@ -148,20 +149,20 @@ namespace Mono.Data.Sqlite
         public SqliteConnection(string connectionString) { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("SQLite.Designer.SqliteConnectionStringEditor, SQLite.Designer, Version=1.0.36.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override string ConnectionString { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string Database { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string DataSource { get { throw null; } }
         protected override System.Data.Common.DbProviderFactory DbProviderFactory { get { throw null; } }
         public int DefaultTimeout { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string ServerVersion { get { throw null; } }
         public static string SQLiteVersion { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override System.Data.ConnectionState State { get { throw null; } }
         public event Mono.Data.Sqlite.SQLiteCommitHandler Commit { add { } remove { } }
         public event System.EventHandler RollBack { add { } remove { } }
@@ -211,10 +212,10 @@ namespace Mono.Data.Sqlite
         [System.ComponentModel.DisplayNameAttribute("Data Source")]
         public string DataSource { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((Mono.Data.Sqlite.SQLiteDateFormats)(1))]
+        [System.ComponentModel.DefaultValueAttribute(Mono.Data.Sqlite.SQLiteDateFormats.ISO8601)]
         public Mono.Data.Sqlite.SQLiteDateFormats DateTimeFormat { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((System.Data.IsolationLevel)(1048576))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.IsolationLevel.Serializable)]
         [System.ComponentModel.DisplayNameAttribute("Default Isolation Level")]
         public System.Data.IsolationLevel DefaultIsolationLevel { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
@@ -228,7 +229,7 @@ namespace Mono.Data.Sqlite
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool FailIfMissing { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((Mono.Data.Sqlite.SQLiteJournalModeEnum)(0))]
+        [System.ComponentModel.DefaultValueAttribute(Mono.Data.Sqlite.SQLiteJournalModeEnum.Delete)]
         [System.ComponentModel.DisplayNameAttribute("Journal Mode")]
         public Mono.Data.Sqlite.SQLiteJournalModeEnum JournalMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
@@ -255,7 +256,7 @@ namespace Mono.Data.Sqlite
         [System.ComponentModel.DisplayNameAttribute("Read Only")]
         public bool ReadOnly { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.DefaultValueAttribute((Mono.Data.Sqlite.SynchronizationModes)(0))]
+        [System.ComponentModel.DefaultValueAttribute(Mono.Data.Sqlite.SynchronizationModes.Normal)]
         [System.ComponentModel.DisplayNameAttribute("Synchronous")]
         public Mono.Data.Sqlite.SynchronizationModes SyncMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -266,7 +267,7 @@ namespace Mono.Data.Sqlite
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(3)]
         public int Version { get { throw null; } set { } }
-        public override bool TryGetValue(string keyword, out object value) { value = default(object); throw null; }
+        public override bool TryGetValue(string keyword, out object value) { throw null; }
     }
     public abstract partial class SqliteConvert
     {
@@ -425,7 +426,7 @@ namespace Mono.Data.Sqlite
         public static void RegisterFunction(System.Type typ) { }
         public virtual void Step(object[] args, int stepNumber, ref object contextData) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=false, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=false, AllowMultiple=true)]
     public sealed partial class SqliteFunctionAttribute : System.Attribute
     {
         public SqliteFunctionAttribute() { }
@@ -469,16 +470,16 @@ namespace Mono.Data.Sqlite
         public SqliteParameter(string parameterName) { }
         public SqliteParameter(string parameterName, System.Data.DbType dbType) { }
         public SqliteParameter(string parameterName, System.Data.DbType parameterType, int parameterSize) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public SqliteParameter(string parameterName, System.Data.DbType parameterType, int parameterSize, System.Data.ParameterDirection direction, bool isNullable, byte precision, byte scale, string sourceColumn, System.Data.DataRowVersion rowVersion, object value) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public SqliteParameter(string parameterName, System.Data.DbType parameterType, int parameterSize, System.Data.ParameterDirection direction, byte precision, byte scale, string sourceColumn, System.Data.DataRowVersion rowVersion, bool sourceColumnNullMapping, object value) { }
         public SqliteParameter(string parameterName, System.Data.DbType parameterType, int parameterSize, string sourceColumn) { }
         public SqliteParameter(string parameterName, System.Data.DbType parameterType, int parameterSize, string sourceColumn, System.Data.DataRowVersion rowVersion) { }
         public SqliteParameter(string parameterName, System.Data.DbType dbType, string sourceColumn) { }
         public SqliteParameter(string parameterName, System.Data.DbType dbType, string sourceColumn, System.Data.DataRowVersion rowVersion) { }
         public SqliteParameter(string parameterName, object value) { }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.Data.Common.DbProviderSpecificTypePropertyAttribute(true)]
         public override System.Data.DbType DbType { get { throw null; } set { } }
         public override System.Data.ParameterDirection Direction { get { throw null; } set { } }
@@ -489,7 +490,7 @@ namespace Mono.Data.Sqlite
         public override string SourceColumn { get { throw null; } set { } }
         public override bool SourceColumnNullMapping { get { throw null; } set { } }
         public override System.Data.DataRowVersion SourceVersion { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.StringConverter))]
         public override object Value { get { throw null; } set { } }
         public object Clone() { throw null; }
@@ -508,7 +509,7 @@ namespace Mono.Data.Sqlite
         public new Mono.Data.Sqlite.SqliteParameter this[string parameterName] { get { throw null; } set { } }
         public override object SyncRoot { get { throw null; } }
         public int Add(Mono.Data.Sqlite.SqliteParameter parameter) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int Add(object value) { throw null; }
         public Mono.Data.Sqlite.SqliteParameter Add(string parameterName, System.Data.DbType parameterType) { throw null; }
         public Mono.Data.Sqlite.SqliteParameter Add(string parameterName, System.Data.DbType parameterType, int parameterSize) { throw null; }

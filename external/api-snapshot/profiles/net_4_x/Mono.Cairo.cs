@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 namespace Cairo
@@ -24,8 +24,9 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Color
     {
-        public Color(double r, double g, double b) { throw null;}
-        public Color(double r, double g, double b, double a) { throw null;}
+        private int _dummyPrimitive;
+        public Color(double r, double g, double b) { throw null; }
+        public Color(double r, double g, double b, double a) { throw null; }
         public double A { get { throw null; } set { } }
         public double B { get { throw null; } set { } }
         public double G { get { throw null; } set { } }
@@ -203,7 +204,8 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Distance
     {
-        public Distance(double dx, double dy) { throw null;}
+        private int _dummyPrimitive;
+        public Distance(double dx, double dy) { throw null; }
         public double Dx { get { throw null; } set { } }
         public double Dy { get { throw null; } set { } }
     }
@@ -238,7 +240,8 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FontExtents
     {
-        public FontExtents(double ascent, double descent, double height, double maxXAdvance, double maxYAdvance) { throw null;}
+        private int _dummyPrimitive;
+        public FontExtents(double ascent, double descent, double height, double maxXAdvance, double maxYAdvance) { throw null; }
         public double Ascent { get { throw null; } set { } }
         public double Descent { get { throw null; } set { } }
         public double Height { get { throw null; } set { } }
@@ -337,7 +340,8 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Glyph
     {
-        public Glyph(long index, double x, double y) { throw null;}
+        private int _dummyPrimitive;
+        public Glyph(long index, double x, double y) { throw null; }
         public long Index { get { throw null; } set { } }
         public double X { get { throw null; } set { } }
         public double Y { get { throw null; } set { } }
@@ -509,14 +513,16 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Point
     {
-        public Point(int x, int y) { throw null;}
+        private int _dummyPrimitive;
+        public Point(int x, int y) { throw null; }
         public int X { get { throw null; } set { } }
         public int Y { get { throw null; } set { } }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PointD
     {
-        public PointD(double x, double y) { throw null;}
+        private int _dummyPrimitive;
+        public PointD(double x, double y) { throw null; }
         public double X { get { throw null; } set { } }
         public double Y { get { throw null; } set { } }
     }
@@ -535,8 +541,9 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Rectangle
     {
-        public Rectangle(Cairo.Point point, double width, double height) { throw null;}
-        public Rectangle(double x, double y, double width, double height) { throw null;}
+        private int _dummyPrimitive;
+        public Rectangle(Cairo.Point point, double width, double height) { throw null; }
+        public Rectangle(double x, double y, double width, double height) { throw null; }
         public double Height { get { throw null; } }
         public double Width { get { throw null; } }
         public double X { get { throw null; } }
@@ -737,6 +744,7 @@ namespace Cairo
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct TextExtents
     {
+        private int _dummyPrimitive;
         public double Height { get { throw null; } set { } }
         public double Width { get { throw null; } set { } }
         public double XAdvance { get { throw null; } set { } }

@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.EnterpriseServices.ApplicationIDAttribute("1e246775-2281-484f-8ad4-044c15b86eb7")]
 [assembly:System.EnterpriseServices.ApplicationNameAttribute(".NET Utilities")]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
@@ -17,39 +17,39 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.EnterpriseServices.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComCompatibleVersionAttribute(1, 0, 3300, 0)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(true)]
 [assembly:System.Runtime.InteropServices.GuidAttribute("4fb2d46f-efc8-4643-bcd0-6e5bfa6a174c")]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -85,7 +85,7 @@ namespace System.EnterpriseServices
         [System.MonoTODOAttribute]
         public void UnbindFromThread() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ApplicationAccessControlAttribute : System.Attribute
     {
@@ -96,7 +96,7 @@ namespace System.EnterpriseServices
         public System.EnterpriseServices.ImpersonationLevelOption ImpersonationLevel { get { throw null; } set { } }
         public bool Value { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ApplicationActivationAttribute : System.Attribute
     {
@@ -105,21 +105,21 @@ namespace System.EnterpriseServices
         public string SoapVRoot { get { throw null; } set { } }
         public System.EnterpriseServices.ActivationOption Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ApplicationIDAttribute : System.Attribute
     {
         public ApplicationIDAttribute(string guid) { }
         public System.Guid Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ApplicationNameAttribute : System.Attribute
     {
         public ApplicationNameAttribute(string name) { }
         public string Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ApplicationQueuingAttribute : System.Attribute
     {
@@ -139,7 +139,7 @@ namespace System.EnterpriseServices
         Packet = 4,
         Privacy = 6,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class AutoCompleteAttribute : System.Attribute
     {
@@ -169,7 +169,7 @@ namespace System.EnterpriseServices
         [System.MonoTODOAttribute]
         public static object CreateWithTransaction(object transaction, System.Type t) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ComponentAccessControlAttribute : System.Attribute
     {
@@ -177,7 +177,7 @@ namespace System.EnterpriseServices
         public ComponentAccessControlAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class COMTIIntrinsicsAttribute : System.Attribute
     {
@@ -185,7 +185,7 @@ namespace System.EnterpriseServices
         public COMTIIntrinsicsAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ConstructionEnabledAttribute : System.Attribute
     {
@@ -227,13 +227,13 @@ namespace System.EnterpriseServices
         [System.MonoTODOAttribute]
         public static void SetNamedProperty(string name, object value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1093))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class DescriptionAttribute : System.Attribute
     {
         public DescriptionAttribute(string desc) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class EventClassAttribute : System.Attribute
     {
@@ -242,7 +242,7 @@ namespace System.EnterpriseServices
         public bool FireInParallel { get { throw null; } set { } }
         public string PublisherFilter { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class EventTrackingEnabledAttribute : System.Attribute
     {
@@ -250,7 +250,7 @@ namespace System.EnterpriseServices
         public EventTrackingEnabledAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ExceptionClassAttribute : System.Attribute
     {
@@ -258,12 +258,12 @@ namespace System.EnterpriseServices
         public string Value { get { throw null; } }
     }
     [System.Runtime.InteropServices.GuidAttribute("FE6777FB-A674-4177-8F32-6D707E113484")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAsyncErrorNotify
     {
         void OnError(int hresult);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class IISIntrinsicsAttribute : System.Attribute
     {
@@ -302,7 +302,7 @@ namespace System.EnterpriseServices
         Register = 256,
         ReportWarningsToConsole = 32,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=true)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class InterfaceQueuingAttribute : System.Attribute
     {
@@ -312,27 +312,27 @@ namespace System.EnterpriseServices
         public string Interface { get { throw null; } set { } }
     }
     [System.Runtime.InteropServices.GuidAttribute("51372AFD-CAE7-11CF-BE81-00AA00A2FA25")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IPlaybackControl
     {
         void FinalClientRetry();
         void FinalServerRetry();
     }
     [System.Runtime.InteropServices.GuidAttribute("72380d55-8d2b-43a3-8513-2b6ef31434e9")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessInitControl
     {
         void ResetInitializerTimeout(int dwSecondsRemaining);
     }
     [System.Runtime.InteropServices.GuidAttribute("1113f52d-dc7f-4943-aed6-88d04027e32a")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessInitializer
     {
         void Shutdown();
         void Startup([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.IUnknown)]object punkProcessControl);
     }
     [System.Runtime.InteropServices.GuidAttribute("55e3ea25-55cb-4650-8887-18e8d30bb4bc")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IRegistrationHelper
     {
         void InstallAssembly([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string assembly, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]ref string application, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]ref string tlb, [System.Runtime.InteropServices.In]System.EnterpriseServices.InstallationFlags installFlags);
@@ -347,26 +347,26 @@ namespace System.EnterpriseServices
         string RemoteDispatchNotAutoDone(string s);
     }
     [System.Runtime.InteropServices.GuidAttribute("BD3E2E12-42DD-40f4-A09A-95A50C58304B")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IServiceCall
     {
         void OnCall();
     }
     [System.Runtime.InteropServices.GuidAttribute("8165B19E-8D3A-4d0b-80C8-97DE310DB583")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IServicedComponentInfo
     {
         void GetComponentInfo(ref int infoMask, out string[] infoArray);
     }
     [System.Runtime.InteropServices.GuidAttribute("0FB15084-AF41-11CE-BD2B-204C4F4F5020")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface ITransaction
     {
         void Abort(ref System.EnterpriseServices.BOID pboidReason, int fRetaining, int fAsync);
         void Commit(int fRetaining, int grfTC, int grfRM);
         void GetTransactionInfo(out System.EnterpriseServices.XACTTRANSINFO pinfo);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class JustInTimeActivationAttribute : System.Attribute
     {
@@ -374,7 +374,7 @@ namespace System.EnterpriseServices
         public JustInTimeActivationAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class LoadBalancingSupportedAttribute : System.Attribute
     {
@@ -382,7 +382,7 @@ namespace System.EnterpriseServices
         public LoadBalancingSupportedAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class MustRunInClientContextAttribute : System.Attribute
     {
@@ -390,7 +390,7 @@ namespace System.EnterpriseServices
         public MustRunInClientContextAttribute(bool val) { }
         public bool Value { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ObjectPoolingAttribute : System.Attribute
     {
@@ -417,7 +417,7 @@ namespace System.EnterpriseServices
         Inherit = 1,
         New = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class PrivateComponentAttribute : System.Attribute
     {
@@ -492,7 +492,7 @@ namespace System.EnterpriseServices
         [System.MonoTODOAttribute]
         public void UninstallAssemblyFromConfig([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.IUnknown)]ref System.EnterpriseServices.RegistrationConfig regConfig) { }
     }
-    [System.EnterpriseServices.TransactionAttribute((System.EnterpriseServices.TransactionOption)(4))]
+    [System.EnterpriseServices.TransactionAttribute(System.EnterpriseServices.TransactionOption.RequiresNew)]
     [System.Runtime.InteropServices.GuidAttribute("C89AC250-E18A-4FC7-ABD5-B8897B6A78A5")]
     public sealed partial class RegistrationHelperTx : System.EnterpriseServices.ServicedComponent
     {
@@ -525,7 +525,7 @@ namespace System.EnterpriseServices
         public bool PutResource(object resource) { throw null; }
         public delegate void TransactionEndDelegate(object resource);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class SecureMethodAttribute : System.Attribute
     {
@@ -562,7 +562,7 @@ namespace System.EnterpriseServices
         public int AuthenticationService { [System.MonoTODOAttribute]get { throw null; } }
         public System.EnterpriseServices.ImpersonationLevelOption ImpersonationLevel { [System.MonoTODOAttribute]get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1093), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method, AllowMultiple=true)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class SecurityRoleAttribute : System.Attribute
     {
@@ -644,7 +644,7 @@ namespace System.EnterpriseServices
         [System.MonoTODOAttribute]
         string System.EnterpriseServices.IRemoteDispatch.RemoteDispatchNotAutoDone(string s) { throw null; }
         [System.MonoTODOAttribute]
-        void System.EnterpriseServices.IServicedComponentInfo.GetComponentInfo(ref int infoMask, out string[] infoArray) { infoArray = default(string[]); }
+        void System.EnterpriseServices.IServicedComponentInfo.GetComponentInfo(ref int infoMask, out string[] infoArray) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.SerializableAttribute]
@@ -673,8 +673,8 @@ namespace System.EnterpriseServices
     public sealed partial class SharedPropertyGroup
     {
         internal SharedPropertyGroup() { }
-        public System.EnterpriseServices.SharedProperty CreateProperty(string name, out bool fExists) { fExists = default(bool); throw null; }
-        public System.EnterpriseServices.SharedProperty CreatePropertyByPosition(int position, out bool fExists) { fExists = default(bool); throw null; }
+        public System.EnterpriseServices.SharedProperty CreateProperty(string name, out bool fExists) { throw null; }
+        public System.EnterpriseServices.SharedProperty CreatePropertyByPosition(int position, out bool fExists) { throw null; }
         public System.EnterpriseServices.SharedProperty Property(string name) { throw null; }
         public System.EnterpriseServices.SharedProperty PropertyByPosition(int position) { throw null; }
     }
@@ -683,7 +683,7 @@ namespace System.EnterpriseServices
     {
         public SharedPropertyGroupManager() { }
         [System.MonoTODOAttribute]
-        public System.EnterpriseServices.SharedPropertyGroup CreatePropertyGroup(string name, ref System.EnterpriseServices.PropertyLockMode dwIsoMode, ref System.EnterpriseServices.PropertyReleaseMode dwRelMode, out bool fExist) { fExist = default(bool); throw null; }
+        public System.EnterpriseServices.SharedPropertyGroup CreatePropertyGroup(string name, ref System.EnterpriseServices.PropertyLockMode dwIsoMode, ref System.EnterpriseServices.PropertyReleaseMode dwRelMode, out bool fExist) { throw null; }
         [System.MonoTODOAttribute]
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
         [System.MonoTODOAttribute]
@@ -697,7 +697,7 @@ namespace System.EnterpriseServices
         Inherit = 1,
         New = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class SynchronizationAttribute : System.Attribute
     {
@@ -723,7 +723,7 @@ namespace System.EnterpriseServices
         None = 0,
         STA = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class TransactionAttribute : System.Attribute
     {
@@ -783,7 +783,7 @@ namespace System.EnterpriseServices
 }
 namespace System.EnterpriseServices.CompensatingResourceManager
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.Runtime.InteropServices.ProgIdAttribute("System.EnterpriseServices.Crm.ApplicationCrmEnabledAttribute")]
     public sealed partial class ApplicationCrmEnabledAttribute : System.Attribute
@@ -951,7 +951,7 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public ComManagedImportUtil() { }
         [System.MonoTODOAttribute]
-        public void GetComponentInfo(string assemblyPath, out string numComponents, out string componentInfo) { numComponents = default(string); componentInfo = default(string); }
+        public void GetComponentInfo(string assemblyPath, out string numComponents, out string componentInfo) { throw null; }
         [System.MonoTODOAttribute]
         public void InstallAssembly(string asmpath, string parname, string appname) { }
     }
@@ -972,7 +972,7 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public string GenerateMetaData(string strSrcTypeLib, string outPath, byte[] PublicKey, System.Reflection.StrongNameKeyPair KeyPair) { throw null; }
         [System.MonoTODOAttribute]
-        public string GenerateSigned(string strSrcTypeLib, string outPath, bool InstallGac, out string Error) { Error = default(string); throw null; }
+        public string GenerateSigned(string strSrcTypeLib, string outPath, bool InstallGac, out string Error) { throw null; }
         [System.MonoTODOAttribute]
         public static int SearchPath(string path, string fileName, string extension, int numBufferChars, string buffer, int[] filePart) { throw null; }
     }
@@ -1053,9 +1053,9 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public IISVirtualRoot() { }
         [System.MonoTODOAttribute]
-        public void Create(string RootWeb, string inPhysicalDirectory, string VirtualDirectory, out string Error) { Error = default(string); }
+        public void Create(string RootWeb, string inPhysicalDirectory, string VirtualDirectory, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void Delete(string RootWeb, string PhysicalDirectory, string VirtualDirectory, out string Error) { Error = default(string); }
+        public void Delete(string RootWeb, string PhysicalDirectory, string VirtualDirectory, out string Error) { throw null; }
     }
     [System.Runtime.InteropServices.GuidAttribute("6261e4b5-572a-4142-a2f9-1fe1a0c97097")]
     public partial interface IServerWebConfig
@@ -1105,29 +1105,29 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public Publish() { }
         [System.MonoTODOAttribute]
-        public void CreateMailBox(string RootMailServer, string MailBox, out string SmtpName, out string Domain, out string PhysicalPath, out string Error) { SmtpName = default(string); Domain = default(string); PhysicalPath = default(string); Error = default(string); }
+        public void CreateMailBox(string RootMailServer, string MailBox, out string SmtpName, out string Domain, out string PhysicalPath, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void CreateVirtualRoot(string Operation, string FullUrl, out string BaseUrl, out string VirtualRoot, out string PhysicalPath, out string Error) { BaseUrl = default(string); VirtualRoot = default(string); PhysicalPath = default(string); Error = default(string); }
+        public void CreateVirtualRoot(string Operation, string FullUrl, out string BaseUrl, out string VirtualRoot, out string PhysicalPath, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void DeleteMailBox(string RootMailServer, string MailBox, out string Error) { Error = default(string); }
+        public void DeleteMailBox(string RootMailServer, string MailBox, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void DeleteVirtualRoot(string RootWebServer, string FullUrl, out string Error) { Error = default(string); }
+        public void DeleteVirtualRoot(string RootWebServer, string FullUrl, out string Error) { throw null; }
         [System.MonoTODOAttribute]
         public void GacInstall(string AssemblyPath) { }
         [System.MonoTODOAttribute]
         public void GacRemove(string AssemblyPath) { }
         [System.MonoTODOAttribute]
-        public void GetAssemblyNameForCache(string TypeLibPath, out string CachePath) { CachePath = default(string); }
+        public void GetAssemblyNameForCache(string TypeLibPath, out string CachePath) { throw null; }
         [System.MonoTODOAttribute]
         public static string GetClientPhysicalPath(bool CreateDir) { throw null; }
         [System.MonoTODOAttribute]
         public string GetTypeNameFromProgId(string AssemblyPath, string ProgId) { throw null; }
         [System.MonoTODOAttribute]
-        public static void ParseUrl(string FullUrl, out string BaseUrl, out string VirtualRoot) { BaseUrl = default(string); VirtualRoot = default(string); }
+        public static void ParseUrl(string FullUrl, out string BaseUrl, out string VirtualRoot) { throw null; }
         [System.MonoTODOAttribute]
-        public void ProcessClientTlb(string ProgId, string SrcTlbPath, string PhysicalPath, string VRoot, string BaseUrl, string Mode, string Transport, out string AssemblyName, out string TypeName, out string Error) { AssemblyName = default(string); TypeName = default(string); Error = default(string); }
+        public void ProcessClientTlb(string ProgId, string SrcTlbPath, string PhysicalPath, string VRoot, string BaseUrl, string Mode, string Transport, out string AssemblyName, out string TypeName, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void ProcessServerTlb(string ProgId, string SrcTlbPath, string PhysicalPath, string Operation, out string strAssemblyName, out string TypeName, out string Error) { strAssemblyName = default(string); TypeName = default(string); Error = default(string); }
+        public void ProcessServerTlb(string ProgId, string SrcTlbPath, string PhysicalPath, string Operation, out string strAssemblyName, out string TypeName, out string Error) { throw null; }
         [System.MonoTODOAttribute]
         public void RegisterAssembly(string AssemblyPath) { }
         [System.MonoTODOAttribute]
@@ -1138,9 +1138,9 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public ServerWebConfig() { }
         [System.MonoTODOAttribute]
-        public void AddElement(string FilePath, string AssemblyName, string TypeName, string ProgId, string WkoMode, out string Error) { Error = default(string); }
+        public void AddElement(string FilePath, string AssemblyName, string TypeName, string ProgId, string WkoMode, out string Error) { throw null; }
         [System.MonoTODOAttribute]
-        public void Create(string FilePath, string FilePrefix, out string Error) { Error = default(string); }
+        public void Create(string FilePath, string FilePrefix, out string Error) { throw null; }
     }
     [System.Runtime.InteropServices.GuidAttribute("346D5B9F-45E1-45c0-AADF-1B7D221E9063")]
     public sealed partial class SoapClientImport : System.EnterpriseServices.Internal.ISoapClientImport
@@ -1156,7 +1156,7 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public SoapServerTlb() { }
         [System.MonoTODOAttribute]
-        public void AddServerTlb(string progId, string classId, string interfaceId, string srcTlbPath, string rootWebServer, string inBaseUrl, string inVirtualRoot, string clientActivated, string wellKnown, string discoFile, string operation, out string strAssemblyName, out string typeName) { strAssemblyName = default(string); typeName = default(string); }
+        public void AddServerTlb(string progId, string classId, string interfaceId, string srcTlbPath, string rootWebServer, string inBaseUrl, string inVirtualRoot, string clientActivated, string wellKnown, string discoFile, string operation, out string strAssemblyName, out string typeName) { throw null; }
         [System.MonoTODOAttribute]
         public void DeleteServerTlb(string progId, string classId, string interfaceId, string srcTlbPath, string rootWebServer, string baseUrl, string virtualRoot, string operation, string assemblyName, string typeName) { }
     }
@@ -1166,11 +1166,11 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public SoapServerVRoot() { }
         [System.MonoTODOAttribute]
-        public void CreateVirtualRootEx(string rootWebServer, string inBaseUrl, string inVirtualRoot, string homePage, string discoFile, string secureSockets, string authentication, string operation, out string baseUrl, out string virtualRoot, out string physicalPath) { baseUrl = default(string); virtualRoot = default(string); physicalPath = default(string); }
+        public void CreateVirtualRootEx(string rootWebServer, string inBaseUrl, string inVirtualRoot, string homePage, string discoFile, string secureSockets, string authentication, string operation, out string baseUrl, out string virtualRoot, out string physicalPath) { throw null; }
         [System.MonoTODOAttribute]
         public void DeleteVirtualRootEx(string rootWebServer, string inBaseUrl, string inVirtualRoot) { }
         [System.MonoTODOAttribute]
-        public void GetVirtualRootStatus(string RootWebServer, string inBaseUrl, string inVirtualRoot, out string Exists, out string SSL, out string WindowsAuth, out string Anonymous, out string HomePage, out string DiscoFile, out string PhysicalPath, out string BaseUrl, out string VirtualRoot) { Exists = default(string); SSL = default(string); WindowsAuth = default(string); Anonymous = default(string); HomePage = default(string); DiscoFile = default(string); PhysicalPath = default(string); BaseUrl = default(string); VirtualRoot = default(string); }
+        public void GetVirtualRootStatus(string RootWebServer, string inBaseUrl, string inVirtualRoot, out string Exists, out string SSL, out string WindowsAuth, out string Anonymous, out string HomePage, out string DiscoFile, out string PhysicalPath, out string BaseUrl, out string VirtualRoot) { throw null; }
     }
     [System.Runtime.InteropServices.GuidAttribute("5F9A955F-AA55-4127-A32B-33496AA8A44E")]
     public sealed partial class SoapUtility : System.EnterpriseServices.Internal.ISoapUtility
@@ -1178,9 +1178,9 @@ namespace System.EnterpriseServices.Internal
         [System.MonoTODOAttribute]
         public SoapUtility() { }
         [System.MonoTODOAttribute]
-        public void GetServerBinPath(string rootWebServer, string inBaseUrl, string inVirtualRoot, out string binPath) { binPath = default(string); }
+        public void GetServerBinPath(string rootWebServer, string inBaseUrl, string inVirtualRoot, out string binPath) { throw null; }
         [System.MonoTODOAttribute]
-        public void GetServerPhysicalPath(string rootWebServer, string inBaseUrl, string inVirtualRoot, out string physicalPath) { physicalPath = default(string); }
+        public void GetServerPhysicalPath(string rootWebServer, string inBaseUrl, string inVirtualRoot, out string physicalPath) { throw null; }
         [System.MonoTODOAttribute]
         public void Present() { }
     }

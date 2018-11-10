@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 namespace Mono.CompilerServices.SymbolWriter
@@ -21,7 +21,7 @@ namespace Mono.CompilerServices.SymbolWriter
     {
         public readonly string CapturedName;
         public readonly int Scope;
-        public CapturedScope(int scope, string captured_name) { throw null;}
+        public CapturedScope(int scope, string captured_name) { throw null; }
         public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -30,7 +30,7 @@ namespace Mono.CompilerServices.SymbolWriter
         public readonly string CapturedName;
         public readonly Mono.CompilerServices.SymbolWriter.CapturedVariable.CapturedKind Kind;
         public readonly string Name;
-        public CapturedVariable(string name, string captured_name, Mono.CompilerServices.SymbolWriter.CapturedVariable.CapturedKind kind) { throw null;}
+        public CapturedVariable(string name, string captured_name, Mono.CompilerServices.SymbolWriter.CapturedVariable.CapturedKind kind) { throw null; }
         public override string ToString() { throw null; }
         public enum CapturedKind : byte
         {
@@ -124,7 +124,7 @@ namespace Mono.CompilerServices.SymbolWriter
         protected Mono.CompilerServices.SymbolWriter.LineNumberEntry[] _line_numbers;
         protected LineNumberTable(Mono.CompilerServices.SymbolWriter.MonoSymbolFile file) { }
         public Mono.CompilerServices.SymbolWriter.LineNumberEntry[] LineNumbers { get { throw null; } }
-        public bool GetMethodBounds(out Mono.CompilerServices.SymbolWriter.LineNumberEntry start, out Mono.CompilerServices.SymbolWriter.LineNumberEntry end) { start = default(Mono.CompilerServices.SymbolWriter.LineNumberEntry); end = default(Mono.CompilerServices.SymbolWriter.LineNumberEntry); throw null; }
+        public bool GetMethodBounds(out Mono.CompilerServices.SymbolWriter.LineNumberEntry start, out Mono.CompilerServices.SymbolWriter.LineNumberEntry end) { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct LocalVariableEntry
@@ -132,7 +132,7 @@ namespace Mono.CompilerServices.SymbolWriter
         public readonly int BlockIndex;
         public readonly int Index;
         public readonly string Name;
-        public LocalVariableEntry(int index, string name, int block) { throw null;}
+        public LocalVariableEntry(int index, string name, int block) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class MethodEntry : System.IComparable
@@ -240,7 +240,7 @@ namespace Mono.CompilerServices.SymbolWriter
         public readonly string Name;
         public readonly int Parent;
         public readonly string[] UsingClauses;
-        public NamespaceEntry(string name, int index, string[] using_clauses, int parent) { throw null;}
+        public NamespaceEntry(string name, int index, string[] using_clauses, int parent) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class OffsetTable
@@ -282,7 +282,7 @@ namespace Mono.CompilerServices.SymbolWriter
     {
         public readonly int Index;
         public readonly int Scope;
-        public ScopeVariable(int scope, int index) { throw null;}
+        public ScopeVariable(int scope, int index) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class SourceFileEntry

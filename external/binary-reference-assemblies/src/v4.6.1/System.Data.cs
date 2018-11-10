@@ -4788,6 +4788,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlBinary : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private object _dummy;
         public static readonly System.Data.SqlTypes.SqlBinary Null;
         public SqlBinary(byte[] value) { throw null;}
         public bool IsNull { get { throw null; } }
@@ -4828,6 +4829,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlBoolean : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlBoolean False;
         public static readonly System.Data.SqlTypes.SqlBoolean Null;
         public static readonly System.Data.SqlTypes.SqlBoolean One;
@@ -4899,6 +4901,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlByte : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlByte MaxValue;
         public static readonly System.Data.SqlTypes.SqlByte MinValue;
         public static readonly System.Data.SqlTypes.SqlByte Null;
@@ -5043,6 +5046,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlDateTime : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlDateTime MaxValue;
         public static readonly System.Data.SqlTypes.SqlDateTime MinValue;
         public static readonly System.Data.SqlTypes.SqlDateTime Null;
@@ -5095,6 +5099,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlDecimal : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly byte MaxPrecision;
         public static readonly byte MaxScale;
         public static readonly System.Data.SqlTypes.SqlDecimal MaxValue;
@@ -5182,6 +5187,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlDouble : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlDouble MaxValue;
         public static readonly System.Data.SqlTypes.SqlDouble MinValue;
         public static readonly System.Data.SqlTypes.SqlDouble Null;
@@ -5274,6 +5280,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlGuid : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private object _dummy;
         public static readonly System.Data.SqlTypes.SqlGuid Null;
         public SqlGuid(byte[] value) { throw null;}
         public SqlGuid(System.Guid g) { throw null;}
@@ -5316,6 +5323,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlInt16 : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlInt16 MaxValue;
         public static readonly System.Data.SqlTypes.SqlInt16 MinValue;
         public static readonly System.Data.SqlTypes.SqlInt16 Null;
@@ -5391,6 +5399,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlInt32 : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlInt32 MaxValue;
         public static readonly System.Data.SqlTypes.SqlInt32 MinValue;
         public static readonly System.Data.SqlTypes.SqlInt32 Null;
@@ -5466,6 +5475,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlInt64 : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlInt64 MaxValue;
         public static readonly System.Data.SqlTypes.SqlInt64 MinValue;
         public static readonly System.Data.SqlTypes.SqlInt64 Null;
@@ -5541,6 +5551,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlMoney : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlMoney MaxValue;
         public static readonly System.Data.SqlTypes.SqlMoney MinValue;
         public static readonly System.Data.SqlTypes.SqlMoney Null;
@@ -5628,6 +5639,7 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlSingle : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.SqlTypes.SqlSingle MaxValue;
         public static readonly System.Data.SqlTypes.SqlSingle MinValue;
         public static readonly System.Data.SqlTypes.SqlSingle Null;
@@ -5693,6 +5705,8 @@ namespace System.Data.SqlTypes
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SqlString : System.Data.SqlTypes.INullable, System.IComparable, System.Xml.Serialization.IXmlSerializable
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public static readonly int BinarySort;
         public static readonly int BinarySort2;
         public static readonly int IgnoreCase;

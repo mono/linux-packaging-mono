@@ -678,6 +678,8 @@ namespace Microsoft.Build.Evaluation
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ResolvedImport
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public Microsoft.Build.Construction.ProjectRootElement ImportedProject { get { throw null; } }
         public Microsoft.Build.Construction.ProjectImportElement ImportingElement { get { throw null; } }
         public bool IsImported { get { throw null; } }

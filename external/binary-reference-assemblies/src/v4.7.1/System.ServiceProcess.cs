@@ -289,6 +289,7 @@ namespace System.ServiceProcess
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SessionChangeDescription
     {
+        private int _dummyPrimitive;
         public System.ServiceProcess.SessionChangeReason Reason { get { throw null; } }
         public int SessionId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }

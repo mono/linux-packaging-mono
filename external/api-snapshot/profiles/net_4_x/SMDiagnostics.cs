@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("0.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.dll")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Contains share code for some System.ServiceModel libraries")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("4.6.57.0")]

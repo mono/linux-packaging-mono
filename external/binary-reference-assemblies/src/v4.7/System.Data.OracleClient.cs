@@ -54,6 +54,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleBinary : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
         public static readonly System.Data.OracleClient.OracleBinary Null;
         public OracleBinary(byte[] b) { throw null;}
         public bool IsNull { get { throw null; } }
@@ -83,6 +84,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleBoolean : System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleBoolean False;
         public static readonly System.Data.OracleClient.OracleBoolean Null;
         public static readonly System.Data.OracleClient.OracleBoolean One;
@@ -416,6 +418,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1)]
     public partial struct OracleDateTime : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
         public static readonly System.Data.OracleClient.OracleDateTime MaxValue;
         public static readonly System.Data.OracleClient.OracleDateTime MinValue;
         public static readonly System.Data.OracleClient.OracleDateTime Null;
@@ -516,6 +519,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1)]
     public partial struct OracleMonthSpan : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleMonthSpan MaxValue;
         public static readonly System.Data.OracleClient.OracleMonthSpan MinValue;
         public static readonly System.Data.OracleClient.OracleMonthSpan Null;
@@ -547,6 +551,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1)]
     public partial struct OracleNumber : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
         public static readonly System.Data.OracleClient.OracleNumber E;
         public static readonly int MaxPrecision;
         public static readonly int MaxScale;
@@ -765,6 +770,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleString : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
         public static readonly System.Data.OracleClient.OracleString Empty;
         public static readonly System.Data.OracleClient.OracleString Null;
         public OracleString(string s) { throw null;}
@@ -796,6 +802,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1)]
     public partial struct OracleTimeSpan : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
         public static readonly System.Data.OracleClient.OracleTimeSpan MaxValue;
         public static readonly System.Data.OracleClient.OracleTimeSpan MinValue;
         public static readonly System.Data.OracleClient.OracleTimeSpan Null;

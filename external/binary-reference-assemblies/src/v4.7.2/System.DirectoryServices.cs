@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.DirectoryServices.dll")]
@@ -19,10 +19,10 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
-[assembly:System.Security.Permissions.FileIOPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, AllFiles=(System.Security.Permissions.FileIOPermissionAccess)(8))]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
+[assembly:System.Security.Permissions.FileIOPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, AllFiles=System.Security.Permissions.FileIOPermissionAccess.PathDiscovery)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, UnmanagedCode=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 [assembly:System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, Unrestricted=true)]
@@ -87,8 +87,8 @@ namespace System.DirectoryServices
         public void AddAuditRule(System.DirectoryServices.ActiveDirectoryAuditRule rule) { }
         public sealed override System.Security.AccessControl.AuditRule AuditRuleFactory(System.Security.Principal.IdentityReference identityReference, int accessMask, bool isInherited, System.Security.AccessControl.InheritanceFlags inheritanceFlags, System.Security.AccessControl.PropagationFlags propagationFlags, System.Security.AccessControl.AuditFlags flags) { throw null; }
         public sealed override System.Security.AccessControl.AuditRule AuditRuleFactory(System.Security.Principal.IdentityReference identityReference, int accessMask, bool isInherited, System.Security.AccessControl.InheritanceFlags inheritanceFlags, System.Security.AccessControl.PropagationFlags propagationFlags, System.Security.AccessControl.AuditFlags flags, System.Guid objectGuid, System.Guid inheritedObjectGuid) { throw null; }
-        public override bool ModifyAccessRule(System.Security.AccessControl.AccessControlModification modification, System.Security.AccessControl.AccessRule rule, out bool modified) { modified = default(bool); throw null; }
-        public override bool ModifyAuditRule(System.Security.AccessControl.AccessControlModification modification, System.Security.AccessControl.AuditRule rule, out bool modified) { modified = default(bool); throw null; }
+        public override bool ModifyAccessRule(System.Security.AccessControl.AccessControlModification modification, System.Security.AccessControl.AccessRule rule, out bool modified) { throw null; }
+        public override bool ModifyAuditRule(System.Security.AccessControl.AccessControlModification modification, System.Security.AccessControl.AuditRule rule, out bool modified) { throw null; }
         public override void PurgeAccessRules(System.Security.Principal.IdentityReference identity) { }
         public override void PurgeAuditRules(System.Security.Principal.IdentityReference identity) { }
         public void RemoveAccess(System.Security.Principal.IdentityReference identity, System.Security.AccessControl.AccessControlType type) { }
@@ -169,7 +169,7 @@ namespace System.DirectoryServices
     [System.ComponentModel.TypeConverterAttribute("System.DirectoryServices.Design.DirectoryEntryConverter")]
     [System.DirectoryServices.DSDescriptionAttribute("DirectoryEntryDesc")]
     [System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
-    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
+    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
     [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
     public partial class DirectoryEntry : System.ComponentModel.Component
     {
@@ -183,40 +183,40 @@ namespace System.DirectoryServices
         public DirectoryEntry(string path, string username, string password) { }
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         public DirectoryEntry(string path, string username, string password, System.DirectoryServices.AuthenticationTypes authenticationType) { }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.AuthenticationTypes)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.AuthenticationTypes.Secure)]
         [System.DirectoryServices.DSDescriptionAttribute("DSAuthenticationType")]
         public System.DirectoryServices.AuthenticationTypes AuthenticationType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSChildren")]
         public System.DirectoryServices.DirectoryEntries Children { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSGuid")]
         public System.Guid Guid { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSName")]
         public string Name { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSNativeGuid")]
         public string NativeGuid { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSNativeObject")]
         public object NativeObject { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSObjectSecurity")]
         public System.DirectoryServices.ActiveDirectorySecurity ObjectSecurity { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSOptions")]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.DirectoryServices.DirectoryEntryConfiguration Options { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSParent")]
         public System.DirectoryServices.DirectoryEntry Parent { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -229,15 +229,15 @@ namespace System.DirectoryServices
         [System.DirectoryServices.DSDescriptionAttribute("DSPath")]
         public string Path { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSProperties")]
         public System.DirectoryServices.PropertyCollection Properties { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSchemaClassName")]
         public string SchemaClassName { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSchemaEntry")]
         public System.DirectoryServices.DirectoryEntry SchemaEntry { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -313,7 +313,7 @@ namespace System.DirectoryServices
         public bool CacheResults { get { throw null; } set { } }
         [System.DirectoryServices.DSDescriptionAttribute("DSClientTimeout")]
         public System.TimeSpan ClientTimeout { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.DereferenceAlias)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.DereferenceAlias.Never)]
         [System.DirectoryServices.DSDescriptionAttribute("DSDerefAlias")]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.DirectoryServices.DereferenceAlias DerefAlias { get { throw null; } set { } }
@@ -322,7 +322,7 @@ namespace System.DirectoryServices
         [System.DirectoryServices.DSDescriptionAttribute("DSDirectorySynchronization")]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.DirectoryServices.DirectorySynchronization DirectorySynchronization { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.ExtendedDN)(-1))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.ExtendedDN.None)]
         [System.DirectoryServices.DSDescriptionAttribute("DSExtendedDn")]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.DirectoryServices.ExtendedDN ExtendedDN { get { throw null; } set { } }
@@ -334,24 +334,24 @@ namespace System.DirectoryServices
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.DirectoryServices.DSDescriptionAttribute("DSPageSize")]
         public int PageSize { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.DirectoryServices.DSDescriptionAttribute("DSPropertiesToLoad")]
         public System.Collections.Specialized.StringCollection PropertiesToLoad { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.DirectoryServices.DSDescriptionAttribute("DSPropertyNamesOnly")]
         public bool PropertyNamesOnly { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.ReferralChasingOption)(64))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.ReferralChasingOption.External)]
         [System.DirectoryServices.DSDescriptionAttribute("DSReferralChasing")]
         public System.DirectoryServices.ReferralChasingOption ReferralChasing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSearchRoot")]
         public System.DirectoryServices.DirectoryEntry SearchRoot { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.SearchScope)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.SearchScope.Subtree)]
         [System.ComponentModel.SettingsBindableAttribute(true)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSearchScope")]
         public System.DirectoryServices.SearchScope SearchScope { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.SecurityMasks)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.SecurityMasks.None)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSecurityMasks")]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.DirectoryServices.SecurityMasks SecurityMasks { get { throw null; } set { } }
@@ -362,7 +362,7 @@ namespace System.DirectoryServices
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSizeLimit")]
         public int SizeLimit { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.ExpandableObjectConverter))]
         [System.DirectoryServices.DSDescriptionAttribute("DSSort")]
         public System.DirectoryServices.SortOption Sort { get { throw null; } set { } }
@@ -407,7 +407,7 @@ namespace System.DirectoryServices
         None = 0,
         Write = 6,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(621), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Event | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true, Inherited=false)]
     [System.SerializableAttribute]
     public partial class DirectoryServicesPermissionAttribute : System.Security.Permissions.CodeAccessSecurityAttribute
     {
@@ -448,7 +448,7 @@ namespace System.DirectoryServices
         public DirectorySynchronization(System.DirectoryServices.DirectorySynchronization sync) { }
         public DirectorySynchronization(System.DirectoryServices.DirectorySynchronizationOptions option) { }
         public DirectorySynchronization(System.DirectoryServices.DirectorySynchronizationOptions option, byte[] cookie) { }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.DirectorySynchronizationOptions)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.DirectorySynchronizationOptions.None)]
         [System.DirectoryServices.DSDescriptionAttribute("DSDirectorySynchronizationFlag")]
         public System.DirectoryServices.DirectorySynchronizationOptions Option { get { throw null; } set { } }
         public System.DirectoryServices.DirectorySynchronization Copy() { throw null; }
@@ -501,7 +501,7 @@ namespace System.DirectoryServices
         public DirectoryVirtualListViewContext() { }
         public System.DirectoryServices.DirectoryVirtualListViewContext Copy() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
     public partial class DSDescriptionAttribute : System.ComponentModel.DescriptionAttribute
     {
         public DSDescriptionAttribute(string description) { }
@@ -657,7 +657,7 @@ namespace System.DirectoryServices
         public string Path { get { throw null; } }
         public System.DirectoryServices.ResultPropertyCollection Properties { get { throw null; } }
         [System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         public System.DirectoryServices.DirectoryEntry GetDirectoryEntry() { throw null; }
     }
     [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
@@ -704,7 +704,7 @@ namespace System.DirectoryServices
     {
         public SortOption() { }
         public SortOption(string propertyName, System.DirectoryServices.SortDirection direction) { }
-        [System.ComponentModel.DefaultValueAttribute((System.DirectoryServices.SortDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.DirectoryServices.SortDirection.Ascending)]
         [System.DirectoryServices.DSDescriptionAttribute("DSSortDirection")]
         public System.DirectoryServices.SortDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]

@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.Activation.dll")]
@@ -19,9 +19,9 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, Execution=true)]
 namespace System.ServiceModel
 {
@@ -30,7 +30,7 @@ namespace System.ServiceModel
     {
         public static bool AspNetCompatibilityEnabled { get { throw null; } }
         public static bool MultipleSiteBindingsEnabled { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void EnsureInitialized() { }
         public static void EnsureServiceAvailable(string virtualPath) { }
     }
@@ -43,28 +43,28 @@ namespace System.ServiceModel.Activation
         protected HostedTransportConfiguration() { }
         public abstract System.Uri[] GetBaseAddresses(string virtualPath);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ServiceActivationBuildProviderAttribute : System.Attribute
     {
         public ServiceActivationBuildProviderAttribute() { }
     }
-    [System.Security.SecurityCriticalAttribute((System.Security.SecurityCriticalScope)(1))]
+    [System.Security.SecurityCriticalAttribute(System.Security.SecurityCriticalScope.Everything)]
 #if SERVICEMODEL_DEP
     [System.ServiceModel.Activation.ServiceActivationBuildProviderAttribute]
 #endif
 #if WEB_DEP
-    [System.Web.Compilation.BuildProviderAppliesToAttribute((System.Web.Compilation.BuildProviderAppliesTo)(1))]
+    [System.Web.Compilation.BuildProviderAppliesToAttribute(System.Web.Compilation.BuildProviderAppliesTo.Web)]
     public sealed partial class ServiceBuildProvider : System.Web.Compilation.BuildProvider
 #else
     public sealed partial class ServiceBuildProvider
 #endif
     {
-        public ServiceBuildProvider() { }
 #if WEB_DEP
+        public ServiceBuildProvider() { }
         public override System.Web.Compilation.CompilerType CodeCompilerType { get { throw null; } }
         public override System.Collections.ICollection VirtualPathDependencies { get { throw null; } }
         public override void GenerateCode(System.Web.Compilation.AssemblyBuilder assemblyBuilder) { }
-        protected override System.CodeDom.CodeCompileUnit GetCodeCompileUnit(out System.Collections.IDictionary linePragmasTable) { linePragmasTable = default(System.Collections.IDictionary); throw null; }
+        protected override System.CodeDom.CodeCompileUnit GetCodeCompileUnit(out System.Collections.IDictionary linePragmasTable) { throw null; }
         public override string GetCustomString(System.CodeDom.Compiler.CompilerResults results) { throw null; }
         public override System.Web.Compilation.BuildProviderResultFlags GetResultFlags(System.CodeDom.Compiler.CompilerResults results) { throw null; }
 #endif
@@ -83,7 +83,7 @@ namespace System.ServiceModel.Activation
 #endif
     }
 #if SERVICEMODEL_DEP
-    public partial class ServiceRoute : System.Web.Routing.Route
+     public partial class ServiceRoute : System.Web.Routing.Route
 #else
     public partial class ServiceRoute
 #endif
@@ -96,7 +96,7 @@ namespace System.ServiceModel.Activation
 namespace System.ServiceModel.Activities.Activation
 {
 #if WORKFLOW_DEP
-    public partial class WorkflowServiceHostFactory : System.ServiceModel.Activation.ServiceHostFactoryBase
+     public partial class WorkflowServiceHostFactory : System.ServiceModel.Activation.ServiceHostFactoryBase
 #else
     public partial class WorkflowServiceHostFactory
 #endif

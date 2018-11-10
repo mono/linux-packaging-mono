@@ -4,13 +4,13 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(257))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.Default | System.Diagnostics.DebuggableAttribute.DebuggingModes.DisableOptimizations)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("Accessibility.dll")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Accessibility.dll")]
-[assembly:System.Reflection.AssemblyFileVersionAttribute("4.7.2558.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("4.7.2558.0")]
+[assembly:System.Reflection.AssemblyFileVersionAttribute("4.7.3062.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("4.7.3062.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono Common Language Infrastructure")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Accessibility.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
@@ -19,12 +19,12 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(true)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Runtime.InteropServices.GuidAttribute("1EA4DBF0-3C3B-11CF-810C-00AA00389B71")]
 [assembly:System.Runtime.InteropServices.ImportedFromTypeLibAttribute("Accessibility")]
 [assembly:System.Runtime.InteropServices.TypeLibVersionAttribute(1, 1)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(2), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level2, SkipVerificationInFullTrust=true)]
 namespace Accessibility
 {
     public enum AnnoScope
@@ -37,10 +37,10 @@ namespace Accessibility
     public partial interface CAccPropServices : Accessibility.IAccPropServices
     {
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(0))]
+    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
     [System.Runtime.InteropServices.ComConversionLossAttribute]
     [System.Runtime.InteropServices.GuidAttribute("B5F8350B-0548-48B1-A6EE-88BD00B4A5E7")]
-    [System.Runtime.InteropServices.TypeLibTypeAttribute((System.Runtime.InteropServices.TypeLibTypeFlags)(2))]
+    [System.Runtime.InteropServices.TypeLibTypeAttribute(System.Runtime.InteropServices.TypeLibTypeFlags.FCanCreate)]
     public partial class CAccPropServicesClass : Accessibility.CAccPropServices, Accessibility.IAccPropServices
     {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public CAccPropServicesClass() { }
@@ -61,7 +61,7 @@ namespace Accessibility
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public virtual void SetPropValue([System.Runtime.InteropServices.In]ref byte pIDString, [System.Runtime.InteropServices.In]uint dwIDStringLen, [System.Runtime.InteropServices.In]System.Guid idProp, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Struct)]object var) { }
     }
     [System.Runtime.InteropServices.GuidAttribute("618736E0-3C3D-11CF-810C-00AA00389B71")]
-    [System.Runtime.InteropServices.TypeLibTypeAttribute((System.Runtime.InteropServices.TypeLibTypeFlags)(4176))]
+    [System.Runtime.InteropServices.TypeLibTypeAttribute(System.Runtime.InteropServices.TypeLibTypeFlags.FDispatchable | System.Runtime.InteropServices.TypeLibTypeFlags.FDual | System.Runtime.InteropServices.TypeLibTypeFlags.FHidden)]
     public partial interface IAccessible
     {
         int accChildCount { get; }
@@ -87,28 +87,28 @@ namespace Accessibility
         void set_accValue(object childID, string newValue);
     }
     [System.Runtime.InteropServices.GuidAttribute("03022430-ABC4-11D0-BDE2-00AA001A1953")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
-    [System.Runtime.InteropServices.TypeLibTypeAttribute((System.Runtime.InteropServices.TypeLibTypeFlags)(272))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
+    [System.Runtime.InteropServices.TypeLibTypeAttribute(System.Runtime.InteropServices.TypeLibTypeFlags.FHidden | System.Runtime.InteropServices.TypeLibTypeFlags.FOleAutomation)]
     public partial interface IAccessibleHandler
     {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]void AccessibleObjectFromID([System.Runtime.InteropServices.In]int hwnd, [System.Runtime.InteropServices.In]int lObjectID, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]out Accessibility.IAccessible pIAccessible);
     }
     [System.Runtime.InteropServices.ComConversionLossAttribute]
     [System.Runtime.InteropServices.GuidAttribute("7852B78D-1CFD-41C1-A615-9C0C85960B5F")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAccIdentity
     {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]void GetIdentityString([System.Runtime.InteropServices.In]uint dwIDChild, [System.Runtime.InteropServices.Out]System.IntPtr ppIDString, out uint pdwIDStringLen);
     }
     [System.Runtime.InteropServices.GuidAttribute("76C0DBBB-15E0-4E7B-B61B-20EEEA2001E0")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAccPropServer
     {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]void GetPropValue([System.Runtime.InteropServices.In]ref byte pIDString, [System.Runtime.InteropServices.In]uint dwIDStringLen, [System.Runtime.InteropServices.In]System.Guid idProp, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Struct)]out object pvarValue, out int pfHasProp);
     }
     [System.Runtime.InteropServices.ComConversionLossAttribute]
     [System.Runtime.InteropServices.GuidAttribute("6E26E776-04F0-495D-80E4-3330352E3169")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAccPropServices
     {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]void ClearHmenuProps([System.Runtime.InteropServices.ComAliasNameAttribute("Accessibility.wireHMENU")][System.Runtime.InteropServices.In]ref Accessibility._RemotableHandle hmenu, [System.Runtime.InteropServices.In]uint idChild, [System.Runtime.InteropServices.In]ref System.Guid paProps, [System.Runtime.InteropServices.In]int cProps);
