@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(false)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Runtime.Remoting.dll")]
@@ -15,39 +15,39 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Runtime.Remoting.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComCompatibleVersionAttribute(1, 0, 3300, 0)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Runtime.InteropServices.TypeLibVersionAttribute(2, 0)]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -67,7 +67,7 @@ namespace System.Runtime.Remoting.Channels
         public void AsyncProcessRequest(System.Runtime.Remoting.Channels.IClientChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public void AsyncProcessResponse(System.Runtime.Remoting.Channels.IClientResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public System.IO.Stream GetRequestStream(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers) { throw null; }
-        public void ProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { responseHeaders = default(System.Runtime.Remoting.Channels.ITransportHeaders); responseStream = default(System.IO.Stream); }
+        public void ProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { throw null; }
         public System.Runtime.Remoting.Messaging.IMessage SyncProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg) { throw null; }
     }
     public partial class BinaryClientFormatterSinkProvider : System.Runtime.Remoting.Channels.IClientChannelSinkProvider, System.Runtime.Remoting.Channels.IClientFormatterSinkProvider
@@ -86,7 +86,7 @@ namespace System.Runtime.Remoting.Channels
         public System.Runtime.Serialization.Formatters.TypeFilterLevel TypeFilterLevel { get { throw null; } set { } }
         public void AsyncProcessResponse(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public System.IO.Stream GetResponseStream(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers) { throw null; }
-        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { responseMsg = default(System.Runtime.Remoting.Messaging.IMessage); responseHeaders = default(System.Runtime.Remoting.Channels.ITransportHeaders); responseStream = default(System.IO.Stream); throw null; }
+        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { throw null; }
         [System.SerializableAttribute]
         public enum Protocol
         {
@@ -126,7 +126,7 @@ namespace System.Runtime.Remoting.Channels
         public void AsyncProcessRequest(System.Runtime.Remoting.Channels.IClientChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public void AsyncProcessResponse(System.Runtime.Remoting.Channels.IClientResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public System.IO.Stream GetRequestStream(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers) { throw null; }
-        public void ProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { responseHeaders = default(System.Runtime.Remoting.Channels.ITransportHeaders); responseStream = default(System.IO.Stream); }
+        public void ProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { throw null; }
         public System.Runtime.Remoting.Messaging.IMessage SyncProcessMessage(System.Runtime.Remoting.Messaging.IMessage msg) { throw null; }
     }
     public partial class SoapClientFormatterSinkProvider : System.Runtime.Remoting.Channels.IClientChannelSinkProvider, System.Runtime.Remoting.Channels.IClientFormatterSinkProvider
@@ -145,7 +145,7 @@ namespace System.Runtime.Remoting.Channels
         public System.Runtime.Serialization.Formatters.TypeFilterLevel TypeFilterLevel { get { throw null; } set { } }
         public void AsyncProcessResponse(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public System.IO.Stream GetResponseStream(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers) { throw null; }
-        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { responseMsg = default(System.Runtime.Remoting.Messaging.IMessage); responseHeaders = default(System.Runtime.Remoting.Channels.ITransportHeaders); responseStream = default(System.IO.Stream); throw null; }
+        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { throw null; }
         [System.SerializableAttribute]
         public enum Protocol
         {
@@ -187,9 +187,9 @@ namespace System.Runtime.Remoting.Channels.Http
         public override System.Collections.IDictionary Properties { get { throw null; } }
         public bool WantsToListen { get { throw null; } set { } }
         public void AddHookChannelUri(string channelUri) { }
-        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
+        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
         public string[] GetUrlsForUri(string objectURI) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -204,8 +204,8 @@ namespace System.Runtime.Remoting.Channels.Http
         public bool IsSecured { get { throw null; } set { } }
         public override object this[object key] { get { throw null; } set { } }
         public override System.Collections.ICollection Keys { get { throw null; } }
-        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
     }
     public partial class HttpRemotingHandler : System.Web.IHttpHandler
     {
@@ -240,7 +240,7 @@ namespace System.Runtime.Remoting.Channels.Http
         public void AddHookChannelUri(string channelUri) { }
         public string GetChannelUri() { throw null; }
         public virtual string[] GetUrlsForUri(string objectUri) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -255,9 +255,9 @@ namespace System.Runtime.Remoting.Channels.Ipc
         public object ChannelData { get { throw null; } }
         public string ChannelName { get { throw null; } }
         public int ChannelPriority { get { throw null; } }
-        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
+        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
         public string[] GetUrlsForUri(string objectURI) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -268,8 +268,8 @@ namespace System.Runtime.Remoting.Channels.Ipc
         public IpcClientChannel(string name, System.Runtime.Remoting.Channels.IClientChannelSinkProvider sinkProvider) { }
         public string ChannelName { get { throw null; } }
         public int ChannelPriority { get { throw null; } }
-        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
     }
     public partial class IpcServerChannel : System.Runtime.Remoting.Channels.IChannel, System.Runtime.Remoting.Channels.IChannelReceiver
     {
@@ -282,7 +282,7 @@ namespace System.Runtime.Remoting.Channels.Ipc
         public int ChannelPriority { get { throw null; } }
         public string GetChannelUri() { throw null; }
         public virtual string[] GetUrlsForUri(string objectUri) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -297,9 +297,9 @@ namespace System.Runtime.Remoting.Channels.Tcp
         public object ChannelData { get { throw null; } }
         public string ChannelName { get { throw null; } }
         public int ChannelPriority { get { throw null; } }
-        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
+        public System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
         public string[] GetUrlsForUri(string objectURI) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -310,8 +310,8 @@ namespace System.Runtime.Remoting.Channels.Tcp
         public TcpClientChannel(string name, System.Runtime.Remoting.Channels.IClientChannelSinkProvider sinkProvider) { }
         public string ChannelName { get { throw null; } }
         public int ChannelPriority { get { throw null; } }
-        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { objectURI = default(string); throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public virtual System.Runtime.Remoting.Messaging.IMessageSink CreateMessageSink(string url, object remoteChannelData, out string objectURI) { throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
     }
     public partial class TcpServerChannel : System.Runtime.Remoting.Channels.IChannel, System.Runtime.Remoting.Channels.IChannelReceiver
     {
@@ -324,7 +324,7 @@ namespace System.Runtime.Remoting.Channels.Tcp
         public int ChannelPriority { get { throw null; } }
         public string GetChannelUri() { throw null; }
         public virtual string[] GetUrlsForUri(string objectUri) { throw null; }
-        public string Parse(string url, out string objectURI) { objectURI = default(string); throw null; }
+        public string Parse(string url, out string objectURI) { throw null; }
         public void StartListening(object data) { }
         public void StopListening(object data) { }
     }
@@ -356,7 +356,7 @@ namespace System.Runtime.Remoting.MetadataServices
         public System.Collections.IDictionary Properties { get { throw null; } }
         public void AsyncProcessResponse(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers, System.IO.Stream stream) { }
         public System.IO.Stream GetResponseStream(System.Runtime.Remoting.Channels.IServerResponseChannelSinkStack sinkStack, object state, System.Runtime.Remoting.Messaging.IMessage msg, System.Runtime.Remoting.Channels.ITransportHeaders headers) { throw null; }
-        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { responseMsg = default(System.Runtime.Remoting.Messaging.IMessage); responseHeaders = default(System.Runtime.Remoting.Channels.ITransportHeaders); responseStream = default(System.IO.Stream); throw null; }
+        public System.Runtime.Remoting.Channels.ServerProcessing ProcessMessage(System.Runtime.Remoting.Channels.IServerChannelSinkStack sinkStack, System.Runtime.Remoting.Messaging.IMessage requestMsg, System.Runtime.Remoting.Channels.ITransportHeaders requestHeaders, System.IO.Stream requestStream, out System.Runtime.Remoting.Messaging.IMessage responseMsg, out System.Runtime.Remoting.Channels.ITransportHeaders responseHeaders, out System.IO.Stream responseStream) { throw null; }
     }
     public partial class SdlChannelSinkProvider : System.Runtime.Remoting.Channels.IServerChannelSinkProvider
     {

@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Data.Services.Client.dll")]
@@ -15,12 +15,12 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Data.Services.Client.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("2.0.5.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 [assembly:System.Security.SecurityCriticalAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 namespace System.Data.Services.Client
 {
     public sealed partial class ChangeOperationResponse : System.Data.Services.Client.OperationResponse
@@ -125,8 +125,8 @@ namespace System.Data.Services.Client
         public void SetLink(object source, string sourceProperty, object target) { }
         public void SetSaveStream(object entity, System.IO.Stream stream, bool closeStream, System.Data.Services.Client.DataServiceRequestArgs args) { }
         public void SetSaveStream(object entity, System.IO.Stream stream, bool closeStream, string contentType, string slug) { }
-        public bool TryGetEntity<TEntity>(System.Uri identity, out TEntity entity) where TEntity : class { entity = default(TEntity); throw null; }
-        public bool TryGetUri(object entity, out System.Uri identity) { identity = default(System.Uri); throw null; }
+        public bool TryGetEntity<TEntity>(System.Uri identity, out TEntity entity) where TEntity : class { throw null; }
+        public bool TryGetUri(object entity, out System.Uri identity) { throw null; }
         public void UpdateObject(object entity) { }
     }
     public abstract partial class DataServiceQuery : System.Data.Services.Client.DataServiceRequest, System.Collections.IEnumerable, System.Linq.IQueryable
@@ -288,7 +288,7 @@ namespace System.Data.Services.Client
         public string SourceProperty { get { throw null; } }
         public object Target { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class MediaEntryAttribute : System.Attribute
     {
         public MediaEntryAttribute(string mediaMemberName) { }
@@ -301,7 +301,7 @@ namespace System.Data.Services.Client
         OverwriteChanges = 1,
         PreserveChanges = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class MimeTypePropertyAttribute : System.Attribute
     {
         public MimeTypePropertyAttribute(string dataPropertyName, string mimeTypePropertyName) { }
@@ -360,12 +360,12 @@ namespace System.Data.Services.Client
 }
 namespace System.Data.Services.Common
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class DataServiceEntityAttribute : System.Attribute
     {
         public DataServiceEntityAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class DataServiceKeyAttribute : System.Attribute
     {
         public DataServiceKeyAttribute(string keyName) { }
@@ -377,7 +377,7 @@ namespace System.Data.Services.Common
         V1 = 0,
         V2 = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=true, Inherited=true)]
     public sealed partial class EntityPropertyMappingAttribute : System.Attribute
     {
         public EntityPropertyMappingAttribute(string sourcePath, System.Data.Services.Common.SyndicationItemProperty targetSyndicationItem, System.Data.Services.Common.SyndicationTextContentKind targetTextContentKind, bool keepInContent) { }
@@ -390,13 +390,13 @@ namespace System.Data.Services.Common
         public System.Data.Services.Common.SyndicationItemProperty TargetSyndicationItem { get { throw null; } }
         public System.Data.Services.Common.SyndicationTextContentKind TargetTextContentKind { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class EntitySetAttribute : System.Attribute
     {
         public EntitySetAttribute(string entitySet) { }
         public string EntitySet { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=true, AllowMultiple=false)]
     public sealed partial class HasStreamAttribute : System.Attribute
     {
         public HasStreamAttribute() { }

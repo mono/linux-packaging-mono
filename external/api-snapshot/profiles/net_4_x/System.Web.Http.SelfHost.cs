@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -22,7 +22,7 @@
 [assembly:System.Security.SecurityTransparentAttribute]
 namespace System.Net.Http
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpRequestMessageExtensions
     {
         public static System.ServiceModel.Security.SecurityMessageProperty GetSecurityMessageProperty(this System.Net.Http.HttpRequestMessage request) { throw null; }
@@ -60,7 +60,7 @@ namespace System.Web.Http.SelfHost.Channels
         public HttpBinding() { }
         public HttpBinding(System.Web.Http.SelfHost.Channels.HttpBindingSecurityMode securityMode) { }
         public System.ServiceModel.EnvelopeVersion EnvelopeVersion { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute((long)524288)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
@@ -71,7 +71,7 @@ namespace System.Web.Http.SelfHost.Channels
         public override string Scheme { get { throw null; } }
         public System.Web.Http.SelfHost.Channels.HttpBindingSecurity Security { get { throw null; } set { } }
         bool System.ServiceModel.Channels.IBindingRuntimePreferences.ReceiveSynchronously { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.TransferMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
     }

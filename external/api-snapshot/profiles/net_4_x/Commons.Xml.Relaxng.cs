@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Commons.Xml.Relaxng.dll")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.0.0.1")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]

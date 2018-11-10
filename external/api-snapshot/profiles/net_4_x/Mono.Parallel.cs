@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 namespace Mono.Collections.Concurrent
@@ -24,10 +24,10 @@ namespace Mono.Collections.Concurrent
         System.Collections.Generic.IEnumerator<T> System.Collections.Generic.IEnumerable<T>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         public bool TryAdd(T data) { throw null; }
-        public bool TryGetFromHash(int key, out T data) { data = default(T); throw null; }
-        public bool TryPop(out T data) { data = default(T); throw null; }
+        public bool TryGetFromHash(int key, out T data) { throw null; }
+        public bool TryPop(out T data) { throw null; }
         public bool TryRemove(T data) { throw null; }
-        public bool TryRemoveHash(int key, out T data) { data = default(T); throw null; }
+        public bool TryRemoveHash(int key, out T data) { throw null; }
     }
     public partial class ConcurrentSkipList<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable
     {
@@ -45,7 +45,7 @@ namespace Mono.Collections.Concurrent
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         public T[] ToArray() { throw null; }
         public bool TryAdd(T value) { throw null; }
-        public bool TryGetFromHash(int hash, out T value) { value = default(T); throw null; }
+        public bool TryGetFromHash(int hash, out T value) { throw null; }
     }
 }
 namespace Mono.Threading
@@ -68,6 +68,7 @@ namespace Mono.Threading
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AtomicBooleanValue
     {
+        private int _dummyPrimitive;
         public bool Value { get { throw null; } set { } }
         public bool CompareAndExchange(bool expected, bool newVal) { throw null; }
         public bool Equals(Mono.Threading.AtomicBooleanValue rhs) { throw null; }
@@ -101,6 +102,7 @@ namespace Mono.Threading
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ReaderWriterLockSlimmer
     {
+        private int _dummyPrimitive;
         public void EnterReadLock(ref bool taken) { }
         public void EnterWriteLock(ref bool taken) { }
         public void ExitReadLock() { }
@@ -130,9 +132,9 @@ namespace Mono.Threading.Tasks
         public CyclicDeque() { }
         public bool IsEmpty { get { throw null; } }
         public System.Collections.Generic.IEnumerable<T> GetEnumerable() { throw null; }
-        public bool PeekBottom(out T obj) { obj = default(T); throw null; }
-        public Mono.Threading.Tasks.PopResult PopBottom(out T obj) { obj = default(T); throw null; }
-        public Mono.Threading.Tasks.PopResult PopTop(out T obj) { obj = default(T); throw null; }
+        public bool PeekBottom(out T obj) { throw null; }
+        public Mono.Threading.Tasks.PopResult PopBottom(out T obj) { throw null; }
+        public Mono.Threading.Tasks.PopResult PopTop(out T obj) { throw null; }
         public void PushBottom(T obj) { }
     }
     public partial interface IConcurrentDeque<T>

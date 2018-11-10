@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("1.1.1.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2003-2010 Niels Kokholm and Peter Sestoft")]
@@ -162,7 +162,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -207,11 +207,11 @@ namespace C5
         public override bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         protected override void updatecheck() { }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual C5.IList<T> View(int start, int count) { throw null; }
         [C5.TestedAttribute]
@@ -338,7 +338,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Exists(C5.Fun<T, bool> predicate) { throw null; }
         public virtual System.Collections.Generic.IEnumerable<T> Filter(C5.Fun<T, bool> predicate) { throw null; }
-        public virtual bool Find(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public virtual bool Find(C5.Fun<T, bool> predicate, out T item) { throw null; }
         public abstract override System.Collections.Generic.IEnumerator<T> GetEnumerator();
         protected virtual void raiseCollectionChanged() { }
         protected virtual void raiseCollectionCleared(bool full, int count) { }
@@ -437,8 +437,8 @@ namespace C5
         public virtual bool Contains(K key) { throw null; }
         public virtual bool ContainsAll<H>(System.Collections.Generic.IEnumerable<H> keys) where H : K { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Find(K key, out V value) { value = default(V); throw null; }
-        public virtual bool Find(ref K key, out V value) { value = default(V); throw null; }
+        public virtual bool Find(K key, out V value) { throw null; }
+        public virtual bool Find(ref K key, out V value) { throw null; }
         [C5.TestedAttribute]
         public virtual bool FindOrAdd(K key, ref V value) { throw null; }
         [C5.TestedAttribute]
@@ -446,14 +446,14 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(K key) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(K key, out V value) { value = default(V); throw null; }
+        public virtual bool Remove(K key, out V value) { throw null; }
         public override bool Show(System.Text.StringBuilder stringbuilder, ref int rest, System.IFormatProvider formatProvider) { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(K key, V value) { throw null; }
-        public virtual bool Update(K key, V value, out V oldvalue) { oldvalue = default(V); throw null; }
+        public virtual bool Update(K key, V value, out V oldvalue) { throw null; }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(K key, V value) { throw null; }
-        public virtual bool UpdateOrAdd(K key, V value, out V oldvalue) { oldvalue = default(V); throw null; }
+        public virtual bool UpdateOrAdd(K key, V value, out V oldvalue) { throw null; }
     }
     [System.SerializableAttribute]
     public abstract partial class DirectedCollectionBase<T> : C5.CollectionBase<T>, C5.ICollectionValue<T>, C5.IDirectedCollectionValue<T>, C5.IDirectedEnumerable<T>, C5.IShowable, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable, System.IFormattable
@@ -462,7 +462,7 @@ namespace C5
         public virtual C5.EnumerationDirection Direction { [C5.TestedAttribute]get { throw null; } }
         public abstract C5.IDirectedCollectionValue<T> Backwards();
         C5.IDirectedEnumerable<T> C5.IDirectedEnumerable<T>.Backwards() { throw null; }
-        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { throw null; }
     }
     public abstract partial class DirectedCollectionValueBase<T> : C5.CollectionValueBase<T>, C5.ICollectionValue<T>, C5.IDirectedCollectionValue<T>, C5.IDirectedEnumerable<T>, C5.IShowable, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable, System.IFormattable
     {
@@ -470,7 +470,7 @@ namespace C5
         public virtual C5.EnumerationDirection Direction { [C5.TestedAttribute]get { throw null; } }
         public abstract C5.IDirectedCollectionValue<T> Backwards();
         C5.IDirectedEnumerable<T> C5.IDirectedEnumerable<T>.Backwards() { throw null; }
-        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { throw null; }
     }
     public partial class DoubleEqualityComparer : System.Collections.Generic.IEqualityComparer<double>
     {
@@ -568,7 +568,7 @@ namespace C5
         public virtual void CopyTo(T[] a, int i) { }
         public virtual bool Exists(C5.Fun<T, bool> filter) { throw null; }
         public virtual System.Collections.Generic.IEnumerable<T> Filter(C5.Fun<T, bool> filter) { throw null; }
-        public virtual bool Find(C5.Fun<T, bool> filter, out T item) { item = default(T); throw null; }
+        public virtual bool Find(C5.Fun<T, bool> filter, out T item) { throw null; }
         public bool Show(System.Text.StringBuilder stringbuilder, ref int rest, System.IFormatProvider formatProvider) { throw null; }
         public virtual T[] ToArray() { throw null; }
         public string ToString(string format, System.IFormatProvider formatProvider) { throw null; }
@@ -595,7 +595,7 @@ namespace C5
         public virtual int GetUnsequencedHashCode() { throw null; }
         public virtual C5.ICollectionValue<C5.KeyValuePair<T, int>> ItemMultiplicities() { throw null; }
         public virtual bool Remove(T item) { throw null; }
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         public virtual void RemoveAllCopies(T item) { }
         public virtual void RemoveAll<U>(System.Collections.Generic.IEnumerable<U> items) where U : T { }
         public virtual void RetainAll<U>(System.Collections.Generic.IEnumerable<U> items) where U : T { }
@@ -603,9 +603,9 @@ namespace C5
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         public virtual bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
     }
     public partial class GuardedDictionary<K, V> : C5.GuardedCollectionValue<C5.KeyValuePair<K, V>>, C5.ICollectionValue<C5.KeyValuePair<K, V>>, C5.IDictionary<K, V>, C5.IShowable, System.Collections.Generic.IEnumerable<C5.KeyValuePair<K, V>>, System.Collections.IEnumerable, System.ICloneable, System.IFormattable
     {
@@ -624,15 +624,15 @@ namespace C5
         public virtual object Clone() { throw null; }
         public bool Contains(K key) { throw null; }
         public bool ContainsAll<H>(System.Collections.Generic.IEnumerable<H> keys) where H : K { throw null; }
-        public bool Find(K key, out V val) { val = default(V); throw null; }
-        public bool Find(ref K key, out V val) { val = default(V); throw null; }
+        public bool Find(K key, out V val) { throw null; }
+        public bool Find(ref K key, out V val) { throw null; }
         public bool FindOrAdd(K key, ref V val) { throw null; }
         public bool Remove(K key) { throw null; }
-        public bool Remove(K key, out V val) { val = default(V); throw null; }
+        public bool Remove(K key, out V val) { throw null; }
         public bool Update(K key, V val) { throw null; }
-        public bool Update(K key, V val, out V oldval) { oldval = default(V); throw null; }
+        public bool Update(K key, V val, out V oldval) { throw null; }
         public bool UpdateOrAdd(K key, V val) { throw null; }
-        public bool UpdateOrAdd(K key, V val, out V oldval) { oldval = default(V); throw null; }
+        public bool UpdateOrAdd(K key, V val, out V oldval) { throw null; }
     }
     public partial class GuardedDirectedCollectionValue<T> : C5.GuardedCollectionValue<T>, C5.ICollectionValue<T>, C5.IDirectedCollectionValue<T>, C5.IDirectedEnumerable<T>, C5.IShowable, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable, System.IFormattable
     {
@@ -640,7 +640,7 @@ namespace C5
         public C5.EnumerationDirection Direction { get { throw null; } }
         public virtual C5.IDirectedCollectionValue<T> Backwards() { throw null; }
         C5.IDirectedEnumerable<T> C5.IDirectedEnumerable<T>.Backwards() { throw null; }
-        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { throw null; }
     }
     public partial class GuardedDirectedEnumerable<T> : C5.GuardedEnumerable<T>, C5.IDirectedEnumerable<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable
     {
@@ -767,7 +767,7 @@ namespace C5
         C5.IDirectedEnumerable<T> C5.IDirectedEnumerable<T>.Backwards() { throw null; }
         public override object Clone() { throw null; }
         public int FindIndex(C5.Fun<T, bool> predicate) { throw null; }
-        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public virtual bool FindLast(C5.Fun<T, bool> predicate, out T item) { throw null; }
         public int FindLastIndex(C5.Fun<T, bool> predicate) { throw null; }
         public int GetSequencedHashCode() { throw null; }
         public bool SequencedEquals(C5.ISequenced<T> that) { throw null; }
@@ -778,7 +778,7 @@ namespace C5
         public System.Collections.Generic.IComparer<K> Comparer { get { throw null; } }
         public new C5.ISorted<K> Keys { get { throw null; } }
         public void AddSorted(System.Collections.Generic.IEnumerable<C5.KeyValuePair<K, V>> items) { }
-        public bool Cut(System.IComparable<K> c, out C5.KeyValuePair<K, V> lowEntry, out bool lowIsValid, out C5.KeyValuePair<K, V> highEntry, out bool highIsValid) { lowEntry = default(C5.KeyValuePair<K, V>); lowIsValid = default(bool); highEntry = default(C5.KeyValuePair<K, V>); highIsValid = default(bool); throw null; }
+        public bool Cut(System.IComparable<K> c, out C5.KeyValuePair<K, V> lowEntry, out bool lowIsValid, out C5.KeyValuePair<K, V> highEntry, out bool highIsValid) { throw null; }
         public C5.KeyValuePair<K, V> DeleteMax() { throw null; }
         public C5.KeyValuePair<K, V> DeleteMin() { throw null; }
         public C5.KeyValuePair<K, V> FindMax() { throw null; }
@@ -792,10 +792,10 @@ namespace C5
         public void RemoveRangeFromTo(K low, K hi) { }
         public void RemoveRangeTo(K hi) { }
         public C5.KeyValuePair<K, V> Successor(K key) { throw null; }
-        public bool TryPredecessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
-        public bool TrySuccessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
-        public bool TryWeakPredecessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
-        public bool TryWeakSuccessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
+        public bool TryPredecessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
+        public bool TrySuccessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
+        public bool TryWeakPredecessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
+        public bool TryWeakSuccessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
         public C5.KeyValuePair<K, V> WeakPredecessor(K key) { throw null; }
         public C5.KeyValuePair<K, V> WeakSuccessor(K key) { throw null; }
     }
@@ -806,7 +806,7 @@ namespace C5
         public void AddSorted<U>(System.Collections.Generic.IEnumerable<U> items) where U : T { }
         C5.IDirectedEnumerable<T> C5.IDirectedEnumerable<T>.Backwards() { throw null; }
         public override object Clone() { throw null; }
-        public bool Cut(System.IComparable<T> c, out T low, out bool lval, out T high, out bool hval) { low = default(T); lval = default(bool); high = default(T); hval = default(bool); throw null; }
+        public bool Cut(System.IComparable<T> c, out T low, out bool lval, out T high, out bool hval) { throw null; }
         public T DeleteMax() { throw null; }
         public T DeleteMin() { throw null; }
         public T FindMax() { throw null; }
@@ -820,10 +820,10 @@ namespace C5
         public void RemoveRangeFromTo(T low, T hi) { }
         public void RemoveRangeTo(T hi) { }
         public T Successor(T item) { throw null; }
-        public bool TryPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TrySuccessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakSuccessor(T item, out T res) { res = default(T); throw null; }
+        public bool TryPredecessor(T item, out T res) { throw null; }
+        public bool TrySuccessor(T item, out T res) { throw null; }
+        public bool TryWeakPredecessor(T item, out T res) { throw null; }
+        public bool TryWeakSuccessor(T item, out T res) { throw null; }
         public T WeakPredecessor(T item) { throw null; }
         public T WeakSuccessor(T item) { throw null; }
     }
@@ -867,7 +867,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -881,10 +881,10 @@ namespace C5
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
     }
     [System.SerializableAttribute]
     public partial class HashDictionary<K, V> : C5.DictionaryBase<K, V>, C5.ICollectionValue<C5.KeyValuePair<K, V>>, C5.IDictionary<K, V>, C5.IShowable, System.Collections.Generic.IEnumerable<C5.KeyValuePair<K, V>>, System.Collections.IEnumerable, System.ICloneable, System.IFormattable
@@ -988,7 +988,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -1033,11 +1033,11 @@ namespace C5
         public override bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         protected override void updatecheck() { }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual C5.IList<T> View(int start, int count) { throw null; }
         [C5.TestedAttribute]
@@ -1139,7 +1139,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -1183,11 +1183,11 @@ namespace C5
         public override bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         protected override void updatecheck() { }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual C5.IList<T> View(int start, int count) { throw null; }
         public virtual C5.IList<T> ViewOf(T item) { throw null; }
@@ -1235,7 +1235,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -1249,10 +1249,10 @@ namespace C5
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [System.FlagsAttribute]
         public enum Feature : short
         {
@@ -1484,17 +1484,17 @@ namespace C5
         public T Delete(C5.IPriorityQueueHandle<T> handle) { throw null; }
         [C5.TestedAttribute]
         public T DeleteMax() { throw null; }
-        public T DeleteMax(out C5.IPriorityQueueHandle<T> handle) { handle = default(C5.IPriorityQueueHandle<T>); throw null; }
+        public T DeleteMax(out C5.IPriorityQueueHandle<T> handle) { throw null; }
         [C5.TestedAttribute]
         public T DeleteMin() { throw null; }
-        public T DeleteMin(out C5.IPriorityQueueHandle<T> handle) { handle = default(C5.IPriorityQueueHandle<T>); throw null; }
-        public bool Find(C5.IPriorityQueueHandle<T> handle, out T item) { item = default(T); throw null; }
+        public T DeleteMin(out C5.IPriorityQueueHandle<T> handle) { throw null; }
+        public bool Find(C5.IPriorityQueueHandle<T> handle, out T item) { throw null; }
         [C5.TestedAttribute]
         public T FindMax() { throw null; }
-        public T FindMax(out C5.IPriorityQueueHandle<T> handle) { handle = default(C5.IPriorityQueueHandle<T>); throw null; }
+        public T FindMax(out C5.IPriorityQueueHandle<T> handle) { throw null; }
         [C5.TestedAttribute]
         public T FindMin() { throw null; }
-        public T FindMin(out C5.IPriorityQueueHandle<T> handle) { handle = default(C5.IPriorityQueueHandle<T>); throw null; }
+        public T FindMin(out C5.IPriorityQueueHandle<T> handle) { throw null; }
         [C5.TestedAttribute]
         public override System.Collections.Generic.IEnumerator<T> GetEnumerator() { throw null; }
         [C5.TestedAttribute]
@@ -1645,8 +1645,8 @@ namespace C5
     {
         public K Key;
         public V Value;
-        public KeyValuePair(K key) { throw null;}
-        public KeyValuePair(K key, V value) { throw null;}
+        public KeyValuePair(K key) { throw null; }
+        public KeyValuePair(K key, V value) { throw null; }
         public bool Equals(C5.KeyValuePair<K, V> other) { throw null; }
         [C5.TestedAttribute]
         public override bool Equals(object obj) { throw null; }
@@ -1763,7 +1763,7 @@ namespace C5
         [C5.TestedAttribute]
         public virtual bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public virtual bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public virtual bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public virtual void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -1807,11 +1807,11 @@ namespace C5
         public override bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         [C5.TestedAttribute]
         public virtual bool Update(T item) { throw null; }
-        public virtual bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool Update(T item, out T olditem) { throw null; }
         protected override void updatecheck() { }
         [C5.TestedAttribute]
         public virtual bool UpdateOrAdd(T item) { throw null; }
-        public virtual bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public virtual bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public virtual C5.IList<T> View(int start, int count) { throw null; }
         public virtual C5.IList<T> ViewOf(T item) { throw null; }
@@ -1881,7 +1881,7 @@ namespace C5
         public readonly T1 X1;
         public readonly T2 X2;
         [C5.TestedAttribute]
-        public Rec(T1 x1, T2 x2) { throw null;}
+        public Rec(T1 x1, T2 x2) { throw null; }
         [C5.TestedAttribute]
         public bool Equals(C5.Rec<T1, T2> other) { throw null; }
         [C5.TestedAttribute]
@@ -1903,7 +1903,7 @@ namespace C5
         public readonly T2 X2;
         public readonly T3 X3;
         [C5.TestedAttribute]
-        public Rec(T1 x1, T2 x2, T3 x3) { throw null;}
+        public Rec(T1 x1, T2 x2, T3 x3) { throw null; }
         [C5.TestedAttribute]
         public bool Equals(C5.Rec<T1, T2, T3> other) { throw null; }
         [C5.TestedAttribute]
@@ -1926,7 +1926,7 @@ namespace C5
         public readonly T3 X3;
         public readonly T4 X4;
         [C5.TestedAttribute]
-        public Rec(T1 x1, T2 x2, T3 x3, T4 x4) { throw null;}
+        public Rec(T1 x1, T2 x2, T3 x3, T4 x4) { throw null; }
         [C5.TestedAttribute]
         public bool Equals(C5.Rec<T1, T2, T3, T4> other) { throw null; }
         [C5.TestedAttribute]
@@ -2052,7 +2052,7 @@ namespace C5
         [C5.TestedAttribute]
         public int CountTo(T top) { throw null; }
         [C5.TestedAttribute]
-        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { low = default(T); lowIsValid = default(bool); high = default(T); highIsValid = default(bool); throw null; }
+        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { throw null; }
         [C5.TestedAttribute]
         public T DeleteMax() { throw null; }
         [C5.TestedAttribute]
@@ -2087,7 +2087,7 @@ namespace C5
         [C5.TestedAttribute]
         public bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -2108,17 +2108,17 @@ namespace C5
         public T Successor(T item) { throw null; }
         [C5.TestedAttribute]
         void System.Collections.Generic.ICollection<T>.Add(T item) { }
-        public bool TryPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TrySuccessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakSuccessor(T item, out T res) { res = default(T); throw null; }
+        public bool TryPredecessor(T item, out T res) { throw null; }
+        public bool TrySuccessor(T item, out T res) { throw null; }
+        public bool TryWeakPredecessor(T item, out T res) { throw null; }
+        public bool TryWeakSuccessor(T item, out T res) { throw null; }
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         [C5.TestedAttribute]
         public bool Update(T item) { throw null; }
-        public bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool Update(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public bool UpdateOrAdd(T item) { throw null; }
-        public bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public T WeakPredecessor(T item) { throw null; }
         [C5.TestedAttribute]
@@ -2137,7 +2137,7 @@ namespace C5
         public System.Collections.Generic.IComparer<K> Comparer { get { throw null; } }
         public new C5.ISorted<K> Keys { get { throw null; } }
         public void AddSorted(System.Collections.Generic.IEnumerable<C5.KeyValuePair<K, V>> items) { }
-        public bool Cut(System.IComparable<K> cutter, out C5.KeyValuePair<K, V> lowEntry, out bool lowIsValid, out C5.KeyValuePair<K, V> highEntry, out bool highIsValid) { lowEntry = default(C5.KeyValuePair<K, V>); lowIsValid = default(bool); highEntry = default(C5.KeyValuePair<K, V>); highIsValid = default(bool); throw null; }
+        public bool Cut(System.IComparable<K> cutter, out C5.KeyValuePair<K, V> lowEntry, out bool lowIsValid, out C5.KeyValuePair<K, V> highEntry, out bool highIsValid) { throw null; }
         public C5.KeyValuePair<K, V> DeleteMax() { throw null; }
         public C5.KeyValuePair<K, V> DeleteMin() { throw null; }
         public C5.KeyValuePair<K, V> FindMax() { throw null; }
@@ -2155,13 +2155,13 @@ namespace C5
         [C5.TestedAttribute]
         public C5.KeyValuePair<K, V> Successor(K key) { throw null; }
         [C5.TestedAttribute]
-        public bool TryPredecessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
+        public bool TryPredecessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
         [C5.TestedAttribute]
-        public bool TrySuccessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
+        public bool TrySuccessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
         [C5.TestedAttribute]
-        public bool TryWeakPredecessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
+        public bool TryWeakPredecessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
         [C5.TestedAttribute]
-        public bool TryWeakSuccessor(K key, out C5.KeyValuePair<K, V> res) { res = default(C5.KeyValuePair<K, V>); throw null; }
+        public bool TryWeakSuccessor(K key, out C5.KeyValuePair<K, V> res) { throw null; }
         [C5.TestedAttribute]
         public C5.KeyValuePair<K, V> WeakPredecessor(K key) { throw null; }
         [C5.TestedAttribute]
@@ -2186,7 +2186,7 @@ namespace C5
         Log = (short)3,
         PotentiallyInfinite = (short)1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public sealed partial class TestedAttribute : System.Attribute
     {
         [C5.TestedAttribute]
@@ -2251,7 +2251,7 @@ namespace C5
         [C5.TestedAttribute]
         public int CountTo(T top) { throw null; }
         [C5.TestedAttribute]
-        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { low = default(T); lowIsValid = default(bool); high = default(T); highIsValid = default(bool); throw null; }
+        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { throw null; }
         [C5.TestedAttribute]
         public T DeleteMax() { throw null; }
         [C5.TestedAttribute]
@@ -2294,7 +2294,7 @@ namespace C5
         [C5.TestedAttribute]
         public bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -2317,17 +2317,17 @@ namespace C5
         public T Successor(T item) { throw null; }
         [C5.TestedAttribute]
         void System.Collections.Generic.ICollection<T>.Add(T item) { }
-        public bool TryPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TrySuccessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakSuccessor(T item, out T res) { res = default(T); throw null; }
+        public bool TryPredecessor(T item, out T res) { throw null; }
+        public bool TrySuccessor(T item, out T res) { throw null; }
+        public bool TryWeakPredecessor(T item, out T res) { throw null; }
+        public bool TryWeakSuccessor(T item, out T res) { throw null; }
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         [C5.TestedAttribute]
         public bool Update(T item) { throw null; }
-        public bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool Update(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public bool UpdateOrAdd(T item) { throw null; }
-        public bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public T WeakPredecessor(T item) { throw null; }
         [C5.TestedAttribute]
@@ -2398,7 +2398,7 @@ namespace C5
         [C5.TestedAttribute]
         public int CountTo(T top) { throw null; }
         [C5.TestedAttribute]
-        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { low = default(T); lowIsValid = default(bool); high = default(T); highIsValid = default(bool); throw null; }
+        public bool Cut(System.IComparable<T> c, out T low, out bool lowIsValid, out T high, out bool highIsValid) { throw null; }
         [C5.TestedAttribute]
         public T DeleteMax() { throw null; }
         [C5.TestedAttribute]
@@ -2441,7 +2441,7 @@ namespace C5
         [C5.TestedAttribute]
         public bool Remove(T item) { throw null; }
         [C5.TestedAttribute]
-        public bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public bool Remove(T item, out T removeditem) { throw null; }
         [C5.TestedAttribute]
         public void RemoveAllCopies(T item) { }
         [C5.TestedAttribute]
@@ -2464,17 +2464,17 @@ namespace C5
         public T Successor(T item) { throw null; }
         [C5.TestedAttribute]
         void System.Collections.Generic.ICollection<T>.Add(T item) { }
-        public bool TryPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TrySuccessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakPredecessor(T item, out T res) { res = default(T); throw null; }
-        public bool TryWeakSuccessor(T item, out T res) { res = default(T); throw null; }
+        public bool TryPredecessor(T item, out T res) { throw null; }
+        public bool TrySuccessor(T item, out T res) { throw null; }
+        public bool TryWeakPredecessor(T item, out T res) { throw null; }
+        public bool TryWeakSuccessor(T item, out T res) { throw null; }
         public virtual C5.ICollectionValue<T> UniqueItems() { throw null; }
         [C5.TestedAttribute]
         public bool Update(T item) { throw null; }
-        public bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool Update(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public bool UpdateOrAdd(T item) { throw null; }
-        public bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool UpdateOrAdd(T item, out T olditem) { throw null; }
         [C5.TestedAttribute]
         public T WeakPredecessor(T item) { throw null; }
         [C5.TestedAttribute]
@@ -2586,11 +2586,11 @@ namespace C5
         public void Dispose() { }
         public bool Exists(C5.Fun<T, bool> predicate) { throw null; }
         public System.Collections.Generic.IEnumerable<T> Filter(C5.Fun<T, bool> filter) { throw null; }
-        public bool Find(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public bool Find(C5.Fun<T, bool> predicate, out T item) { throw null; }
         public bool Find(ref T item) { throw null; }
         public C5.IList<T> FindAll(C5.Fun<T, bool> filter) { throw null; }
         public int FindIndex(C5.Fun<T, bool> predicate) { throw null; }
-        public bool FindLast(C5.Fun<T, bool> predicate, out T item) { item = default(T); throw null; }
+        public bool FindLast(C5.Fun<T, bool> predicate, out T item) { throw null; }
         public int FindLastIndex(C5.Fun<T, bool> predicate) { throw null; }
         public bool FindOrAdd(ref T item) { throw null; }
         public System.Collections.Generic.IEnumerator<T> GetEnumerator() { throw null; }
@@ -2611,7 +2611,7 @@ namespace C5
         public C5.IList<V> Map<V>(C5.Fun<T, V> mapper, System.Collections.Generic.IEqualityComparer<V> equalityComparer) { throw null; }
         public T Remove() { throw null; }
         public bool Remove(T item) { throw null; }
-        public bool Remove(T item, out T removeditem) { removeditem = default(T); throw null; }
+        public bool Remove(T item, out T removeditem) { throw null; }
         public void RemoveAllCopies(T item) { }
         public void RemoveAll<U>(System.Collections.Generic.IEnumerable<U> items) where U : T { }
         public T RemoveAt(int i) { throw null; }
@@ -2647,9 +2647,9 @@ namespace C5
         public C5.ICollectionValue<T> UniqueItems() { throw null; }
         public bool UnsequencedEquals(C5.ICollection<T> that) { throw null; }
         public bool Update(T item) { throw null; }
-        public bool Update(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool Update(T item, out T olditem) { throw null; }
         public bool UpdateOrAdd(T item) { throw null; }
-        public bool UpdateOrAdd(T item, out T olditem) { olditem = default(T); throw null; }
+        public bool UpdateOrAdd(T item, out T olditem) { throw null; }
         public C5.IList<T> View(int start, int count) { throw null; }
         public C5.IList<T> ViewOf(T item) { throw null; }
     }

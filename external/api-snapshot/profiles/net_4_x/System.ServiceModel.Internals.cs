@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("0.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.dll")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Contains share code for some System.ServiceModel libraries")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("4.6.57.0")]
@@ -60,5 +60,5 @@
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Runtime.InteropServices.GuidAttribute("a9b8c4b5-b4a9-4800-8268-e8ec3b93d9ac")]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityCriticalAttribute((System.Security.SecurityCriticalScope)(0))]
+[assembly:System.Security.SecurityCriticalAttribute(System.Security.SecurityCriticalScope.Explicit)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]

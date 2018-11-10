@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("0.10.1.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2018 Jb Evain")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.1.0")]
 [assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.1.0")]
@@ -22,7 +22,8 @@ namespace Mono.Cecil
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ArrayDimension
     {
-        public ArrayDimension(System.Nullable<int> lowerBound, System.Nullable<int> upperBound) { throw null;}
+        private int _dummyPrimitive;
+        public ArrayDimension(System.Nullable<int> lowerBound, System.Nullable<int> upperBound) { throw null; }
         public bool IsSized { get { throw null; } }
         public System.Nullable<int> LowerBound { get { throw null; } set { } }
         public System.Nullable<int> UpperBound { get { throw null; } set { } }
@@ -196,14 +197,16 @@ namespace Mono.Cecil
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeArgument
     {
-        public CustomAttributeArgument(Mono.Cecil.TypeReference type, object value) { throw null;}
+        private object _dummy;
+        public CustomAttributeArgument(Mono.Cecil.TypeReference type, object value) { throw null; }
         public Mono.Cecil.TypeReference Type { get { throw null; } }
         public object Value { get { throw null; } }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CustomAttributeNamedArgument
     {
-        public CustomAttributeNamedArgument(string name, Mono.Cecil.CustomAttributeArgument argument) { throw null;}
+        private object _dummy;
+        public CustomAttributeNamedArgument(string name, Mono.Cecil.CustomAttributeArgument argument) { throw null; }
         public Mono.Cecil.CustomAttributeArgument Argument { get { throw null; } }
         public string Name { get { throw null; } }
     }
@@ -660,11 +663,12 @@ namespace Mono.Cecil
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct MetadataToken : System.IEquatable<Mono.Cecil.MetadataToken>
     {
+        private int _dummyPrimitive;
         public static readonly Mono.Cecil.MetadataToken Zero;
-        public MetadataToken(Mono.Cecil.TokenType type) { throw null;}
-        public MetadataToken(Mono.Cecil.TokenType type, int rid) { throw null;}
-        public MetadataToken(Mono.Cecil.TokenType type, uint rid) { throw null;}
-        public MetadataToken(uint token) { throw null;}
+        public MetadataToken(Mono.Cecil.TokenType type) { throw null; }
+        public MetadataToken(Mono.Cecil.TokenType type, int rid) { throw null; }
+        public MetadataToken(Mono.Cecil.TokenType type, uint rid) { throw null; }
+        public MetadataToken(uint token) { throw null; }
         public uint RID { get { throw null; } }
         public Mono.Cecil.TokenType TokenType { get { throw null; } }
         public bool Equals(Mono.Cecil.MetadataToken other) { throw null; }
@@ -1012,8 +1016,8 @@ namespace Mono.Cecil
         public void ReadSymbols() { }
         public void ReadSymbols(Mono.Cecil.Cil.ISymbolReader reader) { }
         public void ReadSymbols(Mono.Cecil.Cil.ISymbolReader reader, bool throwIfSymbolsAreNotMaching) { }
-        public bool TryGetTypeReference(string fullName, out Mono.Cecil.TypeReference type) { type = default(Mono.Cecil.TypeReference); throw null; }
-        public bool TryGetTypeReference(string scope, string fullName, out Mono.Cecil.TypeReference type) { type = default(Mono.Cecil.TypeReference); throw null; }
+        public bool TryGetTypeReference(string fullName, out Mono.Cecil.TypeReference type) { throw null; }
+        public bool TryGetTypeReference(string scope, string fullName, out Mono.Cecil.TypeReference type) { throw null; }
         public void Write() { }
         public void Write(Mono.Cecil.WriterParameters parameters) { }
         public void Write(System.IO.Stream stream) { }
@@ -2136,8 +2140,10 @@ namespace Mono.Cecil.Cil
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct InstructionOffset
     {
-        public InstructionOffset(Mono.Cecil.Cil.Instruction instruction) { throw null;}
-        public InstructionOffset(int offset) { throw null;}
+        private object _dummy;
+        private int _dummyPrimitive;
+        public InstructionOffset(Mono.Cecil.Cil.Instruction instruction) { throw null; }
+        public InstructionOffset(int offset) { throw null; }
         public bool IsEndOfMethod { get { throw null; } }
         public int Offset { get { throw null; } }
     }
@@ -2190,11 +2196,12 @@ namespace Mono.Cecil.Cil
         public System.Collections.Generic.IEnumerable<Mono.Cecil.Cil.ScopeDebugInformation> GetScopes() { throw null; }
         public Mono.Cecil.Cil.SequencePoint GetSequencePoint(Mono.Cecil.Cil.Instruction instruction) { throw null; }
         public System.Collections.Generic.IDictionary<Mono.Cecil.Cil.Instruction, Mono.Cecil.Cil.SequencePoint> GetSequencePointMapping() { throw null; }
-        public bool TryGetName(Mono.Cecil.Cil.VariableDefinition variable, out string name) { name = default(string); throw null; }
+        public bool TryGetName(Mono.Cecil.Cil.VariableDefinition variable, out string name) { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OpCode : System.IEquatable<Mono.Cecil.Cil.OpCode>
     {
+        private int _dummyPrimitive;
         public Mono.Cecil.Cil.Code Code { get { throw null; } }
         public Mono.Cecil.Cil.FlowControl FlowControl { get { throw null; } }
         public string Name { get { throw null; } }
@@ -2507,7 +2514,7 @@ namespace Mono.Cecil.Cil
         public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.ScopeDebugInformation> Scopes { get { throw null; } }
         public Mono.Cecil.Cil.InstructionOffset Start { get { throw null; } set { } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.VariableDebugInformation> Variables { get { throw null; } }
-        public bool TryGetName(Mono.Cecil.Cil.VariableDefinition variable, out string name) { name = default(string); throw null; }
+        public bool TryGetName(Mono.Cecil.Cil.VariableDefinition variable, out string name) { throw null; }
     }
     public sealed partial class SequencePoint
     {
@@ -2605,8 +2612,10 @@ namespace Mono.Cecil.Cil
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct VariableIndex
     {
-        public VariableIndex(Mono.Cecil.Cil.VariableDefinition variable) { throw null;}
-        public VariableIndex(int index) { throw null;}
+        private object _dummy;
+        private int _dummyPrimitive;
+        public VariableIndex(Mono.Cecil.Cil.VariableDefinition variable) { throw null; }
+        public VariableIndex(int index) { throw null; }
         public int Index { get { throw null; } }
     }
     public abstract partial class VariableReference
@@ -2665,6 +2674,9 @@ namespace Mono.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }

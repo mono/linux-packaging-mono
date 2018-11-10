@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Drawing.BitmapSuffixInSatelliteAssemblyAttribute]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
@@ -20,9 +20,9 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
-[assembly:System.Security.AllowPartiallyTrustedCallersAttribute(PartialTrustVisibilityLevel=(System.Security.PartialTrustVisibilityLevel)(1))]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(2), SkipVerificationInFullTrust=true)]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
+[assembly:System.Security.AllowPartiallyTrustedCallersAttribute(PartialTrustVisibilityLevel=System.Security.PartialTrustVisibilityLevel.NotVisibleByDefault)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level2, SkipVerificationInFullTrust=true)]
 [assembly:System.Security.SecurityTransparentAttribute]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, Execution=true)]
 namespace System.Web.DynamicData
@@ -104,7 +104,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool HtmlEncode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DataBoundControlMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DataBoundControlMode.ReadOnly)]
         public System.Web.UI.WebControls.DataBoundControlMode Mode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -154,8 +154,8 @@ namespace System.Web.DynamicData
         public static void SetMetaTable(this System.Web.UI.INamingContainer control, System.Web.DynamicData.MetaTable table) { }
         public static void SetMetaTable(this System.Web.UI.INamingContainer control, System.Web.DynamicData.MetaTable table, System.Collections.Generic.IDictionary<string, object> defaultValues) { }
         public static void SetMetaTable(this System.Web.UI.INamingContainer control, System.Web.DynamicData.MetaTable table, object defaultValues) { }
-        public static bool TryGetMetaTable(this System.Web.UI.IDataSource dataSource, out System.Web.DynamicData.MetaTable table) { table = default(System.Web.DynamicData.MetaTable); throw null; }
-        public static bool TryGetMetaTable(this System.Web.UI.INamingContainer control, out System.Web.DynamicData.MetaTable table) { table = default(System.Web.DynamicData.MetaTable); throw null; }
+        public static bool TryGetMetaTable(this System.Web.UI.IDataSource dataSource, out System.Web.DynamicData.MetaTable table) { throw null; }
+        public static bool TryGetMetaTable(this System.Web.UI.INamingContainer control, out System.Web.DynamicData.MetaTable table) { throw null; }
     }
     [System.ComponentModel.DesignerAttribute("System.Web.DynamicData.Design.DynamicDataManagerDesigner, System.Web.DynamicData.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
     [System.Drawing.ToolboxBitmapAttribute(typeof(System.Web.DynamicData.DynamicDataManager), "DynamicDataManager.bmp")]
@@ -169,21 +169,21 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AutoLoadForeignKeys { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.DynamicData.DataControlReferenceCollection DataControls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         protected override void OnInit(System.EventArgs e) { }
         protected override void OnLoad(System.EventArgs e) { }
@@ -220,7 +220,7 @@ namespace System.Web.DynamicData
     {
         public DynamicEntity() { }
         [System.ComponentModel.CategoryAttribute("Behavior")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DataBoundControlMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DataBoundControlMode.ReadOnly)]
         public System.Web.UI.WebControls.DataBoundControlMode Mode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -264,7 +264,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string UIHint { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ValidateRequestMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ValidateRequestMode.Inherit)]
         public new System.Web.UI.ValidateRequestMode ValidateRequestMode { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -286,7 +286,7 @@ namespace System.Web.DynamicData
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DataField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control FilterTemplate { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Behavior")]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -363,7 +363,7 @@ namespace System.Web.DynamicData
         public EntityTemplate() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.INamingContainer))]
         public virtual System.Web.UI.ITemplate ItemTemplate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
@@ -630,8 +630,8 @@ namespace System.Web.DynamicData
         public void RegisterContext(System.Web.DynamicData.ModelProviders.DataModelProvider dataModelProvider) { }
         public virtual void RegisterContext(System.Web.DynamicData.ModelProviders.DataModelProvider dataModelProvider, System.Web.DynamicData.ContextConfiguration configuration) { }
         public static void ResetRegistrationException() { }
-        public bool TryGetTable(string uniqueTableName, out System.Web.DynamicData.MetaTable table) { table = default(System.Web.DynamicData.MetaTable); throw null; }
-        public bool TryGetTable(System.Type entityType, out System.Web.DynamicData.MetaTable table) { table = default(System.Web.DynamicData.MetaTable); throw null; }
+        public bool TryGetTable(string uniqueTableName, out System.Web.DynamicData.MetaTable table) { throw null; }
+        public bool TryGetTable(System.Type entityType, out System.Web.DynamicData.MetaTable table) { throw null; }
     }
     public partial class MetaTable
     {
@@ -688,8 +688,8 @@ namespace System.Web.DynamicData
         protected internal virtual void Initialize() { }
         public void ResetMetadata() { }
         public override string ToString() { throw null; }
-        public bool TryGetColumn(string columnName, out System.Web.DynamicData.MetaColumn column) { column = default(System.Web.DynamicData.MetaColumn); throw null; }
-        public static bool TryGetTable(System.Type entityType, out System.Web.DynamicData.MetaTable table) { table = default(System.Web.DynamicData.MetaTable); throw null; }
+        public bool TryGetColumn(string columnName, out System.Web.DynamicData.MetaColumn column) { throw null; }
+        public static bool TryGetTable(System.Type entityType, out System.Web.DynamicData.MetaTable table) { throw null; }
     }
     public static partial class PageAction
     {
@@ -710,7 +710,7 @@ namespace System.Web.DynamicData
         public string DynamicFilterContainerId { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.INamingContainer))]
         public virtual System.Web.UI.ITemplate ItemTemplate { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         protected override void OnPreRender(System.EventArgs e) { }
@@ -730,7 +730,7 @@ namespace System.Web.DynamicData
         protected void OnFilterChanged() { }
         public void PopulateListControl(System.Web.UI.WebControls.ListControl listControl) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class TableNameAttribute : System.Attribute
     {
         public TableNameAttribute(string name) { }

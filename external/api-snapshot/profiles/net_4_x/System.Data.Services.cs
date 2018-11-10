@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Data.Services.dll")]
@@ -21,32 +21,32 @@
 [assembly:System.Security.SecurityCriticalAttribute]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -56,7 +56,7 @@ namespace System
 }
 namespace System.Data.Services
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=true, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=true, Inherited=true)]
     public sealed partial class ChangeInterceptorAttribute : System.Attribute
     {
         public ChangeInterceptorAttribute(string entitySetName) { }
@@ -138,8 +138,8 @@ namespace System.Data.Services
         public DataServiceProcessingPipelineEventArgs() { }
         public System.Data.Services.DataServiceOperationContext OperationContext { get { throw null; } }
     }
-    [System.ServiceModel.Activation.AspNetCompatibilityRequirementsAttribute(RequirementsMode=(System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode)(1))]
-    [System.ServiceModel.ServiceBehaviorAttribute(InstanceContextMode=(System.ServiceModel.InstanceContextMode)(1))]
+    [System.ServiceModel.Activation.AspNetCompatibilityRequirementsAttribute(RequirementsMode=System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+    [System.ServiceModel.ServiceBehaviorAttribute(InstanceContextMode=System.ServiceModel.InstanceContextMode.PerCall)]
     public partial class DataService<T> : System.Data.Services.IRequestHandler
     {
         public DataService() { }
@@ -166,7 +166,7 @@ namespace System.Data.Services
         WriteMerge = 32,
         WriteReplace = 8,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class ETagAttribute : System.Attribute
     {
         public ETagAttribute(string propertyName) { }
@@ -249,7 +249,7 @@ namespace System.Data.Services
     {
         System.Collections.IEnumerable ApplyExpansions(System.Linq.IQueryable queryable, System.Collections.Generic.ICollection<System.Data.Services.ExpandSegmentCollection> expandPaths);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class IgnorePropertiesAttribute : System.Attribute
     {
         public IgnorePropertiesAttribute(string propertyName) { }
@@ -278,7 +278,7 @@ namespace System.Data.Services
         void SetReference(object targetResource, string propertyName, object propertyValue);
         void SetValue(object targetResource, string propertyName, object propertyValue);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class MimeTypeAttribute : System.Attribute
     {
         public MimeTypeAttribute(string memberName, string mimeType) { }
@@ -292,7 +292,7 @@ namespace System.Data.Services
         public System.Data.Services.DataServiceOperationContext OperationContext { get { throw null; } }
         public System.Uri RequestUri { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=true, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=true, Inherited=true)]
     public sealed partial class QueryInterceptorAttribute : System.Attribute
     {
         public QueryInterceptorAttribute(string entitySetName) { }
@@ -308,7 +308,7 @@ namespace System.Data.Services
         ReadMultiple = 2,
         ReadSingle = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class SingleResultAttribute : System.Attribute
     {
         public SingleResultAttribute() { }
@@ -324,7 +324,7 @@ namespace System.Data.Services
 }
 namespace System.Data.Services.Internal
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public abstract partial class ExpandedWrapper<TExpandedElement> : System.Data.Services.IExpandedResult
     {
         protected ExpandedWrapper() { }
@@ -334,7 +334,7 @@ namespace System.Data.Services.Internal
         public object GetExpandedPropertyValue(string name) { throw null; }
         protected abstract object InternalGetExpandedPropertyValue(int nameIndex);
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -349,7 +349,7 @@ namespace System.Data.Services.Internal
         public TProperty8 ProjectedProperty8 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -365,7 +365,7 @@ namespace System.Data.Services.Internal
         public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9, TProperty10> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -382,7 +382,7 @@ namespace System.Data.Services.Internal
         public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7, TProperty8, TProperty9, TProperty10, TProperty11> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -400,14 +400,14 @@ namespace System.Data.Services.Internal
         public TProperty9 ProjectedProperty9 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
         public TProperty0 ProjectedProperty0 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -415,7 +415,7 @@ namespace System.Data.Services.Internal
         public TProperty1 ProjectedProperty1 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -424,7 +424,7 @@ namespace System.Data.Services.Internal
         public TProperty2 ProjectedProperty2 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -434,7 +434,7 @@ namespace System.Data.Services.Internal
         public TProperty3 ProjectedProperty3 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -445,7 +445,7 @@ namespace System.Data.Services.Internal
         public TProperty4 ProjectedProperty4 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -457,7 +457,7 @@ namespace System.Data.Services.Internal
         public TProperty5 ProjectedProperty5 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -470,7 +470,7 @@ namespace System.Data.Services.Internal
         public TProperty6 ProjectedProperty6 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExpandedWrapper<TExpandedElement, TProperty0, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6, TProperty7> : System.Data.Services.Internal.ExpandedWrapper<TExpandedElement>
     {
         public ExpandedWrapper() { }
@@ -484,7 +484,7 @@ namespace System.Data.Services.Internal
         public TProperty7 ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetExpandedPropertyValue(int nameIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public abstract partial class ProjectedWrapper
     {
         protected ProjectedWrapper() { }
@@ -493,21 +493,21 @@ namespace System.Data.Services.Internal
         public object GetProjectedPropertyValue(string propertyName) { throw null; }
         protected abstract object InternalGetProjectedPropertyValue(int propertyIndex);
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper0 : System.Data.Services.Internal.ProjectedWrapper
     {
         [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline this type of method across NGen image boundaries")]
         public ProjectedWrapper0() { }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper1 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper1() { }
         public object ProjectedProperty0 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper2 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper2() { }
@@ -515,7 +515,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty1 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper3 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper3() { }
@@ -524,7 +524,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty2 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper4 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper4() { }
@@ -534,7 +534,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty3 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper5 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper5() { }
@@ -545,7 +545,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty4 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper6 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper6() { }
@@ -557,7 +557,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty5 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper7 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper7() { }
@@ -570,7 +570,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty6 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapper8 : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapper8() { }
@@ -584,7 +584,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class ProjectedWrapperMany : System.Data.Services.Internal.ProjectedWrapper
     {
         public ProjectedWrapperMany() { }
@@ -599,7 +599,7 @@ namespace System.Data.Services.Internal
         public object ProjectedProperty7 { get { throw null; } set { } }
         protected override object InternalGetProjectedPropertyValue(int propertyIndex) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectedWrapperManyEnd : System.Data.Services.Internal.ProjectedWrapperMany
     {
         public ProjectedWrapperManyEnd() { }

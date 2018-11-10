@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -75,7 +75,7 @@ namespace System.Web.Razor
         public abstract System.Web.Razor.Parser.ParserBase CreateCodeParser();
         public static System.Web.Razor.RazorCodeLanguage GetLanguageByExtension(string fileExtension) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=true, Inherited=true)]
     public sealed partial class RazorDirectiveAttribute : System.Attribute
     {
         public RazorDirectiveAttribute(string name, string value) { }
@@ -343,6 +343,7 @@ namespace System.Web.Razor.Generator
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct GeneratedClassContext
     {
+        private object _dummy;
         public static readonly System.Web.Razor.Generator.GeneratedClassContext Default;
         public static readonly string DefaultExecuteMethodName;
         public static readonly string DefaultLayoutPropertyName;
@@ -350,10 +351,10 @@ namespace System.Web.Razor.Generator
         public static readonly string DefaultWriteAttributeToMethodName;
         public static readonly string DefaultWriteLiteralMethodName;
         public static readonly string DefaultWriteMethodName;
-        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName) { throw null;}
-        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName) { throw null;}
-        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName, string defineSectionMethodName) { throw null;}
-        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName, string defineSectionMethodName, string beginContextMethodName, string endContextMethodName) { throw null;}
+        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName) { throw null; }
+        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName) { throw null; }
+        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName, string defineSectionMethodName) { throw null; }
+        public GeneratedClassContext(string executeMethodName, string writeMethodName, string writeLiteralMethodName, string writeToMethodName, string writeLiteralToMethodName, string templateTypeName, string defineSectionMethodName, string beginContextMethodName, string endContextMethodName) { throw null; }
         public bool AllowSections { get { throw null; } }
         public bool AllowTemplates { get { throw null; } }
         public string BeginContextMethodName { get { throw null; } set { } }
@@ -378,8 +379,9 @@ namespace System.Web.Razor.Generator
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct GeneratedCodeMapping
     {
-        public GeneratedCodeMapping(int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null;}
-        public GeneratedCodeMapping(int startOffset, int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null;}
+        private int _dummyPrimitive;
+        public GeneratedCodeMapping(int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null; }
+        public GeneratedCodeMapping(int startOffset, int startLine, int startColumn, int startGeneratedColumn, int codeLength) { throw null; }
         public int CodeLength { get { throw null; } set { } }
         public int StartColumn { get { throw null; } set { } }
         public int StartGeneratedColumn { get { throw null; } set { } }
@@ -606,7 +608,7 @@ namespace System.Web.Razor.Parser
         protected virtual void SessionStateDirective() { }
         protected void SessionStateDirectiveCore() { }
         protected void SessionStateTypeDirective(string noValueError, System.Func<string, string, System.Web.Razor.Generator.SpanCodeGenerator> createCodeGenerator) { }
-        protected bool TryGetDirectiveHandler(string directive, out System.Action handler) { handler = default(System.Action); throw null; }
+        protected bool TryGetDirectiveHandler(string directive, out System.Action handler) { throw null; }
         protected virtual bool ValidSessionStateValue() { throw null; }
         protected partial class Block
         {
@@ -1133,9 +1135,10 @@ namespace System.Web.Razor.Text
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SourceLocation : System.IComparable<System.Web.Razor.Text.SourceLocation>, System.IEquatable<System.Web.Razor.Text.SourceLocation>
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.Razor.Text.SourceLocation Undefined;
         public static readonly System.Web.Razor.Text.SourceLocation Zero;
-        public SourceLocation(int absoluteIndex, int lineIndex, int characterIndex) { throw null;}
+        public SourceLocation(int absoluteIndex, int lineIndex, int characterIndex) { throw null; }
         public int AbsoluteIndex { get { throw null; } }
         public int CharacterIndex { get { throw null; } }
         public int LineIndex { get { throw null; } }
@@ -1176,7 +1179,9 @@ namespace System.Web.Razor.Text
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct TextChange
     {
-        public TextChange(int oldPosition, int oldLength, System.Web.Razor.Text.ITextBuffer oldBuffer, int newPosition, int newLength, System.Web.Razor.Text.ITextBuffer newBuffer) { throw null;}
+        private object _dummy;
+        private int _dummyPrimitive;
+        public TextChange(int oldPosition, int oldLength, System.Web.Razor.Text.ITextBuffer oldBuffer, int newPosition, int newLength, System.Web.Razor.Text.ITextBuffer newBuffer) { throw null; }
         public bool IsDelete { get { throw null; } }
         public bool IsInsert { get { throw null; } }
         public bool IsReplace { get { throw null; } }

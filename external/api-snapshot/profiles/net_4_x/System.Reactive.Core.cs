@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.2.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Open Technologies, Inc.")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Retail")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Open Technologies, Inc.  All rights reserved.")]
@@ -25,7 +25,7 @@ namespace System
 {
     public static partial class ObservableExtensions
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.IDisposable SubscribeSafe<T>(this System.IObservable<T> source, System.IObserver<T> observer) { throw null; }
         public static System.IDisposable Subscribe<T>(this System.IObservable<T> source) { throw null; }
         public static System.IDisposable Subscribe<T>(this System.IObservable<T> source, System.Action<T> onNext) { throw null; }
@@ -148,9 +148,9 @@ namespace System.Reactive.Concurrency
     {
         internal CurrentThreadScheduler() { }
         public static System.Reactive.Concurrency.CurrentThreadScheduler Instance { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static bool IsScheduleRequired { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This instance property is no longer supported. Use CurrentThreadScheduler.IsScheduleRequired instead. See http://go.microsoft.com/fwlink/?LinkID=260866 for more information.")]
         public bool ScheduleRequired { get { throw null; } }
         public override System.IDisposable Schedule<TState>(TState state, System.TimeSpan dueTime, System.Func<System.Reactive.Concurrency.IScheduler, TState, System.IDisposable> action) { throw null; }
@@ -164,7 +164,7 @@ namespace System.Reactive.Concurrency
         public override System.IDisposable Schedule<TState>(TState state, System.Func<System.Reactive.Concurrency.IScheduler, TState, System.IDisposable> action) { throw null; }
         public override System.IDisposable Schedule<TState>(TState state, System.TimeSpan dueTime, System.Func<System.Reactive.Concurrency.IScheduler, TState, System.IDisposable> action) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface IConcurrencyAbstractionLayer
     {
         bool SupportsLongRunning { get; }
@@ -275,7 +275,7 @@ namespace System.Reactive.Concurrency
         public System.Reactive.Concurrency.SchedulerOperation ConfigureAwait(bool continueOnCapturedContext) { throw null; }
         public System.Reactive.Concurrency.SchedulerOperationAwaiter GetAwaiter() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class SchedulerOperationAwaiter : System.Runtime.CompilerServices.INotifyCompletion
     {
         internal SchedulerOperationAwaiter() { }
@@ -293,7 +293,7 @@ namespace System.Reactive.Concurrency
         public System.Reactive.Concurrency.ScheduledItem<TAbsolute> Peek() { throw null; }
         public bool Remove(System.Reactive.Concurrency.ScheduledItem<TAbsolute> scheduledItem) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public static partial class Synchronization
     {
         public static System.IObservable<TSource> ObserveOn<TSource>(System.IObservable<TSource> source, System.Reactive.Concurrency.IScheduler scheduler) { throw null; }
@@ -396,13 +396,13 @@ namespace System.Reactive.Disposables
 }
 namespace System.Reactive.PlatformServices
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class DefaultSystemClock : System.Reactive.PlatformServices.ISystemClock
     {
         public DefaultSystemClock() { }
         public System.DateTimeOffset UtcNow { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HostLifecycleService
     {
         public static event System.EventHandler<System.Reactive.PlatformServices.HostResumingEventArgs> Resuming { add { } remove { } }
@@ -410,54 +410,54 @@ namespace System.Reactive.PlatformServices
         public static void AddRef() { }
         public static void Release() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class HostResumingEventArgs : System.EventArgs
     {
         public HostResumingEventArgs() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class HostSuspendingEventArgs : System.EventArgs
     {
         public HostSuspendingEventArgs() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface IExceptionServices
     {
         void Rethrow(System.Exception exception);
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface IHostLifecycleNotifications
     {
         event System.EventHandler<System.Reactive.PlatformServices.HostResumingEventArgs> Resuming;
         event System.EventHandler<System.Reactive.PlatformServices.HostSuspendingEventArgs> Suspending;
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface INotifySystemClockChanged
     {
         event System.EventHandler<System.Reactive.PlatformServices.SystemClockChangedEventArgs> SystemClockChanged;
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface IPlatformEnlightenmentProvider
     {
         T GetService<T>(params object[] args) where T : class;
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface ISystemClock
     {
         System.DateTimeOffset UtcNow { get; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class PeriodicTimerSystemClockMonitor : System.Reactive.PlatformServices.INotifySystemClockChanged
     {
         public PeriodicTimerSystemClockMonitor(System.TimeSpan period) { }
         public event System.EventHandler<System.Reactive.PlatformServices.SystemClockChangedEventArgs> SystemClockChanged { add { } remove { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class PlatformEnlightenmentProvider
     {
         public static System.Reactive.PlatformServices.IPlatformEnlightenmentProvider Current { get { throw null; } set { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class SystemClock
     {
         public static System.DateTimeOffset UtcNow { get { throw null; } }
@@ -465,7 +465,7 @@ namespace System.Reactive.PlatformServices
         public static void AddRef() { }
         public static void Release() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class SystemClockChangedEventArgs : System.EventArgs
     {
         public SystemClockChangedEventArgs() { }

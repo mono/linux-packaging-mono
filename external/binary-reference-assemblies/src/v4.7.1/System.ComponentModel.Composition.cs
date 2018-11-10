@@ -657,6 +657,8 @@ namespace System.ComponentModel.Composition.ReflectionModel
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct LazyMemberInfo
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public LazyMemberInfo(System.Reflection.MemberInfo member) { throw null;}
         public LazyMemberInfo(System.Reflection.MemberTypes memberType, System.Func<System.Reflection.MemberInfo[]> accessorsCreator) { throw null;}
         public LazyMemberInfo(System.Reflection.MemberTypes memberType, params System.Reflection.MemberInfo[] accessors) { throw null;}

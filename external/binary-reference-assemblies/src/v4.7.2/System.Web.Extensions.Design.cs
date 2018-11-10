@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Drawing.BitmapSuffixInSatelliteAssemblyAttribute]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
@@ -20,7 +20,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Web.UI.WebResourceAttribute("System.Web.Resources.Design.Background.gif", "image/gif")]
 namespace System.Web.UI.Design
 {
@@ -170,7 +170,7 @@ namespace System.Web.UI.Design.WebControls
         public string ContextTypeName { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.WebControls.LinqDataSourceInsertUpdateDeleteStatementConverter")]
         public string Delete { get { throw null; } set { } }
@@ -183,7 +183,7 @@ namespace System.Web.UI.Design.WebControls
         public string GroupBy { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.WebControls.LinqDataSourceInsertUpdateDeleteStatementConverter")]
         public string Insert { get { throw null; } set { } }
@@ -207,7 +207,7 @@ namespace System.Web.UI.Design.WebControls
         public string TableName { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Data")]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.WebControls.LinqDataSourceInsertUpdateDeleteStatementConverter")]
         public string Update { get { throw null; } set { } }
@@ -233,7 +233,7 @@ namespace System.Web.UI.Design.WebControls
         public bool IsDataContext { get { throw null; } }
         public bool IsTableTypeTable { get { throw null; } }
         public override System.Web.UI.Design.IDataSourceViewSchema Schema { get { throw null; } }
-        public override System.Collections.IEnumerable GetDesignTimeData(int minimumRows, out bool isSampleData) { isSampleData = default(bool); throw null; }
+        public override System.Collections.IEnumerable GetDesignTimeData(int minimumRows, out bool isSampleData) { throw null; }
     }
     public partial class ListViewDesigner : System.Web.UI.Design.WebControls.DataBoundControlDesigner
     {

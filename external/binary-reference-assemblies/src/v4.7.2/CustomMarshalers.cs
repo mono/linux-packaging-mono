@@ -17,7 +17,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1))]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.Runtime.InteropServices.CustomMarshalers
 {
