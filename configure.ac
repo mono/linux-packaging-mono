@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.428],
+AC_INIT(mono, [5.21.0.439],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -20,6 +20,7 @@ AM_INIT_AUTOMAKE([1.9 dist-bzip2 tar-ustar no-dist-gzip foreign subdir-objects]
 
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
+AM_EXTRA_RECURSIVE_TARGETS([test])
 
 API_VER=2.0
 AC_SUBST(API_VER)
