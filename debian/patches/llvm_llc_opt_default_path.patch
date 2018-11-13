@@ -1,11 +1,10 @@
-diff --git a/mono/mini/aot-compiler.c b/mono/mini/aot-compiler.c
-index 17a377236c7..8225b9e870f 100644
---- a/mono/mini/aot-compiler.c
-+++ b/mono/mini/aot-compiler.c
-@@ -12588,7 +12588,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options,
- #ifdef MONO_ARCH_HAVE_FTNPTR_ARG_TRAMPOLINE
+diff -urNad mono-5.21.0.439.bak/mono/mini/aot-compiler.c mono-5.21.0.439/mono/mini/aot-compiler.c
+--- mono-5.21.0.439.bak/mono/mini/aot-compiler.c	2018-11-13 03:22:01.000000000 -0500
++++ mono-5.21.0.439/mono/mini/aot-compiler.c	2018-11-13 11:07:35.737483738 -0500
+@@ -12819,7 +12819,7 @@
  	acfg->aot_opts.nftnptr_arg_trampolines = 128;
  #endif
+ 	acfg->aot_opts.nunbox_arbitrary_trampolines = 256;
 -	acfg->aot_opts.llvm_path = g_strdup ("");
 +	acfg->aot_opts.llvm_path = g_strdup ("/usr/lib/mono/llvm/bin/");
  	acfg->aot_opts.temp_path = g_strdup ("");
