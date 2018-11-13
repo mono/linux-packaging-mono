@@ -144,6 +144,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(monodir)"
 DATA = $(mono_DATA)
+am__extra_recursive_targets = test-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -460,6 +461,7 @@ uninstall-monoDATA:
 	@list='$(mono_DATA)'; test -n "$(monodir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(monodir)'; $(am__uninstall_files_from_dir)
+test-local: 
 tags TAGS:
 
 ctags CTAGS:
@@ -598,6 +600,10 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
 uninstall-am: uninstall-monoDATA
 
 .MAKE: install-am install-strip
@@ -612,7 +618,8 @@ uninstall-am: uninstall-monoDATA
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags-am uninstall uninstall-am uninstall-monoDATA
+	ps ps-am tags-am test-am test-local uninstall uninstall-am \
+	uninstall-monoDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

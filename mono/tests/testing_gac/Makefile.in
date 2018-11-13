@@ -116,6 +116,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__extra_recursive_targets = test-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -470,6 +471,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+test-local: 
 tags TAGS:
 
 ctags CTAGS:
@@ -606,6 +608,10 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
 uninstall-am:
 
 .MAKE: install-am install-strip
@@ -620,14 +626,15 @@ uninstall-am:
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool mostlyclean-local pdf \
-	pdf-am ps ps-am tags-am uninstall uninstall-am
+	pdf-am ps ps-am tags-am test-am test-local uninstall \
+	uninstall-am
 
 
 ### Test cases
 
-.PHONY: runtest compile-tests prereqs
+.PHONY: run-test test-local prereqs
 
-runtest:
+run-test:
 	true
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-app-both
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-unsigned-v1
@@ -636,7 +643,7 @@ runtest:
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-signed-v2-signed-v1
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-gac
 
-compile-tests: prereqs $(APP_SIGNED_V1_EXE) $(APP_BOTH_EXE) $(APP_SIGNED_V1_AOT)
+test-local: prereqs $(APP_SIGNED_V1_EXE) $(APP_BOTH_EXE) $(APP_SIGNED_V1_AOT)
 
 prereqs: $(GACTESTLIB_DLLS) $(GACTESTLIB_DLLS_AOT)
 	$(MAKE) gacinstall

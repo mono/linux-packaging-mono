@@ -222,6 +222,7 @@ am__recursive_targets = \
   $(am__extra_recursive_targets)
 AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
 	distdir
+am__extra_recursive_targets = test-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -1007,6 +1008,7 @@ $(am__recursive_targets):
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
+test-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1236,6 +1238,10 @@ ps: ps-recursive
 
 ps-am:
 
+test: test-recursive
+
+test-am: test-local
+
 uninstall-am: uninstall-eglibDATA
 
 .MAKE: $(am__recursive_targets) install-am install-strip
@@ -1253,7 +1259,8 @@ uninstall-am: uninstall-eglibDATA
 	installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-eglibDATA
+	tags tags-am test-am test-local uninstall uninstall-am \
+	uninstall-eglibDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

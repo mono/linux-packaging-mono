@@ -291,6 +291,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 DATA = $(suppression_DATA)
+am__extra_recursive_targets = test-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -589,7 +590,7 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # sampling infrastructure depends on signals being available.
 #
 # See: https://bugzilla.xamarin.com/show_bug.cgi?id=57011
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = testlog
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = run-test
 @BITCODE_FALSE@@HOST_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 
 # On Apple hosts, we want to allow undefined symbols when building the
@@ -902,6 +903,7 @@ uninstall-suppressionDATA:
 	@list='$(suppression_DATA)'; test -n "$(suppressiondir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(suppressiondir)'; $(am__uninstall_files_from_dir)
+test-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1094,6 +1096,10 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
 uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-suppressionDATA
 
@@ -1112,15 +1118,17 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	install-suppressionDATA installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
-	uninstall-suppressionDATA
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
+	test-local uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-libLTLIBRARIES uninstall-suppressionDATA
 
 
 %.exe: %.cs
 	$(MCS) -out:$@ $<
 
-testlog: $(PLOG_TESTS)
+test-local: $(PLOG_TESTS)
+
+run-test: test
 	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir) nunit TestResult-profiler.xml
 
 check-local: $(check_targets)
