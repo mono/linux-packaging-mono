@@ -384,7 +384,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__extra_recursive_targets = test-recursive
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -1208,6 +1208,7 @@ clean-libtool:
 	-rm -rf ../../external/corefx/src/Native/Unix/System.Native/.libs ../../external/corefx/src/Native/Unix/System.Native/_libs
 	-rm -rf ../../external/corefx/src/Native/Unix/System.Net.Security.Native/.libs ../../external/corefx/src/Native/Unix/System.Net.Security.Native/_libs
 test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1405,6 +1406,10 @@ test: test-am
 
 test-am: test-local
 
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
@@ -1421,9 +1426,13 @@ uninstall-am: uninstall-libLTLIBRARIES
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am test-am test-local uninstall uninstall-am \
-	uninstall-libLTLIBRARIES
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-libLTLIBRARIES
 
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)
+	cp -L .libs/libmono-native$(libsuffix) $(TEST_BUNDLE_PATH)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1371,6 +1371,9 @@
 /* The architecture this is running on */
 #undef MONO_ARCHITECTURE
 
+/* 64 bit mode with 4 byte longs and pointers */
+#undef MONO_ARCH_ILP32
+
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
 
@@ -1580,9 +1583,6 @@
 #  undef WORDS_BIGENDIAN
 # endif
 #endif
-
-/* 64 bit mode with 4 byte longs and pointers */
-#undef __mono_ilp32__
 
 /* ... */
 #undef __mono_ppc64__

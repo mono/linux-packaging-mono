@@ -146,7 +146,7 @@ am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)"
 man5dir = $(mandir)/man5
 NROFF = nroff
 MANS = $(man_MANS)
-am__extra_recursive_targets = test-recursive
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -591,6 +591,7 @@ uninstall-man5:
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man5dir)'; $(am__uninstall_files_from_dir)
 test-local: 
+test-bundle-local: 
 tags TAGS:
 
 ctags CTAGS:
@@ -733,6 +734,10 @@ test: test-am
 
 test-am: test-local
 
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-man
 
 uninstall-man: uninstall-man1 uninstall-man5
@@ -750,8 +755,8 @@ uninstall-man: uninstall-man1 uninstall-man5
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags-am test-am \
-	test-local uninstall uninstall-am uninstall-man uninstall-man1 \
-	uninstall-man5
+	test-bundle-am test-bundle-local test-local uninstall \
+	uninstall-am uninstall-man uninstall-man1 uninstall-man5
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

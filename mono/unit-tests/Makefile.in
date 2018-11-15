@@ -256,7 +256,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__extra_recursive_targets = test-recursive
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -1088,6 +1088,7 @@ mostlyclean-libtool:
 clean-libtool:
 	-rm -rf .libs _libs
 test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1417,10 +1418,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@clean-local:
-@HOST_WIN32_TRUE@clean-local:
 @CROSS_COMPILE_TRUE@test-local:
 @HOST_WIN32_TRUE@test-local:
+@CROSS_COMPILE_TRUE@clean-local:
+@HOST_WIN32_TRUE@clean-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
@@ -1494,6 +1495,10 @@ test: test-am
 
 test-am: test-local
 
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am:
 
 .MAKE: check-am install-am install-strip
@@ -1511,7 +1516,8 @@ uninstall-am:
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	recheck tags tags-am test-am test-local uninstall uninstall-am
+	recheck tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am
 
 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test-local: $(check_PROGRAMS)

@@ -114,7 +114,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__extra_recursive_targets = test-recursive
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -458,6 +458,7 @@ mostlyclean-libtool:
 clean-libtool:
 	-rm -rf .libs _libs
 test-local: 
+test-bundle-local: 
 tags TAGS:
 
 ctags CTAGS:
@@ -597,6 +598,10 @@ test: test-am
 
 test-am: test-local
 
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am:
 
 .MAKE: install-am install-strip
@@ -612,7 +617,8 @@ uninstall-am:
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am test-am test-local uninstall uninstall-am
+	tags-am test-am test-bundle-am test-bundle-local test-local \
+	uninstall uninstall-am
 
 
 all-local: build-shared/libmono-btls-shared$(libsuffix)
@@ -635,6 +641,10 @@ install-exec-local:
 @HOST_WIN32_TRUE@	$(install_sh) build-shared/libmono-btls-shared*.a "$(DESTDIR)$(libdir)"
 @HOST_WIN32_TRUE@	$(install_sh) build-shared/libmono-btls-shared*.dll "$(DESTDIR)$(bindir)"
 @HOST_WIN32_FALSE@	$(install_sh) build-shared/libmono-btls-shared.* "$(DESTDIR)$(libdir)"
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)
+	cp -L build-shared/libmono-btls-shared$(libsuffix) $(TEST_BUNDLE_PATH)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
