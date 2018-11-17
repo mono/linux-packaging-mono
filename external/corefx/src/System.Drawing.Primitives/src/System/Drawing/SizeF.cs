@@ -20,6 +20,9 @@ namespace System.Drawing
 #if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
 #endif
+#if FEATURE_TYPECONVERTER
+    [TypeConverter (typeof (SizeFConverter))]
+#endif
     public struct SizeF : IEquatable<SizeF>
     {
         /// <summary>

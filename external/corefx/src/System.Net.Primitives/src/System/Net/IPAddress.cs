@@ -76,7 +76,7 @@ namespace System.Net
             get { return _numbers != null; }
         }
 
-        private uint PrivateAddress
+        internal uint PrivateAddress
         {
             get
             {

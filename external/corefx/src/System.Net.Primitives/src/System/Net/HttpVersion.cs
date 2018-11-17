@@ -4,7 +4,11 @@
 
 namespace System.Net
 {
-    public static class HttpVersion
+    public 
+#if !MONO
+    static
+#endif
+    class HttpVersion
     {
         public static readonly Version Unknown = new Version(0, 0);
         public static readonly Version Version10 = new Version(1, 0);

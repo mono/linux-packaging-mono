@@ -75,7 +75,9 @@ namespace System.Reflection.Tests
             Assert.Equal(1, complicatedAttribute.NamedArguments.Count);
             Assert.Equal(false, complicatedAttribute.NamedArguments[0].IsField);
             Assert.Equal("Stuff", complicatedAttribute.NamedArguments[0].MemberName);
+#if !MONO // Mono issue #11572
             Assert.Equal(typeof(ComplicatedAttribute).GetProperty("Stuff"), complicatedAttribute.NamedArguments[0].MemberInfo);
+#endif            
             Assert.Equal(typeof(int), complicatedAttribute.NamedArguments[0].TypedValue.ArgumentType);
             Assert.Equal(2, complicatedAttribute.NamedArguments[0].TypedValue.Value);
         }
@@ -91,7 +93,11 @@ namespace System.Reflection.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.Name does not indicate file location on UwpAot")]
         public void Name()
         {
+#if MONO            
+            Assert.EndsWith("corlib_xunit-test.dll", Module.Name);
+#else
             Assert.Equal("system.runtime.tests.dll", Module.Name, ignoreCase: true);
+#endif
         }
 
         [Fact]
@@ -119,7 +125,11 @@ namespace System.Reflection.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.ToString() does not indicate file location on UwpAot")]
         public void TestToString()
         {
+#if MONO
+            Assert.EndsWith("corlib_xunit-test.dll", Module.ToString());
+#else
             Assert.Equal("System.Runtime.Tests.dll", Module.ToString());
+#endif
         }
 
         [Fact]
@@ -152,7 +162,7 @@ namespace System.Reflection.Tests
             Assert.NotNull(ex.Message);
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue")]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.GetField apis not supported on UapAot.")]
         public void GetField()
         {
@@ -166,7 +176,7 @@ namespace System.Reflection.Tests
             Assert.Equal(200L, (long)testLong.GetValue(null));
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue")]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.GetField apis not supported on UapAot.")]
         public void GetFields()
         {
@@ -305,7 +315,7 @@ namespace System.Reflection.Tests
             Assert.Equal(method, actual);
         }
 
-        [Fact]
+        [Fact(Skip="Mono issue")]
         public void GetTypes()
         {
             List<Type> types = TestModule.GetTypes().ToList();
