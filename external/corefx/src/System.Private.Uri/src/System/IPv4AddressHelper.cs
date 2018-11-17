@@ -8,7 +8,7 @@ namespace System
 {
     // The class designed as to keep minimal the working set of Uri class.
     // The idea is to stay with static helper methods and strings
-    internal static class IPv4AddressHelper
+    internal static partial class IPv4AddressHelper
     {
         internal const long Invalid = -1;
         // Note: the native parser cannot handle MaxIPv4Value, only MaxIPv4Value - 1

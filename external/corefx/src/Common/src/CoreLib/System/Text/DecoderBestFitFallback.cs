@@ -11,6 +11,9 @@ using System.Threading;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     internal sealed class InternalDecoderBestFitFallback : DecoderFallback
     {
         // Our variables

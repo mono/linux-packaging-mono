@@ -5,19 +5,6 @@
 using System.Collections.Generic;
 using Xunit;
 
-// remove it after including external/corefx/src/System.Runtime/tests/System/TypeTests.cs to corelib source. 
-#if MONO
-internal class Outside
-{
-    public class Inside { }
-}
-
-internal class Outside<T>
-{
-    public class Inside<U> { }
-}
-#endif
-
 namespace System.Reflection.Tests
 {
     public class TypeInfoNetcoreTests

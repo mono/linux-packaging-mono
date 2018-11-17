@@ -106,7 +106,11 @@ namespace System
 
         public virtual bool IsEnum => IsSubclassOf(typeof(Enum));
         public bool IsMarshalByRef => IsMarshalByRefImpl();
+#if MONO
+        protected virtual bool IsMarshalByRefImpl() => typeof(MarshalByRefObject).IsAssignableFrom(this);
+#else
         protected virtual bool IsMarshalByRefImpl() => false;
+#endif
         public bool IsPrimitive => IsPrimitiveImpl();
         protected abstract bool IsPrimitiveImpl();
         public bool IsValueType => IsValueTypeImpl();
@@ -364,9 +368,9 @@ namespace System
             return base.GetHashCode();
         }
         public virtual bool Equals(Type o) => o == null ? false : object.ReferenceEquals(this.UnderlyingSystemType, o.UnderlyingSystemType);
-
+#if !MONO
         public static Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw new PlatformNotSupportedException(SR.PlatformNotSupported_ReflectionOnly); }
-
+#endif
         public static Binder DefaultBinder
         {
             get
