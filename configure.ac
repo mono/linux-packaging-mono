@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.490],
+AC_INIT(mono, [5.21.0.500],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -211,6 +211,16 @@ case "$host" in
 		libgc_threads=pthreads
 		use_sigposix=yes
 		has_dtrace=yes
+		case "$host" in
+		aarch64-*)
+			support_boehm=no
+			with_gc=sgen
+			;;
+		riscv*)
+			support_boehm=no
+			with_gc=sgen
+			;;
+		esac
 		with_sgen_default_concurrent=yes
 		;;
 	*-*-*openbsd*)

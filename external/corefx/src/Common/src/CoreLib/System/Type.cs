@@ -100,7 +100,11 @@ namespace System
         public bool IsCOMObject => IsCOMObjectImpl();
         protected abstract bool IsCOMObjectImpl();
         public bool IsContextful => IsContextfulImpl();
+#if MONO
+        protected virtual bool IsContextfulImpl() => typeof(ContextBoundObject).IsAssignableFrom(this);
+#else
         protected virtual bool IsContextfulImpl() => false;
+#endif
 
         public virtual bool IsCollectible => true;
 
