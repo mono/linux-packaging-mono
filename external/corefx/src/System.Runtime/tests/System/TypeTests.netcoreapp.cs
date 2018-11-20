@@ -226,7 +226,9 @@ namespace System.Tests
                 yield return new object[] { typeof(ByRefLikeStruct), true };
                 yield return new object[] { typeof(RegularStruct), false };
                 yield return new object[] { typeof(object), false };
+#if !MONO // MONO issue #11693
                 yield return new object[] { typeof(Span<int>).MakeByRefType(), false };
+#endif                
                 yield return new object[] { typeof(Span<int>).MakePointerType(), false };
                 yield return new object[] { theT, false };
                 yield return new object[] { typeof(int[]), false };
