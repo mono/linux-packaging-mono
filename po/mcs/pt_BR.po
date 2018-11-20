@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-11-17 08:06+0000\n"
+"POT-Creation-Date: 2018-11-20 08:06+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3296,25 +3296,25 @@ msgstr "__arglist não é permitida em parâmetros de listas de iteradores"
 msgid "Iterators cannot have unsafe parameters or yield types"
 msgstr "Iteradores não podem ter parâmetros inseguros ou tipos yield"
 
-#: mcs/mcs/ikvm.cs:294
+#: mcs/mcs/ikvm.cs:295
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:519
+#: mcs/mcs/ikvm.cs:520
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:537
+#: mcs/mcs/ikvm.cs:538
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:657
+#: mcs/mcs/ikvm.cs:658
 #, fuzzy, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr "Erro ao gerar arquivo de documentação XML \"{0}\" (\"{1}\")"
