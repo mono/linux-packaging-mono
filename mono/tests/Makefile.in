@@ -402,7 +402,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
 @FULL_AOT_TESTS_TRUE@am__append_28 = constraints-load.exe \
-@FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
+@FULL_AOT_TESTS_TRUE@	calli_sig_check.exe bug-515884.exe \
+@FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
@@ -1418,6 +1419,7 @@ TESTS_IL_SRC = \
 	invalid-token.il	\
 	call_missing_method.il	\
 	call_missing_class.il	\
+	calli_sig_check.il	\
 	ldfld_missing_field.il	\
 	ldfld_missing_class.il	\
 	find-method.2.il	\
@@ -1547,7 +1549,8 @@ PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	$(am__append_26) $(am__append_27) $(am__append_28) \
 	$(am__append_29) $(am__append_31) $(am__append_32)
 AOT_DISABLED_TESTS = \
-	constraints-load.exe
+	constraints-load.exe \
+	calli_sig_check.exe
 
 CI_DISABLED_TESTS = \
 	main-returns-background-resetabort.exe \
@@ -1656,6 +1659,8 @@ DISABLED_TESTS = \
 # Interpreter does not currently implement tailcall.
 # Disable all tailcall tests.
 # FIXME
+
+# expected InvalidProgramException not thrown
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	itaili1.exe ivtail1.exe sitail1.exe sirtail1.exe srtail1.exe \
 	stail1.exe tail1.exe taili1.exe vtail1.exe \
@@ -1780,8 +1785,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/6.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
-	tailcall/interface-conservestack/9.exe $(am__append_33) \
-	$(am__append_34) $(am__append_35)
+	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
+	$(am__append_33) $(am__append_34) $(am__append_35)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
