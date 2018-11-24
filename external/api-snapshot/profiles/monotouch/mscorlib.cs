@@ -5059,9 +5059,9 @@ namespace System
         public System.Reflection.PropertyInfo GetProperty(string name, System.Type[] types) { throw null; }
         protected abstract System.Reflection.PropertyInfo GetPropertyImpl(string name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Type returnType, System.Type[] types, System.Reflection.ParameterModifier[] modifiers);
         public new System.Type GetType() { throw null; }
-        public static System.Type GetType(string typeName) { throw null; }
-        public static System.Type GetType(string typeName, bool throwOnError) { throw null; }
-        public static System.Type GetType(string typeName, bool throwOnError, bool ignoreCase) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName, bool throwOnError) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName, bool throwOnError, bool ignoreCase) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName, System.Func<System.Reflection.AssemblyName, System.Reflection.Assembly> assemblyResolver, System.Func<System.Reflection.Assembly, string, bool, System.Type> typeResolver) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName, System.Func<System.Reflection.AssemblyName, System.Reflection.Assembly> assemblyResolver, System.Func<System.Reflection.Assembly, string, bool, System.Type> typeResolver, bool throwOnError) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type GetType(string typeName, System.Func<System.Reflection.AssemblyName, System.Reflection.Assembly> assemblyResolver, System.Func<System.Reflection.Assembly, string, bool, System.Type> typeResolver, bool throwOnError, bool ignoreCase) { throw null; }
@@ -5115,7 +5115,7 @@ namespace System
         public virtual System.Type MakePointerType() { throw null; }
         public static bool operator ==(System.Type left, System.Type right) { throw null; }
         public static bool operator !=(System.Type left, System.Type right) { throw null; }
-        public static System.Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw null; }
         void System.Runtime.InteropServices._Type.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
         void System.Runtime.InteropServices._Type.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
         void System.Runtime.InteropServices._Type.GetTypeInfoCount(out uint pcTInfo) { throw null; }
