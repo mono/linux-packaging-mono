@@ -2,10 +2,10 @@ Index: xamarin-pkg-mono/mono/mini/aot-compiler.c
 ===================================================================
 --- xamarin-pkg-mono.orig/mono/mini/aot-compiler.c
 +++ xamarin-pkg-mono/mono/mini/aot-compiler.c
-@@ -12559,7 +12559,7 @@ mono_compile_assembly (MonoAssembly *ass
- #ifdef MONO_ARCH_HAVE_FTNPTR_ARG_TRAMPOLINE
+@@ -12699,7 +12699,7 @@ mono_compile_assembly (MonoAssembly *ass
  	acfg->aot_opts.nftnptr_arg_trampolines = 128;
  #endif
+ 	acfg->aot_opts.nunbox_arbitrary_trampolines = 256;
 -	acfg->aot_opts.llvm_path = g_strdup ("");
 +	acfg->aot_opts.llvm_path = g_strdup ("/usr/lib/mono/llvm/bin/");
  	acfg->aot_opts.temp_path = g_strdup ("");
