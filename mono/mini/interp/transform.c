@@ -790,26 +790,6 @@ jit_call_supported (MonoMethod *method, MonoMethodSignature *sig)
 	if (method->string_ctor)
 		return FALSE;
 
-	/* FIXME: needed for this situation:
-	 * frame #7: 0x00000001027e355c test-Mono.Runtime.Tests`monoeg_assertion_message(format="* Assertion at %s:%d, condition `%s' not met\n") at goutput.c:163
-	 * frame #8: 0x0000000102565200 test-Mono.Runtime.Tests`mono_aot_get_unbox_trampoline(method=0x00000001c42bfd40) at aot-runtime.c:5771
-	 * frame #9: 0x00000001025a7534 test-Mono.Runtime.Tests`mini_add_method_trampoline(m=0x00000001c42bfd40, compiled_method=0x00000001057ec998, add_static_rgctx_tramp=1, add_unbox_tramp=1) at mini-trampolines.c:375
-	 * frame #10: 0x00000001025a8830 test-Mono.Runtime.Tests`common_call_trampoline(regs=0x000000016eed7f30, code="�\x1b@�1\x8eB�Q, m=0x00000001c42bfd40, vt=0x0000000104be07d0, vtable_slot=0x0000000104be0778, error=0x000000016eed7e30) at mini-trampolines.c:767
-	 * frame #11: 0x00000001025a9b84 test-Mono.Runtime.Tests`mono_vcall_trampoline(regs=0x000000016eed7f30, code="�\x1b@�1\x8eB�Q, slot=-11, tramp=0x0000000000000000) at mini-trampolines.c:978
-	 * frame #12: 0x00000001024a7f7c test-Mono.Runtime.Tests`generic_trampoline_vcall + 252
-	 * frame #13: 0x0000000101686310 test-Mono.Runtime.Tests`System_Runtime_CompilerServices_AsyncMethodBuilderCore_PostBoxInitialization_System_Runtime_CompilerServices_IAsyncStateMachine_System_Runtime_CompilerServices_AsyncMethodBuilderCore_MoveNextRunner_System_Threading_Tasks_Task + 640
-	 * frame #14: 0x00000001022ebfb4 test-Mono.Runtime.Tests`wrapper_unknown_object_gsharedvt_out_sig_object__object__object__intptr_0 + 164
-	 * frame #15: 0x0000000102809610 test-Mono.Runtime.Tests`do_jit_call(sp=0x000000016eed8908, vt_sp="", context=0x00000001c405e990, frame=0x000000016eedb050, rmethod=0x000000010433d028, error=0x000000016eed99a8) at interp.c:1962
-	 * AsyncTaskMethodBuilder`1::AwaitUnsafeOnCompleted @ 124 "ldarg.p" || frame #16: 0x00000001027f1b80 test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eedb050, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2933
-	 * <FooAsync>d__182`1::MoveNext @ 156 "leave.s" || frame #17: 0x00000001027f187c test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eedc490, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2909
-	 * AsyncTaskMethodBuilder`1::Start @ 72 "leave.s" || frame #18: 0x00000001027f187c test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eedd900, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2909
-	 * GSharedTests::FooAsync @ 92 "ldloca.s" || frame #19: 0x00000001027f187c test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eedecf0, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2909
-	 * GSharedTests::call_async @ 16 "pop" || frame #20: 0x00000001027f187c test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eee00d0, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2909
-	 * GSharedTests::test_0_async_call_from_generic @ 8 "ldc.i4.0" || frame #21: 0x00000001027f187c test-Mono.Runtime.Tests`interp_exec_method_full(frame=0x000000016eee14f0, context=0x00000001c405e990, start_with_ip=0x0000000000000000, filter_exception=0x0000000000000000, exit_at_finally=-1, base_frame=0x0000000000000000) at interp.c:2909
-	 */
-	if (!strcmp (m_class_get_name (method->klass), "AsyncMethodBuilderCore"))
-		return FALSE;
-
 	if (mono_aot_only && m_class_get_image (method->klass)->aot_module) {
 		ERROR_DECL (error);
 		gpointer addr = mono_jit_compile_method_jit_only (method, error);
@@ -959,8 +939,11 @@ interp_handle_intrinsics (TransformData *td, MonoMethod *target_method, MonoMeth
 
 			if (arg_size < SIZEOF_VOID_P) { // 4 -> 8
 				switch (type_index) {
-				case 0: case 1:
+				case 0:
 					ADD_CODE (td, MINT_CONV_I8_I4);
+					break;
+				case 1:
+					ADD_CODE (td, MINT_CONV_I8_U4);
 					break;
 				case 2:
 					ADD_CODE (td, MINT_CONV_R8_R4);
@@ -1038,8 +1021,11 @@ interp_handle_intrinsics (TransformData *td, MonoMethod *target_method, MonoMeth
 #if SIZEOF_VOID_P == 8
 			if (src_size < dst_size) { // 4 -> 8
 				switch (type_index) {
-				case 0: case 1:
+				case 0:
 					ADD_CODE (td, MINT_CONV_I8_I4);
+					break;
+				case 1:
+					ADD_CODE (td, MINT_CONV_I8_U4);
 					break;
 				case 2:
 					ADD_CODE (td, MINT_CONV_R8_R4);
@@ -1088,6 +1074,9 @@ interp_handle_intrinsics (TransformData *td, MonoMethod *target_method, MonoMeth
 			/* white list */
 			return FALSE;
 		} else if (!strcmp ("ToString", tm)) {
+			/* white list */
+			return FALSE;
+		} else if (!strcmp ("GetHashCode", tm)) {
 			/* white list */
 			return FALSE;
 		} else if (!strcmp ("IsNaN", tm) || !strcmp ("IsInfinity", tm) || !strcmp ("IsNegativeInfinity", tm) || !strcmp ("IsPositiveInfinity", tm)) {
@@ -1300,6 +1289,10 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 #if DEBUG_INTERP
 		g_print ("                    : %s::%s.  %s (%p)\n", target_method->klass->name, target_method->name, mono_signature_full_name (target_method->signature), target_method);
 #endif
+		/* Intrinsics: Try again, it could be that `mono_get_method_constrained_with_method` resolves to a method that we can substitute */
+		if (target_method && interp_handle_intrinsics (td, target_method, csignature, readonly, &op))
+			return;
+
 		return_if_nok (error);
 		mono_class_setup_vtable (target_method->klass);
 
@@ -1791,7 +1784,7 @@ collect_pred_seq_points (TransformData *td, InterpBasicBlock *bb, SeqPoint *seqp
 }
 
 static void
-save_seq_points (TransformData *td)
+save_seq_points (TransformData *td, MonoJitInfo *jinfo)
 {
 	InterpMethod *rtm = td->rtm;
 	GByteArray *array;
@@ -1878,6 +1871,8 @@ save_seq_points (TransformData *td)
 	mono_domain_lock (domain);
 	g_hash_table_insert (domain_jit_info (domain)->seq_points, rtm->method, info);
 	mono_domain_unlock (domain);
+
+	jinfo->seq_points = info;
 }
 
 static void
@@ -4009,17 +4004,18 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			break;
 		}
 		case CEE_CONV_OVF_I1:
-		case CEE_CONV_OVF_I1_UN:
+		case CEE_CONV_OVF_I1_UN: {
+			gboolean is_un = *td->ip == CEE_CONV_OVF_I1_UN;
 			CHECK_STACK (td, 1);
 			switch (td->sp [-1].type) {
 			case STACK_TYPE_R8:
-				ADD_CODE(td, MINT_CONV_OVF_I1_R8);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I1_UN_R8 : MINT_CONV_OVF_I1_R8);
 				break;
 			case STACK_TYPE_I4:
-				ADD_CODE(td, MINT_CONV_OVF_I1_I4);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I1_U4 : MINT_CONV_OVF_I1_I4);
 				break;
 			case STACK_TYPE_I8:
-				ADD_CODE(td, MINT_CONV_OVF_I1_I8);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I1_U8 : MINT_CONV_OVF_I1_I8);
 				break;
 			default:
 				g_assert_not_reached ();
@@ -4027,6 +4023,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			++td->ip;
 			SET_SIMPLE_TYPE(td->sp - 1, STACK_TYPE_I4);
 			break;
+		}
 		case CEE_CONV_OVF_U1:
 		case CEE_CONV_OVF_U1_UN:
 			CHECK_STACK (td, 1);
@@ -4047,17 +4044,18 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			SET_SIMPLE_TYPE(td->sp - 1, STACK_TYPE_I4);
 			break;
 		case CEE_CONV_OVF_I2:
-		case CEE_CONV_OVF_I2_UN:
+		case CEE_CONV_OVF_I2_UN: {
+			gboolean is_un = *td->ip == CEE_CONV_OVF_I2_UN;
 			CHECK_STACK (td, 1);
 			switch (td->sp [-1].type) {
 			case STACK_TYPE_R8:
-				ADD_CODE(td, MINT_CONV_OVF_I2_R8);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I2_UN_R8 : MINT_CONV_OVF_I2_R8);
 				break;
 			case STACK_TYPE_I4:
-				ADD_CODE(td, MINT_CONV_OVF_I2_I4);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I2_U4 : MINT_CONV_OVF_I2_I4);
 				break;
 			case STACK_TYPE_I8:
-				ADD_CODE(td, MINT_CONV_OVF_I2_I8);
+				ADD_CODE(td, is_un ? MINT_CONV_OVF_I2_U8 : MINT_CONV_OVF_I2_I8);
 				break;
 			default:
 				g_assert_not_reached ();
@@ -4065,6 +4063,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			++td->ip;
 			SET_SIMPLE_TYPE(td->sp - 1, STACK_TYPE_I4);
 			break;
+		}
 		case CEE_CONV_OVF_U2_UN:
 		case CEE_CONV_OVF_U2:
 			CHECK_STACK (td, 1);
@@ -4852,7 +4851,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		}
 	}
 
-	save_seq_points (td);
+	save_seq_points (td, jinfo);
 
 exit:
 	mono_basic_block_free (original_bb);
@@ -4951,12 +4950,13 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 					g_free (wrapper_name);
 				} else if (*name == 'I' && (strcmp (name, "Invoke") == 0)) {
 					/*
-					 * Handled when transforming caller.
-					 *
-					 * FIXME Resolve other calls in interp_transform_call instead of here
-					 * since changing the called method on the spot might trigger issues
+					 * Usually handled during transformation of the caller, but
+					 * when the caller is handled by another execution engine
+					 * (for example fullAOT) we need to handle it here. That's
+					 * known to be wrong in cases where the reference to
+					 * `MonoDelegate` would be needed (FIXME).
 					 */
-					g_assert_not_reached ();
+					nm = mono_marshal_get_delegate_invoke (method, NULL);
 				} else if (*name == 'B' && (strcmp (name, "BeginInvoke") == 0)) {
 					nm = mono_marshal_get_delegate_begin_invoke (method);
 				} else if (*name == 'E' && (strcmp (name, "EndInvoke") == 0)) {

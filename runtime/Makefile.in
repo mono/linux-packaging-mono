@@ -386,7 +386,7 @@ build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_11) $(am__append_12) $(am__append_13)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
-@BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
+MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
@@ -586,28 +586,43 @@ $(symlinks):
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 # The write check is to foil 'make distcheck'
-@BUILD_MCS_TRUE@all-local: $(SUPPORT_FILES) $(TEST_SUPPORT_FILES)
-@BUILD_MCS_TRUE@	if test -w $(mcs_topdir); then :; else chmod -R +w $(mcs_topdir); fi
-@BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) $(MAKE_FLAGS) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' CC='$(CC)' all-profiles
+all-mcs: $(SUPPORT_FILES) $(TEST_SUPPORT_FILES)
+	if test -w $(mcs_topdir); then :; else chmod -R +w $(mcs_topdir); fi
+	cd $(mcs_topdir) && $(MAKE) $(MAKE_FLAGS) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' CC='$(CC)' all-profiles
+
+install-mcs: install-mcs-exec install-mcs-data
 
 # override automake
-@BUILD_MCS_TRUE@install: install-exec install-data
+install-mcs-exec: $(SUPPORT_FILES) $(TEST_SUPPORT_FILES)
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' RUNTIME_HAS_CONSISTENT_GACDIR=yes prefix=$(prefix) install-profiles
 
 # override automake
-@BUILD_MCS_TRUE@install-exec: $(SUPPORT_FILES) $(TEST_SUPPORT_FILES)
-@BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' RUNTIME_HAS_CONSISTENT_GACDIR=yes prefix=$(prefix) install-profiles
+install-mcs-data:
+	@:
 
 # override automake
-@BUILD_MCS_TRUE@install-data:
-@BUILD_MCS_TRUE@	@:
+uninstall-mcs:
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' RUNTIME_HAS_CONSISTENT_GACDIR=yes prefix=$(prefix) uninstall-profiles
+
+clean-mcs:
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' clean-profiles
+	-rm -fr $(etctmp) $(tmpinst)
+
+@BUILD_MCS_TRUE@all-local: all-mcs
 
 # override automake
-@BUILD_MCS_TRUE@uninstall:
-@BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' RUNTIME_HAS_CONSISTENT_GACDIR=yes prefix=$(prefix) uninstall-profiles
+@BUILD_MCS_TRUE@install: install-mcs
 
-@BUILD_MCS_TRUE@clean-local:
-@BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' clean-profiles
-@BUILD_MCS_TRUE@	-rm -fr $(etctmp) $(tmpinst)
+# override automake
+@BUILD_MCS_TRUE@install-exec: install-mcs-exec
+
+# override automake
+@BUILD_MCS_TRUE@install-data: install-mcs-data
+
+# override automake
+@BUILD_MCS_TRUE@uninstall: uninstall-mcs
+
+@BUILD_MCS_TRUE@clean-local: clean-mcs
 
 mcs-do-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' test-profiles

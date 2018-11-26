@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 
 public class BuiltinTests {
@@ -290,6 +291,37 @@ public class BuiltinTests {
 		return 0;
 	}
 
+	private sealed class MyGenericEqualityComparer<T> : EqualityComparer<T> where T : IEquatable<T>
+	{
+		public sealed override bool Equals(T x, T y) {
+			if (x != null) {
+				if (y != null)
+					return x.Equals (y);
+				return false;
+			}
+			if (y != null)
+				return false;
+			return true;
+		}
+
+		public sealed override int GetHashCode(T obj)
+		{
+			if (obj == null)
+				return 0;
+			return obj.GetHashCode ();
+		}
+	}
+
+	static int test_0_nint_genequals ()
+	{
+		MyGenericEqualityComparer<nint> cmp = new MyGenericEqualityComparer<nint> ();
+		if (cmp.Equals ((nint) 1, (nint) 2))
+			return 1;
+		if (!cmp.Equals ((nint) 4, (nint) 4))
+			return 2;
+		return 0;
+	}
+
 	static int test_0_nint_call_boxed_funs ()
 	{
 		object x = new nint (10);
@@ -419,6 +451,24 @@ public class BuiltinTests {
 			return 10;
 
 		return 0;
+	}
+
+	static int NuintConstructor (nuint cap)
+	{
+		if (cap > (ulong) nint.MaxValue)
+			return 1;
+		return 0;
+	}
+
+	/* resembles https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/tests/monotouch-test/Foundation/MutableDataTest.cs#L62-L89 */
+	static int test_0_nint_maxintcmp ()
+	{
+		/* does not work on 32bit */
+		if (IntPtr.Size == 4)
+			return 0;
+
+		uint cap = (uint) Int32.MaxValue + 2;
+		return NuintConstructor (cap);
 	}
 
 
