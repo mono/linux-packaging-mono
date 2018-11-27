@@ -513,6 +513,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
+ mono_add_internal_call_internal@Base 5.21.0.527
+ mono_add_internal_call_with_flags@Base 5.21.0.527
  mono_aot_register_module@Base 4.1.0.1738
  mono_array_addr_with_size@Base 4.1.0.1738
  mono_array_class_get@Base 4.1.0.1738
@@ -719,6 +721,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_custom_attrs_from_property@Base 4.1.0.1738
  mono_custom_attrs_get_attr@Base 4.1.0.1738
  mono_custom_attrs_has_attr@Base 4.1.0.1738
+ mono_dangerous_add_raw_internal_call@Base 5.21.0.527
  mono_debug_add_delegate_trampoline@Base 4.1.0.1738
  mono_debug_add_method@Base 4.1.0.1738
  mono_debug_cleanup@Base 4.1.0.1738
