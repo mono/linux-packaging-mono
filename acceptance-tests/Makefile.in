@@ -85,10 +85,11 @@ host_triplet = @host@
 target_triplet = @target@
 DIST_COMMON = $(srcdir)/versions.mk \
 	$(top_srcdir)/scripts/submodules/versions.mk \
-	$(srcdir)/profiler-stress.mk $(srcdir)/roslyn.mk \
-	$(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk \
-	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs
+	$(srcdir)/microbench.mk $(srcdir)/profiler-stress.mk \
+	$(srcdir)/roslyn.mk $(srcdir)/coreclr.mk \
+	$(srcdir)/ms-test-suite.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
+	$(srcdir)/microbench-perf.sh.in
 subdir = acceptance-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -102,7 +103,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = microbench-perf.sh
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -303,7 +304,7 @@ XMKMF = @XMKMF@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
-abs_top_srcdir = @abs_top_srcdir@
+abs_top_srcdir = $(abspath $(top_srcdir))
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -383,9 +384,10 @@ BENCHMARKER_PATH = $(ACCEPTANCE_TESTS_PATH)/benchmarker
 ROSLYN_PATH = $(ACCEPTANCE_TESTS_PATH)/roslyn
 CORECLR_PATH = $(ACCEPTANCE_TESTS_PATH)/coreclr
 MSTESTSUITE_PATH = $(ACCEPTANCE_TESTS_PATH)/ms-test-suite
+DEBIANSHOOTOUTMONO_PATH = $(ACCEPTANCE_TESTS_PATH)/DebianShootoutMono
 CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) \
 	GCStressTests.exe coreclr-testlibrary.dll
-EXTRA_DIST = README.md SUBMODULES.json versions.mk profiler-stress.mk roslyn.mk coreclr.mk ms-test-suite.mk
+EXTRA_DIST = README.md SUBMODULES.json microbench.mk versions.mk profiler-stress.mk roslyn.mk coreclr.mk ms-test-suite.mk
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 TOOLS_CLASS = $(mcs_topdir)/class/lib/build
 RUNTIME = MONO_PATH=$(CLASS) $(abs_top_builddir)/runtime/mono-wrapper --debug
@@ -395,6 +397,13 @@ ILASM = $(TOOLS_RUNTIME) $(TOOLS_CLASS)/ilasm.exe
 XUNIT = $(RUNTIME) $(abs_top_builddir)/external/xunit-binaries/xunit.console.exe
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/acceptance-tests/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
+TEST_EXE_PATH = $(abs_top_srcdir)/acceptance-tests/external/DebianShootoutMono/release/
+NET_4_X_RUNTIME = MONO_PATH=$(TEST_EXE_PATH):$(abs_top_srcdir)/mcs/class/lib/net_4_x $(abs_top_srcdir)/runtime/mono-wrapper
+FULL_AOT_RUNTIME = MONO_PATH=$(abs_top_srcdir)/mcs/class/lib/testing_aot_full $(abs_top_srcdir)/runtime/mono-wrapper
+PERF_BINARY = $(if $(MONO_PERF_BINARY),$(MONO_PERF_BINARY),perf)
+PERF_RUNTIME = $(abs_top_srcdir)/acceptance-tests/microbench-perf.sh
+@HOST_LINUX_TRUE@MONO_PERF_FLAGS = --show-cpu-utilization -n --hierarchy -T $(MONO_PERF_ADDITIONAL_FLAGS)
+FIXTURE_DIR = $(abs_top_srcdir)/acceptance-tests/external/DebianShootoutMono/fixtures
 SYS_REFS = \
 	System.dll \
 	System.Core.dll \
@@ -5491,7 +5500,7 @@ CORECLR_COREMANGLIB_TESTSI_CS = $(CORECLR_COREMANGLIB_TEST_CS_SRC:.cs=.exe)
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/profiler-stress.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/microbench.mk $(srcdir)/profiler-stress.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -5512,7 +5521,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/profiler-stress.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk:
+$(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/microbench.mk $(srcdir)/profiler-stress.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -5522,6 +5531,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+microbench-perf.sh: $(top_builddir)/config.status $(srcdir)/microbench-perf.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -5813,6 +5824,7 @@ $(eval $(call ValidateVersionTemplate,benchmarker,BENCHMARKER))
 $(eval $(call ValidateVersionTemplate,roslyn,ROSLYN))
 $(eval $(call ValidateVersionTemplate,coreclr,CORECLR))
 $(eval $(call ValidateVersionTemplate,ms-test-suite,MSTESTSUITE))
+$(eval $(call ValidateVersionTemplate,DebianShootoutMono,DEBIANSHOOTOUTMONO))
 
 # Bump the given submodule to the revision given by the REV make variable
 # If COMMIT is 1, commit the change
@@ -5820,6 +5832,7 @@ bump-benchmarker: __bump-benchmarker
 bump-roslyn: __bump-version-roslyn
 bump-coreclr: __bump-version-coreclr
 bump-ms-test-suite: __bump-version-ms-test-suite
+bump-DebianShootoutMono: __bump-version-DebianShootoutMono
 
 # Bump the given submodule to the branch given by the BRANCH/REMOTE_BRANCH make variables
 # If COMMIT is 1, commit the change
@@ -5827,6 +5840,7 @@ bump-branch-benchmarker: __bump-branch-benchmarker
 bump-branch-roslyn: __bump-branch-roslyn
 bump-branch-coreclr: __bump-branch-coreclr
 bump-branch-ms-test-suite: __bump-branch-ms-test-suite
+bump-branch-DebianShootoutMono: __bump-branch-DebianShootoutMono
 
 # Bump the given submodule to its current GIT version
 # If COMMIT is 1, commit the change
@@ -5834,6 +5848,7 @@ bump-current-benchmarker: __bump-current-benchmarker
 bump-current-roslyn: __bump-current-version-roslyn
 bump-current-coreclr: __bump-current-version-coreclr
 bump-current-ms-test-suite: __bump-current-version-ms-test-suite
+bump-current-DebianShootoutMono: __bump-current-version-DebianShootoutMono
 
 commit-bump-benchmarker:
 	$(MAKE) bump-benchmarker COMMIT=1
@@ -5847,6 +5862,9 @@ commit-bump-coreclr:
 commit-bump-ms-test-suite:
 	$(MAKE) bump-ms-test-suite COMMIT=1
 
+commit-bump-DebianShootoutMono:
+	$(MAKE) bump-DebianShootoutMono COMMIT=1
+
 commit-bump-current-benchmarker:
 	$(MAKE) bump-current-benchmarker COMMIT=1
 
@@ -5858,6 +5876,103 @@ commit-bump-current-coreclr:
 
 commit-bump-current-ms-test-suite:
 	$(MAKE) bump-current-ms-test-suite COMMIT=1
+
+commit-bump-current-DebianShootoutMono:
+	$(MAKE) bump-current-DebianShootoutMono COMMIT=1
+check-microbench: DebianShootoutMono.stamp
+	@$(MAKE) test-run-microbench
+
+DebianShootoutMono.stamp: 
+	@$(MAKE) validate-DebianShootoutMono RESET_VERSIONS=1
+	@$(MAKE) prepare-dlls
+	@touch $@
+
+define BenchmarkDotNetTemplate
+
+run-microbench-$(1):: DebianShootoutMono.stamp
+	MONO_BENCH_AOT_RUN="$(AOT_RUN_FLAGS)" \
+	MONO_BENCH_AOT_BUILD="$(AOT_BUILD_FLAGS)" \
+	MONO_BENCH_EXECUTABLE="$(abs_top_srcdir)/runtime/mono-wrapper" \
+	MONO_BENCH_PATH="$(abs_top_srcdir)/mcs/class/lib/$(TEST_PROFILE)" \
+	MONO_BENCH_INPUT="$(2)" \
+	$(NET_4_X_RUNTIME) \
+	$(TEST_EXE_PATH)/DebianShootoutMono.exe $(1)
+
+test-run-microbench:: run-microbench-$(1)
+
+run-microbench-debug-$(1):: DebianShootoutMono.stamp
+	echo MONO_PATH="$(abs_top_srcdir)/mcs/class/lib/$(TEST_PROFILE)" $(abs_top_srcdir)/runtime/mono-wrapper $(AOT_BUILD_FLAGS) $(TEST_EXE_PATH)/DebianShootoutMono.exe
+	MONO_BENCH_INPUT="$(2)" \
+	MONO_PATH="$(abs_top_srcdir)/mcs/class/lib/$(TEST_PROFILE)" \
+	$(abs_top_srcdir)/runtime/mono-wrapper $(AOT_RUN_FLAGS) $(TEST_EXE_PATH)/DebianShootoutMono.exe Run $(1)
+
+test-run-microbench-debug:: run-microbench-debug-$(1)
+
+@HOST_LINUX_TRUE@run-microbench-profiled-$(1):: microbench-results/$(1).perf.data 
+
+@HOST_LINUX_TRUE@microbench-results/$(1).perf.data: DebianShootoutMono.stamp 
+@HOST_LINUX_TRUE@	mkdir -p microbench-results
+@HOST_LINUX_TRUE@	MONO_PERF_BINARY="$(PERF_BINARY)" \
+@HOST_LINUX_TRUE@	MONO_BENCH_EXECUTABLE="$(PERF_RUNTIME)" \
+@HOST_LINUX_TRUE@	MONO_BENCH_AOT_RUN="$(AOT_RUN_FLAGS)"\
+@HOST_LINUX_TRUE@	MONO_BENCH_AOT_BUILD="$(AOT_BUILD_FLAGS)"\
+@HOST_LINUX_TRUE@	MONO_BENCH_PATH="$(abs_top_srcdir)/mcs/class/lib/$(TEST_PROFILE)" \
+@HOST_LINUX_TRUE@	MONO_BENCH_INPUT="$(2)" \
+@HOST_LINUX_TRUE@	$(NET_4_X_RUNTIME) \
+@HOST_LINUX_TRUE@	$(TEST_EXE_PATH)/DebianShootoutMono.exe $(1) $(2)
+@HOST_LINUX_TRUE@	mv perf.data microbench-results/$(1).perf.data
+
+@HOST_LINUX_TRUE@microbench-results/$(1).tmp.perf: microbench-results/$(1).perf.data
+@HOST_LINUX_TRUE@	$(PERF_BINARY) script -i microbench-results/$(1).perf.data > microbench-results/$(1).tmp.perf
+
+@HOST_LINUX_TRUE@microbench-results/$(1).perf-flame.svg: microbench-results/$(1).tmp.perf
+@HOST_LINUX_TRUE@	cat microbench-results/$(1).tmp.perf | ./external/DebianShootoutMono/FlameGraph/stackcollapse-perf.pl > microbench-results/$(1).perf-folded
+@HOST_LINUX_TRUE@	./external/DebianShootoutMono/FlameGraph/flamegraph.pl microbench-results/$(1).perf-folded > microbench-results/$(1).perf-flame.svg
+@HOST_LINUX_TRUE@	rm microbench-results/$(1).tmp.perf
+@HOST_LINUX_TRUE@	rm microbench-results/$(1).perf-folded
+
+@HOST_LINUX_TRUE@microbench-results/$(1).perf.report: microbench-results/$(1).perf.data
+@HOST_LINUX_TRUE@	$(PERF_BINARY) report -i microbench-results/$(1).perf.data $(MONO_PERF_FLAGS) > microbench-results/$(1).perf.report 
+
+@HOST_LINUX_TRUE@test-run-microbench-profiled:: run-microbench-profiled-$(1)
+
+@HOST_LINUX_TRUE@test-run-microbench-publish-collect:: microbench-results/$(1).perf.data microbench-results/$(1).perf.report microbench-results/$(1).perf-flame.svg
+
+endef
+
+@HOST_LINUX_TRUE@test-run-microbench-perf-check:
+@HOST_LINUX_TRUE@	$(PERF_BINARY) record -a -o perf.data -- echo "testing"
+@HOST_LINUX_TRUE@	rm perf.data
+
+@HOST_LINUX_TRUE@microbench-results/perf-data.zip:
+@HOST_LINUX_TRUE@	zip microbench-results/perf-data.zip microbench-results/*.perf.data
+@HOST_LINUX_TRUE@	rm microbench-results/*.perf.data
+
+@HOST_LINUX_TRUE@perf-report: microbench-results/perf-data.zip
+
+@HOST_LINUX_TRUE@perf-report-total: test-run-microbench-publish-collect
+@HOST_LINUX_TRUE@	@$(MAKE) perf-report
+
+.PHONY: prepare-dlls
+
+@FULL_AOT_TESTS_TRUE@prepare-dlls: 
+@FULL_AOT_TESTS_TRUE@	$(FULL_AOT_RUNTIME) $(AOT_BUILD_FLAGS) $(TEST_EXE_PATH)/*.{dll,exe}
+
+@FULL_AOT_TESTS_FALSE@prepare-dlls:
+
+$(eval $(call BenchmarkDotNetTemplate,Mandelbrot,))
+$(eval $(call BenchmarkDotNetTemplate,RegexRedux,$(FIXTURE_DIR)/regexredux-input.txt))
+$(eval $(call BenchmarkDotNetTemplate,KNucleotide,$(FIXTURE_DIR)/knucleotide-input.txt))
+
+$(eval $(call BenchmarkDotNetTemplate,BinaryTrees,))
+$(eval $(call BenchmarkDotNetTemplate,NBodyTest,))
+$(eval $(call BenchmarkDotNetTemplate,SpectralNorm,))
+$(eval $(call BenchmarkDotNetTemplate,Fannkuchredux,))
+$(eval $(call BenchmarkDotNetTemplate,Fasta,))
+
+$(eval $(call BenchmarkDotNetTemplate,RevComp,$(FIXTURE_DIR)/revcomp-input.txt)) 
+
+#$(eval $(call BenchmarkDotNetTemplate,GistBenchmark,$(MONO_BENCH_GIST_URL))) broken in BDN, bug filed
 
 check-profiler-stress:
 	@$(MAKE) validate-benchmarker RESET_VERSIONS=1

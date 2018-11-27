@@ -115,11 +115,12 @@ namespace NUnitLite.Runner
         {
 #if MONO
             return;
-#endif
+#else
             reportCount = 0;
             writer.WriteLine();
             writer.WriteLine("Tests Not Run:");
             PrintNotRunResults(this.result);
+#endif
         }
 
 #if MONO
