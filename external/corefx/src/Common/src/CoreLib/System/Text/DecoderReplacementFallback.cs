@@ -3,13 +3,16 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace System.Text
 {
 #if MONO
     [System.Serializable]
-#endif
+    public sealed class DecoderReplacementFallback : DecoderFallback, ISerializable
+#else
     public sealed class DecoderReplacementFallback : DecoderFallback
+#endif
     {
         // Our variables
         private String _strDefault;
@@ -18,6 +21,16 @@ namespace System.Text
         public DecoderReplacementFallback() : this("?")
         {
         }
+
+#if MONO
+        internal DecoderReplacementFallback(SerializationInfo info, StreamingContext context)
+        {
+            try { _strDefault = info.GetString("strDefault"); } // for old mono and .NET 4.x
+            catch { _strDefault = info.GetString("_strDefault"); }
+        }
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("strDefault", _strDefault);
+#endif
 
         public DecoderReplacementFallback(String replacement)
         {
