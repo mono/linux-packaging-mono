@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.527],
+AC_INIT(mono, [5.21.0.552],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1166,7 +1166,7 @@ with_bitcode_default=no
 enable_cooperative_suspend_default=no
 enable_hybrid_suspend_default=no
 
-INVARIANT_AOT_OPTIONS=nimt-trampolines=2000,ntrampolines=10000,nrgctx-fetch-trampolines=256,ngsharedvt-trampolines=4000
+INVARIANT_AOT_OPTIONS=nimt-trampolines=2000,ntrampolines=10000,nrgctx-fetch-trampolines=256,ngsharedvt-trampolines=4000,nftnptr-arg-trampolines=1000
 
 AOT_BUILD_ATTRS=$INVARIANT_AOT_OPTIONS
 
@@ -1399,6 +1399,7 @@ AM_CONDITIONAL(INSTALL_WASM, [test "x$with_wasm" != "xno"])
 AM_CONDITIONAL(FULL_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full"] || [test "x$TEST_PROFILE" = "xwinaot"] || [test "x$TEST_PROFILE" = "xorbis"] || [test "x$TEST_PROFILE" = "xwasm"])
 AM_CONDITIONAL(HYBRID_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_hybrid"] || [test "x$TEST_PROFILE" = "xunreal"])
 AM_CONDITIONAL(AOT_FULL_INTERP_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full_interp"])
+AM_CONDITIONAL(DEFAULT_TESTS, [test "x$TEST_PROFILE" = "xnet_4_x"])
 
 default_profile=net_4_x
 if test -z "$INSTALL_MONODROID_TRUE"; then :
@@ -1409,6 +1410,15 @@ if test -z "$INSTALL_MONOTOUCH_TRUE"; then :
 fi
 if test -z "$INSTALL_XAMMAC_TRUE"; then :
    default_profile=xammac
+fi
+if test -z "$INSTALL_TESTING_AOT_FULL_INTERP_TRUE"; then :
+   default_profile=testing_aot_full_interp
+fi
+if test -z "$INSTALL_TESTING_AOT_HYBRID_TRUE"; then :
+   default_profile=testing_aot_hybrid
+fi
+if test -z "$INSTALL_TESTING_AOT_FULL_TRUE"; then :
+   default_profile=testing_aot_full
 fi
 if test -z "$INSTALL_WINAOT_TRUE"; then :
    default_profile=winaot
@@ -1424,15 +1434,6 @@ if test -z "$INSTALL_WASM_TRUE"; then :
 fi
 if test -z "$INSTALL_4_x_TRUE"; then :
    default_profile=net_4_x
-fi
-if test -z "$INSTALL_TESTING_AOT_FULL_INTERP_TRUE"; then :
-   default_profile=testing_aot_full_interp
-fi
-if test -z "$INSTALL_TESTING_AOT_HYBRID_TRUE"; then :
-   default_profile=testing_aot_hybrid
-fi
-if test -z "$INSTALL_TESTING_AOT_FULL_TRUE"; then :
-   default_profile=testing_aot_full
 fi
 DEFAULT_PROFILE=$default_profile
 AC_SUBST(DEFAULT_PROFILE)

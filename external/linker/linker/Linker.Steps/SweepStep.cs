@@ -289,6 +289,9 @@ namespace Mono.Linker.Steps {
 
 			if (type.HasEvents)
 				SweepCustomAttributeCollection (type.Events);
+
+			if (type.HasFields && !type.IsBeforeFieldInit && !Annotations.HasPreservedStaticCtor (type) && !type.IsEnum)
+				type.IsBeforeFieldInit = true;
 		}
 
 		protected void SweepNestedTypes (TypeDefinition type)
@@ -308,7 +311,7 @@ namespace Mono.Linker.Steps {
 		{
 			for (int i = type.Interfaces.Count - 1; i >= 0; i--) {
 				var iface = type.Interfaces [i];
-				if (Annotations.IsMarked (iface.InterfaceType.Resolve ()))
+				if (Annotations.IsMarked (iface))
 					continue;
 				InterfaceRemoved (type, iface);
 				type.Interfaces.RemoveAt (i);

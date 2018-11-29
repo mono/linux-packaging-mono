@@ -450,8 +450,9 @@ EXTRA_DIST = \
 	TODO			\
 	unmanaged-calls	
 
-CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-TOOL_MAKE = $(MAKE) -f $(srcdir)/docs.make topdir=$(srcdir)/../mcs srcdir=$(srcdir)
+DOC_PROFILE := net_4_x
+CLASS = $(mcs_topdir)/class/lib/$(DOC_PROFILE)
+TOOL_MAKE = $(MAKE) -f $(srcdir)/docs.make topdir=$(srcdir)/../mcs srcdir=$(srcdir) PROFILE=$(DOC_PROFILE)
 all: all-am
 
 .SUFFIXES:
