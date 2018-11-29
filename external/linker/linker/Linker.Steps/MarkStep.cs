@@ -1,4 +1,4 @@
-﻿//
+//
 // MarkStep.cs
 //
 // Author:
@@ -45,6 +45,7 @@ namespace Mono.Linker.Steps {
 		protected List<MethodDefinition> _virtual_methods;
 		protected Queue<AttributeProviderPair> _assemblyLevelAttributes;
 		protected Queue<AttributeProviderPair> _lateMarkedAttributes;
+		protected List<TypeDefinition> _typesWithInterfaces;
 
 		public AnnotationStore Annotations {
 			get { return _context.Annotations; }
@@ -62,6 +63,7 @@ namespace Mono.Linker.Steps {
 			_virtual_methods = new List<MethodDefinition> ();
 			_assemblyLevelAttributes = new Queue<AttributeProviderPair> ();
 			_lateMarkedAttributes = new Queue<AttributeProviderPair> ();
+			_typesWithInterfaces = new List<TypeDefinition> ();
 		}
 
 		public virtual void Process (LinkContext context)
@@ -168,6 +170,7 @@ namespace Mono.Linker.Steps {
 			while (!QueueIsEmpty ()) {
 				ProcessQueue ();
 				ProcessVirtualMethods ();
+				ProcessMarkedTypesWithInterfaces ();
 				DoAdditionalProcessing ();
 			}
 
@@ -208,6 +211,20 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		void ProcessMarkedTypesWithInterfaces ()
+		{
+			// We may mark an interface type later on.  Which means we need to reprocess any time with one or more interface implementations that have not been marked
+			// and if an interface type is found to be marked and implementation is not marked, then we need to mark that implementation
+			foreach (var type in _typesWithInterfaces) {
+				// Exception, types that have not been flagged as instantiated yet.  These types may not need their interfaces even if the
+				// interface type is marked
+				if (!Annotations.IsInstantiated (type))
+					continue;
+
+				MarkInterfaceImplementations (type);
+			}
+		}
+
 		void ProcessVirtualMethod (MethodDefinition method)
 		{
 			var overrides = Annotations.GetOverrides (method);
@@ -215,10 +232,10 @@ namespace Mono.Linker.Steps {
 				return;
 
 			foreach (MethodDefinition @override in overrides)
-				ProcessOverride (@override);
+				ProcessOverride (@override, method);
 		}
 
-		void ProcessOverride (MethodDefinition method)
+		void ProcessOverride (MethodDefinition method, MethodDefinition @base)
 		{
 			if (!Annotations.IsMarked (method.DeclaringType))
 				return;
@@ -227,6 +244,11 @@ namespace Mono.Linker.Steps {
 				return;
 
 			if (Annotations.IsMarked (method))
+				return;
+
+			// We don't need to mark overrides until it is possible that the type could be instantiated
+			// Note : The base type is interface check should be removed once we have base type sweeping
+			if (!Annotations.IsInstantiated (method.DeclaringType) && @base.DeclaringType.IsInterface)
 				return;
 
 			MarkMethod (method);
@@ -453,9 +475,12 @@ namespace Mono.Linker.Steps {
 				case "System.ThreadStaticAttribute":
 				case "System.ContextStaticAttribute":
 					return true;
+				// Attributes related to `fixed` keyword used to declare fixed length arrays
+				case "System.Runtime.CompilerServices.FixedBufferAttribute":
+					return true;
 				case "System.Runtime.InteropServices.InterfaceTypeAttribute":
 				case "System.Runtime.InteropServices.GuidAttribute":
-					return !_context.IsFeatureExcluded ("com");
+					return true;
 				}
 				
 				if (!Annotations.IsMarked (attr_type.Resolve ()))
@@ -465,9 +490,21 @@ namespace Mono.Linker.Steps {
 			return true;
 		}
 
-		protected virtual bool ShoulMarkTypeConstructor (TypeDefinition type)
+		protected virtual bool ShouldMarkTypeStaticConstructor (TypeDefinition type)
 		{
-			return !type.IsBeforeFieldInit && _context.IsOptimizationEnabled (CodeOptimizations.BeforeFieldInit);
+			if (Annotations.HasPreservedStaticCtor (type))
+				return false;
+			
+			if (type.IsBeforeFieldInit && _context.IsOptimizationEnabled (CodeOptimizations.BeforeFieldInit))
+				return false;
+
+			return true;
+		}
+
+		protected void MarkStaticConstructor (TypeDefinition type)
+		{
+			if (MarkMethodIf (type.Methods, IsNonEmptyStaticConstructor) != null)
+				Annotations.SetPreservedStaticCtor (type);
 		}
 
 		protected virtual bool ShouldMarkTopLevelCustomAttribute (AttributeProviderPair app, MethodDefinition resolvedConstructor)
@@ -819,10 +856,8 @@ namespace Mono.Linker.Steps {
 			DoAdditionalFieldProcessing (field);
 
 			var parent = reference.DeclaringType.Resolve ();
-			if (parent.IsBeforeFieldInit && !Annotations.HasPreservedStaticCtor (parent) && _context.IsOptimizationEnabled (CodeOptimizations.BeforeFieldInit)) {
-				if (MarkMethodIf (parent.Methods, IsStaticConstructor))
-					Annotations.SetPreservedStaticCtor (parent);
-			}
+			if (!Annotations.HasPreservedStaticCtor (parent))
+				MarkStaticConstructor (parent);
 
 			Annotations.Mark (field);
 		}
@@ -898,8 +933,8 @@ namespace Mono.Linker.Steps {
 			if (IsSerializable (type))
 				MarkSerializable (type);
 
-			if (IsEventSource (type)) {
-				MarkEventSource (type);
+			if (!_context.IsFeatureExcluded ("etw") && BCL.EventTracingForWindows.IsEventSourceImplementation (type, _context)) {
+				MarkEventSourceProviders (type);
 			}
 
 			MarkTypeSpecialCustomAttributes (type);
@@ -910,17 +945,24 @@ namespace Mono.Linker.Steps {
 			if (type.IsValueType || !type.IsAutoLayout)
 				MarkFields (type, type.IsEnum);
 
-			if (type.HasInterfaces) {
-				foreach (var iface in type.Interfaces) {
-					MarkInterfaceImplementation (type, iface);
-				}
+			// There are a number of markings we can defer until later when we know it's possible a reference type could be instantiated
+			// For example, if no instance of a type exist, then we don't need to mark the interfaces on that type
+			// However, for some other types there is no benefit to deferring
+			if (type.IsInterface) {
+				// There's no benefit to deferring processing of an interface type until we know a type implementing that interface is marked
+				MarkRequirementsForInstantiatedTypes (type);
+			} else if (type.IsValueType) {
+				// Note : Technically interfaces could be removed from value types in some of the same cases as reference types, however, it's harder to know when
+				// a value type instance could exist.  You'd have to track initobj and maybe locals types.  Going to punt for now.
+				MarkRequirementsForInstantiatedTypes (type);
 			}
+			
+			if (type.HasInterfaces)
+				_typesWithInterfaces.Add (type);
 
 			if (type.HasMethods) {
-				MarkMethodsIf (type.Methods, IsVirtualAndHasPreservedParent);
-
-				if (ShoulMarkTypeConstructor (type) && MarkMethodIf (type.Methods, IsStaticConstructor))
-					Annotations.SetPreservedStaticCtor (type);
+				if (ShouldMarkTypeStaticConstructor (type))
+					MarkStaticConstructor (type);
 
 				MarkMethodsIf (type.Methods, HasSerializationAttribute);
 			}
@@ -958,6 +1000,11 @@ namespace Mono.Linker.Steps {
 
 		// Allow subclassers to mark additional things
 		protected virtual void DoAdditionalEventProcessing (EventDefinition evt)
+		{
+		}
+
+		// Allow subclassers to mark additional things
+		protected virtual void DoAdditionalInstantiatedTypeProcessing (TypeDefinition type)
 		{
 		}
 
@@ -1013,7 +1060,7 @@ namespace Mono.Linker.Steps {
 					MarkTypeWithDebuggerTypeProxyAttribute (type, attribute);
 					break;
 				case "System.Diagnostics.Tracing.EventDataAttribute":
-					MarkTypeWithEventDataAttribute (type);
+					MarkMethodsIf (type.Methods, IsPublicInstancePropertyMethod);
 					break;
 				}
 			}
@@ -1031,11 +1078,6 @@ namespace Mono.Linker.Steps {
 					break;
 				}
 			}
-		}
-
-		void MarkTypeWithEventDataAttribute (TypeDefinition type)
-		{
-			MarkMethodsIf (type.Methods, IsPublicInstancePropertyMethod);
 		}
 
 		void MarkXmlSchemaProvider (TypeDefinition type, CustomAttribute attribute)
@@ -1195,6 +1237,25 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		void MarkInterfaceImplementations (TypeDefinition type)
+		{
+			if (!type.HasInterfaces)
+				return;
+
+			foreach (var iface in type.Interfaces) {
+				// Only mark interface implementations of interface types that have been marked.
+				// This enables stripping of interfaces that are never used
+				var resolvedInterfaceType = iface.InterfaceType.Resolve ();
+				if (resolvedInterfaceType == null) {
+					HandleUnresolvedType (iface.InterfaceType);
+					continue;
+				}
+				
+				if (ShouldMarkInterfaceImplementation (type, iface, resolvedInterfaceType))
+					MarkInterfaceImplementation (iface);
+			}
+		}
+
 		void MarkGenericParameterProvider (IGenericParameterProvider provider)
 		{
 			if (!provider.HasGenericParameters)
@@ -1233,7 +1294,7 @@ namespace Mono.Linker.Steps {
 
 		static bool IsSpecialSerializationConstructor (MethodDefinition method)
 		{
-			if (!IsInstanceConstructor (method))
+			if (!method.IsInstanceConstructor ())
 				return false;
 
 			var parameters = method.Parameters;
@@ -1251,39 +1312,37 @@ namespace Mono.Linker.Steps {
 					MarkMethod (method);
 		}
 
-		protected bool MarkMethodIf (Collection<MethodDefinition> methods, Func<MethodDefinition, bool> predicate)
+		protected MethodDefinition MarkMethodIf (Collection<MethodDefinition> methods, Func<MethodDefinition, bool> predicate)
 		{
 			foreach (MethodDefinition method in methods) {
 				if (predicate (method)) {
-					MarkMethod (method);
-					return true;
+					return MarkMethod (method);
 				}
 			}
 
-			return false;
+			return null;
 		}
 
-		static bool IsDefaultConstructor (MethodDefinition method)
+		protected bool MarkDefaultConstructor (TypeDefinition type)
 		{
-			return IsInstanceConstructor (method) && !method.HasParameters;
+			if (type?.HasMethods != true)
+				return false;
+
+			return MarkMethodIf (type.Methods, MethodDefinitionExtensions.IsDefaultConstructor) != null;
 		}
 
-		protected static bool IsInstanceConstructor (MethodDefinition method)
+		static bool IsNonEmptyStaticConstructor (MethodDefinition method)
 		{
-			return method.IsConstructor && !method.IsStatic;
-		}
+			if (!method.IsStaticConstructor ())
+				return false;
 
-		protected void MarkDefaultConstructor (TypeDefinition type)
-		{
-			if ((type == null) || !type.HasMethods)
-				return;
+			if (!method.HasBody || !method.IsIL)
+				return true;
 
-			MarkMethodsIf (type.Methods, IsDefaultConstructor);
-		}
+			if (method.Body.CodeSize != 1)
+				return true;
 
-		static bool IsStaticConstructor (MethodDefinition method)
-		{
-			return method.IsConstructor && method.IsStatic;
+			return method.Body.Instructions [0].OpCode.Code != Code.Ret;
 		}
 
 		static bool HasSerializationAttribute (MethodDefinition method)
@@ -1315,30 +1374,11 @@ namespace Mono.Linker.Steps {
 			return td.BaseType != null && td.BaseType.FullName == "System.MulticastDelegate";
 		}
 
-		bool IsEventSource (TypeDefinition td)
-		{
-			TypeReference type = td;
-			do {
-				if (type.FullName == "System.Diagnostics.Tracing.EventSource") {
-					return true;
-				}
-
-				TypeDefinition typeDef = type.Resolve ();
-				if (typeDef == null) {
-					HandleUnresolvedType (type);
-					return false;
-				}
-				type = typeDef.BaseType;
-			} while (type != null);
-			return false;
-		}
-
-		void MarkEventSource (TypeDefinition td)
+		void MarkEventSourceProviders (TypeDefinition td)
 		{
 			foreach (var nestedType in td.NestedTypes) {
-				if (nestedType.Name == "Keywords" || nestedType.Name == "Tasks" || nestedType.Name == "Opcodes") {
+				if (BCL.EventTracingForWindows.IsProviderName (nestedType.Name))
 					MarkStaticFields (nestedType);
-				}
 			}
 		}
 
@@ -1426,10 +1466,7 @@ namespace Mono.Linker.Steps {
 					continue;
 
 				var argument_definition = ResolveTypeDefinition (argument);
-				if (argument_definition == null)
-					continue;
-
-				MarkMethodsIf (argument_definition.Methods, ctor => !ctor.IsStatic && !ctor.HasParameters);
+				MarkDefaultConstructor (argument_definition);
 			}
 		}
 
@@ -1459,10 +1496,12 @@ namespace Mono.Linker.Steps {
 				MarkMethods (type);
 				break;
 			case TypePreserve.Fields:
-				MarkFields (type, true, true);
+				if (!MarkFields (type, true, true))
+					_context.LogMessage ($"Type {type.FullName} has no fields to preserve");
 				break;
 			case TypePreserve.Methods:
-				MarkMethods (type);
+				if (!MarkMethods (type))
+					_context.LogMessage ($"Type {type.FullName} has no methods to preserve");
 				break;
 			}
 		}
@@ -1485,10 +1524,10 @@ namespace Mono.Linker.Steps {
 			MarkMethodCollection (list);
 		}
 
-		protected void MarkFields (TypeDefinition type, bool includeStatic, bool markBackingFieldsOnlyIfPropertyMarked = false)
+		protected bool MarkFields (TypeDefinition type, bool includeStatic, bool markBackingFieldsOnlyIfPropertyMarked = false)
 		{
 			if (!type.HasFields)
-				return;
+				return false;
 
 			foreach (FieldDefinition field in type.Fields) {
 				if (!includeStatic && field.IsStatic)
@@ -1508,6 +1547,8 @@ namespace Mono.Linker.Steps {
 				}
 				MarkField (field);
 			}
+
+			return true;
 		}
 
 		static PropertyDefinition SearchPropertiesForMatchingFieldDefinition (FieldDefinition field)
@@ -1526,7 +1567,7 @@ namespace Mono.Linker.Steps {
 			return null;
 		}
 
-		protected void MarkStaticFields(TypeDefinition type)
+		protected void MarkStaticFields (TypeDefinition type)
 		{
 			if (!type.HasFields)
 				return;
@@ -1537,10 +1578,13 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		protected virtual void MarkMethods (TypeDefinition type)
+		protected virtual bool MarkMethods (TypeDefinition type)
 		{
-			if (type.HasMethods)
-				MarkMethodCollection (type.Methods);
+			if (!type.HasMethods)
+				return false;
+
+			MarkMethodCollection (type.Methods);
+			return true;
 		}
 
 		void MarkMethodCollection (IList<MethodDefinition> methods)
@@ -1624,6 +1668,9 @@ namespace Mono.Linker.Steps {
 
 			MarkGenericParameterProvider (method);
 
+			if (ShouldMarkAsInstancePossible (method))
+				MarkRequirementsForInstantiatedTypes (method.DeclaringType);
+
 			if (IsPropertyMethod (method))
 				MarkProperty (GetProperty (method));
 			else if (IsEventMethod (method))
@@ -1646,6 +1693,8 @@ namespace Mono.Linker.Steps {
 
 			if (method.IsVirtual)
 				_virtual_methods.Add (method);
+
+			MarkNewCodeDependencies (method);
 
 			MarkBaseMethods (method);
 
@@ -1672,6 +1721,65 @@ namespace Mono.Linker.Steps {
 		protected virtual void DoAdditionalMethodProcessing (MethodDefinition method)
 		{
 		}
+
+		protected virtual bool ShouldMarkAsInstancePossible (MethodDefinition method)
+		{
+			// We don't need to mark it multiple times
+			if (Annotations.IsInstantiated (method.DeclaringType))
+				return false;
+
+			if (method.IsInstanceConstructor ())
+				return true;
+
+			if (method.DeclaringType.IsInterface)
+				return true;
+
+			return false;
+		}
+
+		protected virtual void MarkRequirementsForInstantiatedTypes (TypeDefinition type)
+		{
+			if (Annotations.IsInstantiated (type))
+				return;
+
+			Annotations.MarkInstantiated (type);
+
+			MarkInterfaceImplementations (type);
+			MarkMethodsIf (type.Methods, IsVirtualAndHasPreservedParent);
+			DoAdditionalInstantiatedTypeProcessing (type);
+		}
+
+		void MarkNewCodeDependencies (MethodDefinition method)
+		{
+			switch (Annotations.GetAction (method)) {
+			case MethodAction.ConvertToStub:
+				if (!method.IsInstanceConstructor ())
+					return;
+
+				var baseType = ResolveTypeDefinition (method.DeclaringType.BaseType);
+				if (!MarkDefaultConstructor (baseType))
+					throw new NotSupportedException ($"Cannot stub constructor on '{method.DeclaringType}' when base type does not have default constructor");
+
+				break;
+
+			case MethodAction.ConvertToThrow:
+				if (_context.MarkedKnownMembers.NotSupportedExceptionCtorString != null)
+					break;
+
+				var nse = BCL.FindPredefinedType ("System", "NotSupportedException", _context);
+				if (nse == null)
+					throw new NotSupportedException ("Missing predefined 'System.NotSupportedException' type");
+
+				MarkType (nse);
+
+				var nseCtor = MarkMethodIf (nse.Methods, KnownMembers.IsNotSupportedExceptionCtorString);
+				if (nseCtor == null)
+					throw new MarkException ($"Could not find constructor on '{nse.FullName}'");
+
+				_context.MarkedKnownMembers.NotSupportedExceptionCtorString = nseCtor;
+				break;
+			}
+		}		
 
 		void MarkBaseMethods (MethodDefinition method)
 		{
@@ -1867,10 +1975,30 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		protected virtual void MarkInterfaceImplementation (TypeDefinition type, InterfaceImplementation iface)
+		protected virtual bool ShouldMarkInterfaceImplementation (TypeDefinition type, InterfaceImplementation iface, TypeDefinition resolvedInterfaceType)
+		{
+			if (Annotations.IsMarked (iface))
+				return false;
+
+			if (Annotations.IsMarked (resolvedInterfaceType) && !Annotations.IsMarked (iface))
+				return true;
+
+			// It's hard to know if a com or windows runtime interface will be needed from managed code alone,
+			// so as a precaution we will mark these interfaces once the type is instantiated
+			if (resolvedInterfaceType.IsImport || resolvedInterfaceType.IsWindowsRuntime)
+				return true;
+
+			if (!Annotations.IsPreserved (type))
+				return false;
+
+			return Annotations.GetPreserve (type) == TypePreserve.All;
+		}
+
+		protected virtual void MarkInterfaceImplementation (InterfaceImplementation iface)
 		{
 			MarkCustomAttributes (iface);
 			MarkType (iface.InterfaceType);
+			Annotations.Mark (iface);
 		}
 
 		bool CheckReflectionMethod (Instruction instruction, string reflectionMethod)

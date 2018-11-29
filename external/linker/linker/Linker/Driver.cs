@@ -93,6 +93,7 @@ namespace Mono.Linker {
 				var disabled_optimizations = new HashSet<string> (StringComparer.Ordinal);
 				bool dumpDependencies = false;
 				bool ignoreDescriptors = false;
+				bool removeCAS = true;
 
 				bool resolver = false;
 				while (HaveMoreTokens ()) {
@@ -136,8 +137,7 @@ namespace Mono.Linker {
 							continue;
 
 						case "--strip-security":
-							if (bool.Parse (GetParam ()))
-								p.AddStepBefore (typeof (MarkStep), new RemoveSecurityStep ());
+							removeCAS = bool.Parse (GetParam ());
 							continue;
 
 						case "--strip-resources":
@@ -163,7 +163,7 @@ namespace Mono.Linker {
 							continue;
 
 						case "--disable-opt":
-							var opt = GetParam ();
+							var opt = GetParam ().ToLower ();
 							if (!disabled_optimizations.Contains (opt))
 								disabled_optimizations.Add (opt);
 
@@ -270,7 +270,16 @@ namespace Mono.Linker {
 					p.AddStepAfter (typeof (PreserveDependencyLookupStep), new PreserveCalendarsStep (assemblies));
 				}
 
+				if (removeCAS)
+					p.AddStepBefore (typeof (MarkStep), new RemoveSecurityStep ());
+
 				if (excluded_features.Count > 0) {
+
+					p.AddStepBefore (typeof (MarkStep), new RemoveFeaturesStep () {
+						FeatureCOM = excluded_features.Contains ("com"),
+						FeatureETW = excluded_features.Contains ("etw")
+					});
+
 					var excluded = new string [excluded_features.Count];
 					excluded_features.CopyTo (excluded);
 					context.ExcludedFeatures = excluded;
@@ -440,6 +449,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("                              beforefieldinit: Unused static fields are removed if there is no static ctor");
 			Console.WriteLine ("  --exclude-feature <name>  Any code which has a feature <name> in linked assemblies will be removed");
 			Console.WriteLine ("                              com: Support for COM Interop");
+			Console.WriteLine ("                              etw: Event Tracing for Windows");
 			Console.WriteLine ("                              remoting: .NET Remoting dependencies");
 			Console.WriteLine ("                              sre: System.Reflection.Emit namespace");
 			Console.WriteLine ("  --ignore-descriptors      Skips reading embedded descriptors (short -z). Defaults to false");
@@ -485,6 +495,7 @@ namespace Mono.Linker {
 			p.AppendStep (new TypeMapStep ());
 			p.AppendStep (new MarkStep ());
 			p.AppendStep (new SweepStep ());
+			p.AppendStep (new CodeRewriterStep ());
 			p.AppendStep (new CleanStep ());
 			p.AppendStep (new RegenerateGuidStep ());
 			p.AppendStep (new OutputStep ());

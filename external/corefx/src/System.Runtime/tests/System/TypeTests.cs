@@ -318,7 +318,7 @@ namespace System.Tests
 
         private static Func<AssemblyName, Assembly> assemblyloader = (aName) => aName.Name == "TestLoadAssembly" ?
 #if MONO
-                           Assembly.LoadFrom(@"TestLoadAssembly.dll") :
+                           Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(typeof(TypeTestsExtended).Assembly.Location), "TestLoadAssembly.dll")) :
 #else
                            Assembly.LoadFrom(@".\TestLoadAssembly.dll") :
 #endif

@@ -485,6 +485,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 noinst_DATA = mono-uninstalled.pc
 DISTCLEANFILES = mono-uninstalled.pc
 @BITCODE_TRUE@BITCODE_CHECK = yes
+@DEFAULT_TESTS_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+@DEFAULT_TESTS_TRUE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-default.sh
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -1013,7 +1015,7 @@ get-monolite-latest:
 
 .PHONY: check-ci
 check-ci:
-	MONO_LLVMONLY=$(BITCODE_CHECK) $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+	MONO_LLVMONLY=$(BITCODE_CHECK) $(CI_TEST_SCRIPT)
 
 .PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
 validate: do-build-mono-mcs

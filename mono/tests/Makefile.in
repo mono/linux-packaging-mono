@@ -481,27 +481,48 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
-@AOT_FULL_INTERP_TESTS_TRUE@am__append_32 = \
+
+# AppDomain tests
+
+# Tests which load assemblies which are not in the profile
+
+# Tests which needs named Mutex support
+
+# Test which needs System.Web support
+@AOT_FULL_INTERP_TESTS_TRUE@am__append_32 = appdomain1.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain2.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-loader.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-322722_dyn_method_throw.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-70561.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-threadpool-unload.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-asmload.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	assemblyresolve_event6.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-335131.2.exe bug-415577.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	cross-domain.exe dataslot.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	delegate9.exe domain-stress.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	generic-unloading.2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	generic-xdomain.2.exe hostname.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	marshal-valuetypes.exe monitor.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	pinvoke3.exe remoting4.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	stackframes-async.2.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	thread6.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	marshal2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	transparentproxy.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	remoting4.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions4.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions5.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe
-
+@AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe bug-70561.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@	transparentproxy.exe
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.

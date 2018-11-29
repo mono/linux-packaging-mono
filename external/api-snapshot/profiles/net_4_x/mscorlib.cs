@@ -4975,11 +4975,8 @@ namespace System
         int System.IComparable.CompareTo(object obj) { throw null; }
         public override string ToString() { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._Type))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public abstract partial class Type : System.Reflection.MemberInfo, System.Reflection.IReflect, System.Runtime.InteropServices._Type
+    public abstract partial class Type : System.Reflection.MemberInfo, System.Reflection.IReflect
     {
         public static readonly char Delimiter;
         public static readonly System.Type[] EmptyTypes;
@@ -5022,7 +5019,7 @@ namespace System
         public virtual bool IsGenericTypeDefinition { get { throw null; } }
         public virtual bool IsGenericTypeParameter { get { throw null; } }
         public bool IsImport { get { throw null; } }
-        public bool IsInterface { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
+        public bool IsInterface { get { throw null; } }
         public bool IsLayoutSequential { get { throw null; } }
         public bool IsMarshalByRef { get { throw null; } }
         public bool IsNested { get { throw null; } }
@@ -5041,19 +5038,20 @@ namespace System
         public virtual bool IsSecuritySafeCritical { get { throw null; } }
         public virtual bool IsSecurityTransparent { get { throw null; } }
         public virtual bool IsSerializable { get { throw null; } }
+        public virtual bool IsSignatureType { get { throw null; } }
         public bool IsSpecialName { get { throw null; } }
         public virtual bool IsSZArray { get { throw null; } }
         public virtual bool IsTypeDefinition { get { throw null; } }
         public bool IsUnicodeClass { get { throw null; } }
         public bool IsValueType { get { throw null; } }
+        public virtual bool IsVariableBoundArray { get { throw null; } }
         public bool IsVisible { get { throw null; } }
         public override System.Reflection.MemberTypes MemberType { get { throw null; } }
-        public abstract override System.Reflection.Module Module { get; }
+        public abstract new System.Reflection.Module Module { get; }
         public abstract string Namespace { get; }
         public override System.Type ReflectedType { get { throw null; } }
         public virtual System.Runtime.InteropServices.StructLayoutAttribute StructLayoutAttribute { get { throw null; } }
         public virtual System.RuntimeTypeHandle TypeHandle { get { throw null; } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.ConstructorInfo TypeInitializer { get { throw null; } }
         public abstract System.Type UnderlyingSystemType { get; }
         public override bool Equals(object o) { throw null; }
@@ -5062,16 +5060,11 @@ namespace System
         public virtual System.Reflection.MemberInfo[] FindMembers(System.Reflection.MemberTypes memberType, System.Reflection.BindingFlags bindingAttr, System.Reflection.MemberFilter filter, object filterCriteria) { throw null; }
         public virtual int GetArrayRank() { throw null; }
         protected abstract System.Reflection.TypeAttributes GetAttributeFlagsImpl();
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.ConstructorInfo GetConstructor(System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.ConstructorInfo GetConstructor(System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.ConstructorInfo GetConstructor(System.Type[] types) { throw null; }
         protected abstract System.Reflection.ConstructorInfo GetConstructorImpl(System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers);
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public System.Reflection.ConstructorInfo[] GetConstructors() { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public abstract System.Reflection.ConstructorInfo[] GetConstructors(System.Reflection.BindingFlags bindingAttr);
         public virtual System.Reflection.MemberInfo[] GetDefaultMembers() { throw null; }
         public abstract System.Type GetElementType();
@@ -5093,7 +5086,6 @@ namespace System
         public override int GetHashCode() { throw null; }
         public System.Type GetInterface(string name) { throw null; }
         public abstract System.Type GetInterface(string name, bool ignoreCase);
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public virtual System.Reflection.InterfaceMapping GetInterfaceMap(System.Type interfaceType) { throw null; }
         public abstract System.Type[] GetInterfaces();
         public System.Reflection.MemberInfo[] GetMember(string name) { throw null; }
@@ -5102,11 +5094,16 @@ namespace System
         public System.Reflection.MemberInfo[] GetMembers() { throw null; }
         public abstract System.Reflection.MemberInfo[] GetMembers(System.Reflection.BindingFlags bindingAttr);
         public System.Reflection.MethodInfo GetMethod(string name) { throw null; }
+        public System.Reflection.MethodInfo GetMethod(string name, int genericParameterCount, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
+        public System.Reflection.MethodInfo GetMethod(string name, int genericParameterCount, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
+        public System.Reflection.MethodInfo GetMethod(string name, int genericParameterCount, System.Type[] types) { throw null; }
+        public System.Reflection.MethodInfo GetMethod(string name, int genericParameterCount, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
         public System.Reflection.MethodInfo GetMethod(string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
         public System.Reflection.MethodInfo GetMethod(string name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
         public System.Reflection.MethodInfo GetMethod(string name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
         public System.Reflection.MethodInfo GetMethod(string name, System.Type[] types) { throw null; }
         public System.Reflection.MethodInfo GetMethod(string name, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
+        protected virtual System.Reflection.MethodInfo GetMethodImpl(string name, int genericParameterCount, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
         protected abstract System.Reflection.MethodInfo GetMethodImpl(string name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers);
         public System.Reflection.MethodInfo[] GetMethods() { throw null; }
         public abstract System.Reflection.MethodInfo[] GetMethods(System.Reflection.BindingFlags bindingAttr);
@@ -5134,22 +5131,14 @@ namespace System
         public static System.Type[] GetTypeArray(object[] args) { throw null; }
         public static System.TypeCode GetTypeCode(System.Type type) { throw null; }
         protected virtual System.TypeCode GetTypeCodeImpl() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.Type GetTypeFromCLSID(System.Guid clsid) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.Type GetTypeFromCLSID(System.Guid clsid, bool throwOnError) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.Type GetTypeFromCLSID(System.Guid clsid, string server) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
         public static System.Type GetTypeFromCLSID(System.Guid clsid, string server, bool throwOnError) { throw null; }
         public static System.Type GetTypeFromHandle(System.RuntimeTypeHandle handle) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public static System.Type GetTypeFromProgID(string progID) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public static System.Type GetTypeFromProgID(string progID, bool throwOnError) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public static System.Type GetTypeFromProgID(string progID, string server) { throw null; }
-        [System.Security.SecurityCriticalAttribute]
         public static System.Type GetTypeFromProgID(string progID, string server, bool throwOnError) { throw null; }
         public static System.RuntimeTypeHandle GetTypeHandle(object o) { throw null; }
         protected abstract bool HasElementTypeImpl();
@@ -5171,21 +5160,18 @@ namespace System
         protected virtual bool IsMarshalByRefImpl() { throw null; }
         protected abstract bool IsPointerImpl();
         protected abstract bool IsPrimitiveImpl();
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public virtual bool IsSubclassOf(System.Type c) { throw null; }
         protected virtual bool IsValueTypeImpl() { throw null; }
         public virtual System.Type MakeArrayType() { throw null; }
         public virtual System.Type MakeArrayType(int rank) { throw null; }
         public virtual System.Type MakeByRefType() { throw null; }
+        public static System.Type MakeGenericMethodParameter(int position) { throw null; }
+        public static System.Type MakeGenericSignatureType(System.Type genericTypeDefinition, params System.Type[] typeArguments) { throw null; }
         public virtual System.Type MakeGenericType(params System.Type[] typeArguments) { throw null; }
         public virtual System.Type MakePointerType() { throw null; }
         public static bool operator ==(System.Type left, System.Type right) { throw null; }
         public static bool operator !=(System.Type left, System.Type right) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw null; }
-        void System.Runtime.InteropServices._Type.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        void System.Runtime.InteropServices._Type.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._Type.GetTypeInfoCount(out uint pcTInfo) { throw null; }
-        void System.Runtime.InteropServices._Type.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
     [System.SerializableAttribute]
@@ -12095,6 +12081,7 @@ namespace System.Reflection.Emit
         public override string FullName { get { throw null; } }
         public override System.Guid GUID { get { throw null; } }
         public override bool IsConstructedGenericType { get { throw null; } }
+        public override bool IsTypeDefinition { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override string Namespace { get { throw null; } }
@@ -13129,6 +13116,7 @@ namespace System.Reflection.Emit
         public override bool IsGenericParameter { get { throw null; } }
         public override bool IsGenericType { get { throw null; } }
         public override bool IsGenericTypeDefinition { get { throw null; } }
+        public override bool IsTypeDefinition { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override string Namespace { get { throw null; } }
@@ -24012,7 +24000,7 @@ namespace System.Text
         public int Index { get { throw null; } }
     }
     [System.SerializableAttribute]
-    public sealed partial class DecoderReplacementFallback : System.Text.DecoderFallback
+    public sealed partial class DecoderReplacementFallback : System.Text.DecoderFallback, System.Runtime.Serialization.ISerializable
     {
         public DecoderReplacementFallback() { }
         public DecoderReplacementFallback(string replacement) { }
@@ -24021,6 +24009,7 @@ namespace System.Text
         public override System.Text.DecoderFallbackBuffer CreateFallbackBuffer() { throw null; }
         public override bool Equals(object value) { throw null; }
         public override int GetHashCode() { throw null; }
+        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public sealed partial class DecoderReplacementFallbackBuffer : System.Text.DecoderFallbackBuffer
     {
@@ -24101,7 +24090,7 @@ namespace System.Text
         public bool IsUnknownSurrogate() { throw null; }
     }
     [System.SerializableAttribute]
-    public sealed partial class EncoderReplacementFallback : System.Text.EncoderFallback
+    public sealed partial class EncoderReplacementFallback : System.Text.EncoderFallback, System.Runtime.Serialization.ISerializable
     {
         public EncoderReplacementFallback() { }
         public EncoderReplacementFallback(string replacement) { }
@@ -24110,6 +24099,7 @@ namespace System.Text
         public override System.Text.EncoderFallbackBuffer CreateFallbackBuffer() { throw null; }
         public override bool Equals(object value) { throw null; }
         public override int GetHashCode() { throw null; }
+        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public sealed partial class EncoderReplacementFallbackBuffer : System.Text.EncoderFallbackBuffer
     {
