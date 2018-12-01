@@ -65,6 +65,7 @@ namespace System.Reflection.Tests
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "MethodBase.GetMethodBody() not supported on UapAot")]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Test depends on the C# compiler flags")]
         public static void TestMethodBody()
         {
             MethodBase mbase = typeof(MethodBaseTests).GetMethod("MyOtherMethod", BindingFlags.Static | BindingFlags.Public);

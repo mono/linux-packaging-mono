@@ -183,12 +183,12 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
 	debugger-state-machine.h xdebug.c mini-llvm.h mini-llvm-cpp.h \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
-	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
-	intrinsics.c mini-profiler.c interp-stubs.c aot-runtime.h ee.h \
-	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
+	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
+	aot-runtime.h ee.h mini-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
 	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
 	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
 	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
@@ -224,9 +224,10 @@ am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-mini-gc.lo libmini_la-debugger-agent-stubs.lo \
 	libmini_la-xdebug.lo libmini_la-alias-analysis.lo \
 	libmini_la-mini-cross-helpers.lo libmini_la-arch-stubs.lo \
-	libmini_la-type-checking.lo libmini_la-lldb.lo \
-	libmini_la-memory-access.lo libmini_la-intrinsics.lo \
-	libmini_la-mini-profiler.lo libmini_la-interp-stubs.lo
+	libmini_la-type-checking.lo libmini_la-calls.lo \
+	libmini_la-lldb.lo libmini_la-memory-access.lo \
+	libmini_la-intrinsics.lo libmini_la-mini-profiler.lo \
+	libmini_la-interp-stubs.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_3 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
@@ -1075,6 +1076,7 @@ common_sources = \
 	arch-stubs.c		\
 	llvm-runtime.h	\
 	type-checking.c \
+	calls.c			\
 	lldb.h			\
 	lldb.c	\
 	memory-access.c	\
@@ -1494,6 +1496,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-arch-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-branch-opts.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-calls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-cfgdump.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-cfold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-debug-mini.Plo@am__quote@
@@ -1921,6 +1924,13 @@ libmini_la-type-checking.lo: type-checking.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='type-checking.c' object='libmini_la-type-checking.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-type-checking.lo `test -f 'type-checking.c' || echo '$(srcdir)/'`type-checking.c
+
+libmini_la-calls.lo: calls.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-calls.lo -MD -MP -MF $(DEPDIR)/libmini_la-calls.Tpo -c -o libmini_la-calls.lo `test -f 'calls.c' || echo '$(srcdir)/'`calls.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-calls.Tpo $(DEPDIR)/libmini_la-calls.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='calls.c' object='libmini_la-calls.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-calls.lo `test -f 'calls.c' || echo '$(srcdir)/'`calls.c
 
 libmini_la-lldb.lo: lldb.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-lldb.lo -MD -MP -MF $(DEPDIR)/libmini_la-lldb.Tpo -c -o libmini_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c

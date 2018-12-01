@@ -105,6 +105,12 @@ namespace Mono.Linker.Steps {
 
 			MarkType (type);
 
+			// Edge case to cover a scenario where a type has preserve all, implements interfaces, but does not have any instance ctors.
+			// Normally TypePreserve.All would cause an instance ctor to be marked and that would in turn lead to MarkInterfaceImplementations being called
+			// Without an instance ctor, MarkInterfaceImplementations is not called and then TypePreserve.All isn't truly respected.
+			if (Annotations.TryGetPreserve (type, out TypePreserve preserve) && preserve == TypePreserve.All)
+				MarkInterfaceImplementations (type);
+
 			if (type.HasFields)
 				InitializeFields (type);
 			if (type.HasMethods)
@@ -1487,10 +1493,10 @@ namespace Mono.Linker.Steps {
 		{
 			ApplyPreserveMethods (type);
 
-			if (!Annotations.IsPreserved (type))
+			if (!Annotations.TryGetPreserve (type, out TypePreserve preserve))
 				return;
 
-			switch (Annotations.GetPreserve (type)) {
+			switch (preserve) {
 			case TypePreserve.All:
 				MarkFields (type, true);
 				MarkMethods (type);
@@ -1685,8 +1691,10 @@ namespace Mono.Linker.Steps {
 			}
 
 			if (method.HasOverrides) {
-				foreach (MethodReference ov in method.Overrides)
+				foreach (MethodReference ov in method.Overrides) {
 					MarkMethod (ov);
+					MarkExplicitInterfaceImplementation (method, ov);
+				}
 			}
 
 			MarkMethodSpecialCustomAttributes (method);
@@ -1747,6 +1755,31 @@ namespace Mono.Linker.Steps {
 			MarkInterfaceImplementations (type);
 			MarkMethodsIf (type.Methods, IsVirtualAndHasPreservedParent);
 			DoAdditionalInstantiatedTypeProcessing (type);
+		}
+
+		void MarkExplicitInterfaceImplementation (MethodDefinition method, MethodReference ov)
+		{
+			var resolvedOverride = ov.Resolve ();
+			
+			if (resolvedOverride == null) {
+				HandleUnresolvedMethod (ov);
+				return;
+			}
+
+			if (resolvedOverride.DeclaringType.IsInterface) {
+				foreach (var ifaceImpl in method.DeclaringType.Interfaces) {
+					var resolvedInterfaceType = ifaceImpl.InterfaceType.Resolve ();
+					if (resolvedInterfaceType == null) {
+						HandleUnresolvedType (ifaceImpl.InterfaceType);
+						continue;
+					}
+
+					if (resolvedInterfaceType == resolvedOverride.DeclaringType) {
+						MarkInterfaceImplementation (ifaceImpl);
+						return;
+					}
+				}
+			}
 		}
 
 		void MarkNewCodeDependencies (MethodDefinition method)
@@ -1988,10 +2021,10 @@ namespace Mono.Linker.Steps {
 			if (resolvedInterfaceType.IsImport || resolvedInterfaceType.IsWindowsRuntime)
 				return true;
 
-			if (!Annotations.IsPreserved (type))
+			if (!Annotations.TryGetPreserve (type, out TypePreserve preserve))
 				return false;
 
-			return Annotations.GetPreserve (type) == TypePreserve.All;
+			return preserve == TypePreserve.All;
 		}
 
 		protected virtual void MarkInterfaceImplementation (InterfaceImplementation iface)
