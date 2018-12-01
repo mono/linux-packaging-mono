@@ -23,7 +23,11 @@ namespace System.Text
         }
 
 #if MONO
-        internal DecoderReplacementFallback(SerializationInfo info, StreamingContext context) => _strDefault = info.GetString("strDefault");
+        internal DecoderReplacementFallback(SerializationInfo info, StreamingContext context)
+        {
+            try { _strDefault = info.GetString("strDefault"); } // for old mono and .NET 4.x
+            catch { _strDefault = info.GetString("_strDefault"); }
+        }
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("strDefault", _strDefault);
 #endif

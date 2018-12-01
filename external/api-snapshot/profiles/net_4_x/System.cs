@@ -12483,7 +12483,9 @@ namespace System.Security.Cryptography.X509Certificates
     {
         public X509Certificate2() { }
         public X509Certificate2(byte[] rawData) { }
+        [System.CLSCompliantAttribute(false)]
         public X509Certificate2(byte[] rawData, System.Security.SecureString password) { }
+        [System.CLSCompliantAttribute(false)]
         public X509Certificate2(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public X509Certificate2(byte[] rawData, string password) { }
         public X509Certificate2(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
@@ -12510,24 +12512,20 @@ namespace System.Security.Cryptography.X509Certificates
         public System.Security.Cryptography.X509Certificates.X500DistinguishedName SubjectName { get { throw null; } }
         public string Thumbprint { get { throw null; } }
         public int Version { get { throw null; } }
-        [System.MonoTODOAttribute("X509ContentType.SerializedCert is not supported")]
-        public override byte[] Export(System.Security.Cryptography.X509Certificates.X509ContentType contentType, string password) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx/Pkcs12, Pkcs7 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(byte[] rawData) { throw null; }
-        [System.MonoTODOAttribute("Detection limited to Cert, Pfx, Pkcs12 and Unknown")]
         public static System.Security.Cryptography.X509Certificates.X509ContentType GetCertContentType(string fileName) { throw null; }
-        [System.MonoTODOAttribute("always return String.Empty for UpnName, DnsFromAlternativeName and UrlName")]
         public string GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType nameType, bool forIssuer) { throw null; }
         public override void Import(byte[] rawData) { }
+        [System.CLSCompliantAttribute(false)]
         public override void Import(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Import(string fileName) { }
+        [System.CLSCompliantAttribute(false)]
         public override void Import(string fileName, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Import(string fileName, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Reset() { }
         public override string ToString() { throw null; }
         public override string ToString(bool verbose) { throw null; }
-        [System.MonoTODOAttribute("by default this depends on the incomplete X509Chain")]
         public bool Verify() { throw null; }
     }
     public partial class X509Certificate2Collection : System.Security.Cryptography.X509Certificates.X509CertificateCollection

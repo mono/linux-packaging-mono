@@ -3917,8 +3917,6 @@ namespace System
         protected virtual void OnReport(T value) { }
         void System.IProgress<T>.Report(T value) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public partial class Random
     {
         public Random() { }
@@ -3927,6 +3925,7 @@ namespace System
         public virtual int Next(int maxValue) { throw null; }
         public virtual int Next(int minValue, int maxValue) { throw null; }
         public virtual void NextBytes(byte[] buffer) { }
+        public virtual void NextBytes(System.Span<byte> buffer) { }
         public virtual double NextDouble() { throw null; }
         protected virtual double Sample() { throw null; }
     }
@@ -11226,12 +11225,7 @@ namespace System.Reflection
         Virtual = 64,
         VtableLayoutMask = 256,
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MethodBase))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
-    [System.SerializableAttribute]
-    public abstract partial class MethodBase : System.Reflection.MemberInfo, System.Runtime.InteropServices._MethodBase
+    public abstract partial class MethodBase : System.Reflection.MemberInfo
     {
         protected MethodBase() { }
         public abstract System.Reflection.MethodAttributes Attributes { get; }
@@ -11239,7 +11233,7 @@ namespace System.Reflection
         public virtual bool ContainsGenericParameters { get { throw null; } }
         public bool IsAbstract { get { throw null; } }
         public bool IsAssembly { get { throw null; } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
+        public virtual bool IsConstructedGenericMethod { get { throw null; } }
         public bool IsConstructor { get { throw null; } }
         public bool IsFamily { get { throw null; } }
         public bool IsFamilyAndAssembly { get { throw null; } }
@@ -11258,26 +11252,10 @@ namespace System.Reflection
         public bool IsVirtual { get { throw null; } }
         public abstract System.RuntimeMethodHandle MethodHandle { get; }
         public virtual System.Reflection.MethodImplAttributes MethodImplementationFlags { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsAbstract { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsAssembly { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsConstructor { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsFamily { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsFamilyAndAssembly { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsFamilyOrAssembly { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsFinal { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsHideBySig { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsPrivate { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsPublic { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsSpecialName { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsStatic { get { throw null; } }
-        bool System.Runtime.InteropServices._MethodBase.IsVirtual { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.Reflection.MethodBase GetCurrentMethod() { throw null; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public virtual System.Type[] GetGenericArguments() { throw null; }
         public override int GetHashCode() { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.ReflectionPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.ReflectionPermissionFlag.MemberAccess)]
         public virtual System.Reflection.MethodBody GetMethodBody() { throw null; }
         public static System.Reflection.MethodBase GetMethodFromHandle(System.RuntimeMethodHandle handle) { throw null; }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
@@ -11290,11 +11268,6 @@ namespace System.Reflection
         public abstract object Invoke(object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture);
         public static bool operator ==(System.Reflection.MethodBase left, System.Reflection.MethodBase right) { throw null; }
         public static bool operator !=(System.Reflection.MethodBase left, System.Reflection.MethodBase right) { throw null; }
-        void System.Runtime.InteropServices._MethodBase.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
-        System.Type System.Runtime.InteropServices._MethodBase.GetType() { throw null; }
-        void System.Runtime.InteropServices._MethodBase.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
-        void System.Runtime.InteropServices._MethodBase.GetTypeInfoCount(out uint pcTInfo) { throw null; }
-        void System.Runtime.InteropServices._MethodBase.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class MethodBody
@@ -21044,6 +21017,11 @@ namespace System.Security.Cryptography
         public CryptographicException(string message, System.Exception inner) { }
         public CryptographicException(string format, string insert) { }
     }
+    public static partial class CryptographicOperations
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static bool FixedTimeEquals(System.ReadOnlySpan<byte> left, System.ReadOnlySpan<byte> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static void ZeroMemory(System.Span<byte> buffer) { }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class CryptographicUnexpectedOperationException : System.Security.Cryptography.CryptographicException
@@ -21278,7 +21256,6 @@ namespace System.Security.Cryptography
         DoNotIgnoreWhiteSpaces = 1,
         IgnoreWhiteSpaces = 0,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public abstract partial class HashAlgorithm : System.IDisposable, System.Security.Cryptography.ICryptoTransform
     {
         protected int HashSizeValue;
@@ -21300,10 +21277,13 @@ namespace System.Security.Cryptography
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         protected abstract void HashCore(byte[] array, int ibStart, int cbSize);
+        protected virtual void HashCore(System.ReadOnlySpan<byte> source) { }
         protected abstract byte[] HashFinal();
         public abstract void Initialize();
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset) { throw null; }
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount) { throw null; }
+        public bool TryComputeHash(System.ReadOnlySpan<byte> source, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        protected virtual bool TryHashFinal(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct HashAlgorithmName : System.IEquatable<System.Security.Cryptography.HashAlgorithmName>
@@ -21502,6 +21482,7 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.RandomNumberGenerator Create(string rngName) { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public static void Fill(System.Span<byte> data) { }
         public abstract void GetBytes(byte[] data);
         public virtual void GetBytes(byte[] data, int offset, int count) { }
         public virtual void GetNonZeroBytes(byte[] data) { }
