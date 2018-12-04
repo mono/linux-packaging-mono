@@ -179,6 +179,7 @@ am__objects_6 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
 	$(am__objects_5)
 am__objects_7 = $(am__objects_2) $(am__objects_5)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_8 = $(am__objects_6)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_8 = $(am__objects_7)
@@ -244,6 +245,7 @@ am__objects_14 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
 	$(am__objects_13)
 am__objects_15 = $(am__objects_10) $(am__objects_13)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_16 = $(am__objects_11)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_16 = $(am__objects_11)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_16 = $(am__objects_14)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_16 = $(am__objects_15)
@@ -305,6 +307,7 @@ am__objects_22 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
 	$(am__objects_21)
 am__objects_23 = $(am__objects_18) $(am__objects_21)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_24 = $(am__objects_19)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_24 = $(am__objects_19)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_24 = $(am__objects_22)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_24 = $(am__objects_23)
@@ -688,6 +691,7 @@ ios_sources = pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
 	$(am__append_2)
 linux_sources = $(unix_sources)
+aix_sources = $(unix_sources)
 unix_sources = \
 	pal-icalls.h \
 	pal-icalls.c \
@@ -706,7 +710,8 @@ gss_sources = \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(unix_sources) $(gss_sources)
+EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(unix_sources) $(gss_sources)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(ios_sources)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@platform_sources = $(macos_sources)
