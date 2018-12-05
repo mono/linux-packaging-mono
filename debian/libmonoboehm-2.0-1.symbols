@@ -510,6 +510,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
  g_printv@Base 5.15.0.216
+ g_utf16_len@Base 5.21.0.610
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
