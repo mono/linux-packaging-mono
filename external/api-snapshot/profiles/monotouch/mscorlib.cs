@@ -3991,9 +3991,8 @@ namespace System
         public System.Reflection.Assembly RequestingAssembly { get { throw null; } }
     }
     public delegate System.Reflection.Assembly ResolveEventHandler(object sender, System.ResolveEventArgs args);
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct RuntimeArgumentHandle
+    public ref partial struct RuntimeArgumentHandle
     {
         private int _dummyPrimitive;
     }
@@ -5139,7 +5138,7 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct TypedReference
+    public ref partial struct TypedReference
     {
         private int _dummyPrimitive;
         public override bool Equals(object o) { throw null; }

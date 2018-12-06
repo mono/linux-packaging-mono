@@ -123,7 +123,7 @@ extern guint64 stat_objects_copied_major;
 		struct tm tod;									\
 		time(&t);									\
 		localtime_r(&t, &tod);								\
-		strftime(logTime, sizeof(logTime), "%Y-%m-%d %H:%M:%S", &tod);			\
+		strftime(logTime, sizeof(logTime), MONO_STRFTIME_F " " MONO_STRFTIME_T, &tod);	\
 	} while (0)
 #else
 # define LOG_TIMESTAMP  \
@@ -132,7 +132,7 @@ extern guint64 stat_objects_copied_major;
 		struct tm *tod;									\
 		time(&t);									\
 		tod = localtime(&t);								\
-		strftime(logTime, sizeof(logTime), "%F %T", tod);				\
+		strftime(logTime, sizeof(logTime), MONO_STRFTIME_F " " MONO_STRFTIME_T, tod);	\
 	} while (0)
 #endif
 

@@ -2057,14 +2057,14 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	/* Unwind info for specifc trampolines */
 	sprintf (symbol, "%sspecific_trampolines_page_gen_p", acfg->user_symbol_prefix);
 	/* We unwind to the original caller, from the stack, since lr is clobbered */
-	mono_add_unwind_op_def_cfa (unwind_ops, 0, 0, ARMREG_SP, 14 * sizeof (mgreg_t));
+	mono_add_unwind_op_def_cfa (unwind_ops, 0, 0, ARMREG_SP, 14 * sizeof (target_mgreg_t));
 	mono_add_unwind_op_offset (unwind_ops, 0, 0, ARMREG_LR, -4);
 	save_unwind_info (acfg, symbol, unwind_ops);
 	mono_free_unwind_info (unwind_ops);
 
 	sprintf (symbol, "%sspecific_trampolines_page_sp_p", acfg->user_symbol_prefix);
 	mono_add_unwind_op_def_cfa (unwind_ops, 0, 0, ARMREG_SP, 0);
-	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 14 * sizeof (mgreg_t));
+	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 14 * sizeof (target_mgreg_t));
 	save_unwind_info (acfg, symbol, unwind_ops);
 	mono_free_unwind_info (unwind_ops);
 
@@ -2080,7 +2080,7 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	/* Unwind info for gsharedvt trampolines */
 	sprintf (symbol, "%sgsharedvt_trampolines_page_gen_p", acfg->user_symbol_prefix);
 	mono_add_unwind_op_def_cfa (unwind_ops, 0, 0, ARMREG_SP, 0);
-	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 4 * sizeof (mgreg_t));
+	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 4 * sizeof (target_mgreg_t));
 	save_unwind_info (acfg, symbol, unwind_ops);
 	mono_free_unwind_info (unwind_ops);
 
@@ -2101,7 +2101,7 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	/* Unwind info for imt trampolines */
 	sprintf (symbol, "%simt_trampolines_page_gen_p", acfg->user_symbol_prefix);
 	mono_add_unwind_op_def_cfa (unwind_ops, 0, 0, ARMREG_SP, 0);
-	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 3 * sizeof (mgreg_t));
+	mono_add_unwind_op_def_cfa_offset (unwind_ops, 4, 0, 3 * sizeof (target_mgreg_t));
 	save_unwind_info (acfg, symbol, unwind_ops);
 	mono_free_unwind_info (unwind_ops);
 
@@ -4896,7 +4896,7 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 	if (!acfg->ginst_hash)
 		acfg->ginst_hash = g_hash_table_new (NULL, NULL);
 
-	mono_class_init (klass);
+	mono_class_init_internal (klass);
 
 	if (mono_class_is_ginst (klass) && mono_class_get_generic_class (klass)->context.class_inst->is_open)
 		return;
@@ -6796,7 +6796,7 @@ emit_klass_info (MonoAotCompile *acfg, guint32 token)
 
 	g_assert (klass);
 
-	mono_class_init (klass);
+	mono_class_init_internal (klass);
 
 	mono_class_get_nested_types (klass, &iter);
 	g_assert (m_class_is_nested_classes_inited (klass));
