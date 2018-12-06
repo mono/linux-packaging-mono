@@ -2225,7 +2225,7 @@ ves_icall_MonoField_GetRawConstantValue (MonoReflectionField *rfield)
 	MonoType *t;
 	ERROR_DECL (error);
 
-	mono_class_init (field->parent);
+	mono_class_init_internal (field->parent);
 
 	t = mono_field_get_type_checked (field, error);
 	if (!is_ok (error)) {
@@ -2723,7 +2723,7 @@ ves_icall_RuntimeTypeHandle_HasReferences (MonoReflectionTypeHandle ref_type, Mo
 	MonoClass *klass;
 
 	klass = mono_class_from_mono_type_internal (type);
-	mono_class_init (klass);
+	mono_class_init_internal (klass);
 	return m_class_has_references (klass);
 }
 
@@ -5713,7 +5713,7 @@ ves_icall_Mono_RuntimeMarshal_FreeAssemblyName (MonoAssemblyName *aname, MonoBoo
 void
 ves_icall_Mono_Runtime_DisableMicrosoftTelemetry (MonoError *error)
 {
-#ifdef TARGET_OSX
+#if defined(TARGET_OSX) && !defined(DISABLE_CRASH_REPORTING)
 	mono_merp_disable ();
 #else
 	// Icall has platform check in managed too.
@@ -5724,7 +5724,7 @@ ves_icall_Mono_Runtime_DisableMicrosoftTelemetry (MonoError *error)
 void
 ves_icall_Mono_Runtime_EnableMicrosoftTelemetry (char *appBundleID, char *appSignature, char *appVersion, char *merpGUIPath, char *eventType, char *appPath, MonoError *error)
 {
-#ifdef TARGET_OSX
+#if defined(TARGET_OSX) && !defined(DISABLE_CRASH_REPORTING)
 	mono_merp_enable (appBundleID, appSignature, appVersion, merpGUIPath, eventType, appPath);
 
 	mono_get_runtime_callbacks ()->install_state_summarizer ();
@@ -5740,35 +5740,37 @@ ves_icall_Mono_Runtime_ExceptionToState (MonoExceptionHandle exc_handle, guint64
 	MonoStringHandle result;
 
 #ifndef DISABLE_CRASH_REPORTING
-	// FIXME: Push handles down into mini/mini-exceptions.c
-	MonoException *exc = MONO_HANDLE_RAW (exc_handle);
-	MonoThreadSummary out;
-	mono_get_eh_callbacks ()->mono_summarize_exception (exc, &out);
+	if (mono_get_eh_callbacks ()->mono_summarize_exception) {
+		// FIXME: Push handles down into mini/mini-exceptions.c
+		MonoException *exc = MONO_HANDLE_RAW (exc_handle);
+		MonoThreadSummary out;
+		mono_get_eh_callbacks ()->mono_summarize_exception (exc, &out);
 
-	*portable_hash_out = (guint64) out.hashes.offset_free_hash;
-	*unportable_hash_out = (guint64) out.hashes.offset_rich_hash;
+		*portable_hash_out = (guint64) out.hashes.offset_free_hash;
+		*unportable_hash_out = (guint64) out.hashes.offset_rich_hash;
 
-	JsonWriter writer;
-	mono_json_writer_init (&writer);
-	mono_native_state_init (&writer);
-	gboolean first_thread_added = TRUE;
-	mono_native_state_add_thread (&writer, &out, NULL, first_thread_added, TRUE);
-	char *output = mono_native_state_free (&writer, FALSE);
-	result = mono_string_new_handle (mono_domain_get (), output, error);
-	g_free (output);
-#else
+		JsonWriter writer;
+		mono_json_writer_init (&writer);
+		mono_native_state_init (&writer);
+		gboolean first_thread_added = TRUE;
+		mono_native_state_add_thread (&writer, &out, NULL, first_thread_added, TRUE);
+		char *output = mono_native_state_free (&writer, FALSE);
+		result = mono_string_new_handle (mono_domain_get (), output, error);
+		g_free (output);
+		return result;
+	}
+#endif
+
 	*portable_hash_out = 0;
 	*unportable_hash_out = 0;
 	result = mono_string_new_handle (mono_domain_get (), "", error);
-#endif
-
 	return result;
 }
 
 void
 ves_icall_Mono_Runtime_SendMicrosoftTelemetry (char *payload, guint64 portable_hash, guint64 unportable_hash, MonoError *error)
 {
-#ifdef TARGET_OSX
+#if defined(TARGET_OSX) && !defined(DISABLE_CRASH_REPORTING)
 	if (!mono_merp_enabled ())
 		g_error ("Cannot send telemetry without registering parameters first");
 
@@ -5842,8 +5844,29 @@ void
 ves_icall_Mono_Runtime_RegisterReportingForNativeLib (const char *path_suffix, const char *module_name)
 {
 #ifndef DISABLE_CRASH_REPORTING
-	mono_get_eh_callbacks ()->mono_register_native_library (path_suffix, module_name);
+	if (mono_get_eh_callbacks ()->mono_register_native_library)
+		mono_get_eh_callbacks ()->mono_register_native_library (path_suffix, module_name);
 #endif
+}
+
+void
+ves_icall_Mono_Runtime_EnableCrashReportingLog (const char *directory, MonoError *error)
+{
+#ifndef DISABLE_CRASH_REPORTING
+	mono_summarize_set_timeline_dir (directory);
+#endif
+}
+
+int
+ves_icall_Mono_Runtime_CheckCrashReportingLog (const char *directory, MonoBoolean clear, MonoError *error)
+{
+	int ret;
+#ifndef DISABLE_CRASH_REPORTING
+	ret = (int) mono_summarize_timeline_read_level (directory, clear != 0);
+#else
+	ret = 0;
+#endif
+	return ret;
 }
 
 // Number derived from trials on relevant hardware.
@@ -5866,7 +5889,10 @@ ves_icall_Mono_Runtime_DumpStateTotal (guint64 *portable_hash, guint64 *unportab
 
 	mono_get_runtime_callbacks ()->install_state_summarizer ();
 
+	mono_summarize_timeline_start ();
+
 	gboolean success = mono_threads_summarize (ctx, &out, &hashes, TRUE, FALSE, scratch, MONO_MAX_SUMMARY_LEN_ICALL);
+	mono_summarize_timeline_phase_log (MonoSummaryCleanup);
 
 	if (!success)
 		return mono_string_new_handle (mono_domain_get (), "", error);
@@ -5877,6 +5903,8 @@ ves_icall_Mono_Runtime_DumpStateTotal (guint64 *portable_hash, guint64 *unportab
 
 	// out is now a pointer into garbage memory
 	g_free (scratch);
+
+	mono_summarize_timeline_phase_log (MonoSummaryDone);
 #else
 	*portable_hash = 0;
 	*unportable_hash = 0;
@@ -7990,7 +8018,7 @@ ves_icall_property_info_get_default_value (MonoReflectionProperty *property)
 	const char *def_value;
 	MonoObject *o;
 
-	mono_class_init (prop->parent);
+	mono_class_init_internal (prop->parent);
 
 	if (!(prop->attrs & PROPERTY_ATTRIBUTE_HAS_DEFAULT)) {
 		mono_error_set_invalid_operation (error, NULL);

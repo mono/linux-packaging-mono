@@ -55,6 +55,13 @@
 #include "utils/strenc.h"
 #include "utils/refcount.h"
 
+#if 0 // FIXME icall-decl.h sometimes breaks things because of Boehm's handling of dlopen.
+#include "icall-decl.h"
+#else
+guint32
+ves_icall_System_IO_DriveInfo_GetDriveType (const gunichar2 *root_path_name, gint32 root_path_name_length, MonoError *error);
+#endif
+
 #define NANOSECONDS_PER_MICROSECOND 1000LL
 #define TICKS_PER_MICROSECOND 10L
 #define TICKS_PER_MILLISECOND 10000L
@@ -66,7 +73,7 @@
 // Constants to convert Unix times to the API expected by .NET and Windows
 #define CONVERT_BASE  116444736000000000ULL
 
-#define INVALID_HANDLE_VALUE (GINT_TO_POINTER (-1))
+#define INVALID_HANDLE_VALUE ((gpointer)-1)
 
 typedef struct {
 	guint64 device;
@@ -4868,14 +4875,11 @@ UnlockFile (gpointer handle, guint32 offset_low, guint32 offset_high, guint32 le
 #ifdef HAVE_LARGE_FILE_SUPPORT
 	offset = ((gint64)offset_high << 32) | offset_low;
 	length = ((gint64)length_high << 32) | length_low;
-
-	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_FILE, "%s: Unlocking fd %d, offset %" G_GINT64_FORMAT ", length %" G_GINT64_FORMAT, __func__, ((MonoFDHandle*) filehandle)->fd, (gint64) offset, (gint64) length);
 #else
 	offset = offset_low;
 	length = length_low;
-
-	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_FILE, "%s: Unlocking fd %p, offset %" G_GINT64_FORMAT ", length %" G_GINT64_FORMAT, __func__, ((MonoFDHandle*) filehandle)->fd, (gint64) offset, (gint64) length);
 #endif
+	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_FILE, "%s: Unlocking fd %d, offset %" G_GINT64_FORMAT ", length %" G_GINT64_FORMAT, __func__, ((MonoFDHandle*) filehandle)->fd, (gint64) offset, (gint64) length);
 
 	ret = _wapi_unlock_file_region (((MonoFDHandle*) filehandle)->fd, offset, length);
 

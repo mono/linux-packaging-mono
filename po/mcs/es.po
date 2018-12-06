@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2018-12-04 08:51+0000\n"
+"POT-Creation-Date: 2018-12-06 08:39+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -1274,16 +1274,16 @@ msgstr ""
 "No se le puede tomar la dirección a la variable local o el parámetro `{0}' y "
 "ser al mismo tiempo usada dentro de un método anónimo o una expresión lambda."
 
-#: mcs/mcs/class.cs:3977
+#: mcs/mcs/class.cs:3968
+#, csharp-format
+msgid "Field or property cannot be of type `{0}'"
+msgstr ""
+
+#: mcs/mcs/class.cs:3980
 #, csharp-format
 msgid ""
 "Field or auto-implemented property cannot be of type `{0}' unless it is an "
 "instance member of a ref struct"
-msgstr ""
-
-#: mcs/mcs/class.cs:3981
-#, csharp-format
-msgid "Field or property cannot be of type `{0}'"
 msgstr ""
 
 #: mcs/mcs/const.cs:103

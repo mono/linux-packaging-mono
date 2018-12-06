@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.21.0.610],
+AC_INIT(mono, [5.23.0.32],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -48,7 +48,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=7A6EDC32-7F43-403B-8F6F-53AB0AD74819
+MONO_CORLIB_VERSION=E678B4DD-51DE-4BDE-96B0-8AB6CAA3E014
 
 #
 # Put a quoted #define in config.h.
@@ -1094,7 +1094,7 @@ AC_ARG_WITH(unreal,              [  --with-unreal=yes,no                If you w
 AC_ARG_WITH(wasm,                [  --with-wasm=yes,no                  If you want to build the WebAssembly (defaults to no)], [], [with_wasm=default])
 
 
-AC_ARG_WITH(runtime-preset, [  --with-runtime-preset=net_4_x,all,aot,aot_llvm,hybridaot,hybridaot_llvm,fullaot,fullaot_llvm,bitcode,unreal,fullaotinterp  Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
+AC_ARG_WITH(runtime-preset, [  --with-runtime-preset=net_4_x,all,aot,aot_llvm,hybridaot,hybridaot_llvm,fullaot,fullaot_llvm,bitcode,unreal,fullaotinterp,fullaotinterp_llvm  Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
 AC_ARG_WITH(spectre-mitigation,             [  --with-spectre-mitigation=yes,no   If you want to build the runtime with compiler flags that enable Spectre mitigation (defaults to no)], [], [with_spectre_mitigation=default])
 AC_ARG_WITH(spectre-indirect-branch-choice,   [  --with-spectre-indirect-branch-choice=keep,thunk,inline,extern   Convert indirect branches to the specified kind of thunk (defaults to inline)], [], [with_spectre_indirect_branch_choice=inline])
 AC_ARG_WITH(spectre-function-return-choice, [  --with-spectre-function-return-choice=keep,thunk,inline,extern   Convert function return instructions to the specified kind of thunk (defaults to inline)], [], [with_spectre_function_return_choice=inline])
@@ -1258,6 +1258,15 @@ elif test x$with_runtime_preset = xfullaotinterp; then
 
    AOT_BUILD_FLAGS="--aot=full,interp,$INVARIANT_AOT_OPTIONS"
    AOT_RUN_FLAGS="--full-aot-interp"
+elif test x$with_runtime_preset = xfullaotinterp_llvm; then
+   with_testing_aot_full_interp_default=yes
+   TEST_PROFILE=testing_aot_full_interp_llvm
+
+   # mscorlib.dll aot compilation crashes
+   mono_feature_disable_com='yes'
+
+   AOT_BUILD_FLAGS="-O=gsharedvt --llvm --aot=full,interp,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--full-aot-interp"
 elif test x$with_runtime_preset = xaot; then
    with_profile4_x_default=yes
 
@@ -1399,6 +1408,7 @@ AM_CONDITIONAL(INSTALL_WASM, [test "x$with_wasm" != "xno"])
 AM_CONDITIONAL(FULL_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full"] || [test "x$TEST_PROFILE" = "xwinaot"] || [test "x$TEST_PROFILE" = "xorbis"] || [test "x$TEST_PROFILE" = "xwasm"])
 AM_CONDITIONAL(HYBRID_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_hybrid"] || [test "x$TEST_PROFILE" = "xunreal"])
 AM_CONDITIONAL(AOT_FULL_INTERP_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full_interp"])
+AM_CONDITIONAL(AOT_FULL_INTERP_LLVM_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full_interp_llvm"])
 AM_CONDITIONAL(DEFAULT_TESTS, [test "x$TEST_PROFILE" = "xnet_4_x"])
 
 default_profile=net_4_x
@@ -2907,6 +2917,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(setpgid)
 	AC_CHECK_FUNCS(system)
 	AC_CHECK_FUNCS(fork execv execve)
+	AC_CHECK_FUNCS(waitpid)
 	AC_CHECK_FUNCS(accept4)
 	AC_CHECK_FUNCS(localtime_r)
 	AC_CHECK_FUNCS(mkdtemp)
@@ -4640,6 +4651,7 @@ AC_DEFINE(HAVE_UWP_WINAPI_SUPPORT, 0, [Don't use UWP Windows API support])
 AC_CHECK_FUNCS(strlcpy stpcpy strtok_r rewinddir vasprintf)
 AC_CHECK_FUNCS(getrlimit)
 AC_CHECK_FUNCS(fork execv execve)
+AC_CHECK_FUNCS(waitpid)
 
 AC_ARG_WITH([overridable-allocators], [  --with-overridable-allocators	allow g_*alloc/g_free to call custom allocators set via g_mem_set_vtable])
 
@@ -4721,7 +4733,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 	unsigned long *a = (size_t*)0;
 ])], [
 	AC_MSG_RESULT(yes)
-	AC_SUBST(GSIZE_FORMAT, '"%lu"')
+	AC_SUBST(GSIZE_FORMAT, '"lu"')
 ], [
 	AC_MSG_RESULT(no)
 	AC_MSG_CHECKING(if size_t is unsigned int)
@@ -4730,7 +4742,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 		unsigned *a = (size_t*)0;
 	])], [
 		AC_MSG_RESULT(yes)
-		AC_SUBST(GSIZE_FORMAT, '"%u"')
+		AC_SUBST(GSIZE_FORMAT, '"u"')
 	], [
 # At this point the majority of systems have their answer,
 # and we descend into non-standard or new-standard territory.
@@ -4744,7 +4756,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 			unsigned __int64 *a = (size_t*)0;
 		])], [
 			AC_MSG_RESULT(yes)
-			AC_SUBST(GSIZE_FORMAT, '"%I64u"')
+			AC_SUBST(GSIZE_FORMAT, '"I64u"')
 		], [
 			AC_MSG_RESULT(no)
 			AC_MSG_CHECKING(if size_t is unsigned long long)
@@ -4753,7 +4765,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 				unsigned long long *a = (size_t*)0;
 			])], [
 				AC_MSG_RESULT(yes)
-				AC_SUBST(GSIZE_FORMAT, '"%llu"')
+				AC_SUBST(GSIZE_FORMAT, '"llu"')
 			], [
 				AC_MSG_RESULT(no)
 				AC_MSG_ERROR(Unable to determine size_t among unsigned long, int, __int64, long long)
