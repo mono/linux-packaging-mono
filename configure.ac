@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.23.0.32],
+AC_INIT(mono, [5.23.0.48],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -48,7 +48,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=E678B4DD-51DE-4BDE-96B0-8AB6CAA3E014
+MONO_CORLIB_VERSION=0C41185A-B349-47B0-B592-2409FE8B0134
 
 #
 # Put a quoted #define in config.h.

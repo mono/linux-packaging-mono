@@ -144,11 +144,12 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 # see https://github.com/mono/mono/issues/10845
 @HOST_DARWIN_TRUE@am__append_15 = monitor-wait-abort.exe
+@HOST_DARWIN_FALSE@am__append_16 = merp-json-valid.exe
 
 # #651684
-@AMD64_TRUE@am__append_16 = finally_guard.exe
-@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_17 = w32message.exe
-@HOST_WIN32_TRUE@@X86_TRUE@am__append_18 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@AMD64_TRUE@am__append_17 = finally_guard.exe
+@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_18 = w32message.exe
+@HOST_WIN32_TRUE@@X86_TRUE@am__append_19 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
@@ -156,13 +157,13 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 # test_virt.exe fails because callee takes more parameters than caller, 1 vs. 0, and
 # x86 passes no parameters in registers, so it is a stack imbalance.
-@X86_TRUE@am__append_19 = tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe
+@X86_TRUE@am__append_20 = tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe
 
 # bug #71274
-@POWERPC_TRUE@am__append_20 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+@POWERPC_TRUE@am__append_21 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_21 = monitor.exe threadpool-exceptions5.exe \
+@POWERPC64_TRUE@am__append_22 = monitor.exe threadpool-exceptions5.exe \
 @POWERPC64_TRUE@	appdomain-unload.exe pinvoke2.exe pinvoke3.exe \
 @POWERPC64_TRUE@	pinvoke11.exe threadpool-exceptions7.exe \
 @POWERPC64_TRUE@	winx64structs.exe bug-10127.exe \
@@ -186,7 +187,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Interface calls cannot be tailcalls on ARM due to extra_arg. Bitcode could easily work however.
 
 # Interface calls cannot be tailcalls on ARM due to extra_arg. Bitcode could easily work however.
-@ARM_TRUE@am__append_22 = filter-stack.exe weak-fields.exe ivtail1.exe \
+@ARM_TRUE@am__append_23 = filter-stack.exe weak-fields.exe ivtail1.exe \
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @ARM_TRUE@	tailcall-virt.exe \
@@ -279,12 +280,12 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	tailcall/interface-conservestack/7.exe \
 @ARM_TRUE@	tailcall/interface-conservestack/8.exe \
 @ARM_TRUE@	tailcall/interface-conservestack/9.exe
-@ARM64_TRUE@am__append_23 = weak-fields.exe
+@ARM64_TRUE@am__append_24 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_24 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_25 = filter-stack.exe monitor.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_25 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_26 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe
@@ -319,7 +320,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Tests which have no way of finding AOT images because they use Assembly.Load(byte[])
 
 # Tests which require AOT of a multi-netmodule assemblies
-@FULL_AOT_TESTS_TRUE@am__append_26 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_27 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -392,7 +393,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	test-multi-netmodule-4-exe.exe
 
 # Tests which depend on a case-insensitive filesystem when using AOT
-@FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@am__append_27 = \
+@FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@am__append_28 = \
 @FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@	assembly-loadfrom-simplename.exe
 
 
@@ -401,7 +402,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-@FULL_AOT_TESTS_TRUE@am__append_28 = constraints-load.exe \
+@FULL_AOT_TESTS_TRUE@am__append_29 = constraints-load.exe \
 @FULL_AOT_TESTS_TRUE@	calli_sig_check.exe bug-515884.exe \
 @FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
@@ -424,7 +425,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 #
 # gsharedvt should be viable when only wrapping "in" but not "out",
 # as long as "in" does not expand parameter stack size, which it should never do.
-@FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@am__append_29 = tailcall-interface-conservestack.exe \
+@FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@am__append_30 = tailcall-interface-conservestack.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/20.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/26.exe \
@@ -476,8 +477,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # https://github.com/mono/mono/issues/10783
 # https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/486/parsed_console/log.html
 # https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/471/parsed_console/log.html
-@ARM64_TRUE@@FULL_AOT_TESTS_TRUE@am__append_30 = tailcall/2.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_31 = \
+@ARM64_TRUE@@FULL_AOT_TESTS_TRUE@am__append_31 = tailcall/2.exe
+@HYBRID_AOT_TESTS_TRUE@am__append_32 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
@@ -489,7 +490,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Tests which needs named Mutex support
 
 # Test which needs System.Web support
-@AOT_FULL_INTERP_TESTS_TRUE@am__append_32 = appdomain1.exe \
+@AOT_FULL_INTERP_TESTS_TRUE@am__append_33 = appdomain1.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain2.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
@@ -531,7 +532,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Tests which needs named Mutex support
 
 # Test which needs System.Web support
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@am__append_33 = appdomain1.exe \
+@AOT_FULL_INTERP_LLVM_TESTS_TRUE@am__append_34 = appdomain1.exe \
 @AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain2.exe \
 @AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-async-invoke.exe \
 @AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain.exe \
@@ -575,7 +576,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_34 = \
+@ARM_TRUE@am__append_35 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -628,13 +629,13 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_35 = \
+@ARM64_TRUE@am__append_36 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_36 = \
+@AMD64_TRUE@am__append_37 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1174,12 +1175,12 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception8.cs exception10.cs exception11.cs exception12.cs \
 	exception13.cs exception14.cs exception15.cs exception16.cs \
 	exception17.cs exception18.cs exception-invokes.cs \
-	exception19.cs exception20.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	merp-json-valid.cs exception19.cs exception20.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1613,12 +1614,12 @@ PLATFORM_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	$(am__append_17) $(am__append_18) $(am__append_19) \
 	$(am__append_20) $(am__append_21) $(am__append_22) \
 	$(am__append_23) $(am__append_24) $(am__append_25) \
-	$(am__append_30)
+	$(am__append_26) $(am__append_31)
 PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
-	$(am__append_26) $(am__append_27) $(am__append_28) \
-	$(am__append_29) $(am__append_31) $(am__append_32) \
-	$(am__append_33)
+	$(am__append_27) $(am__append_28) $(am__append_29) \
+	$(am__append_30) $(am__append_32) $(am__append_33) \
+	$(am__append_34)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe \
 	calli_sig_check.exe
@@ -1857,7 +1858,7 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_34) $(am__append_35) $(am__append_36)
+	$(am__append_35) $(am__append_36) $(am__append_37)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -2725,6 +2726,9 @@ test-runner.exe: test-runner.cs $(TEST_DRIVER_DEPEND)
 
 reference-loader.exe: reference-loader.cs TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll $(TEST_DRIVER_DEPEND)
 	$(MCS) -r:$(CLASS)/System.dll -r:TestDriver.dll -r:TestingReferenceAssembly.dll -r:TestingReferenceReferenceAssembly.dll $(TEST_DRIVER_HARD_KILL_FEATURE) -out:$@ $(srcdir)/reference-loader.cs
+
+merp-json-valid.exe: merp-json-valid.cs
+	$(MCS) -r:$(CLASS)/System.Web.Extensions.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
 
 TestingReferenceAssembly.dll: TestingReferenceAssembly.cs
 	$(MCS) -target:library -out:$@ $<
