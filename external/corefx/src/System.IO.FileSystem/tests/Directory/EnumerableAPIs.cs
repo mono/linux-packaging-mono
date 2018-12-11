@@ -82,6 +82,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void Clone_Enumerator_Trimmed_SearchPattern()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());

@@ -39,6 +39,7 @@ namespace System.IO.Tests
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         [PlatformSpecific(TestPlatforms.Windows)]  // Drive letter only
         public void DriveOnlyReturnsPeriod_Windows_Desktop()
         {

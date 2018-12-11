@@ -122,6 +122,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(FileMode.Create)]
         [InlineData(FileMode.Truncate)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void NoTruncateOnFileShareViolation(FileMode fileMode)
         {
             string fileName = GetTestFilePath();

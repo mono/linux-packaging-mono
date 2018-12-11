@@ -72,6 +72,7 @@ namespace System.IO.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Linux)] // Windows tested below, and OSX does not currently support millisec granularity
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Seems to require CoreFX DriveInfo")]
         public void TimesIncludeMillisecondPart_Linux()
         {
             T item = GetExistingItem();
@@ -139,6 +140,7 @@ namespace System.IO.Tests
         [Fact]
         // OSX does not currently support millisec granularity: use this test as a canary to flag
         // if this ever changes so we can enable the actual test
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono actually supports milliseconds on MacOS")]
         [PlatformSpecific(TestPlatforms.OSX)]
         public void TimesIncludeMillisecondPart_OSX()
         {

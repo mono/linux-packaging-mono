@@ -12,6 +12,7 @@ namespace System.IO.Tests
     {
         [Fact]
         [PlatformSpecific(TestPlatforms.AnyUnix)]  // Valid drive strings on Unix
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX DriveInfo not yet imported")]
         public void GetsValidDriveStrings_Unix()
         {
             string[] drives = Directory.GetLogicalDrives();

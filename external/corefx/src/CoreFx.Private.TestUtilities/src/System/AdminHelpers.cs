@@ -14,6 +14,9 @@ namespace System
         /// </summary>
         /// <param name="commandLine">The command line to run as sudo</param>
         /// <returns> Returns the process exit code (0 typically means it is successful)</returns>
+#if MONO && MOBILE// No external process support
+        public static int RunAsSudo(string commandLine) => throw new PlatformNotSupportedException();
+#else
         public static int RunAsSudo(string commandLine)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo()
@@ -28,6 +31,7 @@ namespace System
                 return process.ExitCode;
             }
         }
+#endif
 
     }
 }
