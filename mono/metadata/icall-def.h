@@ -195,10 +195,10 @@ HANDLES(APPDOM_21, "getRootDomain", ves_icall_System_AppDomain_getRootDomain, Mo
 HANDLES(APPDOM_22, "getSetup", ves_icall_System_AppDomain_getSetup, MonoAppDomainSetup, 1, (MonoAppDomain))
 
 ICALL_TYPE(ARGI, "System.ArgIterator", ARGI_1)
-ICALL(ARGI_1, "IntGetNextArg()",                  mono_ArgIterator_IntGetNextArg)
-ICALL(ARGI_2, "IntGetNextArg(intptr)", mono_ArgIterator_IntGetNextArgT)
-ICALL(ARGI_3, "IntGetNextArgType",                mono_ArgIterator_IntGetNextArgType)
-ICALL(ARGI_4, "Setup",                            mono_ArgIterator_Setup)
+NOHANDLES(ICALL(ARGI_1, "IntGetNextArg()",                  mono_ArgIterator_IntGetNextArg))
+NOHANDLES(ICALL(ARGI_2, "IntGetNextArg(intptr)", mono_ArgIterator_IntGetNextArgT))
+NOHANDLES(ICALL(ARGI_3, "IntGetNextArgType",                mono_ArgIterator_IntGetNextArgType))
+NOHANDLES(ICALL(ARGI_4, "Setup",                            mono_ArgIterator_Setup))
 
 ICALL_TYPE(ARRAY, "System.Array", ARRAY_1)
 HANDLES(ARRAY_1, "ClearInternal", ves_icall_System_Array_ClearInternal, void, 3, (MonoArray, int, int))
@@ -952,8 +952,8 @@ HANDLES(WINPRIN_1, "IsMemberOfGroupId", ves_icall_System_Security_Principal_Wind
 HANDLES(WINPRIN_2, "IsMemberOfGroupName", ves_icall_System_Security_Principal_WindowsPrincipal_IsMemberOfGroupName, MonoBoolean, 2, (gpointer, const_char_ptr))
 
 ICALL_TYPE(SECSTRING, "System.Security.SecureString", SECSTRING_1)
-ICALL(SECSTRING_1, "DecryptInternal", ves_icall_System_Security_SecureString_DecryptInternal)
-ICALL(SECSTRING_2, "EncryptInternal", ves_icall_System_Security_SecureString_EncryptInternal)
+HANDLES(SECSTRING_1, "DecryptInternal", ves_icall_System_Security_SecureString_DecryptInternal, void, 2, (MonoArray, MonoObject))
+HANDLES(SECSTRING_2, "EncryptInternal", ves_icall_System_Security_SecureString_EncryptInternal, void, 2, (MonoArray, MonoObject))
 
 ICALL_TYPE(SECMAN, "System.Security.SecurityManager", SECMAN_1)
 NOHANDLES(ICALL(SECMAN_1, "get_RequiresElevatedPermissions", mono_security_core_clr_require_elevated_permissions))

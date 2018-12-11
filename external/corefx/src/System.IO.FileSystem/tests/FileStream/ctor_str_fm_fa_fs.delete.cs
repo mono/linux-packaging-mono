@@ -12,6 +12,7 @@ namespace System.IO.Tests
     public partial class FileStream_ctor_str_fm_fa_fs
     {
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void FileShareDeleteNew()
         {
             string fileName = GetTestFilePath();
@@ -43,6 +44,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void FileShareDeleteExisting()
         {
             // create the file
@@ -87,6 +89,7 @@ namespace System.IO.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // file sharing restriction limitations on Unix
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void FileShareDeleteExistingMultipleClients()
         {
             // create the file

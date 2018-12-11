@@ -5,7 +5,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Enumeration;
+#if !MONO
 using System.Linq;
+#endif
 
 namespace System.IO
 {

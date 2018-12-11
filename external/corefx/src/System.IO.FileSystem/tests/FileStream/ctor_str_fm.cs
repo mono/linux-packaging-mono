@@ -38,6 +38,7 @@ namespace System.IO.Tests
         }
 
         [Theory, MemberData(nameof(TrailingCharacters))]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void MissingFile_ThrowsFileNotFound(char trailingChar)
         {
             string path = GetTestFilePath() + trailingChar;

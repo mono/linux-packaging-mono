@@ -128,6 +128,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void CharacterTests()
         {
             //bug #417100 - not sure if this hard coded approach is safe in all 9x platforms!!!

@@ -42,6 +42,7 @@ namespace System.IO.Tests
 
         [Theory, MemberData(nameof(PathsWithInvalidCharacters))]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void PathWithInvalidCharactersAsPath_Core(string invalidPath)
         {
             if (invalidPath.Contains('\0'))
@@ -226,6 +227,7 @@ namespace System.IO.Tests
         [Theory, MemberData(nameof(PathsWithInvalidColons))]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void PathsWithInvalidColons_ThrowIOException_Core(string invalidPath)
         {
             // You can't actually create a directory with a colon in it. It was a preemptive

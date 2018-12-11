@@ -32,6 +32,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void CopyOntoDirectory()
         {
             string testFile = GetTestFilePath();
@@ -48,6 +49,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void NonExistentPath()
         {
             FileInfo testFile = new FileInfo(GetTestFilePath());
@@ -70,6 +72,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void ShortenLongPath()
         {
             string testFileSource = GetTestFilePath();
@@ -190,6 +193,7 @@ namespace System.IO.Tests
             InlineData("\t")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void WindowsInvalidCharsPath_Core(string invalid)
         {
             string testFile = GetTestFilePath();
@@ -225,6 +229,7 @@ namespace System.IO.Tests
             InlineData("::$DATA", ":bar:$DATA")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void WindowsAlternateDataStream(string defaultStream, string alternateStream)
         {
             DirectoryInfo testDirectory = Directory.CreateDirectory(GetTestFilePath());
@@ -323,6 +328,7 @@ namespace System.IO.Tests
             InlineData("::$DATA", ":bar:$DATA")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void WindowsAlternateDataStreamOverwrite(string defaultStream, string alternateStream)
         {
             DirectoryInfo testDirectory = Directory.CreateDirectory(GetTestFilePath());

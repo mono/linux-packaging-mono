@@ -71,6 +71,7 @@ namespace System.IO.Tests
             InlineData(":bar:$DATA")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void GettingAndSettingAttributes_AlternateDataStream_Windows(string streamName)
         {
             string path = CreateItem();

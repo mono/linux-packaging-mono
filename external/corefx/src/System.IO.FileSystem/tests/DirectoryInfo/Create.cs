@@ -43,6 +43,7 @@ namespace System.IO.Tests
         [InlineData(".")]
         [InlineData("............")]
         [PlatformSpecific(TestPlatforms.Windows)]  // Windows-invalid extensions are removed
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void WindowsInvalidExtensionsAreRemoved(string extension)
         {
             string testDir = GetTestFilePath();
@@ -54,6 +55,7 @@ namespace System.IO.Tests
         [InlineData(".s", ".")]
         [InlineData(".s", ".s....")]
         [PlatformSpecific(TestPlatforms.Windows)]  // Trailing dots in extension are removed
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void WindowsCurtailTrailingDots(string extension, string trailing)
         {
             string testDir = GetTestFilePath();

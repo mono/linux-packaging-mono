@@ -3152,6 +3152,12 @@ mono_runtime_invoke_handle (MonoMethod *method, MonoObjectHandle obj, void **par
 	return MONO_HANDLE_NEW (MonoObject, mono_runtime_invoke_checked (method, MONO_HANDLE_RAW (obj), params, error));
 }
 
+void
+mono_runtime_invoke_handle_void (MonoMethod *method, MonoObjectHandle obj, void **params, MonoError* error)
+{
+	mono_runtime_invoke_checked (method, MONO_HANDLE_RAW (obj), params, error);
+}
+
 /**
  * mono_method_get_unmanaged_thunk:
  * \param method method to generate a thunk for.
@@ -8995,6 +9001,8 @@ mono_array_length (MonoArray *array)
 	MONO_EXTERNAL_ONLY (uintptr_t, mono_array_length_internal (array));
 }
 
+#ifdef ENABLE_CHECKED_BUILD_GC
+
 /**
  * mono_string_handle_length:
  * \param s \c MonoString
@@ -9007,6 +9015,8 @@ mono_string_handle_length (MonoStringHandle s)
 
 	return MONO_HANDLE_GETVAL (s, length);
 }
+
+#endif
 
 /**
  * mono_array_addr_with_size:
