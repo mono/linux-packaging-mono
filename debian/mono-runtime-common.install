@@ -6,6 +6,7 @@
 /usr/share/mono-2.0/mono/cil/cil-opcodes.xml
 /usr/lib/libMonoPosixHelper.so
 /usr/lib/libMonoSupportW.so
+/usr/lib/libmono-native.so*
 debian/mono-runtime-common.png /usr/share/pixmaps
 debian/mono-runtime-common.desktop /usr/share/applications
 debian/mono-runtime-terminal.desktop /usr/share/applications
