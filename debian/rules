@@ -332,6 +332,7 @@ ifdef BTLS_ARCH
 endif
 ifdef LLVM_ARCH
 	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.a debian/mono-runtime-common/usr/lib/
+	EXTRA_STRIP = -pmono-llvm-support
 endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
@@ -340,7 +341,7 @@ endif
 	dh_installman -s
 	dh_installexamples -s
 	dh_installexamples -pmono-jay $(CURDIR)/mcs/jay/skeleton.cs
-	dh_strip -pmono-runtime-common -pmono-runtime-sgen -pmono-runtime-boehm --dbg-package=mono-runtime-dbg
+	dh_strip -pmono-runtime-common -pmono-runtime-sgen -pmono-runtime-boehm $(EXTRA_STRIP) --dbg-package=mono-runtime-dbg
 	dh_strip -plibmonoboehm-2.0-1 --dbg-package=libmonoboehm-2.0-1-dbg
 	dh_strip -plibmonosgen-2.0-1 --dbg-package=libmonosgen-2.0-1-dbg
 	dh_strip -s -Xbin/mono-sgen -Xbin/mono-boehm
