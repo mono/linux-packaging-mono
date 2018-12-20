@@ -721,7 +721,7 @@ register_icall (gpointer func, const char *name, const char *sigstr, gboolean av
 	else
 		sig = NULL;
 
-	mono_register_jit_icall_full (func, name, sig, avoid_wrapper, avoid_wrapper ? name : NULL);
+	mono_register_jit_icall_full (func, name, sig, avoid_wrapper, name);
 }
 
 #ifdef __cplusplus
@@ -759,11 +759,21 @@ register_icall_with_wrapper (gpointer func, const char *name, const char *sigstr
 	else
 		sig = NULL;
 
-	mono_register_jit_icall_full (func, name, sig, FALSE, NULL);
+	mono_register_jit_icall_full (func, name, sig, FALSE, name);
 }
 
+/*
+ * Register an icall where FUNC is dynamically generated or otherwise not
+ * possible to link to it using NAME during AOT.
+ */
+#ifdef __cplusplus
+template <typename T>
+static void
+register_dyn_icall (T func, const char *name, const char *sigstr, gboolean save)
+#else
 static void
 register_dyn_icall (gpointer func, const char *name, const char *sigstr, gboolean save)
+#endif
 {
 	MonoMethodSignature *sig;
 
@@ -1236,6 +1246,7 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_METHODCONST:
 	case MONO_PATCH_INFO_METHOD:
 	case MONO_PATCH_INFO_METHOD_JUMP:
+	case MONO_PATCH_INFO_METHOD_FTNDESC:
 	case MONO_PATCH_INFO_IMAGE:
 	case MONO_PATCH_INFO_ICALL_ADDR:
 	case MONO_PATCH_INFO_ICALL_ADDR_CALL:
@@ -1430,6 +1441,21 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 				return NULL;
 		}
 		break;
+	case MONO_PATCH_INFO_METHOD_FTNDESC: {
+		/*
+		 * Return an ftndesc for either AOTed code, or for an interp entry.
+		 */
+		target = mono_compile_method_checked (patch_info->data.method, error);
+		return_val_if_nok (error, NULL);
+		if (target) {
+			gpointer arg = NULL;
+			target = mini_add_method_wrappers_llvmonly (patch_info->data.method, (gpointer)target, FALSE, FALSE, &arg);
+			return mini_create_llvmonly_ftndesc (domain, (gpointer)target, arg);
+		} else {
+			g_assert_not_reached ();
+		}
+		break;
+	}
 	case MONO_PATCH_INFO_METHOD_CODE_SLOT: {
 		gpointer code_slot;
 
@@ -4812,7 +4838,7 @@ register_icalls (void)
 	register_icall (mono_fill_class_rgctx, "mono_fill_class_rgctx", "ptr ptr int", FALSE);
 	register_icall (mono_fill_method_rgctx, "mono_fill_method_rgctx", "ptr ptr int", FALSE);
 
-	register_icall (mini_get_dbg_callbacks ()->user_break, "mono_debugger_agent_user_break", "void", FALSE);
+	register_dyn_icall (mini_get_dbg_callbacks ()->user_break, "mono_debugger_agent_user_break", "void", FALSE);
 
 	register_icall (mono_aot_init_llvm_method, "mono_aot_init_llvm_method", "void ptr int", TRUE);
 	register_icall (mono_aot_init_gshared_method_this, "mono_aot_init_gshared_method_this", "void ptr int object", TRUE);

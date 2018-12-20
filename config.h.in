@@ -173,8 +173,14 @@
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
+/* Enable the LLVM back end */
+#undef ENABLE_LLVM_MSVC_ONLY
+
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
+
+/* Runtime support code for llvm enabled */
+#undef ENABLE_LLVM_RUNTIME_MSVC_ONLY
 
 /* Enable runtime support for Monodroid (Xamarin.Android) */
 #undef ENABLE_MONODROID
@@ -1346,6 +1352,12 @@
 
 /* Build LLVM with assertions */
 #undef INTERNAL_LLVM_ASSERTS
+
+/* Build LLVM with assertions */
+#undef INTERNAL_LLVM_ASSERTS_MSVC_ONLY
+
+/* LLVM used is being build during mono build */
+#undef INTERNAL_LLVM_MSVC_ONLY
 
 /* struct ipv6_mreq with unsigned ipv6mr_interface */
 #undef IPV6MR_INTERFACE_UNSIGNED
