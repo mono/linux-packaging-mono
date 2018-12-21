@@ -86,6 +86,7 @@ endif
 
 ifdef LLVM_ARCH
 	CONF_FLAGS += --enable-loadedllvm
+	EXTRA_STRIP := -pmono-llvm-support
 endif
 
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -332,7 +333,6 @@ ifdef BTLS_ARCH
 endif
 ifdef LLVM_ARCH
 	install -D -m 644 debian/tmp/usr/lib/libmono-llvm.a debian/mono-runtime-common/usr/lib/
-	EXTRA_STRIP = -pmono-llvm-support
 endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
