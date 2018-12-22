@@ -340,14 +340,14 @@ mono_marshal_alloc (gsize size, MonoError *error)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">static gpointer
-mono_marshal_asany_handle (MonoObjectHandle o, MonoMarshalNative string_encoding, int param_attrs, MonoError *error)
+            <div class="mapi-prototype">gpointer
+mono_marshal_asany_impl (MonoObjectHandle o, MonoMarshalNative string_encoding, int param_attrs, MonoError *error)
 
 </div>
             <p />
              <div class="mapi-section">Description</div>
              <div>
- This is a JIT icall, it sets the pending exception and returns <code>NULL</code> on error.</div>
+ This is a JIT icall, it sets the pending exception (in wrapper) and returns <code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -380,13 +380,13 @@ mono_marshal_free_array (gpointer *ptr, int size)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">void
-mono_marshal_free_asany (MonoObject *o, gpointer ptr, MonoMarshalNative string_encoding, int param_attrs)
+mono_marshal_free_asany_impl (MonoObjectHandle o, gpointer ptr, MonoMarshalNative string_encoding, int param_attrs, MonoError *error)
 
 </div>
             <p />
              <div class="mapi-section">Description</div>
              <div>
- This is a JIT icall, it sets the pending exception</div>
+ This is a JIT icall, it sets the pending exception (in wrapper)</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

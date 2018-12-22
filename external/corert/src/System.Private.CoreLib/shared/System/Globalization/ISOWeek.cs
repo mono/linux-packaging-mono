@@ -89,8 +89,12 @@ namespace System.Globalization
             {
                 throw new ArgumentOutOfRangeException(nameof(year), SR.ArgumentOutOfRange_Year);
             }
-
-            int P(int y) => (y + (y / 4) - (y / 100) + (y / 400)) % 7;
+#if __MonoCS__ // mcs doesn't support local functions
+            Func<int, int> P = y => 
+#else
+            int P(int y) => 
+#endif
+                (y + (y / 4) - (y / 100) + (y / 400)) % 7;
 
             if (P(year) == 4 || P(year - 1) == 3)
             {

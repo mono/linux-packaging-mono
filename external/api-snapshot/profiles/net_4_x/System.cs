@@ -11333,6 +11333,7 @@ namespace System.Net.Sockets
         public int Receive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public int Receive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
+        public int Receive(System.Span<byte> buffer) { throw null; }
         public int Receive(System.Span<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         public bool ReceiveAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public int ReceiveFrom(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
@@ -11354,6 +11355,7 @@ namespace System.Net.Sockets
         public int Send(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         [System.CLSCompliantAttribute(false)]
         public int Send(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
+        public int Send(System.ReadOnlySpan<byte> buffer) { throw null; }
         public int Send(System.ReadOnlySpan<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         public bool SendAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public void SendFile(string fileName) { }
@@ -11384,6 +11386,7 @@ namespace System.Net.Sockets
         public int Count { get { throw null; } }
         public bool DisconnectReuseSocket { get { throw null; } set { } }
         public System.Net.Sockets.SocketAsyncOperation LastOperation { get { throw null; } }
+        public System.Memory<byte> MemoryBuffer { get { throw null; } }
         public int Offset { get { throw null; } }
         public System.Net.Sockets.IPPacketInformation ReceiveMessageFromPacketInfo { get { throw null; } }
         public System.Net.EndPoint RemoteEndPoint { get { throw null; } set { } }
@@ -12188,6 +12191,9 @@ namespace System.Security.Authentication
         Md5 = 32771,
         None = 0,
         Sha1 = 32772,
+        Sha256 = 32780,
+        Sha384 = 32781,
+        Sha512 = 32782,
     }
     [System.SerializableAttribute]
     public partial class InvalidCredentialException : System.Security.Authentication.AuthenticationException
@@ -12358,6 +12364,11 @@ namespace System.Security.Cryptography
         object System.Collections.IEnumerator.Current { get { throw null; } }
         public bool MoveNext() { throw null; }
         public void Reset() { }
+    }
+    public static partial class CryptographicOperations
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static bool FixedTimeEquals(System.ReadOnlySpan<byte> left, System.ReadOnlySpan<byte> right) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static void ZeroMemory(System.Span<byte> buffer) { }
     }
     public sealed partial class Oid
     {
