@@ -2828,6 +2828,7 @@ namespace System
         public static int CollectionCount(int generation) { throw null; }
         [System.Security.SecurityCriticalAttribute]
         public static void EndNoGCRegion() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static long GetAllocatedBytesForCurrentThread() { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
         public static int GetGeneration(object obj) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
@@ -7749,11 +7750,10 @@ namespace System.Diagnostics.SymbolStore
         NativeSectionOffset = 10,
         NativeStackRegister = 8,
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct SymbolToken
+    public readonly partial struct SymbolToken
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public SymbolToken(int val) { throw null; }
         public bool Equals(System.Diagnostics.SymbolStore.SymbolToken obj) { throw null; }
         public override bool Equals(object obj) { throw null; }
@@ -7839,9 +7839,10 @@ namespace System.Diagnostics.Tracing
         public bool DisableEvent(int eventId) { throw null; }
         public bool EnableEvent(int eventId) { throw null; }
     }
-    public partial class EventCounter
+    public partial class EventCounter : System.IDisposable
     {
         public EventCounter(string name, System.Diagnostics.Tracing.EventSource eventSource) { }
+        public void Dispose() { }
         public void WriteMetric(float value) { }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct, Inherited=false)]
@@ -7906,6 +7907,8 @@ namespace System.Diagnostics.Tracing
     public partial class EventListener : System.IDisposable
     {
         public EventListener() { }
+        public event System.EventHandler<System.Diagnostics.Tracing.EventSourceCreatedEventArgs> EventSourceCreated { add { } remove { } }
+        public event System.EventHandler<System.Diagnostics.Tracing.EventWrittenEventArgs> EventWritten { add { } remove { } }
         public void DisableEvents(System.Diagnostics.Tracing.EventSource eventSource) { }
         public virtual void Dispose() { }
         public void EnableEvents(System.Diagnostics.Tracing.EventSource eventSource, System.Diagnostics.Tracing.EventLevel level) { }
@@ -8577,6 +8580,15 @@ namespace System.Globalization
         public string GetUnicode(string ascii) { throw null; }
         public string GetUnicode(string ascii, int index) { throw null; }
         public string GetUnicode(string ascii, int index, int count) { throw null; }
+    }
+    public static partial class ISOWeek
+    {
+        public static int GetWeekOfYear(System.DateTime date) { throw null; }
+        public static int GetWeeksInYear(int year) { throw null; }
+        public static int GetYear(System.DateTime date) { throw null; }
+        public static System.DateTime GetYearEnd(int year) { throw null; }
+        public static System.DateTime GetYearStart(int year) { throw null; }
+        public static System.DateTime ToDateTime(int year, int week, System.DayOfWeek dayOfWeek) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -12884,6 +12896,9 @@ namespace System.Runtime.CompilerServices
     {
         public ConditionalWeakTable() { }
         public void Add(TKey key, TValue value) { }
+        public void AddOrUpdate(TKey key, TValue value) { }
+        [System.Security.SecuritySafeCriticalAttribute]
+        public void Clear() { }
         ~ConditionalWeakTable() { }
         public TValue GetOrCreateValue(TKey key) { throw null; }
         public TValue GetValue(TKey key, System.Runtime.CompilerServices.ConditionalWeakTable<TKey, TValue>.CreateValueCallback createValueCallback) { throw null; }
@@ -13222,6 +13237,7 @@ namespace System.Runtime.CompilerServices
         public static void ExecuteCodeWithGuaranteedCleanup(System.Runtime.CompilerServices.RuntimeHelpers.TryCode code, System.Runtime.CompilerServices.RuntimeHelpers.CleanupCode backoutCode, object userData) { }
         public static int GetHashCode(object o) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static object GetObjectValue(object obj) { throw null; }
+        public static object GetUninitializedObject(System.Type type) { throw null; }
         public static void InitializeArray(System.Array array, System.RuntimeFieldHandle fldHandle) { }
         public static bool IsReferenceOrContainsReferences<T>() { throw null; }
         [System.MonoTODOAttribute("Currently a no-op")]

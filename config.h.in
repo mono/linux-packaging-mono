@@ -188,6 +188,9 @@
 /* Enable runtime support for Monotouch (Xamarin.iOS and Xamarin.Mac) */
 #undef ENABLE_MONOTOUCH
 
+/* Enables the support for .NET Core Features in the MonoVM */
+#undef ENABLE_NETCORE
+
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
 
