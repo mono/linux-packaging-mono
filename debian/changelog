@@ -1,3 +1,9 @@
+mono (5.18.0.225-0xamarin8) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 28 Dec 2018 08:26:58 +0000
+
 mono (5.18.0.225-0xamarin7) preview; urgency=medium
 
   * Packaging bugfix:
