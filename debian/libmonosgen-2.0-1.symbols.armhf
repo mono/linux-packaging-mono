@@ -1,1 +1,2 @@
 #include "libmonosgen-2.0-1.symbols.arm64"
+ GC_allocate_lock@Base 5.23.0.159
