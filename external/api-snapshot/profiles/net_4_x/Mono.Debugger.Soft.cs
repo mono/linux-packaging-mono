@@ -671,6 +671,7 @@ namespace Mono.Debugger.Soft
         public long ThreadId { get { throw null; } }
         public System.Threading.ThreadState ThreadState { get { throw null; } }
         public long TID { get { throw null; } }
+        public long ElapsedTime() { throw null; }
         public static void FetchFrames(System.Collections.Generic.IList<Mono.Debugger.Soft.ThreadMirror> threads) { }
         public Mono.Debugger.Soft.StackFrame[] GetFrames() { throw null; }
         public void SetIP(Mono.Debugger.Soft.Location loc) { }
