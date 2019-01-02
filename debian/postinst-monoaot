@@ -2,9 +2,22 @@ if [ "$1" = "configure" ]
 then
 	TEMPDIR=`mktemp -d -t monoaot.XXXXXXXXX`
 	MONOARCH=`mono --version | grep Architecture | sed 's/.*:  //' | sed 's/el,.*//'`
-	echo "Mono precompiling #FILE# for ${MONOARCH}..."
+	HASSSE41=`grep sse4_1 /proc/cpuinfo || true`
+	TRYLLVM=""
+	LLVMNOTE=""
+	if [ -e "/usr/lib/libmono-llvm.so.0" ]
+	then
+		TRYLLVM="try-llvm,"
+		LLVMNOTE=" (trying with LLVM)"
+	fi
+	if [ -z "$HASSSE41" ]
+	then
+		TRYLLVM=""
+		LLVMNOTE=" (LLVM disabled due to missing SSE4.1)"
+	fi
+	echo "Mono precompiling #FILE# for ${MONOARCH}${LLVMNOTE}..."
 	mkdir -p /usr/lib/mono/aot-cache/${MONOARCH}/
-	/usr/bin/mono --aot=try-llvm,temp-path=${TEMPDIR},outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
+	/usr/bin/mono --aot=${TRYLLVM}temp-path=${TEMPDIR},outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all #FILE# > /dev/null 2>&1 || true
 	if [ -n "${TEMPDIR}" -a "${TEMPDIR}" != "/tmp" -a "${TEMPDIR}" != "/tmp/"  -a "${TEMPDIR}" != "/" ]
 	then
 		rm -f ${TEMPDIR}/*
