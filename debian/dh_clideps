@@ -192,7 +192,7 @@ if (defined($dh{INTERNAL_MONO_FLAG}) ||
     (defined($ARGV[0]) && $ARGV[0] eq "internal-mono")) {
     $clr = "mono";
     $cli_parser = "$pwd/debian/tmp/usr/bin/mono $pwd/debian/tmp/usr/lib/mono/4.5/ikdasm.exe";
-    $cli_parser_paths = "LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$pwd/debian/tmp/usr/lib/mono/4.5 MONO_GAC_PREFIX=$pwd/debian/tmp/usr/lib/mono/gac ";
+    $cli_parser_paths = "MONO_CONFIG=$pwd/debian/tmp/etc/mono/config LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$pwd/debian/tmp/usr/lib/mono/4.5 MONO_GAC_PREFIX=$pwd/debian/tmp/usr/lib/mono/gac ";
     $cli_version = `LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib $pwd/debian/tmp/usr/bin/mono --version 2>&1`;
     verbose_print("Will use built Mono (debian/tmp/usr/bin/ikdasm) for CIL parsing.");
 } elsif (-x "/usr/bin/ikdasm") {
