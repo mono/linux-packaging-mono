@@ -1158,8 +1158,8 @@ TESTS_STRESS_SRC = \
 # Disabled until ?mcs is fixed
 #	bug-331958.cs
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
-	bug-2907.cs $(ARRAY_COOP_CS) array-init.cs arraylist.cs \
-	assembly-load-remap.cs assembly-load-bytes.cs \
+	bug-2907.cs $(ARRAY_COOP_CS) array-12193.cs array-init.cs \
+	arraylist.cs assembly-load-remap.cs assembly-load-bytes.cs \
 	assembly-loadfile.cs assembly-loadfrom.cs \
 	assembly-load-bytes-bindingredirect.cs \
 	assembly-loadfile-bindingredirect.cs \
