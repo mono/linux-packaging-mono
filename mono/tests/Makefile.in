@@ -1176,11 +1176,12 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception13.cs exception14.cs exception15.cs exception16.cs \
 	exception17.cs exception18.cs exception-invokes.cs \
 	merp-json-valid.cs exception19.cs exception20.cs \
-	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
-	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
-	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
-	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
-	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	exception21.cs typeload-unaligned.cs struct.cs \
+	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
+	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
+	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
+	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
+	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \

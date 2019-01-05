@@ -736,7 +736,8 @@ static int CheckX509HostnameMatch(ASN1_STRING* candidate, const char* hostname, 
         {
             char c = candidateStr[i];
 
-            if ((c < 'a' || c > 'z') && (c < '0' || c > '9') && (c != '.') && (c != '-') && (c != '*' || i != 0))
+            if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9') && (c != '.') && (c != '-') &&
+                (c != '*' || i != 0))
             {
                 return 0;
             }
