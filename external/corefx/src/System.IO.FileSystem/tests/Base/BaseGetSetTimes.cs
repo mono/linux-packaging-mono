@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -10,8 +10,14 @@ namespace System.IO.Tests
 {
     public abstract class BaseGetSetTimes<T> : FileSystemTest
     {
+        protected const string HFS = "hfs";
         public delegate void SetTime(T item, DateTime time);
         public delegate DateTime GetTime(T item);
+        // AppContainer restricts access to DriveFormat (::GetVolumeInformation)
+        private static string driveFormat = PlatformDetection.IsInAppContainer ? string.Empty : new DriveInfo(Path.GetTempPath()).DriveFormat;
+
+        protected static bool isHFS => driveFormat.Equals(HFS, StringComparison.InvariantCultureIgnoreCase);
+        protected static bool isNotHFS => !isHFS;
 
         public abstract T GetExistingItem();
         public abstract T GetMissingItem();
@@ -70,15 +76,12 @@ namespace System.IO.Tests
             ValidateSetTimes(item, beforeTime, afterTime);
         }
 
-        [Fact]
+        [ConditionalFact(nameof(isNotHFS))] // OSX HFS driver format does not support millisec granularity
         [PlatformSpecific(TestPlatforms.Linux)] // Windows tested below, and OSX does not currently support millisec granularity
         [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Seems to require CoreFX DriveInfo")]
-        public void TimesIncludeMillisecondPart_Linux()
+        public void TimesIncludeMillisecondPart_Unix()
         {
             T item = GetExistingItem();
-
-            string driveFormat = new DriveInfo(GetItemPath(item)).DriveFormat;
-
             Assert.All(TimeFunctions(), (function) =>
             {
                 var msec = 0;
@@ -86,7 +89,6 @@ namespace System.IO.Tests
                 {
                     DateTime time = function.Getter(item);
                     msec = time.Millisecond;
-
                     if (msec != 0)
                         break;
 
@@ -107,7 +109,6 @@ namespace System.IO.Tests
                 Assert.NotEqual(0, msec);
             });
         }
-
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // Breaking out Windows as it passes no problem there
@@ -137,7 +138,7 @@ namespace System.IO.Tests
             });
         }
 
-        [Fact]
+        [ConditionalFact(nameof(isHFS))]
         // OSX does not currently support millisec granularity: use this test as a canary to flag
         // if this ever changes so we can enable the actual test
         [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono actually supports milliseconds on MacOS")]
@@ -145,6 +146,7 @@ namespace System.IO.Tests
         public void TimesIncludeMillisecondPart_OSX()
         {
             T item = GetExistingItem();
+            // OSX HFS driver format does not support millisec granularity
             Assert.All(TimeFunctions(), (function) =>
             {
                 DateTime time = function.Getter(item);

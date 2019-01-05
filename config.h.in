@@ -216,6 +216,9 @@
    */
 #undef HAVE_ANDROID_LEGACY_SIGNAL_INLINES_H
 
+/* Define to 1 if you have the <android/ndk-version.h> header file. */
+#undef HAVE_ANDROID_NDK_VERSION_H
+
 /* Define to 1 if you have the <android/versioning.h> header file. */
 #undef HAVE_ANDROID_VERSIONING_H
 

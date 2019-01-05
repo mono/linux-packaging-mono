@@ -3117,6 +3117,7 @@ namespace System.Data.SqlClient
         public SqlConnection() { }
         public SqlConnection(string connectionString) { }
         public SqlConnection(string connectionString, System.Data.SqlClient.SqlCredential credential) { }
+        public string AccessToken { get { throw null; } set { } }
         public System.Guid ClientConnectionId { get { throw null; } }
         public override string ConnectionString { get { throw null; } set { } }
         public override int ConnectionTimeout { get { throw null; } }

@@ -13,7 +13,11 @@ namespace System.IO
 {
     // Class for creating FileStream objects, and some basic file management
     // routines such as Delete, etc.
+#if MONO
+    public static partial class File
+#else
     public static class File
+#endif
     {
         private const int MaxByteArrayLength = 0x7FFFFFC7;
         private static Encoding s_UTF8NoBOM;
@@ -243,6 +247,16 @@ namespace System.IO
 
         public static void SetAttributes(string path, FileAttributes fileAttributes)
         {
+#if MONO
+            if (((uint)fileAttributes & 0x80000000) != 0) {
+                MonoIOError error;
+			    Path.Validate (path);
+
+                if (!MonoIO.SetFileAttributes (path, fileAttributes, out error))
+                    throw MonoIO.GetException (path, error);
+                    return;
+            }
+#endif
             string fullPath = Path.GetFullPath(path);
             FileSystem.SetAttributes(fullPath, fileAttributes);
         }

@@ -76,6 +76,9 @@
     <BinPlaceConfiguration Condition="'$(BuildingNETCoreAppVertical)' == 'true'" Include="netcoreapp2.0">
       <RefPath>$(RefRootPath)netcoreapp2.0/</RefPath>
     </BinPlaceConfiguration>
+    <BinPlaceConfiguration Include="netcoreapp2.0-Windows_NT">
+      <RuntimePath>$(ShimsTargetRuntimeRoot)netcoreapp2.0/</RuntimePath>
+    </BinPlaceConfiguration>
     <!-- some libraries that produce packages will remain targeting uap10.0.16299 -->
     <BinPlaceConfiguration Condition="'$(BuildingUAPVertical)' == 'true' OR '$(BuildingUAPAOTVertical)' == 'true'" Include="uap10.0.16299">
       <RefPath>$(RefRootPath)uap10.0.16299/</RefPath>
@@ -89,6 +92,15 @@
       <RefPath>$(RefRootPath)%(Identity)/</RefPath>
     </BinPlaceConfiguration>
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(BlockStable)' == 'true'">
+    <!--
+      If BlockStable is set to true then always include the label and build number in the package version.
+      This needs to be set before we import packaging.targets which comes in the Build.Common.targets.
+    -->
+    <IncludePreReleaseLabelInPackageVersion>true</IncludePreReleaseLabelInPackageVersion>
+    <IncludeBuildNumberInPackageVersion>true</IncludeBuildNumberInPackageVersion>
+  </PropertyGroup>
 
   <Import Project="$(ToolsDir)/Build.Common.targets" Condition="Exists('$(ToolsDir)/Build.Common.targets')" />
 
