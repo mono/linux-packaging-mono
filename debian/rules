@@ -15,7 +15,7 @@ UPVERSION = $(shell echo $(VERSION) | sed 's,-.*,,' | sed 's,+dfsg.*,,')
 NEXT_UPVERSION = $(shell perl -e '$$_=pop; s/(\d+)$$/$$1+1/e; print' $(UPVERSION))
 DEB_SOURCE_NAME = $(shell dpkg-parsechangelog -l$(DEBIAN_DIR)/changelog | grep ^Source | cut -d" " -f2)
 
-RUN_MONO = LD_LIBRARY_PATH=debian/tmp/usr/lib MONO_PATH=debian/tmp/usr/lib/mono/4.5 debian/tmp/usr/bin/mono
+RUN_MONO = LD_LIBRARY_PATH=debian/tmp/usr/lib MONO_PATH=debian/tmp/usr/lib/mono/4.5 debian/tmp/usr/bin/mono --config debian/tmp/usr/etc/mono/config
 KILL_MONO = pgrep mono | xargs kill -9
 DH_INTERNAL_MONO_PARAM = --internal-mono
 ifeq ($(shell dpkg --compare-versions $$(dpkg-query -f '$${Version}' -W debhelper) lt 7.1; echo $$?), 0)
