@@ -222,8 +222,11 @@
 /* Define to 1 if you have the <android/versioning.h> header file. */
 #undef HAVE_ANDROID_VERSIONING_H
 
-/* arc4random */
+/* Define to 1 if you have the `arc4random' function. */
 #undef HAVE_ARC4RANDOM
+
+/* arc4random_buf */
+#undef HAVE_ARC4RANDOM_BUF
 
 /* ARM v5 */
 #undef HAVE_ARMV5
@@ -616,6 +619,9 @@
 
 /* Define to 1 if you have the <link.h> header file. */
 #undef HAVE_LINK_H
+
+/* Define to 1 if you have the <linux/if_packet.h> header file. */
+#undef HAVE_LINUX_IF_PACKET_H
 
 /* linux/in.h */
 #undef HAVE_LINUX_IN_H

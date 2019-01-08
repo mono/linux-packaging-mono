@@ -34,6 +34,11 @@
       <TargetsUnix>true</TargetsUnix>
       <TargetsNetBSD>true</TargetsNetBSD>
     </OSGroups>
+    <OSGroups Include="WebAssembly">
+      <Imports>Unix</Imports>
+      <TargetsUnix>true</TargetsUnix>
+      <TargetsWebAssembly>true</TargetsWebAssembly>
+    </OSGroups>
     <OSGroups Include="AnyOS" />
   </ItemGroup>
 </Project>
