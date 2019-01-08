@@ -1,58 +1,64 @@
 include_directories(../include)
 
-if(APPLE)
-  if (${ARCH} STREQUAL "x86")
-    set(PERLASM_FLAGS "-fPIC -DOPENSSL_IA32_SSE2")
-  endif()
-  set(PERLASM_STYLE macosx)
-  set(ASM_EXT S)
-  enable_language(ASM)
-elseif(UNIX)
-  if (${ARCH} STREQUAL "aarch64")
-    # The "armx" Perl scripts look for "64" in the style argument
-    # in order to decide whether to generate 32- or 64-bit asm.
-    set(PERLASM_STYLE linux64)
-  elseif (${ARCH} STREQUAL "arm")
-    set(PERLASM_STYLE linux32)
-  elseif (${ARCH} STREQUAL "x86")
-    set(PERLASM_FLAGS "-fPIC -DOPENSSL_IA32_SSE2")
-    set(PERLASM_STYLE elf)
+if(NOT OPENSSL_NO_ASM)
+  if(APPLE)
+    if (${ARCH} STREQUAL "x86")
+      set(PERLASM_FLAGS "-fPIC -DOPENSSL_IA32_SSE2")
+    endif()
+    set(PERLASM_STYLE macosx)
+    set(ASM_EXT S)
+    enable_language(ASM)
+  elseif(UNIX AND NOT CYGWIN)
+    if (${ARCH} STREQUAL "aarch64")
+      # The "armx" Perl scripts look for "64" in the style argument
+      # in order to decide whether to generate 32- or 64-bit asm.
+      set(PERLASM_STYLE linux64)
+    elseif (${ARCH} STREQUAL "arm")
+      set(PERLASM_STYLE linux32)
+    elseif (${ARCH} STREQUAL "x86")
+      set(PERLASM_FLAGS "-fPIC -DOPENSSL_IA32_SSE2")
+      set(PERLASM_STYLE elf)
+    else()
+      set(PERLASM_STYLE elf)
+    endif()
+    set(ASM_EXT S)
+    enable_language(ASM)
+    set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -Wa,--noexecstack")
   else()
-    set(PERLASM_STYLE elf)
+    if (CMAKE_CL_64 OR (CYGWIN AND ${ARCH} STREQUAL "x86_64"))
+      message("Using nasm")
+      set(PERLASM_STYLE nasm)
+    else()
+      message("Using win32n")
+      set(PERLASM_STYLE win32n)
+      set(PERLASM_FLAGS "-DOPENSSL_IA32_SSE2")
+    endif()
+
+    # On Windows, we use the NASM output, specifically built with Yasm.
+    set(ASM_EXT asm)
+    enable_language(ASM_NASM)
   endif()
-  set(ASM_EXT S)
-  enable_language(ASM)
-  set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -Wa,--noexecstack")
+
+  function(perlasm dest src)
+    add_custom_command(
+      OUTPUT ${dest}
+      COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${src} ${PERLASM_STYLE} ${PERLASM_FLAGS} ${ARGN} > ${dest}
+      DEPENDS
+      ${src}
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/arm-xlate.pl
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86_64-xlate.pl
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86asm.pl
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86gas.pl
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86masm.pl
+      ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86nasm.pl
+      WORKING_DIRECTORY .
+    )
+  endfunction()
 else()
-  if (CMAKE_CL_64)
-    message("Using nasm")
-    set(PERLASM_STYLE nasm)
-  else()
-    message("Using win32n")
-    set(PERLASM_STYLE win32n)
-    set(PERLASM_FLAGS "-DOPENSSL_IA32_SSE2")
-  endif()
-
-  # On Windows, we use the NASM output, specifically built with Yasm.
-  set(ASM_EXT asm)
-  enable_language(ASM_NASM)
+  function(perlasm dest src)
+    # Disabled since OPENSSL_NO_ASM has been defined.
+  endfunction()
 endif()
-
-function(perlasm dest src)
-  add_custom_command(
-    OUTPUT ${dest}
-    COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${src} ${PERLASM_STYLE} ${PERLASM_FLAGS} ${ARGN} > ${dest}
-    DEPENDS
-    ${src}
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/arm-xlate.pl
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86_64-xlate.pl
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86asm.pl
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86gas.pl
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86masm.pl
-    ${PROJECT_SOURCE_DIR}/crypto/perlasm/x86nasm.pl
-    WORKING_DIRECTORY .
-  )
-endfunction()
 
 # Level 0.1 - depends on nothing outside this set.
 add_subdirectory(stack)
