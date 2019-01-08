@@ -1268,15 +1268,15 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	thread_static_gc_layout.cs sleep.cs bug-27147.cs bug-30085.cs \
 	bug-17537.cs pinvoke_ppcc.cs pinvoke_ppcs.cs pinvoke_ppci.cs \
 	pinvoke_ppcf.cs pinvoke_ppcd.cs bug-29585.cs priority.cs \
-	abort-cctor.cs abort-try-holes.cs thread-native-exit.cs \
-	reference-loader.cs thread-suspend-suspended.cs \
-	thread-suspend-selfsuspended.cs remoting4.cs remoting1.cs \
-	remoting2.cs remoting3.cs remoting5.cs appdomain.cs \
-	appdomain-client.cs appdomain-unload.cs \
-	appdomain-async-invoke.cs appdomain-thread-abort.cs \
-	appdomain1.cs appdomain2.cs appdomain-exit.cs \
-	appdomain-serialize-exception.cs assemblyresolve_event2.2.cs \
-	appdomain-unload-callback.cs \
+	abort-cctor.cs abort-try-holes.cs abort-tests.cs \
+	thread-native-exit.cs reference-loader.cs \
+	thread-suspend-suspended.cs thread-suspend-selfsuspended.cs \
+	remoting4.cs remoting1.cs remoting2.cs remoting3.cs \
+	remoting5.cs appdomain.cs appdomain-client.cs \
+	appdomain-unload.cs appdomain-async-invoke.cs \
+	appdomain-thread-abort.cs appdomain1.cs appdomain2.cs \
+	appdomain-exit.cs appdomain-serialize-exception.cs \
+	assemblyresolve_event2.2.cs appdomain-unload-callback.cs \
 	appdomain-unload-doesnot-raise-pending-events.cs \
 	appdomain-unload-asmload.cs appdomain-unload-exception.cs \
 	unload-appdomain-on-shutdown.cs \

@@ -414,21 +414,23 @@ namespace System
             string currentPath = path;
             for(;;)
             {
-                using (Microsoft.Win32.SafeHandles.SafeDirectoryHandle dirHandle = Interop.Sys.OpenDir(currentPath))
+                IntPtr dirHandle = Interop.Sys.OpenDir(currentPath);
+                if (dirHandle == IntPtr.Zero)
+                    throw Interop.GetExceptionForIoErrno(Interop.Sys.GetLastErrorInfo(), currentPath, isDirectory: true);
+                try
                 {
-                    if (dirHandle.IsInvalid)
-                    {
-                        throw Interop.GetExceptionForIoErrno(Interop.Sys.GetLastErrorInfo(), currentPath, isDirectory: true);
-                    }
-
                     // Read each entry from the enumerator
-                    Interop.Sys.DirectoryEntry dirent;
-                    while (Interop.Sys.ReadDir(dirHandle, out dirent) == 0)
+                    var dirBuffer = new byte[Interop.Sys.ReadBufferSize];
+                    Interop.Sys.DirectoryEntry dirent = default(Interop.Sys.DirectoryEntry);
+                    while (Interop.Sys.ReadDir(dirHandle, dirBuffer, ref dirent) == 0)
                     {
-                        if (dirent.InodeName == "." || dirent.InodeName == "..")
+                        Span<char> nameBuffer = stackalloc char[256];
+                        string direntName = dirent.GetName(nameBuffer).ToString();
+
+                        if (direntName == "." || direntName == "..")
                             continue;
 
-                        string fullPath = Path.Combine(currentPath, dirent.InodeName);
+                        string fullPath = Path.Combine(currentPath, direntName);
 
                         // Get from the dir entry whether the entry is a file or directory.
                         // We classify everything as a file unless we know it to be a directory.
@@ -475,6 +477,10 @@ namespace System
                             yield return fullPath;
                         }
                     }
+                }
+                finally
+                {
+                    Interop.Sys.CloseDir(dirHandle);
                 }
 
                 if (toExplore == null || toExplore.Count == 0)
