@@ -3744,20 +3744,6 @@ mini_imt_entry_inited (MonoVTable *vt, int imt_slot_index)
 	return (imt [imt_slot_index] != mini_get_imt_trampoline (vt, imt_slot_index));
 }
 
-static gboolean
-is_callee_gsharedvt_variable (gpointer addr)
-{
-	MonoJitInfo *ji;
-	gboolean callee_gsharedvt;
-
-	ji = mini_jit_info_table_find (mono_domain_get (), (char *)mono_get_addr_from_ftnptr (addr), NULL);
-	g_assert (ji);
-	callee_gsharedvt = mini_jit_info_is_gsharedvt (ji);
-	if (callee_gsharedvt)
-		callee_gsharedvt = mini_is_gsharedvt_variable_signature (mono_method_signature_internal (jinfo_get_method (ji)));
-	return callee_gsharedvt;
-}
-
 gpointer
 mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr)
 {
@@ -3772,16 +3758,40 @@ mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr)
 	 * Instead, encode that the method is gsharedvt in del->extra_arg,
 	 * the CEE_MONO_CALLI_EXTRA_ARG implementation in the JIT depends on this.
 	 */
-	if (method->is_inflated && is_callee_gsharedvt_variable (method_ptr)) {
+	if (method->is_inflated && (mono_aot_get_method_flags ((guint8*)method_ptr) & MONO_AOT_METHOD_FLAG_GSHAREDVT_VARIABLE)) {
 		g_assert ((((gsize)arg) & 1) == 0);
 		arg = (gpointer)(((gsize)arg) | 1);
 	}
 	return arg;
 }
 
-void
-mini_init_delegate (MonoDelegate *del)
+static gpointer
+create_delegate_method_ptr (MonoMethod *method, MonoError *error)
 {
+	gpointer func;
+
+	if (method_is_dynamic (method)) {
+		/* Creating a trampoline would leak memory */
+		func = mono_compile_method_checked (method, error);
+		return_val_if_nok (error, NULL);
+	} else {
+		gpointer trampoline = mono_runtime_create_jump_trampoline (mono_domain_get (), method, TRUE, error);
+		return_val_if_nok (error, NULL);
+		func = mono_create_ftnptr (mono_domain_get (), trampoline);
+	}
+	return func;
+}
+
+static void
+mini_init_delegate (MonoDelegateHandle delegate, MonoError *error)
+{
+	MonoDelegate *del = MONO_HANDLE_RAW (delegate);
+
+	if (!del->method_ptr) {
+		del->method_ptr = create_delegate_method_ptr (del->method, error);
+		return_if_nok (error);
+	}
+
 	if (mono_use_interpreter)
 		mini_get_interp_callbacks ()->init_delegate (del);
 	else if (mono_llvm_only)
@@ -4305,6 +4315,12 @@ mono_interp_entry_from_trampoline (gpointer ccontext, gpointer imethod)
 	mini_get_interp_callbacks ()->entry_from_trampoline (ccontext, imethod);
 }
 
+void
+mono_interp_to_native_trampoline (gpointer addr, gpointer ccontext)
+{
+	mini_get_interp_callbacks ()->to_native_trampoline (addr, ccontext);
+}
+
 MonoDomain *
 mini_init (const char *filename, const char *runtime_version)
 {
@@ -4657,9 +4673,11 @@ register_icalls (void)
 	register_icall (mono_debug_personality, "mono_debug_personality", "int int int ptr ptr ptr", TRUE);
 #endif
 
-	register_dyn_icall (mono_get_throw_exception (), "mono_arch_throw_exception", "void object", TRUE);
-	register_dyn_icall (mono_get_rethrow_exception (), "mono_arch_rethrow_exception", "void object", TRUE);
-	register_dyn_icall (mono_get_throw_corlib_exception (), "mono_arch_throw_corlib_exception", "void ptr", TRUE);
+	if (!mono_llvm_only) {
+		register_dyn_icall (mono_get_throw_exception (), "mono_arch_throw_exception", "void object", TRUE);
+		register_dyn_icall (mono_get_rethrow_exception (), "mono_arch_rethrow_exception", "void object", TRUE);
+		register_dyn_icall (mono_get_throw_corlib_exception (), "mono_arch_throw_corlib_exception", "void ptr", TRUE);
+	}
 	register_icall (mono_thread_get_undeniable_exception, "mono_thread_get_undeniable_exception", "object", FALSE);
 	register_icall (ves_icall_thread_finish_async_abort, "ves_icall_thread_finish_async_abort", "void", FALSE);
 	register_icall (mono_thread_interruption_checkpoint, "mono_thread_interruption_checkpoint", "object", FALSE);
@@ -4879,6 +4897,7 @@ register_icalls (void)
 	register_icall_no_wrapper (mono_tls_set_lmf_addr, "mono_tls_set_lmf_addr", "void ptr");
 
 	register_icall_no_wrapper (mono_interp_entry_from_trampoline, "mono_interp_entry_from_trampoline", "void ptr ptr");
+	register_icall_no_wrapper (mono_interp_to_native_trampoline, "mono_interp_to_native_trampoline", "void ptr ptr");
 
 #ifdef MONO_ARCH_HAS_REGISTER_ICALL
 	mono_arch_register_icall ();

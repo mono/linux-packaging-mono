@@ -10117,16 +10117,30 @@ namespace System.IO
 }
 namespace System.IO.Enumeration
 {
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public ref partial struct FileSystemEntry
     {
+        private int _dummyPrimitive;
+        public System.IO.FileAttributes Attributes { get { throw null; } }
+        public System.DateTimeOffset CreationTimeUtc { get { throw null; } }
         public System.ReadOnlySpan<char> Directory { get { throw null; } }
         public System.ReadOnlySpan<char> FileName { get { throw null; } }
         public bool IsDirectory { get { throw null; } }
+        public bool IsHidden { get { throw null; } }
+        public System.DateTimeOffset LastAccessTimeUtc { get { throw null; } }
+        public System.DateTimeOffset LastWriteTimeUtc { get { throw null; } }
+        public long Length { get { throw null; } }
         public System.ReadOnlySpan<char> OriginalRootDirectory { get { throw null; } }
         public System.ReadOnlySpan<char> RootDirectory { get { throw null; } }
         public System.IO.FileSystemInfo ToFileSystemInfo() { throw null; }
+        public string ToFullPath() { throw null; }
         public string ToSpecifiedFullPath() { throw null; }
+        [System.Runtime.CompilerServices.UnsafeValueTypeAttribute]
+        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=512)]
+        public partial struct <_fileNameBuffer>e__FixedBuffer
+        {
+            public char FixedElementField;
+        }
     }
     public partial class FileSystemEnumerable<TResult> : System.Collections.Generic.IEnumerable<TResult>, System.Collections.IEnumerable
     {
@@ -10147,11 +10161,11 @@ namespace System.IO.Enumeration
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         ~FileSystemEnumerator() { }
+        public bool MoveNext() { throw null; }
         protected virtual void OnDirectoryFinished(System.ReadOnlySpan<char> directory) { }
         public void Reset() { }
         protected virtual bool ShouldIncludeEntry(ref System.IO.Enumeration.FileSystemEntry entry) { throw null; }
         protected virtual bool ShouldRecurseIntoEntry(ref System.IO.Enumeration.FileSystemEntry entry) { throw null; }
-        bool System.Collections.IEnumerator.MoveNext() { throw null; }
         protected abstract TResult TransformEntry(ref System.IO.Enumeration.FileSystemEntry entry);
     }
     public static partial class FileSystemName

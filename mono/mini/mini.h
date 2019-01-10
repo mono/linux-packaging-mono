@@ -798,6 +798,7 @@ enum {
 	MONO_INST_NOTYPECHECK    = 4,
 	MONO_INST_NONEMPTY_STACK = 4, /* in SEQ_POINT */
 	MONO_INST_UNALIGNED  = 8,
+	MONO_INST_NESTED_CALL = 8, /* in SEQ_POINT */
     MONO_INST_CFOLD_TAKEN = 8, /* On branches */
     MONO_INST_CFOLD_NOT_TAKEN = 16, /* On branches */
 	MONO_INST_DEFINITION_HAS_SIDE_EFFECTS = 8,
@@ -1464,6 +1465,7 @@ typedef struct {
 	/* Used to implement dyn_call */
 	MonoInst *dyn_call_var;
 
+	MonoInst *last_seq_point;
 	/*
 	 * List of sequence points represented as IL offset+native offset pairs.
 	 * Allocated using glib.
@@ -2265,7 +2267,6 @@ void              mono_if_conversion (MonoCompile *cfg);
 
 /* Delegates */
 gpointer          mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr);
-void              mini_init_delegate (MonoDelegate *del);
 char*             mono_get_delegate_virtual_invoke_impl_name (gboolean load_imt_reg, int offset);
 gpointer          mono_get_delegate_virtual_invoke_impl  (MonoMethodSignature *sig, MonoMethod *method);
 
@@ -2718,8 +2719,9 @@ MonoMethod* mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig);
 MonoMethodSignature* mini_get_gsharedvt_out_sig_wrapper_signature (gboolean has_this, gboolean has_ret, int param_count);
 gboolean mini_gsharedvt_runtime_invoke_supported (MonoMethodSignature *sig);
 G_EXTERN_C void mono_interp_entry_from_trampoline (gpointer ccontext, gpointer imethod);
+G_EXTERN_C void mono_interp_to_native_trampoline (gpointer addr, gpointer ccontext);
 MonoMethod* mini_get_interp_in_wrapper (MonoMethodSignature *sig);
-MonoMethod* mini_get_interp_lmf_wrapper (void);
+MonoMethod* mini_get_interp_lmf_wrapper (const char *name, gpointer target);
 char* mono_get_method_from_ip (void *ip);
 
 /* SIMD support */
