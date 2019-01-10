@@ -13,6 +13,8 @@
 #include <sys/types.h>
 #include <pwd.h>
 
+#ifndef TARGET_ANDROID
+
 static int32_t ConvertNativePasswdToPalPasswd(int error, struct passwd* nativePwd, struct passwd* result, Passwd* pwd)
 {
     // positive error number returned -> failure other than entry-not-found
@@ -75,6 +77,7 @@ int32_t SystemNative_GetPwNamR(const char* name, Passwd* pwd, char* buf, int32_t
 
     return ConvertNativePasswdToPalPasswd(error, &nativePwd, result, pwd);
 }
+#endif
 
 uint32_t SystemNative_GetEUid()
 {
