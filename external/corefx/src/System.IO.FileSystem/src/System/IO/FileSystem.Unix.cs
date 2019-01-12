@@ -401,27 +401,31 @@ namespace System.IO
             }
         }
 
-        public static bool DirectoryExists(string fullPath)
+        public static bool DirectoryExists(ReadOnlySpan<char> fullPath)
         {
             Interop.ErrorInfo ignored;
             return DirectoryExists(fullPath, out ignored);
         }
 
-        private static bool DirectoryExists(string fullPath, out Interop.ErrorInfo errorInfo)
+        private static bool DirectoryExists(ReadOnlySpan<char> fullPath, out Interop.ErrorInfo errorInfo)
         {
             return FileExists(fullPath, Interop.Sys.FileTypes.S_IFDIR, out errorInfo);
         }
 
-        public static bool FileExists(string fullPath)
+        public static bool FileExists(ReadOnlySpan<char> fullPath)
         {
-            Interop.ErrorInfo ignored;
-
-            // Input allows trailing separators in order to match Windows behavior
-            // Unix does not accept trailing separators, so must be trimmed
+            Interop.ErrorInfo ignored;    
+            // File.Exists() explicitly checks for a trailing separator and returns false if found. FileInfo.Exists and all other
+            // internal usages do not check for the trailing separator. Historically we've always removed the trailing separator
+            // when getting attributes as trailing separators are generally not accepted by Windows APIs. Unix will take
+            // trailing separators, but it infers that the path must be a directory (it effectively appends "."). To align with
+            // our historical behavior (outside of File.Exists()), we need to trim.
+            //
+            // See http://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap04.html#tag_04_11 for details.
             return FileExists(PathInternal.TrimEndingDirectorySeparator(fullPath), Interop.Sys.FileTypes.S_IFREG, out ignored);
         }
 
-        private static bool FileExists(string fullPath, int fileType, out Interop.ErrorInfo errorInfo)
+        private static bool FileExists(ReadOnlySpan<char> fullPath, int fileType, out Interop.ErrorInfo errorInfo)
         {
             Debug.Assert(fileType == Interop.Sys.FileTypes.S_IFREG || fileType == Interop.Sys.FileTypes.S_IFDIR);
 

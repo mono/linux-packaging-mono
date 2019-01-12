@@ -130,7 +130,7 @@ static size_t RemainingInputBlockSize(BrotliEncoderState* s) {
   return block_size - (size_t)delta;
 }
 
-BROTLI_BOOL BrotliEncoderSetParameter(
+DLLEXPORT BROTLI_BOOL BrotliEncoderSetParameter(
     BrotliEncoderState* state, BrotliEncoderParameter p, uint32_t value) {
   /* Changing parameters on the fly is not implemented yet. */
   if (state->is_initialized_) return BROTLI_FALSE;
@@ -718,7 +718,7 @@ static void BrotliEncoderInitState(BrotliEncoderState* s) {
   memcpy(s->saved_dist_cache_, s->dist_cache_, sizeof(s->saved_dist_cache_));
 }
 
-BrotliEncoderState* BrotliEncoderCreateInstance(brotli_alloc_func alloc_func,
+DLLEXPORT BrotliEncoderState* BrotliEncoderCreateInstance(brotli_alloc_func alloc_func,
                                                 brotli_free_func free_func,
                                                 void* opaque) {
   BrotliEncoderState* state = 0;
@@ -753,7 +753,7 @@ static void BrotliEncoderCleanupState(BrotliEncoderState* s) {
 }
 
 /* Deinitializes and frees BrotliEncoderState instance. */
-void BrotliEncoderDestroyInstance(BrotliEncoderState* state) {
+DLLEXPORT void BrotliEncoderDestroyInstance(BrotliEncoderState* state) {
   if (!state) {
     return;
   } else {
@@ -1335,7 +1335,7 @@ static size_t MakeUncompressedStream(
   return result;
 }
 
-BROTLI_BOOL BrotliEncoderCompress(
+DLLEXPORT BROTLI_BOOL BrotliEncoderCompress(
     int quality, int lgwin, BrotliEncoderMode mode, size_t input_size,
     const uint8_t* input_buffer, size_t* encoded_size,
     uint8_t* encoded_buffer) {
@@ -1655,7 +1655,7 @@ static void UpdateSizeHint(BrotliEncoderState* s, size_t available_in) {
   }
 }
 
-BROTLI_BOOL BrotliEncoderCompressStream(
+DLLEXPORT BROTLI_BOOL BrotliEncoderCompressStream(
     BrotliEncoderState* s, BrotliEncoderOperation op, size_t* available_in,
     const uint8_t** next_in, size_t* available_out,uint8_t** next_out,
     size_t* total_out) {
@@ -1732,7 +1732,7 @@ BROTLI_BOOL BrotliEncoderIsFinished(BrotliEncoderState* s) {
       !BrotliEncoderHasMoreOutput(s));
 }
 
-BROTLI_BOOL BrotliEncoderHasMoreOutput(BrotliEncoderState* s) {
+DLLEXPORT BROTLI_BOOL BrotliEncoderHasMoreOutput(BrotliEncoderState* s) {
   return TO_BROTLI_BOOL(s->available_out_ != 0);
 }
 

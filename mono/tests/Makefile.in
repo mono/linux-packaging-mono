@@ -522,8 +522,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
 @AOT_FULL_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe bug-70561.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	transparentproxy.exe
+@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
 
 # AppDomain tests
 

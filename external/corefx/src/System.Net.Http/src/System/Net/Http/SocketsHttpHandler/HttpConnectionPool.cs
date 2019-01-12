@@ -421,7 +421,13 @@ namespace System.Net.Http
                 return (null, tunnelResponse);
             }
 
+#if __MonoCS__
+            var result = await tunnelResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return (result, null);
+#else
             return (await tunnelResponse.Content.ReadAsStreamAsync().ConfigureAwait(false), null);
+#endif
+
         }
 
         /// <summary>Enqueues a waiter to the waiters list.</summary>
@@ -598,7 +604,13 @@ namespace System.Net.Http
                             try
                             {
                                 // Get the resulting connection.
+#if __MonoCS__
+                                var tupleResult = innerConnectionTask.GetAwaiter().GetResult();
+                                HttpConnection result = tupleResult.Item1;
+                                HttpResponseMessage response = tupleResult.Item2;
+#else
                                 (HttpConnection result, HttpResponseMessage response) = innerConnectionTask.GetAwaiter().GetResult();
+#endif
 
                                 if (response != null)
                                 {

@@ -27,6 +27,9 @@
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
+/* Disable runtime cleanup. */
+#undef DISABLE_CLEANUP
+
 /* Disable COM support */
 #undef DISABLE_COM
 

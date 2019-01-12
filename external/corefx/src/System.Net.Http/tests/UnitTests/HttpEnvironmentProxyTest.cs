@@ -114,6 +114,7 @@ namespace System.Net.Http.Tests
         [InlineData("HTTP://ABC.COM/", "abc.com", "80", null, null)]
         [InlineData("http://10.30.62.64:7890/", "10.30.62.64", "7890", null, null)]
         [InlineData("http://1.2.3.4:8888/foo", "1.2.3.4", "8888", null, null)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public void HttpProxy_Uri_Parsing(string _input, string _host, string _port, string _user , string _password)
         {
             RemoteInvoke((input, host, port, user, password) =>

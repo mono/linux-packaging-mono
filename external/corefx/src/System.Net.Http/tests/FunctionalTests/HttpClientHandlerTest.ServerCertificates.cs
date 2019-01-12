@@ -20,8 +20,8 @@ namespace System.Net.Http.Functional.Tests
     public abstract partial class HttpClientHandler_ServerCertificates_Test : HttpClientTestBase
     {
         private static bool ClientSupportsDHECipherSuites => (!PlatformDetection.IsWindows || PlatformDetection.IsWindows10Version1607OrGreater);
-        private bool BackendSupportsCustomCertificateHandlingAndClientSupportsDHECipherSuites =>
-            (BackendSupportsCustomCertificateHandling && ClientSupportsDHECipherSuites);
+        private static bool BackendSupportsX509Chain => PlatformDetection.SupportsX509Chain;
+        private static bool BackendSupportsCertRevocation => PlatformDetection.SupportsCertRevocation;
 
         [Fact]
         [SkipOnTargetFramework(~TargetFrameworkMonikers.Uap)]
@@ -201,8 +201,8 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Theory]
         [MemberData(nameof(UseCallback_ValidCertificate_ExpectedValuesDuringCallback_Urls))]
+        [ConditionalTheory(nameof(BackendSupportsX509Chain))]
         public async Task UseCallback_ValidCertificate_ExpectedValuesDuringCallback(Uri url, bool checkRevocation)
         {
             if (!BackendSupportsCustomCertificateHandling)
@@ -230,6 +230,11 @@ namespace System.Net.Http.Functional.Tests
 
                     Assert.True(chain.ChainElements.Count > 0);
                     Assert.NotEmpty(cert.Subject);
+
+                    if (!BackendSupportsCertRevocation)
+                    {
+                        return true;
+                    }
 
                     // UWP always uses CheckCertificateRevocationList=true regardless of setting the property and
                     // the getter always returns true. So, for this next Assert, it is better to get the property
@@ -308,7 +313,7 @@ namespace System.Net.Http.Functional.Tests
 
         [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "UAP doesn't allow revocation checking to be turned off")]
         [OuterLoop] // TODO: Issue #11345
-        [ConditionalFact(nameof(ClientSupportsDHECipherSuites))]
+        [ConditionalFact(nameof(ClientSupportsDHECipherSuites), nameof(BackendSupportsX509Chain))]
         public async Task NoCallback_RevokedCertificate_NoRevocationChecking_Succeeds()
         {
             // On macOS (libcurl+darwinssl) we cannot turn revocation off.
@@ -330,7 +335,7 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Fact]
+        [ConditionalFact(nameof(BackendSupportsCertRevocation))]
         public async Task NoCallback_RevokedCertificate_RevocationChecking_Fails()
         {
             if (!BackendSupportsCustomCertificateHandling)
@@ -387,13 +392,13 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Theory]
         [MemberData(nameof(CertificateValidationServersAndExpectedPolicies))]
+        [ConditionalTheory(nameof(BackendSupportsX509Chain), nameof(ClientSupportsDHECipherSuites))]
         public async Task UseCallback_BadCertificate_ExpectedPolicyErrors(string url, SslPolicyErrors expectedErrors)
         {
             const int SEC_E_BUFFER_TOO_SMALL = unchecked((int)0x80090321);
 
-            if (!BackendSupportsCustomCertificateHandlingAndClientSupportsDHECipherSuites)
+            if (!BackendSupportsCustomCertificateHandling)
             {
                 return;
             }
