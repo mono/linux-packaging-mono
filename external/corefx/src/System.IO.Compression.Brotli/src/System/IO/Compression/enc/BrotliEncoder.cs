@@ -133,7 +133,11 @@ namespace System.IO.Compression
                     fixed (byte* inBytes = &MemoryMarshal.GetReference(source))
                     fixed (byte* outBytes = &MemoryMarshal.GetReference(destination))
                     {
-                        if (!Interop.Brotli.BrotliEncoderCompressStream(_state, operation, ref availableInput, &inBytes, ref availableOutput, &outBytes, out size_t totalOut))
+                        // MCS bug workaround:
+                        byte* inBytesPtr = inBytes;
+                        byte* outBytesPtr = outBytes;
+
+                        if (!Interop.Brotli.BrotliEncoderCompressStream(_state, operation, ref availableInput, &inBytesPtr, ref availableOutput, &outBytesPtr, out size_t totalOut))
                         {
                             return OperationStatus.InvalidData;
                         }

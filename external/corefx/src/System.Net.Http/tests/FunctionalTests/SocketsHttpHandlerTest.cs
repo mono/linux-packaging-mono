@@ -611,6 +611,7 @@ namespace System.Net.Http.Functional.Tests
         }
     }
 
+    [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
     public sealed class SocketsHttpHandler_ConnectionUpgrade_Test : HttpClientTestBase
     {
         protected override bool UseSocketsHttpHandler => true;
@@ -1401,6 +1402,7 @@ namespace System.Net.Http.Functional.Tests
         }
     }
 
+    [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
     public sealed class SocketsHttpHandler_ExternalConfiguration_Test : HttpClientTestBase
     {
         private const string EnvironmentVariableSettingName = "DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER";

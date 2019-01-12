@@ -4553,8 +4553,6 @@ mini_init (const char *filename, const char *runtime_version)
 	/*Init arch tls information only after the metadata side is inited to make sure we see dynamic appdomain tls keys*/
 	mono_arch_finish_init ();
 
-	mono_icall_init ();
-
 	/* This must come after mono_init () in the aot-only case */
 	mono_exceptions_init ();
 
@@ -4598,7 +4596,9 @@ mini_init (const char *filename, const char *runtime_version)
 
 #define JIT_RUNTIME_WORKS
 #ifdef JIT_RUNTIME_WORKS
+#ifndef DISABLE_CLEANUP
 	mono_install_runtime_cleanup ((MonoDomainFunc)mini_cleanup);
+#endif
 	mono_runtime_init_checked (domain, (MonoThreadStartCB)mono_thread_start_cb, mono_thread_attach_cb, error);
 	mono_error_assert_ok (error);
 	mono_thread_attach (domain);

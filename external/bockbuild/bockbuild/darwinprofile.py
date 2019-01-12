@@ -90,12 +90,12 @@ class DarwinProfile (UnixProfile):
         # even when they are not.
         xcode_blacklisted_functions = []
 
+        # based on https://github.com/Homebrew/brew/blob/241ee989bb6a917cb6000a1aa06aa341c465a1b3/Library/Homebrew/extend/os/mac/extend/ENV/super.rb#L118-L128
         if xcode_version >= '8.0':
-            # based on https://github.com/Homebrew/brew/pull/970
-            xcode_blacklisted_functions.extend (['basename_r','clock_getres','clock_gettime','clock_settime','dirname_r','getentropy','mkostemp', 'mkostemps'])
+            xcode_blacklisted_functions.extend (['basename_r','clock_getres','clock_gettime','clock_settime','dirname_r','getentropy','mkostemp', 'mkostemps', 'timingsafe_bcmp'])
 
         if xcode_version >= '9.0':
-            xcode_blacklisted_functions.extend (['futimens', 'utimensat'])
+            xcode_blacklisted_functions.extend (['fmemopen', 'futimens', 'open_memstream', 'utimensat'])
 
         map(lambda t : self.configure_flags.append ('ac_cv_func_%s=no' % t), xcode_blacklisted_functions)
 
