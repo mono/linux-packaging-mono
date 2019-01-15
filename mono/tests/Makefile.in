@@ -1051,7 +1051,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-SUBDIRS = gc-descriptors . testing_gac assembly-load-reference
+SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed
 BUILT_SOURCES = $(ARRAY_COOP_CS) $(TAILCALL_FSHARP_DEEPTAIL_IL) \
 	$(TAILCALL_INTERFACE_CONSERVESTACK_IL)
 ARRAY_COOP_CS = \
