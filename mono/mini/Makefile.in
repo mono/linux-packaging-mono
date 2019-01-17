@@ -223,7 +223,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c
+	mini-windows-dlldac.c main-core.c
 am__objects_4 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -300,8 +300,9 @@ am__objects_19 = libmini_la-mini-windows.lo \
 @HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_20 =  \
 @HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_18)
 @HOST_DARWIN_TRUE@am__objects_20 = $(am__objects_17) $(am__objects_18)
+@ENABLE_NETCORE_TRUE@am__objects_21 = libmini_la-main-core.lo
 am_libmini_la_OBJECTS = $(am__objects_4) $(am__objects_5) \
-	$(am__objects_16) $(am__objects_20)
+	$(am__objects_16) $(am__objects_20) $(am__objects_21)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 libmini_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmini_la_CFLAGS) \
@@ -311,9 +312,9 @@ libmini_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@WASM_FALSE@am__objects_21 = libmono_dbg_la-debugger-engine.lo
+@WASM_FALSE@am__objects_22 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	libmono_dbg_la-debugger-state-machine.lo $(am__objects_21)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_22)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -325,10 +326,10 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_22 = interp/libmono_ee_interp_la-interp.lo \
+am__objects_23 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
 	interp/libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_22)
+am_libmono_ee_interp_la_OBJECTS = $(am__objects_23)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -413,11 +414,11 @@ mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_23 =
+am__objects_24 =
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_23)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_24)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_23)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_24)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
 	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
@@ -1046,6 +1047,9 @@ interp_libs = libmono-ee-interp.la
 @ENABLE_LLVM_TRUE@llvm_runtime_sources = \
 @ENABLE_LLVM_TRUE@	llvm-runtime.cpp
 
+@ENABLE_NETCORE_TRUE@netcore_sources = \
+@ENABLE_NETCORE_TRUE@	main-core.c
+
 common_sources = \
 	mini.c			\
 	mini-runtime.c	\
@@ -1252,7 +1256,7 @@ dbg_libs = libmono-dbg.la
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
 # compile time dependencies on boehm/sgen.
 #
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sources)
+libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sources) $(netcore_sources)
 libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@libmini_la_LIBADD = libmini-cxx.la
 @ENABLE_LLVM_TRUE@libmini_la_LIBADD = libmini-cxx.la
@@ -1581,6 +1585,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-liveness.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-main-core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-memory-access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64-gsharedvt.Plo@am__quote@
@@ -2350,6 +2355,13 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dlldac.c' object='libmini_la-mini-windows-dlldac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
+
+libmini_la-main-core.lo: main-core.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-main-core.lo -MD -MP -MF $(DEPDIR)/libmini_la-main-core.Tpo -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-main-core.Tpo $(DEPDIR)/libmini_la-main-core.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-core.c' object='libmini_la-main-core.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
 
 libmono_dbg_la-debugger-agent.lo: debugger-agent.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-agent.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-agent.Tpo -c -o libmono_dbg_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
