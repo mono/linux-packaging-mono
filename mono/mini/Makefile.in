@@ -205,22 +205,23 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
 	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
-	aot-runtime.h ee.h mini-runtime.h mini-llvm.c \
-	mini-llvm-loaded.c mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
-	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
-	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-riscv.c mini-riscv.h exceptions-riscv.c tramp-riscv.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-wasm.c mini-wasm.h mini-wasm-debugger.c \
-	debugger-engine.c exceptions-wasm.c tramp-wasm.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
+	mini-runtime.h mini-llvm.c mini-llvm-loaded.c mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
+	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
+	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
+	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-riscv.c mini-riscv.h \
+	exceptions-riscv.c tramp-riscv.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
+	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
+	exceptions-wasm.c tramp-wasm.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows.h mini-windows-dllmain.c \
 	mini-windows-dlldac.c main-core.c
@@ -246,7 +247,7 @@ am__objects_4 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-type-checking.lo libmini_la-calls.lo \
 	libmini_la-lldb.lo libmini_la-memory-access.lo \
 	libmini_la-intrinsics.lo libmini_la-mini-profiler.lo \
-	libmini_la-interp-stubs.lo
+	libmini_la-interp-stubs.lo libmini_la-llvmonly-runtime.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_5 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo
@@ -1126,6 +1127,8 @@ common_sources = \
 	intrinsics.c \
 	mini-profiler.c	\
 	interp-stubs.c \
+	llvmonly-runtime.h \
+	llvmonly-runtime.c \
 	aot-runtime.h	\
 	ee.h \
 	mini-runtime.h
@@ -1584,6 +1587,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-linear-scan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-liveness.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-llvmonly-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-main-core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-memory-access.Plo@am__quote@
@@ -2026,6 +2030,13 @@ libmini_la-interp-stubs.lo: interp-stubs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp-stubs.c' object='libmini_la-interp-stubs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-interp-stubs.lo `test -f 'interp-stubs.c' || echo '$(srcdir)/'`interp-stubs.c
+
+libmini_la-llvmonly-runtime.lo: llvmonly-runtime.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-llvmonly-runtime.lo -MD -MP -MF $(DEPDIR)/libmini_la-llvmonly-runtime.Tpo -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-llvmonly-runtime.Tpo $(DEPDIR)/libmini_la-llvmonly-runtime.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='llvmonly-runtime.c' object='libmini_la-llvmonly-runtime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c

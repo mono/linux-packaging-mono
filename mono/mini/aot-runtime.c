@@ -1615,7 +1615,7 @@ aot_cache_load_module (MonoAssembly *assembly, char **aot_name)
 		return module;
 	}
 
-	if (!strcmp (assembly->aname.name, "mscorlib") && !mscorlib_aot_loaded)
+	if (mono_is_corlib_image (assembly->image) && !mscorlib_aot_loaded)
 		/*
 		 * Can't AOT this during startup, so we AOT it when called later from
 		 * mono_aot_get_method ().
@@ -2040,6 +2040,9 @@ load_aot_module (MonoAssembly *assembly, gpointer user_data)
 	if (mono_compile_aot)
 		return;
 
+	if (mono_aot_mode == MONO_AOT_MODE_NONE)
+		return;
+
 	if (assembly->image->aot_module)
 		/* 
 		 * Already loaded. This can happen because the assembly loading code might invoke
@@ -2104,6 +2107,7 @@ if (container_assm_name && !container_amodule) {
 			}
 			g_free (aot_name);
 		}
+#ifndef PLATFORM_ANDROID
 		if (!sofile) {
 			char *basename = g_path_get_basename (assembly->image->name);
 			aot_name = g_strdup_printf ("%s/mono/aot-cache/%s/%s%s", mono_assembly_getrootdir(), MONO_ARCHITECTURE, basename, MONO_SOLIB_EXT);
@@ -2115,6 +2119,7 @@ if (container_assm_name && !container_amodule) {
 			}
 			g_free (aot_name);
 		}
+#endif
 		if (!sofile) {
 			GList *l;
 
@@ -2313,7 +2318,7 @@ if (container_assm_name && !container_amodule) {
 	amodule->trampolines [MONO_AOT_TRAMP_FTNPTR_ARG] = (guint8 *)info->ftnptr_arg_trampolines;
 	amodule->trampolines [MONO_AOT_TRAMP_UNBOX_ARBITRARY] = (guint8 *)info->unbox_arbitrary_trampolines;
 
-	if (!strcmp (assembly->aname.name, "mscorlib"))
+	if (mono_is_corlib_image (assembly->image))
 		mscorlib_aot_module = amodule;
 
 	/* Compute method addresses */
@@ -4706,7 +4711,7 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 		/* Non shared AOT code can't be used in other appdomains */
 		return NULL;
 
-	if (enable_aot_cache && !amodule && domain->entry_assembly && m_class_get_image (klass) == mono_defaults.corlib) {
+	if (enable_aot_cache && !amodule && domain->entry_assembly && mono_is_corlib_image (m_class_get_image (klass))) {
 		/* This cannot be AOTed during startup, so do it now */
 		if (!mscorlib_aot_loaded) {
 			mscorlib_aot_loaded = TRUE;
@@ -5782,7 +5787,7 @@ get_numerous_trampoline (MonoAotTrampoline tramp_type, int n_got_slots, MonoAotM
 #endif
 	if (amodule->trampoline_index [tramp_type] == amodule->info.num_trampolines [tramp_type]) {
 		g_error ("Ran out of trampolines of type %d in '%s' (limit %d)%s\n", 
-				 tramp_type, image ? image->name : "mscorlib", amodule->info.num_trampolines [tramp_type], MONOTOUCH_TRAMPOLINES_ERROR);
+				 tramp_type, image ? image->name : MONO_ASSEMBLY_CORLIB_NAME, amodule->info.num_trampolines [tramp_type], MONOTOUCH_TRAMPOLINES_ERROR);
 	}
 	index = amodule->trampoline_index [tramp_type] ++;
 
