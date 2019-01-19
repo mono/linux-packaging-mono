@@ -2412,8 +2412,6 @@ namespace System
         public static bool TryParse(string s, out System.Decimal result) { throw null; }
         public static bool TryParse(string s, System.Globalization.NumberStyles style, System.IFormatProvider provider, out System.Decimal result) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.AutoDual)]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public abstract partial class Delegate : System.ICloneable, System.Runtime.Serialization.ISerializable
@@ -2749,8 +2747,6 @@ namespace System
     }
     public delegate void EventHandler(object sender, System.EventArgs e);
     public delegate void EventHandler<TEventArgs>(object sender, TEventArgs e);
-    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._Exception))]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -4044,7 +4040,6 @@ namespace System
         public override bool Equals(object obj) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public bool Equals(System.RuntimeMethodHandle handle) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public System.IntPtr GetFunctionPointer() { throw null; }
         public override int GetHashCode() { throw null; }
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -7984,31 +7979,22 @@ namespace System.Diagnostics.Tracing
         public System.Guid Guid { get { throw null; } }
         public string Name { get { throw null; } }
         public System.Diagnostics.Tracing.EventSourceSettings Settings { get { throw null; } }
-        [System.MonoTODOAttribute]
         public event System.EventHandler<System.Diagnostics.Tracing.EventCommandEventArgs> EventCommandExecuted { add { } remove { } }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         ~EventSource() { }
-        [System.MonoTODOAttribute]
         public static string GenerateManifest(System.Type eventSourceType, string assemblyPathToIncludeInManifest) { throw null; }
-        [System.MonoTODOAttribute]
         public static string GenerateManifest(System.Type eventSourceType, string assemblyPathToIncludeInManifest, System.Diagnostics.Tracing.EventManifestOptions flags) { throw null; }
-        [System.MonoTODOAttribute]
         public static System.Guid GetGuid(System.Type eventSourceType) { throw null; }
-        [System.MonoTODOAttribute]
         public static string GetName(System.Type eventSourceType) { throw null; }
-        [System.MonoTODOAttribute]
         public static System.Collections.Generic.IEnumerable<System.Diagnostics.Tracing.EventSource> GetSources() { throw null; }
         public string GetTrait(string key) { throw null; }
         public bool IsEnabled() { throw null; }
         public bool IsEnabled(System.Diagnostics.Tracing.EventLevel level, System.Diagnostics.Tracing.EventKeywords keywords) { throw null; }
         public bool IsEnabled(System.Diagnostics.Tracing.EventLevel level, System.Diagnostics.Tracing.EventKeywords keywords, System.Diagnostics.Tracing.EventChannel channel) { throw null; }
         protected virtual void OnEventCommand(System.Diagnostics.Tracing.EventCommandEventArgs command) { }
-        [System.MonoTODOAttribute]
         public static void SendCommand(System.Diagnostics.Tracing.EventSource eventSource, System.Diagnostics.Tracing.EventCommand command, System.Collections.Generic.IDictionary<string, string> commandArguments) { }
-        [System.MonoTODOAttribute]
         public static void SetCurrentThreadActivityId(System.Guid activityId) { }
-        [System.MonoTODOAttribute]
         public static void SetCurrentThreadActivityId(System.Guid activityId, out System.Guid oldActivityThatWillContinue) { throw null; }
         public void Write(string eventName) { }
         public void Write(string eventName, System.Diagnostics.Tracing.EventSourceOptions options) { }
@@ -10766,13 +10752,11 @@ namespace System.Reflection
         public System.Configuration.Assemblies.AssemblyHashAlgorithm HashAlgorithm { get { throw null; } set { } }
         public System.Reflection.StrongNameKeyPair KeyPair { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
-        [System.MonoLimitationAttribute("Not used, as the values are too limited;  Mono supports more")]
         public System.Reflection.ProcessorArchitecture ProcessorArchitecture { get { throw null; } set { } }
         public System.Version Version { get { throw null; } set { } }
         public System.Configuration.Assemblies.AssemblyVersionCompatibility VersionCompatibility { get { throw null; } set { } }
         public object Clone() { throw null; }
         public static System.Reflection.AssemblyName GetAssemblyName(string assemblyFile) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public byte[] GetPublicKey() { throw null; }
         public byte[] GetPublicKeyToken() { throw null; }
@@ -13863,30 +13847,22 @@ namespace System.Runtime.CompilerServices
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static void EnsureSufficientExecutionStack() { }
         public static new bool Equals(object o1, object o2) { throw null; }
-        [System.MonoTODOAttribute("Currently a no-op")]
         public static void ExecuteCodeWithGuaranteedCleanup(System.Runtime.CompilerServices.RuntimeHelpers.TryCode code, System.Runtime.CompilerServices.RuntimeHelpers.CleanupCode backoutCode, object userData) { }
         public static int GetHashCode(object o) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static object GetObjectValue(object obj) { throw null; }
         public static object GetUninitializedObject(System.Type type) { throw null; }
         public static void InitializeArray(System.Array array, System.RuntimeFieldHandle fldHandle) { }
         public static bool IsReferenceOrContainsReferences<T>() { throw null; }
-        [System.MonoTODOAttribute("Currently a no-op")]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public static void PrepareConstrainedRegions() { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public static void PrepareConstrainedRegionsNoOP() { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         [System.Security.SecurityCriticalAttribute]
         public static void PrepareContractedDelegate(System.Delegate d) { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         [System.Security.SecurityCriticalAttribute]
         public static void PrepareDelegate(System.Delegate d) { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         public static void PrepareMethod(System.RuntimeMethodHandle method) { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         public static void PrepareMethod(System.RuntimeMethodHandle method, System.RuntimeTypeHandle[] instantiation) { }
-        [System.MonoTODOAttribute("Currently a no-op")]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public static void ProbeForSufficientStack() { }
         public static void RunClassConstructor(System.RuntimeTypeHandle type) { }
@@ -14337,7 +14313,6 @@ namespace System.Runtime.InteropServices
         public object pUnk;
     }
     [System.Security.SecurityCriticalAttribute]
-    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     public abstract partial class CriticalHandle : System.Runtime.ConstrainedExecution.CriticalFinalizerObject, System.IDisposable
     {
         protected System.IntPtr handle;
@@ -14583,7 +14558,6 @@ namespace System.Runtime.InteropServices
         FUNC_STATIC = 3,
         FUNC_VIRTUAL = 0,
     }
-    [System.MonoTODOAttribute("Struct should be [StructLayout(LayoutKind.Sequential)] but will need to be reordered for that.")]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct GCHandle
@@ -15318,7 +15292,6 @@ namespace System.Runtime.InteropServices
         public void Write<T>(ulong byteOffset, T value) where T : struct { }
     }
     [System.Security.SecurityCriticalAttribute]
-    [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public abstract partial class SafeHandle : System.Runtime.ConstrainedExecution.CriticalFinalizerObject, System.IDisposable
     {
@@ -24429,7 +24402,6 @@ namespace System.Threading
         public bool Unregister() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public partial class CancellationTokenSource : System.IDisposable
     {
         public CancellationTokenSource() { }
@@ -24675,12 +24647,9 @@ namespace System.Threading
         public bool Wait(System.TimeSpan timeout) { throw null; }
         public bool Wait(System.TimeSpan timeout, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public static partial class Monitor
     {
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static void Enter(object obj) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void Enter(object obj) { }
         public static void Enter(object obj, ref bool lockTaken) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SecuritySafeCriticalAttribute]
@@ -24905,9 +24874,6 @@ namespace System.Threading
         public SynchronizationLockException(string message) { }
         public SynchronizationLockException(string message, System.Exception innerException) { }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
-    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._Thread))]
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public sealed partial class Thread : System.Runtime.ConstrainedExecution.CriticalFinalizerObject
     {
@@ -24921,26 +24887,22 @@ namespace System.Threading
         public Thread(System.Threading.ThreadStart start, int maxStackSize) { }
         [System.ObsoleteAttribute("Deprecated in favor of GetApartmentState, SetApartmentState and TrySetApartmentState.")]
         public System.Threading.ApartmentState ApartmentState { get { throw null; } set { } }
-        public static System.Runtime.Remoting.Contexts.Context CurrentContext { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Infrastructure=true)]get { throw null; } }
+        public static System.Runtime.Remoting.Contexts.Context CurrentContext { get { throw null; } }
         public System.Globalization.CultureInfo CurrentCulture { get { throw null; } [System.Security.SecuritySafeCriticalAttribute]set { } }
-        public static System.Security.Principal.IPrincipal CurrentPrincipal { get { throw null; } [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlPrincipal=true)]set { } }
+        public static System.Security.Principal.IPrincipal CurrentPrincipal { get { throw null; } set { } }
         public static System.Threading.Thread CurrentThread { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]get { throw null; } }
-        public System.Globalization.CultureInfo CurrentUICulture { get { throw null; } [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]set { } }
+        public System.Globalization.CultureInfo CurrentUICulture { get { throw null; } set { } }
         public System.Threading.ExecutionContext ExecutionContext { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail), System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
         public bool IsAlive { get { throw null; } }
         public bool IsBackground { get { throw null; } set { } }
         public bool IsThreadPoolThread { get { throw null; } }
         public int ManagedThreadId { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]get { throw null; } }
         public string Name { get { throw null; } set { } }
-        public System.Threading.ThreadPriority Priority { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecuritySafeCriticalAttribute][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SelfAffectingThreading=true)]set { } }
+        public System.Threading.ThreadPriority Priority { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } set { } }
         public System.Threading.ThreadState ThreadState { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public void Abort() { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public void Abort(object stateInfo) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static System.LocalDataStoreSlot AllocateDataSlot() { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static System.LocalDataStoreSlot AllocateNamedDataSlot(string name) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public static void BeginCriticalRegion() { }
@@ -24953,60 +24915,40 @@ namespace System.Threading
         public static void EndThreadAffinity() { }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         ~Thread() { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static void FreeNamedDataSlot(string name) { }
         public System.Threading.ApartmentState GetApartmentState() { throw null; }
         [System.ObsoleteAttribute("Thread.GetCompressedStack is no longer supported. Please use the System.Threading.CompressedStack class")]
         [System.Security.SecurityCriticalAttribute]
         public System.Threading.CompressedStack GetCompressedStack() { throw null; }
         public static int GetCurrentProcessorId() { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static object GetData(System.LocalDataStoreSlot slot) { throw null; }
         public static System.AppDomain GetDomain() { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static int GetDomainID() { throw null; }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public override int GetHashCode() { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static System.LocalDataStoreSlot GetNamedDataSlot(string name) { throw null; }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public void Interrupt() { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         public void Join() { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         public bool Join(int millisecondsTimeout) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         public bool Join(System.TimeSpan timeout) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Security.SecuritySafeCriticalAttribute]
-        public static void MemoryBarrier() { }
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void MemoryBarrier() { }
         public static void ResetAbort() { }
         [System.ObsoleteAttribute("Thread.Resume has been deprecated.  Please use other classes in System.Threading, such as Monitor, Mutex, Event, and Semaphore, to synchronize Threads or protect resources.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public void Resume() { }
         public void SetApartmentState(System.Threading.ApartmentState state) { }
         [System.ObsoleteAttribute("Thread.SetCompressedStack is no longer supported. Please use the System.Threading.CompressedStack class")]
-        [System.Security.SecurityCriticalAttribute]
         public void SetCompressedStack(System.Threading.CompressedStack stack) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SharedState=true, ExternalThreading=true)]
         public static void SetData(System.LocalDataStoreSlot slot, object data) { }
         [System.Security.SecuritySafeCriticalAttribute]
         public static void Sleep(int millisecondsTimeout) { }
         public static void Sleep(System.TimeSpan timeout) { }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static void SpinWait(int iterations) { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
-        public void Start() { }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
-        public void Start(object parameter) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public void Start() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public void Start(object parameter) { }
         [System.ObsoleteAttribute("Thread.Suspend has been deprecated.  Please use other classes in System.Threading, such as Monitor, Mutex, Event, and Semaphore, to synchronize Threads or protect resources.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public void Suspend() { }
         public bool TrySetApartmentState(System.Threading.ApartmentState state) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static byte VolatileRead(ref byte address) { throw null; }
@@ -25045,9 +24987,6 @@ namespace System.Threading
         public static void VolatileWrite(ref ulong address, ulong value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.CLSCompliantAttribute(false)]
         public static void VolatileWrite(ref System.UIntPtr address, System.UIntPtr value) { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
-        [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
         public static bool Yield() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -25084,15 +25023,12 @@ namespace System.Threading
         ~ThreadLocal() { }
         public override string ToString() { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public static partial class ThreadPool
     {
         [System.ObsoleteAttribute("ThreadPool.BindHandle(IntPtr) has been deprecated.  Please use ThreadPool.BindHandle(SafeHandle) instead.", false)]
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         public static bool BindHandle(System.IntPtr osHandle) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         public static bool BindHandle(System.Runtime.InteropServices.SafeHandle osHandle) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
         public static void GetAvailableThreads(out int workerThreads, out int completionPortThreads) { throw null; }
@@ -25114,10 +25050,8 @@ namespace System.Threading
         [System.Security.SecuritySafeCriticalAttribute]
         public static System.Threading.RegisteredWaitHandle RegisterWaitForSingleObject(System.Threading.WaitHandle waitObject, System.Threading.WaitOrTimerCallback callBack, object state, uint millisecondsTimeOutInterval, bool executeOnlyOnce) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public static bool SetMaxThreads(int workerThreads, int completionPortThreads) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public static bool SetMinThreads(int workerThreads, int completionPortThreads) { throw null; }
         [System.CLSCompliantAttribute(false)]
         [System.Security.SecurityCriticalAttribute]
@@ -25288,8 +25222,8 @@ namespace System.Threading
         public const int WaitTimeout = 258;
         protected WaitHandle() { }
         [System.ObsoleteAttribute("Use the SafeWaitHandle property instead.")]
-        public virtual System.IntPtr Handle { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]set { } }
-        public Microsoft.Win32.SafeHandles.SafeWaitHandle SafeWaitHandle { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail), System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]get { throw null; } [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success), System.Security.SecurityCriticalAttribute][System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]set { } }
+        public virtual System.IntPtr Handle { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } [System.Security.SecurityCriticalAttribute]set { } }
+        public Microsoft.Win32.SafeHandles.SafeWaitHandle SafeWaitHandle { [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail), System.Security.SecurityCriticalAttribute]get { throw null; } [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success), System.Security.SecurityCriticalAttribute]set { } }
         public virtual void Close() { }
         public void Dispose() { }
         [System.Security.SecuritySafeCriticalAttribute]

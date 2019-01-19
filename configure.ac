@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.23.0.331],
+AC_INIT(mono, [5.23.0.366],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -760,6 +760,9 @@ AC_ARG_WITH(jumptables, [  --with-jumptables=yes,no      enable/disable support 
 AC_ARG_WITH(core,       [  --with-core=only       controls whether to build Mono as a .NET Core runtime (defaults to no)],[],[with_core=no])
 if test x$with_core = xonly; then
     AC_DEFINE(ENABLE_NETCORE,1,[Enables the support for .NET Core Features in the MonoVM])
+    mono_feature_disable_remoting='yes'
+    mono_feature_disable_reflection_emit_save='yes'
+    mono_feature_disable_appdomains='yes'
 fi
 AM_CONDITIONAL(ENABLE_NETCORE, test x$with_core = xonly)
 
