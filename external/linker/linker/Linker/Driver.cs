@@ -29,6 +29,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Xml.XPath;
 
 using Mono.Linker.Steps;
@@ -72,7 +74,72 @@ namespace Mono.Linker {
 
 		public Driver (string [] args)
 		{
-			_queue = new Queue<string> (args);
+			_queue = ProcessResponseFile (args);
+		}
+
+		Queue<String> ProcessResponseFile (string [] args)
+		{
+			var result = new Queue<string> ();
+			foreach (string arg in args) {
+				if (arg.StartsWith ("@")) {
+					try {
+						string responseFileName = arg.Substring (1);
+						IEnumerable<string> responseFileLines = File.ReadLines (responseFileName);
+						ParseResponseFileLines (responseFileLines, result);
+					} catch (Exception e) {
+						Usage ("Cannot read response file with exception " + e.Message);
+					}
+				} else {
+					result.Enqueue (arg);
+				}
+			}
+			return result;
+		}
+
+		public static void ParseResponseFileLines (IEnumerable<string> responseFileLines, Queue<string> result)
+		{
+			foreach (var rawResponseFileText in responseFileLines) {
+				var responseFileText = rawResponseFileText.Trim ();
+				int idx = 0;
+				while (idx < responseFileText.Length) {
+					while (idx < responseFileText.Length && char.IsWhiteSpace (responseFileText [idx])) {
+						idx++;
+					}
+					if (idx == responseFileText.Length) {
+						break;
+					}
+					StringBuilder argBuilder = new StringBuilder ();
+					bool inquote = false;
+					while (true) {
+						bool copyChar = true;
+						int numBackslash = 0;
+						while (idx < responseFileText.Length && responseFileText [idx] == '\\') {
+							numBackslash++;
+							idx++;
+						}
+						if (idx < responseFileText.Length && responseFileText [idx] == '"') {
+							if ( (numBackslash % 2) == 0) {
+								if (inquote && (idx + 1) < responseFileText.Length && responseFileText [idx + 1] == '"') {
+									idx++;
+								} else {
+									copyChar = false;
+									inquote = !inquote;
+								}
+							}
+							numBackslash /= 2;
+						}
+						argBuilder.Append (new String ('\\', numBackslash));
+						if (idx == responseFileText.Length || (!inquote && Char.IsWhiteSpace (responseFileText [idx]))) {
+							break;
+						}
+						if (copyChar) {
+							argBuilder.Append (responseFileText [idx]);
+						}
+						idx++;
+					}
+					result.Enqueue (argBuilder.ToString ());
+				}
+			}
 		}
 
 		bool HaveMoreTokens ()
@@ -146,8 +213,10 @@ namespace Mono.Linker {
 
 						case "--exclude-feature":
 							var name = GetParam ();
-							if (!excluded_features.Contains (name))
-								excluded_features.Add (name);
+							foreach (var feature in name.Split (',')) {
+								if (!excluded_features.Contains (feature))
+									excluded_features.Add (feature);
+							}
 							continue;
 
 						case "--custom-step":
@@ -277,7 +346,8 @@ namespace Mono.Linker {
 
 					p.AddStepBefore (typeof (MarkStep), new RemoveFeaturesStep () {
 						FeatureCOM = excluded_features.Contains ("com"),
-						FeatureETW = excluded_features.Contains ("etw")
+						FeatureETW = excluded_features.Contains ("etw"),
+						FeatureGlobalization = excluded_features.Contains ("globalization")
 					});
 
 					var excluded = new string [excluded_features.Count];
@@ -384,9 +454,7 @@ namespace Mono.Linker {
 		AssemblyAction ParseAssemblyAction (string s)
 		{
 			var assemblyAction = (AssemblyAction)Enum.Parse(typeof(AssemblyAction), s, true);
-			if ((assemblyAction == AssemblyAction.AddBypassNGen) || (assemblyAction == AssemblyAction.AddBypassNGenUsed)) {
-				_needAddBypassNGenStep = true;
-			}
+			_needAddBypassNGenStep = ((assemblyAction == AssemblyAction.AddBypassNGen) || (assemblyAction == AssemblyAction.AddBypassNGenUsed));
 			return assemblyAction;
 		}
 
@@ -456,6 +524,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("                              etw: Event Tracing for Windows");
 			Console.WriteLine ("                              remoting: .NET Remoting dependencies");
 			Console.WriteLine ("                              sre: System.Reflection.Emit namespace");
+			Console.WriteLine ("                              globalization: Globalization data and globalization behavior");
 			Console.WriteLine ("  --ignore-descriptors      Skips reading embedded descriptors (short -z). Defaults to false");
 			Console.WriteLine ("  --keep-facades            Keep assemblies with type-forwarders (short -t). Defaults to false");
 			Console.WriteLine ("  --new-mvid                Generate a new guid for each linked assembly (short -g). Defaults to true");
@@ -505,11 +574,5 @@ namespace Mono.Linker {
 			p.AppendStep (new OutputStep ());
 			return p;
 		}
-	}
-
-	[Flags]
-	public enum CodeOptimizations
-	{
-		BeforeFieldInit = 1 << 0,
 	}
 }
