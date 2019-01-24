@@ -134,6 +134,9 @@
 /* Enable checked build */
 #undef ENABLE_CHECKED_BUILD
 
+/* Enable private types checked build */
+#undef ENABLE_CHECKED_BUILD_CRASH_REPORTING
+
 /* Enable GC checked build */
 #undef ENABLE_CHECKED_BUILD_GC
 

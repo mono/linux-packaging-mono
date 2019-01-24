@@ -93,7 +93,7 @@ target_triplet = @target@
 @INSTALL_ORBIS_TRUE@am__append_12 = orbis
 @INSTALL_UNREAL_TRUE@am__append_13 = unreal
 @INSTALL_WASM_TRUE@am__append_14 = wasm wasm_tools
-@INSTALL_NETCORE_TRUE@am__append_15 = netcore
+@ENABLE_NETCORE_TRUE@am__append_15 = netcore
 
 # Mono.WebBrowser.dll fails to verify on Windows
 @HOST_WIN32_TRUE@am__append_16 = Mono.WebBrowser.dll
@@ -216,6 +216,7 @@ GTKX11 = @GTKX11@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
+HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@

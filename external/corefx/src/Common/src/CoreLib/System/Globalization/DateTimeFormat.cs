@@ -462,6 +462,7 @@ namespace System
             
             // This is a flag to indicate if we are format the dates using Hebrew calendar.
             bool isHebrewCalendar = ((CalendarId)cal.ID == CalendarId.HEBREW);
+            bool isJapaneseCalendar = ((CalendarId)cal.ID == CalendarId.JAPAN);
             // This is a flag to indicate if we are formating hour/minute/second only.
             bool bTimeOnly = true;
 
@@ -653,7 +654,19 @@ namespace System
 
                         int year = cal.GetYear(dateTime);
                         tokenLen = ParseRepeatPattern(format, i, ch);
-                        if (dtfi.HasForceTwoDigitYears)
+                        if (isJapaneseCalendar &&
+                            !AppContextSwitches.FormatJapaneseFirstYearAsANumber &&
+                            year == 1 &&
+                            i + tokenLen < format.Length - 1 &&
+                            format[i + tokenLen] == '\'' &&
+                            format[i + tokenLen + 1] == DateTimeFormatInfoScanner.CJKYearSuff[0])
+                        {
+                            // We are formatting a Japanese date with year equals 1 and the year number is followed by the year sign \u5e74
+                            // In Japanese dates, the first year in the era is not formatted as a number 1 instead it is formatted as \u5143 which means
+                            // first or beginning of the era.
+                            result.Append(DateTimeFormatInfo.JapaneseEraStart[0]);
+                        }
+                        else if (dtfi.HasForceTwoDigitYears)
                         {
                             FormatDigits(result, year, tokenLen <= 2 ? tokenLen : 2);
                         }

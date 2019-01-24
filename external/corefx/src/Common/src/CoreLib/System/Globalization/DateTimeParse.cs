@@ -3829,7 +3829,23 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
             return (DateTimeFormat.GetRealFormat(format, dtfi));
         }
 
+        [MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
+        private static bool ParseJapaneseEraStart(ref __DTString str, DateTimeFormatInfo dtfi)
+        {
+            // ParseJapaneseEraStart will be called when parsing the year number. We can have dates which not listing
+            // the year as a number and listing it as JapaneseEraStart symbol (which means year 1).
+            // This will be legitimate date to recognize.
+            if (AppContextSwitches.EnforceLegacyJapaneseDateParsing || dtfi.Calendar.ID != (int)CalendarId.JAPAN || !str.GetNext())
+                return false;
 
+            if (str.m_current != DateTimeFormatInfo.JapaneseEraStart[0])
+            {
+                str.Index--;
+                return false;
+            }
+
+            return true;
+        }
 
 
 
@@ -3854,7 +3870,12 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                 case 'y':
                     tokenLen = format.GetRepeatCount();
                     bool parseResult;
-                    if (dtfi.HasForceTwoDigitYears)
+                    if (ParseJapaneseEraStart(ref str, dtfi))
+                    {
+                        tempYear = 1;
+                        parseResult = true;
+                    }
+                    else if (dtfi.HasForceTwoDigitYears)
                     {
                         parseResult = ParseDigits(ref str, 1, 4, out tempYear);
                     }

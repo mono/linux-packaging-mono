@@ -144,7 +144,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 # see https://github.com/mono/mono/issues/10845
 @HOST_DARWIN_TRUE@am__append_15 = monitor-wait-abort.exe
-@HOST_DARWIN_FALSE@am__append_16 = merp-json-valid.exe
+@HOST_DARWIN_FALSE@am__append_16 = merp-json-valid.exe merp-crash-test.exe
 
 # #651684
 @AMD64_TRUE@am__append_17 = finally_guard.exe
@@ -385,7 +385,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.exe \
-@FULL_AOT_TESTS_TRUE@	dynamic-method-churn.exe bug-80307.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-method-churn.exe bug-666008.exe \
+@FULL_AOT_TESTS_TRUE@	bug-685908.exe bug-80307.exe \
 @FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
 @FULL_AOT_TESTS_TRUE@	reference-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assembly-load-bytes.exe \
@@ -871,6 +872,7 @@ GTKX11 = @GTKX11@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
+HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -1174,8 +1176,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception8.cs exception10.cs exception11.cs exception12.cs \
 	exception13.cs exception14.cs exception15.cs exception16.cs \
 	exception17.cs exception18.cs exception-invokes.cs \
-	merp-json-valid.cs exception19.cs exception20.cs \
-	exception21.cs typeload-unaligned.cs struct.cs \
+	merp-json-valid.cs merp-crash-test.cs exception19.cs \
+	exception20.cs exception21.cs typeload-unaligned.cs struct.cs \
 	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
 	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
 	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
@@ -2728,6 +2730,9 @@ reference-loader.exe: reference-loader.cs TestingReferenceAssembly.dll TestingRe
 	$(MCS) -r:$(CLASS)/System.dll -r:TestDriver.dll -r:TestingReferenceAssembly.dll -r:TestingReferenceReferenceAssembly.dll $(TEST_DRIVER_HARD_KILL_FEATURE) -out:$@ $(srcdir)/reference-loader.cs
 
 merp-json-valid.exe: merp-json-valid.cs
+	$(MCS) -r:$(CLASS)/System.Web.Extensions.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
+
+merp-crash-test.exe: merp-crash-test.cs
 	$(MCS) -r:$(CLASS)/System.Web.Extensions.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
 
 TestingReferenceAssembly.dll: TestingReferenceAssembly.cs

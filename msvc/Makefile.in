@@ -190,6 +190,7 @@ GTKX11 = @GTKX11@
 HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
+HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -492,8 +493,8 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@ENABLE_MSVC_FALSE@install-exec-local:
 @ENABLE_MSVC_FALSE@clean-local:
+@ENABLE_MSVC_FALSE@install-exec-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
