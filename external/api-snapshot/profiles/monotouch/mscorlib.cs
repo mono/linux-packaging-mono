@@ -14156,13 +14156,9 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr AllocHGlobal(int cb) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public static System.IntPtr AllocHGlobal(System.IntPtr cb) { throw null; }
-        [System.MonoTODOAttribute]
         public static bool AreComObjectsAvailableForCleanup() { throw null; }
-        [System.MonoTODOAttribute]
         public static object BindToMoniker(string monikerName) { throw null; }
-        [System.MonoTODOAttribute]
         public static void ChangeWrapperHandleStrength(object otp, bool fIsWeak) { }
-        [System.MonoTODOAttribute]
         public static void CleanupUnusedObjectsInCurrentContext() { }
         public static void Copy(byte[] source, int startIndex, System.IntPtr destination, int length) { }
         public static void Copy(char[] source, int startIndex, System.IntPtr destination, int length) { }
@@ -14193,7 +14189,6 @@ namespace System.Runtime.InteropServices
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static void FreeHGlobal(System.IntPtr hglobal) { }
         public static System.IntPtr GetComInterfaceForObject(object o, System.Type T) { throw null; }
-        [System.MonoTODOAttribute]
         public static System.IntPtr GetComInterfaceForObject(object o, System.Type T, System.Runtime.InteropServices.CustomQueryInterfaceMode mode) { throw null; }
         public static System.IntPtr GetComInterfaceForObject<T, TInterface>(T o) { throw null; }
         public static System.Delegate GetDelegateForFunctionPointer(System.IntPtr ptr, System.Type t) { throw null; }
@@ -14204,7 +14199,6 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr GetFunctionPointerForDelegate(System.Delegate d) { throw null; }
         public static System.IntPtr GetFunctionPointerForDelegate<TDelegate>(TDelegate d) { throw null; }
         public static int GetHRForException(System.Exception e) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static int GetHRForLastWin32Error() { throw null; }
         public static System.IntPtr GetIUnknownForObject(object o) { throw null; }
@@ -14217,7 +14211,6 @@ namespace System.Runtime.InteropServices
         public static T GetObjectForNativeVariant<T>(System.IntPtr pSrcNativeVariant) { throw null; }
         public static object[] GetObjectsForNativeVariants(System.IntPtr aSrcNativeVariant, int cVars) { throw null; }
         public static T[] GetObjectsForNativeVariants<T>(System.IntPtr aSrcNativeVariant, int cVars) { throw null; }
-        [System.MonoTODOAttribute]
         public static int GetStartComSlot(System.Type t) { throw null; }
         public static System.Type GetTypeFromCLSID(System.Guid clsid) { throw null; }
         public static string GetTypeInfoName(System.Runtime.InteropServices.ComTypes.ITypeInfo typeInfo) { throw null; }
@@ -14245,26 +14238,22 @@ namespace System.Runtime.InteropServices
         public static int QueryInterface(System.IntPtr pUnk, ref System.Guid iid, out System.IntPtr ppv) { throw null; }
         public static byte ReadByte(System.IntPtr ptr) { throw null; }
         public static byte ReadByte(System.IntPtr ptr, int ofs) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static byte ReadByte([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs) { throw null; }
         public static short ReadInt16(System.IntPtr ptr) { throw null; }
         public static short ReadInt16(System.IntPtr ptr, int ofs) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static short ReadInt16([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static int ReadInt32(System.IntPtr ptr) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static int ReadInt32(System.IntPtr ptr, int ofs) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static int ReadInt32([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static long ReadInt64(System.IntPtr ptr) { throw null; }
         public static long ReadInt64(System.IntPtr ptr, int ofs) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static long ReadInt64([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs) { throw null; }
@@ -14272,7 +14261,6 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr ReadIntPtr(System.IntPtr ptr) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static System.IntPtr ReadIntPtr(System.IntPtr ptr, int ofs) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static System.IntPtr ReadIntPtr([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.IntPtr ReAllocCoTaskMem(System.IntPtr pv, int cb) { throw null; }
@@ -14308,31 +14296,25 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr UnsafeAddrOfPinnedArrayElement<T>(T[] arr, int index) { throw null; }
         public static void WriteByte(System.IntPtr ptr, byte val) { }
         public static void WriteByte(System.IntPtr ptr, int ofs, byte val) { }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static void WriteByte([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs, byte val) { throw null; }
         public static void WriteInt16(System.IntPtr ptr, char val) { }
         public static void WriteInt16(System.IntPtr ptr, short val) { }
         public static void WriteInt16(System.IntPtr ptr, int ofs, char val) { }
         public static void WriteInt16(System.IntPtr ptr, int ofs, short val) { }
-        [System.MonoTODOAttribute]
         public static void WriteInt16([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out]object ptr, int ofs, char val) { throw null; }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static void WriteInt16([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs, short val) { throw null; }
         public static void WriteInt32(System.IntPtr ptr, int val) { }
         public static void WriteInt32(System.IntPtr ptr, int ofs, int val) { }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static void WriteInt32([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs, int val) { throw null; }
         public static void WriteInt64(System.IntPtr ptr, int ofs, long val) { }
         public static void WriteInt64(System.IntPtr ptr, long val) { }
-        [System.MonoTODOAttribute]
         [System.Security.SuppressUnmanagedCodeSecurityAttribute]
         public static void WriteInt64([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs, long val) { throw null; }
         public static void WriteIntPtr(System.IntPtr ptr, int ofs, System.IntPtr val) { }
         public static void WriteIntPtr(System.IntPtr ptr, System.IntPtr val) { }
-        [System.MonoTODOAttribute]
         public static void WriteIntPtr([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.AsAny)]object ptr, int ofs, System.IntPtr val) { throw null; }
         public static void ZeroFreeBSTR(System.IntPtr s) { }
         public static void ZeroFreeCoTaskMemAnsi(System.IntPtr s) { }

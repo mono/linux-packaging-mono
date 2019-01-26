@@ -122,6 +122,9 @@
 /* Disable SIMD intrinsics related optimizations. */
 #undef DISABLE_SIMD
 
+/* Disable sockets */
+#undef DISABLE_SOCKETS
+
 /* Disable advanced SSA JIT optimizations */
 #undef DISABLE_SSA
 
@@ -249,6 +252,9 @@
 /* Define to 1 if you have the <asm/sigcontext.h> header file. */
 #undef HAVE_ASM_SIGCONTEXT_H
 
+/* Define to 1 if you have the `atexit' function. */
+#undef HAVE_ATEXIT
+
 /* Define to 1 if you have the <attr/xattr.h> header file. */
 #undef HAVE_ATTR_XATTR_H
 
@@ -267,6 +273,9 @@
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
 
+/* Define to 1 if you have the `chmod' function. */
+#undef HAVE_CHMOD
+
 /* Use classic Windows API support */
 #undef HAVE_CLASSIC_WINAPI_SUPPORT
 
@@ -281,6 +290,9 @@
 
 /* CLOCK_REALTIME */
 #undef HAVE_CLOCK_REALTIME
+
+/* Define to 1 if you have the `closelog' function. */
+#undef HAVE_CLOSELOG
 
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
@@ -422,6 +434,9 @@
 /* Define to 1 if you have the `fstatvfs' function. */
 #undef HAVE_FSTATVFS
 
+/* Define to 1 if you have the `ftruncate' function. */
+#undef HAVE_FTRUNCATE
+
 /* ftruncate64 */
 #undef HAVE_FTRUNCATE64
 
@@ -442,6 +457,9 @@
 
 /* getdomainname with size_t namelen */
 #undef HAVE_GETDOMAINNAME_SIZET
+
+/* Define to 1 if you have the `getdtablesize' function. */
+#undef HAVE_GETDTABLESIZE
 
 /* Define to 1 if you have the `getentropy' function. */
 #undef HAVE_GETENTROPY
@@ -470,6 +488,9 @@
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
 
+/* Define to 1 if you have the `gethostname' function. */
+#undef HAVE_GETHOSTNAME
+
 /* gethrtime */
 #undef HAVE_GETHRTIME
 
@@ -493,6 +514,9 @@
 
 /* getpeereid */
 #undef HAVE_GETPEEREID
+
+/* Define to 1 if you have the `getpeername' function. */
+#undef HAVE_GETPEERNAME
 
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
@@ -656,6 +680,9 @@
 /* lseek64 */
 #undef HAVE_LSEEK64
 
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
+
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
 
@@ -707,6 +734,9 @@
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
 
+/* Define to 1 if you have the `msync' function. */
+#undef HAVE_MSYNC
+
 /* Define to 1 if you have the `munlock' function. */
 #undef HAVE_MUNLOCK
 
@@ -730,6 +760,9 @@
 
 /* No GC support. */
 #undef HAVE_NULL_GC
+
+/* Define to 1 if you have the `openlog' function. */
+#undef HAVE_OPENLOG
 
 /* O_CLOEXEC */
 #undef HAVE_O_CLOEXEC
@@ -821,6 +854,9 @@
 
 /* readdir_r */
 #undef HAVE_READDIR_R
+
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
 
 /* Define to 1 if you have the `readlinkat' function. */
 #undef HAVE_READLINKAT
@@ -1269,8 +1305,14 @@
 /* Define to 1 if you have /usr/include/malloc.h. */
 #undef HAVE_USR_INCLUDE_MALLOC_H
 
+/* Define to 1 if you have the `utime' function. */
+#undef HAVE_UTIME
+
 /* Define to 1 if you have the `utimensat' function. */
 #undef HAVE_UTIMENSAT
+
+/* Define to 1 if you have the `utimes' function. */
+#undef HAVE_UTIMES
 
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
