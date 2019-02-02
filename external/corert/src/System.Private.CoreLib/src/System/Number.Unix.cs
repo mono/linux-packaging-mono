@@ -38,7 +38,7 @@ namespace System
                 number.sign = true;
             }
 
-            if (value == 0.0)
+            if (BitConverter.DoubleToInt64Bits (value) == 0)
             {
                 for (int j = 0; j < precision; j++)
                 {
