@@ -28,17 +28,23 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-static class Consts
+static partial class Consts
+{
+	public const string MonoCorlibVersion = "9032116E-BB4E-4ED5-9C71-9E5E0B0230CA";
+}
+
+#if !NETCORE
+
+static partial class Consts
 {
 	//
 	// Use these assembly version constants to make code more maintainable.
 	//
 
-	public const string MonoVersion = "5.23.0.508";
+	public const string MonoVersion = "5.23.0.593";
 	public const string MonoCompany = "Mono development team";
 	public const string MonoProduct = "Mono Common Language Infrastructure";
 	public const string MonoCopyright = "(c) Various Mono authors";
-	public const string MonoCorlibVersion = "07423dee-1eb8-11e9-a2ee-43262508f9cf";
 
 #if MOBILE
 	// Versions of .NET Framework for Silverlight 4.0
@@ -62,6 +68,13 @@ static class Consts
 
 	public const string VsVersion = "0.0.0.0"; // Useless ?
 	public const string VsFileVersion = "11.0.0.0"; // TODO:
+#elif NETCORE
+	public const string FxVersion = "";
+	public const string FxFileVersion = "";
+	public const string EnvironmentVersion = FxFileVersion;
+
+	public const string VsVersion = "";
+	public const string VsFileVersion = "";
 #elif NET_4_0
 	#error Profile NET_4_0 is not supported.
 #elif NET_3_5
@@ -119,3 +132,5 @@ static class Consts
 	public const string AssemblyPresentationFramework_3_5 = "PresentationFramework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 	public const string AssemblySystemServiceModel_3_0 = "System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
+
+#endif

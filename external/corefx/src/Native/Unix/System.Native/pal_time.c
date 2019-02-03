@@ -26,6 +26,14 @@ static void ConvertUTimBuf(const UTimBuf* pal, struct utimbuf* native)
     native->modtime = (time_t)(pal->ModTime);
 }
 
+static void ConvertTimeValPair(const TimeValPair* pal, struct timeval native[2])
+{
+    native[0].tv_sec = (long)(pal->AcTimeSec);
+    native[0].tv_usec = (long)(pal->AcTimeUSec);
+    native[1].tv_sec = (long)(pal->ModTimeSec);
+    native[1].tv_usec = (long)(pal->ModTimeUSec);
+}
+
 int32_t SystemNative_UTime(const char* path, UTimBuf* times)
 {
     assert(times != NULL);
@@ -37,6 +45,19 @@ int32_t SystemNative_UTime(const char* path, UTimBuf* times)
     while (CheckInterrupted(result = utime(path, &temp)));
     return result;
 }
+
+int32_t SystemNative_UTimes(const char* path, TimeValPair* times)
+{
+    assert(times != NULL);
+
+    struct timeval temp [2];
+    ConvertTimeValPair(times, temp);
+
+    int32_t result;
+    while (CheckInterrupted(result = utimes(path, temp)));
+    return result;
+}
+
 
 int32_t SystemNative_GetTimestampResolution(uint64_t* resolution)
 {

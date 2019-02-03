@@ -589,6 +589,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -715,6 +716,7 @@ mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
 mono_msvc_build_dir = @mono_msvc_build_dir@
 mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -1420,10 +1422,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@test-local:
-@HOST_WIN32_TRUE@test-local:
 @CROSS_COMPILE_TRUE@clean-local:
 @HOST_WIN32_TRUE@clean-local:
+@CROSS_COMPILE_TRUE@test-local:
+@HOST_WIN32_TRUE@test-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \

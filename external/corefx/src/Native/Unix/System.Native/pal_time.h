@@ -16,12 +16,27 @@ typedef struct UTimBuf
     int64_t ModTime;
 } UTimBuf;
 
+typedef struct TimeValPair
+{
+    int64_t AcTimeSec;
+    int64_t AcTimeUSec;
+    int64_t ModTimeSec;
+    int64_t ModTimeUSec;
+} TimeValPair;
+
 /**
  * Sets the last access and last modified time of a file
  *
  * Returns 0 on success; otherwise, returns -1 and errno is set.
  */
 DLLEXPORT int32_t SystemNative_UTime(const char* path, UTimBuf* time);
+
+/**
+ * Sets the last access and last modified time of a file (with microsecond granularity)
+ *
+ * Returns 0 on success; otherwise, returns -1 and errno is set.
+ */
+DLLEXPORT int32_t SystemNative_UTimes(const char* path, TimeValPair* times);
 
 /**
  * Gets the resolution of the timestamp, in counts per second.

@@ -22,6 +22,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public async Task InvalidParametersAsync()
         {
             string path = GetTestFilePath();
