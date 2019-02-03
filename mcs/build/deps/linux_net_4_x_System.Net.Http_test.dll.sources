@@ -1,4 +1,5 @@
 ../test-helpers/NetworkHelpers.cs
+Test/HttpClientTestHelpers.cs
 Test/System.Net.Http.Headers/AuthenticationHeaderValueTest.cs
 Test/System.Net.Http.Headers/CacheControlHeaderValueTest.cs
 Test/System.Net.Http.Headers/ContentDispositionHeaderValueTest.cs

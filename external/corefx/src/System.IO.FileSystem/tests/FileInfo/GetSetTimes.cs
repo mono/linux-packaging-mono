@@ -18,6 +18,48 @@ namespace System.IO.Tests
             return new FileInfo(path);
         }
 
+        private static bool HasNonZeroNanoseconds(DateTime dt) => dt.Ticks % 10 != 0;
+        
+        public FileInfo GetNonZeroMilliseconds()
+        {
+            FileInfo fileinfo = new FileInfo(GetTestFilePath());
+            for (int i = 0; i < 5; i++)
+            {
+                fileinfo.Create().Dispose();
+                if (fileinfo.LastWriteTime.Millisecond != 0)
+                    break;
+
+                // This case should only happen 1/1000 times, unless the OS/Filesystem does
+                // not support millisecond granularity.
+
+                // If it's 1/1000, or low granularity, this may help:
+                Thread.Sleep(1234);
+            }
+
+            Assert.NotEqual(0, fileinfo.LastWriteTime.Millisecond);
+            return fileinfo;
+        }
+
+        public FileInfo GetNonZeroNanoseconds()
+        {
+            FileInfo fileinfo = new FileInfo(GetTestFilePath());
+            for (int i = 0; i < 5; i++)
+            {
+                fileinfo.Create().Dispose();
+                if (HasNonZeroNanoseconds(fileinfo.LastWriteTime))
+                    break;
+
+                // This case should only happen 1/10 times, unless the OS/Filesystem does
+                // not support nanosecond granularity.
+
+                // If it's 1/10, or low granularity, this may help:
+                Thread.Sleep(123);
+            }
+            
+            Assert.True(HasNonZeroNanoseconds(fileinfo.LastWriteTime), "Tests failed to create a file with non-zero nanoseconds.");
+            return fileinfo;
+        }
+
         public override FileInfo GetMissingItem() => new FileInfo(GetTestFilePath());
 
         public override string GetItemPath(FileInfo item) => item.FullName;
@@ -70,25 +112,64 @@ namespace System.IO.Tests
         [ConditionalFact(nameof(isNotHFS))]
         public void CopyToMillisecondPresent()
         {
-            FileInfo input = new FileInfo(GetTestFilePath());
-            for (int i = 0; i < 5; i++)
-            {
-                input.Create().Dispose();
-                if (input.LastWriteTime.Millisecond != 0)
-                    break;
-
-                // This case should only happen 1/1000 times, unless the OS/Filesystem does
-                // not support millisecond granularity.
-
-                // If it's 1/1000, or low granularity, this may help:
-                Thread.Sleep(1234);
-            }
-
+            FileInfo input = GetNonZeroMilliseconds();
             FileInfo output = new FileInfo(Path.Combine(GetTestFilePath(), input.Name));
+
             Assert.Equal(0, output.LastWriteTime.Millisecond);
             output.Directory.Create();
             output = input.CopyTo(output.FullName, true);
-            Assert.NotEqual(0, input.LastWriteTime.Millisecond);
+
+            Assert.Equal(input.LastWriteTime.Millisecond, output.LastWriteTime.Millisecond);
+            Assert.NotEqual(0, output.LastWriteTime.Millisecond);
+        }
+
+        [ConditionalFact(nameof(isNotHFS))]
+        public void CopyToNanosecondsPresent()
+        {
+            FileInfo input = GetNonZeroNanoseconds();
+            FileInfo output = new FileInfo(Path.Combine(GetTestFilePath(), input.Name));
+
+            output.Directory.Create();
+            output = input.CopyTo(output.FullName, true);
+
+            Assert.Equal(input.LastWriteTime.Ticks, output.LastWriteTime.Ticks);
+            Assert.True(HasNonZeroNanoseconds(output.LastWriteTime));
+        }
+
+        [ConditionalFact(nameof(isHFS))]
+        public void CopyToNanosecondsPresent_HFS()
+        {
+            FileInfo input = new FileInfo(GetTestFilePath());
+            input.Create().Dispose();
+            FileInfo output = new FileInfo(Path.Combine(GetTestFilePath(), input.Name));
+
+            output.Directory.Create();
+            output = input.CopyTo(output.FullName, true);
+
+            Assert.Equal(input.LastWriteTime.Ticks, output.LastWriteTime.Ticks);
+            Assert.False(HasNonZeroNanoseconds(output.LastWriteTime));
+        }
+
+        [ConditionalFact(nameof(isHFS))]
+        public void MoveToMillisecondPresent_HFS()
+        {
+            FileInfo input = new FileInfo(GetTestFilePath());
+            input.Create().Dispose();
+
+            string dest = Path.Combine(input.DirectoryName, GetTestFileName());
+            input.MoveTo(dest);
+            FileInfo output = new FileInfo(dest);
+            Assert.Equal(0, output.LastWriteTime.Millisecond);
+        }
+
+        [ConditionalFact(nameof(isNotHFS))]
+        public void MoveToMillisecondPresent()
+        {
+            FileInfo input = GetNonZeroMilliseconds();
+            string dest = Path.Combine(input.DirectoryName, GetTestFileName());
+
+            input.MoveTo(dest);
+            FileInfo output = new FileInfo(dest);
             Assert.NotEqual(0, output.LastWriteTime.Millisecond);
         }
 
@@ -100,7 +181,7 @@ namespace System.IO.Tests
             FileInfo output = new FileInfo(Path.Combine(GetTestFilePath(), input.Name));
             output.Directory.Create();
             output = input.CopyTo(output.FullName, true);
-            Assert.Equal(0, input.LastWriteTime.Millisecond);
+            Assert.Equal(input.LastWriteTime.Millisecond, output.LastWriteTime.Millisecond);
             Assert.Equal(0, output.LastWriteTime.Millisecond);
         }
 
@@ -139,8 +220,7 @@ namespace System.IO.Tests
             Assert.InRange(fi.CreationTimeUtc, before, fi.LastWriteTimeUtc);
         }
 
-
-        [Fact]
+        [ConditionalFact(typeof(PlatformDetection), nameof(PlatformDetection.IsNotInAppContainer))] // Can't read root in appcontainer
         [PlatformSpecific(TestPlatforms.Windows)]
         public void PageFileHasTimes()
         {
