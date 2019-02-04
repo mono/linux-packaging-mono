@@ -43,6 +43,7 @@ RESX_RESOURCE_STRING = \
 	../../../external/corefx/src/System.Net.Requests/src/Resources/Strings.resx	\
 	../../../external/corefx/src/System.Net.Http/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Numerics.Vectors/src/Resources/Strings.resx \
+	../../../external/corefx/src/System.Reflection.TypeExtensions/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Runtime.Extensions/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Runtime.InteropServices.RuntimeInformation/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.Runtime.Numerics/src/Resources/Strings.resx \
@@ -55,8 +56,8 @@ RESX_RESOURCE_STRING = \
 	../../../external/corefx/src/System.Threading.Tasks.Parallel/src/Resources/Strings.resx \
 	../../../external/corefx/src/System.ObjectModel/src/Resources/Strings.resx \
 	../../../external/corert/src/System.Private.CoreLib/src/Resources/Strings.resx \
-	../../../external/corefx/src/System.Private.Uri/src/Resources/Strings.resx
-	
+	../../../external/corefx/src/System.Private.Uri/src/Resources/Strings.resx	\
+	../../../external/corefx/src/Microsoft.Win32.Registry/src/Resources/Strings.resx
 
 LIBRARY_COMPILE = $(BOOT_COMPILE)
 LIBRARY_INSTALL_DIR = $(mono_libdir)/mono/$(FRAMEWORK_VERSION)
@@ -69,6 +70,8 @@ ifneq ($(PROFILE),basic)
 RESOURCE_STRINGS = ../referencesource/mscorlib/mscorlib.txt
 MODULE_DEPS = $(IL_REPLACE)
 endif
+
+MODULE_DEPS += LinkerDescriptor/mscorlib.xml
 
 RESOURCE_FILES = \
 	resources/charinfo.nlp \
@@ -122,7 +125,7 @@ ifdef MONO_FEATURE_APPLE_X509
 LIB_MCS_FLAGS += -d:MONO_FEATURE_APPLE_X509
 endif
 
-COREFX_FLAGS := -d:BIT64
+COREFX_FLAGS := -d:BIT64,REGISTRY_ASSEMBLY
 
 WARNING_ABOUT_DISABLED_WARNING=1635
 LOCAL_MCS_FLAGS = -unsafe -nostdlib -nowarn:612,618,3001,3002,3003,$(WARNING_ABOUT_DISABLED_WARNING) -d:INSIDE_CORLIB,MONO_CULTURE_DATA -d:LIBC $(REFERENCE_SOURCES_FLAGS) $(COREFX_FLAGS)
@@ -132,6 +135,7 @@ TEST_LIB_REFS = System.Core System
 
 XTEST_LIB_REFS = System System.Core Facades/System.Threading.Tasks Facades/System.Text.RegularExpressions System.Numerics System.Runtime.CompilerServices.Unsafe
 XTEST_LIB_FLAGS = -d:netcoreapp -publicsign -keyfile:../mono.snk
+XTEST_MCS_FLAGS = -resource:../../../external/corefx/src/System.Reflection/tests/Resources/ResourceTextFile.txt,ResourceTextFile.txt
 
 ifndef AOT_FRIENDLY_PROFILE
 ifneq ($(PROFILE),testing_aot_hybrid)
@@ -171,6 +175,13 @@ CommonCrypto/%.g.cs:
 endif
 
 EXTRA_DISTFILES = \
+	Test/resources/culture-*.cs		\
+	$(RESOURCE_FILES) \
+	$(TEST_RESOURCE_FILES) \
+	$(TEST_RESOURCES:.resources=.resx) \
+	LinkerDescriptor/mscorlib_test.xml
+
+TEST_RESOURCE_FILES = \
 	Test/resources/MyResources.resources	\
 	Test/resources/MyResources.de.resources	\
 	Test/resources/Empty.resources		\
@@ -179,11 +190,9 @@ EXTRA_DISTFILES = \
 	Test/resources/StreamTest.ja.resources	\
 	Test/resources/bug81759.resources	\
 	Test/resources/415628.bin		\
-	Test/resources/Fergie.GED		\
-	Test/resources/culture-*.cs		\
-	$(RESOURCE_FILES) \
-	$(TEST_RESOURCES:.resources=.resx) \
-	LinkerDescriptor/mscorlib_test.xml
+	Test/resources/Fergie.GED
+
+TEST_MCS_FLAGS += $(foreach r, $(TEST_RESOURCE_FILES), -resource:$(r),$(r))
 
 TEST_RESX_RESOURCES = \
 	Test/resources/Resources.resources
@@ -192,7 +201,7 @@ TEST_RESX_RESOURCES_SATELITE = \
 	Test/resources/Resources.es-ES.resources \
 	Test/resources/Resources.nn-NO.resources
 
-CLEAN_FILES += $(TEST_RESX_RESOURCES) $(IL_REPLACE)
+CLEAN_FILES += $(TEST_RESX_RESOURCES) $(TEST_RESX_RESOURCES_SATELITE) $(IL_REPLACE)
 
 include $(topdir)/build/library.make
 
@@ -204,7 +213,7 @@ TEST_RESOURCES = $(TEST_RESX_RESOURCES) $(TEST_RESX_RESOURCES_SATELITE)
 satellite_assembly1 = $(test_lib_dir)/es-ES/$(patsubst %.dll,%.resources.dll,$(test_lib))
 satellite_assembly2 = $(test_lib_dir)/nn-NO/$(patsubst %.dll,%.resources.dll,$(test_lib))
 
-$(test_lib_output): $(TEST_RESOURCES) $(satellite_assembly1) $(satellite_assembly2) | $(test_lib_dir)
+$(test_lib_output): $(TEST_RESOURCES) $(satellite_assembly1) $(satellite_assembly2) $(test_lib_dir)
 
 $(satellite_assembly1): Test/resources/culture-es-ES.cs Test/resources/Resources.es-ES.resources
 	@mkdir -p $(dir $@)

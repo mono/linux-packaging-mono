@@ -4455,7 +4455,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
             bool bTimeOnly = false;
             result.calendar = parseInfo.calendar;
 
-            if (parseInfo.calendar.ID == CalendarId.HEBREW)
+            if ((CalendarId)parseInfo.calendar.ID == CalendarId.HEBREW)
             {
                 parseInfo.parseNumberDelegate = m_hebrewNumberParser;
                 parseInfo.fCustomNumberParser = true;

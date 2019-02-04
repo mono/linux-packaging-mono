@@ -15204,6 +15204,7 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FontUnit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.FontUnit Empty;
         public static readonly System.Web.UI.WebControls.FontUnit Large;
         public static readonly System.Web.UI.WebControls.FontUnit Larger;
@@ -20257,6 +20258,7 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Unit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.Unit Empty;
         public Unit(double value) { throw null;}
         public Unit(double value, System.Web.UI.WebControls.UnitType type) { throw null;}

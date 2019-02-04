@@ -98,6 +98,11 @@ namespace ILCompiler.DependencyAnalysis
                             }
 
                             string resourceName = module.MetadataReader.GetString(resource.Name);
+
+                            // Check if emitting the manifest resource is blocked by policy.
+                            if (factory.MetadataManager.IsManifestResourceBlocked(module, resourceName))
+                                continue;
+
                             string assemblyName = module.GetName().FullName;
                             BlobReader reader = resourceDirectory.GetReader((int)resource.Offset, resourceDirectory.Length - (int)resource.Offset);
                             int length = (int)reader.ReadUInt32();
@@ -143,7 +148,7 @@ namespace ILCompiler.DependencyAnalysis
         }
 
         protected internal override int Phase => (int)ObjectNodePhase.Ordered;
-        protected internal override int ClassCode => (int)ObjectNodeOrder.ResourceDataNode;
+        public override int ClassCode => (int)ObjectNodeOrder.ResourceDataNode;
     }
 
     /// <summary>

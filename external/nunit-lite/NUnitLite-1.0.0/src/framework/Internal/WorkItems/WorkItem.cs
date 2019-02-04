@@ -122,7 +122,7 @@ namespace NUnit.Framework.Internal.WorkItems
         {
             _context = new TestExecutionContext(context);
 
-#if (CLR_2_0 || CLR_4_0) && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__
+#if (CLR_2_0 || CLR_4_0) && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__ && !MONOTOUCH_TV && !MONOTOUCH_WATCH
             // Timeout set at a higher level
             int timeout = _context.TestCaseTimeout;
 
@@ -139,7 +139,7 @@ namespace NUnit.Framework.Internal.WorkItems
 #endif
         }
 
-#if (CLR_2_0 || CLR_4_0) && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__
+#if (CLR_2_0 || CLR_4_0) && !SILVERLIGHT && !__TVOS__ && !__WATCHOS__ && !MONOTOUCH_TV && !MONOTOUCH_WATCH
         private void RunTestWithTimeout(int timeout)
         {
             Thread thread = new Thread(new ThreadStart(RunTest));

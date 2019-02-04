@@ -335,6 +335,8 @@ namespace Microsoft.Build.Tasks
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ExtractedClassName
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public bool IsInsideConditionalBlock { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
     }

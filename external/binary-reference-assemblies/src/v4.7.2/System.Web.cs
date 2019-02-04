@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Drawing.BitmapSuffixInSatelliteAssemblyAttribute]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
@@ -20,10 +20,10 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Runtime.InteropServices.TypeLibVersionAttribute(2, 4)]
-[assembly:System.Security.AllowPartiallyTrustedCallersAttribute(PartialTrustVisibilityLevel=(System.Security.PartialTrustVisibilityLevel)(1))]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.AllowPartiallyTrustedCallersAttribute(PartialTrustVisibilityLevel=System.Security.PartialTrustVisibilityLevel.NotVisibleByDefault)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 [assembly:System.Web.UI.TagPrefixAttribute("System.Web.UI.WebControls", "asp")]
 [assembly:System.Web.UI.WebResourceAttribute("add_permissions_for_users.gif", "image/gif")]
 [assembly:System.Web.UI.WebResourceAttribute("DetailsView.js", "application/x-javascript", CdnSupportsSecureConnection=true, CdnPath="http://ajax.aspnetcdn.com/ajax/4.6/1/DetailsView.js", LoadSuccessExpression="window.DetailsView")]
@@ -169,33 +169,33 @@ namespace System.Web
     {
         public HttpApplication() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpContext Context { get { throw null; } }
         protected System.ComponentModel.EventHandlerList Events { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.HttpModuleCollection Modules { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.HttpModuleCollection Modules { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.ComponentModel.ISite Site { get { throw null; } set { } }
         bool System.Web.IHttpHandler.IsReusable { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Security.Principal.IPrincipal User { get { throw null; } }
         public event System.EventHandler AcquireRequestState { add { } remove { } }
         public event System.EventHandler AuthenticateRequest { add { } remove { } }
@@ -780,8 +780,8 @@ namespace System.Web
         public HttpCompileException(string message) { }
         public HttpCompileException(string message, System.Exception innerException) { }
         public override string Message { get { throw null; } }
-        public System.CodeDom.Compiler.CompilerResults Results { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
-        public string SourceCode { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        public System.CodeDom.Compiler.CompilerResults Results { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
+        public string SourceCode { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -790,7 +790,7 @@ namespace System.Web
         public HttpContext(System.Web.HttpRequest request, System.Web.HttpResponse response) { }
         public HttpContext(System.Web.HttpWorkerRequest wr) { }
         public System.Exception[] AllErrors { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool AllowAsyncDuringSyncStages { get { throw null; } set { } }
         public System.Web.HttpApplicationState Application { get { throw null; } }
         public System.Web.HttpApplication ApplicationInstance { get { throw null; } set { } }
@@ -849,7 +849,7 @@ namespace System.Web
     {
         protected HttpContextBase() { }
         public virtual System.Exception[] AllErrors { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual bool AllowAsyncDuringSyncStages { get { throw null; } set { } }
         public virtual System.Web.HttpApplicationStateBase Application { get { throw null; } }
         public virtual System.Web.HttpApplication ApplicationInstance { get { throw null; } set { } }
@@ -903,7 +903,7 @@ namespace System.Web
     {
         public HttpContextWrapper(System.Web.HttpContext httpContext) { }
         public override System.Exception[] AllErrors { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public override bool AllowAsyncDuringSyncStages { get { throw null; } set { } }
         public override System.Web.HttpApplicationStateBase Application { get { throw null; } }
         public override System.Web.HttpApplication ApplicationInstance { get { throw null; } set { } }
@@ -968,7 +968,7 @@ namespace System.Web
         public bool Shareable { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string Value { get { throw null; } set { } }
         public System.Collections.Specialized.NameValueCollection Values { get { throw null; } }
-        public static bool TryParse(string input, out System.Web.HttpCookie result) { result = default(System.Web.HttpCookie); throw null; }
+        public static bool TryParse(string input, out System.Web.HttpCookie result) { throw null; }
     }
     public sealed partial class HttpCookieCollection : System.Collections.Specialized.NameObjectCollectionBase
     {
@@ -1121,7 +1121,7 @@ namespace System.Web
         public string ApplicationPath { get { throw null; } }
         public string AppRelativeCurrentExecutionFilePath { get { throw null; } }
         public System.Web.HttpBrowserCapabilities Browser { get { throw null; } set { } }
-        public System.Web.HttpClientCertificate ClientCertificate { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public System.Web.HttpClientCertificate ClientCertificate { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public System.Text.Encoding ContentEncoding { get { throw null; } set { } }
         public int ContentLength { get { throw null; } }
         public string ContentType { get { throw null; } set { } }
@@ -1140,7 +1140,7 @@ namespace System.Web
         public bool IsLocal { get { throw null; } }
         public bool IsSecureConnection { get { throw null; } }
         public string this[string key] { get { throw null; } }
-        public System.Security.Principal.WindowsIdentity LogonUserIdentity { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]get { throw null; } }
+        public System.Security.Principal.WindowsIdentity LogonUserIdentity { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]get { throw null; } }
         public System.Collections.Specialized.NameValueCollection Params { get { throw null; } }
         public string Path { get { throw null; } }
         public string PathInfo { get { throw null; } }
@@ -1168,7 +1168,7 @@ namespace System.Web
         public System.IO.Stream GetBufferlessInputStream() { throw null; }
         public System.IO.Stream GetBufferlessInputStream(bool disableMaxRequestLength) { throw null; }
         public void InsertEntityBody() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public void InsertEntityBody(byte[] buffer, int offset, int count) { }
         public int[] MapImageCoordinates(string imageFieldName) { throw null; }
         public string MapPath(string virtualPath) { throw null; }
@@ -1355,7 +1355,7 @@ namespace System.Web
         public System.Web.ISubscriptionToken AddOnSendingHeaders(System.Action<System.Web.HttpContext> callback) { throw null; }
         public void AppendCookie(System.Web.HttpCookie cookie) { }
         public void AppendHeader(string name, string value) { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public void AppendToLog(string param) { }
         public string ApplyAppPathModifier(string virtualPath) { throw null; }
         public System.IAsyncResult BeginFlush(System.AsyncCallback callback, object state) { throw null; }
@@ -1591,7 +1591,7 @@ namespace System.Web
         public static string AppDomainAppId { get { throw null; } }
         public static string AppDomainAppPath { get { throw null; } }
         public static string AppDomainAppVirtualPath { get { throw null; } }
-        public static string AppDomainId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]get { throw null; } }
+        public static string AppDomainId { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]get { throw null; } }
         public static string AspClientScriptPhysicalPath { get { throw null; } }
         public static string AspClientScriptVirtualPath { get { throw null; } }
         public static string AspInstallDirectory { get { throw null; } }
@@ -1600,24 +1600,24 @@ namespace System.Web
         public static string ClrInstallDirectory { get { throw null; } }
         public static string CodegenDir { get { throw null; } }
         public static System.Version IISVersion { get { throw null; } }
-        public static bool IsOnUNCShare { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]get { throw null; } }
+        public static bool IsOnUNCShare { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]get { throw null; } }
         public static string MachineConfigurationDirectory { get { throw null; } }
         public static System.Version TargetFramework { get { throw null; } }
         public static bool UsingIntegratedPipeline { get { throw null; } }
         public static System.IServiceProvider WebObjectActivator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         public static void Close() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
         public static System.Security.NamedPermissionSet GetNamedPermissionSet() { throw null; }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void ProcessRequest(System.Web.HttpWorkerRequest wr) { }
         public static void UnloadAppDomain() { }
     }
     public sealed partial class HttpServerUtility
     {
         internal HttpServerUtility() { }
-        public string MachineName { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]get { throw null; } }
-        public int ScriptTimeout { get { throw null; } [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]set { } }
+        public string MachineName { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]get { throw null; } }
+        public int ScriptTimeout { get { throw null; } [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]set { } }
         public void ClearError() { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         public object CreateObject(string progID) { throw null; }
@@ -1832,7 +1832,7 @@ namespace System.Web
     {
         protected HttpTaskAsyncHandler() { }
         public virtual bool IsReusable { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void ProcessRequest(System.Web.HttpContext context) { }
         public abstract System.Threading.Tasks.Task ProcessRequestAsync(System.Web.HttpContext context);
         System.IAsyncResult System.Web.IHttpAsyncHandler.BeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback cb, object extraData) { throw null; }
@@ -2122,7 +2122,7 @@ namespace System.Web
         public void Insert(int index, System.Web.ParserError value) { }
         public void Remove(System.Web.ParserError value) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class PreApplicationStartMethodAttribute : System.Attribute
     {
         public PreApplicationStartMethodAttribute(System.Type type, string methodName) { }
@@ -2145,9 +2145,9 @@ namespace System.Web
     public partial class ProcessModelInfo
     {
         public ProcessModelInfo() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public static System.Web.ProcessInfo GetCurrentProcessInfo() { throw null; }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.High)]
         public static System.Web.ProcessInfo[] GetHistory(int numRecords) { throw null; }
     }
     public enum ProcessShutdownReason
@@ -2604,7 +2604,7 @@ namespace System.Web.Caching
         public DatabaseNotEnabledForNotificationException(string message) { }
         public DatabaseNotEnabledForNotificationException(string message, System.Exception innerException) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class FileResponseElement : System.Web.Caching.ResponseElement
     {
@@ -2625,7 +2625,7 @@ namespace System.Web.Caching
         System.Collections.Generic.List<System.Web.Caching.HeaderElement> HeaderElements { get; set; }
         System.Collections.Generic.List<System.Web.Caching.ResponseElement> ResponseElements { get; set; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class MemoryResponseElement : System.Web.Caching.ResponseElement
     {
@@ -2637,9 +2637,9 @@ namespace System.Web.Caching
     {
         public static string DefaultProviderName { get { throw null; } }
         public static System.Web.Caching.OutputCacheProviderCollection Providers { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public static object Deserialize(System.IO.Stream stream) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public static void Serialize(System.IO.Stream stream, object data) { }
     }
     public abstract partial class OutputCacheProvider : System.Configuration.Provider.ProviderBase
@@ -2687,7 +2687,7 @@ namespace System.Web.Caching
         protected override void DependencyDispose() { }
         public override string GetUniqueID() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public static partial class SqlCacheDependencyAdmin
     {
         public static void DisableNotifications(string connectionString) { }
@@ -2698,7 +2698,7 @@ namespace System.Web.Caching
         public static void EnableTableForNotifications(string connectionString, string[] tables) { }
         public static string[] GetTablesEnabledForNotifications(string connectionString) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(600))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Unrestricted)]
     [System.SerializableAttribute]
     public partial class SubstitutionResponseElement : System.Web.Caching.ResponseElement
     {
@@ -2784,7 +2784,7 @@ namespace System.Web.Compilation
         protected internal string VirtualPath { get { throw null; } }
         public virtual System.Collections.ICollection VirtualPathDependencies { get { throw null; } }
         public virtual void GenerateCode(System.Web.Compilation.AssemblyBuilder assemblyBuilder) { }
-        protected internal virtual System.CodeDom.CodeCompileUnit GetCodeCompileUnit(out System.Collections.IDictionary linePragmasTable) { linePragmasTable = default(System.Collections.IDictionary); throw null; }
+        protected internal virtual System.CodeDom.CodeCompileUnit GetCodeCompileUnit(out System.Collections.IDictionary linePragmasTable) { throw null; }
         public virtual string GetCustomString(System.CodeDom.Compiler.CompilerResults results) { throw null; }
         protected System.Web.Compilation.CompilerType GetDefaultCompilerType() { throw null; }
         protected System.Web.Compilation.CompilerType GetDefaultCompilerTypeForLanguage(string language) { throw null; }
@@ -2805,7 +2805,7 @@ namespace System.Web.Compilation
         Resources = 4,
         Web = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class BuildProviderAppliesToAttribute : System.Attribute
     {
         public BuildProviderAppliesToAttribute(System.Web.Compilation.BuildProviderAppliesTo appliesTo) { }
@@ -2834,14 +2834,14 @@ namespace System.Web.Compilation
         public void CompileFile(string virtualPath) { }
         public void CompileFile(string virtualPath, System.Web.Compilation.ClientBuildManagerCallback callback) { }
         public System.Web.Hosting.IRegisteredObject CreateObject(System.Type type, bool failIfExists) { throw null; }
-        public string GenerateCode(string virtualPath, string virtualFileString, out System.Collections.IDictionary linePragmasTable) { linePragmasTable = default(System.Collections.IDictionary); throw null; }
-        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, string virtualFileString, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); linePragmasTable = default(System.Collections.IDictionary); throw null; }
-        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); linePragmasTable = default(System.Collections.IDictionary); throw null; }
+        public string GenerateCode(string virtualPath, string virtualFileString, out System.Collections.IDictionary linePragmasTable) { throw null; }
+        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, string virtualFileString, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { throw null; }
+        public System.CodeDom.CodeCompileUnit GenerateCodeCompileUnit(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out System.Collections.IDictionary linePragmasTable) { throw null; }
         public string[] GetAppDomainShutdownDirectories() { throw null; }
         public System.Collections.IDictionary GetBrowserDefinitions() { throw null; }
-        public void GetCodeDirectoryInformation(string virtualCodeDir, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out string generatedFilesDir) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); generatedFilesDir = default(string); }
+        public void GetCodeDirectoryInformation(string virtualCodeDir, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters, out string generatedFilesDir) { throw null; }
         public System.Type GetCompiledType(string virtualPath) { throw null; }
-        public void GetCompilerParameters(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters) { codeDomProviderType = default(System.Type); compilerParameters = default(System.CodeDom.Compiler.CompilerParameters); }
+        public void GetCompilerParameters(string virtualPath, out System.Type codeDomProviderType, out System.CodeDom.Compiler.CompilerParameters compilerParameters) { throw null; }
         public string GetGeneratedFileVirtualPath(string filePath) { throw null; }
         public string GetGeneratedSourceFile(string virtualPath) { throw null; }
         public string[] GetTopLevelAssemblyReferences(string virtualPath) { throw null; }
@@ -2899,7 +2899,7 @@ namespace System.Web.Compilation
         public virtual void OnProcessGeneratedCode(System.Web.UI.ControlBuilder controlBuilder, System.CodeDom.CodeCompileUnit codeCompileUnit, System.CodeDom.CodeTypeDeclaration baseType, System.CodeDom.CodeTypeDeclaration derivedType, System.CodeDom.CodeMemberMethod buildMethod, System.CodeDom.CodeMemberMethod dataBindingMethod, System.Collections.IDictionary additionalState) { }
         public virtual void PreControlBuilderInit(System.Web.UI.ControlBuilder controlBuilder, System.Web.UI.TemplateParser parser, System.Web.UI.ControlBuilder parentBuilder, System.Type type, string tagName, string id, System.Collections.IDictionary attributes, System.Collections.IDictionary additionalState) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DesignTimeResourceProviderFactoryAttribute : System.Attribute
     {
         public DesignTimeResourceProviderFactoryAttribute(string factoryTypeName) { }
@@ -2922,7 +2922,7 @@ namespace System.Web.Compilation
         public System.Web.UI.TemplateControl TemplateControl { get { throw null; } }
         public string VirtualPath { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class ExpressionEditorAttribute : System.Attribute
     {
         public ExpressionEditorAttribute(string typeName) { }
@@ -2931,7 +2931,7 @@ namespace System.Web.Compilation
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class ExpressionPrefixAttribute : System.Attribute
     {
         public ExpressionPrefixAttribute(string expressionPrefix) { }
@@ -2946,14 +2946,14 @@ namespace System.Web.Compilation
         None = 0,
         WebReferences = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class FolderLevelBuildProviderAppliesToAttribute : System.Attribute
     {
         public FolderLevelBuildProviderAppliesToAttribute(System.Web.Compilation.FolderLevelBuildProviderAppliesTo appliesTo) { }
         public System.Web.Compilation.FolderLevelBuildProviderAppliesTo AppliesTo { get { throw null; } }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public partial interface IAssemblyPostProcessor : System.IDisposable
     {
         void PostProcessAssembly(string path);
@@ -3033,7 +3033,7 @@ namespace System.Web.Compilation
         public override object EvaluateExpression(object target, System.Web.UI.BoundPropertyEntry entry, object parsedData, System.Web.Compilation.ExpressionBuilderContext context) { throw null; }
         public override System.CodeDom.CodeExpression GetCodeExpression(System.Web.UI.BoundPropertyEntry entry, object parsedData, System.Web.Compilation.ExpressionBuilderContext context) { throw null; }
         public static string GetRouteUrl(System.Web.UI.Control control, string expression) { throw null; }
-        public static bool TryParseRouteExpression(string expression, System.Web.Routing.RouteValueDictionary routeValues, out string routeName) { routeName = default(string); throw null; }
+        public static bool TryParseRouteExpression(string expression, System.Web.Routing.RouteValueDictionary routeValues, out string routeName) { throw null; }
     }
     [System.Web.Compilation.ExpressionEditorAttribute("System.Web.UI.Design.RouteValueExpressionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Web.Compilation.ExpressionPrefixAttribute("Routes")]
@@ -3057,7 +3057,7 @@ namespace System.Web.Configuration
     public sealed partial class AnonymousIdentificationSection : System.Configuration.ConfigurationSection
     {
         public AnonymousIdentificationSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("cookieless", DefaultValue=(System.Web.HttpCookieMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("cookieless", DefaultValue=System.Web.HttpCookieMode.UseCookies)]
         public System.Web.HttpCookieMode Cookieless { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("cookieName", DefaultValue=".ASPXANONYMOUS")]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
@@ -3065,7 +3065,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("cookiePath", DefaultValue="/")]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string CookiePath { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("cookieProtection", DefaultValue=(System.Web.Security.CookieProtection)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("cookieProtection", DefaultValue=System.Web.Security.CookieProtection.Validation)]
         public System.Web.Security.CookieProtection CookieProtection { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("cookieRequireSSL", DefaultValue=false)]
         public bool CookieRequireSSL { get { throw null; } set { } }
@@ -3126,7 +3126,7 @@ namespace System.Web.Configuration
         public AuthenticationSection() { }
         [System.Configuration.ConfigurationPropertyAttribute("forms")]
         public System.Web.Configuration.FormsAuthenticationConfiguration Forms { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.Web.Configuration.AuthenticationMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.Web.Configuration.AuthenticationMode.Windows)]
         public System.Web.Configuration.AuthenticationMode Mode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("passport")]
         [System.ObsoleteAttribute("This property is obsolete. The Passport authentication product is no longer supported and has been superseded by Live ID.")]
@@ -3164,7 +3164,7 @@ namespace System.Web.Configuration
         Allow = 1,
         Deny = 0,
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AuthorizationRule), AddItemName="allow,deny", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(2))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.AuthorizationRule), AddItemName="allow,deny", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate)]
     public sealed partial class AuthorizationRuleCollection : System.Configuration.ConfigurationElementCollection
     {
         public AuthorizationRuleCollection() { }
@@ -3332,16 +3332,16 @@ namespace System.Web.Configuration
     public partial class BrowserCapabilitiesFactoryBase
     {
         public BrowserCapabilitiesFactoryBase() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected System.Collections.IDictionary BrowserElements { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected System.Collections.IDictionary MatchedHeaders { get { throw null; } }
         public virtual void ConfigureBrowserCapabilities(System.Collections.Specialized.NameValueCollection headers, System.Web.HttpBrowserCapabilities browserCaps) { }
         public virtual void ConfigureCustomCapabilities(System.Collections.Specialized.NameValueCollection headers, System.Web.HttpBrowserCapabilities browserCaps) { }
         protected bool IsBrowserUnknown(System.Web.Configuration.HttpCapabilitiesBase browserCaps) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void PopulateBrowserElements(System.Collections.IDictionary dictionary) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void PopulateMatchedHeaders(System.Collections.IDictionary dictionary) { }
     }
     [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.BufferModeSettings))]
@@ -3474,7 +3474,7 @@ namespace System.Web.Configuration
         public System.Web.Configuration.ClientTargetCollection ClientTargets { get { throw null; } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CodeSubDirectory), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CodeSubDirectory), CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CodeSubDirectoriesCollection : System.Configuration.ConfigurationElementCollection
     {
         public CodeSubDirectoriesCollection() { }
@@ -3542,7 +3542,7 @@ namespace System.Web.Configuration
         public int NumRecompilesBeforeAppRestart { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("optimizeCompilations", DefaultValue=false)]
         public bool OptimizeCompilations { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("profileGuidedOptimizations", DefaultValue=(System.Web.Configuration.ProfileGuidedOptimizationsFlags)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("profileGuidedOptimizations", DefaultValue=System.Web.Configuration.ProfileGuidedOptimizationsFlags.All)]
         public System.Web.Configuration.ProfileGuidedOptimizationsFlags ProfileGuidedOptimizations { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("strict", DefaultValue=false)]
@@ -3573,7 +3573,7 @@ namespace System.Web.Configuration
         [System.Configuration.IntegerValidatorAttribute(MinValue=0, MaxValue=4)]
         public int WarningLevel { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.Compiler), AddItemName="compiler", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.Compiler), AddItemName="compiler", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CompilerCollection : System.Configuration.ConfigurationElementCollection
     {
         public CompilerCollection() { }
@@ -3602,7 +3602,7 @@ namespace System.Web.Configuration
         public override bool Equals(object customError) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CustomError), AddItemName="error", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.CustomError), AddItemName="error", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class CustomErrorCollection : System.Configuration.ConfigurationElementCollection
     {
         public CustomErrorCollection() { }
@@ -3643,10 +3643,10 @@ namespace System.Web.Configuration
         public string DefaultRedirect { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true)]
         public System.Web.Configuration.CustomErrorCollection Errors { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.Web.Configuration.CustomErrorsMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.Web.Configuration.CustomErrorsMode.RemoteOnly)]
         public System.Web.Configuration.CustomErrorsMode Mode { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("redirectMode", DefaultValue=(System.Web.Configuration.CustomErrorsRedirectMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("redirectMode", DefaultValue=System.Web.Configuration.CustomErrorsRedirectMode.ResponseRedirect)]
         public System.Web.Configuration.CustomErrorsRedirectMode RedirectMode { get { throw null; } set { } }
         protected override void DeserializeSection(System.Xml.XmlReader reader) { }
         protected override void Reset(System.Configuration.ConfigurationElement parentElement) { }
@@ -3753,7 +3753,7 @@ namespace System.Web.Configuration
     public sealed partial class FormsAuthenticationConfiguration : System.Configuration.ConfigurationElement
     {
         public FormsAuthenticationConfiguration() { }
-        [System.Configuration.ConfigurationPropertyAttribute("cookieless", DefaultValue=(System.Web.HttpCookieMode)(3))]
+        [System.Configuration.ConfigurationPropertyAttribute("cookieless", DefaultValue=System.Web.HttpCookieMode.UseDeviceProfile)]
         public System.Web.HttpCookieMode Cookieless { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("cookieSameSite")]
         public System.Web.SameSiteMode CookieSameSite { get { throw null; } set { } }
@@ -3777,13 +3777,13 @@ namespace System.Web.Configuration
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string Path { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("protection", DefaultValue=(System.Web.Configuration.FormsProtectionEnum)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("protection", DefaultValue=System.Web.Configuration.FormsProtectionEnum.All)]
         public System.Web.Configuration.FormsProtectionEnum Protection { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("requireSSL", DefaultValue=false)]
         public bool RequireSSL { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("slidingExpiration", DefaultValue=true)]
         public bool SlidingExpiration { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("ticketCompatibilityMode", DefaultValue=(System.Web.Configuration.TicketCompatibilityMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("ticketCompatibilityMode", DefaultValue=System.Web.Configuration.TicketCompatibilityMode.Framework20)]
         public System.Web.Configuration.TicketCompatibilityMode TicketCompatibilityMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.TimeSpanMinutesConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("timeout", DefaultValue="00:30:00")]
@@ -3793,10 +3793,10 @@ namespace System.Web.Configuration
     public sealed partial class FormsAuthenticationCredentials : System.Configuration.ConfigurationElement
     {
         public FormsAuthenticationCredentials() { }
-        [System.Configuration.ConfigurationPropertyAttribute("passwordFormat", DefaultValue=(System.Web.Configuration.FormsAuthPasswordFormat)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("passwordFormat", DefaultValue=System.Web.Configuration.FormsAuthPasswordFormat.SHA1)]
         public System.Web.Configuration.FormsAuthPasswordFormat PasswordFormat { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=(System.Configuration.ConfigurationPropertyOptions)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("", IsDefaultCollection=true, Options=System.Configuration.ConfigurationPropertyOptions.IsDefaultCollection)]
         public System.Web.Configuration.FormsAuthenticationUserCollection Users { get { throw null; } }
     }
     public sealed partial class FormsAuthenticationUser : System.Configuration.ConfigurationElement
@@ -3811,7 +3811,7 @@ namespace System.Web.Configuration
         public string Password { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.FormsAuthenticationUser), AddItemName="user", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.FormsAuthenticationUser), AddItemName="user", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class FormsAuthenticationUserCollection : System.Configuration.ConfigurationElementCollection
     {
         public FormsAuthenticationUserCollection() { }
@@ -4114,7 +4114,7 @@ namespace System.Web.Configuration
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("requireSSL", DefaultValue=false)]
         public bool RequireSSL { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("sameSite", DefaultValue=(System.Web.SameSiteMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("sameSite", DefaultValue=System.Web.SameSiteMode.None)]
         public System.Web.SameSiteMode SameSite { get { throw null; } set { } }
     }
     public sealed partial class HttpHandlerAction : System.Configuration.ConfigurationElement
@@ -4131,7 +4131,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("verb", IsRequired=true, IsKey=true)]
         public string Verb { get { throw null; } set { } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpHandlerAction), CollectionType=(System.Configuration.ConfigurationElementCollectionType)(3))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.HttpHandlerAction), CollectionType=System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMapAlternate)]
     public sealed partial class HttpHandlerActionCollection : System.Configuration.ConfigurationElementCollection
     {
         public HttpHandlerActionCollection() { }
@@ -4199,7 +4199,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("appRequestQueueLimit", DefaultValue=5000)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1)]
         public int AppRequestQueueLimit { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("asyncPreloadMode", DefaultValue=(System.Web.Configuration.AsyncPreloadModeFlags)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("asyncPreloadMode", DefaultValue=System.Web.Configuration.AsyncPreloadModeFlags.None)]
         public System.Web.Configuration.AsyncPreloadModeFlags AsyncPreloadMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("defaultRegexMatchTimeout", DefaultValue="00:00:00")]
         public System.TimeSpan DefaultRegexMatchTimeout { get { throw null; } set { } }
@@ -4221,7 +4221,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("executionTimeout", DefaultValue="00:01:50")]
         [System.Configuration.TimeSpanValidatorAttribute(MinValueString="00:00:00", MaxValueString="10675199.02:48:05.4775807")]
         public System.TimeSpan ExecutionTimeout { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("fcnMode", DefaultValue=(System.Web.Configuration.FcnMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("fcnMode", DefaultValue=System.Web.Configuration.FcnMode.NotSet)]
         public System.Web.Configuration.FcnMode FcnMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("maxQueryStringLength", DefaultValue=2048)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0)]
@@ -4308,7 +4308,7 @@ namespace System.Web.Configuration
         public string Name { get { throw null; } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.IgnoreDeviceFilterElement), AddItemName="filter", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.IgnoreDeviceFilterElement), AddItemName="filter", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class IgnoreDeviceFilterElementCollection : System.Configuration.ConfigurationElementCollection
     {
         public IgnoreDeviceFilterElementCollection() { }
@@ -4355,7 +4355,7 @@ namespace System.Web.Configuration
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.WhiteSpaceTrimStringConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("applicationName", DefaultValue="")]
         public string ApplicationName { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("compatibilityMode", DefaultValue=(System.Web.Configuration.MachineKeyCompatibilityMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("compatibilityMode", DefaultValue=System.Web.Configuration.MachineKeyCompatibilityMode.Framework20SP1)]
         public System.Web.Configuration.MachineKeyCompatibilityMode CompatibilityMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.WhiteSpaceTrimStringConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("dataProtectorType", DefaultValue="")]
@@ -4532,9 +4532,9 @@ namespace System.Web.Configuration
         public bool AutoEventWireup { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("buffer", DefaultValue=true)]
         public bool Buffer { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("clientIDMode", DefaultValue=(System.Web.UI.ClientIDMode)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("clientIDMode", DefaultValue=System.Web.UI.ClientIDMode.Predictable)]
         public System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("compilationMode", DefaultValue=(System.Web.UI.CompilationMode)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("compilationMode", DefaultValue=System.Web.UI.CompilationMode.Always)]
         public System.Web.UI.CompilationMode CompilationMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.Web.Configuration.VersionConverter")]
         [System.Configuration.ConfigurationPropertyAttribute("controlRenderingCompatibilityVersion", DefaultValue="4.0")]
@@ -4578,7 +4578,7 @@ namespace System.Web.Configuration
         public string UserControlBaseType { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("validateRequest", DefaultValue=true)]
         public bool ValidateRequest { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("viewStateEncryptionMode", DefaultValue=(System.Web.UI.ViewStateEncryptionMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("viewStateEncryptionMode", DefaultValue=System.Web.UI.ViewStateEncryptionMode.Auto)]
         public System.Web.UI.ViewStateEncryptionMode ViewStateEncryptionMode { get { throw null; } set { } }
         protected override void DeserializeSection(System.Xml.XmlReader reader) { }
         protected override void SetReadOnly() { }
@@ -4656,9 +4656,9 @@ namespace System.Web.Configuration
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("clientConnectedCheck", DefaultValue="00:00:05")]
         public System.TimeSpan ClientConnectedCheck { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("comAuthenticationLevel", DefaultValue=(System.Web.Configuration.ProcessModelComAuthenticationLevel)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("comAuthenticationLevel", DefaultValue=System.Web.Configuration.ProcessModelComAuthenticationLevel.Connect)]
         public System.Web.Configuration.ProcessModelComAuthenticationLevel ComAuthenticationLevel { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("comImpersonationLevel", DefaultValue=(System.Web.Configuration.ProcessModelComImpersonationLevel)(4))]
+        [System.Configuration.ConfigurationPropertyAttribute("comImpersonationLevel", DefaultValue=System.Web.Configuration.ProcessModelComImpersonationLevel.Impersonate)]
         public System.Web.Configuration.ProcessModelComImpersonationLevel ComImpersonationLevel { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("cpuMask", DefaultValue="0xffffffff")]
         public int CpuMask { get { throw null; } set { } }
@@ -4668,7 +4668,7 @@ namespace System.Web.Configuration
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Configuration.InfiniteTimeSpanConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("idleTimeout", DefaultValue="10675199.02:48:05.4775807")]
         public System.TimeSpan IdleTimeout { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("logLevel", DefaultValue=(System.Web.Configuration.ProcessModelLogLevel)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("logLevel", DefaultValue=System.Web.Configuration.ProcessModelLogLevel.Errors)]
         public System.Web.Configuration.ProcessModelLogLevel LogLevel { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("maxAppDomains", DefaultValue=2000)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483646)]
@@ -4785,7 +4785,7 @@ namespace System.Web.Configuration
         public string Provider { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("readOnly", DefaultValue=false)]
         public bool ReadOnly { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("serializeAs", DefaultValue=(System.Web.Configuration.SerializationMode)(3))]
+        [System.Configuration.ConfigurationPropertyAttribute("serializeAs", DefaultValue=System.Web.Configuration.SerializationMode.ProviderSpecific)]
         public System.Web.Configuration.SerializationMode SerializeAs { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("type", DefaultValue="string")]
         public string Type { get { throw null; } set { } }
@@ -4916,9 +4916,9 @@ namespace System.Web.Configuration
     }
     public static partial class ProvidersHelper
     {
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]
         public static System.Configuration.Provider.ProviderBase InstantiateProvider(System.Configuration.ProviderSettings providerSettings, System.Type providerType) { throw null; }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(300))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Low)]
         public static void InstantiateProviders(System.Configuration.ProviderSettingsCollection configProviders, System.Configuration.Provider.ProviderCollection providers, System.Type providerType) { }
     }
     public partial class RegexWorker
@@ -4927,7 +4927,7 @@ namespace System.Web.Configuration
         public string this[string key] { get { throw null; } }
         public bool ProcessRegex(string target, string regexExpression) { throw null; }
     }
-    [System.Runtime.InteropServices.ClassInterfaceAttribute((System.Runtime.InteropServices.ClassInterfaceType)(2))]
+    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.AutoDual)]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.GuidAttribute("9FDB6D2C-90EA-4e42-99E6-38B96E28698E")]
     [System.Runtime.InteropServices.ProgIdAttribute("System.Web.Configuration.RemoteWebConfigurationHostServerV4_32")]
@@ -4936,8 +4936,8 @@ namespace System.Web.Configuration
     {
         public RemoteWebConfigurationHostServer() { }
         public string DoEncryptOrDecrypt(bool doEncrypt, string xmlString, string protectionProviderName, string protectionProviderType, string[] paramKeys, string[] paramValues) { throw null; }
-        public byte[] GetData(string fileName, bool getReadTimeOnly, out long readTime) { readTime = default(long); throw null; }
-        public void GetFileDetails(string name, out bool exists, out long size, out long createDate, out long lastWriteDate) { exists = default(bool); size = default(long); createDate = default(long); lastWriteDate = default(long); }
+        public byte[] GetData(string fileName, bool getReadTimeOnly, out long readTime) { throw null; }
+        public void GetFileDetails(string name, out bool exists, out long size, out long createDate, out long lastWriteDate) { throw null; }
         public string GetFilePaths(int webLevelAsInt, string path, string site, string locationSubPath) { throw null; }
         public void WriteData(string fileName, string templateFileName, byte[] data, ref long readTime) { }
     }
@@ -4954,7 +4954,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("cookiePath", DefaultValue="/")]
         [System.Configuration.StringValidatorAttribute(MinLength=1)]
         public string CookiePath { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("cookieProtection", DefaultValue=(System.Web.Security.CookieProtection)(3))]
+        [System.Configuration.ConfigurationPropertyAttribute("cookieProtection", DefaultValue=System.Web.Security.CookieProtection.All)]
         public System.Web.Security.CookieProtection CookieProtection { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("cookieRequireSSL", DefaultValue=false)]
         public bool CookieRequireSSL { get { throw null; } set { } }
@@ -5082,7 +5082,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("customProvider", DefaultValue="")]
         public string CustomProvider { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationElementProperty ElementProperty { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.Web.SessionState.SessionStateMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.Web.SessionState.SessionStateMode.InProc)]
         public System.Web.SessionState.SessionStateMode Mode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("partitionResolverType", DefaultValue="")]
         public string PartitionResolverType { get { throw null; } set { } }
@@ -5291,7 +5291,7 @@ namespace System.Web.Configuration
         public override int GetHashCode() { throw null; }
         protected override bool SerializeElement(System.Xml.XmlWriter writer, bool serializeCollectionKey) { throw null; }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagPrefixInfo), AddItemName="add", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TagPrefixInfo), AddItemName="add", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class TagPrefixCollection : System.Configuration.ConfigurationElementCollection
     {
         public TagPrefixCollection() { }
@@ -5350,7 +5350,7 @@ namespace System.Web.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("requestLimit", DefaultValue=10)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0)]
         public int RequestLimit { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("traceMode", DefaultValue=(System.Web.Configuration.TraceDisplayMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("traceMode", DefaultValue=System.Web.Configuration.TraceDisplayMode.SortByTime)]
         public System.Web.Configuration.TraceDisplayMode TraceMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("writeToDiagnosticsTrace", DefaultValue=false)]
         public bool WriteToDiagnosticsTrace { get { throw null; } set { } }
@@ -5391,7 +5391,7 @@ namespace System.Web.Configuration
         public string PolicyFile { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
-    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TrustLevel), AddItemName="trustLevel", CollectionType=(System.Configuration.ConfigurationElementCollectionType)(0))]
+    [System.Configuration.ConfigurationCollectionAttribute(typeof(System.Web.Configuration.TrustLevel), AddItemName="trustLevel", CollectionType=System.Configuration.ConfigurationElementCollectionType.BasicMap)]
     public sealed partial class TrustLevelCollection : System.Configuration.ConfigurationElementCollection
     {
         public TrustLevelCollection() { }
@@ -5468,12 +5468,12 @@ namespace System.Web.Configuration
     {
         public UserMapPath(System.Configuration.ConfigurationFileMap fileMap) { }
         public string GetAppPathForPath(string siteID, string path) { throw null; }
-        public void GetDefaultSiteNameAndID(out string siteName, out string siteID) { siteName = default(string); siteID = default(string); }
+        public void GetDefaultSiteNameAndID(out string siteName, out string siteID) { throw null; }
         public string GetMachineConfigFilename() { throw null; }
-        public void GetPathConfigFilename(string siteID, string path, out string directory, out string baseName) { directory = default(string); baseName = default(string); }
+        public void GetPathConfigFilename(string siteID, string path, out string directory, out string baseName) { throw null; }
         public string GetRootWebConfigFilename() { throw null; }
         public string MapPath(string siteID, string path) { throw null; }
-        public void ResolveSiteArgument(string siteArgument, out string siteName, out string siteID) { siteName = default(string); siteID = default(string); }
+        public void ResolveSiteArgument(string siteArgument, out string siteName, out string siteID) { throw null; }
     }
     public sealed partial class VirtualDirectoryMapping
     {
@@ -5598,7 +5598,7 @@ namespace System.Web.Configuration
     public sealed partial class XhtmlConformanceSection : System.Configuration.ConfigurationSection
     {
         public XhtmlConformanceSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.Web.Configuration.XhtmlConformanceMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.Web.Configuration.XhtmlConformanceMode.Transitional)]
         public System.Web.Configuration.XhtmlConformanceMode Mode { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -5679,7 +5679,7 @@ namespace System.Web.Hosting
     public abstract partial class AppDomainProtocolHandler : System.MarshalByRefObject, System.Web.Hosting.IRegisteredObject
     {
         protected AppDomainProtocolHandler() { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(4096))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService() { throw null; }
         public abstract void StartListenerChannel(System.Web.Hosting.IListenerChannelCallback listenerChannelCallback);
         public virtual void Stop(bool immediate) { }
@@ -5819,7 +5819,7 @@ namespace System.Web.Hosting
         void StopAppDomainProtocolListenerChannel([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string protocolId, int listenerChannelId, bool immediate);
     }
     [System.Runtime.InteropServices.GuidAttribute("e6e21054-a7dc-4378-877d-b7f4a2d7e8ba")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppDomainFactory
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
@@ -5827,7 +5827,7 @@ namespace System.Web.Hosting
         object Create([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string module, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string typeName, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string appPath, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]string strUrlOfAppOrigin, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]int iZone);
     }
     [System.Runtime.InteropServices.GuidAttribute("5BC9C234-6CD7-49bf-A07A-6FDB7F22DFFF")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppDomainInfo
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
@@ -5842,7 +5842,7 @@ namespace System.Web.Hosting
         bool IsIdle();
     }
     [System.Runtime.InteropServices.GuidAttribute("F79648FB-558B-4a09-88F1-1E3BCB30E34F")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppDomainInfoEnum
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I4)]
@@ -5883,21 +5883,21 @@ namespace System.Web.Hosting
         void Stop();
     }
     [System.Runtime.InteropServices.GuidAttribute("AE54F424-71BC-4da5-AA2F-8C0CD53496FC")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IApplicationPreloadManager
     {
         void SetApplicationPreloadState([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string context, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]bool enabled);
         void SetApplicationPreloadUtil([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]System.Web.Hosting.IApplicationPreloadUtil preloadUtil);
     }
     [System.Runtime.InteropServices.GuidAttribute("940D8ADD-9E40-4475-9A67-2CDCDF57995C")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IApplicationPreloadUtil
     {
         void GetApplicationPreloadInfo([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string context, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]out bool enabled, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]out string startupObjType, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.SafeArray)]out string[] parametersForStartupObj);
         void ReportApplicationPreloadFailure([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string context, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.U4)]int errorCode, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string errorMessage);
     }
     [System.Runtime.InteropServices.GuidAttribute("02998279-7175-4d59-aa5a-fb8e44d4ca9d")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IAppManagerAppDomainFactory
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
@@ -5907,7 +5907,7 @@ namespace System.Web.Hosting
         void Stop();
     }
     [System.Runtime.InteropServices.GuidAttribute("08a2c56f-7c16-41c1-a8be-432917a1a2d1")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IISAPIRuntime
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
@@ -5925,7 +5925,7 @@ namespace System.Web.Hosting
         void StopProcessing();
     }
     [System.Runtime.InteropServices.GuidAttribute("dc3b0a85-9da7-47e4-ba1b-e27da9db8a1e")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IListenerChannelCallback
     {
         void GetBlob([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPArray)]byte[] buffer, ref int bufferSize);
@@ -5936,7 +5936,7 @@ namespace System.Web.Hosting
         void ReportStopped(int hr);
     }
     [System.Runtime.InteropServices.GuidAttribute("1cc9099d-0a8d-41cb-87d6-845e4f8c4e91")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IPphManager
     {
         void StartProcessProtocolListenerChannel([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string protocolId, System.Web.Hosting.IListenerChannelCallback listenerChannelCallback);
@@ -5944,7 +5944,7 @@ namespace System.Web.Hosting
         void StopProcessProtocolListenerChannel([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string protocolId, int listenerChannelId, bool immediate);
     }
     [System.Runtime.InteropServices.GuidAttribute("0ccd465e-3114-4ca3-ad50-cea561307e93")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessHost
     {
         void EnumerateAppDomains([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]out System.Web.Hosting.IAppDomainInfoEnum appDomainInfoEnum);
@@ -5953,14 +5953,14 @@ namespace System.Web.Hosting
         void StartApplication([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appPath, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]out object runtimeInterface);
     }
     [System.Runtime.InteropServices.GuidAttribute("02fd465d-5c5d-4b7e-95b6-82faa031b74a")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessHostFactoryHelper
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Interface)]
         object GetProcessHost(System.Web.Hosting.IProcessHostSupportFunctions functions);
     }
     [System.Runtime.InteropServices.GuidAttribute("9d98b251-453e-44f6-9cec-8b5aed970129")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessHostIdleAndHealthCheck
     {
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
@@ -5972,7 +5972,7 @@ namespace System.Web.Hosting
         void Preload(string[] parameters);
     }
     [System.Runtime.InteropServices.GuidAttribute("35f9c4c1-3800-4d17-99bc-018a62243687")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     [System.Security.SuppressUnmanagedCodeSecurityAttribute]
     public partial interface IProcessHostSupportFunctions
     {
@@ -6000,7 +6000,7 @@ namespace System.Web.Hosting
         void MapPath([System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appId, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string virtualPath, out string physicalPath);
     }
     [System.Runtime.InteropServices.GuidAttribute("f11dc4c9-ddd1-4566-ad53-cf6f3a28fefe")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IProcessPingCallback
     {
         void Respond();
@@ -6049,8 +6049,8 @@ namespace System.Web.Hosting
     public sealed partial class ProcessHost : System.MarshalByRefObject, System.Web.Hosting.IAdphManager, System.Web.Hosting.IApplicationPreloadManager, System.Web.Hosting.IPphManager, System.Web.Hosting.IProcessHost, System.Web.Hosting.IProcessHostIdleAndHealthCheck
     {
         internal ProcessHost() { }
-        public void EnumerateAppDomains(out System.Web.Hosting.IAppDomainInfoEnum appDomainInfoEnum) { appDomainInfoEnum = default(System.Web.Hosting.IAppDomainInfoEnum); }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(4096))]
+        public void EnumerateAppDomains(out System.Web.Hosting.IAppDomainInfoEnum appDomainInfoEnum) { throw null; }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService() { throw null; }
         public bool IsIdle() { throw null; }
         public void Ping(System.Web.Hosting.IProcessPingCallback callback) { }
@@ -6059,7 +6059,7 @@ namespace System.Web.Hosting
         public void Shutdown() { }
         public void ShutdownApplication(string appId) { }
         public void StartAppDomainProtocolListenerChannel(string appId, string protocolId, System.Web.Hosting.IListenerChannelCallback listenerChannelCallback) { }
-        public void StartApplication(string appId, string appPath, out object runtimeInterface) { runtimeInterface = default(object); }
+        public void StartApplication(string appId, string appPath, out object runtimeInterface) { throw null; }
         public void StartProcessProtocolListenerChannel(string protocolId, System.Web.Hosting.IListenerChannelCallback listenerChannelCallback) { }
         public void StopAppDomainProtocol(string appId, string protocolId, bool immediate) { }
         public void StopAppDomainProtocolListenerChannel(string appId, string protocolId, int listenerChannelId, bool immediate) { }
@@ -6070,13 +6070,13 @@ namespace System.Web.Hosting
     {
         public ProcessHostFactoryHelper() { }
         public object GetProcessHost(System.Web.Hosting.IProcessHostSupportFunctions functions) { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(4096))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService() { throw null; }
     }
     public abstract partial class ProcessProtocolHandler : System.MarshalByRefObject
     {
         protected ProcessProtocolHandler() { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(4096))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService() { throw null; }
         public abstract void StartListenerChannel(System.Web.Hosting.IListenerChannelCallback listenerChannelCallback, System.Web.Hosting.IAdphManager AdphManager);
         public abstract void StopListenerChannel(int listenerChannelId, bool immediate);
@@ -6269,10 +6269,10 @@ namespace System.Web.Mail
         internal SmtpMail() { }
         public static string SmtpServer { get { throw null; } set { } }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true)]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void Send(string from, string to, string subject, string messageText) { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode=true)]
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void Send(System.Web.Mail.MailMessage message) { }
     }
 }
@@ -6313,11 +6313,11 @@ namespace System.Web.Management
         public override void Shutdown() { }
     }
     [System.Runtime.InteropServices.GuidAttribute("c84f668a-cc3f-11d7-b79e-505054503030")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IRegiisUtility
     {
         void ProtectedConfigAction(long actionToPerform, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string firstArgument, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string secondArgument, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string providerName, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string appPath, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string site, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string cspOrLocation, int keySize, out System.IntPtr exception);
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         void RegisterAsnetMmcAssembly(int doReg, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string assemblyName, [System.Runtime.InteropServices.In][System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string binaryDirectory, out System.IntPtr exception);
         void RegisterSystemWebAssembly(int doReg, out System.IntPtr exception);
         void RemoveBrowserCaps(out System.IntPtr exception);
@@ -6353,11 +6353,11 @@ namespace System.Web.Management
     public sealed partial class RegiisUtility : System.Web.Management.IRegiisUtility
     {
         public RegiisUtility() { }
-        public void ProtectedConfigAction(long options, string firstArgument, string secondArgument, string providerName, string appPath, string site, string cspOrLocation, int keySize, out System.IntPtr exception) { exception = default(System.IntPtr); }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
-        public void RegisterAsnetMmcAssembly(int doReg, string typeName, string binaryDirectory, out System.IntPtr exception) { exception = default(System.IntPtr); }
-        public void RegisterSystemWebAssembly(int doReg, out System.IntPtr exception) { exception = default(System.IntPtr); }
-        public void RemoveBrowserCaps(out System.IntPtr exception) { exception = default(System.IntPtr); }
+        public void ProtectedConfigAction(long options, string firstArgument, string secondArgument, string providerName, string appPath, string site, string cspOrLocation, int keySize, out System.IntPtr exception) { throw null; }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
+        public void RegisterAsnetMmcAssembly(int doReg, string typeName, string binaryDirectory, out System.IntPtr exception) { throw null; }
+        public void RegisterSystemWebAssembly(int doReg, out System.IntPtr exception) { throw null; }
+        public void RemoveBrowserCaps(out System.IntPtr exception) { throw null; }
     }
     public sealed partial class RuleFiringRecord
     {
@@ -6402,7 +6402,7 @@ namespace System.Web.Management
         RoleManager = 4,
         SqlWebEventProvider = 16,
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(500))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.High)]
     public static partial class SqlServices
     {
         public static string GenerateApplicationServicesScripts(bool install, System.Web.Management.SqlFeatures features, string database) { throw null; }
@@ -6502,9 +6502,9 @@ namespace System.Web.Management
         public string Message { get { throw null; } }
         public virtual void FormatCustomEventDetails(System.Web.Management.WebEventFormatter formatter) { }
         protected internal virtual void IncrementPerfCounters() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public virtual void Raise() { }
-        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+        [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
         public static void Raise(System.Web.Management.WebBaseEvent eventRaised) { }
         public override string ToString() { throw null; }
         public virtual string ToString(bool includeAppInfo, bool includeCustomEventDetails) { throw null; }
@@ -6761,19 +6761,19 @@ namespace System.Web.ModelBinding
         Optional = 0,
         Required = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public partial class BindingBehaviorAttribute : System.Attribute
     {
         public BindingBehaviorAttribute(System.Web.ModelBinding.BindingBehavior behavior) { }
         public System.Web.ModelBinding.BindingBehavior Behavior { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
         public override object TypeId { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class BindNeverAttribute : System.Web.ModelBinding.BindingBehaviorAttribute
     {
         public BindNeverAttribute() : base (default(System.Web.ModelBinding.BindingBehavior)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class BindRequiredAttribute : System.Web.ModelBinding.BindingBehaviorAttribute
     {
         public BindRequiredAttribute() : base (default(System.Web.ModelBinding.BindingBehavior)) { }
@@ -6812,7 +6812,7 @@ namespace System.Web.ModelBinding
         public object Model { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
         public System.Web.ModelBinding.ModelValidationNode ValidationNode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class ControlAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute
     {
         public ControlAttribute() { }
@@ -6829,7 +6829,7 @@ namespace System.Web.ModelBinding
         public string PropertyName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
         protected override object FetchValue(string controlId) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class CookieAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute, System.Web.ModelBinding.IUnvalidatedValueProviderSource, System.Web.ModelBinding.IValueProviderSource
     {
         public CookieAttribute() { }
@@ -6914,14 +6914,14 @@ namespace System.Web.ModelBinding
         public EmptyModelMetadataProvider() { }
         protected override System.Web.ModelBinding.ModelMetadata CreateMetadata(System.Collections.Generic.IEnumerable<System.Attribute> attributes, System.Type containerType, System.Func<object> modelAccessor, System.Type modelType, string propertyName) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=false, Inherited=true)]
     public sealed partial class ExtensibleModelBinderAttribute : System.Attribute
     {
         public ExtensibleModelBinderAttribute(System.Type binderType) { }
         public System.Type BinderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
         public bool SuppressPrefixCheck { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class FormAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute, System.Web.ModelBinding.IUnvalidatedValueProviderSource, System.Web.ModelBinding.IValueProviderSource
     {
         public FormAttribute() { }
@@ -7012,7 +7012,7 @@ namespace System.Web.ModelBinding
         public bool Remove(System.Collections.Generic.KeyValuePair<System.Type, System.Web.ModelBinding.IModelBinder> item) { throw null; }
         public bool Remove(System.Type key) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(System.Type key, out System.Web.ModelBinding.IModelBinder value) { value = default(System.Web.ModelBinding.IModelBinder); throw null; }
+        public bool TryGetValue(System.Type key, out System.Web.ModelBinding.IModelBinder value) { throw null; }
     }
     public delegate string ModelBinderErrorMessageProvider(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext, System.Web.ModelBinding.ModelMetadata modelMetadata, object incomingValue);
     public static partial class ModelBinderErrorMessageProviders
@@ -7038,7 +7038,7 @@ namespace System.Web.ModelBinding
         public void RegisterBinderForType(System.Type modelType, System.Web.ModelBinding.IModelBinder modelBinder) { }
         protected override void SetItem(int index, System.Web.ModelBinding.ModelBinderProvider item) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class ModelBinderProviderOptionsAttribute : System.Attribute
     {
         public ModelBinderProviderOptionsAttribute() { }
@@ -7171,7 +7171,7 @@ namespace System.Web.ModelBinding
         public bool Remove(string key) { throw null; }
         public void SetModelValue(string key, System.Web.ModelBinding.ValueProviderResult value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Web.ModelBinding.ModelState value) { value = default(System.Web.ModelBinding.ModelState); throw null; }
+        public bool TryGetValue(string key, out System.Web.ModelBinding.ModelState value) { throw null; }
     }
     public sealed partial class ModelValidatedEventArgs : System.EventArgs
     {
@@ -7255,7 +7255,7 @@ namespace System.Web.ModelBinding
         public virtual System.Web.ModelBinding.ValueProviderResult GetValue(string key) { throw null; }
         public virtual System.Web.ModelBinding.ValueProviderResult GetValue(string key, bool skipValidation) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class ProfileAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute
     {
         public ProfileAttribute() { }
@@ -7269,7 +7269,7 @@ namespace System.Web.ModelBinding
         public ProfileValueProvider(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext) : base (default(System.Web.ModelBinding.ModelBindingExecutionContext)) { }
         protected override object FetchValue(string key) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class QueryStringAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute, System.Web.ModelBinding.IUnvalidatedValueProviderSource, System.Web.ModelBinding.IValueProviderSource
     {
         public QueryStringAttribute() { }
@@ -7297,7 +7297,7 @@ namespace System.Web.ModelBinding
     {
         public RequiredAttributeAdapter(System.Web.ModelBinding.ModelMetadata metadata, System.Web.ModelBinding.ModelBindingExecutionContext context, System.ComponentModel.DataAnnotations.RequiredAttribute attribute) : base (default(System.Web.ModelBinding.ModelMetadata), default(System.Web.ModelBinding.ModelBindingExecutionContext), default(System.ComponentModel.DataAnnotations.RequiredAttribute)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class RouteDataAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute
     {
         public RouteDataAttribute() { }
@@ -7310,7 +7310,7 @@ namespace System.Web.ModelBinding
     {
         public RouteDataValueProvider(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext) : base (default(System.Collections.Generic.IDictionary<string, object>), default(System.Globalization.CultureInfo)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class SessionAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute
     {
         public SessionAttribute() { }
@@ -7362,7 +7362,7 @@ namespace System.Web.ModelBinding
         public TypeMatchModelBinderProvider() { }
         public override System.Web.ModelBinding.IModelBinder GetBinder(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext, System.Web.ModelBinding.ModelBindingContext bindingContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class UserProfileAttribute : System.Attribute, System.Web.ModelBinding.IValueProviderSource
     {
         public UserProfileAttribute() { }
@@ -7405,7 +7405,7 @@ namespace System.Web.ModelBinding
         public virtual string GetModelName() { throw null; }
         public abstract System.Web.ModelBinding.IValueProvider GetValueProvider(System.Web.ModelBinding.ModelBindingExecutionContext modelBindingExecutionContext);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
     public sealed partial class ViewStateAttribute : System.Web.ModelBinding.ValueProviderSourceAttribute
     {
         public ViewStateAttribute() { }
@@ -7422,7 +7422,7 @@ namespace System.Web.ModelBinding
 }
 namespace System.Web.Profile
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class CustomProviderDataAttribute : System.Attribute
     {
         public CustomProviderDataAttribute(string customProviderData) { }
@@ -7519,13 +7519,13 @@ namespace System.Web.Profile
         public static int DeleteProfiles(string[] usernames) { throw null; }
         public static int DeleteProfiles(System.Web.Profile.ProfileInfoCollection profiles) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption) { throw null; }
-        public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public static int GetNumberOfProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption) { throw null; }
     }
@@ -7558,7 +7558,7 @@ namespace System.Web.Profile
         public abstract System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords);
         public abstract int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class ProfileProviderAttribute : System.Attribute
     {
         public ProfileProviderAttribute(string providerName) { }
@@ -7570,7 +7570,7 @@ namespace System.Web.Profile
         public new System.Web.Profile.ProfileProvider this[string name] { get { throw null; } }
         public override void Add(System.Configuration.Provider.ProviderBase provider) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class SettingsAllowAnonymousAttribute : System.Attribute
     {
         public SettingsAllowAnonymousAttribute(bool allow) { }
@@ -7584,10 +7584,10 @@ namespace System.Web.Profile
         public override int DeleteInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public override int DeleteProfiles(string[] usernames) { throw null; }
         public override int DeleteProfiles(System.Web.Profile.ProfileInfoCollection profiles) { throw null; }
-        public override System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Profile.ProfileInfoCollection FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption authenticationOption, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Profile.ProfileInfoCollection GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption authenticationOption, System.DateTime userInactiveSinceDate) { throw null; }
         public override System.Configuration.SettingsPropertyValueCollection GetPropertyValues(System.Configuration.SettingsContext sc, System.Configuration.SettingsPropertyCollection properties) { throw null; }
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config) { }
@@ -7730,7 +7730,7 @@ namespace System.Web.Routing
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.Remove(System.Collections.Generic.KeyValuePair<string, object> item) { throw null; }
         System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out object value) { value = default(object); throw null; }
+        public bool TryGetValue(string key, out object value) { throw null; }
     }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System.Web.Routing, Version=3.5.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
     public partial class StopRoutingHandler : System.Web.Routing.IRouteHandler
@@ -7819,8 +7819,7 @@ namespace System.Web.Security
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
 #endif
-
-        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
 #if false
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
@@ -7832,20 +7831,20 @@ namespace System.Web.Security
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
 #endif
-        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
 #if false
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
 #endif
-        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public virtual string GeneratePassword() { throw null; }
 #if false
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         [System.DirectoryServices.DirectoryServicesPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
 #endif
-        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetNumberOfUsersOnline() { throw null; }
         public override string GetPassword(string username, string passwordAnswer) { throw null; }
 #if false
@@ -8086,17 +8085,17 @@ namespace System.Web.Security
         public static event System.Web.Security.MembershipValidatePasswordEventHandler ValidatingPassword { add { } remove { } }
         public static System.Web.Security.MembershipUser CreateUser(string username, string password) { throw null; }
         public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email) { throw null; }
-        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
-        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
+        public static System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, out System.Web.Security.MembershipCreateStatus status) { throw null; }
         public static bool DeleteUser(string username) { throw null; }
         public static bool DeleteUser(string username, bool deleteAllRelatedData) { throw null; }
         public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch) { throw null; }
-        public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch) { throw null; }
-        public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static string GeneratePassword(int length, int numberOfNonAlphanumericCharacters) { throw null; }
         public static System.Web.Security.MembershipUserCollection GetAllUsers() { throw null; }
-        public static System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static int GetNumberOfUsersOnline() { throw null; }
         public static System.Web.Security.MembershipUser GetUser() { throw null; }
         public static System.Web.Security.MembershipUser GetUser(bool userIsOnline) { throw null; }
@@ -8108,7 +8107,7 @@ namespace System.Web.Security
         public static void UpdateUser(System.Web.Security.MembershipUser user) { }
         public static bool ValidateUser(string username, string password) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2432), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property, AllowMultiple=false)]
     public partial class MembershipPasswordAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
         public MembershipPasswordAttribute() { }
@@ -8248,7 +8247,7 @@ namespace System.Web.Security
         public override bool IsInRole(string role) { throw null; }
         public void SetDirty() { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public string ToEncryptedTicket() { throw null; }
     }
     public sealed partial class RoleProviderCollection : System.Configuration.Provider.ProviderCollection
@@ -8311,12 +8310,12 @@ namespace System.Web.Security
         public override bool RequiresUniqueEmail { get { throw null; } }
         public override bool ChangePassword(string username, string oldPassword, string newPassword) { throw null; }
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer) { throw null; }
-        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { status = default(System.Web.Security.MembershipCreateStatus); throw null; }
+        public override System.Web.Security.MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out System.Web.Security.MembershipCreateStatus status) { throw null; }
         public override bool DeleteUser(string username, bool deleteAllRelatedData) { throw null; }
-        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
-        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
+        public override System.Web.Security.MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public virtual string GeneratePassword() { throw null; }
-        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.Security.MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetNumberOfUsersOnline() { throw null; }
         public override string GetPassword(string username, string passwordAnswer) { throw null; }
         public override System.Web.Security.MembershipUser GetUser(object providerUserKey, bool userIsOnline) { throw null; }
@@ -8704,7 +8703,7 @@ namespace System.Web.SessionState
         System.Threading.Tasks.Task ReleaseSessionStateAsync(System.Web.HttpContext context);
     }
     [System.Runtime.InteropServices.GuidAttribute("7297744b-e188-40bf-b7e9-56698d25cf44")]
-    [System.Runtime.InteropServices.InterfaceTypeAttribute((System.Runtime.InteropServices.ComInterfaceType)(1))]
+    [System.Runtime.InteropServices.InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IStateRuntime
     {
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
@@ -8726,9 +8725,9 @@ namespace System.Web.SessionState
         public virtual string Encode(string id) { throw null; }
         public string GetSessionID(System.Web.HttpContext context) { throw null; }
         public void Initialize() { }
-        public bool InitializeRequest(System.Web.HttpContext context, bool suppressAutoDetectRedirect, out bool supportSessionIDReissue) { supportSessionIDReissue = default(bool); throw null; }
+        public bool InitializeRequest(System.Web.HttpContext context, bool suppressAutoDetectRedirect, out bool supportSessionIDReissue) { throw null; }
         public void RemoveSessionID(System.Web.HttpContext context) { }
-        public void SaveSessionID(System.Web.HttpContext context, string id, out bool redirected, out bool cookieAdded) { redirected = default(bool); cookieAdded = default(bool); }
+        public void SaveSessionID(System.Web.HttpContext context, string id, out bool redirected, out bool cookieAdded) { throw null; }
         public virtual bool Validate(string id) { throw null; }
     }
     [System.FlagsAttribute]
@@ -8997,7 +8996,7 @@ namespace System.Web.UI
         CompareAllValues = 1,
         OverwriteChanges = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ConstructorNeedsTagAttribute : System.Attribute
     {
         public ConstructorNeedsTagAttribute() { }
@@ -9010,44 +9009,44 @@ namespace System.Web.UI
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.ControlDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.ComponentModel.DesignerCategoryAttribute("Code")]
     [System.ComponentModel.ToolboxItemAttribute("System.Web.UI.Design.WebControlToolboxItem, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", (System.ComponentModel.ToolboxItemFilterType)(3))]
+    [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI", System.ComponentModel.ToolboxItemFilterType.Require)]
     [System.Web.UI.ThemeableAttribute(false)]
     public partial class Control : System.ComponentModel.IComponent, System.IDisposable, System.Web.UI.IControlBuilderAccessor, System.Web.UI.IControlDesignerAccessor, System.Web.UI.IDataBindingsAccessor, System.Web.UI.IExpressionsAccessor, System.Web.UI.IParserAccessor, System.Web.UI.IUrlResolutionService
     {
         public Control() { }
         protected System.Web.UI.Adapters.ControlAdapter Adapter { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
-        public string AppRelativeTemplateSourceDirectory { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]set { } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public string AppRelativeTemplateSourceDirectory { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control BindingContainer { get { throw null; } }
         protected bool ChildControlsCreated { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string ClientID { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ClientIDMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ClientIDMode.Inherit)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
         protected char ClientIDSeparator { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected internal virtual System.Web.HttpContext Context { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control DataItemContainer { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.Control DataKeysContainer { get { throw null; } }
         protected internal bool DesignMode { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -9071,30 +9070,30 @@ namespace System.Web.UI
         protected bool LoadViewStateByID { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Control NamingContainer { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Page Page { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.Control Parent { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Version RenderingCompatibility { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.ComponentModel.ISite Site { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.FilterableAttribute(false)]
         public virtual string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         System.Web.UI.ControlBuilder System.Web.UI.IControlBuilderAccessor.ControlBuilder { get { throw null; } }
         System.Collections.IDictionary System.Web.UI.IControlDesignerAccessor.UserData { get { throw null; } }
         System.Web.UI.DataBindingCollection System.Web.UI.IDataBindingsAccessor.DataBindings { get { throw null; } }
@@ -9103,23 +9102,23 @@ namespace System.Web.UI
         bool System.Web.UI.IExpressionsAccessor.HasExpressions { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.UI.TemplateControl TemplateControl { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]set { } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.UI.TemplateControl TemplateControl { get { throw null; } [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string TemplateSourceDirectory { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string UniqueID { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ValidateRequestMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ValidateRequestMode.Inherit)]
         public virtual System.Web.UI.ValidateRequestMode ValidateRequestMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual System.Web.UI.StateBag ViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual bool ViewStateIgnoresCase { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ViewStateMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ViewStateMode.Inherit)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.ViewStateMode ViewStateMode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
@@ -9133,9 +9132,9 @@ namespace System.Web.UI
         public event System.EventHandler Unload { add { } remove { } }
         protected internal virtual void AddedControl(System.Web.UI.Control control, int index) { }
         protected virtual void AddParsedSubObject(object obj) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void ApplyStyleSheetSkin(System.Web.UI.Page page) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void BeginRenderTracing(System.IO.TextWriter writer, object traceObject) { }
         protected void BuildProfileTree(string parentId, bool calcViewState) { }
         protected void ClearCachedClientID() { }
@@ -9149,7 +9148,7 @@ namespace System.Web.UI
         protected virtual void DataBind(bool raiseOnDataBinding) { }
         protected virtual void DataBindChildren() { }
         public virtual void Dispose() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void EndRenderTracing(System.IO.TextWriter writer, object traceObject) { }
         protected virtual void EnsureChildControls() { }
         protected void EnsureID() { }
@@ -9188,11 +9187,11 @@ namespace System.Web.UI
         protected internal virtual object SaveControlState() { throw null; }
         protected virtual object SaveViewState() { throw null; }
         protected virtual void SetDesignModeState(System.Collections.IDictionary data) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void SetRenderMethodDelegate(System.Web.UI.RenderMethod renderMethod) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void SetTraceData(object traceDataKey, object traceDataValue) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void SetTraceData(object tracedObject, object traceDataKey, object traceDataValue) { }
         System.Collections.IDictionary System.Web.UI.IControlDesignerAccessor.GetDesignModeState() { throw null; }
         void System.Web.UI.IControlDesignerAccessor.SetDesignModeState(System.Collections.IDictionary data) { }
@@ -9245,7 +9244,7 @@ namespace System.Web.UI
         public void SetServiceProvider(System.IServiceProvider serviceProvider) { }
         public virtual void SetTagInnerText(string text) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ControlBuilderAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ControlBuilderAttribute Default;
@@ -9288,16 +9287,16 @@ namespace System.Web.UI
         public virtual void Remove(System.Web.UI.Control value) { }
         public virtual void RemoveAt(int index) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public partial class ControlSkin
     {
         public ControlSkin(System.Type controlType, System.Web.UI.ControlSkinDelegate themeDelegate) { }
         public System.Type ControlType { get { throw null; } }
         public void ApplySkin(System.Web.UI.Control control) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate System.Web.UI.Control ControlSkinDelegate(System.Web.UI.Control control);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ControlValuePropertyAttribute : System.Attribute
     {
         public ControlValuePropertyAttribute(string name) { }
@@ -9308,7 +9307,7 @@ namespace System.Web.UI
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class CssClassPropertyAttribute : System.Attribute
     {
         public CssClassPropertyAttribute() { }
@@ -9334,7 +9333,7 @@ namespace System.Web.UI
         public static object Eval(object container, string expression) { throw null; }
         public static string Eval(object container, string expression, string format) { throw null; }
         public static object GetDataItem(object container) { throw null; }
-        public static object GetDataItem(object container, out bool foundDataItem) { foundDataItem = default(bool); throw null; }
+        public static object GetDataItem(object container, out bool foundDataItem) { throw null; }
         public static object GetIndexedPropertyValue(object container, string expr) { throw null; }
         public static string GetIndexedPropertyValue(object container, string propName, string format) { throw null; }
         public static object GetPropertyValue(object container, string propName) { throw null; }
@@ -9369,7 +9368,7 @@ namespace System.Web.UI
         public void Remove(string propertyName, bool addToRemovedList) { }
         public void Remove(System.Web.UI.DataBinding binding) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DataBindingHandlerAttribute : System.Attribute
     {
         public static readonly System.Web.UI.DataBindingHandlerAttribute Default;
@@ -9393,7 +9392,7 @@ namespace System.Web.UI
         public void SetDataBoundString(int index, string s) { }
         public void SetStaticString(int index, string s) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class DataKeyPropertyAttribute : System.Attribute
     {
         public DataKeyPropertyAttribute(string name) { }
@@ -9433,41 +9432,41 @@ namespace System.Web.UI
     {
         protected DataSourceControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         bool System.ComponentModel.IListSource.ContainsListCollection { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         event System.EventHandler System.Web.UI.IDataSource.DataSourceChanged { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void ApplyStyleSheetSkin(System.Web.UI.Page page) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected abstract System.Web.UI.DataSourceView GetView(string viewName);
         protected virtual System.Collections.ICollection GetViewNames() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected virtual void RaiseDataSourceChangedEvent(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void RenderControl(System.Web.UI.HtmlTextWriter writer) { }
         System.Collections.IList System.ComponentModel.IListSource.GetList() { throw null; }
         System.Web.UI.DataSourceView System.Web.UI.IDataSource.GetView(string viewName) { throw null; }
@@ -9608,7 +9607,7 @@ namespace System.Web.UI
         public void Remove(System.Web.UI.ExpressionBinding binding) { }
     }
     public delegate System.Collections.Specialized.IOrderedDictionary ExtractTemplateValuesMethod(System.Web.UI.Control control);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class FileLevelControlBuilderAttribute : System.Attribute
     {
         public static readonly System.Web.UI.FileLevelControlBuilderAttribute Default;
@@ -9632,7 +9631,7 @@ namespace System.Web.UI
     {
         public FileLevelUserControlBuilder() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property)]
     public sealed partial class FilterableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.FilterableAttribute Default;
@@ -9661,39 +9660,39 @@ namespace System.Web.UI
     {
         protected HierarchicalDataSourceControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ClientIDMode ClientIDMode { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         event System.EventHandler System.Web.UI.IHierarchicalDataSource.DataSourceChanged { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void ApplyStyleSheetSkin(System.Web.UI.Page page) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected abstract System.Web.UI.HierarchicalDataSourceView GetHierarchicalView(string viewPath);
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected virtual void OnDataSourceChanged(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void RenderControl(System.Web.UI.HtmlTextWriter writer) { }
         System.Web.UI.HierarchicalDataSourceView System.Web.UI.IHierarchicalDataSource.GetHierarchicalView(string viewPath) { throw null; }
     }
@@ -9771,9 +9770,9 @@ namespace System.Web.UI
         protected virtual System.Web.UI.HtmlTextWriterTag GetTagKey(string tagName) { throw null; }
         protected virtual string GetTagName(System.Web.UI.HtmlTextWriterTag tagKey) { throw null; }
         protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key) { throw null; }
-        protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key, out string value) { value = default(string); throw null; }
+        protected bool IsAttributeDefined(System.Web.UI.HtmlTextWriterAttribute key, out string value) { throw null; }
         protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key) { throw null; }
-        protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key, out string value) { value = default(string); throw null; }
+        protected bool IsStyleAttributeDefined(System.Web.UI.HtmlTextWriterStyle key, out string value) { throw null; }
         public virtual bool IsValidFormAttribute(string attribute) { throw null; }
         protected virtual bool OnAttributeRender(string name, string value, System.Web.UI.HtmlTextWriterAttribute key) { throw null; }
         protected virtual bool OnStyleAttributeRender(string name, string value, System.Web.UI.HtmlTextWriterStyle key) { throw null; }
@@ -10105,7 +10104,7 @@ namespace System.Web.UI
     {
         object DataSourceViewSchema { get; set; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class IDReferencePropertyAttribute : System.Attribute
     {
         public IDReferencePropertyAttribute() { }
@@ -10271,17 +10270,17 @@ namespace System.Web.UI
     {
         public MasterPage() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal System.Collections.IList ContentPlaceHolders { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal System.Collections.IDictionary ContentTemplates { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.MasterPage Master { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string MasterPageFile { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal void AddContentTemplate(string templateName, System.Web.UI.ITemplate template) { }
         public void InstantiateInContentPlaceHolder(System.Web.UI.Control contentPlaceHolder, System.Web.UI.ITemplate template) { }
     }
@@ -10289,7 +10288,7 @@ namespace System.Web.UI
     {
         public MasterPageControlBuilder() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class NonVisualControlAttribute : System.Attribute
     {
         public static readonly System.Web.UI.NonVisualControlAttribute Default;
@@ -10377,120 +10376,120 @@ namespace System.Web.UI
     [System.ComponentModel.ToolboxItemAttribute(false)]
     public partial class Page : System.Web.UI.TemplateControl, System.Web.IHttpHandler
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public const string postEventArgumentID = "__EVENTARGUMENT";
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public const string postEventSourceID = "__EVENTTARGET";
         public Page() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected bool AspCompatMode { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected bool AsyncMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.TimeSpan AsyncTimeout { get { throw null; } set { } }
         public System.Web.UI.Control AutoPostBackControl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool Buffer { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Caching.Cache Cache { get { throw null; } }
         public string ClientQueryString { get { throw null; } }
         public System.Web.UI.ClientScriptManager ClientScript { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string ClientTarget { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int CodePage { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string ContentType { get { throw null; } set { } }
         protected internal override System.Web.HttpContext Context { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string Culture { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual bool EnableEventValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override bool EnableViewState { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool EnableViewStateMac { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ErrorPage { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("The recommended alternative is HttpResponse.AddFileDependencies. http://go.microsoft.com/fwlink/?linkid=14202")]
         protected System.Collections.ArrayList FileDependencies { set { } }
         public System.Web.UI.HtmlControls.HtmlForm Form { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.HtmlControls.HtmlHead Header { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual new char IdSeparator { get { throw null; } }
         public bool IsAsync { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsCallback { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsCrossPagePostBack { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsPostBack { get { throw null; } }
         public bool IsPostBackEventControlRegistered { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool IsReusable { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsValid { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public System.Collections.IDictionary Items { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int LCID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool MaintainScrollPositionOnPostBack { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.MasterPage Master { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string MasterPageFile { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public int MaxPageStateFieldLength { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string MetaDescription { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string MetaKeywords { get { throw null; } set { } }
         public System.Web.ModelBinding.ModelBindingExecutionContext ModelBindingExecutionContext { get { throw null; } }
@@ -10498,153 +10497,153 @@ namespace System.Web.UI
         public System.Web.UI.Adapters.PageAdapter PageAdapter { get { throw null; } }
         protected virtual System.Web.UI.PageStatePersister PageStatePersister { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Page PreviousPage { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public string ResponseEncoding { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Routing.RouteData RouteData { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool SkipFormActionValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ObsoleteAttribute("The recommended alternative is Page.SetFocus and Page.MaintainScrollPositionOnPostBack. http://go.microsoft.com/fwlink/?linkid=14202")]
         [System.Web.UI.FilterableAttribute(false)]
         public bool SmartNavigation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         public virtual string StyleSheetTheme { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Theme { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.TraceContext Trace { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool TraceEnabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.TraceMode TraceModeValue { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected int TransactionMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string UICulture { get { throw null; } set { } }
         protected internal virtual string UniqueFilePathSuffix { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.UnobtrusiveValidationMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.UnobtrusiveValidationMode.None)]
         public System.Web.UI.UnobtrusiveValidationMode UnobtrusiveValidationMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Security.Principal.IPrincipal User { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ValidateRequestMode)(2))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ValidateRequestMode.Enabled)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ValidateRequestMode ValidateRequestMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.ValidatorCollection Validators { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ViewStateEncryptionMode)(0))]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ViewStateEncryptionMode.Auto)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public System.Web.UI.ViewStateEncryptionMode ViewStateEncryptionMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public string ViewStateUserKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override bool Visible { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler InitComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler LoadComplete { add { } remove { } }
         public event System.EventHandler PreInit { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler PreLoad { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler PreRenderComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public event System.EventHandler SaveStateComplete { add { } remove { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected internal void AddContentTemplate(string templateName, System.Web.UI.ITemplate template) { }
         public void AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler beginHandler, System.Web.EndEventHandler endHandler) { }
         public void AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler beginHandler, System.Web.EndEventHandler endHandler, object state) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected internal void AddWrappedFileDependencies(object virtualFileDependencies) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected System.IAsyncResult AspCompatBeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback cb, object extraData) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void AspCompatEndProcessRequest(System.IAsyncResult result) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected System.IAsyncResult AsyncPageBeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback callback, object extraData) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void AsyncPageEndProcessRequest(System.IAsyncResult result) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual System.Web.UI.HtmlTextWriter CreateHtmlTextWriter(System.IO.TextWriter tw) { throw null; }
         public static System.Web.UI.HtmlTextWriter CreateHtmlTextWriterFromType(System.IO.TextWriter tw, System.Type writerType) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void DesignerInitialize() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual System.Collections.Specialized.NameValueCollection DeterminePostBackMode() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual System.Collections.Specialized.NameValueCollection DeterminePostBackModeUnvalidated() { throw null; }
         public void ExecuteRegisteredAsyncTasks() { }
         public override System.Web.UI.Control FindControl(string id) { throw null; }
         protected override void FrameworkInitialize() { }
         public object GetDataItem() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackClientEvent(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackClientHyperlink. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackClientHyperlink(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackEventReference(System.Web.UI.Control control) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.GetPostBackEventReference. http://go.microsoft.com/fwlink/?linkid=14202")]
         public string GetPostBackEventReference(System.Web.UI.Control control, string argument) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual int GetTypeHashCode() { throw null; }
         public System.Web.UI.ValidatorCollection GetValidators(string validationGroup) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected object GetWrappedFileDependencies(string[] virtualFileDependencies) { throw null; }
         protected virtual void InitializeCulture() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual void InitOutputCache(int duration, string varyByContentEncoding, string varyByHeader, string varyByCustom, System.Web.UI.OutputCacheLocation location, string varyByParam) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual void InitOutputCache(int duration, string varyByHeader, string varyByCustom, System.Web.UI.OutputCacheLocation location, string varyByParam) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected internal virtual void InitOutputCache(System.Web.UI.OutputCacheParameters cacheSettings) { }
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.IsClientScriptBlockRegistered(string key). http://go.microsoft.com/fwlink/?linkid=14202")]
         public bool IsClientScriptBlockRegistered(string key) { throw null; }
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.IsStartupScriptRegistered(string key). http://go.microsoft.com/fwlink/?linkid=14202")]
         public bool IsStartupScriptRegistered(string key) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual object LoadPageStateFromPersistenceMedium() { throw null; }
         public string MapPath(string virtualPath) { throw null; }
         protected internal override void OnInit(System.EventArgs e) { }
@@ -10654,50 +10653,50 @@ namespace System.Web.UI
         protected virtual void OnPreLoad(System.EventArgs e) { }
         protected virtual void OnPreRenderComplete(System.EventArgs e) { }
         protected virtual void OnSaveStateComplete(System.EventArgs e) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void ProcessRequest(System.Web.HttpContext context) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void RaisePostBackEvent(System.Web.UI.IPostBackEventHandler sourceControl, string eventArgument) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterArrayDeclaration(string arrayName, string arrayValue). http://go.microsoft.com/fwlink/?linkid=14202")]
         public void RegisterArrayDeclaration(string arrayName, string arrayValue) { }
         public void RegisterAsyncTask(System.Web.UI.PageAsyncTask task) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterClientScriptBlock(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual void RegisterClientScriptBlock(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterHiddenField(string hiddenFieldName, string hiddenFieldInitialValue). http://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual void RegisterHiddenField(string hiddenFieldName, string hiddenFieldInitialValue) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterOnSubmitStatement(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public void RegisterOnSubmitStatement(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterRequiresControlState(System.Web.UI.Control control) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterRequiresPostBack(System.Web.UI.Control control) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void RegisterRequiresRaiseEvent(System.Web.UI.IPostBackEventHandler control) { }
         public void RegisterRequiresViewStateEncryption() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.ObsoleteAttribute("The recommended alternative is ClientScript.RegisterStartupScript(Type type, string key, string script). http://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual void RegisterStartupScript(string key, string script) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void RegisterViewStateHandler() { }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
         public bool RequiresControlState(System.Web.UI.Control control) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected internal virtual void SavePageStateToPersistenceMedium(object state) { }
         public void SetFocus(string clientID) { }
         public void SetFocus(System.Web.UI.Control control) { }
         public virtual bool TryUpdateModel<TModel>(TModel model) where TModel : class { throw null; }
         public virtual bool TryUpdateModel<TModel>(TModel model, System.Web.ModelBinding.IValueProvider valueProvider) where TModel : class { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void UnregisterRequiresControlState(System.Web.UI.Control control) { }
         public virtual void UpdateModel<TModel>(TModel model) where TModel : class { }
         public virtual void UpdateModel<TModel>(TModel model, System.Web.ModelBinding.IValueProvider valueProvider) where TModel : class { }
         public virtual void Validate() { }
         public virtual void Validate(string validationGroup) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public virtual void VerifyRenderingInServerForm(System.Web.UI.Control control) { }
     }
     public sealed partial class PageAsyncTask
@@ -10731,8 +10730,8 @@ namespace System.Web.UI
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         public static System.Web.IHttpHandler GetCompiledPageInstance(string virtualPath, string inputFile, System.Web.HttpContext context) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(400))]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
+    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Medium)]
     public abstract partial class PageParserFilter
     {
         protected PageParserFilter() { }
@@ -10768,7 +10767,7 @@ namespace System.Web.UI
         public abstract void Load();
         public abstract void Save();
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public abstract partial class PageTheme
     {
         protected PageTheme() { }
@@ -10795,7 +10794,7 @@ namespace System.Web.UI
         public Pair() { }
         public Pair(object x, object y) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ParseChildrenAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ParseChildrenAttribute Default;
@@ -10824,7 +10823,7 @@ namespace System.Web.UI
         public virtual void RecordEmptyTag(System.Web.UI.ControlBuilder builder, System.Text.RegularExpressions.Match tag) { }
         public virtual void RecordEndTag(System.Web.UI.ControlBuilder builder, System.Text.RegularExpressions.Match tag) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class PartialCachingAttribute : System.Attribute
     {
         public PartialCachingAttribute(int duration) { }
@@ -10844,7 +10843,7 @@ namespace System.Web.UI
         internal PartialCachingControl() { }
         public System.Web.UI.Control CachedControl { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class PersistChildrenAttribute : System.Attribute
     {
         public static readonly System.Web.UI.PersistChildrenAttribute Default;
@@ -10865,7 +10864,7 @@ namespace System.Web.UI
         InnerDefaultProperty = 2,
         InnerProperty = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
     public sealed partial class PersistenceModeAttribute : System.Attribute
     {
         public static readonly System.Web.UI.PersistenceModeAttribute Attribute;
@@ -11044,12 +11043,12 @@ namespace System.Web.UI
         public static void BuildCachedControl(System.Web.UI.Control parent, string ctrlID, string guid, int duration, string varyByParams, string varyByControls, string varyByCustom, string sqlDependency, System.Web.UI.BuildMethod buildMethod, string providerName) { }
         public static void BuildCachedControl(System.Web.UI.Control parent, string ctrlID, string guid, int duration, string varyByParams, string varyByControls, string varyByCustom, System.Web.UI.BuildMethod buildMethod) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class SupportsEventValidationAttribute : System.Attribute
     {
         public SupportsEventValidationAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class TagPrefixAttribute : System.Attribute
     {
         public TagPrefixAttribute(string namespaceName, string tagPrefix) { }
@@ -11067,7 +11066,7 @@ namespace System.Web.UI
         public override bool NeedsTagInnerText() { throw null; }
         public override void SetTagInnerText(string text) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class TemplateContainerAttribute : System.Attribute
     {
         public TemplateContainerAttribute(System.Type containerType) { }
@@ -11079,14 +11078,14 @@ namespace System.Web.UI
     {
         protected TemplateControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string AppRelativeVirtualPath { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Use of this property is not recommended because it is no longer useful. http://go.microsoft.com/fwlink/?linkid=14202")]
         protected virtual int AutoHandlers { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         public override bool EnableTheming { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual bool SupportAutoEvents { get { throw null; } }
         public event System.EventHandler AbortTransaction { add { } remove { } }
         public event System.EventHandler CommitTransaction { add { } remove { } }
@@ -11095,7 +11094,7 @@ namespace System.Web.UI
         protected System.Web.UI.LiteralControl CreateResourceBasedLiteralControl(int offset, int size, bool fAsciiOnly) { throw null; }
         protected internal object Eval(string expression) { throw null; }
         protected internal string Eval(string expression, string format) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected virtual void FrameworkInitialize() { }
         protected object GetGlobalResourceObject(string className, string resourceKey) { throw null; }
         protected object GetGlobalResourceObject(string className, string resourceKey, System.Type objType, string propName) { throw null; }
@@ -11109,16 +11108,16 @@ namespace System.Web.UI
         protected virtual void OnError(System.EventArgs e) { }
         public System.Web.UI.Control ParseControl(string content) { throw null; }
         public System.Web.UI.Control ParseControl(string content, bool ignoreParserFilter) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public object ReadStringResource() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static object ReadStringResource(System.Type t) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void SetStringResourcePointer(object stringResourcePointer, int maxResourceOffset) { }
         int System.Web.UI.IFilterResolutionService.CompareFilters(string filter1, string filter2) { throw null; }
         bool System.Web.UI.IFilterResolutionService.EvaluateFilter(string filterName) { throw null; }
         public virtual bool TestDeviceFilter(string filterName) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected void WriteUTF8ResourceString(System.Web.UI.HtmlTextWriter output, int offset, int size, bool fAsciiOnly) { }
         protected internal object XPath(string xPathExpression) { throw null; }
         protected internal string XPath(string xPathExpression, string format) { throw null; }
@@ -11136,7 +11135,7 @@ namespace System.Web.UI
         Multiple = 0,
         Single = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class TemplateInstanceAttribute : System.Attribute
     {
         public static readonly System.Web.UI.TemplateInstanceAttribute Default;
@@ -11162,7 +11161,7 @@ namespace System.Web.UI
         internal TemplatePropertyEntry() { }
         public bool BindableTemplate { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property)]
     public sealed partial class ThemeableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ThemeableAttribute Default;
@@ -11187,7 +11186,7 @@ namespace System.Web.UI
         public System.Collections.IDictionary GetSkinControlBuildersForControlType(System.Type type) { throw null; }
         public System.Collections.ICollection GetSkinsForControl(System.Type type) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ToolboxDataAttribute : System.Attribute
     {
         public static readonly System.Web.UI.ToolboxDataAttribute Default;
@@ -11212,7 +11211,7 @@ namespace System.Web.UI
         None = 0,
         WebForms = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class UrlPropertyAttribute : System.Attribute
     {
         public UrlPropertyAttribute() { }
@@ -11233,40 +11232,40 @@ namespace System.Web.UI
     {
         public UserControl() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpApplicationState Application { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Caching.Cache Cache { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.ControlCachePolicy CachePolicy { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsPostBack { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpRequest Request { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpResponse Response { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpServerUtility Server { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SessionState.HttpSessionState Session { get { throw null; } }
         string System.Web.UI.IUserControlDesignerAccessor.InnerText { get { throw null; } set { } }
         string System.Web.UI.IUserControlDesignerAccessor.TagName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.TraceContext Trace { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void DesignerInitialize() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void InitializeAsUserControl(System.Web.UI.Page page) { }
         protected override void LoadViewState(object savedState) { }
         public string MapPath(string virtualPath) { throw null; }
@@ -11292,7 +11291,7 @@ namespace System.Web.UI
         Enabled = 2,
         Inherit = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ValidationPropertyAttribute : System.Attribute
     {
         public ValidationPropertyAttribute(string name) { }
@@ -11316,7 +11315,7 @@ namespace System.Web.UI
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
         public void Remove(System.Web.UI.IValidator validator) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=true)]
     public sealed partial class VerificationAttribute : System.Attribute
     {
         public VerificationAttribute(string guideline, string checkpoint, System.Web.UI.VerificationReportLevel reportLevel, int priority, string message) { }
@@ -11377,7 +11376,7 @@ namespace System.Web.UI
         Enabled = 1,
         Inherit = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class ViewStateModeByIdAttribute : System.Attribute
     {
         public ViewStateModeByIdAttribute() { }
@@ -11390,7 +11389,7 @@ namespace System.Web.UI
         SourceFile = 3,
         UserControl = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class WebResourceAttribute : System.Attribute
     {
         public WebResourceAttribute(string webResource, string contentType) { }
@@ -11447,13 +11446,13 @@ namespace System.Web.UI.Adapters
         protected ControlAdapter() { }
         protected System.Web.HttpBrowserCapabilities Browser { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Control Control { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Page Page { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.Adapters.PageAdapter PageAdapter { get { throw null; } }
         protected internal virtual void BeginRender(System.Web.UI.HtmlTextWriter writer) { }
         protected internal virtual void CreateChildControls() { }
@@ -11500,17 +11499,17 @@ namespace System.Web.UI.HtmlControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string HRef { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Target { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Title { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -11527,7 +11526,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlArea() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Href { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -11536,7 +11535,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlAudio() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -11562,10 +11561,10 @@ namespace System.Web.UI.HtmlControls
         protected HtmlContainerControl() { }
         public HtmlContainerControl(string tag) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string InnerHtml { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string InnerText { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected override void LoadViewState(object savedState) { }
@@ -11580,17 +11579,17 @@ namespace System.Web.UI.HtmlControls
         protected HtmlControl() { }
         protected HtmlControl(string tag) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool Disabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.CssStyleCollection Style { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string TagName { get { throw null; } }
         protected override bool ViewStateIgnoresCase { get { throw null; } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
@@ -11606,7 +11605,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlElement() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Manifest { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -11615,7 +11614,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlEmbed() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -11629,7 +11628,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlForm() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Action { get { throw null; } set { } }
         public override string ClientID { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -11637,18 +11636,18 @@ namespace System.Web.UI.HtmlControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DefaultFocus { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Enctype { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Method { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool SubmitDisabledControls { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Target { get { throw null; } set { } }
         public override string UniqueID { get { throw null; } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
@@ -11665,7 +11664,7 @@ namespace System.Web.UI.HtmlControls
         public HtmlGenericControl() { }
         public HtmlGenericControl(string tag) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new string TagName { get { throw null; } set { } }
     }
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.HtmlControls.HtmlHeadBuilder))]
@@ -11692,7 +11691,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlIframe() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -11702,24 +11701,24 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlImage() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Alt { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Height { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(100)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Width { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -11746,7 +11745,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlInputCheckBox() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool Checked { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
@@ -11763,13 +11762,13 @@ namespace System.Web.UI.HtmlControls
     {
         protected HtmlInputControl(string type) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Type { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Value { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -11778,16 +11777,16 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlInputFile() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Accept { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int MaxLength { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpPostedFile PostedFile { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public override string Value { get { throw null; } set { } }
@@ -11831,19 +11830,19 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlInputImage() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Alt { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -11873,7 +11872,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlInputRadioButton() : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Checked { get { throw null; } set { } }
         public override string Name { get { throw null; } set { } }
         public override string Value { get { throw null; } set { } }
@@ -11893,13 +11892,13 @@ namespace System.Web.UI.HtmlControls
         public HtmlInputReset() { }
         public HtmlInputReset(string type) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool CausesValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ValidationGroup { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public new event System.EventHandler ServerClick { add { } remove { } }
     }
     [System.ComponentModel.DefaultEventAttribute("ServerClick")]
@@ -11917,10 +11916,10 @@ namespace System.Web.UI.HtmlControls
         public HtmlInputText() : base (default(string)) { }
         public HtmlInputText(string type) : base (default(string)) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int MaxLength { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
         public override string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
@@ -11937,7 +11936,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlLink() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string Href { get { throw null; } set { } }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
@@ -11948,16 +11947,16 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlMeta() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Content { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string HttpEquiv { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Scheme { get { throw null; } set { } }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -11969,10 +11968,10 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlSelect() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string DataMember { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string DataSourceID { get { throw null; } set { } }
@@ -11984,22 +11983,22 @@ namespace System.Web.UI.HtmlControls
         public override string InnerText { get { throw null; } set { } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.ListItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Multiple { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } set { } }
         protected bool RequiresDataBinding { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         protected virtual int[] SelectedIndices { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Size { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -12036,7 +12035,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlSource() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -12046,33 +12045,33 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlTable() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Border { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         public override string InnerHtml { get { throw null; } set { } }
         public override string InnerText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.HtmlControls.HtmlTableRowCollection Rows { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Width { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected internal override void RenderChildren(System.Web.UI.HtmlTextWriter writer) { }
@@ -12090,32 +12089,32 @@ namespace System.Web.UI.HtmlControls
         public HtmlTableCell() { }
         public HtmlTableCell(string tagName) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int ColSpan { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.MinimizableAttributeTypeConverter")]
         public bool NoWrap { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int RowSpan { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string VAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Width { get { throw null; } set { } }
         protected override void RenderEndTag(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -12140,24 +12139,24 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlTableRow() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Align { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BgColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.HtmlControls.HtmlTableCellCollection Cells { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Height { get { throw null; } set { } }
         public override string InnerHtml { get { throw null; } set { } }
         public override string InnerText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string VAlign { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected internal override void RenderChildren(System.Web.UI.HtmlTextWriter writer) { }
@@ -12192,16 +12191,16 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlTextArea() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Cols { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Rows { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Value { get { throw null; } set { } }
         public event System.EventHandler ServerChange { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -12217,9 +12216,9 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlTitle() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
@@ -12230,7 +12229,7 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlTrack() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -12239,11 +12238,11 @@ namespace System.Web.UI.HtmlControls
     {
         public HtmlVideo() { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Poster { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.UrlPropertyAttribute]
         public string Src { get { throw null; } set { } }
         protected override void RenderAttributes(System.Web.UI.HtmlTextWriter writer) { }
@@ -12258,17 +12257,17 @@ namespace System.Web.UI.WebControls
         public AccessDataSource() { }
         public AccessDataSource(string dataFile, string selectCommand) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string ConnectionString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.MdbDataFileEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
         public string DataFile { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string ProviderName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string SqlCacheDependency { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.SqlDataSourceView CreateDataSourceView(string viewName) { throw null; }
         protected override System.Data.Common.DbProviderFactory GetDbProviderFactory() { throw null; }
@@ -12302,8 +12301,8 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("AlternateText")]
         public string AlternateTextField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("ImageUrl")]
         public string ImageUrlField { get { throw null; } set { } }
@@ -12391,7 +12390,7 @@ namespace System.Web.UI.WebControls
         void System.Web.UI.IStateManager.TrackViewState() { }
         protected virtual void TrackViewState() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class AutoGeneratedField : System.Web.UI.WebControls.BoundField
     {
         public AutoGeneratedField(string dataField) { }
@@ -12426,7 +12425,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public bool CultureInvariantValues { get { throw null; } set { } }
         protected static int CutoffYear { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationDataType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationDataType.String)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.ValidationDataType Type { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -12434,8 +12433,8 @@ namespace System.Web.UI.WebControls
         public static bool CanConvert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant) { throw null; }
         protected static bool Compare(string leftText, bool cultureInvariantLeftText, string rightText, bool cultureInvariantRightText, System.Web.UI.WebControls.ValidationCompareOperator op, System.Web.UI.WebControls.ValidationDataType type) { throw null; }
         protected static bool Compare(string leftText, string rightText, System.Web.UI.WebControls.ValidationCompareOperator op, System.Web.UI.WebControls.ValidationDataType type) { throw null; }
-        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant, out object value) { value = default(object); throw null; }
-        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, out object value) { value = default(object); throw null; }
+        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, bool cultureInvariant, out object value) { throw null; }
+        protected static bool Convert(string text, System.Web.UI.WebControls.ValidationDataType type, out object value) { throw null; }
         protected override bool DetermineRenderUplevel() { throw null; }
         protected static string GetDateElementOrder() { throw null; }
         protected static int GetFullYear(int shortYear) { throw null; }
@@ -12447,7 +12446,7 @@ namespace System.Web.UI.WebControls
         protected BaseDataBoundControl() { }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -12480,7 +12479,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
@@ -12491,7 +12490,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DataKeyField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DataKeyCollection DataKeys { get { throw null; } }
         protected System.Collections.ArrayList DataKeysArray { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -12499,17 +12498,17 @@ namespace System.Web.UI.WebControls
         public string DataMember { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DataSourceID { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         protected bool Initialized { get { throw null; } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
@@ -12543,14 +12542,14 @@ namespace System.Web.UI.WebControls
     {
         protected BaseValidator() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string AssociatedControlID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ValidatedControlConverter))]
         [System.Web.UI.IDReferencePropertyAttribute]
         [System.Web.UI.ThemeableAttribute(false)]
         public string ControlToValidate { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidatorDisplay)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidatorDisplay.Static)]
         [System.Web.UI.ThemeableAttribute(true)]
         public System.Web.UI.WebControls.ValidatorDisplay Display { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -12565,7 +12564,7 @@ namespace System.Web.UI.WebControls
         protected bool IsUnobtrusive { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public bool IsValid { get { throw null; } set { } }
         protected bool PropertiesValid { get { throw null; } }
@@ -12574,7 +12573,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public bool SetFocusOnError { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public override string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -12645,7 +12644,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ReadOnly { get { throw null; } set { } }
         protected virtual bool SupportsHtmlEncode { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ValidateRequestMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ValidateRequestMode.Inherit)]
         public new System.Web.UI.ValidateRequestMode ValidateRequestMode { get { throw null; } set { } }
         protected override void CopyProperties(System.Web.UI.WebControls.DataControlField newField) { }
         protected override System.Web.UI.WebControls.DataControlField CreateField() { throw null; }
@@ -12668,16 +12667,16 @@ namespace System.Web.UI.WebControls
     {
         public BulletedList() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool AutoPostBack { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BulletImageUrl { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BulletStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BulletStyle.NotSet)]
         public virtual System.Web.UI.WebControls.BulletStyle BulletStyle { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BulletedListDisplayMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BulletedListDisplayMode.Text)]
         public virtual System.Web.UI.WebControls.BulletedListDisplayMode DisplayMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int FirstBulletNumber { get { throw null; } set { } }
@@ -12685,18 +12684,18 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(true)]
         public virtual bool RenderWhenDataEmpty { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int SelectedIndex { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.ListItem SelectedItem { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SelectedValue { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.TargetConverter))]
         public virtual string Target { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string Text { get { throw null; } set { } }
         public event System.Web.UI.WebControls.BulletedListEventHandler Click { add { } remove { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -12783,7 +12782,7 @@ namespace System.Web.UI.WebControls
     public partial class ButtonColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public ButtonColumn() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonColumnType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonColumnType.LinkButton)]
         public virtual System.Web.UI.WebControls.ButtonColumnType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
@@ -12834,7 +12833,7 @@ namespace System.Web.UI.WebControls
     public abstract partial class ButtonFieldBase : System.Web.UI.WebControls.DataControlField
     {
         protected ButtonFieldBase() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Link)]
         public virtual System.Web.UI.WebControls.ButtonType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
@@ -12862,61 +12861,61 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(2)]
         public int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle DayHeaderStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DayNameFormat)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DayNameFormat.Short)]
         public System.Web.UI.WebControls.DayNameFormat DayNameFormat { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle DayStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.FirstDayOfWeek)(7))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.FirstDayOfWeek.Default)]
         public System.Web.UI.WebControls.FirstDayOfWeek FirstDayOfWeek { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string NextMonthText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.NextPrevFormat)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.NextPrevFormat.CustomText)]
         public System.Web.UI.WebControls.NextPrevFormat NextPrevFormat { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle NextPrevStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle OtherMonthDayStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("&lt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string PrevMonthText { get { throw null; } set { } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "1/1/0001")]
         public System.DateTime SelectedDate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.SelectedDatesCollection SelectedDates { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectedDayStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.CalendarSelectionMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.CalendarSelectionMode.Day)]
         public System.Web.UI.WebControls.CalendarSelectionMode SelectionMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public string SelectMonthText { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectorStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -12930,28 +12929,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ShowTitle { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TitleFormat)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TitleFormat.MonthYear)]
         public System.Web.UI.WebControls.TitleFormat TitleFormat { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TodayDayStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.DateTime TodaysDate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool UseAccessibleHeader { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "1/1/0001")]
         public System.DateTime VisibleDate { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle WeekendDayStyle { get { throw null; } }
         public event System.Web.UI.WebControls.DayRenderEventHandler DayRender { add { } remove { } }
         public event System.EventHandler SelectionChanged { add { } remove { } }
@@ -13010,13 +13009,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CancelButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CancelButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CancelButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CancelButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -13028,27 +13027,27 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ChangePasswordButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ChangePasswordButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ChangePasswordButtonType { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordFailureText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.ChangePassword))]
         public virtual System.Web.UI.ITemplate ChangePasswordTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control ChangePasswordTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ChangePasswordTitleText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string ConfirmNewPassword { get { throw null; } }
@@ -13063,13 +13062,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ContinueButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ContinueButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ContinueButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ContinueButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -13088,7 +13087,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CreateUserUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string CurrentPassword { get { throw null; } }
@@ -13106,9 +13105,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string EditProfileUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -13122,33 +13121,33 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string NewPassword { get { throw null; } }
@@ -13159,9 +13158,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string NewPasswordRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PasswordHintStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13189,31 +13188,31 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SuccessPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.ChangePassword))]
         public virtual System.Web.UI.ITemplate SuccessTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control SuccessTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SuccessTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessTitleText { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string UserName { get { throw null; } set { } }
@@ -13222,9 +13221,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         public event System.EventHandler CancelButtonClick { add { } remove { } }
         public event System.EventHandler ChangedPassword { add { } remove { } }
@@ -13268,21 +13267,21 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool CausesValidation { get { throw null; } set { } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool Checked { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection InputAttributes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection LabelAttributes { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -13304,30 +13303,30 @@ namespace System.Web.UI.WebControls
     {
         public CheckBoxField() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool ApplyFormatInEditMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool ConvertEmptyStringToNull { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.DataSourceBooleanViewSchemaConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public override string DataField { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string DataFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HtmlEncode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HtmlEncodeFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string NullDisplayText { get { throw null; } set { } }
         protected override bool SupportsHtmlEncode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -13356,16 +13355,16 @@ namespace System.Web.UI.WebControls
         public virtual bool RenderWhenDataEmpty { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
         protected virtual int RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasFooter { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasHeader { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasSeparators { get { throw null; } }
         int System.Web.UI.WebControls.IRepeatInfoUser.RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
         protected override System.Web.UI.Control FindControl(string id, int pathOffset) { throw null; }
@@ -13471,7 +13470,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ValidatedControlConverter))]
         [System.Web.UI.ThemeableAttribute(false)]
         public string ControlToCompare { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationCompareOperator)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationCompareOperator.Equal)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.ValidationCompareOperator Operator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -13486,7 +13485,7 @@ namespace System.Web.UI.WebControls
     {
         public CompleteWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
@@ -13526,22 +13525,22 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public string ContentPlaceHolderID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler DataBinding { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Disposed { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Init { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Load { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler PreRender { add { } remove { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new event System.EventHandler Unload { add { } remove { } }
     }
     public enum ContentDirection
@@ -13551,7 +13550,7 @@ namespace System.Web.UI.WebControls
         RightToLeft = 2,
     }
     [System.ComponentModel.DesignerAttribute("System.Web.UI.Design.WebControls.ContentPlaceHolderDesigner, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-    [System.ComponentModel.ToolboxItemFilterAttribute("Microsoft.VisualStudio.Web.WebForms.MasterPageWebFormDesigner", (System.ComponentModel.ToolboxItemFilterType)(3))]
+    [System.ComponentModel.ToolboxItemFilterAttribute("Microsoft.VisualStudio.Web.WebForms.MasterPageWebFormDesigner", System.ComponentModel.ToolboxItemFilterType.Require)]
     [System.ComponentModel.ToolboxItemFilterAttribute("System.Web.UI")]
     [System.Web.UI.ToolboxDataAttribute("<{0}:ContentPlaceHolder runat=\"server\"></{0}:ContentPlaceHolder>")]
     public partial class ContentPlaceHolder : System.Web.UI.Control, System.Web.UI.INamingContainer
@@ -13576,7 +13575,7 @@ namespace System.Web.UI.WebControls
         public ControlParameter(string name, System.TypeCode type, string controlID, string propertyName) { }
         protected ControlParameter(System.Web.UI.WebControls.ControlParameter original) { }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.ControlIDConverter))]
         [System.Web.UI.IDReferencePropertyAttribute]
         public string ControlID { get { throw null; } set { } }
@@ -13636,17 +13635,17 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool AutoGeneratePassword { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.CompleteWizardStep CompleteStep { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CompleteSuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CompleteSuccessTextStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string ConfirmPassword { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ConfirmPasswordCompareErrorMessage { get { throw null; } set { } }
@@ -13659,13 +13658,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string ContinueButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ContinueButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string ContinueButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType ContinueButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -13677,16 +13676,16 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CreateUserButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CreateUserButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CreateUserButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CreateUserButtonType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.CreateUserWizardStep CreateUserStep { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -13717,9 +13716,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string EmailRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle ErrorMessageStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -13733,17 +13732,17 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InvalidAnswerErrorMessage { get { throw null; } set { } }
@@ -13754,28 +13753,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InvalidQuestionErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool LoginCreatedUser { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Password { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PasswordHintStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PasswordHintText { get { throw null; } set { } }
@@ -13801,14 +13800,14 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public override string SkipLinkText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UnknownErrorMessage { get { throw null; } set { } }
@@ -13819,9 +13818,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.CreateUserWizardStepCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         public override System.Web.UI.WebControls.WizardStepCollection WizardSteps { get { throw null; } }
@@ -13854,10 +13853,10 @@ namespace System.Web.UI.WebControls
     {
         public CreateUserWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override bool AllowReturn { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
@@ -13897,7 +13896,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
         public override string DataSourceID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IDataSource DataSourceObject { get { throw null; } }
         protected override bool IsUsingModelBinders { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -13964,13 +13963,13 @@ namespace System.Web.UI.WebControls
         public virtual string AccessibleHeaderText { get { throw null; } set { } }
         protected System.Web.UI.Control Control { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ControlStyle { get { throw null; } }
         protected bool DesignMode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13980,8 +13979,8 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HeaderImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -13990,8 +13989,8 @@ namespace System.Web.UI.WebControls
         public virtual bool InsertVisible { get { throw null; } set { } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ShowHeader { get { throw null; } set { } }
@@ -14094,9 +14093,9 @@ namespace System.Web.UI.WebControls
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowSorting { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle AlternatingItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool AutoGenerateColumns { get { throw null; } set { } }
@@ -14107,40 +14106,40 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataGridColumnCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataGridColumnCollection Columns { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int CurrentPageIndex { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditItemIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle EditItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataGridItemCollection Items { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int PageCount { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataGridPagerStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(10)]
         public virtual int PageSize { get { throw null; } set { } }
@@ -14148,11 +14147,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataGridItem SelectedItem { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SelectedItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ShowFooter { get { throw null; } set { } }
@@ -14160,7 +14159,7 @@ namespace System.Web.UI.WebControls
         public virtual bool ShowHeader { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int VirtualItemCount { get { throw null; } set { } }
         public event System.Web.UI.WebControls.DataGridCommandEventHandler CancelCommand { add { } remove { } }
         public event System.Web.UI.WebControls.DataGridCommandEventHandler DeleteCommand { add { } remove { } }
@@ -14198,8 +14197,8 @@ namespace System.Web.UI.WebControls
         protected DataGridColumn() { }
         protected bool DesignMode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string FooterText { get { throw null; } set { } }
@@ -14207,15 +14206,15 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HeaderImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string HeaderText { get { throw null; } set { } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         protected System.Web.UI.WebControls.DataGrid Owner { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14308,7 +14307,7 @@ namespace System.Web.UI.WebControls
     public sealed partial class DataGridPagerStyle : System.Web.UI.WebControls.TableItemStyle
     {
         internal DataGridPagerStyle() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerMode.NextPrev)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerMode Mode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&gt;")]
@@ -14318,7 +14317,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(10)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int PageButtonCount { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerPosition)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerPosition.Bottom)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerPosition Position { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("&lt;")]
@@ -14396,96 +14395,96 @@ namespace System.Web.UI.WebControls
         public const string UpdateCommandName = "Update";
         public DataList() { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle AlternatingItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditItemIndex { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle EditItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ExtractTemplateRows { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public override System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataListItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle ItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataListItem SelectedItem { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SelectedItemStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate SelectedItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public object SelectedValue { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.TableItemStyle SeparatorStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataListItem))]
         public virtual System.Web.UI.ITemplate SeparatorTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -14601,9 +14600,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle AlternatingRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AutoGenerateDeleteButton { get { throw null; } set { } }
@@ -14618,59 +14617,59 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CommandRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DetailsViewMode CurrentMode { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int DataItemCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int DataItemIndex { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey DataKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.DetailsViewMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.DetailsViewMode.ReadOnly)]
         public virtual System.Web.UI.WebControls.DetailsViewMode DefaultMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual new string DeleteMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView))]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -14681,92 +14680,92 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnablePagingCallbacks { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FieldHeaderStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataControlFieldTypeEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataControlFieldCollection Fields { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FooterText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual new string InsertMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InsertRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DetailsView))]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRowCollection Rows { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IAutoFieldGenerator RowsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object SelectedValue { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DataItemIndex { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DisplayIndex { get { throw null; } }
@@ -14780,7 +14779,7 @@ namespace System.Web.UI.WebControls
         System.Web.UI.IAutoFieldGenerator System.Web.UI.WebControls.IFieldControl.FieldsGenerator { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DetailsViewRow TopPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -14974,7 +14973,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override int SelectedIndex { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -14988,7 +14987,7 @@ namespace System.Web.UI.WebControls
     public partial class EditCommandColumn : System.Web.UI.WebControls.DataGridColumn
     {
         public EditCommandColumn() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonColumnType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonColumnType.LinkButton)]
         public virtual System.Web.UI.WebControls.ButtonColumnType ButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -15043,25 +15042,25 @@ namespace System.Web.UI.WebControls
         public virtual bool AllowMultiple { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public byte[] FileBytes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.IO.Stream FileContent { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string FileName { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasFile { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasFiles { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.HttpPostedFile PostedFile { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Collections.Generic.IList<System.Web.HttpPostedFile> PostedFiles { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected internal override void OnPreRender(System.EventArgs e) { }
@@ -15090,15 +15089,15 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public bool Italic { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.Drawing.Design.FontNameEditor, System.Drawing.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.FontConverter.FontNameConverter))]
         public string Name { get { throw null; } set { } }
         [System.ComponentModel.EditorAttribute("System.Windows.Forms.Design.StringArrayEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.FontNamesConverter))]
         public string[] Names { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -15106,7 +15105,7 @@ namespace System.Web.UI.WebControls
         public bool Overline { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.FontUnit), "")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(2))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.Repaint)]
         public System.Web.UI.WebControls.FontUnit Size { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -15146,6 +15145,7 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FontUnit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.FontUnit Empty;
         public static readonly System.Web.UI.WebControls.FontUnit Large;
         public static readonly System.Web.UI.WebControls.FontUnit Larger;
@@ -15156,13 +15156,13 @@ namespace System.Web.UI.WebControls
         public static readonly System.Web.UI.WebControls.FontUnit XSmall;
         public static readonly System.Web.UI.WebControls.FontUnit XXLarge;
         public static readonly System.Web.UI.WebControls.FontUnit XXSmall;
-        public FontUnit(double value) { throw null;}
-        public FontUnit(double value, System.Web.UI.WebControls.UnitType type) { throw null;}
-        public FontUnit(int value) { throw null;}
-        public FontUnit(string value) { throw null;}
-        public FontUnit(string value, System.Globalization.CultureInfo culture) { throw null;}
-        public FontUnit(System.Web.UI.WebControls.FontSize type) { throw null;}
-        public FontUnit(System.Web.UI.WebControls.Unit value) { throw null;}
+        public FontUnit(double value) { throw null; }
+        public FontUnit(double value, System.Web.UI.WebControls.UnitType type) { throw null; }
+        public FontUnit(int value) { throw null; }
+        public FontUnit(string value) { throw null; }
+        public FontUnit(string value, System.Globalization.CultureInfo culture) { throw null; }
+        public FontUnit(System.Web.UI.WebControls.FontSize type) { throw null; }
+        public FontUnit(System.Web.UI.WebControls.Unit value) { throw null; }
         public bool IsEmpty { get { throw null; } }
         public System.Web.UI.WebControls.FontSize Type { get { throw null; } }
         public System.Web.UI.WebControls.Unit Unit { get { throw null; } }
@@ -15219,59 +15219,59 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int CellSpacing { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.FormViewMode CurrentMode { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int DataItemCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int DataItemIndex { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey DataKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.FormViewMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.FormViewMode.ReadOnly)]
         public virtual System.Web.UI.WebControls.FormViewMode DefaultMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual new string DeleteMethod { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView))]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15280,91 +15280,91 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool EnableModelValidation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FooterText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate InsertItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual new string InsertMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InsertRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.FormView))]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool RenderOuterTable { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow Row { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object SelectedValue { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DataItemIndex { get { throw null; } }
         int System.Web.UI.IDataItemContainer.DisplayIndex { get { throw null; } }
@@ -15377,7 +15377,7 @@ namespace System.Web.UI.WebControls
         System.Web.UI.WebControls.DataBoundControlMode System.Web.UI.WebControls.IDataBoundItemControl.Mode { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.FormViewRow TopPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -15553,9 +15553,9 @@ namespace System.Web.UI.WebControls
         public virtual bool AllowPaging { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool AllowSorting { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle AlternatingRowStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool AutoGenerateColumns { get { throw null; } set { } }
@@ -15570,12 +15570,12 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow BottomPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
@@ -15585,39 +15585,39 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] ClientIDRowSuffix { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.DataKeyArray ClientIDRowSuffixDataKeys { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataControlFieldTypeEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.DataControlFieldCollection Columns { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.IAutoFieldGenerator ColumnsGenerator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.DataFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] DataKeyNames { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKeyArray DataKeys { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual new string DeleteMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int EditIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EditRowStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle EmptyDataRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.GridViewRow))]
         public virtual System.Web.UI.ITemplate EmptyDataTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -15630,43 +15630,43 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableSortingAndPagingCallbacks { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow FooterRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FooterStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.Both)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow HeaderRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.CategoryAttribute("Layout")]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int PageCount { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int PageIndex { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.PagerSettings PagerSettings { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle PagerStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.GridViewRow))]
         public virtual System.Web.UI.ITemplate PagerTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(10)]
@@ -15675,27 +15675,27 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute("System.Web.UI.Design.DataColumnSelectionConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public virtual string RowHeaderColumn { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRowCollection Rows { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle RowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey SelectedDataKey { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.DataKey SelectedPersistedDataKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow SelectedRow { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SelectedRowStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public object SelectedValue { get { throw null; } }
@@ -15706,28 +15706,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool ShowHeaderWhenEmpty { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SortDirection)(0))]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SortDirection.Ascending)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.SortDirection SortDirection { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedAscendingCellStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedAscendingHeaderStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedDescendingCellStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SortedDescendingHeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string SortExpression { get { throw null; } }
         System.Web.UI.WebControls.DataKeyArray System.Web.UI.IDataKeysControl.ClientIDRowSuffixDataKeys { get { throw null; } }
         string[] System.Web.UI.WebControls.IDataBoundControl.DataKeyNames { get { throw null; } set { } }
@@ -15744,7 +15744,7 @@ namespace System.Web.UI.WebControls
         System.Web.UI.WebControls.DataKey System.Web.UI.WebControls.IPersistedSelector.DataKey { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.GridViewRow TopPagerRow { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -15752,7 +15752,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool UseAccessibleHeader { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual int VirtualItemCount { get { throw null; } set { } }
         public event System.EventHandler PageIndexChanged { add { } remove { } }
         public event System.Web.UI.WebControls.GridViewPageEventHandler PageIndexChanging { add { } remove { } }
@@ -15953,17 +15953,17 @@ namespace System.Web.UI.WebControls
     {
         public HiddenField() { }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string Value { get { throw null; } set { } }
         public event System.EventHandler ValueChanged { add { } remove { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected virtual bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection) { throw null; }
         protected internal override void OnPreRender(System.EventArgs e) { }
@@ -16011,7 +16011,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual string AlternateText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HotSpotMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HotSpotMode.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HotSpotMode HotSpotMode { get { throw null; } set { } }
         protected virtual bool IsTrackingViewState { get { throw null; } }
@@ -16034,7 +16034,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.TargetConverter))]
         public virtual string Target { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.StateBag ViewState { get { throw null; } }
         public abstract string GetCoordinates();
         protected virtual void LoadViewState(object savedState) { }
@@ -16096,7 +16096,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected override void AddParsedSubObject(object obj) { }
@@ -16225,15 +16225,15 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string DescriptionUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool GenerateEmptyAlternateText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ImageAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ImageAlign.NotSet)]
         public virtual System.Web.UI.WebControls.ImageAlign ImageAlign { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16276,11 +16276,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
         public override bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool GenerateEmptyAlternateText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16294,7 +16294,7 @@ namespace System.Web.UI.WebControls
         public override bool SupportsDisabledAttribute { get { throw null; } }
         string System.Web.UI.WebControls.IButtonControl.Text { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         protected virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16364,13 +16364,13 @@ namespace System.Web.UI.WebControls
     {
         public ImageMap() { }
         [System.ComponentModel.BrowsableAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
         public override bool Enabled { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HotSpotMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HotSpotMode.NotSet)]
         public virtual System.Web.UI.WebControls.HotSpotMode HotSpotMode { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.HotSpotCollection HotSpots { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string Target { get { throw null; } set { } }
@@ -16428,7 +16428,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         protected override void AddParsedSubObject(object obj) { }
@@ -16473,7 +16473,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -16509,7 +16509,7 @@ namespace System.Web.UI.WebControls
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(4)]
         public virtual int Rows { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ListSelectionMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ListSelectionMode.Single)]
         public virtual System.Web.UI.WebControls.ListSelectionMode SelectionMode { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
         public virtual int[] GetSelectedIndices() { throw null; }
@@ -16548,28 +16548,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ListItemsCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.ListItemCollection Items { get { throw null; } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(0)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int SelectedIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.ListItem SelectedItem { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string SelectedValue { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16602,7 +16602,7 @@ namespace System.Web.UI.WebControls
         public ListItem(string text, string value) { }
         public ListItem(string text, string value, bool enabled) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool Enabled { get { throw null; } set { } }
@@ -16612,7 +16612,7 @@ namespace System.Web.UI.WebControls
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(3))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.EncodedInnerDefaultProperty)]
         public string Text { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -16694,7 +16694,7 @@ namespace System.Web.UI.WebControls
     public partial class Literal : System.Web.UI.Control, System.Web.UI.ITextControl
     {
         public Literal() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LiteralMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LiteralMode.Transform)]
         public System.Web.UI.WebControls.LiteralMode Mode { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16702,7 +16702,7 @@ namespace System.Web.UI.WebControls
         public string Text { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected internal override void Render(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -16735,9 +16735,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int BorderPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle CheckBoxStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -16758,15 +16758,15 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool DisplayRememberMe { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginFailureAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginFailureAction.Refresh)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.LoginFailureAction FailureAction { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FailureText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -16780,25 +16780,25 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Login))]
         public virtual System.Web.UI.ITemplate LayoutTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16806,21 +16806,21 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string LoginButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style LoginButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string LoginButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType LoginButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.Orientation)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.Orientation.Vertical)]
         public virtual System.Web.UI.WebControls.Orientation Orientation { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Password { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PasswordLabelText { get { throw null; } set { } }
@@ -16846,18 +16846,18 @@ namespace System.Web.UI.WebControls
         public virtual bool RenderOuterTable { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginTextLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginTextLayout.TextOnLeft)]
         public virtual System.Web.UI.WebControls.LoginTextLayout TextLayout { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string TitleText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string UserName { get { throw null; } set { } }
@@ -16866,9 +16866,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -16930,7 +16930,7 @@ namespace System.Web.UI.WebControls
         public virtual string LoginImageUrl { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string LoginText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LogoutAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LogoutAction.Refresh)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.LogoutAction LogoutAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -16973,7 +16973,7 @@ namespace System.Web.UI.WebControls
         public LoginView() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public virtual System.Web.UI.ITemplate AnonymousTemplate { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
@@ -16981,12 +16981,12 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public virtual System.Web.UI.ITemplate LoggedInTemplate { get { throw null; } set { } }
         [System.ComponentModel.MergablePropertyAttribute(false)]
         [System.Web.UI.FilterableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.RoleGroupCollection RoleGroups { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
@@ -16995,7 +16995,7 @@ namespace System.Web.UI.WebControls
         public event System.EventHandler ViewChanging { add { } remove { } }
         protected internal override void CreateChildControls() { }
         public override void DataBind() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected internal override void LoadControlState(object savedState) { }
         protected internal override void OnInit(System.EventArgs e) { }
@@ -17029,7 +17029,7 @@ namespace System.Web.UI.WebControls
         public string CC { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.EmbeddedMailObjectsCollection EmbeddedObjects { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -17037,7 +17037,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public bool IsBodyHtml { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Net.Mail.MailPriority)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Net.Mail.MailPriority.Normal)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Net.Mail.MailPriority Priority { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -17068,7 +17068,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuBindingsEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemBindingCollection DataBindings { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(500)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -17083,26 +17083,26 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int DynamicHorizontalOffset { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style DynamicHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DynamicItemFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer))]
         public System.Web.UI.ITemplate DynamicItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle DynamicMenuItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyle DynamicMenuStyle { get { throw null; } }
         public string DynamicPopOutImageTextFormatString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -17110,9 +17110,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string DynamicPopOutImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle DynamicSelectedStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -17125,30 +17125,30 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuItemCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemCollection Items { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ItemWrap { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuItemStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyleCollection LevelMenuItemStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.MenuItemStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyleCollection LevelSelectedStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.SubMenuStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyleCollection LevelSubMenuStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(3)]
         [System.Web.UI.ThemeableAttribute(true)]
         public int MaximumDynamicDisplayLevels { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.Orientation)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.Orientation.Vertical)]
         public System.Web.UI.WebControls.Orientation Orientation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute('/')]
         public char PathSeparator { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.MenuRenderingMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.MenuRenderingMode.Default)]
         public System.Web.UI.WebControls.MenuRenderingMode RenderingMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -17163,11 +17163,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string ScrollUpText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.MenuItem SelectedItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string SelectedValue { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public string SkipLinkText { get { throw null; } set { } }
@@ -17181,26 +17181,26 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool StaticEnableDefaultPopOutImage { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StaticHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string StaticItemFormatString { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.MenuItemTemplateContainer))]
         public System.Web.UI.ITemplate StaticItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle StaticMenuItemStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.SubMenuStyle StaticMenuStyle { get { throw null; } }
         public string StaticPopOutImageTextFormatString { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -17208,9 +17208,9 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string StaticPopOutImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.MenuItemStyle StaticSelectedStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         [System.Web.UI.ThemeableAttribute(true)]
@@ -17274,21 +17274,21 @@ namespace System.Web.UI.WebControls
         public MenuItem(string text, string value, string imageUrl, string navigateUrl, string target) { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.MenuItemCollection ChildItems { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool DataBound { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         public object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DataPath { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Depth { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -17302,7 +17302,7 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NavigateUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.MenuItem Parent { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -17331,7 +17331,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Value { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ValuePath { get { throw null; } }
         object System.ICloneable.Clone() { throw null; }
         void System.Web.UI.IStateManager.LoadViewState(object state) { }
@@ -17566,7 +17566,7 @@ namespace System.Web.UI.WebControls
         protected virtual System.Web.UI.WebControls.ModelDataSourceMethod EvaluateInsertMethodParameters(System.Collections.IDictionary values) { throw null; }
         protected virtual void EvaluateMethodParameters(System.Web.UI.DataSourceOperation dataSourceOperation, System.Web.UI.WebControls.ModelDataSourceMethod modelDataSourceMethod, System.Collections.IDictionary controlValues) { }
         protected virtual void EvaluateMethodParameters(System.Web.UI.DataSourceOperation dataSourceOperation, System.Web.UI.WebControls.ModelDataSourceMethod modelDataSourceMethod, System.Collections.IDictionary controlValues, bool isPageLoadComplete) { }
-        protected virtual System.Web.UI.WebControls.ModelDataSourceMethod EvaluateSelectMethodParameters(System.Web.UI.DataSourceSelectArguments arguments, out System.Web.UI.WebControls.DataSourceSelectResultProcessingOptions selectResultProcessingOptions) { selectResultProcessingOptions = default(System.Web.UI.WebControls.DataSourceSelectResultProcessingOptions); throw null; }
+        protected virtual System.Web.UI.WebControls.ModelDataSourceMethod EvaluateSelectMethodParameters(System.Web.UI.DataSourceSelectArguments arguments, out System.Web.UI.WebControls.DataSourceSelectResultProcessingOptions selectResultProcessingOptions) { throw null; }
         protected virtual System.Web.UI.WebControls.ModelDataSourceMethod EvaluateUpdateMethodParameters(System.Collections.IDictionary keys, System.Collections.IDictionary values, System.Collections.IDictionary oldValues) { throw null; }
         protected override int ExecuteDelete(System.Collections.IDictionary keys, System.Collections.IDictionary oldValues) { throw null; }
         protected override int ExecuteInsert(System.Collections.IDictionary values) { throw null; }
@@ -17610,8 +17610,8 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public bool SetFocusOnError { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.Attribute)]
         public override string Text { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         protected internal override void OnPreRender(System.EventArgs e) { }
     }
@@ -17649,7 +17649,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.ViewCollection Views { get { throw null; } }
         public event System.EventHandler ActiveViewChanged { add { } remove { } }
         protected override void AddParsedSubObject(object obj) { }
@@ -17688,11 +17688,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.DataSourceCacheDurationConverter))]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyDependency { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ConflictOptions)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ConflictOptions.OverwriteChanges)]
         public System.Web.UI.ConflictOptions ConflictDetection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ConvertNullToDBNull { get { throw null; } set { } }
@@ -17703,7 +17703,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableCaching { get { throw null; } set { } }
@@ -17714,20 +17714,20 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string InsertMethod { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("maximumRows")]
         public string MaximumRowsParameterName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("{0}")]
         public string OldValuesParameterFormatString { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ParsingCulture)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ParsingCulture.Invariant)]
         public System.Web.UI.WebControls.ParsingCulture ParsingCulture { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SelectCountMethod { get { throw null; } set { } }
@@ -17736,7 +17736,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection SelectParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SortParameterName { get { throw null; } set { } }
@@ -17751,7 +17751,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.ObjectDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.ObjectDataSourceMethodEventHandler Deleting { add { } remove { } }
@@ -17960,7 +17960,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("&gt;&gt;")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string LastPageText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerButtons)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerButtons.Numeric)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerButtons Mode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -17974,7 +17974,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(10)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public int PageButtonCount { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PagerPosition)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PagerPosition.Bottom)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.PagerPosition Position { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -18009,14 +18009,14 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string DefaultButton { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ContentDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ContentDirection.NotSet)]
         public virtual System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string GroupingText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ScrollBars)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ScrollBars.None)]
         public virtual System.Web.UI.WebControls.ScrollBars ScrollBars { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -18056,11 +18056,11 @@ namespace System.Web.UI.WebControls
         protected Parameter(System.Web.UI.WebControls.Parameter original) { }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ConvertEmptyStringToNull { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.DbType)(13))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.DbType.Object)]
         public System.Data.DbType DbType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         public string DefaultValue { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.ParameterDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.ParameterDirection.Input)]
         public System.Data.ParameterDirection Direction { get { throw null; } set { } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -18068,10 +18068,10 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int Size { get { throw null; } set { } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.TypeCode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.TypeCode.Empty)]
         public System.TypeCode Type { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected System.Web.UI.StateBag ViewState { get { throw null; } }
         protected virtual System.Web.UI.WebControls.Parameter Clone() { throw null; }
         public static System.TypeCode ConvertDbTypeToTypeCode(System.Data.DbType dbType) { throw null; }
@@ -18131,7 +18131,7 @@ namespace System.Web.UI.WebControls
         public static readonly string SubmitButtonCommandName;
         public PasswordRecovery() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Answer { get { throw null; } }
@@ -18142,9 +18142,9 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(1)]
         public virtual int BorderPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle FailureTextStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string GeneralFailureText { get { throw null; } set { } }
@@ -18160,30 +18160,30 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string HelpPageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HyperLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle LabelStyle { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public System.Web.UI.WebControls.MailDefinition MailDefinition { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string MembershipProvider { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Web.UI.FilterableAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual string Question { get { throw null; } }
@@ -18194,11 +18194,11 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string QuestionLabelText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate QuestionTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control QuestionTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string QuestionTitleText { get { throw null; } set { } }
@@ -18209,13 +18209,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SubmitButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SubmitButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SubmitButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType SubmitButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -18223,31 +18223,31 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string SuccessPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate SuccessTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control SuccessTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SuccessText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SuccessTextStyle { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TextBoxStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.LoginTextLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.LoginTextLayout.TextOnLeft)]
         public virtual System.Web.UI.WebControls.LoginTextLayout TextLayout { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle TitleTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -18261,18 +18261,18 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameRequiredErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.PasswordRecovery))]
         public virtual System.Web.UI.ITemplate UserNameTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control UserNameTemplateContainer { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string UserNameTitleText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ValidatorTextStyle { get { throw null; } }
         public event System.EventHandler AnswerLookupError { add { } remove { } }
         public event System.Web.UI.WebControls.MailMessageEventHandler SendingMail { add { } remove { } }
@@ -18387,16 +18387,16 @@ namespace System.Web.UI.WebControls
         public virtual bool RenderWhenDataEmpty { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RepeatColumns { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatDirection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatDirection.Vertical)]
         public virtual System.Web.UI.WebControls.RepeatDirection RepeatDirection { get { throw null; } set { } }
         protected virtual int RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.RepeatLayout)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.RepeatLayout.Table)]
         public virtual System.Web.UI.WebControls.RepeatLayout RepeatLayout { get { throw null; } set { } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasFooter { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasHeader { get { throw null; } }
         bool System.Web.UI.WebControls.IRepeatInfoUser.HasSeparators { get { throw null; } }
         int System.Web.UI.WebControls.IRepeatInfoUser.RepeatedItemCount { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextAlign)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextAlign.Right)]
         public virtual System.Web.UI.WebControls.TextAlign TextAlign { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
         protected override System.Web.UI.Control FindControl(string id, int pathOffset) { throw null; }
@@ -18466,7 +18466,7 @@ namespace System.Web.UI.WebControls
         public Repeater() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
@@ -18474,7 +18474,7 @@ namespace System.Web.UI.WebControls
         public virtual string DataMember { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(true)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object DataSource { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.IDReferencePropertyAttribute(typeof(System.Web.UI.DataSourceControl))]
@@ -18483,23 +18483,23 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         protected bool Initialized { get { throw null; } }
         protected bool IsBoundUsingDataSourceID { get { throw null; } }
         protected bool IsDataBindingAutomatic { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.RepeaterItemCollection Items { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -18512,7 +18512,7 @@ namespace System.Web.UI.WebControls
         public virtual string SelectMethod { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.RepeaterItem))]
         public virtual System.Web.UI.ITemplate SeparatorTemplate { get { throw null; } set { } }
         public event System.Web.UI.WebControls.CallingDataMethodsEventHandler CallingDataMethods { add { } remove { } }
@@ -18612,7 +18612,7 @@ namespace System.Web.UI.WebControls
         public RoleGroup() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.LoginView))]
         public System.Web.UI.ITemplate ContentTemplate { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
@@ -18713,10 +18713,10 @@ namespace System.Web.UI.WebControls
     {
         public SiteMapDataSource() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool ContainsListCollection { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SiteMapProvider Provider { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ShowStartingNode { get { throw null; } set { } }
@@ -18784,56 +18784,56 @@ namespace System.Web.UI.WebControls
     {
         public SiteMapPath() { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CurrentNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem))]
         public virtual System.Web.UI.ITemplate CurrentNodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style NodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem))]
         public virtual System.Web.UI.ITemplate NodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int ParentLevelsDisplayed { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.PathDirection)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.PathDirection.RootToCurrent)]
         public virtual System.Web.UI.WebControls.PathDirection PathDirection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(" > ")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string PathSeparator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style PathSeparatorStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem))]
         public virtual System.Web.UI.ITemplate PathSeparatorTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.SiteMapProvider Provider { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool RenderCurrentNodeAsLink { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style RootNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.SiteMapNodeItem))]
         public virtual System.Web.UI.ITemplate RootNodeTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -18878,28 +18878,28 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.DataSourceCacheDurationConverter))]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyDependency { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool CancelSelectOnNullParameter { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ConflictOptions)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ConflictOptions.OverwriteChanges)]
         public System.Web.UI.ConflictOptions ConflictDetection { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.SqlDataSourceConnectionStringEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
         public virtual string ConnectionString { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceMode.DataSet)]
         public System.Web.UI.WebControls.SqlDataSourceMode DataSourceMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string DeleteCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType DeleteCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public virtual bool EnableCaching { get { throw null; } set { } }
@@ -18908,16 +18908,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string InsertCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType InsertCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("{0}")]
         public string OldValuesParameterFormatString { get { throw null; } set { } }
@@ -18926,12 +18926,12 @@ namespace System.Web.UI.WebControls
         public virtual string ProviderName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SelectCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType SelectCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection SelectParameters { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string SortParameterName { get { throw null; } set { } }
@@ -18939,12 +18939,12 @@ namespace System.Web.UI.WebControls
         public virtual string SqlCacheDependency { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string UpdateCommand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.SqlDataSourceCommandType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.SqlDataSourceCommandType.Text)]
         public System.Web.UI.WebControls.SqlDataSourceCommandType UpdateCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.SqlDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.SqlDataSourceCommandEventHandler Deleting { add { } remove { } }
@@ -19020,18 +19020,18 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.SqlDataSourceCommandType DeleteCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection DeleteParameters { get { throw null; } }
         public string FilterExpression { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection FilterParameters { get { throw null; } }
         public string InsertCommand { get { throw null; } set { } }
         public System.Web.UI.WebControls.SqlDataSourceCommandType InsertCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection InsertParameters { get { throw null; } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("{0}")]
@@ -19046,7 +19046,7 @@ namespace System.Web.UI.WebControls
         public System.Web.UI.WebControls.SqlDataSourceCommandType UpdateCommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.ParameterCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.ParameterCollection UpdateParameters { get { throw null; } }
         public event System.Web.UI.WebControls.SqlDataSourceStatusEventHandler Deleted { add { } remove { } }
         public event System.Web.UI.WebControls.SqlDataSourceCommandEventHandler Deleting { add { } remove { } }
@@ -19103,7 +19103,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public System.Drawing.Color BorderColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BorderStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BorderStyle.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
@@ -19113,7 +19113,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.Web.UI.CssClassPropertyAttribute]
         public string CssClass { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
@@ -19124,16 +19124,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool IsEmpty { get { throw null; } }
         protected bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string RegisteredCssClass { get { throw null; } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected internal System.Web.UI.StateBag ViewState { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -19239,18 +19239,18 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Caption { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableCaptionAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableCaptionAlign.NotSet)]
         public virtual System.Web.UI.WebControls.TableCaptionAlign CaptionAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellPadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         public virtual int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.TableRowCollection Rows { get { throw null; } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
@@ -19289,16 +19289,16 @@ namespace System.Web.UI.WebControls
         public virtual string[] AssociatedHeaderCellID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int ColumnSpan { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(0)]
         public virtual int RowSpan { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool Wrap { get { throw null; } set { } }
@@ -19350,7 +19350,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.StringArrayConverter))]
         public virtual string[] CategoryText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableHeaderScope)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableHeaderScope.NotSet)]
         public virtual System.Web.UI.WebControls.TableHeaderScope Scope { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
     }
@@ -19368,10 +19368,10 @@ namespace System.Web.UI.WebControls
     {
         public TableItemStyle() { }
         public TableItemStyle(System.Web.UI.StateBag bag) { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
@@ -19391,14 +19391,14 @@ namespace System.Web.UI.WebControls
     {
         public TableRow() { }
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public virtual System.Web.UI.WebControls.TableCellCollection Cells { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         public override bool SupportsDisabledAttribute { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TableRowSection)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TableRowSection.TableBody)]
         public virtual System.Web.UI.WebControls.TableRowSection TableSection { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.VerticalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.VerticalAlign.NotSet)]
         public virtual System.Web.UI.WebControls.VerticalAlign VerticalAlign { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
         protected override System.Web.UI.WebControls.Style CreateControlStyle() { throw null; }
@@ -19462,10 +19462,10 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual int CellSpacing { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.GridLines)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.GridLines.None)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.GridLines GridLines { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.HorizontalAlign)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.HorizontalAlign.NotSet)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         public override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer, System.Web.UI.WebControls.WebControl owner) { }
@@ -19486,22 +19486,22 @@ namespace System.Web.UI.WebControls
         public TemplateColumn() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.DataGridItem))]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
         public override void InitializeCell(System.Web.UI.WebControls.TableCell cell, int columnIndex, System.Web.UI.WebControls.ListItemType itemType) { }
@@ -19517,22 +19517,22 @@ namespace System.Web.UI.WebControls
         public TemplatedWizardStep() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate ContentTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control ContentTemplateContainer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate CustomNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.Control CustomNavigationTemplateContainer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(true)]
         public override string SkinID { get { throw null; } set { } }
@@ -19542,37 +19542,37 @@ namespace System.Web.UI.WebControls
         public TemplateField() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate AlternatingItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ConvertEmptyStringToNull { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate EditItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer))]
         public virtual System.Web.UI.ITemplate FooterTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate InsertItemTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), (System.ComponentModel.BindingDirection)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.IDataItemContainer), System.ComponentModel.BindingDirection.TwoWay)]
         public virtual System.Web.UI.ITemplate ItemTemplate { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.ValidateRequestMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.ValidateRequestMode.Inherit)]
         public new System.Web.UI.ValidateRequestMode ValidateRequestMode { get { throw null; } set { } }
         protected override void CopyProperties(System.Web.UI.WebControls.DataControlField newField) { }
         protected override System.Web.UI.WebControls.DataControlField CreateField() { throw null; }
@@ -19597,7 +19597,7 @@ namespace System.Web.UI.WebControls
     public partial class TextBox : System.Web.UI.WebControls.WebControl, System.Web.UI.IEditableTextControl, System.Web.UI.IPostBackDataHandler, System.Web.UI.ITextControl
     {
         public TextBox() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.AutoCompleteType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.AutoCompleteType.None)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.AutoCompleteType AutoCompleteType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -19619,13 +19619,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual int Rows { get { throw null; } set { } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
-        [System.ComponentModel.BindableAttribute(true, (System.ComponentModel.BindingDirection)(1))]
+        [System.ComponentModel.BindableAttribute(true, System.ComponentModel.BindingDirection.TwoWay)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(3))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.EncodedInnerDefaultProperty)]
         public virtual string Text { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TextBoxMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TextBoxMode.SingleLine)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.TextBoxMode TextMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -19689,21 +19689,21 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.TreeNodeCollection ChildNodes { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool DataBound { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         public object DataItem { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DataPath { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Depth { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Nullable<bool>), "")]
         public System.Nullable<bool> Expanded { get { throw null; } set { } }
@@ -19720,11 +19720,11 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NavigateUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNode Parent { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool PopulateOnDemand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeSelectAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeSelectAction.Select)]
         public System.Web.UI.WebControls.TreeNodeSelectAction SelectAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool Selected { get { throw null; } set { } }
@@ -19743,7 +19743,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.LocalizableAttribute(true)]
         public string Value { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ValuePath { get { throw null; } }
         protected virtual object Clone() { throw null; }
         public void Collapse() { }
@@ -19796,7 +19796,7 @@ namespace System.Web.UI.WebControls
         public string NavigateUrlField { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool PopulateOnDemand { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeSelectAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeSelectAction.Select)]
         public System.Web.UI.WebControls.TreeNodeSelectAction SelectAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Nullable<bool>), "")]
         public System.Nullable<bool> ShowCheckBox { get { throw null; } set { } }
@@ -19946,7 +19946,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool AutoGenerateDataBindings { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNodeCollection CheckedNodes { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public string CollapseImageToolTip { get { throw null; } set { } }
@@ -19957,7 +19957,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeViewBindingsEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeBindingCollection DataBindings { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -19972,20 +19972,20 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string ExpandImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style HoverNodeStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeViewImageSet)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeViewImageSet.Custom)]
         public System.Web.UI.WebControls.TreeViewImageSet ImageSet { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle LeafNodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeNodeStyleCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyleCollection LevelStyles { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string LineImagesFolder { get { throw null; } set { } }
@@ -19996,12 +19996,12 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.TreeNodeCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeCollection Nodes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle NodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool NodeWrap { get { throw null; } set { } }
@@ -20010,32 +20010,32 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public string NoExpandImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle ParentNodeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute('/')]
         public char PathSeparator { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool PopulateNodesFromClient { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle RootNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.TreeNode SelectedNode { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TreeNodeStyle SelectedNodeStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string SelectedValue { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.TreeNodeTypes)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.TreeNodeTypes.None)]
         public System.Web.UI.WebControls.TreeNodeTypes ShowCheckBoxes { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool ShowExpandCollapse { get { throw null; } set { } }
@@ -20113,12 +20113,13 @@ namespace System.Web.UI.WebControls
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Unit
     {
+        private int _dummyPrimitive;
         public static readonly System.Web.UI.WebControls.Unit Empty;
-        public Unit(double value) { throw null;}
-        public Unit(double value, System.Web.UI.WebControls.UnitType type) { throw null;}
-        public Unit(int value) { throw null;}
-        public Unit(string value) { throw null;}
-        public Unit(string value, System.Globalization.CultureInfo culture) { throw null;}
+        public Unit(double value) { throw null; }
+        public Unit(double value, System.Web.UI.WebControls.UnitType type) { throw null; }
+        public Unit(int value) { throw null; }
+        public Unit(string value) { throw null; }
+        public Unit(string value, System.Globalization.CultureInfo culture) { throw null; }
         public bool IsEmpty { get { throw null; } }
         public System.Web.UI.WebControls.UnitType Type { get { throw null; } }
         public double Value { get { throw null; } }
@@ -20183,7 +20184,7 @@ namespace System.Web.UI.WebControls
     public partial class ValidationSummary : System.Web.UI.WebControls.WebControl
     {
         public ValidationSummary() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ValidationSummaryDisplayMode)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ValidationSummaryDisplayMode.BulletList)]
         public System.Web.UI.WebControls.ValidationSummaryDisplayMode DisplayMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -20241,7 +20242,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override bool Visible { get { throw null; } set { } }
         public event System.EventHandler Activate { add { } remove { } }
         public event System.EventHandler Deactivate { add { } remove { } }
@@ -20272,7 +20273,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string AccessKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.AttributeCollection Attributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
@@ -20280,16 +20281,16 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public virtual System.Drawing.Color BorderColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BorderStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BorderStyle.NotSet)]
         public virtual System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         public virtual System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.Style ControlStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ControlStyleCreated { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.CssClassPropertyAttribute]
@@ -20301,14 +20302,14 @@ namespace System.Web.UI.WebControls
         public virtual bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(true)]
         public override bool EnableTheming { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public virtual System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasAttributes { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "")]
         public virtual System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
@@ -20316,17 +20317,17 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.BrowsableAttribute(true)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.CssStyleCollection Style { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public virtual bool SupportsDisabledAttribute { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute((short)0)]
         public virtual short TabIndex { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected virtual string TagName { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -20376,7 +20377,7 @@ namespace System.Web.UI.WebControls
         public static readonly string WizardStepPlaceholderId;
         public Wizard() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WizardStepBase ActiveStep { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(-1)]
         [System.Web.UI.ThemeableAttribute(false)]
@@ -20386,13 +20387,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string CancelButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style CancelButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string CancelButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType CancelButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -20414,13 +20415,13 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string FinishCompleteButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style FinishCompleteButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FinishCompleteButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType FinishCompleteButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -20429,7 +20430,7 @@ namespace System.Web.UI.WebControls
         public virtual string FinishDestinationPageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate FinishNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -20437,22 +20438,22 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string FinishPreviousButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style FinishPreviousButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string FinishPreviousButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType FinishPreviousButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate HeaderTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -20460,39 +20461,39 @@ namespace System.Web.UI.WebControls
         public virtual string HeaderText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate LayoutTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style NavigationButtonStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle NavigationStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SideBarButtonStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle SideBarStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate SideBarTemplate { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SkipLinkText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate StartNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -20500,17 +20501,17 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StartNextButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StartNextButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StartNextButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StartNextButtonType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.Wizard))]
         public virtual System.Web.UI.ITemplate StepNavigationTemplate { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -20518,36 +20519,36 @@ namespace System.Web.UI.WebControls
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StepNextButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StepNextButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StepNextButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StepNextButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string StepPreviousButtonImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style StepPreviousButtonStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string StepPreviousButtonText { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType StepPreviousButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableItemStyle StepStyle { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.WebControls.WizardStepCollectionEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual System.Web.UI.WebControls.WizardStepCollection WizardSteps { get { throw null; } }
         public event System.EventHandler ActiveStepChanged { add { } remove { } }
@@ -20611,15 +20612,15 @@ namespace System.Web.UI.WebControls
         public override bool EnableTheming { get { throw null; } set { } }
         public override string ID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string Name { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WizardStepType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WizardStepType.Auto)]
         public virtual System.Web.UI.WebControls.WizardStepType StepType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Web.UI.WebControls.Wizard Wizard { get { throw null; } }
         protected override void LoadViewState(object savedState) { }
         protected internal override void OnLoad(System.EventArgs e) { }
@@ -20671,16 +20672,16 @@ namespace System.Web.UI.WebControls
     public partial class Xml : System.Web.UI.Control
     {
         public Xml() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ObsoleteAttribute("The recommended alternative is the XPathNavigator property. Create a System.Xml.XPath.XPathDocument and call CreateNavigator() to create an XPathNavigator. http://go.microsoft.com/fwlink/?linkid=14202")]
         public System.Xml.XmlDocument Document { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DocumentContent { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XmlUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -20688,33 +20689,33 @@ namespace System.Web.UI.WebControls
         public string DocumentSource { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.Xsl.XslTransform Transform { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.Xsl.XsltArgumentList TransformArgumentList { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XslUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         public string TransformSource { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Xml.XPath.XPathNavigator XPathNavigator { get { throw null; } set { } }
         protected override void AddParsedSubObject(object obj) { }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.Control FindControl(string id) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         protected override System.Collections.IDictionary GetDesignModeState() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool HasControls() { throw null; }
         protected internal override void Render(System.Web.UI.HtmlTextWriter output) { }
     }
@@ -20738,7 +20739,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute(0)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.DataSourceCacheDurationConverter))]
         public virtual int CacheDuration { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.DataSourceCacheExpiry)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.DataSourceCacheExpiry.Absolute)]
         public virtual System.Web.UI.DataSourceCacheExpiry CacheExpirationPolicy { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public virtual string CacheKeyContext { get { throw null; } set { } }
@@ -20747,7 +20748,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.TypeConverterAttribute("System.ComponentModel.MultilineStringConverter,System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual string Data { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.XmlDataFileEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -20758,7 +20759,7 @@ namespace System.Web.UI.WebControls
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.MultilineStringEditor,System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.ComponentModel.TypeConverterAttribute("System.ComponentModel.MultilineStringConverter,System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual string Transform { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public virtual System.Xml.Xsl.XsltArgumentList TransformArgumentList { get { throw null; } set { } }
@@ -20840,7 +20841,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public AppearanceEditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         public override string Title { get { throw null; } set { } }
@@ -20854,7 +20855,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public BehaviorEditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         public override bool Display { get { throw null; } }
@@ -20871,7 +20872,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         protected CatalogPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DisplayTitle { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPartManager WebPartManager { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.CatalogZoneBase Zone { get { throw null; } }
@@ -20911,9 +20912,9 @@ namespace System.Web.UI.WebControls.WebParts
         public CatalogZone() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.WebParts.CatalogZone))]
-        [System.Web.UI.TemplateInstanceAttribute((System.Web.UI.TemplateInstance)(1))]
+        [System.Web.UI.TemplateInstanceAttribute(System.Web.UI.TemplateInstance.Single)]
         public virtual System.Web.UI.ITemplate ZoneTemplate { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.WebParts.CatalogPartCollection CreateCatalogParts() { throw null; }
     }
@@ -20921,36 +20922,36 @@ namespace System.Web.UI.WebControls.WebParts
     {
         protected CatalogZoneBase() : base (default(System.Collections.ICollection)) { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb AddVerb { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.CatalogPartChrome CatalogPartChrome { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.CatalogPartCollection CatalogParts { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb CloseVerb { get { throw null; } }
         public override string EmptyZoneText { get { throw null; } set { } }
         public override string HeaderText { get { throw null; } set { } }
         public override string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style PartLinkStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
         public string SelectedCatalogPartID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SelectedPartLinkStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string SelectTargetZoneText { get { throw null; } set { } }
@@ -20978,7 +20979,7 @@ namespace System.Web.UI.WebControls.WebParts
         void System.Web.UI.IPostBackDataHandler.RaisePostDataChangedEvent() { }
         protected override void TrackViewState() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public partial class ConnectionConsumerAttribute : System.Attribute
     {
         public ConnectionConsumerAttribute(string displayName) { }
@@ -21013,7 +21014,7 @@ namespace System.Web.UI.WebControls.WebParts
         public System.Type InterfaceType { get { throw null; } }
         public virtual bool GetEnabled(System.Web.UI.Control control) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public partial class ConnectionProviderAttribute : System.Attribute
     {
         public ConnectionProviderAttribute(string displayName) { }
@@ -21032,20 +21033,20 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public ConnectionsZone() : base (default(System.Collections.ICollection)) { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb CancelVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb CloseVerb { get { throw null; } }
         public virtual string ConfigureConnectionTitle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb ConfigureVerb { get { throw null; } }
         public virtual string ConnectToConsumerInstructionText { get { throw null; } set { } }
         public virtual string ConnectToConsumerText { get { throw null; } set { } }
@@ -21054,20 +21055,20 @@ namespace System.Web.UI.WebControls.WebParts
         public virtual string ConnectToProviderText { get { throw null; } set { } }
         public virtual string ConnectToProviderTitle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb ConnectVerb { get { throw null; } }
         public virtual string ConsumersInstructionText { get { throw null; } set { } }
         public virtual string ConsumersTitle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb DisconnectVerb { get { throw null; } }
         protected override bool Display { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string EmptyZoneText { get { throw null; } set { } }
         public virtual string ExistingConnectionErrorMessage { get { throw null; } set { } }
@@ -21080,7 +21081,7 @@ namespace System.Web.UI.WebControls.WebParts
         public virtual string NoExistingConnectionInstructionText { get { throw null; } set { } }
         public virtual string NoExistingConnectionTitle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.WebParts.PartChromeType PartChromeType { get { throw null; } set { } }
         public virtual string ProvidersInstructionText { get { throw null; } set { } }
@@ -21125,91 +21126,91 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public DeclarativeCatalogPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string AccessKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.CssClassPropertyAttribute]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string CssClass { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string GroupingText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.ScrollBars ScrollBars { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override short TabIndex { get { throw null; } set { } }
         public override string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string ToolTip { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Visible { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -21219,15 +21220,15 @@ namespace System.Web.UI.WebControls.WebParts
         public string WebPartsListUserControlPath { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart))]
         public System.Web.UI.ITemplate WebPartsTemplate { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit Width { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Wrap { get { throw null; } set { } }
         public override System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection GetAvailableWebPartDescriptions() { throw null; }
@@ -21240,10 +21241,10 @@ namespace System.Web.UI.WebControls.WebParts
     {
         protected EditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool Display { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DisplayTitle { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPartManager WebPartManager { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPart WebPartToEdit { get { throw null; } }
@@ -21283,9 +21284,9 @@ namespace System.Web.UI.WebControls.WebParts
         public EditorZone() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         [System.Web.UI.TemplateContainerAttribute(typeof(System.Web.UI.WebControls.WebParts.EditorZone))]
-        [System.Web.UI.TemplateInstanceAttribute((System.Web.UI.TemplateInstance)(1))]
+        [System.Web.UI.TemplateInstanceAttribute(System.Web.UI.TemplateInstance.Single)]
         public virtual System.Web.UI.ITemplate ZoneTemplate { get { throw null; } set { } }
         protected override System.Web.UI.WebControls.WebParts.EditorPartCollection CreateEditorParts() { throw null; }
     }
@@ -21293,21 +21294,21 @@ namespace System.Web.UI.WebControls.WebParts
     {
         protected EditorZoneBase() : base (default(System.Collections.ICollection)) { }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb ApplyVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb CancelVerb { get { throw null; } }
         protected override bool Display { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.EditorPartChrome EditorPartChrome { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.EditorPartCollection EditorParts { get { throw null; } }
         public override string EmptyZoneText { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -21315,9 +21316,9 @@ namespace System.Web.UI.WebControls.WebParts
         public override string HeaderText { get { throw null; } set { } }
         public override string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb OKVerb { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPart WebPartToEdit { get { throw null; } }
         protected override void Close() { }
@@ -21377,7 +21378,7 @@ namespace System.Web.UI.WebControls.WebParts
         public ImportCatalogPart() { }
         public string BrowseHelpText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         public string ImportedPartLabelText { get { throw null; } set { } }
@@ -21460,7 +21461,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public LayoutEditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         public override bool Display { get { throw null; } }
@@ -21476,99 +21477,99 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public PageCatalogPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string AccessKey { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color BackColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string BackImageUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color BorderColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.CssClassPropertyAttribute]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string CssClass { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.FontInfo Font { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Drawing.Color ForeColor { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string GroupingText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.ScrollBars ScrollBars { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override short TabIndex { get { throw null; } set { } }
         public override string Title { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string ToolTip { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Visible { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.Unit Width { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override bool Wrap { get { throw null; } set { } }
         public override System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection GetAvailableWebPartDescriptions() { throw null; }
@@ -21584,9 +21585,9 @@ namespace System.Web.UI.WebControls.WebParts
     public abstract partial class Part : System.Web.UI.WebControls.Panel, System.Web.UI.INamingContainer, System.Web.UI.WebControls.ICompositeControlDesignerAccessor
     {
         internal Part() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.PartChromeState)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.PartChromeState.Normal)]
         public virtual System.Web.UI.WebControls.WebParts.PartChromeState ChromeState { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.PartChromeType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.PartChromeType.Default)]
         public virtual System.Web.UI.WebControls.WebParts.PartChromeType ChromeType { get { throw null; } set { } }
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -21610,7 +21611,7 @@ namespace System.Web.UI.WebControls.WebParts
         TitleAndBorder = 1,
         TitleOnly = 3,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class PersonalizableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.PersonalizableAttribute Default;
@@ -21637,15 +21638,15 @@ namespace System.Web.UI.WebControls.WebParts
         public static System.Web.UI.WebControls.WebParts.PersonalizationProvider Provider { get { throw null; } }
         public static System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection Providers { get { throw null; } }
         public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindInactiveUserState(string pathToMatch, string usernameToMatch, System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindInactiveUserState(string pathToMatch, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindInactiveUserState(string pathToMatch, string usernameToMatch, System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindSharedState(string pathToMatch) { throw null; }
-        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindSharedState(string pathToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindSharedState(string pathToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindUserState(string pathToMatch, string usernameToMatch) { throw null; }
-        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindUserState(string pathToMatch, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindUserState(string pathToMatch, string usernameToMatch, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllInactiveUserState(System.DateTime userInactiveSinceDate) { throw null; }
-        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllInactiveUserState(System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllInactiveUserState(System.DateTime userInactiveSinceDate, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope) { throw null; }
-        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public static System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection GetAllState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public static int GetCountOfInactiveUserState(System.DateTime userInactiveSinceDate) { throw null; }
         public static int GetCountOfInactiveUserState(string pathToMatch, System.DateTime userInactiveSinceDate) { throw null; }
         public static int GetCountOfState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope) { throw null; }
@@ -21779,7 +21780,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public PropertyGridEditorPart() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override string DefaultButton { get { throw null; } set { } }
         public override bool Display { get { throw null; } }
@@ -21849,28 +21850,28 @@ namespace System.Web.UI.WebControls.WebParts
     public partial class ProxyWebPartManager : System.Web.UI.Control
     {
         public ProxyWebPartManager() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string ClientID { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection StaticConnections { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         protected override System.Web.UI.ControlCollection CreateControlCollection() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         protected internal override void OnInit(System.EventArgs e) { }
     }
@@ -21914,7 +21915,7 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public SqlPersonalizationProvider() { }
         public override string ApplicationName { get { throw null; } set { } }
-        public override System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope, System.Web.UI.WebControls.WebParts.PersonalizationStateQuery query, int pageIndex, int pageSize, out int totalRecords) { totalRecords = default(int); throw null; }
+        public override System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection FindState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope, System.Web.UI.WebControls.WebParts.PersonalizationStateQuery query, int pageIndex, int pageSize, out int totalRecords) { throw null; }
         public override int GetCountOfState(System.Web.UI.WebControls.WebParts.PersonalizationScope scope, System.Web.UI.WebControls.WebParts.PersonalizationStateQuery query) { throw null; }
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection configSettings) { }
         protected override void LoadPersonalizationBlobs(System.Web.UI.WebControls.WebParts.WebPartManager webPartManager, string path, string userName, ref byte[] sharedDataBlob, ref byte[] userDataBlob) { }
@@ -21935,40 +21936,40 @@ namespace System.Web.UI.WebControls.WebParts
         protected ToolZone(System.Collections.ICollection associatedDisplayModes) { }
         protected ToolZone(System.Web.UI.WebControls.WebParts.WebPartDisplayMode associatedDisplayMode) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartDisplayModeCollection AssociatedDisplayModes { get { throw null; } }
         protected virtual bool Display { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style EditUIStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb HeaderCloseVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style HeaderVerbStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string InstructionText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style InstructionTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style LabelStyle { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         protected abstract void Close();
         protected override void LoadViewState(object savedState) { }
@@ -22008,7 +22009,7 @@ namespace System.Web.UI.WebControls.WebParts
         public System.DateTime LastActivityDate { get { throw null; } }
         public string Username { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class WebBrowsableAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebBrowsableAttribute Default;
@@ -22021,7 +22022,7 @@ namespace System.Web.UI.WebControls.WebParts
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class WebDescriptionAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebDescriptionAttribute Default;
@@ -22033,7 +22034,7 @@ namespace System.Web.UI.WebControls.WebParts
         public override int GetHashCode() { throw null; }
         public override bool IsDefaultAttribute() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class WebDisplayNameAttribute : System.Attribute
     {
         public static readonly System.Web.UI.WebControls.WebParts.WebDisplayNameAttribute Default;
@@ -22051,94 +22052,94 @@ namespace System.Web.UI.WebControls.WebParts
         protected WebPart() { }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowClose { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowConnect { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowEdit { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowHide { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowMinimize { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual bool AllowZoneChange { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string AuthorizationFilter { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string CatalogIconImageUrl { get { throw null; } set { } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public override System.Web.UI.WebControls.WebParts.PartChromeState ChromeState { get { throw null; } set { } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public override System.Web.UI.WebControls.WebParts.PartChromeType ChromeType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ConnectErrorMessage { get { throw null; } }
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public override string Description { get { throw null; } set { } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public override System.Web.UI.WebControls.ContentDirection Direction { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string DisplayTitle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.WebPartExportMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.WebPartExportMode.None)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartExportMode ExportMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasSharedData { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool HasUserData { get { throw null; } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public override System.Web.UI.WebControls.Unit Height { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.WebPartHelpMode)(2))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.WebPartHelpMode.Navigate)]
         [System.Web.UI.ThemeableAttribute(false)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartHelpMode HelpMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.ThemeableAttribute(false)]
         [System.Web.UI.UrlPropertyAttribute]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string HelpUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         [System.Web.UI.ThemeableAttribute(false)]
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public virtual bool Hidden { get { throw null; } set { } }
         [System.ComponentModel.LocalizableAttribute(true)]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string ImportErrorMessage { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsClosed { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsShared { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsStandalone { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsStatic { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string Subtitle { get { throw null; } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
@@ -22146,28 +22147,28 @@ namespace System.Web.UI.WebControls.WebParts
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string TitleIconImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.UrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.ThemeableAttribute(false)]
         [System.Web.UI.UrlPropertyAttribute]
-        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(1))]
+        [System.Web.UI.WebControls.WebParts.PersonalizableAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.Shared)]
         public virtual string TitleUrl { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerbCollection Verbs { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual object WebBrowsableObject { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPartManager WebPartManager { get { throw null; } }
         [System.Web.UI.WebControls.WebParts.PersonalizableAttribute]
         public override System.Web.UI.WebControls.Unit Width { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartZoneBase Zone { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int ZoneIndex { get { throw null; } }
         public virtual System.Web.UI.WebControls.WebParts.EditorPartCollection CreateEditorParts() { throw null; }
         protected internal virtual void OnClosing(System.EventArgs e) { }
@@ -22232,10 +22233,10 @@ namespace System.Web.UI.WebControls.WebParts
     {
         public WebPartConnection() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPart Consumer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.ConsumerConnectionPoint ConsumerConnectionPoint { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("default")]
         public string ConsumerConnectionPointID { get { throw null; } set { } }
@@ -22244,30 +22245,30 @@ namespace System.Web.UI.WebControls.WebParts
         [System.ComponentModel.DefaultValueAttribute("")]
         public string ID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsActive { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsShared { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsStatic { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPart Provider { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.ProviderConnectionPoint ProviderConnectionPoint { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("default")]
         public string ProviderConnectionPointID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string ProviderID { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartTransformer Transformer { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerDefaultProperty)]
         public System.Web.UI.WebControls.WebParts.WebPartTransformerCollection Transformers { get { throw null; } }
         public override string ToString() { throw null; }
     }
@@ -22403,65 +22404,65 @@ namespace System.Web.UI.WebControls.WebParts
         public static readonly System.Web.UI.WebControls.WebParts.WebPartDisplayMode EditDisplayMode;
         public WebPartManager() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.TransformerTypeCollection AvailableTransformers { get { throw null; } }
         public virtual string CloseProviderWarning { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartConnectionCollection Connections { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.ControlCollection Controls { get { throw null; } }
         public virtual string DeleteWarning { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartDisplayMode DisplayMode { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartDisplayModeCollection DisplayModes { get { throw null; } }
         protected internal System.Web.UI.WebControls.WebParts.WebPartConnectionCollection DynamicConnections { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool EnableClientScript { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool EnableTheming { get { throw null; } set { } }
         public virtual string ExportSensitiveDataWarning { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected System.Web.UI.WebControls.WebParts.WebPartManagerInternals Internals { get { throw null; } }
         protected virtual bool IsCustomPersonalizationStateDirty { get { throw null; } }
         protected virtual System.Security.PermissionSet MediumPermissionSet { get { throw null; } }
         protected virtual System.Security.PermissionSet MinimalPermissionSet { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.WebPartPersonalization Personalization { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPart SelectedWebPart { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string SkinID { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.MergablePropertyAttribute(false)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.WebPartConnectionCollection StaticConnections { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartDisplayModeCollection SupportedDisplayModes { get { throw null; } }
         bool System.Web.UI.WebControls.WebParts.IPersonalizable.IsDirty { get { throw null; } }
         [System.ComponentModel.BindableAttribute(false)]
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Visible { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartCollection WebParts { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartZoneCollection Zones { get { throw null; } }
         public event System.Web.UI.WebControls.WebParts.WebPartAuthorizationEventHandler AuthorizeWebPart { add { } remove { } }
         public event System.EventHandler ConnectionsActivated { add { } remove { } }
@@ -22507,7 +22508,7 @@ namespace System.Web.UI.WebControls.WebParts
         public virtual void EndWebPartConnecting() { }
         public virtual void EndWebPartEditing() { }
         public virtual void ExportWebPart(System.Web.UI.WebControls.WebParts.WebPart webPart, System.Xml.XmlWriter writer) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Focus() { }
         public virtual System.Web.UI.WebControls.WebParts.ConsumerConnectionPointCollection GetConsumerConnectionPoints(System.Web.UI.WebControls.WebParts.WebPart webPart) { throw null; }
         public static System.Web.UI.WebControls.WebParts.WebPartManager GetCurrentWebPartManager(System.Web.UI.Page page) { throw null; }
@@ -22515,7 +22516,7 @@ namespace System.Web.UI.WebControls.WebParts
         public string GetExportUrl(System.Web.UI.WebControls.WebParts.WebPart webPart) { throw null; }
         public System.Web.UI.WebControls.WebParts.GenericWebPart GetGenericWebPart(System.Web.UI.Control control) { throw null; }
         public virtual System.Web.UI.WebControls.WebParts.ProviderConnectionPointCollection GetProviderConnectionPoints(System.Web.UI.WebControls.WebParts.WebPart webPart) { throw null; }
-        public virtual System.Web.UI.WebControls.WebParts.WebPart ImportWebPart(System.Xml.XmlReader reader, out string errorMessage) { errorMessage = default(string); throw null; }
+        public virtual System.Web.UI.WebControls.WebParts.WebPart ImportWebPart(System.Xml.XmlReader reader, out string errorMessage) { throw null; }
         public virtual bool IsAuthorized(System.Type type, string path, string authorizationFilter, bool isShared) { throw null; }
         public bool IsAuthorized(System.Web.UI.WebControls.WebParts.WebPart webPart) { throw null; }
         protected internal override void LoadControlState(object savedState) { }
@@ -22586,8 +22587,8 @@ namespace System.Web.UI.WebControls.WebParts
         public WebPartMenuStyle() { }
         public WebPartMenuStyle(System.Web.UI.StateBag bag) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Web.UI.WebControls.HorizontalAlign HorizontalAlign { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
@@ -22623,31 +22624,31 @@ namespace System.Web.UI.WebControls.WebParts
         public static readonly System.Web.UI.WebControls.WebParts.WebPartUserCapability ModifyStateUserCapability;
         public WebPartPersonalization(System.Web.UI.WebControls.WebParts.WebPartManager owner) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool CanEnterSharedScope { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual bool HasPersonalizationState { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.PersonalizationScope)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.PersonalizationScope.User)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual System.Web.UI.WebControls.WebParts.PersonalizationScope InitialScope { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsEnabled { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         protected bool IsInitialized { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool IsModifiable { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public virtual string ProviderName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.PersonalizationScope Scope { get { throw null; } }
         protected bool ShouldResetPersonalizationState { get { throw null; } set { } }
         protected virtual System.Collections.IDictionary UserCapabilities { get { throw null; } }
@@ -22681,7 +22682,7 @@ namespace System.Web.UI.WebControls.WebParts
         protected internal virtual object SaveConfigurationState() { throw null; }
         public abstract object Transform(object providerData);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class WebPartTransformerAttribute : System.Attribute
     {
         public WebPartTransformerAttribute(System.Type consumerType, System.Type providerType) { }
@@ -22725,7 +22726,7 @@ namespace System.Web.UI.WebControls.WebParts
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool Checked { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ClientClickHandler { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
@@ -22735,7 +22736,7 @@ namespace System.Web.UI.WebControls.WebParts
         [System.Web.UI.ThemeableAttribute(false)]
         public virtual bool Enabled { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string ID { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -22744,7 +22745,7 @@ namespace System.Web.UI.WebControls.WebParts
         public virtual string ImageUrl { get { throw null; } set { } }
         protected virtual bool IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartEventHandler ServerClickHandler { get { throw null; } }
         bool System.Web.UI.IStateManager.IsTrackingViewState { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -22792,8 +22793,8 @@ namespace System.Web.UI.WebControls.WebParts
         public WebPartZone() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
-        [System.Web.UI.TemplateInstanceAttribute((System.Web.UI.TemplateInstance)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
+        [System.Web.UI.TemplateInstanceAttribute(System.Web.UI.TemplateInstance.Single)]
         public virtual System.Web.UI.ITemplate ZoneTemplate { get { throw null; } set { } }
         protected internal override System.Web.UI.WebControls.WebParts.WebPartCollection GetInitialWebParts() { throw null; }
         protected internal override void OnInit(System.EventArgs e) { }
@@ -22807,70 +22808,70 @@ namespace System.Web.UI.WebControls.WebParts
         public virtual bool AllowLayoutChange { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Gray")]
         public override System.Drawing.Color BorderColor { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.BorderStyle)(4))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.BorderStyle.Solid)]
         public override System.Web.UI.WebControls.BorderStyle BorderStyle { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "1")]
         public override System.Web.UI.WebControls.Unit BorderWidth { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb CloseVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb ConnectVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb DeleteVerb { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual string DisplayTitle { get { throw null; } }
         protected internal bool DragDropEnabled { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Drawing.Color), "Blue")]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.Web.UI.WebControls.WebColorConverter))]
         public virtual System.Drawing.Color DragHighlightColor { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb EditVerb { get { throw null; } }
         public override string EmptyZoneText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb ExportVerb { get { throw null; } }
         protected override bool HasFooter { get { throw null; } }
         protected override bool HasHeader { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb HelpVerb { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.Orientation)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.Orientation.Vertical)]
         public virtual System.Web.UI.WebControls.Orientation LayoutOrientation { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style MenuCheckImageStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Web.UI.Design.ImageUrlEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string MenuCheckImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style MenuLabelHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style MenuLabelStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.LocalizableAttribute(true)]
@@ -22880,55 +22881,55 @@ namespace System.Web.UI.WebControls.WebParts
         [System.Web.UI.UrlPropertyAttribute]
         public virtual string MenuPopupImageUrl { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.WebPartMenuStyle MenuPopupStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style MenuVerbHoverStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style MenuVerbStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb MinimizeVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerb RestoreVerb { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style SelectedPartChromeStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public virtual bool ShowTitleIcons { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Image)]
         public virtual System.Web.UI.WebControls.ButtonType TitleBarVerbButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style TitleBarVerbStyle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Web.UI.ThemeableAttribute(false)]
         public override System.Web.UI.WebControls.ButtonType VerbButtonType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartChrome WebPartChrome { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.UI.WebControls.WebParts.WebPartCollection WebParts { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.WebPartVerbRenderMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.WebPartVerbRenderMode.Menu)]
         public virtual System.Web.UI.WebControls.WebParts.WebPartVerbRenderMode WebPartVerbRenderMode { get { throw null; } set { } }
         public event System.Web.UI.WebControls.WebParts.WebPartVerbsEventHandler CreateVerbs { add { } remove { } }
         protected virtual void CloseWebPart(System.Web.UI.WebControls.WebParts.WebPart webPart) { }
@@ -22977,26 +22978,26 @@ namespace System.Web.UI.WebControls.WebParts
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string EmptyZoneText { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style EmptyZoneTextStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style ErrorStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.TitleStyle FooterStyle { get { throw null; } }
         protected virtual bool HasFooter { get { throw null; } }
         protected virtual bool HasHeader { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.TitleStyle HeaderStyle { get { throw null; } }
         [System.ComponentModel.LocalizableAttribute(true)]
         public virtual string HeaderText { get { throw null; } set { } }
@@ -23005,30 +23006,30 @@ namespace System.Web.UI.WebControls.WebParts
         [System.ComponentModel.DefaultValueAttribute(typeof(System.Web.UI.WebControls.Unit), "5px")]
         public System.Web.UI.WebControls.Unit PartChromePadding { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style PartChromeStyle { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.WebParts.PartChromeType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.WebParts.PartChromeType.Default)]
         public virtual System.Web.UI.WebControls.WebParts.PartChromeType PartChromeType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.TableStyle PartStyle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.WebParts.TitleStyle PartTitleStyle { get { throw null; } }
         protected internal bool RenderClientScript { get { throw null; } }
         protected override System.Web.UI.HtmlTextWriterTag TagKey { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.UI.WebControls.ButtonType)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.UI.WebControls.ButtonType.Button)]
         public virtual System.Web.UI.WebControls.ButtonType VerbButtonType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
-        [System.Web.UI.PersistenceModeAttribute((System.Web.UI.PersistenceMode)(1))]
+        [System.Web.UI.PersistenceModeAttribute(System.Web.UI.PersistenceMode.InnerProperty)]
         public System.Web.UI.WebControls.Style VerbStyle { get { throw null; } }
         protected System.Web.UI.WebControls.WebParts.WebPartManager WebPartManager { get { throw null; } }
         public virtual System.Web.UI.WebControls.WebParts.PartChromeType GetEffectiveChromeType(System.Web.UI.WebControls.WebParts.Part part) { throw null; }
@@ -23051,7 +23052,7 @@ namespace System.Web.Util
         public HttpEncoder() { }
         public static System.Web.Util.HttpEncoder Current { get { throw null; } set { } }
         public static System.Web.Util.HttpEncoder Default { get { throw null; } }
-        protected internal virtual void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) { encodedHeaderName = default(string); encodedHeaderValue = default(string); }
+        protected internal virtual void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) { throw null; }
         protected internal virtual void HtmlAttributeEncode(string value, System.IO.TextWriter output) { }
         protected internal virtual void HtmlDecode(string value, System.IO.TextWriter output) { }
         protected internal virtual void HtmlEncode(string value, System.IO.TextWriter output) { }
@@ -23083,8 +23084,8 @@ namespace System.Web.Util
     {
         public RequestValidator() { }
         public static System.Web.Util.RequestValidator Current { get { throw null; } set { } }
-        public bool InvokeIsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { validationFailureIndex = default(int); throw null; }
-        protected internal virtual bool IsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { validationFailureIndex = default(int); throw null; }
+        public bool InvokeIsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { throw null; }
+        protected internal virtual bool IsValidRequestString(System.Web.HttpContext context, string value, System.Web.Util.RequestValidationSource requestValidationSource, string collectionKey, out int validationFailureIndex) { throw null; }
     }
     public delegate void TransactedCallback();
     public partial class Transactions

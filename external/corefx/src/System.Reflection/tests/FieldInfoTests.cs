@@ -423,6 +423,16 @@ namespace System.Reflection.Tests
             Assert.Equal(initialValue, fi.GetValue(obj));
         }
 
+        [Fact(Skip="It's CAS-related and not actual in Mono")]
+        public void SecurityAttributes()
+        {
+            FieldInfo info = GetField(typeof(FieldInfoTests), nameof(FieldInfoTests.s_intField));
+
+            Assert.True(info.IsSecurityCritical);
+            Assert.False(info.IsSecuritySafeCritical);
+            Assert.False(info.IsSecurityTransparent);
+        }        
+
         private static FieldInfo GetField(Type type, string name)
         {
             return type.GetTypeInfo().DeclaredFields.FirstOrDefault(fieldInfo => fieldInfo.Name.Equals(name));
@@ -533,7 +543,7 @@ namespace System.Reflection.Tests
             public object field;
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue #10372")]
         [InlineData(222)]
         [InlineData("new value")]
         [InlineData('A')]

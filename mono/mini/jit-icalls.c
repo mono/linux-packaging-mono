@@ -26,6 +26,7 @@
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/utils/unlocked.h>
+#include <mono/utils/mono-math.h>
 
 #ifdef ENABLE_LLVM
 #include "mini-llvm-cpp.h"
@@ -666,17 +667,6 @@ mono_fclt_un (double a, double b)
 	return isunordered (a, b) || a < b;
 }
 
-gboolean
-mono_isfinite (double a)
-{
-#ifdef HAVE_ISFINITE
-	return isfinite (a);
-#else
-	g_assert_not_reached ();
-	return TRUE;
-#endif
-}
-
 double
 mono_fload_r4 (float *ptr)
 {
@@ -717,14 +707,14 @@ mono_array_new_va (MonoMethod *cm, ...)
 
 	va_start (ap, cm);
 	
-	lengths = (uintptr_t *)alloca (sizeof (uintptr_t) * pcount);
+	lengths = g_newa (uintptr_t, pcount);
 	for (i = 0; i < pcount; ++i)
 		lengths [i] = d = va_arg(ap, int);
 
 	if (rank == pcount) {
 		/* Only lengths provided. */
 		if (m_class_get_byval_arg (cm->klass)->type == MONO_TYPE_ARRAY) {
-			lower_bounds = (intptr_t *)alloca (sizeof (intptr_t) * rank);
+			lower_bounds = g_newa (intptr_t, rank);
 			memset (lower_bounds, 0, sizeof (intptr_t) * rank);
 		} else {
 			lower_bounds = NULL;
@@ -767,7 +757,7 @@ mono_array_new_1 (MonoMethod *cm, guint32 length)
 	g_assert (rank == pcount);
 
 	if (m_class_get_byval_arg (cm->klass)->type == MONO_TYPE_ARRAY) {
-		lower_bounds = (intptr_t *)alloca (sizeof (intptr_t) * rank);
+		lower_bounds = g_newa (intptr_t, rank);
 		memset (lower_bounds, 0, sizeof (intptr_t) * rank);
 	} else {
 		lower_bounds = NULL;
@@ -803,7 +793,7 @@ mono_array_new_2 (MonoMethod *cm, guint32 length1, guint32 length2)
 	g_assert (rank == pcount);
 
 	if (m_class_get_byval_arg (cm->klass)->type == MONO_TYPE_ARRAY) {
-		lower_bounds = (intptr_t *)alloca (sizeof (intptr_t) * rank);
+		lower_bounds = g_newa (intptr_t, rank);
 		memset (lower_bounds, 0, sizeof (intptr_t) * rank);
 	} else {
 		lower_bounds = NULL;
@@ -840,7 +830,7 @@ mono_array_new_3 (MonoMethod *cm, guint32 length1, guint32 length2, guint32 leng
 	g_assert (rank == pcount);
 
 	if (m_class_get_byval_arg (cm->klass)->type == MONO_TYPE_ARRAY) {
-		lower_bounds = (intptr_t *)alloca (sizeof (intptr_t) * rank);
+		lower_bounds = g_newa (intptr_t, rank);
 		memset (lower_bounds, 0, sizeof (intptr_t) * rank);
 	} else {
 		lower_bounds = NULL;
@@ -878,7 +868,7 @@ mono_array_new_4 (MonoMethod *cm, guint32 length1, guint32 length2, guint32 leng
 	g_assert (rank == pcount);
 
 	if (m_class_get_byval_arg (cm->klass)->type == MONO_TYPE_ARRAY) {
-		lower_bounds = (intptr_t *)alloca (sizeof (intptr_t) * rank);
+		lower_bounds = g_newa (intptr_t, rank);
 		memset (lower_bounds, 0, sizeof (intptr_t) * rank);
 	} else {
 		lower_bounds = NULL;
@@ -990,31 +980,17 @@ guint32
 mono_fconv_u4 (double v)
 {
 	/* MS.NET behaves like this for some reason */
-#ifdef HAVE_ISINF
-	if (isinf (v) || isnan (v))
+	if (mono_isinf (v) || mono_isnan (v))
 		return 0;
-#endif
-
 	return (guint32)v;
 }
-
-#ifndef HAVE_TRUNC
-/* Solaris doesn't have trunc */
-#ifdef HAVE_AINTL
-extern long double aintl (long double);
-#define trunc aintl
-#else
-/* FIXME: This means we will never throw overflow exceptions */
-#define trunc(v) res
-#endif
-#endif /* HAVE_TRUNC */
 
 gint64
 mono_fconv_ovf_i8 (double v)
 {
 	const gint64 res = (gint64)v;
 
-	if (isnan(v) || trunc (v) != res) {
+	if (mono_isnan (v) || mono_trunc (v) != res) {
 		ERROR_DECL (error);
 		mono_error_set_overflow (error);
 		mono_error_set_pending_exception (error);
@@ -1038,7 +1014,7 @@ mono_fconv_ovf_u8 (double v)
  * To work around this issue we test for value boundaries instead. 
  */
 #if defined(__arm__) && defined(MONO_ARCH_SOFT_FLOAT_FALLBACK)
-	if (isnan (v) || !(v >= -0.5 && v <= ULLONG_MAX+0.5)) {
+	if (mono_isnan (v) || !(v >= -0.5 && v <= ULLONG_MAX+0.5)) {
 		ERROR_DECL (error);
 		mono_error_set_overflow (error);
 		mono_error_set_pending_exception (error);
@@ -1047,7 +1023,7 @@ mono_fconv_ovf_u8 (double v)
 	res = (guint64)v;
 #else
 	res = (guint64)v;
-	if (isnan(v) || trunc (v) != res) {
+	if (mono_isnan (v) || mono_trunc (v) != res) {
 		ERROR_DECL (error);
 		mono_error_set_overflow (error);
 		mono_error_set_pending_exception (error);
@@ -1070,7 +1046,7 @@ mono_rconv_ovf_i8 (float v)
 {
 	const gint64 res = (gint64)v;
 
-	if (isnan(v) || trunc (v) != res) {
+	if (mono_isnan (v) || mono_trunc (v) != res) {
 		ERROR_DECL (error);
 		mono_error_set_overflow (error);
 		mono_error_set_pending_exception (error);
@@ -1085,7 +1061,7 @@ mono_rconv_ovf_u8 (float v)
 	guint64 res;
 
 	res = (guint64)v;
-	if (isnan(v) || trunc (v) != res) {
+	if (mono_isnan (v) || mono_trunc (v) != res) {
 		ERROR_DECL (error);
 		mono_error_set_overflow (error);
 		mono_error_set_pending_exception (error);
@@ -1254,7 +1230,7 @@ mono_object_castclass_unbox (MonoObject *obj, MonoClass *klass)
 	MonoClass *oklass;
 
 	if (mini_get_debug_options ()->better_cast_details) {
-		jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
+		jit_tls = mono_tls_get_jit_tls ();
 		jit_tls->class_cast_from = NULL;
 	}
 
@@ -1288,7 +1264,7 @@ mono_object_castclass_with_cache (MonoObject *obj, MonoClass *klass, gpointer *c
 	gpointer cached_vtable, obj_vtable;
 
 	if (mini_get_debug_options ()->better_cast_details) {
-		jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
+		jit_tls = mono_tls_get_jit_tls ();
 		jit_tls->class_cast_from = NULL;
 	}
 
@@ -1577,7 +1553,7 @@ static gpointer
 resolve_iface_call (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, gpointer *out_arg, gboolean caller_gsharedvt, MonoError *error)
 {
 	MonoVTable *vt;
-	gpointer *imt, *vtable_slot;
+	gpointer *imt;
 	MonoMethod *impl_method, *generic_virtual = NULL, *variant_iface = NULL;
 	gpointer addr, compiled_method, aot_addr;
 	gboolean need_rgctx_tramp = FALSE, need_unbox_tramp = FALSE;
@@ -1590,7 +1566,7 @@ resolve_iface_call (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, 
 	vt = this_obj->vtable;
 	imt = (gpointer*)vt - MONO_IMT_SIZE;
 
-	vtable_slot = mini_resolve_imt_method (vt, imt + imt_slot, imt_method, &impl_method, &aot_addr, &need_rgctx_tramp, &variant_iface, error);
+	mini_resolve_imt_method (vt, imt + imt_slot, imt_method, &impl_method, &aot_addr, &need_rgctx_tramp, &variant_iface, error);
 	return_val_if_nok (error, NULL);
 
 	// FIXME: This can throw exceptions
@@ -1915,7 +1891,7 @@ mono_llvmonly_init_delegate (MonoDelegate *del)
 
 		ftndesc = mini_create_llvmonly_ftndesc (mono_domain_get (), addr, arg);
 		mono_memory_barrier ();
-		*del->method_code = (gpointer)ftndesc;
+		*del->method_code = (guint8*)ftndesc;
 	}
 	del->method_ptr = ftndesc->addr;
 	del->extra_arg = ftndesc->arg;
@@ -1963,7 +1939,7 @@ mono_get_method_object (MonoMethod *method)
 double
 mono_ckfinite (double d)
 {
-	if (isinf (d) || isnan (d))
+	if (mono_isinf (d) || mono_isnan (d))
 		mono_set_pending_exception (mono_get_exception_arithmetic ());
 	return d;
 }

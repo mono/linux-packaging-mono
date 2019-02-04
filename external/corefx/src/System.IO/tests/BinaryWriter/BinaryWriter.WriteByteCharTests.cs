@@ -100,6 +100,8 @@ namespace System.IO.Tests
             mem.Dispose();
         }
 
+
+#if !MONO // Avoid CodePagesEncodingProvider dependency in CoreFX test assembly
         /// <summary>
         /// Cases Tested:
         /// Writing bytes casted to chars and using a different encoding; iso-2022-jp.
@@ -139,6 +141,7 @@ namespace System.IO.Tests
             writer.Dispose();
             reader.Dispose();
         }
+#endif
 
         /// <summary>
         /// Testing that bytes can be written to a stream with BinaryWriter.

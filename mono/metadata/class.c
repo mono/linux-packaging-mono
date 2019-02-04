@@ -425,8 +425,8 @@ mono_type_get_name_recurse (MonoType *type, GString *str, gboolean is_recursed,
 		}
 		const char *klass_name = m_class_get_name (klass);
 		if (format == MONO_TYPE_NAME_FORMAT_IL) {
-			char *s = strchr (klass_name, '`');
-			int len = s ? s - klass_name : strlen (klass_name);
+			const char *s = strchr (klass_name, '`');
+			gssize len = s ? (s - klass_name) : (gssize)strlen (klass_name);
 			g_string_append_len (str, klass_name, len);
 		} else {
 			mono_identifier_escape_type_name_chars (str, klass_name);
@@ -1307,7 +1307,7 @@ mono_class_alloc (MonoClass *klass, int size)
 }
 
 gpointer
-mono_class_alloc0 (MonoClass *klass, int size)
+(mono_class_alloc0) (MonoClass *klass, int size)
 {
 	gpointer res;
 
@@ -2984,7 +2984,7 @@ mono_class_from_name_checked_aux (MonoImage *image, const char* name_space, cons
 
 	g_hash_table_insert (visited_images, image, GUINT_TO_POINTER(1));
 
-	if ((nested = strchr (name, '/'))) {
+	if ((nested = (char*)strchr (name, '/'))) {
 		int pos = nested - name;
 		int len = strlen (name);
 		if (len > 1023)
@@ -3745,7 +3745,7 @@ mono_class_implement_interface_slow (MonoClass *target, MonoClass *candidate)
 
 		/*A TypeBuilder can have more interfaces on tb->interfaces than on candidate->interfaces*/
 		if (image_is_dynamic (m_class_get_image (candidate)) && !m_class_was_typebuilder (candidate)) {
-			MonoReflectionTypeBuilder *tb = (MonoReflectionTypeBuilder *)mono_class_get_ref_info_raw (candidate); /* FIXME use handles */
+			MonoReflectionTypeBuilder *tb = mono_class_get_ref_info_raw (candidate); /* FIXME use handles */
 			int j;
 			if (tb && tb->interfaces) {
 				for (j = mono_array_length (tb->interfaces) - 1; j >= 0; --j) {

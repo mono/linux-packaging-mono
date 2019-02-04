@@ -14,12 +14,11 @@
 #                 command line.
 #
 
-# All dependent libs become dependent dirs for parallel builds
-# Have to rename to handle differences between assembly/directory names
-DEP_LIBS=$(patsubst System.Xml,System.XML,$(LIB_REFS))
-
 LIB_REFS_FULL = $(call _FILTER_OUT,=, $(LIB_REFS)) $(DEFAULT_REFERENCES)
 LIB_REFS_ALIAS = $(filter-out $(LIB_REFS_FULL),$(LIB_REFS))
+
+# All dependent libs become dependent dirs for parallel builds
+DEP_LIBS = $(filter-out %=, $(subst =,= ,$(LIB_REFS)))
 
 ifdef TARGET_NET_REFERENCE
 # System*, mscorlib references come from the TARGET_NET_REFERENCE dir, others from the profile dir
@@ -74,17 +73,6 @@ LIB_MCS_FLAGS += -warnaserror
 endif
 endif
 endif
-
-#
-# The bare directory contains the plain versions of System and System.Xml
-#
-bare_libdir = $(the_libdir_base)bare
-
-#
-# The secxml directory contains the System version that depends on 
-# System.Xml and Mono.Security
-#
-secxml_libdir = $(the_libdir_base)secxml
 
 the_libdir = $(the_libdir_base)$(intermediate)
 

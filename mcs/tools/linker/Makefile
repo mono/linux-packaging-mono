@@ -11,16 +11,17 @@ TEST_CASES := \
 	mscorlib/test-exception-01.cs \
 	mscorlib/test-locale-01.cs \
 	mscorlib/test-reflection-01.cs \
+	mscorlib/test-reflection-02.cs \
 	mscorlib/test-string-01.cs \
 	mscorlib/test-string-02.cs \
 	mscorlib/test-string-03.cs \
 	mscorlib/test-task-01.cs \
+#	mscorlib/test-marshaling.cs \
 	System/test-security.cs
 
 ifdef MOBILE_PROFILE
 TEST_CASES += \
-# Requires linker fix
-#	mscorlib/test-crypto-01.cs
+	mscorlib/test-crypto-01.cs
 endif
 
 ifndef AOT_FRIENDLY_PROFILE
@@ -33,6 +34,8 @@ SIZE_TEST_CASES :=
 
 TESTS_COMPILER = $(MCS) -nologo -noconfig -unsafe -debug:portable -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/mscorlib.dll
 
+MARSHALING_TEST_NATIVE = mscorlib/test-marshaling-native.so
+
 check: compile-tests
 	$(MAKE) run-tests
 
@@ -41,14 +44,31 @@ compile-tests: $(TEST_CASES) $(SIZE_TEST_CASES)
 mscorlib/test-%.cs:
 	$(TESTS_COMPILER) Tests/$@ /out:Tests/$(@:.cs=.exe)
 
+$(MARSHALING_TEST_NATIVE): $(@:.so=.c)
+	$(CCOMPILE) Tests/$(@:.so=.c) -shared -o Tests/$@
+
+mscorlib/test-marshaling.cs: $(MARSHALING_TEST_NATIVE)
+	$(TESTS_COMPILER) Tests/$@ /out:Tests/$(@:.cs=.exe)
+
 System/test-%.cs:
 	$(TESTS_COMPILER)  -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.dll Tests/$@ /out:Tests/$(@:.cs=.exe)
 
 run-tests: $(TEST_CASES:.cs=.exe)
 
+LINKER_PROFILE_OPTIONS :=
+
+# Should be in sync with runtime sdk flags
+ifeq ($(PROFILE),monotouch)
+LINKER_PROFILE_OPTIONS += --exclude-feature remoting --exclude-feature com
+endif
+
+ifeq ($(PROFILE),wasm)
+LINKER_PROFILE_OPTIONS += --exclude-feature remoting --exclude-feature com --exclude-feature sre
+endif
+
 LINKER_OUTPUT := illink-output-$(PROFILE_DIRECTORY)
 PROFILE_PATH = $(topdir)/class/lib/$(PROFILE_DIRECTORY)
-LINKER = MONO_PATH=$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE) $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/monolinker.exe -c link -out $(LINKER_OUTPUT) -b true -d $(PROFILE_PATH)
+LINKER = MONO_PATH=$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE) $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/monolinker.exe -c link -out $(LINKER_OUTPUT) -b true -d $(PROFILE_PATH) $(LINKER_PROFILE_OPTIONS)
 TEST_EXEC = MONO_PATH=$(LINKER_OUTPUT) $(RUNTIME) $(RUNTIME_FLAGS) --debug -O=-aot
 
 .NOTPARALLEL:
@@ -59,6 +79,15 @@ System/test-%.exe mscorlib/test-%.exe:
 	@echo Testing $@
 	$(LINKER) -a Tests/$@
 	$(TEST_EXEC) $(LINKER_OUTPUT)/$(@F)
+	@rm -rf $(LINKER_OUTPUT)
+
+mscorlib/test-marshaling.exe: $(MARSHALING_TEST_NATIVE)
+	@rm -rf $(LINKER_OUTPUT)
+	@mkdir $(LINKER_OUTPUT)
+	@echo Testing $@
+	$(LINKER) -a Tests/$@
+	cp Tests/$(MARSHALING_TEST_NATIVE) $(LINKER_OUTPUT)
+	(cd $(LINKER_OUTPUT); MONO_PATH=. $(RUNTIME) $(RUNTIME_FLAGS) --debug -O=-aot ./$(@F))
 	@rm -rf $(LINKER_OUTPUT)
 
 BCL_ASSEMBLIES_CORE=mscorlib.dll System.dll System.Core.dll System.Xml.dll
@@ -88,13 +117,15 @@ bcl-size-diff:
 	$(Q) $(MAKE) bcl-size-current PROFILE=net_4_x   || true
 	$(Q) $(MAKE) bcl-size-current PROFILE=monotouch || true
 	$(Q) $(MAKE) bcl-size-current PROFILE=monodroid || true
+	$(Q) $(MAKE) bcl-size-current PROFILE=wasm || true
 	@echo "Checking size differences..."
 	@mkdir -p sizediff
 	$(Q) git diff HEAD "*.csv" > temp.patch
 	$(Q) git show HEAD:./net_4_x-linked-size.csv > net_4_x-linked-size.old.csv
 	$(Q) git show HEAD:./monotouch-linked-size.csv > monotouch-linked-size.old.csv
 	$(Q) git show HEAD:./monodroid-linked-size.csv > monodroid-linked-size.old.csv
-	$(Q) sed -e "/@diffdata@/r temp.patch" -e "/@diffdata@/d" -e "/@olddata-net_4_x@/r net_4_x-linked-size.old.csv" -e "/@olddata-net_4_x@/d" -e "/@olddata-monotouch@/r monotouch-linked-size.old.csv" -e "/@olddata-monotouch@/d" -e "/@olddata-monodroid@/r monodroid-linked-size.old.csv" -e "/@olddata-monodroid@/d" -e "/@newdata-net_4_x@/r net_4_x-linked-size.csv" -e "/@newdata-net_4_x@/d" -e "/@newdata-monotouch@/r monotouch-linked-size.csv" -e "/@newdata-monotouch@/d" -e "/@newdata-monodroid@/r monodroid-linked-size.csv" -e "/@newdata-monodroid@/d" linked-size-diff.html.in > sizediff/index.html
+	$(Q) git show HEAD:./wasm-linked-size.csv > wasm-linked-size.old.csv
+	$(Q) sed -e "/@diffdata@/r temp.patch" -e "/@diffdata@/d" -e "/@olddata-net_4_x@/r net_4_x-linked-size.old.csv" -e "/@olddata-net_4_x@/d" -e "/@olddata-monotouch@/r monotouch-linked-size.old.csv" -e "/@olddata-monotouch@/d" -e "/@olddata-monodroid@/r monodroid-linked-size.old.csv" -e "/@olddata-monodroid@/d" -e "/@olddata-wasm@/r wasm-linked-size.old.csv" -e "/@olddata-wasm@/d" -e "/@newdata-net_4_x@/r net_4_x-linked-size.csv" -e "/@newdata-net_4_x@/d" -e "/@newdata-monotouch@/r monotouch-linked-size.csv" -e "/@newdata-monotouch@/d" -e "/@newdata-monodroid@/r monodroid-linked-size.csv" -e "/@newdata-monodroid@/d" -e "/@newdata-wasm@/r wasm-linked-size.csv" -e "/@newdata-wasm@/d" linked-size-diff.html.in > sizediff/index.html
 	$(Q) if [ -s temp.patch ]; then echo "Error: Found BCL Linked Size differences, see mcs/tools/linker/sizediff/index.html."; rm -f temp.patch *.old.csv; exit 1; else echo "No differences found."; rm -f temp.patch *.old.csv; fi
 
 include ../../build/executable.make

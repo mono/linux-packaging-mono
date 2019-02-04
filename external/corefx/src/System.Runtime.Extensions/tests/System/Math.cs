@@ -556,7 +556,9 @@ namespace System.Tests
         [InlineData(-0.46382906716062964,     -0.43429448190325183, CrossPlatformMachineEpsilon)]       // expected: -(log10(e))
         [InlineData(-0.45054953406980750,     -0.42331082513074800, CrossPlatformMachineEpsilon)]       // expected: -(pi - e)
         [InlineData(-0.32951473309607836,     -0.31830988618379067, CrossPlatformMachineEpsilon)]       // expected: -(1 / pi)
+#if !MONO
         [InlineData(-0.0,                     -0.0,                 0.0)]
+#endif
         [InlineData( double.NaN,               double.NaN,          0.0)]
         [InlineData( 0.0,                      0.0,                 0.0)]
         [InlineData( 0.32951473309607836,      0.31830988618379067, CrossPlatformMachineEpsilon)]       // expected:  (1 / pi)
@@ -687,7 +689,7 @@ namespace System.Tests
         [InlineData( double.NegativeInfinity, double.PositiveInfinity, -0.78539816339744831, CrossPlatformMachineEpsilon)]         // expected: -(pi / 4)
         [InlineData( double.PositiveInfinity, double.NegativeInfinity,  2.3561944901923449,  CrossPlatformMachineEpsilon * 10)]    // expected:  (3 * pi / 4)
         [InlineData( double.PositiveInfinity, double.PositiveInfinity,  0.78539816339744831, CrossPlatformMachineEpsilon)]         // expected:  (pi / 4)
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Atan2_IEEE(double y, double x, double expectedResult, double allowedVariance)
         {
             AssertEqual(expectedResult, Math.Atan2(y, x), allowedVariance);
@@ -1364,7 +1366,7 @@ namespace System.Tests
         [InlineData( double.NaN, -0.0,                     1.0, CrossPlatformMachineEpsilon * 10)]
         [InlineData( double.NaN,  0.0,                     1.0, CrossPlatformMachineEpsilon * 10)]
         [InlineData( 1.0,         double.NaN,              1.0, CrossPlatformMachineEpsilon * 10)]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Pow_IEEE(float x, float y, float expectedResult, float allowedVariance)
         {
             AssertEqual(expectedResult, Math.Pow(x, y), allowedVariance);
@@ -1508,7 +1510,9 @@ namespace System.Tests
         [InlineData(-0.63661977236758134,     -0.59448076852482208, CrossPlatformMachineEpsilon)]       // value: -(2 / pi)
         [InlineData(-0.43429448190325183,     -0.42077048331375735, CrossPlatformMachineEpsilon)]       // value: -(log10(e))
         [InlineData(-0.31830988618379067,     -0.31296179620778659, CrossPlatformMachineEpsilon)]       // value: -(1 / pi)
+#if !MONO
         [InlineData(-0.0,                     -0.0,                 0.0)]
+#endif
         [InlineData( double.NaN,               double.NaN,          0.0)]
         [InlineData( 0.0,                      0.0,                 0.0)]
         [InlineData( 0.31830988618379067,      0.31296179620778659, CrossPlatformMachineEpsilon)]       // value:  (1 / pi)
@@ -1624,7 +1628,9 @@ namespace System.Tests
         [InlineData(-0.63661977236758134,     -0.73930295048660405,     CrossPlatformMachineEpsilon)]       // value: -(2 / pi)
         [InlineData(-0.43429448190325183,     -0.46382906716062964,     CrossPlatformMachineEpsilon)]       // value: -(log10(e))
         [InlineData(-0.31830988618379067,     -0.32951473309607836,     CrossPlatformMachineEpsilon)]       // value: -(1 / pi)
+#if !MONO
         [InlineData(-0.0,                     -0.0,                     0.0)]
+#endif
         [InlineData( double.NaN,               double.NaN,              0.0)]
         [InlineData( 0.0,                      0.0,                     0.0)]
         [InlineData( 0.31830988618379067,      0.32951473309607836,     CrossPlatformMachineEpsilon)]       // value:  (1 / pi)
@@ -1649,7 +1655,7 @@ namespace System.Tests
         [Theory]
         [InlineData(-1.5707963267948966,      -16331239353195370.0,     0.0)]                               // value: -(pi / 2)
         [InlineData( 1.5707963267948966,       16331239353195370.0,     0.0)]                               // value:  (pi / 2)
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Tan_PiOver2(double value, double expectedResult, double allowedVariance)
         {
             AssertEqual(expectedResult, Math.Tan(value), allowedVariance);

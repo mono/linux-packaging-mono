@@ -87,7 +87,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
 subdir = mono/profiler
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -234,6 +235,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
 mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_2)
+mprof_report_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(mprof_report_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -343,6 +347,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -416,6 +421,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -632,6 +653,7 @@ libmono_profiler_coverage_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
 mprof_report_SOURCES = mprof-report.c
 mprof_report_LDADD = $(glib_libs) $(zlib_dep)
+mprof_report_LDFLAGS = -no-undefined
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \
@@ -797,7 +819,7 @@ clean-binPROGRAMS:
 
 mprof-report$(EXEEXT): $(mprof_report_OBJECTS) $(mprof_report_DEPENDENCIES) $(EXTRA_mprof_report_DEPENDENCIES) 
 	@rm -f mprof-report$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(mprof_report_OBJECTS) $(mprof_report_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(mprof_report_LINK) $(mprof_report_OBJECTS) $(mprof_report_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

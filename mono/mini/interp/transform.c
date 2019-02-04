@@ -19,6 +19,7 @@
 #include <mono/metadata/seq-points-data.h>
 #include <mono/metadata/mono-basic-block.h>
 #include <mono/metadata/abi-details.h>
+#include <mono/metadata/reflection-internals.h>
 
 #include <mono/mini/mini.h>
 #include <mono/mini/mini-runtime.h>
@@ -2071,7 +2072,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 	InterpBasicBlock *bb_exit = NULL;
 	static gboolean verbose_method_inited;
 	static char* verbose_method_name;
-
+	gboolean emitted_funccall_seq_point = FALSE;
+	
 	if (!verbose_method_inited) {
 		verbose_method_name = g_getenv ("MONO_VERBOSE_METHOD");
 		verbose_method_inited = TRUE;
@@ -2327,6 +2329,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		switch (*td->ip) {
 		case CEE_NOP: 
 			/* lose it */
+			emitted_funccall_seq_point = FALSE;
 			++td->ip;
 			break;
 		case CEE_BREAK:
@@ -2517,6 +2520,15 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 				InterpBasicBlock *cbb = td->offset_to_bb [td->ip - header->code];
 				g_assert (cbb);
 
+				//check is is a nested call and remove the MONO_INST_NONEMPTY_STACK of the last breakpoint, only for non native methods
+				if (!(method->flags & METHOD_IMPL_ATTRIBUTE_NATIVE)) {
+					if (emitted_funccall_seq_point)	{
+						if (cbb->last_seq_point)
+							cbb->last_seq_point->flags |= MONO_SEQ_POINT_FLAG_NESTED_CALL;
+					}
+					else
+						emitted_funccall_seq_point = TRUE;	
+				}
 				emit_seq_point (td, td->ip - header->code, cbb, TRUE);
 			}
 
@@ -4365,13 +4377,30 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			g_assert (mt == MINT_TYPE_VT);
 			size = mono_class_value_size (klass, NULL);
 			g_assert (size == sizeof(gpointer));
-			PUSH_VT (td, sizeof(gpointer));
-			ADD_CODE (td, MINT_LDTOKEN);
-			ADD_CODE (td, get_data_item_index (td, handle));
 
-			SET_TYPE (td->sp, stack_type [mt], klass);
-			td->sp++;
-			td->ip += 5;
+			const unsigned char *next_ip = td->ip + 5;
+			MonoMethod *cmethod;
+			if (next_ip < end &&
+					!is_bb_start [next_ip - td->il_code] &&
+					(*next_ip == CEE_CALL || *next_ip == CEE_CALLVIRT) &&
+					(cmethod = mono_get_method_checked (image, read32 (next_ip + 1), NULL, generic_context, error)) &&
+					(cmethod->klass == mono_defaults.systemtype_class) &&
+					(strcmp (cmethod->name, "GetTypeFromHandle") == 0)) {
+				ADD_CODE (td, MINT_MONO_LDPTR);
+				gpointer systype = mono_type_get_object_checked (domain, (MonoType*)handle, error);
+				goto_if_nok (error, exit);
+				ADD_CODE (td, get_data_item_index (td, systype));
+				PUSH_SIMPLE_TYPE (td, STACK_TYPE_MP);
+				td->ip = next_ip + 5;
+			} else {
+				PUSH_VT (td, sizeof(gpointer));
+				ADD_CODE (td, MINT_LDTOKEN);
+				ADD_CODE (td, get_data_item_index (td, handle));
+				SET_TYPE (td->sp, stack_type [mt], klass);
+				td->sp++;
+				td->ip += 5;
+			}
+
 			break;
 		}
 		case CEE_ADD_OVF:
@@ -5011,7 +5040,7 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 	MonoImage *image = m_class_get_image (method->klass);
 	MonoMethodHeader *header = NULL;
 	MonoMethodSignature *signature = mono_method_signature (method);
-	register const unsigned char *ip, *end;
+	const unsigned char *ip, *end;
 	const MonoOpcode *opcode;
 	MonoMethod *m;
 	MonoClass *klass;

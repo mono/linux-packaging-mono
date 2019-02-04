@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace System.ComponentModel
 {
@@ -23,6 +20,9 @@ namespace System.ComponentModel
         /// </devdoc>
         private object _value;
 
+        // Delegate ad hoc created 'TypeDescriptor.ConvertFromInvariantString' reflection object cache
+        static object s_convertFromInvariantString;
+
         /// <devdoc>
         /// <para>Initializes a new instance of the <see cref='System.ComponentModel.DefaultValueAttribute'/> class, converting the
         ///    specified value to the
@@ -36,7 +36,24 @@ namespace System.ComponentModel
             // load an otherwise normal class.
             try
             {
-                if (type.IsSubclassOf(typeof(Enum)))
+#if __MonoCS__
+                // lazy init reflection objects
+                if (s_convertFromInvariantString == null)
+                {
+                    Type typeDescriptorType = Type.GetType("System.ComponentModel.TypeDescriptor, System.ComponentModel.TypeConverter", throwOnError: false);
+                    Volatile.Write(ref s_convertFromInvariantString, typeDescriptorType == null ? new object() : Delegate.CreateDelegate(typeof(Func<Type, string, object>), typeDescriptorType, "ConvertFromInvariantString", ignoreCase: false));
+                }
+                if (s_convertFromInvariantString is Func<Type, string, object> convertFromInvariantString)
+                {
+                    _value = convertFromInvariantString(type, value);
+                }
+#else
+                if (TryConvertFromInvariantString(type, value, out object convertedValue))
+                {
+                    _value = convertedValue;
+                }
+#endif
+                else if (type.IsSubclassOf(typeof(Enum)))
                 {
                     _value = Enum.Parse(type, value, true);
                 }
@@ -48,6 +65,29 @@ namespace System.ComponentModel
                 {
                     _value = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
                 }
+
+                return;
+#if !__MonoCS__
+                // Looking for ad hoc created TypeDescriptor.ConvertFromInvariantString(Type, string)
+                bool TryConvertFromInvariantString(Type typeToConvert, string stringValue, out object conversionResult)
+                {
+                    conversionResult = null;
+
+                    // lazy init reflection objects
+                    if (s_convertFromInvariantString == null)
+                    {
+                        Type typeDescriptorType = Type.GetType("System.ComponentModel.TypeDescriptor, System.ComponentModel.TypeConverter", throwOnError: false);
+                        Volatile.Write(ref s_convertFromInvariantString, typeDescriptorType == null ? new object() : Delegate.CreateDelegate(typeof(Func<Type, string, object>), typeDescriptorType, "ConvertFromInvariantString", ignoreCase: false));
+                    }
+
+                    if (!(s_convertFromInvariantString is Func<Type, string, object> convertFromInvariantString))
+                        return false;
+
+                    conversionResult = convertFromInvariantString(typeToConvert, stringValue);
+
+                    return true;
+                }
+#endif
             }
             catch
             {

@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
@@ -21,7 +21,16 @@ namespace System.Collections.Generic
             _pos = 0;
         }
 
-        public int Length => _pos;
+        public int Length
+        {
+            get => _pos;
+            set
+            {
+                Debug.Assert(value >= 0);
+                Debug.Assert(value <= _span.Length);
+                _pos = value;
+            }
+        }
 
         public ref T this[int index]
         {

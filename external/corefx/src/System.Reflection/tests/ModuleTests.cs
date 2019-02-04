@@ -28,7 +28,7 @@ namespace System.Reflection.Tests
             Assert.Equal(typeInfo.Assembly, module.Assembly);
         }
 
-        [Theory]
+        [Theory(Skip="Mono issue #11569")]
         [InlineData(typeof(Attr), 77, "AttrSimple")]
         [InlineData(typeof(Int32Attr), 77, "Int32AttrSimple")]
         [InlineData(typeof(Int64Attr), (long)77, "Int64AttrSimple")]

@@ -1,10 +1,8 @@
 # Building a MonoGame app with CoreRT
 
-This document will guide you through compiling a .NET Core [MonoGame](http://www.monogame.net) game with CoreRT.
+CoreRT is an AOT-optimized .NET Core runtime. This document will guide you through compiling a .NET Core [MonoGame](http://www.monogame.net) game with CoreRT.
 
-## Install the .NET Core SDK
-CoreRT is an AOT-optimized .NET Core runtime. If you're new to .NET Core make sure to visit the [official starting page](http://dotnet.github.io). It will guide you through installing pre-requisites and building your first app.
-If you're already familiar with .NET Core make sure you've [downloaded and installed the .NET Core 2 SDK](https://www.microsoft.com/net/download/core).
+_Please ensure that [pre-requisites](../prerequisites.md) are installed._
 
 ## Create .NET Core MonoGame project
 Open a new shell/command prompt window and run the following commands.
@@ -22,7 +20,7 @@ Verify that the empty game builds and runs. You should see blue window:
 > dotnet run
 ```
 
-MonoGame tools require [Mono](http://www.mono-project.com/download/) on non-Windows platforms.
+MonoGame tools require [Mono](http://www.mono-project.com/download/) on non-Windows platforms. On Windows, MonoGame tools depend on [Visual Studio 2012 Visual C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
 
 ## Add CoreRT to your project
 Using CoreRT to compile your application is done via the ILCompiler NuGet package, which is [published to MyGet with the CoreRT daily builds](https://dotnet.myget.org/feed/dotnet-core/package/nuget/Microsoft.DotNet.ILCompiler).
@@ -61,7 +59,7 @@ where `<Configuration>` is your project configuration (such as Debug or Release)
 > dotnet publish -r win-x64 -c release
 ```
 
-Once completed, you can find the native executable in the root folder of your project under `/bin/x64/<Configuration>/netcoreapp2.0/publish/`. Navigate to `/bin/x64/<Configuration>/netcoreapp2.0/publish/` in your project folder and run the produced native executable.
+Once completed, you can find the native executable in the root folder of your project under `/bin/x64/<Configuration>/netcoreapp2.1/publish/`. Navigate to `/bin/x64/<Configuration>/netcoreapp2.1/publish/` in your project folder and run the produced native executable.
 
 ## Try MonoGame sample game
 
@@ -75,7 +73,7 @@ MonoGame samples include project files for number of targets, but not for .NET C
 
 ```bash
 > dotnet publish -r win-x64 -c release Platformer2D.csproj
-> bin\x64\Release\netcoreapp2.0\publish\Platformer2D.exe
+> bin\x64\Release\netcoreapp2.1\publish\Platformer2D.exe
 ```
 
 The NeonShooter sample works on Windows-only due to https://github.com/MonoGame/MonoGame/issues/3270.

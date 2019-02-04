@@ -40,9 +40,8 @@ namespace MonoTests.System.Runtime.Remoting
 		[Test]
 		public void Bug46473 () // concurrent serialization/deserialization
 		{
-			bool success = true;
 			crossDomainSerializedObject = new CrossDomainSerializedObject();
-			Task[] tasks = new Task [20];
+			Task[] tasks = new Task [5];
 			for (int i = 0; i < tasks.Length; i++)
 			{
 				var assembly = Assembly.GetAssembly(typeof(AppDomainObject));
@@ -50,7 +49,7 @@ namespace MonoTests.System.Runtime.Remoting
 				tasks [i] = Task.Factory.StartNew(() => AppDomainWithRemotingSerialization(assembly, name));
 			}
 
-			Assert.IsTrue (Task.WaitAll (tasks, 5000));
+			Assert.IsTrue (Task.WaitAll (tasks, 20000));
 		}
 #endif
 	}

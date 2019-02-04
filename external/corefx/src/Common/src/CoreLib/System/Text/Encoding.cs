@@ -77,8 +77,11 @@ namespace System.Text
     public abstract class Encoding : ICloneable
     {
         // For netcore we use UTF8 as default encoding since ANSI isn't available
+#if MONO_HYBRID_ENCODING_SUPPORT
+        private static readonly Encoding s_defaultEncoding = EncodingHelper.GetDefaultEncoding ();
+#else
         private static readonly UTF8Encoding.UTF8EncodingSealed s_defaultEncoding  = new UTF8Encoding.UTF8EncodingSealed(encoderShouldEmitUTF8Identifier: false);
-
+#endif
         // Returns an encoding for the system's current ANSI code page.
         public static Encoding Default => s_defaultEncoding;
 
@@ -301,7 +304,14 @@ namespace System.Text
                     SR.Format(SR.NotSupported_NoCodepageData, codepage));
             }
 
+#if MONO_HYBRID_ENCODING_SUPPORT
+            result = (Encoding)(EncodingHelper.InvokeI18N ("GetEncoding", codepage));
+            if (result == null)
+                throw new NotSupportedException(string.Format("Encoding {0} data could not be found. Make sure you have correct international codeset assembly installed and enabled.", codepage));
+            return result;
+#else
             return UTF8;
+#endif
         }
 
         public static Encoding GetEncoding(int codepage,
@@ -620,6 +630,13 @@ namespace System.Text
                 return (_isReadOnly);
             }
         }
+
+#if MONO_HYBRID_ENCODING_SUPPORT
+        internal void setReadOnly (bool value = true)
+        {
+                   _isReadOnly = value;
+        }
+#endif
 
         // Returns an encoding for the ASCII character set. The returned encoding
         // will be an instance of the ASCIIEncoding class.

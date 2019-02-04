@@ -17,6 +17,9 @@
     <Project Include="$(MSBuildThisFileDirectory)Microsoft.TargetingPack.Private.CoreRT\Microsoft.TargetingPack.Private.CoreRT.builds">
       <OSGroup>Windows_NT</OSGroup>
     </Project>
+    <Project Include="$(MSBuildThisFileDirectory)Microsoft.DotNet.ILVerification\Microsoft.DotNet.ILVerification.builds">
+      <OSGroup>Windows_NT</OSGroup>
+    </Project>
   </ItemGroup>
 
   <ItemGroup Condition="'$(SkipManagedPackageBuild)' != 'true'">
@@ -25,7 +28,13 @@
       <AdditionalProperties>$(AdditionalProperties);BuildIdentityPackage=$(BuildIdentityPackage)</AdditionalProperties>
     </Project>
   </ItemGroup>
-  
+
+  <ItemGroup Condition="'$(SkipManagedPackageBuild)' != 'true' AND '$(ObjWriterBuild)' == 'true'">
+    <Project Include="$(MSBuildThisFileDirectory)Microsoft.DotNet.ObjectWriter\Microsoft.DotNet.ObjectWriter.builds">
+      <OSGroup>AnyOS</OSGroup>
+      <AdditionalProperties>$(AdditionalProperties);BuildIdentityPackage=$(BuildIdentityPackage)</AdditionalProperties>
+    </Project>
+  </ItemGroup>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.traversal.targets))\dir.traversal.targets" />
 </Project>
-

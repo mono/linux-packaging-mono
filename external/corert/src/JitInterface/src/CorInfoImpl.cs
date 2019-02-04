@@ -42,6 +42,12 @@ namespace Internal.JitInterface
             ARM = 0x01c4,
         }
 
+#if SUPPORT_JIT
+        private const string JitSupportLibrary = "*";
+#else
+        private const string JitSupportLibrary = "jitinterface";
+#endif
+
         private IntPtr _jit;
 
         private IntPtr _unmanagedCallbacks; // array of pointers to JIT-EE interface callbacks
@@ -49,13 +55,13 @@ namespace Internal.JitInterface
 
         private ExceptionDispatchInfo _lastException;
 
-        [DllImport("clrjitilc")]
+        [DllImport("clrjitilc", CallingConvention=CallingConvention.StdCall)] // stdcall in CoreCLR!
         private extern static IntPtr jitStartup(IntPtr host);
 
-        [DllImport("clrjitilc")]
+        [DllImport("clrjitilc", CallingConvention=CallingConvention.StdCall)]
         private extern static IntPtr getJit();
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static IntPtr GetJitHost(IntPtr configProvider);
 
         //
@@ -68,15 +74,15 @@ namespace Internal.JitInterface
             return _this;
         }
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static CorJitResult JitCompileMethod(out IntPtr exception, 
             IntPtr jit, IntPtr thisHandle, IntPtr callbacks,
             ref CORINFO_METHOD_INFO info, uint flags, out IntPtr nativeEntry, out uint codeSize);
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static uint GetMaxIntrinsicSIMDVectorLength(IntPtr jit, CORJIT_FLAGS* flags);
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static IntPtr AllocException([MarshalAs(UnmanagedType.LPWStr)]string message, int messageLength);
 
         private IntPtr AllocException(Exception ex)
@@ -93,10 +99,10 @@ namespace Internal.JitInterface
             return nativeException;
         }
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static void FreeException(IntPtr obj);
 
-        [DllImport("jitinterface")]
+        [DllImport(JitSupportLibrary)]
         private extern static char* GetExceptionMessage(IntPtr obj);
 
         private Compilation _compilation;
@@ -407,10 +413,22 @@ namespace Internal.JitInterface
                                                        _compilation.NodeFactory.Target.MinimumFunctionAlignment,
                                                        new ISymbolDefinitionNode[] { _methodCodeNode });
             ObjectNode.ObjectData ehInfo = _ehClauses != null ? EncodeEHInfo() : null;
+            DebugEHClauseInfo[] debugEHClauseInfos = null;
+            if (_ehClauses != null)
+            {
+                debugEHClauseInfos = new DebugEHClauseInfo[_ehClauses.Length];
+                for (int i = 0; i < _ehClauses.Length; i++)
+                {
+                    var clause = _ehClauses[i];
+                    debugEHClauseInfos[i] = new DebugEHClauseInfo(clause.TryOffset, clause.TryLength,
+                                                        clause.HandlerOffset, clause.HandlerLength);
+                }
+            }
 
             _methodCodeNode.SetCode(objectData);
 
             _methodCodeNode.InitializeFrameInfos(_frameInfos);
+            _methodCodeNode.InitializeDebugEHClauseInfos(debugEHClauseInfos);
             _methodCodeNode.InitializeGCInfo(_gcInfo);
             _methodCodeNode.InitializeEHInfo(ehInfo);
 
@@ -751,7 +769,8 @@ namespace Internal.JitInterface
             {
                 result |= CorInfoFlag.CORINFO_FLG_PINVOKE;
 
-                // See comment in pInvokeMarshalingRequired
+                // TODO: Enable PInvoke inlining
+                // https://github.com/dotnet/corert/issues/6063
                 result |= CorInfoFlag.CORINFO_FLG_DONT_INLINE;
             }
 
@@ -859,8 +878,9 @@ namespace Internal.JitInterface
 
             // Normalize to the slot defining method. We don't have slot information for the overrides.
             methodDesc = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(methodDesc);
+            Debug.Assert(!methodDesc.CanMethodBeInSealedVTable());
 
-            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(_compilation.NodeFactory, methodDesc);
+            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(_compilation.NodeFactory, methodDesc, methodDesc.OwningType);
             Debug.Assert(slot != -1);
 
             offsetAfterIndirection = (uint)(EETypeNode.GetVTableOffset(pointerSize) + slot * pointerSize);
@@ -993,7 +1013,7 @@ namespace Internal.JitInterface
         {
             TypeDesc type = HandleToObject(classHnd);
             
-            if (_simdHelper.IsInSimdModule(type))
+            if (_simdHelper.IsSimdType(type))
             {
 #if DEBUG
                 // If this is Vector<T>, make sure the codegen and the type system agree on what instructions/registers
@@ -1024,23 +1044,34 @@ namespace Internal.JitInterface
             return (CorInfoUnmanagedCallConv)unmanagedCallConv;
         }
 
+        private bool IsPInvokeStubRequired(MethodDesc method)
+        {
+            return ((Internal.IL.Stubs.PInvokeILStubMethodIL)_compilation.GetMethodIL(method)).IsStubRequired;
+        }
+
         private bool pInvokeMarshalingRequired(CORINFO_METHOD_STRUCT_* handle, CORINFO_SIG_INFO* callSiteSig)
         {
-            // TODO: Support for PInvoke calli with marshalling. For now, assume there is no marshalling required.
+            // calli is covered by convertPInvokeCalliToCall
             if (handle == null)
+            {
+#if DEBUG
+                MethodSignature methodSignature = (MethodSignature)HandleToObject((IntPtr)callSiteSig->pSig);
+
+                MethodDesc stub = _compilation.PInvokeILProvider.GetCalliStub(methodSignature);
+                Debug.Assert(!IsPInvokeStubRequired(stub));
+#endif
+
                 return false;
+            }
 
             MethodDesc method = HandleToObject(handle);
 
             if (method.IsRawPInvoke())
                 return false;
 
-            // TODO: Ideally, we would just give back the PInvoke stub IL to the JIT and let it inline it, without
-            // checking whether it is required upfront. Unfortunatelly, RyuJIT is not able to generate PInvoke
-            // transitions in inlined methods today (impCheckForPInvokeCall is not called for inlinees and number of other places
-            // depend on it). To get a decent code with this limitation, we mirror CoreCLR behavior: Check
-            // whether PInvoke stub is required here, and disable inlining of PInvoke methods in getMethodAttribsInternal.
-            return ((Internal.IL.Stubs.PInvokeILStubMethodIL)_compilation.GetMethodIL(method)).IsStubRequired;
+            // We could have given back the PInvoke stub IL to the JIT and let it inline it, without
+            // checking whether there is any stub required. Save the JIT from doing the inlining by checking upfront.
+            return IsPInvokeStubRequired(method);
         }
 
         private bool satisfiesMethodConstraints(CORINFO_CLASS_STRUCT_* parent, CORINFO_METHOD_STRUCT_* method)
@@ -1399,7 +1430,7 @@ namespace Internal.JitInterface
         private uint getClassAlignmentRequirement(CORINFO_CLASS_STRUCT_* cls, bool fDoubleAlignHint)
         {
             DefType type = (DefType)HandleToObject(cls);
-            return (uint)type.InstanceByteAlignment.AsInt;
+            return (uint)type.InstanceFieldAlignment.AsInt;
         }
 
         private int GatherClassGCLayout(TypeDesc type, byte* gcPtrs)
@@ -1477,7 +1508,7 @@ namespace Internal.JitInterface
 
             int pointerSize = PointerSize;
 
-            int ptrsCount = AlignmentHelper.AlignUp(type.InstanceByteCount.AsInt, pointerSize) / pointerSize;
+            int ptrsCount = AlignmentHelper.AlignUp(type.InstanceFieldSize.AsInt, pointerSize) / pointerSize;
 
             // Assume no GC pointers at first
             for (int i = 0; i < ptrsCount; i++)
@@ -3342,6 +3373,7 @@ namespace Internal.JitInterface
                 else
                 {
                     pResult.exactContextNeedsRuntimeLookup = false;
+                    targetMethod = targetMethod.GetCanonMethodTarget(CanonicalFormKind.Specific);
 
                     // Get the slot defining method to make sure our virtual method use tracking gets this right.
                     // For normal C# code the targetMethod will always be newslot.
@@ -3426,8 +3458,41 @@ namespace Internal.JitInterface
         { throw new NotImplementedException("GetDelegateCtor"); }
         private void MethodCompileComplete(CORINFO_METHOD_STRUCT_* methHnd)
         { throw new NotImplementedException("MethodCompileComplete"); }
+
         private void* getTailCallCopyArgsThunk(CORINFO_SIG_INFO* pSig, CorInfoHelperTailCallSpecialHandling flags)
-        { throw new NotImplementedException("getTailCallCopyArgsThunk"); }
+        {
+            // Slow tailcalls are not supported yet
+            // https://github.com/dotnet/corert/issues/1683
+            return null;
+        }
+
+        private bool convertPInvokeCalliToCall(ref CORINFO_RESOLVED_TOKEN pResolvedToken, bool mustConvert)
+        {
+            var methodIL = (MethodIL)HandleToObject((IntPtr)pResolvedToken.tokenScope);
+            if (methodIL.OwningMethod.IsPInvoke)
+            {
+                return false;
+            }
+
+            MethodSignature signature = (MethodSignature)methodIL.GetObject((int)pResolvedToken.token);
+
+            CorInfoCallConv callConv = (CorInfoCallConv)(signature.Flags & MethodSignatureFlags.UnmanagedCallingConventionMask);
+            if (callConv != CorInfoCallConv.CORINFO_CALLCONV_C &&
+                callConv != CorInfoCallConv.CORINFO_CALLCONV_STDCALL &&
+                callConv != CorInfoCallConv.CORINFO_CALLCONV_THISCALL &&
+                callConv != CorInfoCallConv.CORINFO_CALLCONV_FASTCALL)
+            {
+                return false;
+            }
+
+            MethodDesc stub = _compilation.PInvokeILProvider.GetCalliStub(signature);
+            if (!mustConvert && !IsPInvokeStubRequired(stub))
+                return false;
+
+            pResolvedToken.hMethod = ObjectToHandle(stub);
+            pResolvedToken.hClass = ObjectToHandle(stub.OwningType);
+            return true;
+        }
 
         private void* getMemoryManager()
         {

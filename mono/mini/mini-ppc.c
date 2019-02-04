@@ -322,7 +322,7 @@ mono_ppc_is_direct_call_sequence (guint32 *code)
 
 #define MAX_ARCH_DELEGATE_PARAMS 7
 
-static gpointer
+static guint8*
 get_delegate_invoke_impl (MonoTrampInfo **info, gboolean has_target, guint32 param_count, gboolean aot)
 {
 	guint8 *code, *start;
@@ -849,7 +849,7 @@ typedef struct {
 				in one word, otherwise it's 0*/
 } ArgInfo;
 
-typedef struct {
+struct CallInfo {
 	int nargs;
 	guint32 stack_usage;
 	guint32 struct_ret;
@@ -858,7 +858,7 @@ typedef struct {
 	gboolean vtype_retaddr;
 	int vret_arg_index;
 	ArgInfo args [1];
-} CallInfo;
+};
 
 #define DEBUG(a)
 
@@ -2071,7 +2071,7 @@ static int
 normalize_opcode (int opcode)
 {
 	switch (opcode) {
-#ifndef __mono_ilp32__
+#ifndef MONO_ARCH_ILP32
 	case MONO_PPC_32_64_CASE (OP_LOADI4_MEMBASE, OP_LOADI8_MEMBASE):
 		return OP_LOAD_MEMBASE;
 	case MONO_PPC_32_64_CASE (OP_LOADI4_MEMINDEX, OP_LOADI8_MEMINDEX):
@@ -3275,7 +3275,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				}
 			}
 			break;
-#ifdef __mono_ilp32__
+#ifdef MONO_ARCH_ILP32
 		case OP_STOREI8_MEMBASE_REG:
 			if (ppc_is_imm16 (ins->inst_offset)) {
 				ppc_str (code, ins->sreg1, ins->inst_offset, ins->inst_destbasereg);
@@ -3380,7 +3380,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				}
 			}
 			break;
-#ifdef __mono_ilp32__
+#ifdef MONO_ARCH_ILP32
 		case OP_LOADI8_MEMBASE:
 			if (ppc_is_imm16 (ins->inst_offset)) {
 				ppc_ldr (code, ins->dreg, ins->inst_offset, ins->inst_basereg);
@@ -5299,7 +5299,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 	}
 
 	if (tracing)
-		code = mono_arch_instrument_prolog (cfg, mono_trace_enter_method, code, TRUE);
+		code = (guint8*)mono_arch_instrument_prolog (cfg, mono_trace_enter_method, code, TRUE);
 
 	set_code_cursor (cfg, code);
 	g_free (cinfo);
@@ -5324,7 +5324,7 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 	code = realloc_code (cfg, max_epilog_size);
 
 	if (mono_jit_trace_calls != NULL && mono_trace_eval (method)) {
-		code = mono_arch_instrument_epilog (cfg, mono_trace_leave_method, code, TRUE);
+		code = (guint8*)mono_arch_instrument_epilog (cfg, mono_trace_leave_method, code, TRUE);
 	}
 	pos = 0;
 
@@ -5965,7 +5965,7 @@ mono_arch_skip_single_step (MonoContext *ctx)
  *
  *   See mini-amd64.c for docs.
  */
-gpointer
+SeqPointInfo*
 mono_arch_get_seq_point_info (MonoDomain *domain, guint8 *code)
 {
 	NOT_IMPLEMENTED;

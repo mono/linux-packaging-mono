@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2019-02-04 08:06+0000\n"
+"POT-Creation-Date: 2019-02-04 19:35+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -2643,16 +2643,16 @@ msgid ""
 "it returns by reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13332
+#: mcs/mcs/expression.cs:13336
 #, fuzzy
 msgid "An expression tree cannot contain a discard"
 msgstr "Un árbol de expresiones no puede contener un operador de asignación"
 
-#: mcs/mcs/expression.cs:13346
+#: mcs/mcs/expression.cs:13350
 msgid "Cannot infer the type of implicitly-typed discard"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13352
+#: mcs/mcs/expression.cs:13356
 msgid "Cannot assign void to a discard"
 msgstr ""
 

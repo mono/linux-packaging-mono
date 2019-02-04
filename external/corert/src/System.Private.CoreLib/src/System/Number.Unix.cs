@@ -30,15 +30,10 @@ namespace System
             char* dst = number.digits;
 
             number.scale = 0;
-            number.sign = false;
+            number.sign = double.IsNegative(value);
             *dst = '\0';
 
-            if (value < 0.0)
-            {
-                number.sign = true;
-            }
-
-            if (BitConverter.DoubleToInt64Bits (value) == 0)
+            if (value == 0.0)
             {
                 for (int j = 0; j < precision; j++)
                 {

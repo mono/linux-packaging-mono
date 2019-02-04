@@ -100,8 +100,14 @@ static MonoMethod *method_set_call_context, *method_needs_context_sink, *method_
 static gpointer
 mono_compile_method_icall (MonoMethod *method);
 
+#ifdef __cplusplus
+template <typename T>
+static void
+register_icall (T func, const char *name, const char *sigstr, gboolean save)
+#else
 static void
 register_icall (gpointer func, const char *name, const char *sigstr, gboolean save)
+#endif
 {
 	MonoMethodSignature *sig = mono_create_icall_signature (sigstr);
 
@@ -229,7 +235,6 @@ mono_remoting_marshal_init (void)
 
 		register_icall (mono_context_get_icall, "mono_context_get_icall", "object", FALSE);
 		register_icall (mono_context_set_icall, "mono_context_set_icall", "void object", FALSE);
-
 	}
 
 	icalls_registered = TRUE;
@@ -402,7 +407,7 @@ mono_remoting_wrapper (MonoMethod *method, gpointer *params)
 		int i;
 		MonoMethodSignature *sig = mono_method_signature (method);
 		int count = sig->param_count;
-		gpointer* mparams = (gpointer*) alloca(count*sizeof(gpointer));
+		gpointer* mparams = g_newa (gpointer, count);
 
 		for (i=0; i<count; i++) {
 			MonoClass *klass = mono_class_from_mono_type (sig->params [i]);
@@ -1008,7 +1013,7 @@ mono_marshal_get_xappdomain_invoke (MonoMethod *method, MonoError *error)
 
 	/* Count the number of parameters that need to be serialized */
 
-	marshal_types = (int *)alloca (sizeof (int) * sig->param_count);
+	marshal_types = g_newa (int, sig->param_count);
 	complex_count = complex_out_count = 0;
 	for (i = 0; i < sig->param_count; i++) {
 		MonoType *ptype = sig->params[i];
@@ -2044,9 +2049,11 @@ mono_marshal_xdomain_copy_value_handle (MonoObjectHandle val, MonoError *error)
 	if (MONO_HANDLE_IS_NULL (val))
 		goto leave;
 
-	MonoDomain *domain = mono_domain_get ();
+	MonoDomain *domain;
+	domain = mono_domain_get ();
 
-	MonoClass *klass = mono_handle_class (val);
+	MonoClass *klass;
+	klass = mono_handle_class (val);
 
 	switch (m_class_get_byval_arg (klass)->type) {
 	case MONO_TYPE_VOID:

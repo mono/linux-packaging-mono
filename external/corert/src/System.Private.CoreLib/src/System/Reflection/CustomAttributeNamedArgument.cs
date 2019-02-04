@@ -39,6 +39,13 @@ namespace System.Reflection
 
             _lazyMemberInfo = memberInfo;
             _attributeType = memberInfo.DeclaringType;
+#if MONO
+            // Mono runtime "create_cattr_named_arg" method passes value wrapped into CustomAttributeTypedArgument object
+            // but CoreFX expects just value. 
+            if (value is CustomAttributeTypedArgument typedArument)
+                TypedValue = typedArument;    
+            else
+#endif
             TypedValue = new CustomAttributeTypedArgument(type, value);
             IsField = field != null;
             MemberName = memberInfo.Name;

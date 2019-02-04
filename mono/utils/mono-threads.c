@@ -503,7 +503,7 @@ unregister_thread (void *arg)
 	MonoThreadInfo *info;
 	int small_id;
 	gboolean result;
-	gpointer handle;
+	MonoThreadHandle* handle;
 
 	info = (MonoThreadInfo *) arg;
 	g_assert (info);
@@ -779,14 +779,14 @@ thread_info_key_dtor (void *arg)
 MonoThreadInfoFlags
 mono_thread_info_get_flags (MonoThreadInfo *info)
 {
-    return mono_atomic_load_i32 (&info->flags);
+    return (MonoThreadInfoFlags)mono_atomic_load_i32 (&info->flags);
 }
 
 void
 mono_thread_info_set_flags (MonoThreadInfoFlags flags)
 {
 	MonoThreadInfo *info = mono_thread_info_current ();
-	MonoThreadInfoFlags old = mono_atomic_load_i32 (&info->flags);
+	MonoThreadInfoFlags old = (MonoThreadInfoFlags)mono_atomic_load_i32 (&info->flags);
 
 	if (threads_callbacks.thread_flags_changing)
 		threads_callbacks.thread_flags_changing (old, flags);
@@ -797,11 +797,6 @@ mono_thread_info_set_flags (MonoThreadInfoFlags flags)
 		threads_callbacks.thread_flags_changed (old, flags);
 }
 
-struct GSList {
-  gpointer data;
-  GSList *next;
-};
-
 #define MONO_END_INIT_CB GINT_TO_POINTER(-1)
 static GSList *init_callbacks;
 
@@ -810,14 +805,14 @@ mono_thread_info_wait_inited (void)
 {
 	MonoSemType cb;
 	mono_os_sem_init (&cb, 0);
-	gpointer old = init_callbacks;
+	GSList *old = init_callbacks;
 
 	GSList wait_request;
 	wait_request.data = &cb;
 	wait_request.next = old;
 
 	while (mono_threads_inited != TRUE) {
-		gpointer old_read = mono_atomic_cas_ptr ((gpointer *) &init_callbacks, &wait_request, old);
+		GSList *old_read = (GSList*)mono_atomic_cas_ptr ((gpointer *) &init_callbacks, &wait_request, old);
 
 		// Queued up waiter, need to be unstuck
 		if (old_read == old) {
@@ -851,7 +846,7 @@ mono_thread_info_set_inited (void)
 	GSList *old = init_callbacks;
 
 	while (TRUE) {
-		gpointer old_read = mono_atomic_cas_ptr ((gpointer *) &init_callbacks, MONO_END_INIT_CB, (gpointer) old);
+		GSList* old_read = (GSList*)mono_atomic_cas_ptr ((gpointer *) &init_callbacks, MONO_END_INIT_CB, (gpointer) old);
 		if (old == old_read)
 			break;
 		else
@@ -869,11 +864,18 @@ mono_thread_info_set_inited (void)
 		GSList *curr = (GSList *) old;
 		GSList *next = old->next;
 
-		mono_os_sem_post (curr->data);
+		mono_os_sem_post ((MonoSemType*)curr->data);
 		old = next;
 	}
 
 	return;
+}
+
+void
+mono_thread_info_cleanup ()
+{
+	mono_native_tls_free (thread_info_key);
+	mono_native_tls_free (thread_exited_key);
 }
 
 void
@@ -973,6 +975,25 @@ mono_thread_info_core_resume (MonoThreadInfo *info)
 		break;
 	}
 
+	return res;
+}
+
+/*
+ *   Current thread must hold the global_suspend_semaphore.
+ *   The given MonoThreadInfo* is a suspended thread.
+ *   Must be using hybrid suspend.
+ */
+static gboolean
+mono_thread_info_core_pulse (MonoThreadInfo *info)
+{
+	gboolean res = FALSE;
+
+	switch (mono_threads_transition_request_pulse (info)) {
+	case PulseInitAsyncPulse:
+		resume_async_suspended (info);
+		res = TRUE;
+		break;
+	}
 	return res;
 }
 
@@ -1115,6 +1136,21 @@ mono_thread_info_begin_resume (MonoThreadInfo *info)
 	return mono_thread_info_core_resume (info);
 }
 
+gboolean
+mono_thread_info_begin_pulse_resume_and_request_suspension (MonoThreadInfo *info)
+{
+	/* For two-phase suspend, we want to atomically resume the thread and
+	 * request that it try to cooperatively suspend again.  Specifically,
+	 * we really don't want it to transition from GC Safe to GC Unsafe
+	 * because we then it could (in GC Unsafe) try to take a lock that's
+	 * held by another preemptively-suspended thread, essentially
+	 * recreating the same problem that two-phase suspend intends to
+	 * fix. */
+	if (mono_threads_is_multiphase_stw_enabled ())
+		return mono_thread_info_core_pulse (info);
+	else
+		return mono_thread_info_core_resume (info);
+}
 /*
 FIXME fix cardtable WB to be out of line and check with the runtime if the target is not the
 WB trampoline. Another option is to encode wb ranges in MonoJitInfo, but that is somewhat hard.
@@ -1465,8 +1501,18 @@ mono_thread_info_set_is_async_context (gboolean async_context)
 {
 	MonoThreadInfo *info = mono_thread_info_current ();
 
-	if (info)
+	if (info) {
+		// If this assert fails, that means there is recursion and/or
+		// concurrency, such that setting async_context to FALSE
+		// that all the callers do after this, is incorrect,
+		// and this should instead be incremented/decremented.
+		//
+		// As the value is only accessed via current(), that
+		// limits the case to recursion, but increment/decrement
+		// is still fast and correct and simple.
+		g_assert (!async_context || !info->is_async_context);
 		info->is_async_context = async_context;
+	}
 }
 
 gboolean
@@ -1699,6 +1745,8 @@ mono_threads_open_thread_handle (MonoThreadHandle *thread_handle)
 void
 mono_threads_close_thread_handle (MonoThreadHandle *thread_handle)
 {
+	if (!thread_handle)
+		return;
 	mono_refcount_dec (thread_handle);
 }
 
@@ -1949,7 +1997,7 @@ mono_thread_info_wait_multiple_handle (MonoThreadHandle **thread_handles, gsize 
 
 	res = mono_os_event_wait_multiple (thread_events, nhandles, waitall, timeout, alertable);
 	if (res >= MONO_OS_EVENT_WAIT_RET_SUCCESS_0 && res <= MONO_OS_EVENT_WAIT_RET_SUCCESS_0 + nhandles - 1)
-		return MONO_THREAD_INFO_WAIT_RET_SUCCESS_0 + (res - MONO_OS_EVENT_WAIT_RET_SUCCESS_0);
+		return (MonoThreadInfoWaitRet)(MONO_THREAD_INFO_WAIT_RET_SUCCESS_0 + (res - MONO_OS_EVENT_WAIT_RET_SUCCESS_0));
 	else if (res == MONO_OS_EVENT_WAIT_RET_ALERTED)
 		return MONO_THREAD_INFO_WAIT_RET_ALERTED;
 	else if (res == MONO_OS_EVENT_WAIT_RET_TIMEOUT)

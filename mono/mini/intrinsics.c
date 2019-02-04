@@ -124,7 +124,7 @@ llvm_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		if (opcode) {
 			MONO_INST_NEW (cfg, ins, opcode);
 			ins->type = STACK_R8;
-			ins->dreg = mono_alloc_dreg (cfg, ins->type);
+			ins->dreg = mono_alloc_dreg (cfg, (MonoStackType)ins->type);
 			ins->sreg1 = args [0]->dreg;
 			if (fsig->param_count == 2)
 				ins->sreg2 = args [1]->dreg;
@@ -146,7 +146,7 @@ llvm_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		if (opcode && fsig->param_count == 1) {
 			MONO_INST_NEW (cfg, ins, opcode);
 			ins->type = STACK_R8;
-			ins->dreg = mono_alloc_dreg (cfg, ins->type);
+			ins->dreg = mono_alloc_dreg (cfg, (MonoStackType)ins->type);
 			ins->sreg1 = args [0]->dreg;
 			MONO_ADD_INS (cfg->cbb, ins);
 		}
@@ -177,7 +177,7 @@ llvm_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		if (opcode && fsig->param_count == 2) {
 			MONO_INST_NEW (cfg, ins, opcode);
 			ins->type = fsig->params [0]->type == MONO_TYPE_I4 ? STACK_I4 : STACK_I8;
-			ins->dreg = mono_alloc_dreg (cfg, ins->type);
+			ins->dreg = mono_alloc_dreg (cfg, (MonoStackType)ins->type);
 			ins->sreg1 = args [0]->dreg;
 			ins->sreg2 = args [1]->dreg;
 			MONO_ADD_INS (cfg->cbb, ins);
@@ -1387,6 +1387,25 @@ mini_emit_inst_for_sharable_method (MonoCompile *cfg, MonoMethod *cmethod, MonoM
 			return emit_array_unsafe_mov (cfg, fsig, args);
 	}
 
+	return NULL;
+}
+
+MonoInst*
+mini_emit_inst_for_field_load (MonoCompile *cfg, MonoClassField *field)
+{
+	MonoClass *klass = field->parent;
+	const char *klass_name_space = m_class_get_name_space (klass);
+	const char *klass_name = m_class_get_name (klass);
+	MonoImage *klass_image = m_class_get_image (klass);
+	gboolean in_corlib = klass_image == mono_defaults.corlib;
+	gboolean is_le;
+	MonoInst *ins;
+
+	if (in_corlib && !strcmp (klass_name_space, "System") && !strcmp (klass_name, "BitConverter") && !strcmp (field->name, "IsLittleEndian")) {
+		is_le = (TARGET_BYTE_ORDER == G_LITTLE_ENDIAN);
+		EMIT_NEW_ICONST (cfg, ins, is_le);
+		return ins;
+	}
 	return NULL;
 }
 

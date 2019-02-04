@@ -16,6 +16,7 @@
 
 
 
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -93,11 +94,11 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	monow$(EXEEXT)
 @DISABLE_EXECUTABLES_FALSE@noinst_PROGRAMS = mono$(EXEEXT)
 @DISABLE_INTERPRETER_TRUE@am__append_1 = $(interp_libs)
-@LOADED_LLVM_TRUE@am__append_2 = libmono-llvm.la
-@BITCODE_TRUE@am__append_3 = -no-undefined
-@FULL_AOT_TESTS_TRUE@am__append_4 = builtin-types.exe
-@MONO_JEMALLOC_ENABLED_TRUE@am__append_5 = $(JEMALLOC_LDFLAGS)
-@MONO_JEMALLOC_ENABLED_TRUE@am__append_6 = $(JEMALLOC_CFLAGS)
+@SUPPORT_BOEHM_TRUE@am__append_2 = main.c
+@LOADED_LLVM_TRUE@am__append_3 = libmono-llvm.la
+@BITCODE_TRUE@am__append_4 = -no-undefined
+@FULL_AOT_TESTS_TRUE@am__append_5 = builtin-types.exe
+@MONO_JEMALLOC_ENABLED_TRUE@am__append_6 = $(JEMALLOC_LDFLAGS)
 @DISABLE_DEBUGGER_AGENT_TRUE@am__append_7 = $(dbg_libs)
 @DISABLE_DEBUGGER_AGENT_FALSE@am__append_8 = $(dbg_libs)
 
@@ -110,7 +111,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 subdir = mono/mini
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -122,6 +124,18 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+LIBRARIES = $(noinst_LIBRARIES)
+ARFLAGS = cru
+AM_V_AR = $(am__v_AR_@AM_V@)
+am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
+am__v_AR_0 = @echo "  AR      " $@;
+am__v_AR_1 = 
+libmain_a_AR = $(AR) $(ARFLAGS)
+libmain_a_LIBADD =
+am__libmain_a_SOURCES_DIST = main-sgen.c main.c
+@SUPPORT_BOEHM_TRUE@am__objects_1 = libmain_a-main.$(OBJEXT)
+am_libmain_a_OBJECTS = libmain_a-main-sgen.$(OBJEXT) $(am__objects_1)
+libmain_a_OBJECTS = $(am_libmain_a_OBJECTS)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -190,7 +204,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows.h mini-windows-dllmain.c \
 	mini-windows-dlldac.c
-am__objects_1 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
+am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
 	libmini_la-jit-icalls.lo libmini_la-trace.lo \
@@ -212,62 +226,62 @@ am__objects_1 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-type-checking.lo libmini_la-lldb.lo \
 	libmini_la-memory-access.lo libmini_la-intrinsics.lo \
 	libmini_la-mini-profiler.lo libmini_la-interp-stubs.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 =  \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_3 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_2 = libmini_la-mini-llvm-loaded.lo
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_3 =  \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_3 = libmini_la-mini-llvm-loaded.lo
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_4 =  \
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
-@ENABLE_LLVM_TRUE@am__objects_3 = llvm-runtime.lo
-am__objects_4 = libmini_la-mini-amd64.lo \
+@ENABLE_LLVM_TRUE@am__objects_4 = llvm-runtime.lo
+am__objects_5 = libmini_la-mini-amd64.lo \
 	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo \
 	libmini_la-mini-amd64-gsharedvt.lo \
 	libmini_la-tramp-amd64-gsharedvt.lo
-am__objects_5 = libmini_la-mini-arm64.lo \
+am__objects_6 = libmini_la-mini-arm64.lo \
 	libmini_la-exceptions-arm64.lo libmini_la-tramp-arm64.lo \
 	libmini_la-mini-arm64-gsharedvt.lo \
 	libmini_la-tramp-arm64-gsharedvt.lo
-am__objects_6 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
+am__objects_7 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
 	libmini_la-tramp-arm.lo libmini_la-mini-arm-gsharedvt.lo \
 	libmini_la-tramp-arm-gsharedvt.lo
-am__objects_7 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
+am__objects_8 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
 	libmini_la-tramp-mips.lo
-am__objects_8 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
+am__objects_9 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
 	libmini_la-tramp-ppc.lo
-am__objects_9 = libmini_la-mini-s390x.lo \
+am__objects_10 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_10 = libmini_la-mini-sparc.lo \
+am__objects_11 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_11 = libmini_la-mini-wasm.lo \
+am__objects_12 = libmini_la-mini-wasm.lo \
 	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
 	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
-am__objects_12 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
+am__objects_13 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
 	libmini_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_13 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_13 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_13 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_13 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_13 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_13 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_13 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_13 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_6)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_5)
-@AMD64_TRUE@am__objects_13 = $(am__objects_4)
-am__objects_14 = libmini_la-mini-darwin.lo
-am__objects_15 = libmini_la-mini-posix.lo
-am__objects_16 = libmini_la-mini-windows.lo \
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_14 = $(am__objects_13)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_14 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_14 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_14 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_14 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_14 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_14 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_14 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_14 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_14 = $(am__objects_6)
+@AMD64_TRUE@am__objects_14 = $(am__objects_5)
+am__objects_15 = libmini_la-mini-darwin.lo
+am__objects_16 = libmini_la-mini-posix.lo
+am__objects_17 = libmini_la-mini-windows.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_17 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_15)
-@HOST_DARWIN_TRUE@am__objects_17 = $(am__objects_14) $(am__objects_15)
-am_libmini_la_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_13) $(am__objects_17)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_18 = $(am__objects_17)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_18 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_16)
+@HOST_DARWIN_TRUE@am__objects_18 = $(am__objects_15) $(am__objects_16)
+am_libmini_la_OBJECTS = $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_14) $(am__objects_18)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -278,9 +292,9 @@ am__v_lt_1 =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@WASM_FALSE@am__objects_18 = libmono_dbg_la-debugger-engine.lo
+@WASM_FALSE@am__objects_19 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	libmono_dbg_la-debugger-state-machine.lo $(am__objects_18)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_19)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -292,10 +306,10 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_19 = interp/libmono_ee_interp_la-interp.lo \
+am__objects_20 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
 	interp/libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_19)
+am_libmono_ee_interp_la_OBJECTS = $(am__objects_20)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -354,13 +368,10 @@ libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @SUPPORT_BOEHM_TRUE@am__EXEEXT_1 = mono-boehm$(EXEEXT)
 @SUPPORT_SGEN_TRUE@am__EXEEXT_2 = mono-sgen$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_mono_OBJECTS = mono-main-sgen.$(OBJEXT)
+am_mono_OBJECTS =
 mono_OBJECTS = $(am_mono_OBJECTS)
 mono_LDADD = $(LDADD)
-mono_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_mono_boehm_OBJECTS = mono_boehm-main.$(OBJEXT)
+am_mono_boehm_OBJECTS =
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
 @SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_6 = libmini.la \
 @SUPPORT_BOEHM_TRUE@	$(interp_libs_with_mini) \
@@ -369,30 +380,30 @@ mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
 @STATIC_MONO_FALSE@am__DEPENDENCIES_7 = libmonoboehm-2.0.la
 @STATIC_MONO_TRUE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_6)
 @DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_8 = mono-dtrace.$(OBJEXT)
-mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_7) $(glib_libs) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+mono_boehm_DEPENDENCIES = libmain_a-main.$(OBJEXT) \
+	$(am__DEPENDENCIES_7) $(glib_libs) $(am__DEPENDENCIES_5) \
+	$(am__DEPENDENCIES_8)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
-am_mono_sgen_OBJECTS = mono_sgen-main-sgen.$(OBJEXT)
+am_mono_sgen_OBJECTS =
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
-mono_sgen_DEPENDENCIES = $(MONO_SGEN_LIB) $(glib_libs) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
+	$(MONO_SGEN_LIB) $(glib_libs) $(am__DEPENDENCIES_5) \
+	$(am__DEPENDENCIES_8)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
-am__monow_SOURCES_DIST = main-sgen.c main.c
-am__objects_20 = main-sgen.$(OBJEXT)
-am__objects_21 = main.$(OBJEXT)
+am__objects_21 =
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_20)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_21)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_21)
 monow_OBJECTS = $(am_monow_OBJECTS)
-am__DEPENDENCIES_9 = $(MONO_SGEN_LIB) $(glib_libs) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
-am__DEPENDENCIES_10 = $(am__DEPENDENCIES_7) $(glib_libs) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
+	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+am__DEPENDENCIES_10 = libmain_a-main.$(OBJEXT) $(am__DEPENDENCIES_7) \
+	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_9)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
@@ -444,18 +455,19 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libmini_la_SOURCES) $(libmono_dbg_la_SOURCES) \
-	$(libmono_ee_interp_la_SOURCES) $(libmono_llvm_la_SOURCES) \
-	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
-	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
-	$(monow_SOURCES)
-DIST_SOURCES = $(am__libmini_la_SOURCES_DIST) \
+SOURCES = $(libmain_a_SOURCES) $(libmini_la_SOURCES) \
+	$(libmono_dbg_la_SOURCES) $(libmono_ee_interp_la_SOURCES) \
+	$(libmono_llvm_la_SOURCES) $(libmonoboehm_2_0_la_SOURCES) \
+	$(libmonosgen_2_0_la_SOURCES) $(mono_SOURCES) \
+	$(mono_boehm_SOURCES) $(mono_sgen_SOURCES) $(monow_SOURCES)
+DIST_SOURCES = $(am__libmain_a_SOURCES_DIST) \
+	$(am__libmini_la_SOURCES_DIST) \
 	$(am__libmono_dbg_la_SOURCES_DIST) \
 	$(libmono_ee_interp_la_SOURCES) \
 	$(am__libmono_llvm_la_SOURCES_DIST) \
 	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
 	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
-	$(am__monow_SOURCES_DIST)
+	$(monow_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -508,7 +520,9 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
+
+# Per-library because linking doesn't like -xc++, it treats libraries as C++.
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -518,6 +532,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -591,6 +606,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -772,15 +803,15 @@ monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info 1:0:0 \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_3) \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_5)
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_4) \
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_6)
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_3) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_5)
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_4) \
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_6)
 @HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
-@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_3) \
-@HOST_WIN32_TRUE@	$(am__append_5)
+@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_4) \
+@HOST_WIN32_TRUE@	$(am__append_6)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
 @SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
@@ -793,27 +824,25 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @SUPPORT_SGEN_TRUE@libmono_suffix = sgen
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
-lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_2) \
+lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_3) \
 	$(am__append_7)
 @SHARED_MONO_FALSE@mini_common_lib = 
 @SHARED_MONO_TRUE@mini_common_lib = libmini.la
 noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_8)
+noinst_LIBRARIES = libmain.a
+libmain_a_SOURCES = main-sgen.c $(am__append_2)
+libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
 @HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
-mono_boehm_SOURCES = \
-	main.c
 
-mono_CFLAGS = $(AM_CFLAGS) $(am__append_6)
-mono_boehm_CFLAGS = $(AM_CFLAGS)
+# we need this to prevent automake from generating a default mono_SOURCES = mono.c
+mono_SOURCES = 
+mono_boehm_SOURCES = 
+mono_boehm_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
-mono_sgen_SOURCES = \
-	main-sgen.c
-
-mono_SOURCES = \
-	main-sgen.c
-
-mono_sgen_CFLAGS = $(AM_CFLAGS)
+mono_sgen_SOURCES = 
+mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 @DTRACE_G_REQUIRED_FALSE@LIBMONO_DTRACE_OBJECT = 
 @DTRACE_G_REQUIRED_TRUE@LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
 @DTRACE_G_REQUIRED_FALSE@MONO_DTRACE_OBJECT = 
@@ -829,6 +858,7 @@ mono_sgen_CFLAGS = $(AM_CFLAGS)
 @LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
 @LOADED_LLVM_TRUE@LLVMMONOF = 
 mono_boehm_LDADD = \
+	libmain_a-main.$(OBJEXT) \
 	$(MONO_LIB)		\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
@@ -839,6 +869,7 @@ mono_boehm_LDFLAGS = \
 	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 mono_sgen_LDADD = \
+	libmain_a-main-sgen.$(OBJEXT) \
 	$(MONO_SGEN_LIB)	\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
@@ -943,7 +974,6 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
 
 interp_sources = \
-	interp/hacks.h		\
 	interp/interp.h	\
 	interp/interp-internals.h	\
 	interp/interp.c	\
@@ -1085,7 +1115,7 @@ regtests_UNIVERSAL = \
 	basic-vectors.exe	\
 	ratests.exe
 
-regtests_DISABLED = $(am__append_4)
+regtests_DISABLED = $(am__append_5)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
@@ -1143,12 +1173,12 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @HOST_SIGPOSIX_TRUE@monobin_platform_ldflags = 
 @HOST_WIN32_TRUE@monobin_platform_ldflags = 
 libmono_ee_interp_la_SOURCES = $(interp_sources)
-libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
+libmono_ee_interp_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @BITCODE_TRUE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
 @WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
 libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
-libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
+libmono_dbg_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
 dbg_libs = libmono-dbg.la
 @DISABLE_DEBUGGER_AGENT_FALSE@dbg_libs_with_mini = $(dbg_libs)
@@ -1158,13 +1188,13 @@ dbg_libs = libmono-dbg.la
 # compile time dependencies on boehm/sgen.
 #
 libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
-libmini_la_CFLAGS = $(mono_CFLAGS)
+libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoboehm_2_0_la_SOURCES = 
-libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
+libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonosgen_2_0_la_SOURCES = 
-libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
+libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
@@ -1263,6 +1293,14 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+
+libmain.a: $(libmain_a_OBJECTS) $(libmain_a_DEPENDENCIES) $(EXTRA_libmain_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libmain.a
+	$(AM_V_AR)$(libmain_a_AR) libmain.a $(libmain_a_OBJECTS) $(libmain_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libmain.a
 
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -1400,7 +1438,7 @@ clean-noinstPROGRAMS:
 
 @DISABLE_EXECUTABLES_TRUE@mono$(EXEEXT): $(mono_OBJECTS) $(mono_DEPENDENCIES) $(EXTRA_mono_DEPENDENCIES) 
 @DISABLE_EXECUTABLES_TRUE@	@rm -f mono$(EXEEXT)
-@DISABLE_EXECUTABLES_TRUE@	$(AM_V_CCLD)$(mono_LINK) $(mono_OBJECTS) $(mono_LDADD) $(LIBS)
+@DISABLE_EXECUTABLES_TRUE@	$(AM_V_CCLD)$(LINK) $(mono_OBJECTS) $(mono_LDADD) $(LIBS)
 
 mono-boehm$(EXEEXT): $(mono_boehm_OBJECTS) $(mono_boehm_DEPENDENCIES) $(EXTRA_mono_boehm_DEPENDENCIES) 
 	@rm -f mono-boehm$(EXEEXT)
@@ -1422,6 +1460,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmain_a-main-sgen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmain_a-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-abcremoval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-alias-analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-compiler.Plo@am__quote@
@@ -1516,13 +1556,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-main-sgen.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_boehm-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_sgen-main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
@@ -1550,6 +1585,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmain_a-main-sgen.o: main-sgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-main-sgen.o -MD -MP -MF $(DEPDIR)/libmain_a-main-sgen.Tpo -c -o libmain_a-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-main-sgen.Tpo $(DEPDIR)/libmain_a-main-sgen.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='libmain_a-main-sgen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
+
+libmain_a-main-sgen.obj: main-sgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-main-sgen.obj -MD -MP -MF $(DEPDIR)/libmain_a-main-sgen.Tpo -c -o libmain_a-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-main-sgen.Tpo $(DEPDIR)/libmain_a-main-sgen.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='libmain_a-main-sgen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
+
+libmain_a-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-main.o -MD -MP -MF $(DEPDIR)/libmain_a-main.Tpo -c -o libmain_a-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-main.Tpo $(DEPDIR)/libmain_a-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libmain_a-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+libmain_a-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-main.obj -MD -MP -MF $(DEPDIR)/libmain_a-main.Tpo -c -o libmain_a-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-main.Tpo $(DEPDIR)/libmain_a-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libmain_a-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
 libmini_la-mini.lo: mini.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini.Tpo -c -o libmini_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
@@ -2216,48 +2279,6 @@ interp/libmono_ee_interp_la-transform.lo: interp/transform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
 
-mono-main-sgen.o: main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_CFLAGS) $(CFLAGS) -MT mono-main-sgen.o -MD -MP -MF $(DEPDIR)/mono-main-sgen.Tpo -c -o mono-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono-main-sgen.Tpo $(DEPDIR)/mono-main-sgen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='mono-main-sgen.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_CFLAGS) $(CFLAGS) -c -o mono-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
-
-mono-main-sgen.obj: main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_CFLAGS) $(CFLAGS) -MT mono-main-sgen.obj -MD -MP -MF $(DEPDIR)/mono-main-sgen.Tpo -c -o mono-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono-main-sgen.Tpo $(DEPDIR)/mono-main-sgen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='mono-main-sgen.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_CFLAGS) $(CFLAGS) -c -o mono-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
-
-mono_boehm-main.o: main.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_boehm_CFLAGS) $(CFLAGS) -MT mono_boehm-main.o -MD -MP -MF $(DEPDIR)/mono_boehm-main.Tpo -c -o mono_boehm-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono_boehm-main.Tpo $(DEPDIR)/mono_boehm-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='mono_boehm-main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_boehm_CFLAGS) $(CFLAGS) -c -o mono_boehm-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
-
-mono_boehm-main.obj: main.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_boehm_CFLAGS) $(CFLAGS) -MT mono_boehm-main.obj -MD -MP -MF $(DEPDIR)/mono_boehm-main.Tpo -c -o mono_boehm-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono_boehm-main.Tpo $(DEPDIR)/mono_boehm-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='mono_boehm-main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_boehm_CFLAGS) $(CFLAGS) -c -o mono_boehm-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
-
-mono_sgen-main-sgen.o: main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_sgen_CFLAGS) $(CFLAGS) -MT mono_sgen-main-sgen.o -MD -MP -MF $(DEPDIR)/mono_sgen-main-sgen.Tpo -c -o mono_sgen-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono_sgen-main-sgen.Tpo $(DEPDIR)/mono_sgen-main-sgen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='mono_sgen-main-sgen.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_sgen_CFLAGS) $(CFLAGS) -c -o mono_sgen-main-sgen.o `test -f 'main-sgen.c' || echo '$(srcdir)/'`main-sgen.c
-
-mono_sgen-main-sgen.obj: main-sgen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_sgen_CFLAGS) $(CFLAGS) -MT mono_sgen-main-sgen.obj -MD -MP -MF $(DEPDIR)/mono_sgen-main-sgen.Tpo -c -o mono_sgen-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mono_sgen-main-sgen.Tpo $(DEPDIR)/mono_sgen-main-sgen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-sgen.c' object='mono_sgen-main-sgen.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mono_sgen_CFLAGS) $(CFLAGS) -c -o mono_sgen-main-sgen.obj `if test -f 'main-sgen.c'; then $(CYGPATH_W) 'main-sgen.c'; else $(CYGPATH_W) '$(srcdir)/main-sgen.c'; fi`
-
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
@@ -2395,7 +2416,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
@@ -2441,8 +2462,8 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLTLIBRARIES \
-	clean-noinstPROGRAMS mostlyclean-am
+	clean-libtool clean-local clean-noinstLIBRARIES \
+	clean-noinstLTLIBRARIES clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
@@ -2517,21 +2538,22 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am check-local clean \
 	clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLTLIBRARIES \
-	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-exec-hook install-html install-html-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-libmonoincludeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-libLTLIBRARIES uninstall-libmonoincludeHEADERS
+	clean-libtool clean-local clean-noinstLIBRARIES \
+	clean-noinstLTLIBRARIES clean-noinstPROGRAMS cscopelist-am \
+	ctags ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-exec-hook install-html \
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-libmonoincludeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-libmonoincludeHEADERS
 
 
 @ENABLE_LLVM_TRUE@-include $(mono_build_root)/llvm/llvm_config.mk
@@ -2558,12 +2580,12 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 # link was done
 @SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
 @SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
-@SUPPORT_BOEHM_TRUE@mono_boehm-main.$(OBJEXT): buildver-boehm.h
+@SUPPORT_BOEHM_TRUE@libmain_a-main.$(OBJEXT): buildver-boehm.h
 
 buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
-mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
-main-sgen.$(OBJEXT): buildver-sgen.h
+
+libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
 
 # if SUPPORT_SGEN
 # 
@@ -2674,8 +2696,8 @@ mixedcheck: mono mixed.exe
 @ARM_TRUE@check-seq-points:
 @ARM_FALSE@check-seq-points: mono $(regtests)
 @ARM_FALSE@	rm -f TestResult-op_il_seq_point.xml
-@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 @ARM_FALSE@	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe

@@ -30,7 +30,7 @@ namespace System
         // declared constructors.
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.Char[])")]
+        [PreserveDependency("CreateString(System.Char[])", "System.String")]
         public extern String(char[] value);
 
 #if PROJECTN
@@ -54,7 +54,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.Char[], System.Int32, System.Int32)")]
+        [PreserveDependency("CreateString(System.Char[], System.Int32, System.Int32)", "System.String")]
         public extern String(char[] value, int startIndex, int length);
 
 #if PROJECTN
@@ -91,7 +91,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.Char*)")]
+        [PreserveDependency("CreateString(System.Char*)", "System.String")]
         public extern unsafe String(char* value);
 
 #if PROJECTN
@@ -117,7 +117,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.Char*, System.Int32, System.Int32)")]
+        [PreserveDependency("CreateString(System.Char*, System.Int32, System.Int32)", "System.String")]
         public extern unsafe String(char* value, int startIndex, int length);
 
 #if PROJECTN
@@ -154,7 +154,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.SByte*)")]
+        [PreserveDependency("CreateString(System.SByte*)", "System.String")]
         public extern unsafe String(sbyte* value);
 
 #if PROJECTN
@@ -180,7 +180,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32)")]
+        [PreserveDependency("CreateString(System.SByte*, System.Int32, System.Int32)", "System.String")]
         public extern unsafe String(sbyte* value, int startIndex, int length);
 
 #if PROJECTN
@@ -243,7 +243,7 @@ namespace System
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.SByte*, System.Int32, System.Int32, System.Text.Encoding)")]
+        [PreserveDependency("CreateString(System.SByte*, System.Int32, System.Int32, System.Text.Encoding)", "System.String")]
         public extern unsafe String(sbyte* value, int startIndex, int length, Encoding enc);
 
 #if PROJECTN
@@ -281,7 +281,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.Char, System.Int32)")]
+        [PreserveDependency("CreateString(System.Char, System.Int32)", "System.String")]
         public extern String(char c, int count);
 
 #if PROJECTN
@@ -334,7 +334,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [PreserveDependency("System.String.CreateString(System.ReadOnlySpan`1<System.Char>)")]
+        [PreserveDependency("CreateString(System.ReadOnlySpan`1<System.Char>)", "System.String")]
         public extern String(ReadOnlySpan<char> value);
 
 #if PROJECTN

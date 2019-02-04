@@ -982,7 +982,7 @@ namespace ILCompiler.DependencyAnalysis
                     yield return new DependencyListEntry(GetStaticsNode(context, out ignored), "type gc static info");
                 }
 
-                if (_type.GetClosestDefType().ThreadStaticFieldSize.AsInt > 0)
+                if (_type.GetClosestDefType().ThreadGcStaticFieldSize.AsInt > 0)
                 {
                     BagElementKind ignored;
                     yield return new DependencyListEntry(GetThreadStaticsNode(context, out ignored), "type thread static info");
@@ -1059,7 +1059,7 @@ namespace ILCompiler.DependencyAnalysis
                 List<NativeLayoutVertexNode> vtableSignatureNodeEntries = null;
                 int currentVTableIndexUnused = 0;
                 ProcessVTableEntriesForCallingConventionSignatureGeneration(context, VTableEntriesToProcess.AllOnTypesThatShouldProduceFullVTables, ref currentVTableIndexUnused,
-                    (int vtableIndex, MethodDesc declMethod, MethodDesc implMethod) =>
+                    (int vtableIndex, bool isSealedVTableSlot, MethodDesc declMethod, MethodDesc implMethod) =>
                     {
                         if (implMethod.IsAbstract)
                             return;
@@ -1069,7 +1069,7 @@ namespace ILCompiler.DependencyAnalysis
                             if (vtableSignatureNodeEntries == null)
                                 vtableSignatureNodeEntries = new List<NativeLayoutVertexNode>();
 
-                            vtableSignatureNodeEntries.Add(context.NativeLayout.MethodSignatureVertex(implMethod.GetTypicalMethodDefinition().Signature));
+                            vtableSignatureNodeEntries.Add(context.NativeLayout.MethodSignatureVertex(declMethod.GetTypicalMethodDefinition().Signature));
                         }
                     }
                     , _type, _type, _type);
@@ -1096,7 +1096,7 @@ namespace ILCompiler.DependencyAnalysis
 
                 int currentVTableIndexUnused = 0;
                 ProcessVTableEntriesForCallingConventionSignatureGeneration(context, VTableEntriesToProcess.AllOnTypesThatProducePartialVTables, ref currentVTableIndexUnused,
-                    (int vtableIndex, MethodDesc declMethod, MethodDesc implMethod) =>
+                    (int vtableIndex, bool isSealedVTableSlot, MethodDesc declMethod, MethodDesc implMethod) =>
                     {
                         if (implMethod.IsAbstract)
                             return;
@@ -1107,7 +1107,7 @@ namespace ILCompiler.DependencyAnalysis
                                 conditionalDependencies = new List<CombinedDependencyListEntry>();
 
                             conditionalDependencies.Add(
-                                new CombinedDependencyListEntry(context.NativeLayout.MethodSignatureVertex(implMethod.GetTypicalMethodDefinition().Signature),
+                                new CombinedDependencyListEntry(context.NativeLayout.MethodSignatureVertex(declMethod.GetTypicalMethodDefinition().Signature),
                                                                 context.VirtualMethodUse(declMethod),
                                                                 "conditional vtable cctor sig"));
                         }
@@ -1201,9 +1201,9 @@ namespace ILCompiler.DependencyAnalysis
                     layoutInfo.AppendUnsigned(staticDescBagType, gcStaticsSymbolIndex);
                 }
 
-                if (closestDefType.ThreadStaticFieldSize.AsInt != 0)
+                if (closestDefType.ThreadGcStaticFieldSize.AsInt != 0)
                 {
-                    layoutInfo.AppendUnsigned(BagElementKind.ThreadStaticDataSize, checked((uint)closestDefType.ThreadStaticFieldSize.AsInt));
+                    layoutInfo.AppendUnsigned(BagElementKind.ThreadStaticDataSize, checked((uint)closestDefType.ThreadGcStaticFieldSize.AsInt));
                     BagElementKind threadStaticDescBagType;
                     ISymbolNode threadStaticsDescSymbol = GetThreadStaticsNode(factory, out threadStaticDescBagType);
                     uint threadStaticsSymbolIndex = factory.MetadataManager.NativeLayoutInfo.StaticsReferences.GetIndex(threadStaticsDescSymbol);
@@ -1235,6 +1235,16 @@ namespace ILCompiler.DependencyAnalysis
 
             if (typeFlags != default(Internal.NativeFormat.TypeFlags))
                 layoutInfo.AppendUnsigned(BagElementKind.TypeFlags, (uint)typeFlags);
+
+            if (!_type.IsArrayTypeWithoutGenericInterfaces() && ConstructedEETypeNode.CreationAllowed(_type))
+            {
+                SealedVTableNode sealedVTable = factory.SealedVTable(_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+
+                sealedVTable.BuildSealedVTableSlots(factory, relocsOnly: false /* This is the final emission phase */);
+
+                if (sealedVTable.NumSealedVTableEntries > 0)
+                    layoutInfo.AppendUnsigned(BagElementKind.SealedVTableEntries, (uint)sealedVTable.NumSealedVTableEntries);
+            }
 
             if (_type.GetTypeDefinition().HasVariance || factory.TypeSystemContext.IsGenericArrayInterfaceType(_type))
             {
@@ -1319,7 +1329,7 @@ namespace ILCompiler.DependencyAnalysis
                 VertexSequence vtableSignaturesSequence = null;
                 
                 ProcessVTableEntriesForCallingConventionSignatureGeneration(factory, VTableEntriesToProcess.AllInVTable, ref currentVTableIndexUnused,
-                    (int vtableIndex, MethodDesc declMethod, MethodDesc implMethod) =>
+                    (int vtableIndex, bool isSealedVTableSlot, MethodDesc declMethod, MethodDesc implMethod) =>
                     {
                         if (implMethod.IsAbstract)
                             return;
@@ -1329,11 +1339,11 @@ namespace ILCompiler.DependencyAnalysis
                             if (vtableSignaturesSequence == null)
                                 vtableSignaturesSequence = new VertexSequence();
 
-                            NativeLayoutVertexNode methodSignature = factory.NativeLayout.MethodSignatureVertex(implMethod.GetTypicalMethodDefinition().Signature);
+                            NativeLayoutVertexNode methodSignature = factory.NativeLayout.MethodSignatureVertex(declMethod.GetTypicalMethodDefinition().Signature);
                             Vertex signatureVertex = GetNativeWriter(factory).GetRelativeOffsetSignature(methodSignature.WriteVertex(factory));
 
                             Vertex vtableSignatureEntry = writer.GetTuple(
-                                writer.GetUnsignedConstant(((uint)vtableIndex) << 1), // We currently do not use sealed vtable entries yet. Update when that happens
+                                writer.GetUnsignedConstant((uint)((vtableIndex << 1) | (isSealedVTableSlot ? 1 : 0))),
                                 factory.MetadataManager.NativeLayoutInfo.TemplatesSection.Place(signatureVertex));
 
                             vtableSignaturesSequence.Append(vtableSignatureEntry);
@@ -1391,7 +1401,7 @@ namespace ILCompiler.DependencyAnalysis
         /// Do not adjust vtable index for generic dictionary slot
         /// The vtable index is only actually valid if whichEntries is set to VTableEntriesToProcess.AllInVTable
         /// </summary>
-        private void ProcessVTableEntriesForCallingConventionSignatureGeneration(NodeFactory factory, VTableEntriesToProcess whichEntries, ref int currentVTableIndex, Action<int, MethodDesc, MethodDesc> operation, TypeDesc implType, TypeDesc declType, TypeDesc templateType)
+        private void ProcessVTableEntriesForCallingConventionSignatureGeneration(NodeFactory factory, VTableEntriesToProcess whichEntries, ref int currentVTableIndex, Action<int, bool, MethodDesc, MethodDesc> operation, TypeDesc implType, TypeDesc declType, TypeDesc templateType)
         {
             if (implType.IsInterface)
                 return;
@@ -1454,16 +1464,28 @@ namespace ILCompiler.DependencyAnalysis
             if (declType.HasGenericDictionarySlot() || templateType.HasGenericDictionarySlot())
                 currentVTableIndex++;
 
+            int sealedVTableSlot = 0;
+            DefType closestDefType = implType.GetClosestDefType();
+
             // Actual vtable slots follow
             foreach (MethodDesc declMethod in vtableEntriesToProcess)
             {
                 // No generic virtual methods can appear in the vtable!
                 Debug.Assert(!declMethod.HasInstantiation);
 
-                MethodDesc implMethod = implType.GetClosestDefType().FindVirtualFunctionTargetMethodOnObjectType(declMethod);
+                MethodDesc implMethod = closestDefType.FindVirtualFunctionTargetMethodOnObjectType(declMethod);
 
-                operation(currentVTableIndex, declMethod, implMethod);
-                currentVTableIndex++;
+                if (implMethod.CanMethodBeInSealedVTable() && !implType.IsArrayTypeWithoutGenericInterfaces())
+                {
+                    // Sealed vtable entries on other types in the hierarchy should not be reported (types read entries
+                    // from their own sealed vtables, and not from the sealed vtables of base types).
+                    if (implMethod.OwningType == closestDefType)
+                        operation(sealedVTableSlot++, true, declMethod, implMethod);
+                }
+                else
+                {
+                    operation(currentVTableIndex++, false, declMethod, implMethod);
+                }
             }
         }
     }
@@ -1714,7 +1736,7 @@ namespace ILCompiler.DependencyAnalysis
             if (method.IsRuntimeDeterminedExactMethod)
                 method = method.GetCanonMethodTarget(CanonicalFormKind.Specific);
 
-            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, method);
+            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, method, method.OwningType);
 
             return writer.GetMethodSlotSignature(_signature.WriteVertex(factory), checked((uint)slot));
         }
@@ -1870,8 +1892,8 @@ namespace ILCompiler.DependencyAnalysis
         protected sealed override Vertex WriteSignatureVertex(NativeWriter writer, NodeFactory factory)
         {
             NativeWriter nativeWriter = GetNativeWriter(factory);
-            
-            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, _slotDefiningMethod);
+
+            int slot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, _slotDefiningMethod, _slotDefiningMethod.OwningType);
             Vertex typeVertex = factory.NativeLayout.TypeSignatureVertex(_slotDefiningMethod.OwningType).WriteVertex(factory);
             return nativeWriter.GetTuple(typeVertex, nativeWriter.GetUnsignedConstant((uint)slot));
         }
@@ -2024,7 +2046,8 @@ namespace ILCompiler.DependencyAnalysis
             {
                 Debug.Assert((SignatureKind == FixupSignatureKind.NonGenericConstrainedMethod) || (SignatureKind == FixupSignatureKind.NonGenericDirectConstrainedMethod));
                 Vertex methodType = factory.NativeLayout.TypeSignatureVertex(_constrainedMethod.OwningType).WriteVertex(factory);
-                int interfaceSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, _constrainedMethod.GetCanonMethodTarget(CanonicalFormKind.Specific));
+                var canonConstrainedMethod = _constrainedMethod.GetCanonMethodTarget(CanonicalFormKind.Specific);
+                int interfaceSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, canonConstrainedMethod, canonConstrainedMethod.OwningType);
                 Vertex interfaceSlotVertex = writer.GetUnsignedConstant(checked((uint)interfaceSlot));
                 return writer.GetTuple(constraintType, methodType, interfaceSlotVertex);
             }

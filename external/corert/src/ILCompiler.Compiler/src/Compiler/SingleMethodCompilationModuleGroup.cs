@@ -17,7 +17,6 @@ namespace ILCompiler
         private MethodDesc _method;
 
         public SingleMethodCompilationModuleGroup(MethodDesc method)
-            : base(method.Context)
         {
             _method = method;
         }
@@ -47,6 +46,11 @@ namespace ILCompiler
         }
 
         public override bool ContainsTypeDictionary(TypeDesc type)
+        {
+            return false;
+        }
+
+        public override bool ImportsMethod(MethodDesc method, bool unboxingStub)
         {
             return false;
         }

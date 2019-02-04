@@ -22,5 +22,8 @@ namespace Microsoft.Win32
         Users = unchecked((int)0x80000003),
         PerformanceData = unchecked((int)0x80000004),
         CurrentConfig = unchecked((int)0x80000005),
+#if MONO
+        DynData = unchecked((int)0x80000006)
+#endif
     }
 }

@@ -54,6 +54,7 @@ namespace Mono.Options
         public Mono.Options.CommandSet Add<T>(string prototype, string description, System.Action<T> action) { throw null; }
         public Mono.Options.CommandSet Add<TKey, TValue>(string prototype, Mono.Options.OptionAction<TKey, TValue> action) { throw null; }
         public Mono.Options.CommandSet Add<TKey, TValue>(string prototype, string description, Mono.Options.OptionAction<TKey, TValue> action) { throw null; }
+        public System.Collections.Generic.IEnumerable<string> GetCompletions(string prefix=null) { throw null; }
         protected override string GetKeyForItem(Mono.Options.Command item) { throw null; }
         public int Run(System.Collections.Generic.IEnumerable<string> arguments) { throw null; }
     }

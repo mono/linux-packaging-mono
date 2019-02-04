@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2019-02-04 08:06+0000\n"
+"POT-Creation-Date: 2019-02-04 19:35+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -2917,17 +2917,17 @@ msgid ""
 "it returns by reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13332
+#: mcs/mcs/expression.cs:13336
 #, fuzzy
 msgid "An expression tree cannot contain a discard"
 msgstr ""
 "Uma árvore de expressão não pode conter um método com argumentos variáveis"
 
-#: mcs/mcs/expression.cs:13346
+#: mcs/mcs/expression.cs:13350
 msgid "Cannot infer the type of implicitly-typed discard"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13352
+#: mcs/mcs/expression.cs:13356
 #, fuzzy
 msgid "Cannot assign void to a discard"
 msgstr "Não foi possível atribuir para \"this\" por que este é somente leitura"

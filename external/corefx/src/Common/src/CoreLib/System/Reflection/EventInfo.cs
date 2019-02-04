@@ -10,7 +10,7 @@ using EventRegistrationToken = System.Runtime.InteropServices.WindowsRuntime.Eve
 
 namespace System.Reflection
 {
-    public abstract class EventInfo : MemberInfo
+    public abstract partial class EventInfo : MemberInfo
     {
         protected EventInfo() { }
 
@@ -49,7 +49,12 @@ namespace System.Reflection
             get
             {
                 MethodInfo m = GetAddMethod(true);
+#if MONO
+                ParameterInfo[] p = m.GetParametersInternal ();
+#else
                 ParameterInfo[] p = m.GetParametersNoCopy();
+#endif
+
                 Type del = typeof(Delegate);
                 for (int i = 0; i < p.Length; i++)
                 {
@@ -61,6 +66,7 @@ namespace System.Reflection
             }
         }
 
+#if !MONO
         [DebuggerHidden]
         [DebuggerStepThrough]
         public virtual void AddEventHandler(object target, Delegate handler)
@@ -77,6 +83,7 @@ namespace System.Reflection
 
             addMethod.Invoke(target, new object[] { handler });
         }
+#endif
 
         [DebuggerHidden]
         [DebuggerStepThrough]

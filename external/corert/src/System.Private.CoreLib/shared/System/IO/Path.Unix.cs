@@ -23,7 +23,7 @@ namespace System.IO
             if (path.Length == 0)
                 throw new ArgumentException(SR.Arg_PathEmpty, nameof(path));
 
-            if (path.IndexOf('\0') != -1)
+            if (path.Contains('\0'))
                 throw new ArgumentException(SR.Argument_InvalidPathChars, nameof(path)); 
             
             // Expand with current directory if necessary
@@ -34,7 +34,7 @@ namespace System.IO
 
             // We would ideally use realpath to do this, but it resolves symlinks, requires that the file actually exist,
             // and turns it into a full path, which we only want if fullCheck is true.
-            string collapsedString = RemoveRelativeSegments(path);
+            string collapsedString = PathInternal.RemoveRelativeSegments(path, PathInternal.GetRootLength(path));
 
             Debug.Assert(collapsedString.Length < path.Length || collapsedString.ToString() == path,
                 "Either we've removed characters, or the string should be unmodified from the input path.");

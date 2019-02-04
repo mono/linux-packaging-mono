@@ -78,12 +78,12 @@ struct MonoLMF {
 };
 
 /* Structure used by the sequence points in AOTed code */
-typedef struct {
+struct SeqPointInfo {
 	gpointer ss_trigger_page;
 	gpointer bp_trigger_page;
 	gpointer ss_tramp_addr;
 	guint8* bp_addrs [MONO_ZERO_LEN_ARRAY];
-} SeqPointInfo;
+};
 
 #define PARAM_REGS 8
 #define FP_PARAM_REGS 8
@@ -99,23 +99,37 @@ typedef struct {
 } DynCallArgs;
 
 typedef struct {
-	gpointer cinfo;
+	CallInfo *cinfo;
 	int saved_gregs_offset;
 	/* Points to arguments received on the stack */
 	int args_reg;
 	gboolean cond_branch_islands;
-	gpointer vret_addr_loc;
-	gpointer seq_point_info_var;
-	gpointer ss_tramp_var;
-	gpointer bp_tramp_var;
+	MonoInst *vret_addr_loc;
+	MonoInst *seq_point_info_var;
+	MonoInst *ss_tramp_var;
+	MonoInst *bp_tramp_var;
 	guint8 *thunks;
 	int thunks_size;
 } MonoCompileArch;
 
-#define MONO_ARCH_EMULATE_FREM 1
-#define MONO_ARCH_NO_EMULATE_LONG_MUL_OPTS 1
-#define MONO_ARCH_EMULATE_LONG_MUL_OVF_OPTS 1
+#ifdef MONO_ARCH_ILP32
+/* For the watch (starting with series 4), a new ABI is introduced: arm64_32.
+ * We can still use the older AOT compiler to produce bitcode, because it's
+ * "offset compatible". However, since it is targeting arm7k, it makes certain
+ * assumptions that we need to align here. */
+#define MONO_ARCH_EMULATE_FCONV_TO_I8 1
+#define MONO_ARCH_EMULATE_LCONV_TO_R8 1
+#define MONO_ARCH_EMULATE_LCONV_TO_R4 1
+#define MONO_ARCH_EMULATE_LCONV_TO_R8_UN 1
+#define MONO_ARCH_EMULATE_DIV 1
+#define MONO_ARCH_EMULATE_CONV_R8_UN 1
+#else
 #define MONO_ARCH_NO_EMULATE_LONG_SHIFT_OPS 1
+#define MONO_ARCH_NO_EMULATE_LONG_MUL_OPTS 1
+#endif
+
+#define MONO_ARCH_EMULATE_FREM 1
+#define MONO_ARCH_EMULATE_LONG_MUL_OVF_OPTS 1
 #define MONO_ARCH_NEED_DIV_CHECK 1
 #define MONO_ARCH_EMULATE_MUL_OVF 1
 #define MONO_ARCH_HAVE_OP_TAILCALL_MEMBASE 1
@@ -224,14 +238,14 @@ typedef struct {
 	gboolean hfa;
 } ArgInfo;
 
-typedef struct {
+struct CallInfo {
 	int nargs;
 	int gr, fr, stack_usage;
 	gboolean pinvoke;
 	ArgInfo ret;
 	ArgInfo sig_cookie;
 	ArgInfo args [1];
-} CallInfo;
+};
 
 typedef struct {
 	/* General registers + ARMREG_R8 for indirect returns */

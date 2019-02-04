@@ -3,6 +3,8 @@ include $(top_srcdir)/mk/common.mk
 # FIXME
 #SUBDIRS = test
 
+DIST_SUBDIRS = test
+
 noinst_LTLIBRARIES = libeglib.la
 
 AM_CFLAGS = $(WERROR_CFLAGS)
@@ -52,6 +54,8 @@ libeglib_la_SOURCES = \
 	gunicode.c	\
 	unicode-data.h	\
 	$(os_files)
+
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
 
 eglibdir=$(datadir)/mono-$(API_VER)/mono/eglib
 eglib_DATA = eglib-config.h

@@ -137,29 +137,37 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @HOST_DARWIN_TRUE@am__append_13 = bug-8417.cs
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@noinst_PROGRAMS = tailcall/split-fsharp$(EXEEXT) \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	split-tailcall-interface-conservestack$(EXEEXT)
+@HOST_DARWIN_FALSE@am__append_14 = \
+@HOST_DARWIN_FALSE@	merp-json-valid.exe \
+@HOST_DARWIN_FALSE@	merp-crash-test.exe
+
 
 # see https://github.com/mono/mono/issues/9739
-@HOST_WIN32_TRUE@am__append_14 = bug-58782-plain-throw.exe \
+@HOST_WIN32_TRUE@am__append_15 = bug-58782-plain-throw.exe \
 @HOST_WIN32_TRUE@	bug-58782-capture-and-throw.exe verbose.exe
 
+# see https://github.com/mono/mono/issues/10845
+@HOST_DARWIN_TRUE@am__append_16 = monitor-wait-abort.exe
+
 # #651684
-@AMD64_TRUE@am__append_15 = finally_guard.exe
-@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_16 = w32message.exe
-@HOST_WIN32_TRUE@@X86_TRUE@am__append_17 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@AMD64_TRUE@am__append_17 = finally_guard.exe
+@AMD64_TRUE@@HOST_WIN32_TRUE@am__append_18 = w32message.exe
+@HOST_WIN32_TRUE@@X86_TRUE@am__append_19 = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
+@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	thread-suspend-suspended.exe thread-suspend-selfsuspended.exe
 
 
 # test_virt.exe fails because callee takes more parameters than caller, 1 vs. 0, and
 # x86 passes no parameters in registers, so it is a stack imbalance.
-@X86_TRUE@am__append_18 = tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe
+@X86_TRUE@am__append_20 = tailcall/coreclr/JIT/Methodical/tailcall/test_virt.exe
 
 # bug #71274
-@POWERPC_TRUE@am__append_19 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+@POWERPC_TRUE@am__append_21 = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@am__append_20 = monitor.exe threadpool-exceptions5.exe \
+@POWERPC64_TRUE@am__append_22 = monitor.exe threadpool-exceptions5.exe \
 @POWERPC64_TRUE@	appdomain-unload.exe pinvoke2.exe pinvoke3.exe \
 @POWERPC64_TRUE@	pinvoke11.exe threadpool-exceptions7.exe \
 @POWERPC64_TRUE@	winx64structs.exe bug-10127.exe \
@@ -183,7 +191,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Interface calls cannot be tailcalls on ARM due to extra_arg. Bitcode could easily work however.
 
 # Interface calls cannot be tailcalls on ARM due to extra_arg. Bitcode could easily work however.
-@ARM_TRUE@am__append_21 = filter-stack.exe weak-fields.exe ivtail1.exe \
+@ARM_TRUE@am__append_23 = filter-stack.exe weak-fields.exe ivtail1.exe \
 @ARM_TRUE@	tailcall-generic-cast-conservestack-il.exe \
 @ARM_TRUE@	tailcall-mrgctx.exe tailcall-rgctxa.exe \
 @ARM_TRUE@	tailcall-virt.exe \
@@ -276,12 +284,12 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	tailcall/interface-conservestack/7.exe \
 @ARM_TRUE@	tailcall/interface-conservestack/8.exe \
 @ARM_TRUE@	tailcall/interface-conservestack/9.exe
-@ARM64_TRUE@am__append_22 = weak-fields.exe
+@ARM64_TRUE@am__append_24 = weak-fields.exe
 
 # monitor.exe is racy
-@MIPS_TRUE@am__append_23 = filter-stack.exe monitor.exe
+@MIPS_TRUE@am__append_25 = filter-stack.exe monitor.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
-@S390X_TRUE@am__append_24 = dynamic-method-resurrection.exe \
+@S390X_TRUE@am__append_26 = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe
@@ -316,7 +324,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Tests which have no way of finding AOT images because they use Assembly.Load(byte[])
 
 # Tests which require AOT of a multi-netmodule assemblies
-@FULL_AOT_TESTS_TRUE@am__append_25 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_27 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -388,7 +396,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@	test-multi-netmodule-4-exe.exe
 
 # Tests which depend on a case-insensitive filesystem when using AOT
-@FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@am__append_26 = \
+@FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@am__append_28 = \
 @FULL_AOT_TESTS_TRUE@@HOST_DARWIN_FALSE@	assembly-loadfrom-simplename.exe
 
 
@@ -397,7 +405,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
 
 # https://bugzilla.xamarin.com/show_bug.cgi?id=60973
-@FULL_AOT_TESTS_TRUE@am__append_27 = constraints-load.exe \
+@FULL_AOT_TESTS_TRUE@am__append_29 = constraints-load.exe \
 @FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
@@ -419,7 +427,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 #
 # gsharedvt should be viable when only wrapping "in" but not "out",
 # as long as "in" does not expand parameter stack size, which it should never do.
-@FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@am__append_28 = tailcall-interface-conservestack.exe \
+@FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@am__append_30 = tailcall-interface-conservestack.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/20.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/interface-conservestack/26.exe \
@@ -466,7 +474,13 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail/TailCallLoopGenericClassAndMethodAbstractClass_int_.Method1_int_.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail/TailCallLoopGenericClassAndMethodAbstractClass_DateTime_.Method1_string_.exe \
 @FULL_AOT_TESTS_TRUE@@MONO_ARCH_GSHAREDVT_SUPPORTED_TRUE@	tailcall/fsharp-deeptail/TailCallLoopGenericClassAndMethodAbstractInterface_int_.Method1_string_.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_29 = \
+
+# Times out on ARM64.
+# https://github.com/mono/mono/issues/10783
+# https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/486/parsed_console/log.html
+# https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/471/parsed_console/log.html
+@ARM64_TRUE@@FULL_AOT_TESTS_TRUE@am__append_31 = tailcall/2.exe
+@HYBRID_AOT_TESTS_TRUE@am__append_32 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
@@ -474,7 +488,7 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_30 = \
+@ARM_TRUE@am__append_33 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -528,14 +542,14 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_31 = \
+@ARM64_TRUE@am__append_34 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	delegate-with-null-target.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_32 = \
+@AMD64_TRUE@am__append_35 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -546,7 +560,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 
 subdir = mono/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -734,6 +749,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -807,6 +823,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -1006,7 +1038,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
-	-nowarn:0197 -langversion:7.3 $(PROFILE_MCS_FLAGS)
+	-nowarn:0197 -langversion:latest $(PROFILE_MCS_FLAGS)
 
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
@@ -1052,11 +1084,12 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	exception13.cs exception14.cs exception15.cs exception16.cs \
 	exception17.cs exception18.cs merp-json-valid.cs \
 	merp-crash-test.cs exception19.cs exception20.cs \
-	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
-	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
-	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
-	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
-	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	exception21.cs typeload-unaligned.cs struct.cs \
+	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
+	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
+	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
+	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
+	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1073,27 +1106,27 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	hashcode.cs delegate1.cs delegate2.cs delegate3.cs \
 	delegate5.cs delegate6.cs delegate7.cs delegate8.cs \
 	delegate10.cs delegate11.cs delegate12.cs delegate13.cs \
-	delegate14.cs delegate15.cs largeexp.cs largeexp2.cs \
-	marshalbyref1.cs static-ctor.cs inctest.cs bound.cs \
-	array-invoke.cs test-arr.cs decimal.cs decimal-array.cs \
-	marshal.cs marshal1.cs marshal2.cs marshal3.cs marshal5.cs \
-	marshal6.cs marshal7.cs marshal8.cs marshal9.cs marshalbool.cs \
-	test-byval-in-struct.cs thread.cs thread5.cs thread-static.cs \
-	thread-static-init.cs context-static.cs float-pop.cs \
-	interfacecast.cs array3.cs classinit.cs classinit2.cs \
-	classinit3.cs synchronized.cs async_read.cs threadpool.cs \
-	threadpool1.cs threadpool-exceptions1.cs \
-	threadpool-exceptions2.cs threadpool-exceptions3.cs \
-	threadpool-exceptions4.cs threadpool-exceptions5.cs \
-	threadpool-exceptions6.cs base-definition.cs bug-27420.cs \
-	bug-46781.cs bug-42136.cs bug-59286.cs bug-70561.cs \
-	bug-78311.cs bug-78653.cs bug-78656.cs bug-77127.cs \
-	bug-323114.cs bug-Xamarin-5278.cs interlocked.cs \
-	delegate-async-exit.cs delegate-delegate-exit.cs \
-	delegate-exit.cs delegate-disposed-hashcode.cs \
-	finalizer-abort.cs finalizer-exception.cs finalizer-exit.cs \
-	finalizer-thread.cs main-exit.cs \
-	main-returns-abort-resetabort.cs \
+	delegate14.cs delegate15.cs delegate16.cs largeexp.cs \
+	largeexp2.cs marshalbyref1.cs static-ctor.cs inctest.cs \
+	bound.cs array-invoke.cs test-arr.cs decimal.cs \
+	decimal-array.cs marshal.cs marshal1.cs marshal2.cs \
+	marshal3.cs marshal5.cs marshal6.cs marshal7.cs marshal8.cs \
+	marshal9.cs marshalbool.cs test-byval-in-struct.cs thread.cs \
+	thread5.cs thread-static.cs thread-static-init.cs \
+	context-static.cs float-pop.cs interfacecast.cs array3.cs \
+	classinit.cs classinit2.cs classinit3.cs synchronized.cs \
+	async_read.cs threadpool.cs threadpool1.cs \
+	threadpool-exceptions1.cs threadpool-exceptions2.cs \
+	threadpool-exceptions3.cs threadpool-exceptions4.cs \
+	threadpool-exceptions5.cs threadpool-exceptions6.cs \
+	base-definition.cs bug-27420.cs bug-46781.cs bug-42136.cs \
+	bug-59286.cs bug-70561.cs bug-78311.cs bug-78653.cs \
+	bug-78656.cs bug-77127.cs bug-323114.cs bug-Xamarin-5278.cs \
+	interlocked.cs delegate-async-exit.cs \
+	delegate-delegate-exit.cs delegate-exit.cs \
+	delegate-disposed-hashcode.cs finalizer-abort.cs \
+	finalizer-exception.cs finalizer-exit.cs finalizer-thread.cs \
+	main-exit.cs main-returns-abort-resetabort.cs \
 	main-returns-background-abort-resetabort.cs \
 	main-returns-background-resetabort.cs \
 	main-returns-background.cs main-returns-background-change.cs \
@@ -1482,20 +1515,17 @@ TESTS_GSHARED_SRC = \
 	bug-1147.cs	\
 	generic-type-builder.2.cs
 
-
-# Only because this depends on an icall change that was
-# made in a later release. 
 PLATFORM_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
-	merp-json-valid.exe merp-crash-test.exe $(am__append_14) \
-	$(am__append_15) $(am__append_16) $(am__append_17) \
-	$(am__append_18) $(am__append_19) $(am__append_20) \
-	$(am__append_21) $(am__append_22) $(am__append_23) \
-	$(am__append_24)
+	$(am__append_14) $(am__append_15) $(am__append_16) \
+	$(am__append_17) $(am__append_18) $(am__append_19) \
+	$(am__append_20) $(am__append_21) $(am__append_22) \
+	$(am__append_23) $(am__append_24) $(am__append_25) \
+	$(am__append_26) $(am__append_31)
 PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
-	$(am__append_25) $(am__append_26) $(am__append_27) \
-	$(am__append_28) $(am__append_29)
+	$(am__append_27) $(am__append_28) $(am__append_29) \
+	$(am__append_30) $(am__append_32)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1503,19 +1533,18 @@ CI_DISABLED_TESTS = \
 	main-returns-background-resetabort.exe \
 	main-returns-background-abort-resetabort.exe	\
 	assemblyresolve_event3.exe \
-	delegate2.exe	\
 	finally_guard.exe \
 	generic-xdomain.2.exe
 
 
 # failing tests which we temporarily disable for PRs
 # so they don't interfere with other people's work
-CI_PR_DISABLED_TESTS = \
-	appdomain-threadpool-unload.exe
-
 
 # FIXME Hybrid Suspend - see https://github.com/mono/mono/issues/9959
 # CI_PR_DISABLED_TESTS += sgen-new-threads-collect.exe
+
+# https://github.com/mono/mono/issues/8997
+CI_PR_DISABLED_TESTS = finalizer-thread.exe
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1721,8 +1750,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/6.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
-	tailcall/interface-conservestack/9.exe $(am__append_30) \
-	$(am__append_31) $(am__append_32)
+	tailcall/interface-conservestack/9.exe $(am__append_33) \
+	$(am__append_34) $(am__append_35)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1990,7 +2019,7 @@ AM_CPPFLAGS = $(GLIB_CFLAGS)
 # gcc-3.4.4 emits incorrect code when making indirect calls to stdcall functions using a tail call
 # This shows up when compiling mono_test_marshal_delegate ()
 @HOST_WIN32_TRUE@libtest_la_CFLAGS = -fno-optimize-sibling-calls
-@HOST_WIN32_FALSE@libtest_la_LDFLAGS = -rpath `pwd`
+@HOST_WIN32_FALSE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd`
 # the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
 # can't find them. So we use --kill-at to remove the @ suffix as well.
 @HOST_WIN32_TRUE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at

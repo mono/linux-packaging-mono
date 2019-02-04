@@ -394,6 +394,7 @@ public class Tests : TestsBase, ITest2
 		set_ip ();
 		step_filters ();
 		pointers ();
+		ref_return ();
 		if (args.Length > 0 && args [0] == "local-reflect")
 			local_reflect ();
 		if (args.Length > 0 && args [0] == "domain-test")
@@ -491,6 +492,8 @@ public class Tests : TestsBase, ITest2
 		ss_fp_clobber ();
 		ss_no_frames ();
 		ss_await ();
+		ss_nested_with_three_args_wrapper();
+		ss_nested_twice_with_two_args_wrapper();
 	}
 
 	[MethodImplAttribute (MethodImplOptions.NoInlining)]
@@ -603,6 +606,18 @@ public class Tests : TestsBase, ITest2
 	}
 
 	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static void ss_nested_with_three_args_wrapper () {
+		ss_nested_with_three_args(ss_nested_arg1 (), ss_nested_arg2 (), ss_nested_arg3 ());
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static void ss_nested_twice_with_two_args_wrapper () {
+		ss_nested_with_two_args(ss_nested_arg1 (), ss_nested_with_two_args(ss_nested_arg2 (), ss_nested_arg3 ()));
+  	}
+  
+	
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
 	public static void inspect_enumerator_in_generic_struct() {
 		TestEnumeratorInsideGenericStruct<String, String> generic_struct = new TestEnumeratorInsideGenericStruct<String, String>(new KeyValuePair<string, string>("0", "f1"));
 	}
@@ -613,7 +628,27 @@ public class Tests : TestsBase, ITest2
 	}
 
 	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static int ss_nested_with_three_args (int a1, int a2, int a3) {
+		return a1 + a2 + a3;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
 	public static int ss_nested_arg () {
+		return 0;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static int ss_nested_arg1 () {
+		return 0;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static int ss_nested_arg2 () {
+		return 0;
+	}
+	
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static int ss_nested_arg3 () {
 		return 0;
 	}
 
@@ -1827,6 +1862,27 @@ public class Tests : TestsBase, ITest2
 		BlittableStruct s = new BlittableStruct () { i = 2, d = 3.0 };
 		fixed (int* pa = a)
 			pointer_arguments (pa, &s);
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static void ref_return () {
+
+	}
+
+	static int ret_val = 1;
+	public static ref int get_ref_int() {
+		return ref ret_val;
+	}
+
+	static string ref_return_string = "byref";
+	public static ref string get_ref_string() {
+		return ref ref_return_string;
+	}
+
+
+	static BlittableStruct ref_return_struct = new BlittableStruct () { i = 1, d = 2.0 };
+	public static ref BlittableStruct get_ref_struct() {
+		return ref ref_return_struct;
 	}
 }
 

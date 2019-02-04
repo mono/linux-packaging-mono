@@ -11,6 +11,6 @@ namespace System.Reflection
         {
             return false;
         }
-#endif		
+#endif
 	}
 }

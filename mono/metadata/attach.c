@@ -11,6 +11,7 @@
 
 #include <config.h>
 #include <glib.h>
+#include "attach.h"
 
 #ifdef HOST_WIN32
 #define DISABLE_ATTACH
@@ -39,7 +40,6 @@
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/gc-internals.h>
 #include <mono/utils/mono-threads.h>
-#include "attach.h"
 
 #include <mono/utils/w32api.h>
 
@@ -491,7 +491,7 @@ transport_start_receive (void)
 	if (!listen_fd)
 		return;
 
-	internal = mono_thread_create_internal (mono_get_root_domain (), receiver_thread, NULL, MONO_THREAD_CREATE_FLAGS_NONE, error);
+	internal = mono_thread_create_internal (mono_get_root_domain (), (gpointer)receiver_thread, NULL, MONO_THREAD_CREATE_FLAGS_NONE, error);
 	mono_error_assert_ok (error);
 
 	receiver_thread_handle = mono_threads_open_thread_handle (internal->handle);

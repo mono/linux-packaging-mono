@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("10.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("Microsoft.VisualBasic.dll")]
@@ -18,7 +18,7 @@
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(true)]
 [assembly:System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.5", FrameworkDisplayName="")]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(2))]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level2)]
 namespace Microsoft.VisualBasic
 {
     public enum AppWinStyle : short
@@ -49,11 +49,11 @@ namespace Microsoft.VisualBasic
     public sealed partial class Collection : System.Collections.ICollection, System.Collections.IList, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
     {
         public Collection() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public object this[object Index] { get { throw null; } }
         public object this[string Key] { get { throw null; } }
         public object this[int Index] { get { throw null; } }
-        public void Add(object Item, string Key=null, object Before=null, object After=null) { }
+        public void Add(object Item, string Key = null, object Before = null, object After = null) { }
         public bool Contains(string Key) { throw null; }
         public System.Collections.IEnumerator GetEnumerator() { throw null; }
         public void Remove(int Index) { }
@@ -75,7 +75,7 @@ namespace Microsoft.VisualBasic
         void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender) { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=false, AllowMultiple=false)]
     public sealed partial class ComClassAttribute : System.Attribute
     {
         public ComClassAttribute() { }
@@ -96,108 +96,108 @@ namespace Microsoft.VisualBasic
     public sealed partial class Constants
     {
         internal Constants() { }
-        public const Microsoft.VisualBasic.MsgBoxResult vbAbort = (Microsoft.VisualBasic.MsgBoxResult)(3);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbAbortRetryIgnore = (Microsoft.VisualBasic.MsgBoxStyle)(2);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbApplicationModal = (Microsoft.VisualBasic.MsgBoxStyle)(0);
-        public const Microsoft.VisualBasic.FileAttribute vbArchive = (Microsoft.VisualBasic.FileAttribute)(32);
-        public const Microsoft.VisualBasic.VariantType vbArray = (Microsoft.VisualBasic.VariantType)(8192);
+        public const Microsoft.VisualBasic.MsgBoxResult vbAbort = Microsoft.VisualBasic.MsgBoxResult.Abort;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbAbortRetryIgnore = Microsoft.VisualBasic.MsgBoxStyle.AbortRetryIgnore;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbApplicationModal = Microsoft.VisualBasic.MsgBoxStyle.OkOnly;
+        public const Microsoft.VisualBasic.FileAttribute vbArchive = Microsoft.VisualBasic.FileAttribute.Archive;
+        public const Microsoft.VisualBasic.VariantType vbArray = Microsoft.VisualBasic.VariantType.Array;
         public const string vbBack = "\b";
-        public const Microsoft.VisualBasic.CompareMethod vbBinaryCompare = (Microsoft.VisualBasic.CompareMethod)(0);
-        public const Microsoft.VisualBasic.VariantType vbBoolean = (Microsoft.VisualBasic.VariantType)(11);
-        public const Microsoft.VisualBasic.VariantType vbByte = (Microsoft.VisualBasic.VariantType)(17);
-        public const Microsoft.VisualBasic.MsgBoxResult vbCancel = (Microsoft.VisualBasic.MsgBoxResult)(2);
+        public const Microsoft.VisualBasic.CompareMethod vbBinaryCompare = Microsoft.VisualBasic.CompareMethod.Binary;
+        public const Microsoft.VisualBasic.VariantType vbBoolean = Microsoft.VisualBasic.VariantType.Boolean;
+        public const Microsoft.VisualBasic.VariantType vbByte = Microsoft.VisualBasic.VariantType.Byte;
+        public const Microsoft.VisualBasic.MsgBoxResult vbCancel = Microsoft.VisualBasic.MsgBoxResult.Cancel;
         public const string vbCr = "\r";
-        public const Microsoft.VisualBasic.MsgBoxStyle vbCritical = (Microsoft.VisualBasic.MsgBoxStyle)(16);
+        public const Microsoft.VisualBasic.MsgBoxStyle vbCritical = Microsoft.VisualBasic.MsgBoxStyle.Critical;
         public const string vbCrLf = "\r\n";
-        public const Microsoft.VisualBasic.VariantType vbCurrency = (Microsoft.VisualBasic.VariantType)(6);
-        public const Microsoft.VisualBasic.VariantType vbDate = (Microsoft.VisualBasic.VariantType)(7);
-        public const Microsoft.VisualBasic.VariantType vbDecimal = (Microsoft.VisualBasic.VariantType)(14);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton1 = (Microsoft.VisualBasic.MsgBoxStyle)(0);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton2 = (Microsoft.VisualBasic.MsgBoxStyle)(256);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton3 = (Microsoft.VisualBasic.MsgBoxStyle)(512);
-        public const Microsoft.VisualBasic.FileAttribute vbDirectory = (Microsoft.VisualBasic.FileAttribute)(16);
-        public const Microsoft.VisualBasic.VariantType vbDouble = (Microsoft.VisualBasic.VariantType)(5);
-        public const Microsoft.VisualBasic.VariantType vbEmpty = (Microsoft.VisualBasic.VariantType)(0);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbExclamation = (Microsoft.VisualBasic.MsgBoxStyle)(48);
-        public const Microsoft.VisualBasic.TriState vbFalse = (Microsoft.VisualBasic.TriState)(0);
-        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstFourDays = (Microsoft.VisualBasic.FirstWeekOfYear)(2);
-        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstFullWeek = (Microsoft.VisualBasic.FirstWeekOfYear)(3);
-        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstJan1 = (Microsoft.VisualBasic.FirstWeekOfYear)(1);
+        public const Microsoft.VisualBasic.VariantType vbCurrency = Microsoft.VisualBasic.VariantType.Currency;
+        public const Microsoft.VisualBasic.VariantType vbDate = Microsoft.VisualBasic.VariantType.Date;
+        public const Microsoft.VisualBasic.VariantType vbDecimal = Microsoft.VisualBasic.VariantType.Decimal;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton1 = Microsoft.VisualBasic.MsgBoxStyle.OkOnly;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton2 = Microsoft.VisualBasic.MsgBoxStyle.DefaultButton2;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbDefaultButton3 = Microsoft.VisualBasic.MsgBoxStyle.DefaultButton3;
+        public const Microsoft.VisualBasic.FileAttribute vbDirectory = Microsoft.VisualBasic.FileAttribute.Directory;
+        public const Microsoft.VisualBasic.VariantType vbDouble = Microsoft.VisualBasic.VariantType.Double;
+        public const Microsoft.VisualBasic.VariantType vbEmpty = Microsoft.VisualBasic.VariantType.Empty;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbExclamation = Microsoft.VisualBasic.MsgBoxStyle.Exclamation;
+        public const Microsoft.VisualBasic.TriState vbFalse = Microsoft.VisualBasic.TriState.False;
+        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstFourDays = Microsoft.VisualBasic.FirstWeekOfYear.FirstFourDays;
+        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstFullWeek = Microsoft.VisualBasic.FirstWeekOfYear.FirstFullWeek;
+        public const Microsoft.VisualBasic.FirstWeekOfYear vbFirstJan1 = Microsoft.VisualBasic.FirstWeekOfYear.Jan1;
         public const string vbFormFeed = "\f";
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbFriday = (Microsoft.VisualBasic.FirstDayOfWeek)(6);
-        public const Microsoft.VisualBasic.DateFormat vbGeneralDate = (Microsoft.VisualBasic.DateFormat)(0);
-        public const Microsoft.VisualBasic.CallType vbGet = (Microsoft.VisualBasic.CallType)(2);
-        public const Microsoft.VisualBasic.FileAttribute vbHidden = (Microsoft.VisualBasic.FileAttribute)(2);
-        public const Microsoft.VisualBasic.AppWinStyle vbHide = (Microsoft.VisualBasic.AppWinStyle)(0);
-        public const Microsoft.VisualBasic.VbStrConv vbHiragana = (Microsoft.VisualBasic.VbStrConv)(32);
-        public const Microsoft.VisualBasic.MsgBoxResult vbIgnore = (Microsoft.VisualBasic.MsgBoxResult)(5);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbInformation = (Microsoft.VisualBasic.MsgBoxStyle)(64);
-        public const Microsoft.VisualBasic.VariantType vbInteger = (Microsoft.VisualBasic.VariantType)(3);
-        public const Microsoft.VisualBasic.VbStrConv vbKatakana = (Microsoft.VisualBasic.VbStrConv)(16);
-        public const Microsoft.VisualBasic.CallType vbLet = (Microsoft.VisualBasic.CallType)(4);
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbFriday = Microsoft.VisualBasic.FirstDayOfWeek.Friday;
+        public const Microsoft.VisualBasic.DateFormat vbGeneralDate = Microsoft.VisualBasic.DateFormat.GeneralDate;
+        public const Microsoft.VisualBasic.CallType vbGet = Microsoft.VisualBasic.CallType.Get;
+        public const Microsoft.VisualBasic.FileAttribute vbHidden = Microsoft.VisualBasic.FileAttribute.Hidden;
+        public const Microsoft.VisualBasic.AppWinStyle vbHide = Microsoft.VisualBasic.AppWinStyle.Hide;
+        public const Microsoft.VisualBasic.VbStrConv vbHiragana = Microsoft.VisualBasic.VbStrConv.Hiragana;
+        public const Microsoft.VisualBasic.MsgBoxResult vbIgnore = Microsoft.VisualBasic.MsgBoxResult.Ignore;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbInformation = Microsoft.VisualBasic.MsgBoxStyle.Information;
+        public const Microsoft.VisualBasic.VariantType vbInteger = Microsoft.VisualBasic.VariantType.Integer;
+        public const Microsoft.VisualBasic.VbStrConv vbKatakana = Microsoft.VisualBasic.VbStrConv.Katakana;
+        public const Microsoft.VisualBasic.CallType vbLet = Microsoft.VisualBasic.CallType.Let;
         public const string vbLf = "\n";
-        public const Microsoft.VisualBasic.VbStrConv vbLinguisticCasing = (Microsoft.VisualBasic.VbStrConv)(1024);
-        public const Microsoft.VisualBasic.VariantType vbLong = (Microsoft.VisualBasic.VariantType)(20);
-        public const Microsoft.VisualBasic.DateFormat vbLongDate = (Microsoft.VisualBasic.DateFormat)(1);
-        public const Microsoft.VisualBasic.DateFormat vbLongTime = (Microsoft.VisualBasic.DateFormat)(3);
-        public const Microsoft.VisualBasic.VbStrConv vbLowerCase = (Microsoft.VisualBasic.VbStrConv)(2);
-        public const Microsoft.VisualBasic.AppWinStyle vbMaximizedFocus = (Microsoft.VisualBasic.AppWinStyle)(3);
-        public const Microsoft.VisualBasic.CallType vbMethod = (Microsoft.VisualBasic.CallType)(1);
-        public const Microsoft.VisualBasic.AppWinStyle vbMinimizedFocus = (Microsoft.VisualBasic.AppWinStyle)(2);
-        public const Microsoft.VisualBasic.AppWinStyle vbMinimizedNoFocus = (Microsoft.VisualBasic.AppWinStyle)(6);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbMonday = (Microsoft.VisualBasic.FirstDayOfWeek)(2);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxHelp = (Microsoft.VisualBasic.MsgBoxStyle)(16384);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxRight = (Microsoft.VisualBasic.MsgBoxStyle)(524288);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxRtlReading = (Microsoft.VisualBasic.MsgBoxStyle)(1048576);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxSetForeground = (Microsoft.VisualBasic.MsgBoxStyle)(65536);
-        public const Microsoft.VisualBasic.VbStrConv vbNarrow = (Microsoft.VisualBasic.VbStrConv)(8);
+        public const Microsoft.VisualBasic.VbStrConv vbLinguisticCasing = Microsoft.VisualBasic.VbStrConv.LinguisticCasing;
+        public const Microsoft.VisualBasic.VariantType vbLong = Microsoft.VisualBasic.VariantType.Long;
+        public const Microsoft.VisualBasic.DateFormat vbLongDate = Microsoft.VisualBasic.DateFormat.LongDate;
+        public const Microsoft.VisualBasic.DateFormat vbLongTime = Microsoft.VisualBasic.DateFormat.LongTime;
+        public const Microsoft.VisualBasic.VbStrConv vbLowerCase = Microsoft.VisualBasic.VbStrConv.Lowercase;
+        public const Microsoft.VisualBasic.AppWinStyle vbMaximizedFocus = Microsoft.VisualBasic.AppWinStyle.MaximizedFocus;
+        public const Microsoft.VisualBasic.CallType vbMethod = Microsoft.VisualBasic.CallType.Method;
+        public const Microsoft.VisualBasic.AppWinStyle vbMinimizedFocus = Microsoft.VisualBasic.AppWinStyle.MinimizedFocus;
+        public const Microsoft.VisualBasic.AppWinStyle vbMinimizedNoFocus = Microsoft.VisualBasic.AppWinStyle.MinimizedNoFocus;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbMonday = Microsoft.VisualBasic.FirstDayOfWeek.Monday;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxHelp = Microsoft.VisualBasic.MsgBoxStyle.MsgBoxHelp;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxRight = Microsoft.VisualBasic.MsgBoxStyle.MsgBoxRight;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxRtlReading = Microsoft.VisualBasic.MsgBoxStyle.MsgBoxRtlReading;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbMsgBoxSetForeground = Microsoft.VisualBasic.MsgBoxStyle.MsgBoxSetForeground;
+        public const Microsoft.VisualBasic.VbStrConv vbNarrow = Microsoft.VisualBasic.VbStrConv.Narrow;
         public const string vbNewLine = "\r\n";
-        public const Microsoft.VisualBasic.MsgBoxResult vbNo = (Microsoft.VisualBasic.MsgBoxResult)(7);
-        public const Microsoft.VisualBasic.FileAttribute vbNormal = (Microsoft.VisualBasic.FileAttribute)(0);
-        public const Microsoft.VisualBasic.AppWinStyle vbNormalFocus = (Microsoft.VisualBasic.AppWinStyle)(1);
-        public const Microsoft.VisualBasic.AppWinStyle vbNormalNoFocus = (Microsoft.VisualBasic.AppWinStyle)(4);
-        public const Microsoft.VisualBasic.VariantType vbNull = (Microsoft.VisualBasic.VariantType)(1);
+        public const Microsoft.VisualBasic.MsgBoxResult vbNo = Microsoft.VisualBasic.MsgBoxResult.No;
+        public const Microsoft.VisualBasic.FileAttribute vbNormal = Microsoft.VisualBasic.FileAttribute.Normal;
+        public const Microsoft.VisualBasic.AppWinStyle vbNormalFocus = Microsoft.VisualBasic.AppWinStyle.NormalFocus;
+        public const Microsoft.VisualBasic.AppWinStyle vbNormalNoFocus = Microsoft.VisualBasic.AppWinStyle.NormalNoFocus;
+        public const Microsoft.VisualBasic.VariantType vbNull = Microsoft.VisualBasic.VariantType.Null;
         public const string vbNullChar = "\0";
         public const string vbNullString = null;
-        public const Microsoft.VisualBasic.VariantType vbObject = (Microsoft.VisualBasic.VariantType)(9);
+        public const Microsoft.VisualBasic.VariantType vbObject = Microsoft.VisualBasic.VariantType.Object;
         public const int vbObjectError = -2147221504;
-        public const Microsoft.VisualBasic.MsgBoxResult vbOK = (Microsoft.VisualBasic.MsgBoxResult)(1);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbOKCancel = (Microsoft.VisualBasic.MsgBoxStyle)(1);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbOKOnly = (Microsoft.VisualBasic.MsgBoxStyle)(0);
-        public const Microsoft.VisualBasic.VbStrConv vbProperCase = (Microsoft.VisualBasic.VbStrConv)(3);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbQuestion = (Microsoft.VisualBasic.MsgBoxStyle)(32);
-        public const Microsoft.VisualBasic.FileAttribute vbReadOnly = (Microsoft.VisualBasic.FileAttribute)(1);
-        public const Microsoft.VisualBasic.MsgBoxResult vbRetry = (Microsoft.VisualBasic.MsgBoxResult)(4);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbRetryCancel = (Microsoft.VisualBasic.MsgBoxStyle)(5);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbSaturday = (Microsoft.VisualBasic.FirstDayOfWeek)(7);
-        public const Microsoft.VisualBasic.CallType vbSet = (Microsoft.VisualBasic.CallType)(8);
-        public const Microsoft.VisualBasic.DateFormat vbShortDate = (Microsoft.VisualBasic.DateFormat)(2);
-        public const Microsoft.VisualBasic.DateFormat vbShortTime = (Microsoft.VisualBasic.DateFormat)(4);
-        public const Microsoft.VisualBasic.VbStrConv vbSimplifiedChinese = (Microsoft.VisualBasic.VbStrConv)(256);
-        public const Microsoft.VisualBasic.VariantType vbSingle = (Microsoft.VisualBasic.VariantType)(4);
-        public const Microsoft.VisualBasic.VariantType vbString = (Microsoft.VisualBasic.VariantType)(8);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbSunday = (Microsoft.VisualBasic.FirstDayOfWeek)(1);
-        public const Microsoft.VisualBasic.FileAttribute vbSystem = (Microsoft.VisualBasic.FileAttribute)(4);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbSystemModal = (Microsoft.VisualBasic.MsgBoxStyle)(4096);
+        public const Microsoft.VisualBasic.MsgBoxResult vbOK = Microsoft.VisualBasic.MsgBoxResult.Ok;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbOKCancel = Microsoft.VisualBasic.MsgBoxStyle.OkCancel;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbOKOnly = Microsoft.VisualBasic.MsgBoxStyle.OkOnly;
+        public const Microsoft.VisualBasic.VbStrConv vbProperCase = Microsoft.VisualBasic.VbStrConv.ProperCase;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbQuestion = Microsoft.VisualBasic.MsgBoxStyle.Question;
+        public const Microsoft.VisualBasic.FileAttribute vbReadOnly = Microsoft.VisualBasic.FileAttribute.ReadOnly;
+        public const Microsoft.VisualBasic.MsgBoxResult vbRetry = Microsoft.VisualBasic.MsgBoxResult.Retry;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbRetryCancel = Microsoft.VisualBasic.MsgBoxStyle.RetryCancel;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbSaturday = Microsoft.VisualBasic.FirstDayOfWeek.Saturday;
+        public const Microsoft.VisualBasic.CallType vbSet = Microsoft.VisualBasic.CallType.Set;
+        public const Microsoft.VisualBasic.DateFormat vbShortDate = Microsoft.VisualBasic.DateFormat.ShortDate;
+        public const Microsoft.VisualBasic.DateFormat vbShortTime = Microsoft.VisualBasic.DateFormat.ShortTime;
+        public const Microsoft.VisualBasic.VbStrConv vbSimplifiedChinese = Microsoft.VisualBasic.VbStrConv.SimplifiedChinese;
+        public const Microsoft.VisualBasic.VariantType vbSingle = Microsoft.VisualBasic.VariantType.Single;
+        public const Microsoft.VisualBasic.VariantType vbString = Microsoft.VisualBasic.VariantType.String;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbSunday = Microsoft.VisualBasic.FirstDayOfWeek.Sunday;
+        public const Microsoft.VisualBasic.FileAttribute vbSystem = Microsoft.VisualBasic.FileAttribute.System;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbSystemModal = Microsoft.VisualBasic.MsgBoxStyle.SystemModal;
         public const string vbTab = "\t";
-        public const Microsoft.VisualBasic.CompareMethod vbTextCompare = (Microsoft.VisualBasic.CompareMethod)(1);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbThursday = (Microsoft.VisualBasic.FirstDayOfWeek)(5);
-        public const Microsoft.VisualBasic.VbStrConv vbTraditionalChinese = (Microsoft.VisualBasic.VbStrConv)(512);
-        public const Microsoft.VisualBasic.TriState vbTrue = (Microsoft.VisualBasic.TriState)(-1);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbTuesday = (Microsoft.VisualBasic.FirstDayOfWeek)(3);
-        public const Microsoft.VisualBasic.VbStrConv vbUpperCase = (Microsoft.VisualBasic.VbStrConv)(1);
-        public const Microsoft.VisualBasic.TriState vbUseDefault = (Microsoft.VisualBasic.TriState)(-2);
-        public const Microsoft.VisualBasic.VariantType vbUserDefinedType = (Microsoft.VisualBasic.VariantType)(36);
-        public const Microsoft.VisualBasic.FirstWeekOfYear vbUseSystem = (Microsoft.VisualBasic.FirstWeekOfYear)(0);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbUseSystemDayOfWeek = (Microsoft.VisualBasic.FirstDayOfWeek)(0);
-        public const Microsoft.VisualBasic.VariantType vbVariant = (Microsoft.VisualBasic.VariantType)(12);
+        public const Microsoft.VisualBasic.CompareMethod vbTextCompare = Microsoft.VisualBasic.CompareMethod.Text;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbThursday = Microsoft.VisualBasic.FirstDayOfWeek.Thursday;
+        public const Microsoft.VisualBasic.VbStrConv vbTraditionalChinese = Microsoft.VisualBasic.VbStrConv.TraditionalChinese;
+        public const Microsoft.VisualBasic.TriState vbTrue = Microsoft.VisualBasic.TriState.True;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbTuesday = Microsoft.VisualBasic.FirstDayOfWeek.Tuesday;
+        public const Microsoft.VisualBasic.VbStrConv vbUpperCase = Microsoft.VisualBasic.VbStrConv.Uppercase;
+        public const Microsoft.VisualBasic.TriState vbUseDefault = Microsoft.VisualBasic.TriState.UseDefault;
+        public const Microsoft.VisualBasic.VariantType vbUserDefinedType = Microsoft.VisualBasic.VariantType.UserDefinedType;
+        public const Microsoft.VisualBasic.FirstWeekOfYear vbUseSystem = Microsoft.VisualBasic.FirstWeekOfYear.System;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbUseSystemDayOfWeek = Microsoft.VisualBasic.FirstDayOfWeek.System;
+        public const Microsoft.VisualBasic.VariantType vbVariant = Microsoft.VisualBasic.VariantType.Variant;
         public const string vbVerticalTab = "\v";
-        public const Microsoft.VisualBasic.FileAttribute vbVolume = (Microsoft.VisualBasic.FileAttribute)(8);
-        public const Microsoft.VisualBasic.FirstDayOfWeek vbWednesday = (Microsoft.VisualBasic.FirstDayOfWeek)(4);
-        public const Microsoft.VisualBasic.VbStrConv vbWide = (Microsoft.VisualBasic.VbStrConv)(4);
-        public const Microsoft.VisualBasic.MsgBoxResult vbYes = (Microsoft.VisualBasic.MsgBoxResult)(6);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbYesNo = (Microsoft.VisualBasic.MsgBoxStyle)(4);
-        public const Microsoft.VisualBasic.MsgBoxStyle vbYesNoCancel = (Microsoft.VisualBasic.MsgBoxStyle)(3);
+        public const Microsoft.VisualBasic.FileAttribute vbVolume = Microsoft.VisualBasic.FileAttribute.Volume;
+        public const Microsoft.VisualBasic.FirstDayOfWeek vbWednesday = Microsoft.VisualBasic.FirstDayOfWeek.Wednesday;
+        public const Microsoft.VisualBasic.VbStrConv vbWide = Microsoft.VisualBasic.VbStrConv.Wide;
+        public const Microsoft.VisualBasic.MsgBoxResult vbYes = Microsoft.VisualBasic.MsgBoxResult.Yes;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbYesNo = Microsoft.VisualBasic.MsgBoxStyle.YesNo;
+        public const Microsoft.VisualBasic.MsgBoxStyle vbYesNoCancel = Microsoft.VisualBasic.MsgBoxStyle.YesNoCancel;
     }
     public sealed partial class ControlChars
     {
@@ -270,18 +270,18 @@ namespace Microsoft.VisualBasic
     public sealed partial class DateAndTime
     {
         internal DateAndTime() { }
-        public static string DateString { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]set { } }
+        public static string DateString { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]set { } }
         public static System.DateTime Now { get { throw null; } }
-        public static System.DateTime TimeOfDay { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]set { } }
+        public static System.DateTime TimeOfDay { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]set { } }
         public static double Timer { get { throw null; } }
-        public static string TimeString { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]set { } }
-        public static System.DateTime Today { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]set { } }
+        public static string TimeString { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]set { } }
+        public static System.DateTime Today { get { throw null; } [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]set { } }
         public static System.DateTime DateAdd(Microsoft.VisualBasic.DateInterval Interval, double Number, System.DateTime DateValue) { throw null; }
         public static System.DateTime DateAdd(string Interval, double Number, object DateValue) { throw null; }
-        public static long DateDiff(Microsoft.VisualBasic.DateInterval Interval, System.DateTime Date1, System.DateTime Date2, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek=(Microsoft.VisualBasic.FirstDayOfWeek)(1), Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear=(Microsoft.VisualBasic.FirstWeekOfYear)(1)) { throw null; }
-        public static long DateDiff(string Interval, object Date1, object Date2, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek=(Microsoft.VisualBasic.FirstDayOfWeek)(1), Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear=(Microsoft.VisualBasic.FirstWeekOfYear)(1)) { throw null; }
-        public static int DatePart(Microsoft.VisualBasic.DateInterval Interval, System.DateTime DateValue, Microsoft.VisualBasic.FirstDayOfWeek FirstDayOfWeekValue=(Microsoft.VisualBasic.FirstDayOfWeek)(1), Microsoft.VisualBasic.FirstWeekOfYear FirstWeekOfYearValue=(Microsoft.VisualBasic.FirstWeekOfYear)(1)) { throw null; }
-        public static int DatePart(string Interval, object DateValue, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek=(Microsoft.VisualBasic.FirstDayOfWeek)(1), Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear=(Microsoft.VisualBasic.FirstWeekOfYear)(1)) { throw null; }
+        public static long DateDiff(Microsoft.VisualBasic.DateInterval Interval, System.DateTime Date1, System.DateTime Date2, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek = Microsoft.VisualBasic.FirstDayOfWeek.Sunday, Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear = Microsoft.VisualBasic.FirstWeekOfYear.Jan1) { throw null; }
+        public static long DateDiff(string Interval, object Date1, object Date2, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek = Microsoft.VisualBasic.FirstDayOfWeek.Sunday, Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear = Microsoft.VisualBasic.FirstWeekOfYear.Jan1) { throw null; }
+        public static int DatePart(Microsoft.VisualBasic.DateInterval Interval, System.DateTime DateValue, Microsoft.VisualBasic.FirstDayOfWeek FirstDayOfWeekValue=Microsoft.VisualBasic.FirstDayOfWeek.Sunday, Microsoft.VisualBasic.FirstWeekOfYear FirstWeekOfYearValue = Microsoft.VisualBasic.FirstWeekOfYear.Jan1) { throw null; }
+        public static int DatePart(string Interval, object DateValue, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek = Microsoft.VisualBasic.FirstDayOfWeek.Sunday, Microsoft.VisualBasic.FirstWeekOfYear WeekOfYear = Microsoft.VisualBasic.FirstWeekOfYear.Jan1) { throw null; }
         public static System.DateTime DateSerial(int Year, int Month, int Day) { throw null; }
         public static System.DateTime DateValue(string StringDate) { throw null; }
         public static int Day(System.DateTime DateValue) { throw null; }
@@ -292,8 +292,8 @@ namespace Microsoft.VisualBasic
         public static int Second(System.DateTime TimeValue) { throw null; }
         public static System.DateTime TimeSerial(int Hour, int Minute, int Second) { throw null; }
         public static System.DateTime TimeValue(string StringTime) { throw null; }
-        public static int Weekday(System.DateTime DateValue, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek=(Microsoft.VisualBasic.FirstDayOfWeek)(1)) { throw null; }
-        public static string WeekdayName(int Weekday, bool Abbreviate=false, Microsoft.VisualBasic.FirstDayOfWeek FirstDayOfWeekValue=(Microsoft.VisualBasic.FirstDayOfWeek)(0)) { throw null; }
+        public static int Weekday(System.DateTime DateValue, Microsoft.VisualBasic.FirstDayOfWeek DayOfWeek = Microsoft.VisualBasic.FirstDayOfWeek.Sunday) { throw null; }
+        public static string WeekdayName(int Weekday, bool Abbreviate = false, Microsoft.VisualBasic.FirstDayOfWeek FirstDayOfWeekValue = Microsoft.VisualBasic.FirstDayOfWeek.System) { throw null; }
         public static int Year(System.DateTime DateValue) { throw null; }
     }
     public enum DateFormat
@@ -332,7 +332,7 @@ namespace Microsoft.VisualBasic
         public int LastDllError { [System.Security.SecurityCriticalAttribute]get { throw null; } }
         public int Number { get { throw null; } set { } }
         public string Source { get { throw null; } set { } }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SecuritySafeCriticalAttribute]
         public void Clear() { }
         public System.Exception GetException() { throw null; }
@@ -351,7 +351,7 @@ namespace Microsoft.VisualBasic
     }
     [Microsoft.VisualBasic.CompilerServices.StandardModuleAttribute]
     [System.Security.SecurityCriticalAttribute]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public sealed partial class FileSystem
     {
         internal FileSystem() { }
@@ -361,7 +361,7 @@ namespace Microsoft.VisualBasic
         public static string CurDir() { throw null; }
         public static string CurDir(char Drive) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static string Dir() { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static string Dir(string PathName, Microsoft.VisualBasic.FileAttribute Attributes=(Microsoft.VisualBasic.FileAttribute)(0)) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static string Dir(string PathName, Microsoft.VisualBasic.FileAttribute Attributes=Microsoft.VisualBasic.FileAttribute.Normal) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static bool EOF(int FileNumber) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static Microsoft.VisualBasic.OpenMode FileAttr(int FileNumber) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileClose(params int[] FileNumbers) { }
@@ -382,7 +382,7 @@ namespace Microsoft.VisualBasic
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileGet(int FileNumber, ref System.ValueType Value, long RecordNumber=(long)-1) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileGetObject(int FileNumber, ref object Value, long RecordNumber=(long)-1) { }
         public static long FileLen(string PathName) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileOpen(int FileNumber, string FileName, Microsoft.VisualBasic.OpenMode Mode, Microsoft.VisualBasic.OpenAccess Access=(Microsoft.VisualBasic.OpenAccess)(-1), Microsoft.VisualBasic.OpenShare Share=(Microsoft.VisualBasic.OpenShare)(-1), int RecordLength=-1) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileOpen(int FileNumber, string FileName, Microsoft.VisualBasic.OpenMode Mode, Microsoft.VisualBasic.OpenAccess Access=Microsoft.VisualBasic.OpenAccess.Default, Microsoft.VisualBasic.OpenShare Share=Microsoft.VisualBasic.OpenShare.Default, int RecordLength=-1) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePut(int FileNumber, System.Array Value, long RecordNumber=(long)-1, bool ArrayIsDynamic=false, bool StringIsFixedLength=false) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePut(int FileNumber, bool Value, long RecordNumber=(long)-1) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePut(int FileNumber, byte Value, long RecordNumber=(long)-1) { }
@@ -397,7 +397,7 @@ namespace Microsoft.VisualBasic
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePut(int FileNumber, string Value, long RecordNumber=(long)-1, bool StringIsFixedLength=false) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePut(int FileNumber, System.ValueType Value, long RecordNumber=(long)-1) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.ObsoleteAttribute("This member has been deprecated. Please use FilePutObject to write Object types, or coerce FileNumber and RecordNumber to Integer for writing non-Object types. http://go.microsoft.com/fwlink/?linkid=14202")]
-        public static void FilePut(object FileNumber, object Value, object RecordNumber=null) { }
+        public static void FilePut(object FileNumber, object Value, object RecordNumber = null) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FilePutObject(int FileNumber, object Value, long RecordNumber=(long)-1) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static void FileWidth(int FileNumber, int RecordWidth) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static int FreeFile() { throw null; }
@@ -444,17 +444,17 @@ namespace Microsoft.VisualBasic
     public sealed partial class Financial
     {
         internal Financial() { }
-        public static double DDB(double Cost, double Salvage, double Life, double Period, double Factor=2) { throw null; }
-        public static double FV(double Rate, double NPer, double Pmt, double PV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
-        public static double IPmt(double Rate, double Per, double NPer, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
-        public static double IRR(ref double[] ValueArray, double Guess=0.1) { throw null; }
+        public static double DDB(double Cost, double Salvage, double Life, double Period, double Factor = 2) { throw null; }
+        public static double FV(double Rate, double NPer, double Pmt, double PV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
+        public static double IPmt(double Rate, double Per, double NPer, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
+        public static double IRR(ref double[] ValueArray, double Guess = 0.1) { throw null; }
         public static double MIRR(ref double[] ValueArray, double FinanceRate, double ReinvestRate) { throw null; }
-        public static double NPer(double Rate, double Pmt, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
+        public static double NPer(double Rate, double Pmt, double PV, double FV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
         public static double NPV(double Rate, ref double[] ValueArray) { throw null; }
-        public static double Pmt(double Rate, double NPer, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
-        public static double PPmt(double Rate, double Per, double NPer, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
-        public static double PV(double Rate, double NPer, double Pmt, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0)) { throw null; }
-        public static double Rate(double NPer, double Pmt, double PV, double FV=0, Microsoft.VisualBasic.DueDate Due=(Microsoft.VisualBasic.DueDate)(0), double Guess=0.1) { throw null; }
+        public static double Pmt(double Rate, double NPer, double PV, double FV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
+        public static double PPmt(double Rate, double Per, double NPer, double PV, double FV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
+        public static double PV(double Rate, double NPer, double Pmt, double FV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod) { throw null; }
+        public static double Rate(double NPer, double Pmt, double PV, double FV = 0, Microsoft.VisualBasic.DueDate Due = Microsoft.VisualBasic.DueDate.EndOfPeriod, double Guess = 0.1) { throw null; }
         public static double SLN(double Cost, double Salvage, double Life) { throw null; }
         public static double SYD(double Cost, double Salvage, double Life, double Period) { throw null; }
     }
@@ -485,7 +485,7 @@ namespace Microsoft.VisualBasic
         public static int ScriptEngineMajorVersion { get { throw null; } }
         public static int ScriptEngineMinorVersion { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=false)]
     public sealed partial class HideModuleNameAttribute : System.Attribute
     {
         public HideModuleNameAttribute() { }
@@ -494,7 +494,7 @@ namespace Microsoft.VisualBasic
     public sealed partial class Information
     {
         internal Information() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static int Erl() { throw null; }
         public static Microsoft.VisualBasic.ErrObject Err() { throw null; }
         public static bool IsArray(object VarName) { throw null; }
@@ -504,12 +504,12 @@ namespace Microsoft.VisualBasic
         public static bool IsNothing(object Expression) { throw null; }
         public static bool IsNumeric(object Expression) { throw null; }
         public static bool IsReference(object Expression) { throw null; }
-        public static int LBound(System.Array Array, int Rank=1) { throw null; }
+        public static int LBound(System.Array Array, int Rank = 1) { throw null; }
         public static int QBColor(int Color) { throw null; }
         public static int RGB(int Red, int Green, int Blue) { throw null; }
         public static string SystemTypeName(string VbName) { throw null; }
         public static string TypeName(object VarName) { throw null; }
-        public static int UBound(System.Array Array, int Rank=1) { throw null; }
+        public static int UBound(System.Array Array, int Rank = 1) { throw null; }
         public static Microsoft.VisualBasic.VariantType VarType(object VarName) { throw null; }
         public static string VbTypeName(string UrtName) { throw null; }
     }
@@ -518,10 +518,10 @@ namespace Microsoft.VisualBasic
     {
         internal Interaction() { }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         public static void AppActivate(int ProcessId) { }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
         public static void AppActivate(string Title) { }
         [System.Security.SecuritySafeCriticalAttribute]
         public static void Beep() { }
@@ -530,30 +530,30 @@ namespace Microsoft.VisualBasic
         [System.Security.SecuritySafeCriticalAttribute]
         public static string Command() { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
-        public static object CreateObject(string ProgId, string ServerName="") { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
-        public static void DeleteSetting(string AppName, string Section=null, string Key=null) { }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
+        public static object CreateObject(string ProgId, string ServerName = "") { throw null; }
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
+        public static void DeleteSetting(string AppName, string Section = null, string Key = null) { }
         [System.Security.SecuritySafeCriticalAttribute]
         public static string Environ(int Expression) { throw null; }
         public static string Environ(string Expression) { throw null; }
         public static string[,] GetAllSettings(string AppName, string Section) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
-        public static object GetObject(string PathName=null, string Class=null) { throw null; }
-        public static string GetSetting(string AppName, string Section, string Key, string Default="") { throw null; }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
+        public static object GetObject(string PathName = null, string Class = null) { throw null; }
+        public static string GetSetting(string AppName, string Section, string Key, string Default = "") { throw null; }
         public static object IIf(bool Expression, object TruePart, object FalsePart) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(128))]
-        public static string InputBox(string Prompt, string Title="", string DefaultResponse="", int XPos=-1, int YPos=-1) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(128))]
-        public static Microsoft.VisualBasic.MsgBoxResult MsgBox(object Prompt, Microsoft.VisualBasic.MsgBoxStyle Buttons=(Microsoft.VisualBasic.MsgBoxStyle)(0), object Title=null) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.UI)]
+        public static string InputBox(string Prompt, string Title = "", string DefaultResponse = "", int XPos = -1, int YPos = -1) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.UI)]
+        public static Microsoft.VisualBasic.MsgBoxResult MsgBox(object Prompt, Microsoft.VisualBasic.MsgBoxStyle Buttons = Microsoft.VisualBasic.MsgBoxStyle.OkOnly, object Title=null) { throw null; }
         public static string Partition(long Number, long Start, long Stop, long Interval) { throw null; }
         public static void SaveSetting(string AppName, string Section, string Key, string Setting) { }
         [System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
-        public static int Shell(string PathName, Microsoft.VisualBasic.AppWinStyle Style=(Microsoft.VisualBasic.AppWinStyle)(2), bool Wait=false, int Timeout=-1) { throw null; }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
+        public static int Shell(string PathName, Microsoft.VisualBasic.AppWinStyle Style = Microsoft.VisualBasic.AppWinStyle.MinimizedFocus, bool Wait = false, int Timeout = -1) { throw null; }
         public static object Switch(params object[] VarExpr) { throw null; }
     }
     public enum MsgBoxResult
@@ -589,8 +589,8 @@ namespace Microsoft.VisualBasic
         YesNo = 4,
         YesNoCancel = 3,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public sealed partial class MyGroupCollectionAttribute : System.Attribute
     {
         public MyGroupCollectionAttribute(string typeToCollect, string createInstanceMethodName, string disposeInstanceMethodName, string defaultInstanceAlias) { }
@@ -622,7 +622,7 @@ namespace Microsoft.VisualBasic
         LockWrite = 1,
         Shared = 3,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SpcInfo
     {
@@ -638,19 +638,19 @@ namespace Microsoft.VisualBasic
         public static int AscW(string String) { throw null; }
         public static char Chr(int CharCode) { throw null; }
         public static char ChrW(int CharCode) { throw null; }
-        public static string[] Filter(object[] Source, string Match, bool Include=true, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static string[] Filter(string[] Source, string Match, bool Include=true, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
+        public static string[] Filter(object[] Source, string Match, bool Include=true, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static string[] Filter(string[] Source, string Match, bool Include=true, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
         public static string Format(object Expression, string Style="") { throw null; }
-        public static string FormatCurrency(object Expression, int NumDigitsAfterDecimal=-1, Microsoft.VisualBasic.TriState IncludeLeadingDigit=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState UseParensForNegativeNumbers=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState GroupDigits=(Microsoft.VisualBasic.TriState)(-2)) { throw null; }
-        public static string FormatDateTime(System.DateTime Expression, Microsoft.VisualBasic.DateFormat NamedFormat=(Microsoft.VisualBasic.DateFormat)(0)) { throw null; }
-        public static string FormatNumber(object Expression, int NumDigitsAfterDecimal=-1, Microsoft.VisualBasic.TriState IncludeLeadingDigit=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState UseParensForNegativeNumbers=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState GroupDigits=(Microsoft.VisualBasic.TriState)(-2)) { throw null; }
-        public static string FormatPercent(object Expression, int NumDigitsAfterDecimal=-1, Microsoft.VisualBasic.TriState IncludeLeadingDigit=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState UseParensForNegativeNumbers=(Microsoft.VisualBasic.TriState)(-2), Microsoft.VisualBasic.TriState GroupDigits=(Microsoft.VisualBasic.TriState)(-2)) { throw null; }
+        public static string FormatCurrency(object Expression, int NumDigitsAfterDecimal = -1, Microsoft.VisualBasic.TriState IncludeLeadingDigit = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState UseParensForNegativeNumbers = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState GroupDigits = Microsoft.VisualBasic.TriState.UseDefault) { throw null; }
+        public static string FormatDateTime(System.DateTime Expression, Microsoft.VisualBasic.DateFormat NamedFormat=Microsoft.VisualBasic.DateFormat.GeneralDate) { throw null; }
+        public static string FormatNumber(object Expression, int NumDigitsAfterDecimal = -1, Microsoft.VisualBasic.TriState IncludeLeadingDigit = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState UseParensForNegativeNumbers = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState GroupDigits = Microsoft.VisualBasic.TriState.UseDefault) { throw null; }
+        public static string FormatPercent(object Expression, int NumDigitsAfterDecimal = -1, Microsoft.VisualBasic.TriState IncludeLeadingDigit = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState UseParensForNegativeNumbers = Microsoft.VisualBasic.TriState.UseDefault, Microsoft.VisualBasic.TriState GroupDigits = Microsoft.VisualBasic.TriState.UseDefault) { throw null; }
         public static char GetChar(string str, int Index) { throw null; }
-        public static int InStr(int Start, string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static int InStr(string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static int InStrRev(string StringCheck, string StringMatch, int Start=-1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static string Join(object[] SourceArray, string Delimiter=" ") { throw null; }
-        public static string Join(string[] SourceArray, string Delimiter=" ") { throw null; }
+        public static int InStr(int Start, string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare = Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static int InStr(string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare = Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static int InStrRev(string StringCheck, string StringMatch, int Start = -1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare = Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static string Join(object[] SourceArray, string Delimiter = " ") { throw null; }
+        public static string Join(string[] SourceArray, string Delimiter = " ") { throw null; }
         public static char LCase(char Value) { throw null; }
         public static string LCase(string Value) { throw null; }
         public static string Left(string str, int Length) { throw null; }
@@ -679,14 +679,14 @@ namespace Microsoft.VisualBasic
         public static string LTrim(string str) { throw null; }
         public static string Mid(string str, int Start) { throw null; }
         public static string Mid(string str, int Start, int Length) { throw null; }
-        public static string Replace(string Expression, string Find, string Replacement, int Start=1, int Count=-1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
+        public static string Replace(string Expression, string Find, string Replacement, int Start = 1, int Count = -1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare = Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
         public static string Right(string str, int Length) { throw null; }
         public static string RSet(string Source, int Length) { throw null; }
         public static string RTrim(string str) { throw null; }
         public static string Space(int Number) { throw null; }
-        public static string[] Split(string Expression, string Delimiter=" ", int Limit=-1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static int StrComp(string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=(Microsoft.VisualBasic.CompareMethod)(0)) { throw null; }
-        public static string StrConv(string str, Microsoft.VisualBasic.VbStrConv Conversion, int LocaleID=0) { throw null; }
+        public static string[] Split(string Expression, string Delimiter=" ", int Limit=-1, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare=Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static int StrComp(string String1, string String2, [Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute]Microsoft.VisualBasic.CompareMethod Compare = Microsoft.VisualBasic.CompareMethod.Binary) { throw null; }
+        public static string StrConv(string str, Microsoft.VisualBasic.VbStrConv Conversion, int LocaleID = 0) { throw null; }
         public static string StrDup(int Number, char Character) { throw null; }
         public static object StrDup(int Number, object Character) { throw null; }
         public static string StrDup(int Number, string Character) { throw null; }
@@ -695,7 +695,7 @@ namespace Microsoft.VisualBasic
         public static char UCase(char Value) { throw null; }
         public static string UCase(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct TabInfo
     {
@@ -730,7 +730,7 @@ namespace Microsoft.VisualBasic
         UserDefinedType = 36,
         Variant = 12,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(256), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field, Inherited=false, AllowMultiple=false)]
     public sealed partial class VBFixedArrayAttribute : System.Attribute
     {
         public VBFixedArrayAttribute(int UpperBound1) { }
@@ -738,7 +738,7 @@ namespace Microsoft.VisualBasic
         public int[] Bounds { get { throw null; } }
         public int Length { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(256), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field, Inherited=false, AllowMultiple=false)]
     public sealed partial class VBFixedStringAttribute : System.Attribute
     {
         public VBFixedStringAttribute(int Length) { }
@@ -771,20 +771,20 @@ namespace Microsoft.VisualBasic
 }
 namespace Microsoft.VisualBasic.ApplicationServices
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class ApplicationBase
     {
         public ApplicationBase() { }
         public System.Globalization.CultureInfo Culture { get { throw null; } }
-        public Microsoft.VisualBasic.ApplicationServices.AssemblyInfo Info { [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]get { throw null; } }
+        public Microsoft.VisualBasic.ApplicationServices.AssemblyInfo Info { [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]get { throw null; } }
         public Microsoft.VisualBasic.Logging.Log Log { get { throw null; } }
         public System.Globalization.CultureInfo UICulture { get { throw null; } }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public void ChangeCulture(string cultureName) { }
         public void ChangeUICulture(string cultureName) { }
         public string GetEnvironmentVariable(string name) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class AssemblyInfo
     {
         public AssemblyInfo(System.Reflection.Assembly currentAssembly) { }
@@ -826,17 +826,17 @@ namespace Microsoft.VisualBasic.ApplicationServices
         public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.SerializableAttribute]
     public partial class CantStartSingleInstanceException : System.Exception
     {
         public CantStartSingleInstanceException() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected CantStartSingleInstanceException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CantStartSingleInstanceException(string message) { }
         public CantStartSingleInstanceException(string message, System.Exception inner) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class ConsoleApplicationBase : Microsoft.VisualBasic.ApplicationServices.ApplicationBase
     {
         public ConsoleApplicationBase() { }
@@ -844,84 +844,84 @@ namespace Microsoft.VisualBasic.ApplicationServices
 #if false
         public System.Deployment.Application.ApplicationDeployment Deployment { get { throw null; } }
 #endif
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected System.Collections.ObjectModel.ReadOnlyCollection<string> InternalCommandLine { set { } }
         public bool IsNetworkDeployed { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.SerializableAttribute]
     public partial class NoStartupFormException : System.Exception
     {
         public NoStartupFormException() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected NoStartupFormException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public NoStartupFormException(string message) { }
         public NoStartupFormException(string message, System.Exception inner) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate void ShutdownEventHandler(object sender, System.EventArgs e);
     public enum ShutdownMode
     {
         AfterAllFormsClose = 1,
         AfterMainFormCloses = 0,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public partial class StartupEventArgs : System.ComponentModel.CancelEventArgs
     {
         public StartupEventArgs(System.Collections.ObjectModel.ReadOnlyCollection<string> args) { }
         public System.Collections.ObjectModel.ReadOnlyCollection<string> CommandLine { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate void StartupEventHandler(object sender, Microsoft.VisualBasic.ApplicationServices.StartupEventArgs e);
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public partial class StartupNextInstanceEventArgs : System.EventArgs
     {
         public StartupNextInstanceEventArgs(System.Collections.ObjectModel.ReadOnlyCollection<string> args, bool bringToForegroundFlag) { }
         public bool BringToForeground { get { throw null; } set { } }
         public System.Collections.ObjectModel.ReadOnlyCollection<string> CommandLine { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate void StartupNextInstanceEventHandler(object sender, Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs e);
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public partial class UnhandledExceptionEventArgs : System.Threading.ThreadExceptionEventArgs
     {
         public UnhandledExceptionEventArgs(bool exitApplication, System.Exception exception) : base (default(System.Exception)) { }
         public bool ExitApplication { get { throw null; } set { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate void UnhandledExceptionEventHandler(object sender, Microsoft.VisualBasic.ApplicationServices.UnhandledExceptionEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class User
     {
         public User() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Security.Principal.IPrincipal CurrentPrincipal { get { throw null; } set { } }
         protected virtual System.Security.Principal.IPrincipal InternalPrincipal { get { throw null; } set { } }
         public bool IsAuthenticated { get { throw null; } }
         public string Name { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void InitializeWithWindowsUser() { }
         public bool IsInRole(Microsoft.VisualBasic.ApplicationServices.BuiltInRole role) { throw null; }
         public bool IsInRole(string role) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class WebUser : Microsoft.VisualBasic.ApplicationServices.User
     {
         public WebUser() { }
         protected override System.Security.Principal.IPrincipal InternalPrincipal { get { throw null; } set { } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class WindowsFormsApplicationBase : Microsoft.VisualBasic.ApplicationServices.ConsoleApplicationBase
     {
         public WindowsFormsApplicationBase() { }
         [System.Security.SecuritySafeCriticalAttribute]
         public WindowsFormsApplicationBase(Microsoft.VisualBasic.ApplicationServices.AuthenticationMode authenticationMode) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Windows.Forms.ApplicationContext ApplicationContext { get { throw null; } }
         protected bool EnableVisualStyles { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected bool IsSingleInstance { get { throw null; } set { } }
         protected System.Windows.Forms.Form MainForm { get { throw null; } set { } }
         public int MinimumSplashScreenDisplayTime { get { throw null; } set { } }
@@ -929,7 +929,7 @@ namespace Microsoft.VisualBasic.ApplicationServices
         public bool SaveMySettingsOnExit { get { throw null; } set { } }
         protected internal Microsoft.VisualBasic.ApplicationServices.ShutdownMode ShutdownStyle { get { throw null; } set { } }
         public System.Windows.Forms.Form SplashScreen { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected static bool UseCompatibleTextRendering { get { throw null; } }
         public event Microsoft.VisualBasic.Devices.NetworkAvailableEventHandler NetworkAvailabilityChanged { add { } remove { } }
         public event Microsoft.VisualBasic.ApplicationServices.ShutdownEventHandler Shutdown { add { } remove { } }
@@ -937,65 +937,65 @@ namespace Microsoft.VisualBasic.ApplicationServices
         public event Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventHandler StartupNextInstance { add { } remove { } }
         public event Microsoft.VisualBasic.ApplicationServices.UnhandledExceptionEventHandler UnhandledException { add { } remove { } }
         public void DoEvents() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.Security.SecuritySafeCriticalAttribute]
         protected void HideSplashScreen() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void OnCreateMainForm() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void OnCreateSplashScreen() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.STAThreadAttribute]
         protected virtual bool OnInitialize(System.Collections.ObjectModel.ReadOnlyCollection<string> commandLineArgs) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.Security.SecuritySafeCriticalAttribute]
         protected virtual void OnRun() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual void OnShutdown() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual bool OnStartup(Microsoft.VisualBasic.ApplicationServices.StartupEventArgs eventArgs) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.Security.SecuritySafeCriticalAttribute]
         protected virtual void OnStartupNextInstance(Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs eventArgs) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected virtual bool OnUnhandledException(Microsoft.VisualBasic.ApplicationServices.UnhandledExceptionEventArgs e) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.SecuritySafeCriticalAttribute]
         public void Run(string[] commandLine) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected void ShowSplashScreen() { }
     }
 }
 namespace Microsoft.VisualBasic.CompilerServices
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class BooleanType
     {
         internal BooleanType() { }
         public static bool FromObject(object Value) { throw null; }
         public static bool FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ByteType
     {
         internal ByteType() { }
         public static byte FromObject(object Value) { throw null; }
         public static byte FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class CharArrayType
     {
         internal CharArrayType() { }
         public static char[] FromObject(object Value) { throw null; }
         public static char[] FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class CharType
     {
         internal CharType() { }
         public static char FromObject(object Value) { throw null; }
         public static char FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class Conversions
     {
         internal Conversions() { }
@@ -1066,7 +1066,7 @@ namespace Microsoft.VisualBasic.CompilerServices
         [System.CLSCompliantAttribute(false)]
         public static ushort ToUShort(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class DateType
     {
         internal DateType() { }
@@ -1074,7 +1074,7 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static System.DateTime FromString(string Value) { throw null; }
         public static System.DateTime FromString(string Value, System.Globalization.CultureInfo culture) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class DecimalType
     {
         internal DecimalType() { }
@@ -1085,13 +1085,13 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static decimal FromString(string Value, System.Globalization.NumberFormatInfo NumberFormat) { throw null; }
         public static decimal Parse(string Value, System.Globalization.NumberFormatInfo NumberFormat) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class DesignerGeneratedAttribute : System.Attribute
     {
         public DesignerGeneratedAttribute() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class DoubleType
     {
         internal DoubleType() { }
@@ -1102,12 +1102,12 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static double Parse(string Value) { throw null; }
         public static double Parse(string Value, System.Globalization.NumberFormatInfo NumberFormat) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ExceptionUtils
     {
         internal ExceptionUtils() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class FlowControl
     {
         internal FlowControl() { }
@@ -1121,42 +1121,42 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static bool ForNextCheckR4(float count, float limit, float StepValue) { throw null; }
         public static bool ForNextCheckR8(double count, double limit, double StepValue) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.SharedState)]
     public sealed partial class HostServices
     {
         public HostServices() { }
         public static Microsoft.VisualBasic.CompilerServices.IVbHost VBHost { get { throw null; } set { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.SerializableAttribute]
     public sealed partial class IncompleteInitialization : System.Exception
     {
         public IncompleteInitialization() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public IncompleteInitialization(string message) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public IncompleteInitialization(string message, System.Exception innerException) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class IntegerType
     {
         internal IntegerType() { }
         public static int FromObject(object Value) { throw null; }
         public static int FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.SerializableAttribute]
     public sealed partial class InternalErrorException : System.Exception
     {
         public InternalErrorException() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public InternalErrorException(string message) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public InternalErrorException(string message, System.Exception innerException) { }
     }
 #if false
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Diagnostics.DebuggerNonUserCodeAttribute]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute]
     public sealed partial class InternalXmlHelper
@@ -1168,25 +1168,25 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static string this[System.Xml.Linq.XElement source, System.Xml.Linq.XName name] { get { throw null; } set { } }
         [System.Runtime.CompilerServices.IndexerName("Value")]
         public static string this[System.Collections.Generic.IEnumerable<System.Xml.Linq.XElement> source] { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.Xml.Linq.XAttribute CreateAttribute(System.Xml.Linq.XName name, object value) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.Xml.Linq.XAttribute CreateNamespaceAttribute(System.Xml.Linq.XName name, System.Xml.Linq.XNamespace ns) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.Collections.IEnumerable RemoveNamespaceAttributes(string[] inScopePrefixes, System.Xml.Linq.XNamespace[] inScopeNs, System.Collections.Generic.List<System.Xml.Linq.XAttribute> attributes, System.Collections.IEnumerable obj) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static object RemoveNamespaceAttributes(string[] inScopePrefixes, System.Xml.Linq.XNamespace[] inScopeNs, System.Collections.Generic.List<System.Xml.Linq.XAttribute> attributes, object obj) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.Xml.Linq.XElement RemoveNamespaceAttributes(string[] inScopePrefixes, System.Xml.Linq.XNamespace[] inScopeNs, System.Collections.Generic.List<System.Xml.Linq.XAttribute> attributes, System.Xml.Linq.XElement e) { throw null; }
     }
 #endif
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial interface IVbHost
     {
         System.Windows.Forms.IWin32Window GetParentWindow();
         string GetWindowTitle();
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class LateBinding
     {
         internal LateBinding() { }
@@ -1212,60 +1212,60 @@ namespace Microsoft.VisualBasic.CompilerServices
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static void LateSetComplex(object o, System.Type objType, string name, object[] args, string[] paramnames, bool OptimisticSet, bool RValueBase) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class LikeOperator
     {
         internal LikeOperator() { }
         public static object LikeObject(object Source, object Pattern, Microsoft.VisualBasic.CompareMethod CompareOption) { throw null; }
         public static bool LikeString(string Source, string Pattern, Microsoft.VisualBasic.CompareMethod CompareOption) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class LongType
     {
         internal LongType() { }
         public static long FromObject(object Value) { throw null; }
         public static long FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class NewLateBinding
     {
         internal NewLateBinding() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object FallbackCall(object Instance, string MemberName, object[] Arguments, string[] ArgumentNames, bool IgnoreReturn) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object FallbackGet(object Instance, string MemberName, object[] Arguments, string[] ArgumentNames) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void FallbackIndexSet(object Instance, object[] Arguments, string[] ArgumentNames) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void FallbackIndexSetComplex(object Instance, object[] Arguments, string[] ArgumentNames, bool OptimisticSet, bool RValueBase) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object FallbackInvokeDefault1(object Instance, object[] Arguments, string[] ArgumentNames, bool ReportErrors) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object FallbackInvokeDefault2(object Instance, object[] Arguments, string[] ArgumentNames, bool ReportErrors) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static void FallbackSet(object Instance, string MemberName, object[] Arguments) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.ObsoleteAttribute("do not use this method", true)]
@@ -1273,7 +1273,7 @@ namespace Microsoft.VisualBasic.CompilerServices
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static object LateCall(object Instance, System.Type Type, string MemberName, object[] Arguments, string[] ArgumentNames, System.Type[] TypeArguments, bool[] CopyBack, bool IgnoreReturn) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static object LateCallInvokeDefault(object Instance, object[] Arguments, string[] ArgumentNames, bool ReportErrors) { throw null; }
@@ -1283,7 +1283,7 @@ namespace Microsoft.VisualBasic.CompilerServices
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static object LateGet(object Instance, System.Type Type, string MemberName, object[] Arguments, string[] ArgumentNames, System.Type[] TypeArguments, bool[] CopyBack) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.DebuggerHiddenAttribute]
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static object LateGetInvokeDefault(object Instance, object[] Arguments, string[] ArgumentNames, bool ReportErrors) { throw null; }
@@ -1306,12 +1306,12 @@ namespace Microsoft.VisualBasic.CompilerServices
         [System.Diagnostics.DebuggerStepThroughAttribute]
         public static void LateSetComplex(object Instance, System.Type Type, string MemberName, object[] Arguments, string[] ArgumentNames, System.Type[] TypeArguments, bool OptimisticSet, bool RValueBase) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ObjectFlowControl
     {
         internal ObjectFlowControl() { }
         public static void CheckForSyncLockOnValueType(object Expression) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public sealed partial class ForLoopControl
         {
             internal ForLoopControl() { }
@@ -1322,7 +1322,7 @@ namespace Microsoft.VisualBasic.CompilerServices
             public static bool ForNextCheckR8(double count, double limit, double StepValue) { throw null; }
         }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ObjectType
     {
         public ObjectType() { }
@@ -1347,7 +1347,7 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static object SubObj(object o1, object o2) { throw null; }
         public static object XorObj(object obj1, object obj2) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class Operators
     {
         internal Operators() { }
@@ -1388,45 +1388,45 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static object SubtractObject(object Left, object Right) { throw null; }
         public static object XorObject(object Left, object Right) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false, AllowMultiple=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false, AllowMultiple=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class OptionCompareAttribute : System.Attribute
     {
         public OptionCompareAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=false, AllowMultiple=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=false, AllowMultiple=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class OptionTextAttribute : System.Attribute
     {
         public OptionTextAttribute() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ProjectData
     {
         internal ProjectData() { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SecuritySafeCriticalAttribute]
         public static void ClearProjectError() { }
         public static System.Exception CreateProjectError(int hr) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.SecuritySafeCriticalAttribute]
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(2))]
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(8))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.SelfAffectingProcessMgmt)]
         public static void EndApp() { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SecuritySafeCriticalAttribute]
         public static void SetProjectError(System.Exception ex) { }
-        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute((System.Runtime.ConstrainedExecution.Consistency)(3), (System.Runtime.ConstrainedExecution.Cer)(2))]
+        [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         [System.Security.SecuritySafeCriticalAttribute]
         public static void SetProjectError(System.Exception ex, int lErl) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class ShortType
     {
         internal ShortType() { }
         public static short FromObject(object Value) { throw null; }
         public static short FromString(string Value) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class SingleType
     {
         internal SingleType() { }
@@ -1435,20 +1435,20 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static float FromString(string Value) { throw null; }
         public static float FromString(string Value, System.Globalization.NumberFormatInfo NumberFormat) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=false, AllowMultiple=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=false, AllowMultiple=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class StandardModuleAttribute : System.Attribute
     {
         public StandardModuleAttribute() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.SerializableAttribute]
     public sealed partial class StaticLocalInitFlag
     {
         public short State;
         public StaticLocalInitFlag() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class StringType
     {
         internal StringType() { }
@@ -1472,18 +1472,18 @@ namespace Microsoft.VisualBasic.CompilerServices
         public static bool StrLikeBinary(string Source, string Pattern) { throw null; }
         public static bool StrLikeText(string Source, string Pattern) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class Utils
     {
         internal Utils() { }
         public static System.Array CopyArray(System.Array arySrc, System.Array aryDest) { throw null; }
         public static string GetResourceString(string ResourceKey, params string[] Args) { throw null; }
         public static string MethodToString(System.Reflection.MethodBase Method) { throw null; }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(32))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.SelfAffectingThreading)]
         public static object SetCultureInfo(System.Globalization.CultureInfo Culture) { throw null; }
         public static void ThrowException(int hr) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class Versioned
     {
         internal Versioned() { }
@@ -1496,7 +1496,7 @@ namespace Microsoft.VisualBasic.CompilerServices
 }
 namespace Microsoft.VisualBasic.Devices
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Audio
     {
         public Audio() { }
@@ -1507,7 +1507,7 @@ namespace Microsoft.VisualBasic.Devices
         public void PlaySystemSound(System.Media.SystemSound systemSound) { }
         public void Stop() { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Clock
     {
         public Clock() { }
@@ -1515,7 +1515,7 @@ namespace Microsoft.VisualBasic.Devices
         public System.DateTime LocalTime { get { throw null; } }
         public int TickCount { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Computer : Microsoft.VisualBasic.Devices.ServerComputer
     {
         public Computer() { }
@@ -1527,7 +1527,7 @@ namespace Microsoft.VisualBasic.Devices
         public System.Windows.Forms.Screen Screen { get { throw null; } }
     }
     [System.Diagnostics.DebuggerTypeProxyAttribute("Microsoft.VisualBasic.Devices.ComputerInfo.ComputerInfoDebugView")]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class ComputerInfo
     {
         [System.Security.SecuritySafeCriticalAttribute]
@@ -1545,7 +1545,7 @@ namespace Microsoft.VisualBasic.Devices
         [System.CLSCompliantAttribute(false)]
         public ulong TotalVirtualMemory { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Keyboard
     {
         public Keyboard() { }
@@ -1558,7 +1558,7 @@ namespace Microsoft.VisualBasic.Devices
         public void SendKeys(string keys) { }
         public void SendKeys(string keys, bool wait) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Mouse
     {
         public Mouse() { }
@@ -1566,7 +1566,7 @@ namespace Microsoft.VisualBasic.Devices
         public bool WheelExists { get { throw null; } }
         public int WheelScrollLines { get { throw null; } }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Network
     {
         public Network() { }
@@ -1603,9 +1603,9 @@ namespace Microsoft.VisualBasic.Devices
         public NetworkAvailableEventArgs(bool networkAvailable) { }
         public bool IsNetworkAvailable { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     public delegate void NetworkAvailableEventHandler(object sender, Microsoft.VisualBasic.Devices.NetworkAvailableEventArgs e);
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Ports
     {
         public Ports() { }
@@ -1616,7 +1616,7 @@ namespace Microsoft.VisualBasic.Devices
         public System.IO.Ports.SerialPort OpenSerialPort(string portName, int baudRate, System.IO.Ports.Parity parity, int dataBits) { throw null; }
         public System.IO.Ports.SerialPort OpenSerialPort(string portName, int baudRate, System.IO.Ports.Parity parity, int dataBits, System.IO.Ports.StopBits stopBits) { throw null; }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class ServerComputer
     {
         public ServerComputer() { }
@@ -1640,7 +1640,7 @@ namespace Microsoft.VisualBasic.FileIO
         Delimited = 0,
         FixedWidth = 1,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class FileSystem
     {
         public FileSystem() { }
@@ -1704,15 +1704,15 @@ namespace Microsoft.VisualBasic.FileIO
     public partial class MalformedLineException : System.Exception
     {
         public MalformedLineException() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected MalformedLineException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MalformedLineException(string message) { }
         public MalformedLineException(string message, System.Exception innerException) { }
         public MalformedLineException(string message, long lineNumber) { }
         public MalformedLineException(string message, long lineNumber, System.Exception innerException) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(0))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
         public long LineNumber { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         [System.Security.SecurityCriticalAttribute]
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -1728,7 +1728,7 @@ namespace Microsoft.VisualBasic.FileIO
         SearchAllSubDirectories = 3,
         SearchTopLevelOnly = 2,
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class SpecialDirectories
     {
         public SpecialDirectories() { }
@@ -1744,32 +1744,32 @@ namespace Microsoft.VisualBasic.FileIO
     }
     public partial class TextFieldParser : System.IDisposable
     {
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(System.IO.Stream stream) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(System.IO.Stream stream, System.Text.Encoding defaultEncoding) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(System.IO.Stream stream, System.Text.Encoding defaultEncoding, bool detectEncoding) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(System.IO.Stream stream, System.Text.Encoding defaultEncoding, bool detectEncoding, bool leaveOpen) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(System.IO.TextReader reader) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(string path) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(string path, System.Text.Encoding defaultEncoding) { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public TextFieldParser(string path, System.Text.Encoding defaultEncoding, bool detectEncoding) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string[] CommentTokens { get { throw null; } set { } }
         public string[] Delimiters { get { throw null; } set { } }
         public bool EndOfData { get { throw null; } }
         public string ErrorLine { get { throw null; } }
         public long ErrorLineNumber { get { throw null; } }
         public int[] FieldWidths { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool HasFieldsEnclosedInQuotes { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public long LineNumber { get { throw null; } }
         public Microsoft.VisualBasic.FileIO.FieldType TextFieldType { get { throw null; } set { } }
         public bool TrimWhiteSpace { get { throw null; } set { } }
@@ -1779,9 +1779,9 @@ namespace Microsoft.VisualBasic.FileIO
         ~TextFieldParser() { }
         public string PeekChars(int numberOfChars) { throw null; }
         public string[] ReadFields() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string ReadLine() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public string ReadToEnd() { throw null; }
         public void SetDelimiters(params string[] delimiters) { }
         public void SetFieldWidths(params int[] fieldWidths) { }
@@ -1799,7 +1799,7 @@ namespace Microsoft.VisualBasic.FileIO
 }
 namespace Microsoft.VisualBasic.Logging
 {
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class AspLog : Microsoft.VisualBasic.Logging.Log
     {
         public AspLog() { }
@@ -1816,9 +1816,9 @@ namespace Microsoft.VisualBasic.Logging
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public partial class FileLogTraceListener : System.Diagnostics.TraceListener
     {
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public FileLogTraceListener() { }
-        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+        [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
         public FileLogTraceListener(string name) { }
         public bool Append { get { throw null; } [System.Security.SecuritySafeCriticalAttribute]set { } }
         public bool AutoFlush { get { throw null; } [System.Security.SecuritySafeCriticalAttribute]set { } }
@@ -1854,7 +1854,7 @@ namespace Microsoft.VisualBasic.Logging
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true)]
         public override void WriteLine(string message) { }
     }
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class Log
     {
         [System.Security.SecuritySafeCriticalAttribute]
@@ -1862,7 +1862,7 @@ namespace Microsoft.VisualBasic.Logging
         [System.Security.SecuritySafeCriticalAttribute]
         public Log(string name) { }
         public Microsoft.VisualBasic.Logging.FileLogTraceListener DefaultFileLogWriter { [System.Security.SecuritySafeCriticalAttribute]get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Diagnostics.TraceSource TraceSource { get { throw null; } }
         [System.Security.SecuritySafeCriticalAttribute]
         protected internal virtual void InitializeWithDefaultsSinceNoConfigExists() { }
@@ -1890,8 +1890,8 @@ namespace Microsoft.VisualBasic.Logging
 }
 namespace Microsoft.VisualBasic.MyServices
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class ClipboardProxy
     {
         internal ClipboardProxy() { }
@@ -1904,7 +1904,7 @@ namespace Microsoft.VisualBasic.MyServices
         public bool ContainsText(System.Windows.Forms.TextDataFormat format) { throw null; }
         public System.IO.Stream GetAudioStream() { throw null; }
         public object GetData(string format) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.Windows.Forms.IDataObject GetDataObject() { throw null; }
         public System.Collections.Specialized.StringCollection GetFileDropList() { throw null; }
         public System.Drawing.Image GetImage() { throw null; }
@@ -1913,15 +1913,15 @@ namespace Microsoft.VisualBasic.MyServices
         public void SetAudio(byte[] audioBytes) { }
         public void SetAudio(System.IO.Stream audioStream) { }
         public void SetData(string format, object data) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void SetDataObject(System.Windows.Forms.DataObject data) { }
         public void SetFileDropList(System.Collections.Specialized.StringCollection filePaths) { }
         public void SetImage(System.Drawing.Image image) { }
         public void SetText(string text) { }
         public void SetText(string text, System.Windows.Forms.TextDataFormat format) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class FileSystemProxy
     {
         internal FileSystemProxy() { }
@@ -1982,8 +1982,8 @@ namespace Microsoft.VisualBasic.MyServices
         public void WriteAllText(string file, string text, bool append) { }
         public void WriteAllText(string file, string text, bool append, System.Text.Encoding encoding) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class RegistryProxy
     {
         internal RegistryProxy() { }
@@ -1999,8 +1999,8 @@ namespace Microsoft.VisualBasic.MyServices
         public void SetValue(string keyName, string valueName, object value) { }
         public void SetValue(string keyName, string valueName, object value, Microsoft.Win32.RegistryValueKind valueKind) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=(System.Security.Permissions.HostProtectionResource)(4))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Resources=System.Security.Permissions.HostProtectionResource.ExternalProcessMgmt)]
     public partial class SpecialDirectoriesProxy
     {
         internal SpecialDirectoriesProxy() { }
@@ -2017,7 +2017,7 @@ namespace Microsoft.VisualBasic.MyServices
 }
 namespace Microsoft.VisualBasic.MyServices.Internal
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class ContextValue<T>
     {
         public ContextValue() { }

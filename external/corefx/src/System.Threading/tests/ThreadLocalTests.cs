@@ -319,6 +319,7 @@ namespace System.Threading.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "This test requires precise stack scanning")]
         public static void RunThreadLocalTest8_Values_NegativeCases()
         {
             // Test that Dispose works and that objects are released on dispose

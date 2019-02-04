@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using Internal.Runtime.CompilerHelpers;
 
 namespace Internal.Runtime
@@ -18,21 +19,29 @@ namespace Internal.Runtime
         /// This method is called from a ReadyToRun helper to get base address of thread
         /// static storage for the given type.
         /// </summary>
-        internal static unsafe object GetThreadStaticBaseForType(TypeManagerSlot* pModuleData, Int32 typeTlsIndex)
+        internal static unsafe object GetThreadStaticBaseForType(TypeManagerSlot* pModuleData, int typeTlsIndex)
         {
             // Get the array that holds thread static memory blocks for each type in the given module
-            Int32 moduleIndex = pModuleData->ModuleIndex;
-            object[] storage = (object[])RuntimeImports.RhGetThreadStaticStorageForModule(moduleIndex);
+            object[] storage = RuntimeImports.RhGetThreadStaticStorageForModule(pModuleData->ModuleIndex);
 
             // Check whether thread static storage has already been allocated for this module and type.
-            if ((storage != null) && (typeTlsIndex < storage.Length) && (storage[typeTlsIndex] != null))
+            if ((storage != null) && ((uint)typeTlsIndex < (uint)storage.Length) && (storage[typeTlsIndex] != null))
             {
                 return storage[typeTlsIndex];
             }
 
+            return GetThreadStaticBaseForTypeSlow(pModuleData, typeTlsIndex);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static unsafe object GetThreadStaticBaseForTypeSlow(TypeManagerSlot* pModuleData, int typeTlsIndex)
+        {
+            // Get the array that holds thread static memory blocks for each type in the given module
+            object[] storage = RuntimeImports.RhGetThreadStaticStorageForModule(pModuleData->ModuleIndex);
+
             // This the first access to the thread statics of the type corresponding to typeTlsIndex.
             // Make sure there is enough storage allocated to hold it.
-            storage = EnsureThreadStaticStorage(moduleIndex, storage, requiredSize: typeTlsIndex + 1);
+            storage = EnsureThreadStaticStorage(pModuleData->ModuleIndex, storage, requiredSize: typeTlsIndex + 1);
 
             // Allocate an object that will represent a memory block for all thread static fields of the type
             object threadStaticBase = AllocateThreadStaticStorageForType(pModuleData->TypeManager, typeTlsIndex);
@@ -45,7 +54,7 @@ namespace Internal.Runtime
         /// if it is required, this method extends thread static storage of the given module
         /// to the specified size and then registers the memory with the runtime.
         /// </summary>
-        private static object[] EnsureThreadStaticStorage(Int32 moduleIndex, object[] existingStorage, Int32 requiredSize)
+        private static object[] EnsureThreadStaticStorage(int moduleIndex, object[] existingStorage, int requiredSize)
         {
             if ((existingStorage != null) && (requiredSize < existingStorage.Length))
             {
@@ -73,9 +82,9 @@ namespace Internal.Runtime
         /// This method allocates an object that represents a memory block for all thread static fields of the type
         /// that corresponds to the specified TLS index.
         /// </summary>
-        private static unsafe object AllocateThreadStaticStorageForType(TypeManagerHandle typeManager, Int32 typeTlsIndex)
+        private static unsafe object AllocateThreadStaticStorageForType(TypeManagerHandle typeManager, int typeTlsIndex)
         {
-            Int32 length;
+            int length;
             IntPtr* threadStaticRegion;
 
             // Get a pointer to the beginning of the module's Thread Static section. Then get a pointer

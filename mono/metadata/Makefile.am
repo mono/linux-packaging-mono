@@ -64,10 +64,6 @@ endif
 
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 
-if HOST_ANDROID
-platform_sources += ../../support/libm/complex.c
-endif
-
 if HOST_WASM
 platform_sources += threadpool-worker-wasm.c
 else
@@ -94,7 +90,45 @@ if !ENABLE_ILGEN
 ilgen_libraries = libmono-ilgen.la
 endif
 
-noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
+support_sources=empty.c
+
+if ENABLE_MONOTOUCH
+support_sources += ../../support/zlib-helper.c
+else
+if ENABLE_MONODROID
+support_sources += \
+	../../support/nl.c \
+	../../support/zlib-helper.c
+if HAVE_ZLIB
+# See libmonoruntime_support_la_LDFLAGS
+else
+support_sources += \
+	../../support/adler32.c \
+	../../support/compress.c \
+	../../support/crc32.c \
+	../../support/crc32.h \
+	../../support/deflate.c \
+	../../support/deflate.h \
+	../../support/infback.c \
+	../../support/inffast.c \
+	../../support/inffast.h \
+	../../support/inffixed.h \
+	../../support/inflate.c \
+	../../support/inflate.h \
+	../../support/inftrees.c \
+	../../support/inftrees.h \
+	../../support/trees.c \
+	../../support/trees.h \
+	../../support/uncompr.c \
+	../../support/zconf.h \
+	../../support/zlib.h \
+	../../support/zutil.c \
+	../../support/zutil.h
+endif
+endif
+endif
+
+noinst_LTLIBRARIES = libmonoruntime-config.la libmonoruntime-support.la $(boehm_libraries) $(sgen_libraries)
 
 lib_LTLIBRARIES = $(icall_table_libraries) $(ilgen_libraries)
 
@@ -116,7 +150,17 @@ mono-config-dirs.lo: Makefile
 libmonoruntime_config_la_SOURCES = \
 	mono-config-dirs.h		\
 	mono-config-dirs.c
-libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\" -DMONO_RELOC_LIBDIR=\"../$(reloc_libdir)\"
+libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\" -DMONO_RELOC_LIBDIR=\"../$(reloc_libdir)\" @CXX_ADD_CFLAGS@
+
+#
+# This library is only used to compile the required support/ sources. We can't use them directly in platform_sources
+# because they aren't C++ compatible.
+#
+libmonoruntime_support_la_SOURCES = $(support_sources)
+libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
+if HAVE_ZLIB
+libmonoruntime_support_la_LDFLAGS = -lz
+endif
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
@@ -152,43 +196,6 @@ libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonos
 endif
 endif
 
-if !HOST_WIN32
-if !HOST_WASM
-if !ENABLE_MONODROID
-if !ENABLE_MONOTOUCH
-lib_LTLIBRARIES += libmono-system-native.la
-endif
-endif
-endif
-endif
-
-libmono_system_native_la_SOURCES = \
-	pal_config.h \
-	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
-	../../external/corefx/src/Native/Unix/Common/pal_safecrt.h \
-	../../external/corefx/src/Native/Unix/Common/pal_types.h \
-	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_errno.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_errno.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
-	pal-icalls.h \
-	pal-icalls.c
-
-# Add back CXX_REMOVE_CFLAGS to keep this as C until/unless https://github.com/dotnet/corefx/pull/31342.
-libmono_system_native_la_CFLAGS = -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common -I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native -Wno-typedef-redefinition @CXX_REMOVE_CFLAGS@
 
 CLEANFILES = mono-bundle.stamp
 
@@ -269,6 +276,7 @@ common_sources = \
 	image-internals.h	\
 	jit-info.c		\
 	loader.c		\
+	loader-internals.h	\
 	locales.c		\
 	locales.h		\
 	lock-tracer.c		\
@@ -336,7 +344,6 @@ common_sources = \
 	security-manager.h	\
 	string-icalls.c 	\
 	string-icalls.h 	\
-	sysmath.h		\
 	sysmath.c		\
 	tabledefs.h 		\
 	threads.c		\
@@ -366,6 +373,7 @@ common_sources = \
 	seq-points-data.h	\
 	seq-points-data.c	\
 	handle.c	\
+	handle-decl.h	\
 	handle.h	\
 	w32mutex.h	\
 	w32semaphore.h	\
@@ -384,7 +392,8 @@ common_sources = \
 	fdhandle.h	\
 	fdhandle.c	\
 	callspec.h	\
-	callspec.c
+	callspec.c	\
+	abi.c
 
 # These source files have compile time dependencies on GC code
 gc_dependent_sources = \
@@ -416,12 +425,12 @@ CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES) @CXX_ADD_CFLAGS@
-libmonoruntime_la_LIBADD = libmonoruntime-config.la
+libmonoruntime_la_LIBADD = libmonoruntime-config.la libmonoruntime-support.la
 
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la libmonoruntime-support.la
 
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 

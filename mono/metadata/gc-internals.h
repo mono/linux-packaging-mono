@@ -160,7 +160,13 @@ gboolean mono_gc_user_markers_supported (void);
  * size bytes will be available from the returned address (ie, descr
  * must not be stored in the returned memory)
  */
-void* mono_gc_alloc_fixed            (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg);
+MonoObject* mono_gc_alloc_fixed      (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, void *key, const char *msg);
+
+// C++ callers outside of metadata (mini/tasklets.c) must use mono_gc_alloc_fixed_no_descriptor
+// instead of mono_gc_alloc_fixed, or else compile twice -- boehm and sgen.
+MonoObject*
+mono_gc_alloc_fixed_no_descriptor (size_t size, MonoGCRootSource source, void *key, const char *msg);
+
 void  mono_gc_free_fixed             (void* addr);
 
 /* make sure the gchandle was allocated for an object in domain */
@@ -169,32 +175,39 @@ void     mono_gchandle_free_domain  (MonoDomain *domain);
 
 typedef void (*FinalizerThreadCallback) (gpointer user_data);
 
-void* mono_gc_alloc_pinned_obj (MonoVTable *vtable, size_t size);
+MonoObject*
+mono_gc_alloc_pinned_obj (MonoVTable *vtable, size_t size);
 
 MonoObjectHandle
 mono_gc_alloc_handle_pinned_obj (MonoVTable *vtable, gsize size);
 
-void* mono_gc_alloc_obj (MonoVTable *vtable, size_t size);
+MonoObject*
+mono_gc_alloc_obj (MonoVTable *vtable, size_t size);
 
 MonoObjectHandle
 mono_gc_alloc_handle_obj (MonoVTable *vtable, gsize size);
 
-void* mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length);
+MonoArray*
+mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length);
 
 MonoArrayHandle
 mono_gc_alloc_handle_vector (MonoVTable *vtable, gsize size, gsize max_length);
 
-void* mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uintptr_t bounds_size);
+MonoArray*
+mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uintptr_t bounds_size);
 
 MonoArrayHandle
 mono_gc_alloc_handle_array (MonoVTable *vtable, gsize size, gsize max_length, gsize bounds_size);
 
-void* mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len);
+MonoString*
+mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len);
 
 MonoStringHandle
 mono_gc_alloc_handle_string (MonoVTable *vtable, gsize size, gint32 len);
 
-void* mono_gc_alloc_mature (MonoVTable *vtable, size_t size);
+MonoObject*
+mono_gc_alloc_mature (MonoVTable *vtable, size_t size);
+
 MonoGCDescriptor mono_gc_make_descr_for_string (gsize *bitmap, int numbits);
 
 MonoObjectHandle
@@ -263,8 +276,12 @@ MonoMethod* mono_gc_get_write_barrier (void);
 
 /* Fast valuetype copy */
 /* WARNING: [dest, dest + size] must be within the bounds of a single type, otherwise the GC will lose remset entries */
-void mono_gc_wbarrier_range_copy (gpointer dest, gpointer src, int size);
-void* mono_gc_get_range_copy_func (void);
+G_EXTERN_C void mono_gc_wbarrier_range_copy (gpointer dest, gconstpointer src, int size);
+
+typedef void (*MonoRangeCopyFunction)(gpointer, gconstpointer, int size);
+
+MonoRangeCopyFunction
+mono_gc_get_range_copy_func (void);
 
 
 /* helper for the managed alloc support */
@@ -352,7 +369,7 @@ void* mono_gc_invoke_with_gc_lock (MonoGCLockedCallbackFunc func, void *data);
 int mono_gc_get_los_limit (void);
 
 guint8* mono_gc_get_card_table (int *shift_bits, gpointer *card_mask);
-guint8* mono_gc_get_target_card_table (int *shift_bits, gpointer *card_mask);
+guint8* mono_gc_get_target_card_table (int *shift_bits, target_mgreg_t *card_mask);
 gboolean mono_gc_card_table_nursery_check (void);
 
 void* mono_gc_get_nursery (int *shift_bits, size_t *size);
@@ -426,10 +443,13 @@ void mono_gc_register_altstack (gpointer stack, gint32 stack_size, gpointer alts
 
 gboolean mono_gc_is_critical_method (MonoMethod *method);
 
+G_EXTERN_C // due to THREAD_INFO_TYPE varying
 gpointer mono_gc_thread_attach (THREAD_INFO_TYPE *info);
 
+G_EXTERN_C // due to THREAD_INFO_TYPE varying
 void mono_gc_thread_detach_with_lock (THREAD_INFO_TYPE *info);
 
+G_EXTERN_C // due to THREAD_INFO_TYPE varying
 gboolean mono_gc_thread_in_critical_region (THREAD_INFO_TYPE *info);
 
 /* If set, print debugging messages around finalizers. */
@@ -441,4 +461,3 @@ extern gboolean mono_do_not_finalize;
 extern gchar **mono_do_not_finalize_class_names;
 
 #endif /* __MONO_METADATA_GC_INTERNAL_H__ */
-

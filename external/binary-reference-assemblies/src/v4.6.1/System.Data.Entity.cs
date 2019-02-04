@@ -265,6 +265,8 @@ namespace System.Data.Common
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FieldMetadata
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public FieldMetadata(int ordinal, System.Data.Metadata.Edm.EdmMember fieldType) { throw null;}
         public System.Data.Metadata.Edm.EdmMember FieldType { get { throw null; } }
         public int Ordinal { get { throw null; } }
@@ -3430,6 +3432,9 @@ namespace System.Data.Metadata.Edm
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T _current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }

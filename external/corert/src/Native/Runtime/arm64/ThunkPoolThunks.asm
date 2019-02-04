@@ -29,7 +29,6 @@ RO$name % 8
 
     MACRO 
         LOAD_DATA_ADDRESS $groupIndex, $index, $pageIndex
-        ALIGN       0x10                        ;; make sure we align to 16-byte boundary for CFG table        
         
         ;; Set xip0 to the address of the current thunk's data block. This is done using labels.
         adr      xip0, label_$groupIndex_$index_P$pageIndex
@@ -42,9 +41,9 @@ RO$name % 8
         ;; fix offset to point to last QWROD in page    : xip1 <- [xip0 + PAGE_SIZE - POINTER_SIZE]
         ;; tailcall to the location pointed at by the last qword in the data page
         ldr      xip1, [xip0, #(PAGE_SIZE - POINTER_SIZE - ($groupIndex * THUNK_DATASIZE * 10 + THUNK_DATASIZE * $index))]
-        ret      xip1
+        br       xip1
 
-        brk     0xf000      ;; Stubs need to be 16-byte aligned (see comment above). Filling padding with a 
+        brk     0xf000      ;; Stubs need to be 16-byte aligned for CFG table. Filling padding with a 
                             ;; deterministic brk instruction, instead of having it just filled with zeros.
     MEND
 

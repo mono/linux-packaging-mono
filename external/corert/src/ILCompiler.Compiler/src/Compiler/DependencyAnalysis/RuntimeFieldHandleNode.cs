@@ -29,9 +29,19 @@ namespace ILCompiler.DependencyAnalysis
         }
         public int Offset => 0;
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
-        public override ObjectNodeSection Section => ObjectNodeSection.ReadOnlyDataSection;
         public override bool IsShareable => false;
         public override bool StaticDependenciesAreComputed => true;
+
+        public override ObjectNodeSection Section
+        {
+            get
+            {
+                if (_targetField.Context.Target.IsWindows)
+                    return ObjectNodeSection.ReadOnlyDataSection;
+                else
+                    return ObjectNodeSection.DataSection;
+            }
+        }
 
         private static Utf8String s_NativeLayoutSignaturePrefix = new Utf8String("__RFHSignature_");
 
@@ -55,9 +65,9 @@ namespace ILCompiler.DependencyAnalysis
             return objData.ToObjectData();
         }
 
-        protected internal override int ClassCode => -1326215725;
+        public override int ClassCode => -1326215725;
 
-        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        public override int CompareToImpl(ISortableNode other, CompilerComparer comparer)
         {
             return comparer.Compare(_targetField, ((RuntimeFieldHandleNode)other)._targetField);
         }

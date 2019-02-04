@@ -85,7 +85,8 @@ subdir = tools/sgen
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -103,6 +104,11 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
+libmain_a_AR = $(AR) $(ARFLAGS)
+libmain_a_LIBADD =
+am_libmain_a_OBJECTS = libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+	libmain_a-sgen-entry-stream.$(OBJEXT)
+libmain_a_OBJECTS = $(am_libmain_a_OBJECTS)
 libsgen_grep_binprot_a_AR = $(AR) $(ARFLAGS)
 libsgen_grep_binprot_a_LIBADD =
 am_libsgen_grep_binprot_a_OBJECTS =  \
@@ -122,11 +128,13 @@ libsgen_grep_binprot64p_a_OBJECTS =  \
 	$(am_libsgen_grep_binprot64p_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_sgen_grep_binprot_OBJECTS = sgen-grep-binprot-main.$(OBJEXT) \
-	sgen-entry-stream.$(OBJEXT)
+am_sgen_grep_binprot_OBJECTS =
 sgen_grep_binprot_OBJECTS = $(am_sgen_grep_binprot_OBJECTS)
-sgen_grep_binprot_DEPENDENCIES = $(glib_libs) libsgen-grep-binprot.a \
-	libsgen-grep-binprot32p.a libsgen-grep-binprot64p.a
+sgen_grep_binprot_DEPENDENCIES =  \
+	libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+	libmain_a-sgen-entry-stream.$(OBJEXT) $(glib_libs) \
+	libsgen-grep-binprot.a libsgen-grep-binprot32p.a \
+	libsgen-grep-binprot64p.a
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -161,11 +169,11 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libsgen_grep_binprot_a_SOURCES) \
+SOURCES = $(libmain_a_SOURCES) $(libsgen_grep_binprot_a_SOURCES) \
 	$(libsgen_grep_binprot32p_a_SOURCES) \
 	$(libsgen_grep_binprot64p_a_SOURCES) \
 	$(sgen_grep_binprot_SOURCES)
-DIST_SOURCES = $(libsgen_grep_binprot_a_SOURCES) \
+DIST_SOURCES = $(libmain_a_SOURCES) $(libsgen_grep_binprot_a_SOURCES) \
 	$(libsgen_grep_binprot32p_a_SOURCES) \
 	$(libsgen_grep_binprot64p_a_SOURCES) \
 	$(sgen_grep_binprot_SOURCES)
@@ -220,7 +228,10 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS = @CFLAGS@
+
+# Default to C so the executable is linked as C and does not use libstdc++.
+# Also the -xc++ flag mishandles .o and .a files.
+CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -230,6 +241,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -303,6 +315,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -427,19 +455,35 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
-noinst_LIBRARIES = libsgen-grep-binprot.a libsgen-grep-binprot32p.a libsgen-grep-binprot64p.a
+
+# Main is in a library so it can be C++.
+noinst_LIBRARIES = libsgen-grep-binprot.a libsgen-grep-binprot32p.a \
+	libsgen-grep-binprot64p.a libmain.a
+
+# Libraries are C++ if enabled.
+libmain_a_CFLAGS = @CXX_ADD_CFLAGS@
+libsgen_grep_binprot_a_CFLAGS = @CXX_ADD_CFLAGS@
+libsgen_grep_binprot32p_a_CFLAGS = @CXX_ADD_CFLAGS@
+libsgen_grep_binprot64p_a_CFLAGS = @CXX_ADD_CFLAGS@
 libsgen_grep_binprot_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
 libsgen_grep_binprot_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 libsgen_grep_binprot32p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
 libsgen_grep_binprot32p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=4 -DBINPROT_HAS_HEADER
 libsgen_grep_binprot64p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
 libsgen_grep_binprot64p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=8 -DBINPROT_HAS_HEADER
-sgen_grep_binprot_SOURCES = \
+
+# Executable has no source files, just links to object files and libraries.
+sgen_grep_binprot_SOURCES = 
+libmain_a_SOURCES = \
 	sgen-grep-binprot-main.c	\
 	sgen-entry-stream.c	\
 	sgen-entry-stream.h
 
+
+# Link to the libmain object files instead of library for higher fidelity with old behavior.
 sgen_grep_binprot_LDADD = \
+	libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+	libmain_a-sgen-entry-stream.$(OBJEXT) \
 	$(glib_libs) libsgen-grep-binprot.a libsgen-grep-binprot32p.a libsgen-grep-binprot64p.a
 
 all: all-am
@@ -479,6 +523,11 @@ $(am__aclocal_m4_deps):
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+
+libmain.a: $(libmain_a_OBJECTS) $(libmain_a_DEPENDENCIES) $(EXTRA_libmain_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libmain.a
+	$(AM_V_AR)$(libmain_a_AR) libmain.a $(libmain_a_OBJECTS) $(libmain_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libmain.a
 
 libsgen-grep-binprot.a: $(libsgen_grep_binprot_a_OBJECTS) $(libsgen_grep_binprot_a_DEPENDENCIES) $(EXTRA_libsgen_grep_binprot_a_DEPENDENCIES) 
 	$(AM_V_at)-rm -f libsgen-grep-binprot.a
@@ -554,11 +603,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmain_a-sgen-entry-stream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmain_a-sgen-grep-binprot-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sgen-entry-stream.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sgen-grep-binprot-main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -584,47 +633,75 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
+libmain_a-sgen-grep-binprot-main.o: sgen-grep-binprot-main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-sgen-grep-binprot-main.o -MD -MP -MF $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Tpo -c -o libmain_a-sgen-grep-binprot-main.o `test -f 'sgen-grep-binprot-main.c' || echo '$(srcdir)/'`sgen-grep-binprot-main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Tpo $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot-main.c' object='libmain_a-sgen-grep-binprot-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-sgen-grep-binprot-main.o `test -f 'sgen-grep-binprot-main.c' || echo '$(srcdir)/'`sgen-grep-binprot-main.c
+
+libmain_a-sgen-grep-binprot-main.obj: sgen-grep-binprot-main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-sgen-grep-binprot-main.obj -MD -MP -MF $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Tpo -c -o libmain_a-sgen-grep-binprot-main.obj `if test -f 'sgen-grep-binprot-main.c'; then $(CYGPATH_W) 'sgen-grep-binprot-main.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot-main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Tpo $(DEPDIR)/libmain_a-sgen-grep-binprot-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot-main.c' object='libmain_a-sgen-grep-binprot-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-sgen-grep-binprot-main.obj `if test -f 'sgen-grep-binprot-main.c'; then $(CYGPATH_W) 'sgen-grep-binprot-main.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot-main.c'; fi`
+
+libmain_a-sgen-entry-stream.o: sgen-entry-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-sgen-entry-stream.o -MD -MP -MF $(DEPDIR)/libmain_a-sgen-entry-stream.Tpo -c -o libmain_a-sgen-entry-stream.o `test -f 'sgen-entry-stream.c' || echo '$(srcdir)/'`sgen-entry-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-sgen-entry-stream.Tpo $(DEPDIR)/libmain_a-sgen-entry-stream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-entry-stream.c' object='libmain_a-sgen-entry-stream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-sgen-entry-stream.o `test -f 'sgen-entry-stream.c' || echo '$(srcdir)/'`sgen-entry-stream.c
+
+libmain_a-sgen-entry-stream.obj: sgen-entry-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -MT libmain_a-sgen-entry-stream.obj -MD -MP -MF $(DEPDIR)/libmain_a-sgen-entry-stream.Tpo -c -o libmain_a-sgen-entry-stream.obj `if test -f 'sgen-entry-stream.c'; then $(CYGPATH_W) 'sgen-entry-stream.c'; else $(CYGPATH_W) '$(srcdir)/sgen-entry-stream.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmain_a-sgen-entry-stream.Tpo $(DEPDIR)/libmain_a-sgen-entry-stream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-entry-stream.c' object='libmain_a-sgen-entry-stream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-sgen-entry-stream.obj `if test -f 'sgen-entry-stream.c'; then $(CYGPATH_W) 'sgen-entry-stream.c'; else $(CYGPATH_W) '$(srcdir)/sgen-entry-stream.c'; fi`
+
 libsgen_grep_binprot_a-sgen-grep-binprot.o: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot_a-sgen-grep-binprot.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 
 libsgen_grep_binprot_a-sgen-grep-binprot.obj: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot_a-sgen-grep-binprot.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 
 libsgen_grep_binprot32p_a-sgen-grep-binprot.o: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot32p_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot32p_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot32p_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot32p_a-sgen-grep-binprot.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot32p_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 
 libsgen_grep_binprot32p_a-sgen-grep-binprot.obj: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot32p_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot32p_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot32p_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot32p_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot32p_a-sgen-grep-binprot.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot32p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot32p_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot32p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 
 libsgen_grep_binprot64p_a-sgen-grep-binprot.o: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot64p_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot64p_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot64p_a-sgen-grep-binprot.o -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot64p_a-sgen-grep-binprot.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot64p_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.o `test -f 'sgen-grep-binprot.c' || echo '$(srcdir)/'`sgen-grep-binprot.c
 
 libsgen_grep_binprot64p_a-sgen-grep-binprot.obj: sgen-grep-binprot.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot64p_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot64p_a_CFLAGS) $(CFLAGS) -MT libsgen_grep_binprot64p_a-sgen-grep-binprot.obj -MD -MP -MF $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Tpo $(DEPDIR)/libsgen_grep_binprot64p_a-sgen-grep-binprot.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-grep-binprot.c' object='libsgen_grep_binprot64p_a-sgen-grep-binprot.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsgen_grep_binprot64p_a_CPPFLAGS) $(CPPFLAGS) $(libsgen_grep_binprot64p_a_CFLAGS) $(CFLAGS) -c -o libsgen_grep_binprot64p_a-sgen-grep-binprot.obj `if test -f 'sgen-grep-binprot.c'; then $(CYGPATH_W) 'sgen-grep-binprot.c'; else $(CYGPATH_W) '$(srcdir)/sgen-grep-binprot.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

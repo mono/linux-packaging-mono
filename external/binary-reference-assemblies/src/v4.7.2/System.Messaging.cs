@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Messaging.dll")]
@@ -19,7 +19,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.Messaging
 {
@@ -96,10 +96,10 @@ namespace System.Messaging
     {
         public BinaryMessageFormatter() { }
         public BinaryMessageFormatter(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle topObjectFormat, System.Runtime.Serialization.Formatters.FormatterTypeStyle typeFormat) { }
-        [System.ComponentModel.DefaultValueAttribute((System.Runtime.Serialization.Formatters.FormatterAssemblyStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple)]
         [System.Messaging.MessagingDescriptionAttribute("MsgTopObjectFormat")]
         public System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TopObjectFormat { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Runtime.Serialization.Formatters.FormatterTypeStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Runtime.Serialization.Formatters.FormatterTypeStyle.TypesWhenNeeded)]
         [System.Messaging.MessagingDescriptionAttribute("MsgTypeFormat")]
         public System.Runtime.Serialization.Formatters.FormatterTypeStyle TypeFormat { get { throw null; } set { } }
         public bool CanRead(System.Messaging.Message message) { throw null; }
@@ -132,7 +132,7 @@ namespace System.Messaging
     public partial class DefaultPropertiesToSend
     {
         public DefaultPropertiesToSend() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Messaging.AcknowledgeTypes)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Messaging.AcknowledgeTypes.None)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAcknowledgeType")]
         public System.Messaging.AcknowledgeTypes AcknowledgeType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
@@ -144,19 +144,19 @@ namespace System.Messaging
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAttachSenderId")]
         public bool AttachSenderId { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Messaging.EncryptionAlgorithm)(26114))]
+        [System.ComponentModel.DefaultValueAttribute(System.Messaging.EncryptionAlgorithm.Rc2)]
         [System.Messaging.MessagingDescriptionAttribute("MsgEncryptionAlgorithm")]
         public System.Messaging.EncryptionAlgorithm EncryptionAlgorithm { get { throw null; } set { } }
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.ArrayEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Messaging.MessagingDescriptionAttribute("MsgExtension")]
         public byte[] Extension { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Messaging.HashAlgorithm)(32771))]
+        [System.ComponentModel.DefaultValueAttribute(System.Messaging.HashAlgorithm.Md5)]
         [System.Messaging.MessagingDescriptionAttribute("MsgHashAlgorithm")]
         public System.Messaging.HashAlgorithm HashAlgorithm { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.Messaging.MessagingDescriptionAttribute("MsgLabel")]
         public string Label { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Messaging.MessagePriority)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Messaging.MessagePriority.Normal)]
         [System.Messaging.MessagingDescriptionAttribute("MsgPriority")]
         public System.Messaging.MessagePriority Priority { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -237,171 +237,171 @@ namespace System.Messaging
         public Message() { }
         public Message(object body) { }
         public Message(object body, System.Messaging.IMessageFormatter formatter) { }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAcknowledgeType")]
         public System.Messaging.AcknowledgeTypes AcknowledgeType { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAcknowledgement")]
         public System.Messaging.Acknowledgment Acknowledgment { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAdministrationQueue")]
         public System.Messaging.MessageQueue AdministrationQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAppSpecific")]
         public int AppSpecific { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgArrivedTime")]
         public System.DateTime ArrivedTime { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAttachSenderId")]
         public bool AttachSenderId { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAuthenticated")]
         public bool Authenticated { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAuthenticationProviderName")]
         public string AuthenticationProviderName { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgAuthenticationProviderType")]
         public System.Messaging.CryptographicProviderType AuthenticationProviderType { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public object Body { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorAttribute("System.ComponentModel.Design.BinaryEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgBodyStream")]
         public System.IO.Stream BodyStream { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgBodyType")]
         public int BodyType { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgConnectorType")]
         public System.Guid ConnectorType { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgCorrelationId")]
         public string CorrelationId { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgDestinationQueue")]
         public System.Messaging.MessageQueue DestinationQueue { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgDestinationSymmetricKey")]
         public byte[] DestinationSymmetricKey { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgDigitalSignature")]
         public byte[] DigitalSignature { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgEncryptionAlgorithm")]
         public System.Messaging.EncryptionAlgorithm EncryptionAlgorithm { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgExtension")]
         public byte[] Extension { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Messaging.IMessageFormatter Formatter { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgHashAlgorithm")]
         public System.Messaging.HashAlgorithm HashAlgorithm { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgId")]
         public string Id { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgIsFirstInTransaction")]
         public bool IsFirstInTransaction { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgIsLastInTransaction")]
         public bool IsLastInTransaction { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgLabel")]
         public string Label { get { throw null; } set { } }
         public long LookupId { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgMessageType")]
         public System.Messaging.MessageType MessageType { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgPriority")]
         public System.Messaging.MessagePriority Priority { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgRecoverable")]
         public bool Recoverable { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgResponseQueue")]
         public System.Messaging.MessageQueue ResponseQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         public System.Messaging.SecurityContext SecurityContext { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgSenderCertificate")]
         public byte[] SenderCertificate { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgSenderId")]
         public byte[] SenderId { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgSenderVersion")]
         public long SenderVersion { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgSentTime")]
         public System.DateTime SentTime { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgSourceMachine")]
         public string SourceMachine { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Messaging.Design.TimeoutConverter")]
         [System.Messaging.MessagingDescriptionAttribute("MsgTimeToBeReceived")]
         public System.TimeSpan TimeToBeReceived { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Messaging.Design.TimeoutConverter")]
         [System.Messaging.MessagingDescriptionAttribute("MsgTimeToReachQueue")]
         public System.TimeSpan TimeToReachQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MsgTransactionId")]
         public string TransactionId { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgTransactionStatusQueue")]
         public System.Messaging.MessageQueue TransactionStatusQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgUseAuthentication")]
         public bool UseAuthentication { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgUseDeadLetterQueue")]
         public bool UseDeadLetterQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgUseEncryption")]
         public bool UseEncryption { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgUseJournalQueue")]
         public bool UseJournalQueue { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.Messaging.MessagingDescriptionAttribute("MsgUseTracing")]
         public bool UseTracing { get { throw null; } set { } }
@@ -601,28 +601,28 @@ namespace System.Messaging
         public MessageQueue(string path, bool sharedModeDenyReceive, bool enableCache, System.Messaging.QueueAccessMode accessMode) { }
         public MessageQueue(string path, System.Messaging.QueueAccessMode accessMode) { }
         public System.Messaging.QueueAccessMode AccessMode { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Authenticate")]
         public bool Authenticate { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_BasePriority")]
         public short BasePriority { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_CanRead")]
         public bool CanRead { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_CanWrite")]
         public bool CanWrite { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Category")]
         public System.Guid Category { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_CreateTime")]
         public System.DateTime CreateTime { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_DefaultPropertiesToSend")]
         public System.Messaging.DefaultPropertiesToSend DefaultPropertiesToSend { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -631,10 +631,10 @@ namespace System.Messaging
         public bool DenySharedReceive { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public static bool EnableConnectionCache { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_EncryptionRequired")]
         public System.Messaging.EncryptionRequired EncryptionRequired { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_FormatName")]
         public string FormatName { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -642,63 +642,63 @@ namespace System.Messaging
         [System.ComponentModel.TypeConverterAttribute("System.Messaging.Design.MessageFormatterConverter")]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Formatter")]
         public System.Messaging.IMessageFormatter Formatter { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_GuidId")]
         public System.Guid Id { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Label")]
         public string Label { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_LastModifyTime")]
         public System.DateTime LastModifyTime { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_MachineName")]
         public string MachineName { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Messaging.Design.SizeConverter")]
         [System.Messaging.MessagingDescriptionAttribute("MQ_MaximumJournalSize")]
         public long MaximumJournalSize { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.TypeConverterAttribute("System.Messaging.Design.SizeConverter")]
         [System.Messaging.MessagingDescriptionAttribute("MQ_MaximumQueueSize")]
         public long MaximumQueueSize { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_MessageReadPropertyFilter")]
         public System.Messaging.MessagePropertyFilter MessageReadPropertyFilter { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_MulticastAddress")]
         public string MulticastAddress { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("System.Messaging.Design.QueuePathEditor", "System.Drawing.Design.UITypeEditor, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.SettingsBindableAttribute(true)]
         [System.ComponentModel.TypeConverterAttribute("System.Diagnostics.Design.StringValueConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Path")]
         public string Path { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_QueueName")]
         public string QueueName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_ReadHandle")]
         public System.IntPtr ReadHandle { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_SynchronizingObject")]
         public System.ComponentModel.ISynchronizeInvoke SynchronizingObject { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_Transactional")]
         public bool Transactional { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_UseJournalQueue")]
         public bool UseJournalQueue { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("MQ_WriteHandle")]
         public System.IntPtr WriteHandle { get { throw null; } }
         [System.Messaging.MessagingDescriptionAttribute("MQ_PeekCompleted")]
@@ -970,7 +970,7 @@ namespace System.Messaging
         public short BasePriority { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.ComponentModel.GuidConverter, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
         public System.Guid Category { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Messaging.EncryptionRequired)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Messaging.EncryptionRequired.Optional)]
         public System.Messaging.EncryptionRequired EncryptionRequired { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string Label { get { throw null; } set { } }
@@ -985,11 +985,11 @@ namespace System.Messaging
         [System.ComponentModel.TypeConverterAttribute("System.Diagnostics.Design.StringValueConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string Path { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Messaging.AccessControlList Permissions { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool Transactional { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Configuration.Install.UninstallAction)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Configuration.Install.UninstallAction.Remove)]
         public System.Configuration.Install.UninstallAction UninstallAction { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool UseJournalQueue { get { throw null; } set { } }
@@ -1028,7 +1028,7 @@ namespace System.Messaging
         Receive = 26,
         Send = 6,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(621), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Event | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true, Inherited=false)]
     [System.SerializableAttribute]
     public partial class MessageQueuePermissionAttribute : System.Security.Permissions.CodeAccessSecurityAttribute
     {
@@ -1099,7 +1099,7 @@ namespace System.Messaging
         Normal = 2,
         Report = 3,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
     public partial class MessagingDescriptionAttribute : System.ComponentModel.DescriptionAttribute
     {
         public MessagingDescriptionAttribute(string description) { }
@@ -1180,7 +1180,7 @@ namespace System.Messaging
         [System.Messaging.MessagingDescriptionAttribute("XmlMsgTargetTypeNames")]
         public string[] TargetTypeNames { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Messaging.MessagingDescriptionAttribute("XmlMsgTargetTypes")]
         public System.Type[] TargetTypes { get { throw null; } set { } }
         public bool CanRead(System.Messaging.Message message) { throw null; }

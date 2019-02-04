@@ -51,7 +51,7 @@ mono_path_canonicalize (const char *path)
 	}
 
 #ifdef HOST_WIN32
-	g_strdelimit (abspath, "/", '\\');
+	g_strdelimit (abspath, '/', '\\');
 #endif
 	abspath = g_strreverse (abspath);
 
@@ -189,7 +189,7 @@ mono_path_resolve_symlinks (const char *path)
 gboolean
 mono_path_filename_in_basedir (const char *filename, const char *basedir)
 {
-	char *p = NULL;
+	const char *p = NULL;
 	if ((p = strstr (filename, basedir))) {
 		p += strlen (basedir);
 		if (*p != G_DIR_SEPARATOR)

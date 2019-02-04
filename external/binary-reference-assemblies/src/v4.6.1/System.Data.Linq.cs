@@ -263,6 +263,8 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct EntityRef<TEntity> where TEntity : class
     {
+        private TEntity entity;
+        private object _dummy;
         public EntityRef(System.Collections.Generic.IEnumerable<TEntity> source) { throw null;}
         public EntityRef(System.Data.Linq.EntityRef<TEntity> entityRef) { throw null;}
         public EntityRef(TEntity entity) { throw null;}
@@ -355,6 +357,9 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public partial struct Link<T>
     {
+        private T underlyingValue;
+        private object _dummy;
+        private int _dummyPrimitive;
         [System.MonoTODOAttribute]
         public Link(System.Collections.Generic.IEnumerable<T> source) { throw null;}
         [System.MonoTODOAttribute]
@@ -391,6 +396,7 @@ namespace System.Data.Linq
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public partial struct ModifiedMemberInfo
     {
+        private object _dummy;
         [System.MonoTODOAttribute]
         public object CurrentValue { get { throw null; } }
         [System.MonoTODOAttribute]

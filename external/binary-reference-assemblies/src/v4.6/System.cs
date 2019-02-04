@@ -1959,6 +1959,8 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
         {
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -1995,6 +1997,9 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T currentElement;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -2049,6 +2054,8 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.IDictionaryEnumerator, System.Collections.IEnumerator, System.IDisposable
         {
+            private object _dummy;
+            private int _dummyPrimitive;
             public System.Collections.Generic.KeyValuePair<TKey, TValue> Current { get { throw null; } }
             System.Collections.DictionaryEntry System.Collections.IDictionaryEnumerator.Entry { get { throw null; } }
             object System.Collections.IDictionaryEnumerator.Key { get { throw null; } }
@@ -2080,6 +2087,7 @@ namespace System.Collections.Generic
             [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
             public partial struct Enumerator : System.Collections.Generic.IEnumerator<TKey>, System.Collections.IEnumerator, System.IDisposable
             {
+                private object _dummy;
                 public TKey Current { get { throw null; } }
                 object System.Collections.IEnumerator.Current { get { throw null; } }
                 public void Dispose() { }
@@ -2109,6 +2117,7 @@ namespace System.Collections.Generic
             [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
             public partial struct Enumerator : System.Collections.Generic.IEnumerator<TValue>, System.Collections.IEnumerator, System.IDisposable
             {
+                private object _dummy;
                 public TValue Current { get { throw null; } }
                 object System.Collections.IEnumerator.Current { get { throw null; } }
                 public void Dispose() { }
@@ -2221,6 +2230,9 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
         {
+            private T current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -2257,6 +2269,9 @@ namespace System.Collections.Generic
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T _currentElement;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -2306,6 +2321,7 @@ namespace System.Collections.Specialized
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct BitVector32
     {
+        private int _dummyPrimitive;
         public BitVector32(System.Collections.Specialized.BitVector32 value) { throw null;}
         public BitVector32(int data) { throw null;}
         public int Data { get { throw null; } }
@@ -2322,6 +2338,7 @@ namespace System.Collections.Specialized
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Section
         {
+            private int _dummyPrimitive;
             public short Mask { get { throw null; } }
             public short Offset { get { throw null; } }
             public bool Equals(System.Collections.Specialized.BitVector32.Section obj) { throw null; }
@@ -5423,6 +5440,7 @@ namespace System.ComponentModel.Design.Serialization
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct MemberRelationship
     {
+        private object _dummy;
         public static readonly System.ComponentModel.Design.Serialization.MemberRelationship Empty;
         public MemberRelationship(object owner, System.ComponentModel.MemberDescriptor member) { throw null;}
         public bool IsEmpty { get { throw null; } }
@@ -6033,6 +6051,7 @@ namespace System.Diagnostics
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CounterSample
     {
+        private int _dummyPrimitive;
         public static System.Diagnostics.CounterSample Empty;
         public CounterSample(long rawValue, long baseValue, long counterFrequency, long systemFrequency, long timeStamp, long timeStamp100nSec, System.Diagnostics.PerformanceCounterType counterType) { throw null;}
         public CounterSample(long rawValue, long baseValue, long counterFrequency, long systemFrequency, long timeStamp, long timeStamp100nSec, System.Diagnostics.PerformanceCounterType counterType, long counterTimeStamp) { throw null;}
@@ -7689,6 +7708,8 @@ namespace System.IO
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct WaitForChangedResult
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.IO.WatcherChangeTypes ChangeType { get { throw null; } set { } }
         public string Name { get { throw null; } set { } }
         public string OldName { get { throw null; } set { } }
@@ -11285,6 +11306,8 @@ namespace System.Net.Sockets
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct IPPacketInformation
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Net.IPAddress Address { get { throw null; } }
         public int Interface { get { throw null; } }
         public override bool Equals(object comparand) { throw null; }
@@ -11718,6 +11741,8 @@ namespace System.Net.Sockets
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SocketInformation
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Net.Sockets.SocketInformationOptions Options { get { throw null; } set { } }
         public byte[] ProtocolInformation { get { throw null; } set { } }
     }
@@ -11935,6 +11960,7 @@ namespace System.Net.Sockets
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct UdpReceiveResult : System.IEquatable<System.Net.Sockets.UdpReceiveResult>
     {
+        private object _dummy;
         public UdpReceiveResult(byte[] buffer, System.Net.IPEndPoint remoteEndPoint) { throw null;}
         public byte[] Buffer { get { throw null; } }
         public System.Net.IPEndPoint RemoteEndPoint { get { throw null; } }
@@ -12849,6 +12875,8 @@ namespace System.Security.Cryptography.X509Certificates
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct X509ChainStatus
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Security.Cryptography.X509Certificates.X509ChainStatusFlags Status { get { throw null; } set { } }
         public string StatusInformation { get { throw null; } set { } }
     }
