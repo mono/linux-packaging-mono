@@ -73,6 +73,8 @@ typedef struct {
 	int first_filter_idx, filter_idx;
 } ResumeState;
 
+typedef void (*MonoAbortFunction)(MonoObject*);
+
 struct MonoJitTlsData {
 	gpointer          end_of_stack;
 	guint32           stack_size;
@@ -85,7 +87,7 @@ struct MonoJitTlsData {
 	guint32          stack_ovf_guard_size;
 	guint            stack_ovf_valloced : 1;
 	guint            stack_ovf_pending : 1;
-	void            (*abort_func) (MonoObject *object);
+	MonoAbortFunction abort_func;
 	/* Used to implement --debug=casts */
 	MonoClass       *class_cast_from, *class_cast_to;
 
@@ -395,6 +397,8 @@ MONO_API int         mono_main                      (int argc, char* argv[]);
 MONO_API void        mono_set_defaults              (int verbose_level, guint32 opts);
 MONO_API void        mono_parse_env_options         (int *ref_argc, char **ref_argv []);
 MONO_API char       *mono_parse_options_from        (const char *options, int *ref_argc, char **ref_argv []);
+MONO_API int         mono_regression_test_step      (int verbose_level, const char *image, const char *method_name);
+
 
 void                   mono_interp_stub_init         (void);
 void                   mini_install_interp_callbacks (MonoEECallbacks *cbs);
@@ -422,10 +426,12 @@ MONO_API int       mono_parse_default_optimizations  (const char* p);
 gboolean          mono_running_on_valgrind (void);
 
 MonoLMF * mono_get_lmf                      (void);
+#define mono_get_lmf_addr mono_tls_get_lmf_addr
 MonoLMF** mono_get_lmf_addr                 (void);
 void      mono_set_lmf                      (MonoLMF *lmf);
 void      mono_push_lmf                     (MonoLMFExt *ext);
 void      mono_pop_lmf                      (MonoLMF *lmf);
+#define mono_get_jit_tls mono_tls_get_jit_tls
 MonoJitTlsData* mono_get_jit_tls            (void);
 MONO_API MONO_RT_EXTERNAL_ONLY
 MonoDomain* mono_jit_thread_attach (MonoDomain *domain);

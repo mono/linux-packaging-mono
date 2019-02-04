@@ -33,8 +33,8 @@
   <PropertyGroup Condition="'$(IsProjectNLibrary)' != 'true'">
     <DefineConstants>EETYPE_TYPE_MANAGER;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(JitSupport)' == 'true'">
-    <DefineConstants>SUPPORT_JIT;$(DefineConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(DynamicCodeSupport)' == 'true'">
+    <DefineConstants>SUPPORT_DYNAMIC_CODE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(IsProjectNLibrary)' == 'true'">
     <DefineConstants>FEATURE_INTERPRETER;$(DefineConstants)</DefineConstants>
@@ -56,7 +56,8 @@
   <PropertyGroup>
     <NativeFormatCommonPath>..\..\Common\src\Internal\NativeFormat</NativeFormatCommonPath>
   </PropertyGroup>
-  <ItemGroup Condition="'$(JitSupport)' == 'true'">
+  <ItemGroup Condition="'$(DynamicCodeSupport)' == 'true'">
+    <Compile Include="..\..\Common\src\TypeSystem\CodeGen\TypeDesc.CodeGen.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\RuntimeDetermined\ArrayType.RuntimeDetermined.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\RuntimeDetermined\ByRefType.RuntimeDetermined.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\RuntimeDetermined\DefType.RuntimeDetermined.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="..\..\Common\src\TypeSystem\RuntimeDetermined\TypeSystemContext.RuntimeDetermined.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\ILEmitter.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\DelegateThunks.cs" />
+    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\DynamicInvokeMethodThunk.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\EnumThunks.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\HelperExtensions.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\ILDisassembler.cs" />
@@ -86,10 +88,12 @@
     <Compile Include="..\..\Common\src\TypeSystem\IL\MethodILDebugView.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\DelegateInfo.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\TypeSystemContext.DelegateInfo.cs" />
+    <Compile Include="..\..\Common\src\TypeSystem\IL\TypeSystemContext.DynamicInvoke.cs" />
     <Compile Include="..\..\Common\src\TypeSystem\IL\TypeSystemContext.EnumMethods.cs" />
+    <Compile Include="..\..\Common\src\TypeSystem\IL\TypeSystemContext.GeneratedAssembly.cs" />
     <Compile Include="Internal\TypeSystem\ILStubMethod.Runtime.cs" />
     <Compile Include="Internal\TypeSystem\MethodForRuntimeDeterminedType.Runtime.cs" />
-    <Compile Include="Internal\Runtime\TypeLoader\JitSupport.MethodEntrypointStubs.cs" />
+    <Compile Include="Internal\Runtime\TypeLoader\MethodEntrypointStubs.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(EcmaMetadataSupport)' == 'true'" >
     <Compile Include="System\Reflection\Runtime\General\QHandles.Ecma.cs" />

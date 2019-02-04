@@ -264,6 +264,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CharacterRange
     {
+        private int _dummyPrimitive;
         public CharacterRange(int First, int Length) { throw null;}
         public int First { get { throw null; } set { } }
         public int Length { get { throw null; } set { } }
@@ -279,6 +280,8 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Color
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Color Empty;
         public byte A { get { throw null; } }
         public static System.Drawing.Color AliceBlue { get { throw null; } }
@@ -1416,6 +1419,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Point
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Point Empty;
         public Point(System.Drawing.Size sz) { throw null;}
         public Point(int dw) { throw null;}
@@ -1458,6 +1462,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PointF
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.PointF Empty;
         public PointF(float x, float y) { throw null;}
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -1484,6 +1489,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Rectangle
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Rectangle Empty;
         public Rectangle(System.Drawing.Point location, System.Drawing.Size size) { throw null;}
         public Rectangle(int x, int y, int width, int height) { throw null;}
@@ -1543,6 +1549,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct RectangleF
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.RectangleF Empty;
         public RectangleF(System.Drawing.PointF location, System.Drawing.SizeF size) { throw null;}
         public RectangleF(float x, float y, float width, float height) { throw null;}
@@ -1669,6 +1676,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Size
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Size Empty;
         public Size(System.Drawing.Point pt) { throw null;}
         public Size(int width, int height) { throw null;}
@@ -1709,6 +1717,7 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SizeF
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.SizeF Empty;
         public SizeF(System.Drawing.PointF pt) { throw null;}
         public SizeF(System.Drawing.SizeF size) { throw null;}

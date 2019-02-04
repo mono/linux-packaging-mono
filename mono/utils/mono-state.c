@@ -800,22 +800,25 @@ mono_native_state_add_version (MonoStateWriter *writer)
 	mono_state_writer_printf(writer, "\"disabled\",\n");
 #endif
 
+	const char *susp_policy = mono_threads_suspend_policy_name ();
+	assert_has_space (writer);
+	mono_state_writer_indent (writer);
+	mono_state_writer_object_key (writer, "suspend");
+	mono_state_writer_printf(writer, "\"%s\",\n", susp_policy);
+
 	assert_has_space (writer);
 	mono_state_writer_indent (writer);
 	mono_state_writer_object_key (writer, "llvm_support");
 #ifdef MONO_ARCH_LLVM_SUPPORTED
 #ifdef ENABLE_LLVM
-	mono_state_writer_printf(writer, "\"%d\",\n", LLVM_API_VERSION);
+	mono_state_writer_printf (writer, "\"%d\"\n", LLVM_API_VERSION);
 #else
-	mono_state_writer_printf(writer, "\"disabled\",\n");
+	mono_state_writer_printf (writer, "\"disabled\"\n");
 #endif
 #endif
 
-	const char *susp_policy = mono_threads_suspend_policy_name ();
-	assert_has_space (writer);
-	mono_state_writer_indent (writer);
-	mono_state_writer_object_key (writer, "suspend");
-	mono_state_writer_printf(writer, "\"%s\"\n", susp_policy);
+	// Don't put any new fields here without adding commas above.
+	// Easier to add new fields above llvm_support
 
 	assert_has_space (writer);
 	mono_state_writer_indent (writer);
@@ -1004,7 +1007,6 @@ mono_crash_dump (const char *jsonFile, MonoStackHash *hashes)
 {
 	size_t size = strlen (jsonFile);
 
-	pid_t pid = getpid ();
 	gboolean success = FALSE;
 
 	// Save up to 100 dump files for a given stacktrace hash

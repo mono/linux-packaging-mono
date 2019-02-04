@@ -4,7 +4,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using Microsoft.NuGet.Build.Tasks;
+using System.Text;
+using Microsoft.NuGet.Build.Tasks.Tests.Helpers;
 using Xunit;
 
 namespace Microsoft.NuGet.Build.Tasks.Tests
@@ -88,7 +89,7 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                     runtimeIdentifier: "missing-runtime-identifier",
                     allowFallbackOnTargetSelection: false));
 
-            Assert.Equal(nameof(Strings.MissingRuntimeInRuntimesSection), exception.ResourceName);
+            Assert.Equal(nameof(Strings.MissingRuntimeInProjectJson), exception.ResourceName);
             Assert.Equal(new[] { "missing-runtime-identifier", "\"missing-runtime-identifier\": { }" }, exception.MessageArgs);
         }
 
@@ -103,12 +104,46 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                     allowFallbackOnTargetSelection: false,
                     projectJsonFileContents: "{ }"));
 
-            Assert.Equal(nameof(Strings.MissingRuntimesSection), exception.ResourceName);
+            Assert.Equal(nameof(Strings.MissingRuntimesSectionInProjectJson), exception.ResourceName);
             Assert.Equal(new[] { "\"runtimes\": { \"missing-runtime-identifier\": { } }" }, exception.MessageArgs);
         }
 
         [Fact]
-        public static void TestReferenceResolutionWithMissingTargetMonikerAndNoFallback()
+        public static void TestReferenceResolutionWithMissingRuntimeIDAndNoFallbackInProjectCsproj()
+        {
+            using (var tempRoot = new TempRoot())
+            using (var disposableFile = new DisposableFile(tempRoot.CreateFile(extension: "assets.json").Path))
+            {
+                var exception = Assert.Throws<ExceptionFromResource>(() =>
+                NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                    Encoding.UTF8.GetString(Json.Json.WithTargets_assets, 0, Json.Json.WithTargets_assets.Length),
+                    targetMoniker: ".NETFramework,Version=v4.5",
+                    runtimeIdentifier: "missing-runtime-identifier",
+                    allowFallbackOnTargetSelection: false,
+                    isLockFileProjectJsonBased: false));
+
+                Assert.Equal(nameof(Strings.MissingRuntimeIdentifierInProjectFile), exception.ResourceName);
+                Assert.Equal(new[] { "missing-runtime-identifier", "missing-runtime-identifier" }, exception.MessageArgs);
+            }
+        }
+
+        [Fact]
+        public static void TestReferenceResolutionWithMissingRuntimeIDAndNoFallbackAndNoRuntimesSectionInProjectCsproj()
+        {
+            var exception = Assert.Throws<ExceptionFromResource>(() =>
+                NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                    Json.Json.Win10,
+                    targetMoniker: ".NETCore,Version=v5.0",
+                    runtimeIdentifier: "missing-runtime-identifier",
+                    allowFallbackOnTargetSelection: false,
+                    projectJsonFileContents: "{ }"));
+
+            Assert.Equal(nameof(Strings.MissingRuntimesSectionInProjectJson), exception.ResourceName);
+            Assert.Equal(new[] { "\"runtimes\": { \"missing-runtime-identifier\": { } }" }, exception.MessageArgs);
+        }
+
+        [Fact]
+        public static void TestReferenceResolutionWithMissingTargetFrameworkAndNoFallback()
         {
             var exception = Assert.Throws<ExceptionFromResource>(() =>
                 NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
@@ -117,8 +152,27 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                     runtimeIdentifier: "missing-runtime-identifier",
                     allowFallbackOnTargetSelection: false));
 
-            Assert.Equal(nameof(Strings.MissingFramework), exception.ResourceName);
+            Assert.Equal(nameof(Strings.MissingFrameworkInProjectJson), exception.ResourceName);
             Assert.Equal(new[] { "Missing,Version=1.0" }, exception.MessageArgs);
+        }
+
+        [Fact]
+        public static void TestReferenceResolutionWithMissingTargetFrameworkAndNoFallbackInProjectCsproj()
+        {
+            using (var tempRoot = new TempRoot())
+            using (var disposableFile = new DisposableFile(tempRoot.CreateFile(extension: "assets.json").Path))
+            {
+                var exception = Assert.Throws<ExceptionFromResource>(() =>
+                    NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                        Encoding.UTF8.GetString(Json.Json.WithoutTargets_assets, 0, Json.Json.WithoutTargets_assets.Length),
+                        targetMoniker: "Missing,Version=1.0",
+                        runtimeIdentifier: "missing-runtime-identifier",
+                        allowFallbackOnTargetSelection: false,
+                        isLockFileProjectJsonBased: false));
+
+                Assert.Equal(nameof(Strings.MissingFrameworkInProjectFile), exception.ResourceName);
+                Assert.Equal(new[] { "Missing,Version=1.0" }, exception.MessageArgs);
+            }
         }
 
         [Fact]
@@ -133,6 +187,45 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
             // We should still have references. Since we have no runtime ID, we should have no copy local items
             AssertHelpers.AssertCountOf(101, result.References);
             AssertHelpers.AssertCountOf(0, result.CopyLocalItems);
+        }
+
+        [Fact]
+        public static void TestReferenceResolutionWithMissingTargetFrameworkAndFallbackInProjectCsproj()
+        {
+            using (var tempRoot = new TempRoot())
+            using (var disposableFile = new DisposableFile(tempRoot.CreateFile(extension: "assets.json").Path))
+            {
+                var result = NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                        Encoding.UTF8.GetString(Json.Json.WithTargets_assets, 0, Json.Json.WithTargets_assets.Length),
+                        targetMoniker: "MissingFrameworkMoniker,Version=v42.0",
+                        runtimeIdentifier: "",
+                        allowFallbackOnTargetSelection: true,
+                        isLockFileProjectJsonBased: false);
+
+                // We should still have references. Since we have no runtime ID, we should have no copy local items
+                AssertHelpers.AssertCountOf(1, result.References);
+                AssertHelpers.AssertCountOf(0, result.CopyLocalItems);
+            }
+        }
+
+        [Theory]
+        [InlineData(true, nameof(Strings.NoTargetsInLockFileForProjectJson))]
+        [InlineData(false, nameof(Strings.NoTargetsInLockFileForProjectFile))]
+        public static void TestReferenceResolutionWithMissingTargets(bool isProjectJsonBased, string errorResourceName)
+        {
+            using (var tempRoot = new TempRoot())
+            using (var disposableFile = new DisposableFile(tempRoot.CreateFile(extension: "assets.json").Path))
+            {
+                var exception = Assert.Throws<ExceptionFromResource>(() =>
+                    NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                            Encoding.UTF8.GetString(Json.Json.WithoutTargets_assets, 0, Json.Json.WithoutTargets_assets.Length),
+                            targetMoniker: "MissingFrameworkMoniker,Version=v42.0",
+                            runtimeIdentifier: "",
+                            allowFallbackOnTargetSelection: true,
+                            isLockFileProjectJsonBased: isProjectJsonBased));
+
+                Assert.Equal(errorResourceName, exception.ResourceName);
+            }
         }
 
         [Fact]
@@ -270,9 +363,9 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
 
             var key = ResolveNuGetPackageAssets.NuGetIsFrameworkReference;
             var values = result.References.Select(r => r.GetMetadata(key));
-            
+
             Assert.All(result.References, r => Assert.Contains(key, r.MetadataNames.Cast<string>()));
-            Assert.All(values, v => Assert.Contains(v, new [] { "true", "false" }));
+            Assert.All(values, v => Assert.Contains(v, new[] { "true", "false" }));
         }
 
         [Fact]
@@ -312,8 +405,8 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                 targetMoniker: ".NETCore,Version=v5.0",
                 runtimeIdentifier: "win10-x86",
                 tryGetRuntimeVersion: tryGetRuntimeVersion);
-            
-            var winmd = result.CopyLocalItems.FirstOrDefault(c => 
+
+            var winmd = result.CopyLocalItems.FirstOrDefault(c =>
                 Path.GetExtension(c.ItemSpec).Equals(".winmd", StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(winmd);
@@ -321,7 +414,7 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
             Assert.Equal("true", winmd.GetMetadata("WinMDFile"));
             Assert.Equal("Native", winmd.GetMetadata("WinMDFileType"));
             Assert.False(string.IsNullOrEmpty(winmd.GetMetadata("Implementation")), "implementation should be set for native winmd");
-            Assert.Equal(Path.GetFileNameWithoutExtension(winmd.ItemSpec) + ".dll", winmd.GetMetadata("Implementation"), StringComparer.OrdinalIgnoreCase);           
+            Assert.Equal(Path.GetFileNameWithoutExtension(winmd.ItemSpec) + ".dll", winmd.GetMetadata("Implementation"), StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -334,8 +427,8 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                 targetMoniker: ".NETCore,Version=v5.0",
                 runtimeIdentifier: "win10-x86",
                 tryGetRuntimeVersion: tryGetRuntimeVersion);
-            
-            var winmd = result.CopyLocalItems.FirstOrDefault(c => 
+
+            var winmd = result.CopyLocalItems.FirstOrDefault(c =>
                 Path.GetExtension(c.ItemSpec).Equals(".winmd", StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(winmd);
@@ -356,7 +449,7 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
                 runtimeIdentifier: "win10-x86",
                 tryGetRuntimeVersion: tryGetRuntimeVersion);
 
-            var winmd = result.CopyLocalItems.FirstOrDefault(c => 
+            var winmd = result.CopyLocalItems.FirstOrDefault(c =>
                 Path.GetExtension(c.ItemSpec).Equals(".winmd", StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(winmd);

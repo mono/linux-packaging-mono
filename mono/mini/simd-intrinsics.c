@@ -605,7 +605,7 @@ static MonoInst* emit_sys_numerics_vectors_intrinsics (MonoCompile *cfg, MonoMet
 static int
 simd_intrinsic_compare_by_name (const void *key, const void *value)
 {
-	return strcmp (key, method_name (((SimdIntrinsic *)value)->name));
+	return strcmp ((const char*)key, method_name (((SimdIntrinsic *)value)->name));
 }
 
 typedef enum {
@@ -817,6 +817,12 @@ mono_simd_simplify_indirection (MonoCompile *cfg)
 	g_free (target_bb);
 }
 
+/*
+* Windows x64 value type ABI uses reg/stack references (ArgValuetypeAddrInIReg/ArgValuetypeAddrOnStack)
+* for function arguments. When using SIMD intrinsics arguments optimized into OP_ARG needs to be decomposed
+* into correspondig SIMD LOADX/STOREX instructions.
+*/
+#if defined(TARGET_WIN32) && defined(TARGET_AMD64)
 static gboolean
 decompose_vtype_opt_uses_simd_intrinsics (MonoCompile *cfg, MonoInst *ins)
 {
@@ -837,8 +843,9 @@ decompose_vtype_opt_uses_simd_intrinsics (MonoCompile *cfg, MonoInst *ins)
 }
 
 static void
-decompose_vtype_opt_load_arg (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins, guint32 *sreg)
+decompose_vtype_opt_load_arg (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins, gint32 *sreg_int32)
 {
+	guint32 *sreg = (guint32*)sreg_int32;
 	MonoInst *src_var = get_vreg_to_inst (cfg, *sreg);
 	if (src_var && src_var->opcode == OP_ARG && src_var->klass && MONO_CLASS_IS_SIMD (cfg, src_var->klass)) {
 		MonoInst *varload_ins, *load_ins;
@@ -854,12 +861,6 @@ decompose_vtype_opt_load_arg (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *in
 	}
 }
 
-/*
-* Windows x64 value type ABI uses reg/stack references (ArgValuetypeAddrInIReg/ArgValuetypeAddrOnStack)
-* for function arguments. When using SIMD intrinsics arguments optimized into OP_ARG needs to be decomposed
-* into correspondig SIMD LOADX/STOREX instructions.
-*/
-#if defined(TARGET_WIN32) && defined(TARGET_AMD64)
 void
 mono_simd_decompose_intrinsic (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins)
 {
@@ -2408,7 +2409,7 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 			/* Load the array slice into the simd reg */
 			ldelema_ins = mini_emit_ldelema_1_ins (cfg, mono_class_from_mono_type (etype), array_ins, index_ins, TRUE);
 			g_assert (args [0]->opcode == OP_LDADDR);
-			var = args [0]->inst_p0;
+			var = (MonoInst*)args [0]->inst_p0;
 			EMIT_NEW_LOAD_MEMBASE (cfg, ins, OP_LOADX_MEMBASE, var->dreg, ldelema_ins->dreg, 0);
 			ins->klass = cmethod->klass;
 			return args [0];
@@ -2552,7 +2553,7 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 		/* Load the simd reg into the array slice */
 		ldelema_ins = mini_emit_ldelema_1_ins (cfg, mono_class_from_mono_type (etype), array_ins, index_ins, TRUE);
 		g_assert (args [0]->opcode == OP_LDADDR);
-		var = args [0]->inst_p0;
+		var = (MonoInst*)args [0]->inst_p0;
 		EMIT_NEW_STORE_MEMBASE (cfg, ins, OP_STOREX_MEMBASE, ldelema_ins->dreg, 0, var->dreg);
 		ins->klass = cmethod->klass;
 		return args [0];

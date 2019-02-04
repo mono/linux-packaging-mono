@@ -95,7 +95,7 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 		shellex.lpDirectory = coop.working_directory;
 
 	if (MONO_HANDLE_GETVAL (proc_start_info, error_dialog))
-		shellex.hwnd = MONO_HANDLE_GETVAL (proc_start_info, error_dialog_parent_handle);
+		shellex.hwnd = (HWND)MONO_HANDLE_GETVAL (proc_start_info, error_dialog_parent_handle);
 	else
 		shellex.fMask = (gulong)(shellex.fMask | SEE_MASK_FLAG_NO_UI);
 
@@ -306,11 +306,13 @@ ves_icall_System_Diagnostics_Process_CreateProcess_internal (MonoW32ProcessStart
 		MonoArrayHandle array = MONO_HANDLE_NEW (MonoArray, process_info->env_variables);
 		MonoStringHandle var = MONO_HANDLE_NEW (MonoString, NULL);
 		gsize const array_length = mono_array_handle_length (array);
-		gsize len = 1; // nul-terminated
+
+		// nul-separated and nul-terminated
+		gsize len = array_length + 1 + !array_length;
 
 		for (gsize i = 0; i < array_length; i++) {
 			MONO_HANDLE_ARRAY_GETREF (var, array, i);
-			len += mono_string_handle_length (var) + 1; // nul-separated
+			len += mono_string_handle_length (var);
 		}
 
 		gunichar2 *ptr = g_new0 (gunichar2, len);

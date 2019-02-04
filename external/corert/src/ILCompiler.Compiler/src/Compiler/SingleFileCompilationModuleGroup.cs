@@ -10,11 +10,6 @@ namespace ILCompiler
 {
     public class SingleFileCompilationModuleGroup : CompilationModuleGroup
     {
-        public SingleFileCompilationModuleGroup(TypeSystemContext context)
-            : base(context)
-        {
-        }
-
         public override bool ContainsType(TypeDesc type)
         {
             return true;
@@ -34,6 +29,11 @@ namespace ILCompiler
         {
             Debug.Assert(method.GetCanonMethodTarget(CanonicalFormKind.Specific) != method);
             return ContainsMethodBody(method, false);
+        }
+
+        public override bool ImportsMethod(MethodDesc method, bool unboxingStub)
+        {
+            return false;
         }
 
         public override ExportForm GetExportTypeForm(TypeDesc type)

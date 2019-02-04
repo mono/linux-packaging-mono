@@ -74,7 +74,6 @@ namespace System.Collections.Generic
         public SynchronizedCollection() { }
         public SynchronizedCollection(object syncRoot) { }
         public SynchronizedCollection(object syncRoot, System.Collections.Generic.IEnumerable<T> list) { }
-        public SynchronizedCollection(object syncRoot, System.Collections.Generic.List<T> list, bool makeCopy) { }
         public SynchronizedCollection(object syncRoot, params T[] list) { }
         public int Count { get { throw null; } }
         public T this[int index] { get { throw null; } set { } }
@@ -91,7 +90,6 @@ namespace System.Collections.Generic
         protected virtual void ClearItems() { }
         public bool Contains(T item) { throw null; }
         public void CopyTo(T[] array, int index) { }
-        [System.MonoTODOAttribute("Should be synchronized enumerator?")]
         public System.Collections.Generic.IEnumerator<T> GetEnumerator() { throw null; }
         public int IndexOf(T item) { throw null; }
         public void Insert(int index, T item) { }
@@ -118,16 +116,12 @@ namespace System.Collections.Generic
         protected System.Collections.Generic.IDictionary<K, T> Dictionary { get { throw null; } }
         public T this[K key] { get { throw null; } }
         protected void ChangeItemKey(T item, K newKey) { }
-        [System.MonoTODOAttribute("This lock is not an atomic.")]
         protected override void ClearItems() { }
         public bool Contains(K key) { throw null; }
         protected abstract K GetKeyForItem(T item);
-        [System.MonoTODOAttribute("This lock is not an atomic.")]
         protected override void InsertItem(int index, T item) { }
         public bool Remove(K key) { throw null; }
-        [System.MonoTODOAttribute("This lock is not an atomic.")]
         protected override void RemoveItem(int index) { }
-        [System.MonoTODOAttribute("This lock is not an atomic.")]
         protected override void SetItem(int index, T item) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
@@ -136,7 +130,6 @@ namespace System.Collections.Generic
         public SynchronizedReadOnlyCollection() { }
         public SynchronizedReadOnlyCollection(object syncRoot) { }
         public SynchronizedReadOnlyCollection(object syncRoot, System.Collections.Generic.IEnumerable<T> list) { }
-        public SynchronizedReadOnlyCollection(object sync_root, System.Collections.Generic.List<T> list, bool make_copy) { }
         public SynchronizedReadOnlyCollection(object syncRoot, params T[] list) { }
         public int Count { get { throw null; } }
         public T this[int index] { get { throw null; } }

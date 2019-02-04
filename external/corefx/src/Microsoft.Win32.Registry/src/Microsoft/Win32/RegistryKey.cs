@@ -22,12 +22,22 @@ namespace Microsoft.Win32
 #endif
     sealed partial class RegistryKey : MarshalByRefObject, IDisposable
     {
+#if MONO
+        internal static readonly IntPtr HKEY_CLASSES_ROOT = new IntPtr(unchecked((int)0x80000000));
+        internal static readonly IntPtr HKEY_CURRENT_USER = new IntPtr(unchecked((int)0x80000001));
+        internal static readonly IntPtr HKEY_LOCAL_MACHINE = new IntPtr(unchecked((int)0x80000002));
+        internal static readonly IntPtr HKEY_USERS = new IntPtr(unchecked((int)0x80000003));
+        internal static readonly IntPtr HKEY_PERFORMANCE_DATA = new IntPtr(unchecked((int)0x80000004));
+        internal static readonly IntPtr HKEY_CURRENT_CONFIG = new IntPtr(unchecked((int)0x80000005));
+        internal static readonly IntPtr HKEY_DYN_DATA = new IntPtr(unchecked((int)0x80000006));
+#else
         private static readonly IntPtr HKEY_CLASSES_ROOT = new IntPtr(unchecked((int)0x80000000));
         private static readonly IntPtr HKEY_CURRENT_USER = new IntPtr(unchecked((int)0x80000001));
         private static readonly IntPtr HKEY_LOCAL_MACHINE = new IntPtr(unchecked((int)0x80000002));
         private static readonly IntPtr HKEY_USERS = new IntPtr(unchecked((int)0x80000003));
         private static readonly IntPtr HKEY_PERFORMANCE_DATA = new IntPtr(unchecked((int)0x80000004));
         private static readonly IntPtr HKEY_CURRENT_CONFIG = new IntPtr(unchecked((int)0x80000005));
+#endif
 
         /// <summary>Names of keys.  This array must be in the same order as the HKEY values listed above.</summary>
         private static readonly string[] s_hkeyNames = new string[]
@@ -37,7 +47,10 @@ namespace Microsoft.Win32
             "HKEY_LOCAL_MACHINE",
             "HKEY_USERS",
             "HKEY_PERFORMANCE_DATA",
-            "HKEY_CURRENT_CONFIG"
+            "HKEY_CURRENT_CONFIG",
+#if MONO
+            "HKEY_DYN_DATA"
+#endif
         };
 
         // MSDN defines the following limits for registry key names & values:
@@ -98,8 +111,15 @@ namespace Microsoft.Win32
             FlushCore();
         }
 
+#if MONO
+        partial void CloseCore();
+#endif
+
         public void Close()
         {
+#if MONO
+            CloseCore();
+#endif
             Dispose();
         }
 

@@ -56,7 +56,7 @@ namespace ILCompiler.DependencyAnalysis
     ///                 |
     /// [Pointer Size]  | Pointer to the generic argument and variance info (optional)
     /// </summary>
-    public partial class EETypeNode : ObjectNode, IExportableSymbolNode, IEETypeNode, ISymbolDefinitionNode
+    public partial class EETypeNode : ObjectNode, IExportableSymbolNode, IEETypeNode, ISymbolDefinitionNode, ISymbolNodeWithLinkage
     {
         protected TypeDesc _type;
         internal EETypeOptionalFieldsBuilder _optionalFieldsBuilder = new EETypeOptionalFieldsBuilder();
@@ -90,9 +90,9 @@ namespace ILCompiler.DependencyAnalysis
             return false;
         }
 
-        public override ObjectNode NodeForLinkage(NodeFactory factory)
+        public virtual ISymbolNode NodeForLinkage(NodeFactory factory)
         {
-            return (ObjectNode)factory.NecessaryTypeSymbol(_type);
+            return factory.NecessaryTypeSymbol(_type);
         }
 
         public ExportForm GetExportForm(NodeFactory factory) => factory.CompilationModuleGroup.GetExportTypeForm(Type);
@@ -385,7 +385,19 @@ namespace ILCompiler.DependencyAnalysis
 
             if (EmitVirtualSlotsAndInterfaces)
             {
+                if (!_type.IsArrayTypeWithoutGenericInterfaces())
+                {
+                    // Sealed vtables have relative pointers, so to minimize size, we build sealed vtables for the canonical types
+                    dependencies.Add(new DependencyListEntry(factory.SealedVTable(_type.ConvertToCanonForm(CanonicalFormKind.Specific)), "Sealed Vtable"));
+                }
+
                 AddVirtualMethodUseDependencies(dependencies, factory);
+
+                // Also add the un-normalized vtable slices of implemented interfaces.
+                // This is important to do in the scanning phase so that the compilation phase can find
+                // vtable information for things like IEnumerator<List<__Canon>>.
+                foreach (TypeDesc intface in _type.RuntimeInterfaces)
+                    dependencies.Add(factory.VTable(intface), "Interface vtable slice");
             }
 
             if (factory.CompilationModuleGroup.PresenceOfEETypeImpliesAllMethodsOnType(_type))
@@ -470,6 +482,7 @@ namespace ILCompiler.DependencyAnalysis
             OutputFinalizerMethod(factory, ref objData);
             OutputOptionalFields(factory, ref objData);
             OutputNullableTypeParameter(factory, ref objData);
+            OutputSealedVTable(factory, relocsOnly, ref objData);
             OutputGenericInstantiationDetails(factory, ref objData);
 
             return objData.ToObjectData();
@@ -690,7 +703,7 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
-        protected virtual void OutputVirtualSlots(NodeFactory factory, ref ObjectDataBuilder objData, TypeDesc implType, TypeDesc declType, TypeDesc templateType, bool relocsOnly)
+        private void OutputVirtualSlots(NodeFactory factory, ref ObjectDataBuilder objData, TypeDesc implType, TypeDesc declType, TypeDesc templateType, bool relocsOnly)
         {
             Debug.Assert(EmitVirtualSlotsAndInterfaces);
 
@@ -759,6 +772,11 @@ namespace ILCompiler.DependencyAnalysis
 
                 MethodDesc implMethod = implType.GetClosestDefType().FindVirtualFunctionTargetMethodOnObjectType(declMethod);
 
+                // Final NewSlot methods cannot be overridden, and therefore can be placed in the sealed-vtable to reduce the size of the vtable
+                // of this type and any type that inherits from it.
+                if (declMethod.CanMethodBeInSealedVTable() && !declType.IsArrayTypeWithoutGenericInterfaces())
+                    continue;
+
                 if (!implMethod.IsAbstract)
                 {
                     MethodDesc canonImplMethod = implMethod.GetCanonMethodTarget(CanonicalFormKind.Specific);
@@ -812,11 +830,32 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
+        private void OutputSealedVTable(NodeFactory factory, bool relocsOnly, ref ObjectDataBuilder objData)
+        {
+            if (EmitVirtualSlotsAndInterfaces && !_type.IsArrayTypeWithoutGenericInterfaces())
+            {
+                // Sealed vtables have relative pointers, so to minimize size, we build sealed vtables for the canonical types
+                SealedVTableNode sealedVTable = factory.SealedVTable(_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+
+                if (sealedVTable.BuildSealedVTableSlots(factory, relocsOnly) && sealedVTable.NumSealedVTableEntries > 0)
+                {
+                    if (factory.Target.SupportsRelativePointers)
+                        objData.EmitReloc(sealedVTable, RelocType.IMAGE_REL_BASED_RELPTR32);
+                    else
+                        objData.EmitPointerReloc(sealedVTable);
+                }
+            }
+        }
+
         private void OutputGenericInstantiationDetails(NodeFactory factory, ref ObjectDataBuilder objData)
         {
             if (_type.HasInstantiation && !_type.IsTypeDefinition)
             {
-                objData.EmitPointerRelocOrIndirectionReference(factory.NecessaryTypeSymbol(_type.GetTypeDefinition()));
+                IEETypeNode typeDefNode = factory.NecessaryTypeSymbol(_type.GetTypeDefinition());
+                if (factory.Target.SupportsRelativePointers)
+                    objData.EmitRelativeRelocOrIndirectionReference(typeDefNode);
+                else
+                    objData.EmitPointerRelocOrIndirectionReference(typeDefNode);
 
                 GenericCompositionDetails details;
                 if (_type.GetTypeDefinition() == factory.ArrayOfTEnumeratorType)
@@ -834,7 +873,11 @@ namespace ILCompiler.DependencyAnalysis
                 else
                     details = new GenericCompositionDetails(_type);
 
-                objData.EmitPointerReloc(factory.GenericComposition(details));
+                ISymbolNode compositionNode = factory.GenericComposition(details);
+                if (factory.Target.SupportsRelativePointers)
+                    objData.EmitReloc(compositionNode, RelocType.IMAGE_REL_BASED_RELPTR32);
+                else
+                    objData.EmitPointerReloc(compositionNode);
             }
         }
 
@@ -843,19 +886,19 @@ namespace ILCompiler.DependencyAnalysis
         /// </summary>
         protected internal virtual void ComputeOptionalEETypeFields(NodeFactory factory, bool relocsOnly)
         {
-            if (!relocsOnly && _type.RuntimeInterfaces.Length > 0 && factory.InterfaceDispatchMap(_type).Marked)
+            if (!relocsOnly && EmitVirtualSlotsAndInterfaces && InterfaceDispatchMapNode.MightHaveInterfaceDispatchMap(_type, factory))
             {
                 _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.DispatchMap, checked((uint)factory.InterfaceDispatchMapIndirection(Type).IndexFromBeginningOfArray));
             }
             
-            ComputeRareFlags(factory);
+            ComputeRareFlags(factory, relocsOnly);
             ComputeNullableValueOffset();
             if (!relocsOnly)
                 ComputeICastableVirtualMethodSlots(factory);
             ComputeValueTypeFieldPadding();
         }
 
-        void ComputeRareFlags(NodeFactory factory)
+        void ComputeRareFlags(NodeFactory factory, bool relocsOnly)
         {
             uint flags = 0;
 
@@ -882,7 +925,12 @@ namespace ILCompiler.DependencyAnalysis
                 flags |= (uint)EETypeRareFlags.RequiresAlign8Flag;
             }
 
-            if (metadataType != null && metadataType.IsHfa)
+            TargetArchitecture targetArch = _type.Context.Target.Architecture;
+            if (metadataType != null &&
+                (targetArch == TargetArchitecture.ARM ||
+                targetArch == TargetArchitecture.ARMEL ||
+                targetArch == TargetArchitecture.ARM64) &&
+                metadataType.IsHfa)
             {
                 flags |= (uint)EETypeRareFlags.IsHFAFlag;
             }
@@ -895,6 +943,13 @@ namespace ILCompiler.DependencyAnalysis
             if (_type.IsByRefLike)
             {
                 flags |= (uint)EETypeRareFlags.IsByRefLikeFlag;
+            }
+
+            if (EmitVirtualSlotsAndInterfaces && !_type.IsArrayTypeWithoutGenericInterfaces())
+            {
+                SealedVTableNode sealedVTable = factory.SealedVTable(_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+                if (sealedVTable.BuildSealedVTableSlots(factory, relocsOnly) && sealedVTable.NumSealedVTableEntries > 0)
+                    flags |= (uint)EETypeRareFlags.HasSealedVTableEntriesFlag;
             }
 
             if (flags != 0)
@@ -945,13 +1000,14 @@ namespace ILCompiler.DependencyAnalysis
                     MethodDesc isInstMethodImpl = _type.ResolveInterfaceMethodTarget(isInstDecl);
                     MethodDesc getImplTypeMethodImpl = _type.ResolveInterfaceMethodTarget(getImplTypeDecl);
 
-                    int isInstMethodSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, isInstMethodImpl);
-                    int getImplTypeMethodSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, getImplTypeMethodImpl);
+                    int isInstMethodSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, isInstMethodImpl, _type);
+                    int getImplTypeMethodSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, getImplTypeMethodImpl, _type);
 
-                    Debug.Assert(isInstMethodSlot != -1 && getImplTypeMethodSlot != -1);
-
-                    _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.ICastableIsInstSlot, (uint)isInstMethodSlot);
-                    _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.ICastableGetImplTypeSlot, (uint)getImplTypeMethodSlot);
+                    // Slots are usually -1, since these methods are usually in the sealed vtable of the base type.
+                    if (isInstMethodSlot != -1)
+                        _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.ICastableIsInstSlot, (uint)isInstMethodSlot);
+                    if (getImplTypeMethodSlot != -1)
+                        _optionalFieldsBuilder.SetFieldValue(EETypeOptionalFieldTag.ICastableGetImplTypeSlot, (uint)getImplTypeMethodSlot);
                 }
             }
         }
@@ -1200,18 +1256,11 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
-        protected internal override int ClassCode => 1521789141;
+        public override int ClassCode => 1521789141;
 
-        protected internal override int CompareToImpl(SortableDependencyNode other, CompilerComparer comparer)
+        public override int CompareToImpl(ISortableNode other, CompilerComparer comparer)
         {
             return comparer.Compare(_type, ((EETypeNode)other)._type);
-        }
-
-        int ISortableSymbolNode.ClassCode => ClassCode;
-
-        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
-        {
-            return CompareToImpl((ObjectNode)other, comparer);
         }
 
         private struct SlotCounter

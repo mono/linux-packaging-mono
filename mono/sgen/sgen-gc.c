@@ -2476,19 +2476,20 @@ sgen_ensure_free_space (size_t size, int generation)
 {
 	int generation_to_collect = -1;
 	const char *reason = NULL;
+	gboolean forced = FALSE;
 
 	if (generation == GENERATION_OLD) {
-		if (sgen_need_major_collection (size)) {
+		if (sgen_need_major_collection (size, &forced)) {
 			reason = "LOS overflow";
 			generation_to_collect = GENERATION_OLD;
 		}
 	} else {
 		if (sgen_degraded_mode) {
-			if (sgen_need_major_collection (size)) {
+			if (sgen_need_major_collection (size, &forced)) {
 				reason = "Degraded mode overflow";
 				generation_to_collect = GENERATION_OLD;
 			}
-		} else if (sgen_need_major_collection (size)) {
+		} else if (sgen_need_major_collection (size, &forced)) {
 			reason = sgen_concurrent_collection_in_progress ? "Forced finish concurrent collection" : "Minor allowance";
 			generation_to_collect = GENERATION_OLD;
 		} else {
@@ -2506,7 +2507,7 @@ sgen_ensure_free_space (size_t size, int generation)
 
 	if (generation_to_collect == -1)
 		return;
-	sgen_perform_collection (size, generation_to_collect, reason, FALSE, TRUE);
+	sgen_perform_collection (size, generation_to_collect, reason, forced, TRUE);
 }
 
 /*
@@ -2791,7 +2792,7 @@ sgen_have_pending_finalizers (void)
  * We do not coalesce roots.
  */
 int
-sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type, int source, void *key, const char *msg)
+sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type, MonoGCRootSource source, void *key, const char *msg)
 {
 	RootRecord new_root;
 	int i;
@@ -2866,7 +2867,7 @@ sgen_wbroot_scan_card_table (void** start_root, mword size,  ScanCopyContext ctx
 	mword card_count = sgen_card_table_number_of_cards_in_range ((mword)start_root, size);
 	guint8 *card_data_end = card_data + card_count;
 	mword extra_idx = 0;
-	char *obj_start = sgen_card_table_align_pointer (start_root);
+	char *obj_start = (char*)sgen_card_table_align_pointer (start_root);
 	char *obj_end = (char*)start_root + size;
 #ifdef SGEN_HAVE_OVERLAPPING_CARDS
 	guint8 *overflow_scan_end = NULL;
@@ -3067,7 +3068,7 @@ mono_gc_wbarrier_generic_store_atomic (gpointer ptr, GCObject *value)
 }
 
 void
-sgen_wbarrier_range_copy (gpointer _dest, gpointer _src, int size)
+sgen_wbarrier_range_copy (gpointer _dest, gconstpointer _src, int size)
 {
 	remset.wbarrier_range_copy (_dest,_src, size);
 }
@@ -3081,13 +3082,15 @@ sgen_wbarrier_range_copy (gpointer _dest, gpointer _src, int size)
 void
 sgen_gc_collect (int generation)
 {
+	gboolean forced;
+
 	LOCK_GC;
 	if (generation > 1)
 		generation = 1;
 	sgen_perform_collection (0, generation, "user request", TRUE, TRUE);
 	/* Make sure we don't exceed heap size allowance by promoting */
-	if (generation == GENERATION_NURSERY && sgen_need_major_collection (0))
-		sgen_perform_collection (0, GENERATION_OLD, "Minor allowance", FALSE, TRUE);
+	if (generation == GENERATION_NURSERY && sgen_need_major_collection (0, &forced))
+		sgen_perform_collection (0, GENERATION_OLD, "Minor allowance", forced, TRUE);
 	UNLOCK_GC;
 }
 

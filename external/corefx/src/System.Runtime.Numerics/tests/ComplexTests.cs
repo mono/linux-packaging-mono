@@ -65,7 +65,7 @@ namespace System.Numerics.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void SqrtMinusOne()
         {
             Assert.Equal(Complex.Sqrt(-1.0), Complex.ImaginaryOne);
@@ -256,7 +256,7 @@ namespace System.Numerics.Tests
 
         [Theory]
         [MemberData(nameof(Abs_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Abs_Advanced(double real, double imaginary, double expected)
         {
             var complex = new Complex(real, imaginary);
@@ -325,7 +325,7 @@ namespace System.Numerics.Tests
         }
 
         [Theory, MemberData(nameof(ACos_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void ACos_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -441,7 +441,7 @@ namespace System.Numerics.Tests
         }
 
         [Theory, MemberData(nameof(ASin_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void ASin_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -591,7 +591,7 @@ namespace System.Numerics.Tests
         [Theory]
         [MemberData(nameof(Cos_Advanced_TestData_Shared))]
         [MemberData(nameof(Cos_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Cos_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -669,7 +669,7 @@ namespace System.Numerics.Tests
         [Theory]
         [MemberData(nameof(Cosh_Advanced_TestData_Shared))]
         [MemberData(nameof(Cosh_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Cosh_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -746,7 +746,7 @@ namespace System.Numerics.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Equals_netcore()
         {
             // Invalid values
@@ -888,7 +888,7 @@ namespace System.Numerics.Tests
         [MemberData(nameof(Exp_TestData))]
         [MemberData(nameof(Primitives_2_TestData))]
         [MemberData(nameof(SmallRandom_2_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Exp(double real, double imaginary)
         {
             Complex expected;
@@ -989,7 +989,7 @@ namespace System.Numerics.Tests
         [Theory]
         [MemberData(nameof(FromPolarCoordinates_TestData))]
         [MemberData(nameof(Invalid_2_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void FromPolarCoordinates(double magnitude, double phase)
         {
             Complex complex = Complex.FromPolarCoordinates(magnitude, phase);
@@ -1388,7 +1388,7 @@ namespace System.Numerics.Tests
         [Theory]
         [MemberData(nameof(Sin_Advanced_TestData_Shared))]
         [MemberData(nameof(Sin_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Sin_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -1465,7 +1465,7 @@ namespace System.Numerics.Tests
         [Theory]
         [MemberData(nameof(Sinh_Advanced_TestData_Shared))]
         [MemberData(nameof(Sinh_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Sinh_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -1588,7 +1588,7 @@ namespace System.Numerics.Tests
 
         [Theory]
         [MemberData(nameof(Sqrt_AdvancedTestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Sqrt_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -1659,7 +1659,7 @@ namespace System.Numerics.Tests
         }
 
         [Theory, MemberData(nameof(Tan_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Tan_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);
@@ -1732,7 +1732,7 @@ namespace System.Numerics.Tests
         }
 
         [Theory, MemberData(nameof(Tanh_Advanced_TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void Tanh_Advanced(double real, double imaginary, double expectedReal, double expectedImaginary)
         {
             var complex = new Complex(real, imaginary);

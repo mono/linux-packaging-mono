@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.18.0.252],
+AC_INIT(mono, [5.20.0.180],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -46,7 +46,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=179F7FD7-9CE8-424E-84AF-0DF5B0B8B469
+MONO_CORLIB_VERSION=B886E13F-6276-4BE5-85F8-C6BF5EDBD200
 
 #
 # Put a quoted #define in config.h.
@@ -105,12 +105,6 @@ need_link_unlink=no
 #Set to extra linker flags to be passed to the runtime binaries (mono /mono-sgen)
 extra_runtime_ldflags=""
 
-
-# Hack for WASM
-# Current autotools (v1.15) doesn't have a triplet we can use for wasm so the kludge we do is to
-# work around it by using a feature flag instead
-AC_ARG_ENABLE(wasm,[  --enable-wasm    Hack to set the current runtime to target wasm], enable_wasm=$enableval)
-
 # Thread configuration inspired by sleepycat's db
 AC_MSG_CHECKING([host platform characteristics])
 
@@ -127,17 +121,14 @@ platform_ios=no
 host_darwin=no
 host_linux=no
 
-
-if test "x$enable_wasm" = "xyes"; then
-CFLAGS="$CFLAGS -D_REENTRANT -D_GNU_SOURCE -DNO_UNALIGNED_ACCESS -s WASM=1"
-CPPFLAGS="$CPPFLAGS -D_REENTRANT -DUSE_MMAP -D_GNU_SOURCE -DNO_UNALIGNED_ACCESS -s WASM=1"
-libdl="-ldl"
-libgc_threads=pthreads
-platform_wasm=yes
-
-else
-
 case "$host" in
+	wasm32*)
+		CFLAGS="$CFLAGS -D_REENTRANT -D_GNU_SOURCE -s WASM=1"
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT -DUSE_MMAP -s WASM=1"
+		libdl="-ldl"
+		libgc_threads=pthreads
+		platform_wasm=yes
+		;;
 	*-mingw*|*-*-cygwin*)
 		AC_DEFINE(DISABLE_PORTABILITY,1,[Disable the io-portability layer])
 		AC_DEFINE(HOST_NO_SYMLINKS,1,[This platform does not support symlinks])
@@ -254,7 +245,7 @@ case "$host" in
 		support_boehm=no
 		with_gc=sgen
 
-		# isinf(3) requires -lm; see isinf check below
+		# isinf(3) requires -lm
 		LDFLAGS="$LDFLAGS -lm"
 
 		# Bionic's <pthread.h> sets PTHREAD_STACK_MIN=2*PAGE_SIZE; doesn't define
@@ -374,7 +365,8 @@ case "$host" in
 		esac
 		;;
 	*-*-haiku*)
-		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_THREAD_SAFE"
+		dnl BSD_SOURCE is for getifaddrs
+		CPPFLAGS="$CPPFLAGS -D_BSD_SOURCE -D_REENTRANT -D_THREAD_SAFE"
 		libmono_cflags="-D_REENTRANT -D_THREAD_SAFE"
 		libdl=
 		LIBS="$LIBS -lnetwork -ltextencoding"
@@ -384,6 +376,7 @@ case "$host" in
 		with_tls=pthread
 		libgc_threads=pthreads
 		use_sigposix=yes
+		with_sigaltstack=no
 		;;
 	*-*-aix*|*-*-os400*)
 		dnl Set up a 64-bit build
@@ -413,9 +406,6 @@ case "$host" in
 		libdl="-ldl"
 		;;
 esac
-
-# WASM hack
-fi
 
 AC_MSG_RESULT(ok)
 
@@ -582,23 +572,6 @@ AC_CHECK_FUNCS(vsyslog)
 
 # for mono/dis
 AC_CHECK_HEADERS(wchar.h)
-AC_CHECK_HEADERS(ieeefp.h)
-AC_MSG_CHECKING(for isinf)
-AC_TRY_LINK([#include <math.h>], [
-	int f = isinf (1.0);
-], [
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(HAVE_ISINF, 1, [isinf available])
-], [
-	# We'll have to use signals
-	AC_MSG_RESULT(no)
-])
-# mingw
-AC_CHECK_FUNCS(_finite, , AC_MSG_CHECKING(for _finite in math.h)
-	AC_TRY_LINK([#include <math.h>], 
-	[ _finite(0.0); ], 
-	AC_DEFINE(HAVE__FINITE, 1, [Have _finite in -lm]) AC_MSG_RESULT(yes),
-	AC_MSG_RESULT(no)))
 
 # for Linux statfs support
 AC_CHECK_HEADERS(linux/magic.h)
@@ -672,15 +645,8 @@ if test x$platform_android = xyes; then
 fi # Android
 
 # not 64 bit clean in cross-compile
-if test "x$enable_wasm" = "xyes"; then
-AC_DEFINE(SIZEOF_VOID_P,4)
-AC_DEFINE(SIZEOF_LONG,4)
-ac_cv_sizeof_void_p="4"
-ac_cv_sizeof_long="4"
-else
 AC_CHECK_SIZEOF(void *)
 AC_CHECK_SIZEOF(long)
-fi
 
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long long)
@@ -1004,11 +970,11 @@ fi
 #--with-crash_privacy=no --with-structured_crashes=no means you want to see no crash dumps on failure and you don't care about privacy. This is how you'd set a "don't want it, don't care" configuration.
 #--with-crash_privacy=no --with-structured_crashes=yes means you want full crashes and you want to see them in the terminal, not on telemetry. This is going to be how we build for CI.
 
-AC_ARG_WITH(crash-privacy,       [  --with-crash_privacy=yes,no         If you want your crashes to not include names of symbols present in the binary. ], [], [with_crash_privacy=no])
+AC_ARG_WITH(crash-privacy,       [  --with-crash_privacy=yes,no         If you want your crashes to not include names of symbols present in the binary. ], [], [with_crash_privacy=yes])
 AC_ARG_WITH(structured-crashes,  [  --with-structured_crashes=yes,no    If you want your unmanaged crashes to result in a small crash dump file. ],        [], [with_structured_crashes=yes])
 AC_ARG_ENABLE(crash-reporting,  [  --disable-crash-reporting            Enable or Disable crash reporting subsystem],        [crash_reporting=$enableval], [crash_reporting=yes])
 
-if test "x$with_crash_privacy" = "xno"; then
+if test "x$with_crash_privacy" = "xyes"; then
 AC_DEFINE(MONO_PRIVATE_CRASHES,1,[Do not include names of unmanaged functions in the crash dump])
 fi
 
@@ -1016,9 +982,11 @@ if test "x$with_structured_crashes" = "xno"; then
 AC_DEFINE(DISABLE_STRUCTURED_CRASH,1,[Do not create structured crash files during unmanaged crashes])
 fi
 
-if test "x$host_win32" = "xyes"; then
-crash_reporting=no
-fi
+case "$host" in
+	*-mingw*|*-*-cygwin*|*-*-aix*|*-*-os400*)
+		crash_reporting=no
+		;;
+esac
 
 if test "x$crash_reporting" != "xyes"; then
 CFLAGS="$CFLAGS -DDISABLE_CRASH_REPORTING=1"
@@ -1041,11 +1009,17 @@ fi
 
 AC_ARG_ENABLE(cxx, [  --enable-cxx   compile some code as C++])
 
+# mono/corefx/native has a lot of invalid C++98 in its headers
+# dotnet/corefx/native looks a lot better, i.e. 44e5bdafb8d989a220c9cf1b94f31a64a6e4f052
+#CXXFLAGS_COMMON=' -std=gnu++98 -fno-exceptions -fno-rtti '
+CXXFLAGS_COMMON=' -std=gnu++0x -fno-exceptions -fno-rtti '
+# "c++0x" instead of C++11, for compat with Centos6/gcc4.4
+
+AC_SUBST(CXXFLAGS_COMMON)
+
 if test "x$enable_cxx" = "xyes"; then
 
-	# FIXME Centos6 requires a different flag for prerelease C++11.
-	#CXX_ADD_CFLAGS=' -xc++ -std=gnu++98 -fno-exceptions -fno-rtti '
-	CXX_ADD_CFLAGS=' -xc++ -std=gnu++11 -fno-exceptions -fno-rtti '
+	CXX_ADD_CFLAGS=" -xc++ $CXXFLAGS_COMMON "
 
 	# -std=gnu99 -xc++ is not allowed and errors.
 	CXX_REMOVE_CFLAGS=-std=gnu99
@@ -1788,6 +1762,52 @@ if test x$platform_android = xyes; then
 	AC_DEFINE(HAVE_SIGNAL,1)
 fi
 
+dnl ***********************************
+dnl *** Checks for availability of GSS dependencies (krb5, gss.framework, etc)
+dnl ***********************************
+enable_gss=no;
+AC_MSG_CHECKING(for GSS/GSS.h)
+AC_TRY_COMPILE([
+    #include <GSS/GSS.h>
+], [
+],[
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_GSSFW_HEADERS, 1, [GSS/GSS.h])
+    AC_DEFINE(HAVE_GSS_SPNEGO_MECHANISM, 1, [GSS_SPNEGO_MECHANISM])
+    enable_gss=yes
+], [
+    AC_MSG_RESULT(no)
+])
+
+AC_MSG_CHECKING(for gssapi/gssapi_ext.h)
+AC_TRY_COMPILE([
+    #include <gssapi/gssapi_ext.h>
+], [
+],[
+    AC_MSG_RESULT(yes)
+    enable_gss=yes
+], [
+    AC_MSG_RESULT(no)
+])
+
+AC_MSG_CHECKING(for GSS_SPNEGO_MECHANISM)
+AC_TRY_COMPILE([
+    #include <gssapi/gssapi_ext.h>
+    #include <gssapi/gssapi_krb5.h>
+    gss_OID_set_desc gss_mech_spnego_OID_set_desc = {.count = 1, .elements = GSS_SPNEGO_MECHANISM};
+], [
+],[
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_GSS_SPNEGO_MECHANISM, 1, [GSS_SPNEGO_MECHANISM])
+], [
+    AC_MSG_RESULT(no)
+])
+
+AM_CONDITIONAL(ENABLE_GSS, test x$enable_gss = xyes)
+
+# `target_ios=yes` does not detect watch devices and fails when cross-compiling
+AC_MONO_APPLE_TARGET(TARGET_OS_IPHONE, [mono_native_platform_ios=yes])
+
 if test x$host_win32 = xno; then
 	dnl *************************************
 	dnl *** Checks for time capabilities ***
@@ -1904,6 +1924,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(getrlimit)
 	AC_CHECK_FUNCS(prctl)
 	AC_CHECK_FUNCS(arc4random)
+	AC_CHECK_FUNCS(nl_langinfo)
 
 	AC_CHECK_FUNCS(sched_getaffinity)
 	AC_CHECK_FUNCS(sched_setaffinity)
@@ -2305,6 +2326,23 @@ if test x$host_win32 = xno; then
 	])
 
 	dnl **********************************
+	dnl *** Check for getprotobyname_r ***
+	dnl **********************************
+	AC_MSG_CHECKING(for getprotobyname_r)
+		AC_TRY_LINK([
+		#include <stdio.h>
+		#include <netdb.h>
+	], [
+		getprotobyname_r(NULL, NULL, NULL, 0, NULL);
+	], [
+		# Yes, we have it...
+		AC_MSG_RESULT(yes)
+		AC_DEFINE(HAVE_GETPROTOBYNAME_R, 1, [Have getprotobyname_r])
+	], [
+		AC_MSG_RESULT(no)
+	])
+
+	dnl **********************************
 	dnl *** Check for getnameinfo ***
 	dnl **********************************
 	AC_MSG_CHECKING(for getnameinfo)
@@ -2407,24 +2445,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(pthread_attr_setstacksize)
 	AC_CHECK_FUNCS(pthread_attr_getstack pthread_attr_getstacksize)
 	AC_CHECK_FUNCS(pthread_get_stacksize_np pthread_get_stackaddr_np)
-
-	dnl **********************************
-	dnl *** Check for mincore ***
-	dnl **********************************
-	AC_MSG_CHECKING(for mincore)
-		AC_TRY_LINK([
-		#include <stdio.h>
-		#include <sys/types.h>
-		#include <sys/mman.h>
-	], [
-		mincore(NULL, 0, NULL);
-	], [
-		# Yes, we have it...
-		AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_MINCORE, 1, [Have mincore])
-	], [
-		AC_MSG_RESULT(no)
-	])
+	AC_CHECK_FUNCS(mincore mlock munlock)
 
 	dnl ***********************************
 	dnl *** Checks for working __thread ***
@@ -2624,37 +2645,12 @@ if test x$host_win32 = xno; then
 	dnl *** Checks for math functions ***
 	dnl *********************************
 	AC_SEARCH_LIBS(sqrtf, m)
-	if test "x$has_broken_apple_cpp" != "xyes"; then
-	        AC_CHECK_FUNCS(finite, , AC_MSG_CHECKING(for finite in math.h)
-	                AC_TRY_LINK([#include <math.h>], 
-	                [ finite(0.0); ], 
-	                AC_DEFINE(HAVE_FINITE, 1, [Have finite in -lm]) AC_MSG_RESULT(yes),
-	                AC_MSG_RESULT(no)))
-	fi
-        AC_CHECK_FUNCS(isfinite, , AC_MSG_CHECKING(for isfinite in math.h)
-                AC_TRY_LINK([#include <math.h>], 
-                [ isfinite(0.0); ], 
-                AC_DEFINE(HAVE_ISFINITE, 1, [Have isfinite]) AC_MSG_RESULT(yes),
-                AC_MSG_RESULT(no)))
 
 	dnl ****************************************************************
 	dnl *** Checks for working poll() (macosx defines it but doesn't ***
 	dnl *** have it in the library (duh))                            ***
 	dnl ****************************************************************
 	AC_CHECK_FUNCS(poll)
-
-	dnl *************************
-	dnl *** Check for signbit ***
-	dnl *************************
-	AC_MSG_CHECKING(for signbit)
-	AC_TRY_LINK([#include <math.h>], [
-		int s = signbit(1.0);
-	], [
-		AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_SIGNBIT, 1, [Have signbit])
-	], [
-		AC_MSG_RESULT(no)
-	]) 
 
 	dnl **********************************
 	dnl *** epoll			   ***
@@ -2974,7 +2970,7 @@ if test x$host_win32 = xno; then
 	fi
 
 	dnl *********************************
-	dnl *** Checks for System.Native  ***
+	dnl *** Checks for Mono.Native  ***
 	dnl *********************************
 
 	AC_MSG_CHECKING(for linux/in.h)
@@ -3024,24 +3020,19 @@ if test x$host_win32 = xno; then
 	])
 
 	if test x$host_darwin = xno; then
-		AC_MSG_CHECKING(for struct flock64)
-		AC_TRY_COMPILE([
-			#include <fcntl.h>
-		], [
-			struct flock64;
-		],[
-			AC_MSG_RESULT(yes)
-			AC_DEFINE(HAVE_FLOCK64, 1, struct flock64)
-		], [
-			AC_MSG_RESULT(no)
-		])
+		AC_CHECK_TYPES([struct flock64], [AC_DEFINE(HAVE_FLOCK64, 1, struct flock64)], , [#include <fcntl.h>])
+	fi
+
+	if test x$mono_native_platform_ios = xno; then
+		# On iOS, `stat64()` is deprecated and there is no `struct stat64` and `stat()`
+		# is either 32-bit or 64-bit based on the device / simulator that you're running on.
+		AC_CHECK_FUNC(stat64,            [AC_DEFINE(HAVE_STAT64, 1, [stat64])])
 	fi
 
 	AC_CHECK_FUNC(lseek64,           [AC_DEFINE(HAVE_LSEEK64, 1, [lseek64])])
 	AC_CHECK_FUNC(mmap64,            [AC_DEFINE(HAVE_MMAP64, 1, [mmap64])])
 	AC_CHECK_FUNC(ftruncate64,       [AC_DEFINE(HAVE_FTRUNCATE64, 1, [ftruncate64])])
 	AC_CHECK_FUNC(posix_fadvise64,   [AC_DEFINE(HAVE_POSIX_FADVISE64, 1, [posix_fadvise64])])
-	AC_CHECK_FUNC(stat64,            [AC_DEFINE(HAVE_STAT64, 1, [stat64])])
 	AC_CHECK_DECL(pipe2,             [AC_DEFINE(HAVE_PIPE2, 1, [pipe2])])
 	AC_CHECK_FUNC(getmntinfo,        [AC_DEFINE(HAVE_GETMNTINFO, 1, [getmntinfo])], [], [[#include <unistd.h>]])
 	AC_CHECK_FUNC(strcpy_s,          [AC_DEFINE(HAVE_STRCPY_S, 1, [strcpy_s])])
@@ -3615,21 +3606,6 @@ AC_TRY_COMPILE([#include <sys/socket.h>], [
 	AC_MSG_RESULT(no)
 ])
 
-AC_CHECK_FUNCS(trunc, , AC_MSG_CHECKING(for trunc in math.h)
-	# Simply calling trunc (0.0) is no good since gcc will optimize the call away
-	AC_TRY_LINK([#include <math.h>], 
-	[ static void *p = &trunc; ],
-	[
-		AC_DEFINE(HAVE_TRUNC) 
-		AC_MSG_RESULT(yes)
-		ac_cv_trunc=yes
-	],
-	AC_MSG_RESULT(no)))
-
-if test "x$ac_cv_truncl" != "xyes"; then
-   AC_CHECK_LIB(sunmath, aintl, [ AC_DEFINE(HAVE_AINTL, 1, [Has the 'aintl' function]) LIBS="$LIBS -lsunmath"])
-fi
-
 AC_CHECK_FUNCS(execvp)
 
 dnl ****************************
@@ -3849,7 +3825,7 @@ if test "x$internal_llvm" != "xno"; then
 fi
 
 AM_CONDITIONAL(INTERNAL_LLVM_ASSERTS, [test "x$enable_llvm_asserts" != "xno"])
-if test "x$internal_llvm_asserts" != "xno"; then
+if test "x$enable_llvm_asserts" != "xno"; then
    AC_DEFINE(INTERNAL_LLVM_ASSERTS, 1, [Build LLVM with assertions])
 fi
 
@@ -3887,19 +3863,14 @@ boehm_supported=true
 BTLS_SUPPORTED=no
 BTLS_PLATFORM=
 
-if test "x$enable_wasm" = "xyes"; then
-TARGET=WASM
-HOST=WASM
-arch_target=wasm
-AC_DEFINE(TARGET_WASM, 1, [Target wasm])
-AC_DEFINE(HOST_WASM, 1, [Host wasm])
-BTLS_SUPPORTED=no
-with_tls=pthread
-target_mach=no
-
-else
-
 case "$host" in
+	wasm32*)
+		TARGET=WASM
+		arch_target=wasm
+		BTLS_SUPPORTED=no
+		ACCESS_UNALIGNED="no"
+		with_tls=pthread
+		;;
 	mips*)
 		TARGET=MIPS;
 		arch_target=mips;
@@ -3970,7 +3941,7 @@ case "$host" in
 		TARGET=AMD64;
 		arch_target=amd64;
 		if test "x$ac_cv_sizeof_void_p" = "x4"; then
-			AC_DEFINE(__mono_ilp32__, 1, [64 bit mode with 4 byte longs and pointers])
+			AC_DEFINE(MONO_ARCH_ILP32, 1, [64 bit mode with 4 byte longs and pointers])
 			sizeof_register=8
 		fi
 		case $host_os in
@@ -4024,7 +3995,7 @@ case "$host" in
 		;;
 	macppc-*-openbsd* | powerpc*-*-linux* | powerpc-*-openbsd* | \
         powerpc-*-sysv* | powerpc-*-darwin* | powerpc-*-netbsd* | \
-        powerpc-*-freebsd* | powerpc-*-aix* | powerpc-*-os400* )
+        powerpc-*-freebsd* | powerpc*-*-aix* | powerpc*-*-os400* )
 		if test "x$ac_cv_sizeof_void_p" = "x8"; then
 			TARGET=POWERPC64;
 			CPPFLAGS="$CPPFLAGS -D__mono_ppc__ -D__mono_ppc64__"
@@ -4088,6 +4059,14 @@ case "$host" in
 		ACCESS_UNALIGNED="no"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		;;
+	aarch64-*darwin*ilp32)
+		TARGET=ARM64;
+		arch_target=arm64
+		AC_DEFINE(MONO_ARCH_ILP32, 1, [64 bit mode with 4 byte longs and pointers])
+		sizeof_register=8
+		# assuming no other target other than watchOS is using aarch64*darwin triple
+		TARGET_SYS=WATCHOS
+		;;
 	aarch64-*)
 		# https://lkml.org/lkml/2012/7/15/133
 		TARGET=ARM64
@@ -4120,6 +4099,11 @@ if test "x$host" != "x$target"; then
    with_tls=pthread
    target_mach=no
    case "$target" in
+   wasm32*)
+		TARGET=WASM
+		arch_target=wasm
+		AC_DEFINE(TARGET_WASM, 1, [Target wasm])
+		;;
    arm*-darwin*)
 		TARGET=ARM;
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
@@ -4137,7 +4121,7 @@ if test "x$host" != "x$target"; then
 		# It would be better to just use TARGET_POWERPC64, but lots of code already
 		# uses this define
 		AC_DEFINE(__mono_ppc64__, 1, [...])
-		AC_DEFINE(__mono_ilp32__, 1, [64 bit mode with 4 byte longs and pointers])
+		AC_DEFINE(MONO_ARCH_ILP32, 1, [64 bit mode with 4 byte longs and pointers])
 		sizeof_register=8
 		target_byte_order=G_BIG_ENDIAN
 		;;
@@ -4195,6 +4179,11 @@ if test "x$host" != "x$target"; then
 fi
 
 case "$TARGET" in
+WASM)
+	AC_DEFINE(TARGET_WASM, 1, [...])
+	arch_target=wasm
+	target_sizeof_void_p=4
+	;;
 X86)
 	AC_DEFINE(TARGET_X86, 1, [...])
 	arch_target=x86
@@ -4236,6 +4225,9 @@ SPARC64)
 esac
 
 case "$HOST" in
+WASM)
+	AC_DEFINE(HOST_WASM, 1, [...])
+	;;
 X86)
 	AC_DEFINE(HOST_X86, 1, [...])
 	;;
@@ -4269,9 +4261,6 @@ SPARC64)
 	;;
 esac
 
-#WASM hack
-fi
-
 MONO_ARCH_GSHAREDVT_SUPPORTED=0
 case "$HOST" in
 X86 | AMD64 | ARM | ARM64)
@@ -4280,6 +4269,7 @@ X86 | AMD64 | ARM | ARM64)
 esac
 
 AM_CONDITIONAL(MONO_ARCH_GSHAREDVT_SUPPORTED, test $MONO_ARCH_GSHAREDVT_SUPPORTED = 1)
+AM_CONDITIONAL(TARGET_WASM, test $arch_target = wasm)
 
 dnl *************
 dnl *** VTUNE ***
@@ -4342,6 +4332,7 @@ if test "x$target_mach" = "xyes"; then
 	  CPPFLAGS_FOR_LIBGC="$CPPFLAGS_FOR_LIBGC -DTARGET_IOS"
 	  CFLAGS_FOR_LIBGC="$CFLAGS_FOR_LIBGC -DTARGET_IOS"
 	  BTLS_SUPPORTED=no
+	  target_ios=yes
    else
        AC_TRY_COMPILE([#include "TargetConditionals.h"],[
        #if TARGET_IPHONE_SIMULATOR == 1 || TARGET_OS_IPHONE == 1
@@ -4604,8 +4595,9 @@ if test $found_export_dynamic = no; then
 	LDFLAGS="${old_ldflags}"
 fi
 
-AC_CHECK_HEADERS(getopt.h sys/select.h sys/time.h sys/wait.h pwd.h iconv.h localcharset.h sys/types.h sys/resource.h)
-AC_CHECK_LIB([iconv], [locale_charset],[],[AC_CHECK_LIB([charset], [locale_charset],[LIBS+=" -liconv -lcharset"])])
+AC_CHECK_HEADERS(getopt.h sys/select.h sys/time.h sys/wait.h pwd.h iconv.h sys/types.h sys/resource.h)
+dnl giconv.c will check on HAVE_ICONV_H but we need this for link time
+AC_CHECK_LIB(iconv, iconv_open)
 AC_CHECK_HEADER(alloca.h, [HAVE_ALLOCA_H=1], [HAVE_ALLOCA_H=0])
 AC_SUBST(HAVE_ALLOCA_H)
 
@@ -5026,12 +5018,11 @@ if test x$enable_cooperative_suspend_default != xyes; then
 	X86 | AMD64)
 		dnl Some host/target confusion, there's no host_osx (and
 		dnl host_darwin would be true on iOS not just macOS).
-		dnl if test x$target_osx = xyes; then
-		dnl 	enable_hybrid_suspend_default=yes
-		dnl elif test x$host_linux = xyes -o x$host_win32 = xyes; then
-		dnl 	enable_hybrid_suspend_default=yes
-		dnl fi
-		true
+		if test x$target_osx = xyes; then
+			enable_hybrid_suspend_default=yes
+		elif test x$host_linux = xyes -o x$host_win32 = xyes; then
+			enable_hybrid_suspend_default=yes
+		fi
 		;;
 	esac
 fi
@@ -5532,6 +5523,7 @@ AC_CONFIG_COMMANDS([runtime/etc/mono/4.5/web.config],
 
 AC_CONFIG_COMMANDS([quiet-libtool], [sed -e 's/echo "copying selected/# "copying selected/g' < libtool > libtool.tmp && mv libtool.tmp libtool && chmod a+x libtool; sed -e 's/$ECHO "copying selected/# "copying selected/g' < libtool > libtool.tmp && mv libtool.tmp libtool && chmod a+x libtool])
 AC_CONFIG_COMMANDS([nolock-libtool], [sed -e 's/lock_old_archive_extraction=yes/lock_old_archive_extraction=no/g' < libtool > libtool.tmp && mv libtool.tmp libtool && chmod a+x libtool])
+AC_CONFIG_COMMANDS([clean-llvm], [rm -f llvm/llvm_config.mk])
 
 # Anything involving -Werror must be done late because autoconf depends on compiling with warnings to be success.
 if test x"$GCC" = xyes; then
@@ -5551,8 +5543,229 @@ if test x"$GCC" = xyes; then
 	])
 fi
 
+#
+# Mono.Native Support
+# -------------------
+# Mono.Native is the new name for both System.Native and System.Security.Cryptography.Apple.
+# It is built as a stand-alone shared library and not bundled with the runtime because we
+# may need to build two different versions of it.
+#
+# Starting with macOS 10.12+ and iOS 10+, Apple introduced a new Unified API for some of the
+# crypto primitives that we're using as part of System.Security.Cryptography.Apple.
+#
+# On Desktop, we can check at runtime whether the OS version is recent enough and switch
+# implementation accordingly.  We build a single `libmono_native` shared library.
+#
+# However, on Mobile we cannot have any undefined symbols as this would break Bitcode.
+#
+# During the mobile build, we are called with `CC` containing an explicit minium version flag,
+# which is eiter `-mmacosx-version-min=`, `-mios-simulator-version-min=` or `-miphoneos-version-min=`
+# depending on platform.
+#
+# We build two versions of the shared library:
+# - `libmono_native_compat` is built with whichever minimum version is passed to us via `CC`.
+# - `libmono_native_unifed` is built with the minimum version set to macOS 10.12+ / iOS 10+.
+#
+# For testing purpuses, there is a function called `mono_native_get_platform_type ()`
+# (see mono/native/mono-native-platform.c), which returns a `MonoNativePlatformType` enum value.
+# There is also `Mono.MonoNativePlatform.GetPlatformType ()` (see mcs/class/System/Mono/MonoNativePlatform.cs).
+#
+# This can be called by automated tests both to ensure that the library has been correctly installed and also
+# to verify that it's the correct version of it.
+#
+
+sed_version_pattern='[[0-9]]\{1,2\}\(\.[[0-9]]\{1,2\}\)'
+if test x$target_osx = xyes; then
+	sed_remove_mac_version_pattern="s/-mmacosx-version-min=$sed_version_pattern//g"
+	grep_find_mac_version_pattern="-mmacosx-version-min=$sed_version_pattern"
+	mono_native_compat_version=`echo $CC | grep -o -e $grep_find_mac_version_pattern`
+	MONO_NATIVE_CC=`echo $CC | sed -e $sed_remove_mac_version_pattern`
+	MONO_NATIVE_CXX=`echo $CXX | sed -e $sed_remove_mac_version_pattern`
+	MONO_NATIVE_CPPFLAGS=`echo $CPPFLAGS | sed -e $sed_remove_mac_version_pattern`
+	MONO_NATIVE_CFLAGS=`echo $CFLAGS | sed -e $sed_remove_mac_version_pattern`
+	MONO_NATIVE_CXXFLAGS=`echo $CXXFLAGS | sed -e $sed_remove_mac_version_pattern`
+	MONO_NATIVE_LDFLAGS=`echo $LDFLAGS | sed -e $sed_remove_mac_version_pattern`
+
+	mono_native=yes
+	MONO_NATIVE_PLATFORM=macos
+	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_MACOS"
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT(macos)
+
+	AC_MONO_APPLE_AVAILABLE(mono_native_compat, [whether we need the compatibility layer],
+		[!(MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12)])
+
+	if test x$mono_native_compat = xyes; then
+		mono_native_compat=yes
+		mono_native_text="Mac OSX (compat+unified)"
+		MONO_NATIVE_COMPAT_CFLAGS="$CFLAGS $mono_native_compat_version"
+		MONO_NATIVE_COMPAT_LDFLAGS="$LDFLAGS $mono_native_compat_version"
+		MONO_NATIVE_UNIFIED_CFLAGS="$MONO_NATIVE_CFLAGS -mmacosx-version-min=10.12"
+		MONO_NATIVE_UNIFIED_LDFLAGS="$MONO_NATIVE_LDFLAGS -mmacosx-version-min=10.12"
+	else
+		mono_native_compat=no
+		mono_native_text="Mac OSX"
+	fi
+elif test x$mono_native_platform_ios = xyes; then
+	AC_MONO_APPLE_TARGET(TARGET_OS_SIMULATOR, [mono_native_ios_sim=yes], [mono_native_ios_sim=no])
+
+	AC_MONO_APPLE_TARGET(TARGET_OS_IOS, [
+		if test x$mono_native_ios_sim = xyes; then
+			mono_native_ios_target=ios-simulator
+			mono_native_text="iOS Simulator"
+			MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_IPHONE | MONO_NATIVE_PLATFORM_TYPE_SIMULATOR"
+		else
+			mono_native_ios_target=iphoneos
+			mono_native_text="iOS Device"
+			MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_IPHONE | MONO_NATIVE_PLATFORM_TYPE_DEVICE"
+		fi
+		mono_native_unified_version="10.0"
+		mono_native_compat_check="__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_10_0"
+	], [
+		AC_MONO_APPLE_TARGET(TARGET_OS_TV, [
+			if test x$mono_native_ios_sim = xyes; then
+				mono_native_ios_target=tvos-simulator
+				mono_native_text="AppleTV Simulator"
+				MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_TV | MONO_NATIVE_PLATFORM_TYPE_SIMULATOR"
+			else
+				mono_native_ios_target=tvos
+				mono_native_text="AppleTV Device"
+				MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_TV | MONO_NATIVE_PLATFORM_TYPE_DEVICE"
+			fi
+			mono_native_unified_version="10.0"
+			mono_native_compat_check="__TV_OS_VERSION_MIN_REQUIRED >= __TVOS_10_0"
+		], [
+			AC_MONO_APPLE_TARGET(TARGET_OS_WATCH, [
+				if test x$mono_native_ios_sim = xyes; then
+					mono_native_ios_target=watchos-simulator
+					mono_native_text="Apple Watch Simulator"
+					MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_WATCH | MONO_NATIVE_PLATFORM_TYPE_SIMULATOR"
+				else
+					mono_native_ios_target=watchos
+					mono_native_text="Apple Watch Device"
+					MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_IOS | MONO_NATIVE_PLATFORM_TYPE_WATCH | MONO_NATIVE_PLATFORM_TYPE_DEVICE"
+				fi
+				mono_native_unified_version="5.0"
+				mono_native_compat_check="__WATCH_OS_VERSION_MIN_REQUIRED >= __WATCHOS_5_0"
+			], [
+				AC_MSG_ERROR([Unknown iOS Target])
+			])
+		])
+	])
+
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT([$mono_native_ios_target])
+
+	AC_MONO_APPLE_AVAILABLE(mono_native_compat, [whether we need the compatibility layer], [!($mono_native_compat_check)])
+
+	sed_remove_ios_version_pattern="s/-m\(.*\)-version-min=$sed_version_pattern//g"
+	grep_find_ios_version_pattern="-m$mono_native_ios_target-version-min=$sed_version_pattern"
+
+	mono_native_compat_version=`echo $CC | grep -o -e $grep_find_ios_version_pattern`
+
+	if test x$with_bitcode = xyes; then
+		mono_native_ldflags="-framework CoreFoundation -framework Foundation -no-undefined -fatal_warnings"
+		MONO_NATIVE_LIBADD="../mini/$LIBMONO_LA"
+	else
+		mono_native_ldflags="-framework CoreFoundation -framework Foundation -fatal_warnings"
+	fi
+
+	if test x$enable_gss = xyes; then
+		mono_native_ldflags="$mono_native_ldflags -framework GSS"
+	fi
+
+	MONO_NATIVE_CC=`echo $CC | sed -e $sed_remove_ios_version_pattern`
+	MONO_NATIVE_CXX=`echo $CXX | sed -e $sed_remove_ios_version_pattern`
+	MONO_NATIVE_CPPFLAGS=`echo $CPPFLAGS | sed -e $sed_remove_ios_version_pattern`
+	MONO_NATIVE_CXXFLAGS=`echo $CXXFLAGS | sed -e $sed_remove_ios_version_pattern`
+	MONO_NATIVE_CFLAGS=`echo $CFLAGS | sed -e $sed_remove_ios_version_pattern`
+	MONO_NATIVE_LDFLAGS=`echo $LDFLAGS $mono_native_ldflags | sed -e $sed_remove_ios_version_pattern`
+
+	if test x$mono_native_compat = xyes; then
+		mono_native_text="$mono_native_text (compat+unified)"
+		MONO_NATIVE_COMPAT_CFLAGS="$CFLAGS $mono_native_compat_version"
+		MONO_NATIVE_COMPAT_LDFLAGS="$LDFLAGS $mono_native_compat_version"
+		MONO_NATIVE_UNIFIED_CFLAGS="$MONO_NATIVE_CFLAGS -m$mono_native_ios_target-version-min=$mono_native_unified_version"
+		MONO_NATIVE_UNIFIED_LDFLAGS="$MONO_NATIVE_LDFLAGS -m$mono_native_ios_target-version-min=$mono_native_unified_version"
+	fi
+
+	mono_native=yes
+	MONO_NATIVE_PLATFORM=ios
+elif test x$host_linux = xyes; then
+	mono_native_text="Linux"
+	MONO_NATIVE_CC=$CC
+	MONO_NATIVE_CXX=$CXX
+	MONO_NATIVE_CPPFLAGS=$CPPFLAGS
+	MONO_NATIVE_CXXFLAGS=$CXXFLAGS
+	MONO_NATIVE_CFLAGS=$CFLAGS
+	MONO_NATIVE_LDFLAGS=$LDFLAGS
+
+	mono_native=yes
+	mono_native_compat=no
+	MONO_NATIVE_PLATFORM=linux
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT(linux)
+
+	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_LINUX"
+elif test x$platform_android = xyes; then
+	mono_native_text="Android"
+	MONO_NATIVE_CC=$CC
+	MONO_NATIVE_CXX=$CXX
+	MONO_NATIVE_CPPFLAGS=$CPPFLAGS
+	MONO_NATIVE_CXXFLAGS=$CXXFLAGS
+	MONO_NATIVE_CFLAGS=$CFLAGS
+	MONO_NATIVE_LDFLAGS=$LDFLAGS
+
+	mono_native=yes
+	mono_native_compat=no
+	MONO_NATIVE_PLATFORM=android
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT(Android)
+
+	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_ANDROID"
+else
+	mono_native=no
+	mono_native_text="no"
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT(no)
+fi
+
+if test x$mono_native_compat = xyes; then
+	MONO_NATIVE_LIBRARY_NAME=libmono-native-compat
+else
+	MONO_NATIVE_LIBRARY_NAME=libmono-native
+fi
+
+AC_SUBST(MONO_NATIVE_PLATFORM)
+AC_SUBST(MONO_NATIVE_CC)
+AC_SUBST(MONO_NATIVE_CXX)
+AC_SUBST(MONO_NATIVE_CPPFLAGS)
+AC_SUBST(MONO_NATIVE_CXXFLAGS)
+AC_SUBST(MONO_NATIVE_CFLAGS)
+AC_SUBST(MONO_NATIVE_COMPAT_CFLAGS)
+AC_SUBST(MONO_NATIVE_UNIFIED_CFLAGS)
+AC_SUBST(MONO_NATIVE_LDFLAGS)
+AC_SUBST(MONO_NATIVE_COMPAT_LDFLAGS)
+AC_SUBST(MONO_NATIVE_UNIFIED_LDFLAGS)
+AC_SUBST(MONO_NATIVE_LIBRARY_NAME)
+AC_SUBST(MONO_NATIVE_LIBADD)
+
+AM_CONDITIONAL(MONO_NATIVE, test x$mono_native = xyes)
+AM_CONDITIONAL(MONO_NATIVE_COMPAT, test x$mono_native_compat = xyes)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_MACOS, test x$MONO_NATIVE_PLATFORM = xmacos)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_IOS, test x$MONO_NATIVE_PLATFORM = xios)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_LINUX, test x$MONO_NATIVE_PLATFORM = xlinux)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_AIX, test x$MONO_NATIVE_PLATFORM = xaix)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_ANDROID, test x$MONO_NATIVE_PLATFORM = xandroid)
+
+MONO_NATIVE_PLATFORM_TYPE_COMPAT="$MONO_NATIVE_PLATFORM_TYPE | MONO_NATIVE_PLATFORM_TYPE_COMPAT"
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED="$MONO_NATIVE_PLATFORM_TYPE | MONO_NATIVE_PLATFORM_TYPE_UNIFIED"
+AC_SUBST(MONO_NATIVE_PLATFORM_TYPE)
+AC_SUBST(MONO_NATIVE_PLATFORM_TYPE_COMPAT)
+AC_SUBST(MONO_NATIVE_PLATFORM_TYPE_UNIFIED)
+
 # Update all submodules recursively to ensure everything is checked out
-$srcdir/scripts/update_submodules.sh
+(cd $srcdir && scripts/update_submodules.sh)
 
 AC_OUTPUT([
 Makefile
@@ -5564,6 +5777,7 @@ scripts/mono-find-requires
 mk/Makefile
 mono/Makefile
 mono/btls/Makefile
+mono/native/Makefile
 mono/utils/Makefile
 mono/utils/jemalloc/Makefile
 mono/metadata/Makefile
@@ -5579,6 +5793,9 @@ mono/arch/arm/Makefile
 mono/arch/arm64/Makefile
 mono/arch/mips/Makefile
 mono/sgen/Makefile
+mono/native/platform-type.c
+mono/native/platform-type-compat.c
+mono/native/platform-type-unified.c
 mono/tests/Makefile
 mono/tests/assembly-load-reference/Makefile
 mono/tests/tests-config
@@ -5590,6 +5807,7 @@ mono/mini/Makefile
 mono/profiler/Makefile
 mono/eglib/Makefile
 mono/eglib/eglib-config.h
+mono/eglib/test/Makefile
 m4/Makefile
 ikvm-native/Makefile
 scripts/Makefile
@@ -5759,6 +5977,21 @@ fi
       echo "HAVE_BTLS=1" >> $srcdir/$mcsdir/build/config.make
     fi
 
+    if test "x$mono_native" = "xyes"; then
+      echo "MONO_NATIVE_SUPPORTED=true" >> $srcdir/$mcsdir/build/config.make
+    else
+      echo "MONO_NATIVE_SUPPORTED=false" >> $srcdir/$mcsdir/build/config.make
+    fi
+
+    if test x$mono_native_compat = xyes; then
+      echo "MONO_NATIVE_USING_COMPAT=true" >> $srcdir/$mcsdir/build/config.make
+    else
+      echo "MONO_NATIVE_USING_COMPAT=false" >> $srcdir/$mcsdir/build/config.make
+    fi
+
+    echo "MONO_NATIVE_PLATFORM_TYPE=$MONO_NATIVE_PLATFORM_TYPE" >> $srcdir/$mcsdir/build/config.make
+    echo "MONO_NATIVE_PLATFORM=$MONO_NATIVE_PLATFORM" >> $srcdir/$mcsdir/build/config.make
+
   fi
 
 )
@@ -5801,6 +6034,7 @@ echo "
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm, built in-tree: $internal_llvm, assertions: $enable_llvm_asserts)
 	Spectre:       $spectre_mitigation_status
+	Mono.Native:   $mono_native_text
 
    Libraries:
 	.NET 4.x:        $with_profile4_x

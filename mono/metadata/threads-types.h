@@ -15,6 +15,7 @@
 
 #include <glib.h>
 
+#include <mono/utils/mono-forward-internal.h>
 #include <mono/metadata/object.h>
 #include "mono/metadata/handle.h"
 #include "mono/utils/mono-compiler.h"
@@ -34,7 +35,9 @@ typedef enum {
 	ThreadState_Suspended = 0x00000040,
 	ThreadState_AbortRequested = 0x00000080,
 	ThreadState_Aborted = 0x00000100
-} MonoThreadState; 
+} MonoThreadState;
+
+G_ENUM_FUNCTIONS (MonoThreadState)
 
 /* This is a copy of System.Threading.ApartmentState */
 typedef enum {
@@ -44,6 +47,8 @@ typedef enum {
 } MonoThreadApartmentState;
 
 typedef enum {
+// These values match System.Threading.ThreadPriority.
+// These values match System.Diagnostics.ThreadPriorityLevel and Windows, but are offset by 2.
 	MONO_THREAD_PRIORITY_LOWEST       = 0,
 	MONO_THREAD_PRIORITY_BELOW_NORMAL = 1,
 	MONO_THREAD_PRIORITY_NORMAL       = 2,
@@ -54,8 +59,6 @@ typedef enum {
 #define SPECIAL_STATIC_NONE 0
 #define SPECIAL_STATIC_THREAD 1
 #define SPECIAL_STATIC_CONTEXT 2
-
-typedef struct _MonoInternalThread MonoInternalThread;
 
 /* It's safe to access System.Threading.InternalThread from native code via a
  * raw pointer because all instances should be pinned.  But for uniformity of
@@ -78,8 +81,44 @@ typedef enum {
 	MONO_THREAD_CREATE_FLAGS_SMALL_STACK  = 0x8,
 } MonoThreadCreateFlags;
 
+// FIXME func should be MonoThreadStart and remove the template
 MonoInternalThread*
 mono_thread_create_internal (MonoDomain *domain, gpointer func, gpointer arg, MonoThreadCreateFlags flags, MonoError *error);
+
+#ifdef __cplusplus
+template <typename T>
+inline MonoInternalThread*
+mono_thread_create_internal (MonoDomain *domain, T func, gpointer arg, MonoThreadCreateFlags flags, MonoError *error)
+{
+	return mono_thread_create_internal(domain, (gpointer)func, arg, flags, error);
+}
+#endif
+
+MonoInternalThreadHandle
+mono_thread_create_internal_handle (MonoDomain *domain, gpointer func, gpointer arg, MonoThreadCreateFlags flags, MonoError *error);
+
+#ifdef __cplusplus
+template <typename T>
+inline MonoInternalThreadHandle
+mono_thread_create_internal_handle (MonoDomain *domain, T func, gpointer arg, MonoThreadCreateFlags flags, MonoError *error)
+{
+	return mono_thread_create_internal_handle(domain, (gpointer)func, arg, flags, error);
+}
+#endif
+
+/* Data owned by a MonoInternalThread that must live until both the finalizer
+ * for MonoInternalThread has run, and the underlying machine thread has
+ * detached.
+ *
+ * Normally a thread is first detached and then the InternalThread object is
+ * finalized and collected.  However during shutdown, when the root domain is
+ * finalized, all the InternalThread objects are finalized first and the
+ * machine threads are detached later.
+ */
+typedef struct {
+  MonoRefCount ref;
+  MonoCoopMutex *synch_cs;
+} MonoLongLivedThreadData;
 
 void mono_threads_install_cleanup (MonoThreadCleanupFunc func);
 
@@ -361,7 +400,7 @@ void
 ves_icall_System_Threading_Thread_SpinWait_nop (MonoError *error);
 
 void
-mono_threads_register_app_context (MonoAppContext* ctx, MonoError *error);
+mono_threads_register_app_context (MonoAppContextHandle ctx, MonoError *error);
 void
 mono_threads_release_app_context (MonoAppContext* ctx, MonoError *error);
 
@@ -372,6 +411,9 @@ ICALL_EXPORT
 void ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContextHandle ctx, MonoError *error);
 
 MONO_PROFILER_API MonoInternalThread *mono_thread_internal_current (void);
+
+MonoInternalThreadHandle
+mono_thread_internal_current_handle (void);
 
 void mono_thread_internal_abort (MonoInternalThread *thread, gboolean appdomain_unload);
 void mono_thread_internal_suspend_for_shutdown (MonoInternalThread *thread);
@@ -437,8 +479,18 @@ void
 mono_thread_resume_interruption (gboolean exec);
 void mono_threads_perform_thread_dump (void);
 
+// FIXME Correct the type of func and remove the template.
 gboolean
 mono_thread_create_checked (MonoDomain *domain, gpointer func, gpointer arg, MonoError *error);
+
+#ifdef __cplusplus
+template <typename T>
+inline gboolean
+mono_thread_create_checked (MonoDomain *domain, T func, gpointer arg, MonoError *error)
+{
+	return mono_thread_create_checked (domain, (gpointer)func, arg, error);
+}
+#endif
 
 void mono_threads_add_joinable_runtime_thread (MonoThreadInfo *thread_info);
 void mono_threads_add_joinable_thread (gpointer tid);
@@ -473,7 +525,13 @@ gboolean
 mono_thread_internal_is_current (MonoInternalThread *internal);
 
 gboolean
+mono_thread_internal_is_current_handle (MonoInternalThreadHandle internal);
+
+gboolean
 mono_threads_is_current_thread_in_protected_block (void);
+
+gboolean
+mono_threads_is_critical_method (MonoMethod *method);
 
 gpointer
 mono_threads_enter_gc_unsafe_region_unbalanced_internal (MonoStackData *stackdata);
@@ -527,8 +585,8 @@ typedef struct {
 } MonoFrameSummary;
 
 typedef struct {
-	intptr_t offset_free_hash;
-	intptr_t offset_rich_hash;
+	guint64 offset_free_hash;
+	guint64 offset_rich_hash;
 } MonoStackHash;
 
 typedef struct {
@@ -538,8 +596,8 @@ typedef struct {
 	// For managed stack walking
 
 	MonoDomain *domain;
-	gpointer *jit_tls;
-	gpointer *lmf;
+	MonoJitTlsData *jit_tls;
+	MonoLMF *lmf;
 
 	// Emitted attributes
 

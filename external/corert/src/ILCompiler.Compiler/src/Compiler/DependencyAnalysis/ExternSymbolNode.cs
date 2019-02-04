@@ -14,7 +14,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents a symbol that is defined externally and statically linked to the output obj file.
     /// </summary>
-    public class ExternSymbolNode : DependencyNodeCore<NodeFactory>, ISortableSymbolNode
+    public class ExternSymbolNode : SortableDependencyNode, ISortableSymbolNode
     {
         private Utf8String _name;
 
@@ -42,9 +42,9 @@ namespace ILCompiler.DependencyAnalysis
         public override IEnumerable<CombinedDependencyListEntry> SearchDynamicDependencies(List<DependencyNodeCore<NodeFactory>> markedNodes, int firstNode, NodeFactory factory) => null;
 
 #if !SUPPORT_JIT
-        int ISortableSymbolNode.ClassCode => 1092559304;
+        public override int ClassCode => 1092559304;
 
-        int ISortableSymbolNode.CompareToImpl(ISortableSymbolNode other, CompilerComparer comparer)
+        public override int CompareToImpl(ISortableNode other, CompilerComparer comparer)
         {
             return _name.CompareTo(((ExternSymbolNode)other)._name);
         }

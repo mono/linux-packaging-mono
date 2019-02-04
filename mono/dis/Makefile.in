@@ -84,9 +84,11 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
 	$(top_srcdir)/depcomp
 @DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@bin_PROGRAMS = monodis$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@am__append_1 = libmonodismain.a
 subdir = mono/dis
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -106,12 +108,18 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libmonodis_a_AR = $(AR) $(ARFLAGS)
 libmonodis_a_LIBADD =
-am_libmonodis_a_OBJECTS = get.$(OBJEXT) dis-cil.$(OBJEXT) \
-	util.$(OBJEXT)
+am_libmonodis_a_OBJECTS = libmonodis_a-get.$(OBJEXT) \
+	libmonodis_a-dis-cil.$(OBJEXT) libmonodis_a-util.$(OBJEXT)
 libmonodis_a_OBJECTS = $(am_libmonodis_a_OBJECTS)
+libmonodismain_a_AR = $(AR) $(ARFLAGS)
+libmonodismain_a_LIBADD =
+am_libmonodismain_a_OBJECTS = libmonodismain_a-dump.$(OBJEXT) \
+	libmonodismain_a-main.$(OBJEXT) \
+	libmonodismain_a-declsec.$(OBJEXT)
+libmonodismain_a_OBJECTS = $(am_libmonodismain_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_monodis_OBJECTS = dump.$(OBJEXT) main.$(OBJEXT) declsec.$(OBJEXT)
+am_monodis_OBJECTS =
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
@@ -119,7 +127,10 @@ am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
 	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
-monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) $(glib_libs)
+monodis_DEPENDENCIES = libmonodismain_a-dump.$(OBJEXT) \
+	libmonodismain_a-main.$(OBJEXT) \
+	libmonodismain_a-declsec.$(OBJEXT) libmonodis.a \
+	$(am__DEPENDENCIES_3) $(glib_libs)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -157,8 +168,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libmonodis_a_SOURCES) $(monodis_SOURCES)
-DIST_SOURCES = $(libmonodis_a_SOURCES) $(monodis_SOURCES)
+SOURCES = $(libmonodis_a_SOURCES) $(libmonodismain_a_SOURCES) \
+	$(monodis_SOURCES)
+DIST_SOURCES = $(libmonodis_a_SOURCES) $(libmonodismain_a_SOURCES) \
+	$(monodis_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -240,7 +253,7 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS = @CFLAGS@
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -250,6 +263,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -323,6 +337,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -458,7 +488,9 @@ runtime_lib = \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(glib_libs)
 
-noinst_LIBRARIES = libmonodis.a
+noinst_LIBRARIES = libmonodis.a $(am__append_1)
+libmonodis_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
+libmonodismain_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
 libmonodis_a_SOURCES = \
 	get.c		\
 	get.h		\
@@ -467,7 +499,7 @@ libmonodis_a_SOURCES = \
 	util.c		\
 	util.h
 
-monodis_SOURCES = \
+libmonodismain_a_SOURCES = \
 	dump.c		\
 	dump.h		\
 	main.c		\
@@ -475,7 +507,11 @@ monodis_SOURCES = \
 	declsec.c	\
 	declsec.h
 
+monodis_SOURCES = 
 monodis_LDADD = \
+	libmonodismain_a-dump.$(OBJEXT)	\
+	libmonodismain_a-main.$(OBJEXT)	\
+	libmonodismain_a-declsec.$(OBJEXT) \
 	libmonodis.a			\
 	$(runtime_lib)			\
 	$(LLVM_LIBS)			\
@@ -528,6 +564,11 @@ libmonodis.a: $(libmonodis_a_OBJECTS) $(libmonodis_a_DEPENDENCIES) $(EXTRA_libmo
 	$(AM_V_at)-rm -f libmonodis.a
 	$(AM_V_AR)$(libmonodis_a_AR) libmonodis.a $(libmonodis_a_OBJECTS) $(libmonodis_a_LIBADD)
 	$(AM_V_at)$(RANLIB) libmonodis.a
+
+libmonodismain.a: $(libmonodismain_a_OBJECTS) $(libmonodismain_a_DEPENDENCIES) $(EXTRA_libmonodismain_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libmonodismain.a
+	$(AM_V_AR)$(libmonodismain_a_AR) libmonodismain.a $(libmonodismain_a_OBJECTS) $(libmonodismain_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libmonodismain.a
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -588,12 +629,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/declsec.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dis-cil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodis_a-dis-cil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodis_a-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodis_a-util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodismain_a-declsec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodismain_a-dump.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonodismain_a-main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -618,6 +659,90 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmonodis_a-get.o: get.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-get.o -MD -MP -MF $(DEPDIR)/libmonodis_a-get.Tpo -c -o libmonodis_a-get.o `test -f 'get.c' || echo '$(srcdir)/'`get.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-get.Tpo $(DEPDIR)/libmonodis_a-get.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='get.c' object='libmonodis_a-get.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-get.o `test -f 'get.c' || echo '$(srcdir)/'`get.c
+
+libmonodis_a-get.obj: get.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-get.obj -MD -MP -MF $(DEPDIR)/libmonodis_a-get.Tpo -c -o libmonodis_a-get.obj `if test -f 'get.c'; then $(CYGPATH_W) 'get.c'; else $(CYGPATH_W) '$(srcdir)/get.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-get.Tpo $(DEPDIR)/libmonodis_a-get.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='get.c' object='libmonodis_a-get.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-get.obj `if test -f 'get.c'; then $(CYGPATH_W) 'get.c'; else $(CYGPATH_W) '$(srcdir)/get.c'; fi`
+
+libmonodis_a-dis-cil.o: dis-cil.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-dis-cil.o -MD -MP -MF $(DEPDIR)/libmonodis_a-dis-cil.Tpo -c -o libmonodis_a-dis-cil.o `test -f 'dis-cil.c' || echo '$(srcdir)/'`dis-cil.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-dis-cil.Tpo $(DEPDIR)/libmonodis_a-dis-cil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dis-cil.c' object='libmonodis_a-dis-cil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-dis-cil.o `test -f 'dis-cil.c' || echo '$(srcdir)/'`dis-cil.c
+
+libmonodis_a-dis-cil.obj: dis-cil.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-dis-cil.obj -MD -MP -MF $(DEPDIR)/libmonodis_a-dis-cil.Tpo -c -o libmonodis_a-dis-cil.obj `if test -f 'dis-cil.c'; then $(CYGPATH_W) 'dis-cil.c'; else $(CYGPATH_W) '$(srcdir)/dis-cil.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-dis-cil.Tpo $(DEPDIR)/libmonodis_a-dis-cil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dis-cil.c' object='libmonodis_a-dis-cil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-dis-cil.obj `if test -f 'dis-cil.c'; then $(CYGPATH_W) 'dis-cil.c'; else $(CYGPATH_W) '$(srcdir)/dis-cil.c'; fi`
+
+libmonodis_a-util.o: util.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-util.o -MD -MP -MF $(DEPDIR)/libmonodis_a-util.Tpo -c -o libmonodis_a-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-util.Tpo $(DEPDIR)/libmonodis_a-util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='util.c' object='libmonodis_a-util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
+
+libmonodis_a-util.obj: util.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -MT libmonodis_a-util.obj -MD -MP -MF $(DEPDIR)/libmonodis_a-util.Tpo -c -o libmonodis_a-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodis_a-util.Tpo $(DEPDIR)/libmonodis_a-util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='util.c' object='libmonodis_a-util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodis_a_CFLAGS) $(CFLAGS) -c -o libmonodis_a-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
+
+libmonodismain_a-dump.o: dump.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-dump.o -MD -MP -MF $(DEPDIR)/libmonodismain_a-dump.Tpo -c -o libmonodismain_a-dump.o `test -f 'dump.c' || echo '$(srcdir)/'`dump.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-dump.Tpo $(DEPDIR)/libmonodismain_a-dump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dump.c' object='libmonodismain_a-dump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-dump.o `test -f 'dump.c' || echo '$(srcdir)/'`dump.c
+
+libmonodismain_a-dump.obj: dump.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-dump.obj -MD -MP -MF $(DEPDIR)/libmonodismain_a-dump.Tpo -c -o libmonodismain_a-dump.obj `if test -f 'dump.c'; then $(CYGPATH_W) 'dump.c'; else $(CYGPATH_W) '$(srcdir)/dump.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-dump.Tpo $(DEPDIR)/libmonodismain_a-dump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dump.c' object='libmonodismain_a-dump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-dump.obj `if test -f 'dump.c'; then $(CYGPATH_W) 'dump.c'; else $(CYGPATH_W) '$(srcdir)/dump.c'; fi`
+
+libmonodismain_a-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-main.o -MD -MP -MF $(DEPDIR)/libmonodismain_a-main.Tpo -c -o libmonodismain_a-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-main.Tpo $(DEPDIR)/libmonodismain_a-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libmonodismain_a-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+libmonodismain_a-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-main.obj -MD -MP -MF $(DEPDIR)/libmonodismain_a-main.Tpo -c -o libmonodismain_a-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-main.Tpo $(DEPDIR)/libmonodismain_a-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libmonodismain_a-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+libmonodismain_a-declsec.o: declsec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-declsec.o -MD -MP -MF $(DEPDIR)/libmonodismain_a-declsec.Tpo -c -o libmonodismain_a-declsec.o `test -f 'declsec.c' || echo '$(srcdir)/'`declsec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-declsec.Tpo $(DEPDIR)/libmonodismain_a-declsec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='declsec.c' object='libmonodismain_a-declsec.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-declsec.o `test -f 'declsec.c' || echo '$(srcdir)/'`declsec.c
+
+libmonodismain_a-declsec.obj: declsec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -MT libmonodismain_a-declsec.obj -MD -MP -MF $(DEPDIR)/libmonodismain_a-declsec.Tpo -c -o libmonodismain_a-declsec.obj `if test -f 'declsec.c'; then $(CYGPATH_W) 'declsec.c'; else $(CYGPATH_W) '$(srcdir)/declsec.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonodismain_a-declsec.Tpo $(DEPDIR)/libmonodismain_a-declsec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='declsec.c' object='libmonodismain_a-declsec.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonodismain_a_CFLAGS) $(CFLAGS) -c -o libmonodismain_a-declsec.obj `if test -f 'declsec.c'; then $(CYGPATH_W) 'declsec.c'; else $(CYGPATH_W) '$(srcdir)/declsec.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

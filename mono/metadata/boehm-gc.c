@@ -59,6 +59,7 @@ void *pthread_get_stackaddr_np(pthread_t);
 #define MIN_BOEHM_MAX_HEAP_SIZE (MIN_BOEHM_MAX_HEAP_SIZE_IN_MB << 20)
 
 static gboolean gc_initialized = FALSE;
+static gboolean gc_dont_gc_env = FALSE;
 static mono_mutex_t mono_gc_lock;
 
 typedef void (*GC_push_other_roots_proc)(void);
@@ -202,6 +203,9 @@ mono_gc_base_init (void)
 			g_free (env);
 		}
 	}
+
+	/* cache value rather than calling during collection since g_hasenv may take locks and can deadlock */
+	gc_dont_gc_env = g_hasenv ("GC_DONT_GC");
 
 	GC_init ();
 
@@ -546,7 +550,7 @@ typedef struct {
 static gpointer
 register_root (gpointer arg)
 {
-	RootData* root_data = arg;
+	RootData* root_data = (RootData*)arg;
 	g_hash_table_insert (roots, root_data->start, root_data->end);
 	return NULL;
 }
@@ -613,7 +617,7 @@ mono_push_other_roots (void)
 {
 	g_hash_table_foreach (roots, push_root, NULL);
 	FOREACH_THREAD_EXCLUDE (info, MONO_THREAD_INFO_FLAGS_NO_GC) {
-		HandleStack* stack = (HandleStack*)info->handle_stack;
+		HandleStack* stack = info->handle_stack;
 		if (stack)
 			push_handle_stack (stack);
 	} FOREACH_THREAD_END
@@ -699,12 +703,18 @@ mono_gc_make_root_descr_all_refs (int numbits)
 	return NULL;
 }
 
-void*
+MonoObject*
 mono_gc_alloc_fixed (size_t size, void *descr, MonoGCRootSource source, void *key, const char *msg)
 {
 	void *start = GC_MALLOC_UNCOLLECTABLE (size);
 	MONO_PROFILER_RAISE (gc_root_register, ((const mono_byte *) start, size, source, key, msg));
-	return start;
+	return (MonoObject*)start;
+}
+
+MonoObject*
+mono_gc_alloc_fixed_no_descriptor (size_t size, MonoGCRootSource source, void *key, const char *msg)
+{
+	return mono_gc_alloc_fixed (size, 0, source, key, msg);
 }
 
 void
@@ -714,7 +724,7 @@ mono_gc_free_fixed (void* addr)
 	GC_FREE (addr);
 }
 
-void *
+MonoObject*
 mono_gc_alloc_obj (MonoVTable *vtable, size_t size)
 {
 	MonoObject *obj;
@@ -746,7 +756,7 @@ mono_gc_alloc_obj (MonoVTable *vtable, size_t size)
 	return obj;
 }
 
-void *
+MonoArray*
 mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length)
 {
 	MonoArray *obj;
@@ -780,7 +790,7 @@ mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length)
 	return obj;
 }
 
-void *
+MonoArray*
 mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uintptr_t bounds_size)
 {
 	MonoArray *obj;
@@ -817,7 +827,7 @@ mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uint
 	return obj;
 }
 
-void *
+MonoString*
 mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len)
 {
 	MonoString *obj = (MonoString *)GC_MALLOC_ATOMIC (size);
@@ -835,13 +845,13 @@ mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len)
 	return obj;
 }
 
-void*
+MonoObject*
 mono_gc_alloc_mature (MonoVTable *vtable, size_t size)
 {
 	return mono_gc_alloc_obj (vtable, size);
 }
 
-void*
+MonoObject*
 mono_gc_alloc_pinned_obj (MonoVTable *vtable, size_t size)
 {
 	return mono_gc_alloc_obj (vtable, size);
@@ -1389,19 +1399,19 @@ mono_gc_is_moving (void)
 gboolean
 mono_gc_is_disabled (void)
 {
-	if (GC_dont_gc || g_hasenv ("GC_DONT_GC"))
+	if (GC_dont_gc || gc_dont_gc_env)
 		return TRUE;
 	else
 		return FALSE;
 }
 
 void
-mono_gc_wbarrier_range_copy (gpointer _dest, gpointer _src, int size)
+mono_gc_wbarrier_range_copy (gpointer _dest, gconstpointer _src, int size)
 {
 	g_assert_not_reached ();
 }
 
-void*
+MonoRangeCopyFunction
 mono_gc_get_range_copy_func (void)
 {
 	return &mono_gc_wbarrier_range_copy;
@@ -1415,10 +1425,10 @@ mono_gc_get_card_table (int *shift_bits, gpointer *card_mask)
 }
 
 guint8*
-mono_gc_get_target_card_table (int *shift_bits, gpointer *card_mask)
+mono_gc_get_target_card_table (int *shift_bits, target_mgreg_t *card_mask)
 {
 	*shift_bits = 0;
-	*card_mask = NULL;
+	*card_mask = 0;
 	return NULL;
 }
 
@@ -1516,7 +1526,7 @@ mono_gc_register_for_finalization (MonoObject *obj, MonoFinalizationProc user_da
 	g_assert (GC_base (obj) == (char*)obj - offset);
 #endif
 
-	GC_REGISTER_FINALIZER_NO_ORDER ((char*)obj - offset, (GC_finalization_proc)user_data, GUINT_TO_POINTER (offset), NULL, NULL);
+	GC_REGISTER_FINALIZER_NO_ORDER ((char*)obj - offset, user_data, GUINT_TO_POINTER (offset), NULL, NULL);
 }
 
 #ifndef HOST_WIN32
@@ -1804,7 +1814,7 @@ alloc_handle (HandleData *handles, MonoObject *obj, gboolean track)
 #endif
 	unlock_handles (handles);
 	res = MONO_GC_HANDLE (slot, handles->type);
-	MONO_PROFILER_RAISE (gc_handle_created, (res, handles->type, obj));
+	MONO_PROFILER_RAISE (gc_handle_created, (res, (MonoGCHandleType)handles->type, obj));
 	return res;
 }
 
@@ -2005,7 +2015,7 @@ mono_gchandle_free (guint32 gchandle)
 #endif
 	/*g_print ("freed entry %d of type %d\n", slot, handles->type);*/
 	unlock_handles (handles);
-	MONO_PROFILER_RAISE (gc_handle_deleted, (gchandle, handles->type));
+	MONO_PROFILER_RAISE (gc_handle_deleted, (gchandle, (MonoGCHandleType)handles->type));
 }
 
 /**

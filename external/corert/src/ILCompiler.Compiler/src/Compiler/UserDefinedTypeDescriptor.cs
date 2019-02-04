@@ -81,7 +81,9 @@ namespace ILCompiler
                 descriptor.ReturnType = GetVariableTypeIndex(DebuggerCanonicalize(signature.ReturnType));
                 descriptor.ThisAdjust = 0;
                 descriptor.CallingConvention = 0x4; // Near fastcall
-                descriptor.TypeIndexOfThisPointer = signature.IsStatic ? (uint)PrimitiveTypeDescriptor.TYPE_ENUM.T_VOID : GetThisTypeIndex(method.OwningType);
+                descriptor.TypeIndexOfThisPointer = signature.IsStatic ?
+                    GetPrimitiveTypeIndex(method.OwningType.Context.GetWellKnownType(WellKnownType.Void)) :
+                    GetThisTypeIndex(method.OwningType);
                 descriptor.ContainingClass = GetTypeIndex(method.OwningType, true);
 
                 try
@@ -139,7 +141,7 @@ namespace ILCompiler
             uint variableTypeIndex = 0;
             if (type.IsPrimitive)
             {
-                variableTypeIndex = PrimitiveTypeDescriptor.GetPrimitiveTypeIndex(type);
+                variableTypeIndex = GetPrimitiveTypeIndex(type);
             }
             else
             {
@@ -180,6 +182,10 @@ namespace ILCompiler
                     variableTypeIndex = GetEnumTypeIndex(type);
 
                     GetTypeIndex(type, false); // Ensure regular structure record created
+
+                    _enumTypes[type] = variableTypeIndex;
+
+                    return variableTypeIndex;
                 }
 
                 variableTypeIndex = GetTypeIndex(type, needsCompleteIndex);
@@ -290,7 +296,7 @@ namespace ILCompiler
             EnumTypeDescriptor enumTypeDescriptor = new EnumTypeDescriptor
             {
                 ElementCount = (ulong)fieldsDescriptors.Count,
-                ElementType = PrimitiveTypeDescriptor.GetPrimitiveTypeIndex(defType.UnderlyingType),
+                ElementType = GetPrimitiveTypeIndex(defType.UnderlyingType),
                 Name = _objectWriter.GetMangledName(type),
             };
             EnumRecordTypeDescriptor[] typeRecords = new EnumRecordTypeDescriptor[enumTypeDescriptor.ElementCount];
@@ -381,32 +387,68 @@ namespace ILCompiler
             return 0;
         }
 
-        TypeDesc GetFieldDebugType(FieldDesc field)
+        bool ShouldUseCanonicalTypeRecord(TypeDesc type)
         {
-            TypeDesc type = field.FieldType;
-
             // TODO: check the type's generic complexity
-            if (NodeFactory.LazyGenericsPolicy.UsesLazyGenerics(type))
+            return type.GetGenericDepth() > NodeFactory.TypeSystemContext.GenericsConfig.MaxGenericDepthOfDebugRecord;
+        }
+
+        TypeDesc GetDebugType(TypeDesc type)
+        {
+            TypeDesc typeGenericComplexityInfo = type;
+
+            // Strip off pointer, array, and byref details.
+            while (typeGenericComplexityInfo is ParameterizedType paramType) {
+                typeGenericComplexityInfo = paramType.ParameterType;
+            }
+
+            // Types that have some canonical subtypes types should always be represented in normalized canonical form to the binder.
+            // Also, to avoid infinite generic recursion issues, attempt to use canonical form for fields with high generic complexity. 
+            if (type.IsCanonicalSubtype(CanonicalFormKind.Specific) || (typeGenericComplexityInfo is DefType defType) && ShouldUseCanonicalTypeRecord(defType))
             {
                 type = type.ConvertToCanonForm(CanonicalFormKind.Specific);
+
+                // Re-check if the canonical subtype has acceptable generic complexity
+                typeGenericComplexityInfo = type;
+
+                while (typeGenericComplexityInfo is ParameterizedType paramType) {
+                    typeGenericComplexityInfo = paramType.ParameterType;
+                }
+
+                if ((typeGenericComplexityInfo is DefType canonDefType) && ShouldUseCanonicalTypeRecord(canonDefType))
+                {
+                    type = type.ConvertToCanonForm(CanonicalFormKind.Universal);
+                }
             }
 
             return type;
         }
 
+        TypeDesc GetFieldDebugType(FieldDesc field)
+        {
+            return GetDebugType(field.FieldType);
+        }
+
         private uint GetClassTypeIndex(TypeDesc type, bool needsCompleteType)
         {
-            DefType defType = type as DefType;
+            TypeDesc debugType = GetDebugType(type);
+            DefType defType = debugType as DefType;
             System.Diagnostics.Debug.Assert(defType != null, "GetClassTypeIndex was called with non def type");
             ClassTypeDescriptor classTypeDescriptor = new ClassTypeDescriptor
             {
                 IsStruct = type.IsValueType ? 1 : 0,
-                Name = _objectWriter.GetMangledName(type),
-                BaseClassId = 0
+                Name = _objectWriter.GetMangledName(defType),
+                BaseClassId = 0,
+                InstanceSize = 0
             };
 
             uint typeIndex = _objectWriter.GetClassTypeIndex(classTypeDescriptor);
             _knownTypes[type] = typeIndex;
+
+            if (!defType.InstanceByteCount.IsIndeterminate)
+            {
+                classTypeDescriptor.InstanceSize = (ulong)defType.InstanceByteCount.AsInt;
+            }
 
             if (type.HasBaseType && !type.IsValueType)
             {
@@ -417,6 +459,12 @@ namespace ILCompiler
             List<DataFieldDescriptor> nonGcStaticFields = new List<DataFieldDescriptor>();
             List<DataFieldDescriptor> gcStaticFields = new List<DataFieldDescriptor>();
             List<DataFieldDescriptor> threadStaticFields = new List<DataFieldDescriptor>();
+            List<StaticDataFieldDescriptor> staticsDescs = new List<StaticDataFieldDescriptor>();
+
+            string nonGcStaticDataName = NodeFactory.NameMangler.NodeMangler.NonGCStatics(type);
+            string gcStaticDataName = NodeFactory.NameMangler.NodeMangler.GCStatics(type);
+            string threadStaticDataName = NodeFactory.NameMangler.NodeMangler.ThreadStatics(type);
+            bool IsCoreRTAbi = Abi == TargetAbi.CoreRT;
 
             bool isCanonical = defType.IsCanonicalSubtype(CanonicalFormKind.Any);
 
@@ -439,6 +487,30 @@ namespace ILCompiler
 
                 if (fieldDesc.IsStatic)
                 {
+                    if (NodeFactory.Target.OperatingSystem != TargetOS.Windows)
+                    {
+                        StaticDataFieldDescriptor staticDesc = new StaticDataFieldDescriptor
+                        {
+                            StaticOffset = (ulong)fieldOffsetEmit
+                        };
+
+                        // Mark field as static
+                        field.Offset = 0xFFFFFFFF;
+
+                        if (fieldDesc.IsThreadStatic) {
+                            staticDesc.StaticDataName = threadStaticDataName;
+                            staticDesc.IsStaticDataInObject = IsCoreRTAbi ? 1 : 0;
+                        } else if (fieldDesc.HasGCStaticBase) {
+                            staticDesc.StaticDataName = gcStaticDataName;
+                            staticDesc.IsStaticDataInObject = IsCoreRTAbi ? 1 : 0;
+                        } else {
+                            staticDesc.StaticDataName = nonGcStaticDataName;
+                            staticDesc.IsStaticDataInObject = 0;
+                        }
+
+                        staticsDescs.Add(staticDesc);
+                    }
+
                     if (fieldDesc.IsThreadStatic)
                         threadStaticFields.Add(field);
                     else if (fieldDesc.HasGCStaticBase)
@@ -452,9 +524,18 @@ namespace ILCompiler
                 }
             }
 
-            InsertStaticFieldRegionMember(fieldsDescs, defType, nonGcStaticFields, WindowsNodeMangler.NonGCStaticMemberName, "__type_" + WindowsNodeMangler.NonGCStaticMemberName, false);
-            InsertStaticFieldRegionMember(fieldsDescs, defType, gcStaticFields, WindowsNodeMangler.GCStaticMemberName, "__type_" + WindowsNodeMangler.GCStaticMemberName, Abi == TargetAbi.CoreRT);
-            InsertStaticFieldRegionMember(fieldsDescs, defType, threadStaticFields, WindowsNodeMangler.ThreadStaticMemberName, "__type_" + WindowsNodeMangler.ThreadStaticMemberName, Abi == TargetAbi.CoreRT);
+            if (NodeFactory.Target.OperatingSystem == TargetOS.Windows)
+            {
+                InsertStaticFieldRegionMember(fieldsDescs, defType, nonGcStaticFields, WindowsNodeMangler.NonGCStaticMemberName, "__type_" + WindowsNodeMangler.NonGCStaticMemberName, false);
+                InsertStaticFieldRegionMember(fieldsDescs, defType, gcStaticFields, WindowsNodeMangler.GCStaticMemberName, "__type_" + WindowsNodeMangler.GCStaticMemberName, IsCoreRTAbi);
+                InsertStaticFieldRegionMember(fieldsDescs, defType, threadStaticFields, WindowsNodeMangler.ThreadStaticMemberName, "__type_" + WindowsNodeMangler.ThreadStaticMemberName, IsCoreRTAbi);
+            }
+            else
+            {
+                fieldsDescs.AddRange(nonGcStaticFields);
+                fieldsDescs.AddRange(gcStaticFields);
+                fieldsDescs.AddRange(threadStaticFields);
+            }
 
             DataFieldDescriptor[] fields = new DataFieldDescriptor[fieldsDescs.Count];
             for (int i = 0; i < fieldsDescs.Count; ++i)
@@ -462,15 +543,21 @@ namespace ILCompiler
                 fields[i] = fieldsDescs[i];
             }
 
+            StaticDataFieldDescriptor[] statics = new StaticDataFieldDescriptor[staticsDescs.Count];
+            for (int i = 0; i < staticsDescs.Count; ++i)
+            {
+                statics[i] = staticsDescs[i];
+            }
+
             LayoutInt elementSize = defType.GetElementSize();
             int elementSizeEmit = elementSize.IsIndeterminate ? 0xBAAD : elementSize.AsInt;
             ClassFieldsTypeDescriptor fieldsDescriptor = new ClassFieldsTypeDescriptor
             {
                 Size = (ulong)elementSizeEmit,
-                FieldsCount = fieldsDescs.Count
+                FieldsCount = fieldsDescs.Count,
             };
 
-            uint completeTypeIndex = _objectWriter.GetCompleteClassTypeIndex(classTypeDescriptor, fieldsDescriptor, fields);
+            uint completeTypeIndex = _objectWriter.GetCompleteClassTypeIndex(classTypeDescriptor, fieldsDescriptor, fields, statics);
             _completeKnownTypes[type] = completeTypeIndex;
 
             if (needsCompleteType)
@@ -502,7 +589,7 @@ namespace ILCompiler
                     classTypeDescriptor.BaseClassId = GetTypeIndex(defType.Context.GetWellKnownType(WellKnownType.Object), true);
                 }
 
-                uint staticFieldRegionTypeIndex = _objectWriter.GetCompleteClassTypeIndex(classTypeDescriptor, fieldsDescriptor, staticFields.ToArray());
+                uint staticFieldRegionTypeIndex = _objectWriter.GetCompleteClassTypeIndex(classTypeDescriptor, fieldsDescriptor, staticFields.ToArray(), null);
                 uint staticFieldRegionSymbolTypeIndex = staticFieldRegionTypeIndex;
 
                 // This means that access to this static region is done via a double indirection
@@ -530,6 +617,21 @@ namespace ILCompiler
             }
         }
 
+        private uint GetPrimitiveTypeIndex(TypeDesc type)
+        {
+            Debug.Assert(type.IsPrimitive, "it is not a primitive type");
+
+            uint typeIndex;
+
+            if (_primitiveTypes.TryGetValue(type, out typeIndex))
+                return typeIndex;
+
+            typeIndex = _objectWriter.GetPrimitiveTypeIndex(type);
+            _primitiveTypes[type] = typeIndex;
+
+            return typeIndex;
+        }
+
         private ITypesDebugInfoWriter _objectWriter;
         private Dictionary<TypeDesc, uint> _knownTypes = new Dictionary<TypeDesc, uint>();
         private Dictionary<TypeDesc, uint> _completeKnownTypes = new Dictionary<TypeDesc, uint>();
@@ -538,6 +640,7 @@ namespace ILCompiler
         private Dictionary<TypeDesc, uint> _enumTypes = new Dictionary<TypeDesc, uint>();
         private Dictionary<TypeDesc, uint> _byRefTypes = new Dictionary<TypeDesc, uint>();
         private Dictionary<TypeDesc, uint> _thisTypes = new Dictionary<TypeDesc, uint>();
+        private Dictionary<TypeDesc, uint> _primitiveTypes = new Dictionary<TypeDesc, uint>();
         private Dictionary<MethodDesc, uint> _methodIndices = new Dictionary<MethodDesc, uint>();
         private Dictionary<MethodDesc, uint> _methodIdIndices = new Dictionary<MethodDesc, uint>();
 

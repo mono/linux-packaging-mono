@@ -17,6 +17,7 @@
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/icall-internals.h>
 #include <mono/metadata/loader.h>
+#include <mono/metadata/loader-internals.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/mono-gc.h>

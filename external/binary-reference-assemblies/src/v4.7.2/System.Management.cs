@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Management.dll")]
@@ -19,7 +19,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, UnmanagedCode=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.Management
@@ -390,19 +390,19 @@ namespace System.Management
     {
         public ManagementPath() { }
         public ManagementPath(string path) { }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string ClassName { get { throw null; } set { } }
         public static System.Management.ManagementPath DefaultPath { get { throw null; } set { } }
         public bool IsClass { get { throw null; } }
         public bool IsInstance { get { throw null; } }
         public bool IsSingleton { get { throw null; } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string NamespacePath { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Path { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string RelativePath { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Server { get { throw null; } set { } }
         public System.Management.ManagementPath Clone() { throw null; }
         public void SetAsClass() { }
@@ -794,7 +794,7 @@ namespace System.Management
 }
 namespace System.Management.Instrumentation
 {
-    [System.Management.Instrumentation.InstrumentationClassAttribute((System.Management.Instrumentation.InstrumentationType)(1))]
+    [System.Management.Instrumentation.InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType.Event)]
     public abstract partial class BaseEvent : System.Management.Instrumentation.IEvent
     {
         protected BaseEvent() { }
@@ -808,7 +808,7 @@ namespace System.Management.Instrumentation
     {
         void Fire();
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(448))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Method | System.AttributeTargets.Property)]
     public partial class IgnoreMemberAttribute : System.Attribute
     {
         public IgnoreMemberAttribute() { }
@@ -817,7 +817,7 @@ namespace System.Management.Instrumentation
     {
         bool Published { get; set; }
     }
-    [System.Management.Instrumentation.InstrumentationClassAttribute((System.Management.Instrumentation.InstrumentationType)(0))]
+    [System.Management.Instrumentation.InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType.Instance)]
     public abstract partial class Instance : System.Management.Instrumentation.IInstance
     {
         protected Instance() { }
@@ -834,7 +834,7 @@ namespace System.Management.Instrumentation
         public static void Revoke(object instanceData) { }
         public static void SetBatchSize(System.Type instrumentationClass, int batchSize) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(12))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct)]
     public partial class InstrumentationClassAttribute : System.Attribute
     {
         public InstrumentationClassAttribute(System.Management.Instrumentation.InstrumentationType instrumentationType) { }
@@ -848,7 +848,7 @@ namespace System.Management.Instrumentation
         Event = 1,
         Instance = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     public partial class InstrumentedAttribute : System.Attribute
     {
         public InstrumentedAttribute() { }
@@ -857,7 +857,7 @@ namespace System.Management.Instrumentation
         public string NamespaceName { get { throw null; } }
         public string SecurityDescriptor { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(460))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Field | System.AttributeTargets.Method | System.AttributeTargets.Property | System.AttributeTargets.Struct)]
     public partial class ManagedNameAttribute : System.Attribute
     {
         public ManagedNameAttribute(string name) { }

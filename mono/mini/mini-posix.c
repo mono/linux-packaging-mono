@@ -153,7 +153,7 @@ get_saved_signal_handler (int signo, gboolean remove)
 {
 	if (mono_saved_signal_handlers) {
 		/* The hash is only modified during startup, so no need for locking */
-		struct sigaction *handler = g_hash_table_lookup (mono_saved_signal_handlers, GINT_TO_POINTER (signo));
+		struct sigaction *handler = (struct sigaction*)g_hash_table_lookup (mono_saved_signal_handlers, GINT_TO_POINTER (signo));
 		if (remove && handler)
 			g_hash_table_remove (mono_saved_signal_handlers, GINT_TO_POINTER (signo));
 		return handler;
@@ -296,7 +296,7 @@ MONO_SIG_HANDLER_FUNC (static, profiler_signal_handler)
 
 	mono_thread_info_set_is_async_context (TRUE);
 
-	MONO_PROFILER_RAISE (sample_hit, (mono_arch_ip_from_context (ctx), ctx));
+	MONO_PROFILER_RAISE (sample_hit, ((const mono_byte*)mono_arch_ip_from_context (ctx), ctx));
 
 	mono_thread_info_set_is_async_context (FALSE);
 
@@ -332,14 +332,16 @@ MONO_SIG_HANDLER_FUNC (static, sigusr2_signal_handler)
 	mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
 }
 
+typedef void MONO_SIG_HANDLER_SIGNATURE ((*MonoSignalHandler));
+
 static void
-add_signal_handler (int signo, gpointer handler, int flags)
+add_signal_handler (int signo, MonoSignalHandler handler, int flags)
 {
 	struct sigaction sa;
 	struct sigaction previous_sa;
 
 #ifdef MONO_ARCH_USE_SIGACTION
-	sa.sa_sigaction = (void (*)(int, siginfo_t *, void *))handler;
+	sa.sa_sigaction = handler;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO | flags;
 #ifdef MONO_ARCH_SIGSEGV_ON_ALTSTACK
@@ -370,7 +372,7 @@ add_signal_handler (int signo, gpointer handler, int flags)
 		sigemptyset (&block_mask);
 	}
 #else
-	sa.sa_handler = handler;
+	sa.sa_handler = (void (*)(int))handler;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = flags;
 #endif
@@ -711,7 +713,9 @@ sampling_thread_func (gpointer unused)
 	 * to do our work, the kernel may knock us back down to the normal thread
 	 * scheduling policy without telling us.
 	 */
-	struct sched_param sched = { .sched_priority = sched_get_priority_max (SCHED_FIFO) };
+	struct sched_param sched;
+	memset (&sched, 0, sizeof (sched));
+	sched.sched_priority = sched_get_priority_max (SCHED_FIFO);
 	pthread_setschedparam (pthread_self (), SCHED_FIFO, &sched);
 
 	MonoProfilerSampleMode mode;
@@ -856,7 +860,7 @@ mono_runtime_setup_stat_profiler (void)
 	mono_atomic_store_i32 (&sampling_thread_running, 1);
 
 	MonoError error;
-	MonoInternalThread *thread = mono_thread_create_internal (mono_get_root_domain (), sampling_thread_func, NULL, MONO_THREAD_CREATE_FLAGS_NONE, &error);
+	MonoInternalThread *thread = mono_thread_create_internal (mono_get_root_domain (), (gpointer)sampling_thread_func, NULL, MONO_THREAD_CREATE_FLAGS_NONE, &error);
 	mono_error_assert_ok (&error);
 
 	sampling_thread = MONO_UINT_TO_NATIVE_THREAD_ID (thread->tid);
@@ -986,8 +990,9 @@ dump_native_stacktrace (const char *signal, void *ctx)
 		pid_t pid;
 		int status;
 		pid_t crashed_pid = getpid ();
-		gchar *output = NULL;
+
 		MonoStackHash hashes;
+		gchar *output = NULL;
 
 #ifndef DISABLE_CRASH_REPORTING
 		MonoStateMem merp_mem;
@@ -996,7 +1001,6 @@ dump_native_stacktrace (const char *signal, void *ctx)
 		if (!double_faulted) {
 			gboolean leave = FALSE;
 			gboolean dump_for_merp = FALSE;
-
 #if defined(TARGET_OSX)
 			dump_for_merp = mono_merp_enabled ();
 #endif
@@ -1123,7 +1127,6 @@ dump_native_stacktrace (const char *signal, void *ctx)
 		output = NULL;
 		mono_state_free_mem (&merp_mem);
 #endif
-
 	}
 #endif
 #else

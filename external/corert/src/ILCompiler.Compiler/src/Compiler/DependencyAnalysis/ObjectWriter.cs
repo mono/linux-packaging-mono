@@ -194,16 +194,6 @@ namespace ILCompiler.DependencyAnalysis
         private static extern int EmitSymbolRef(IntPtr objWriter, byte[] symbolName, RelocType relocType, int delta);
         public int EmitSymbolRef(Utf8StringBuilder symbolName, RelocType relocType, int delta = 0)
         {
-            if (_targetPlatform.Architecture != TargetArchitecture.ARMEL && _targetPlatform.Architecture != TargetArchitecture.ARM)
-            {
-                // Workaround for ObjectWriter's lack of support for IMAGE_REL_BASED_RELPTR32
-                // https://github.com/dotnet/corert/issues/3278
-                if (relocType == RelocType.IMAGE_REL_BASED_RELPTR32)
-                {
-                    relocType = RelocType.IMAGE_REL_BASED_REL32;
-                    delta = checked(delta + sizeof(int));
-                }
-            }
             return EmitSymbolRef(_nativeObjectWriter, symbolName.Append('\0').UnderlyingArray, relocType, delta);
         }
 
@@ -275,7 +265,12 @@ namespace ILCompiler.DependencyAnalysis
         private static extern uint GetClassTypeIndex(IntPtr objWriter, ClassTypeDescriptor classTypeDescriptor);
 
         [DllImport(NativeObjectWriterFileName)]
-        private static extern uint GetCompleteClassTypeIndex(IntPtr objWriter, ClassTypeDescriptor classTypeDescriptor, ClassFieldsTypeDescriptor classFieldsTypeDescriptior, DataFieldDescriptor[] fields);
+        private static extern uint GetCompleteClassTypeIndex(IntPtr objWriter, ClassTypeDescriptor classTypeDescriptor,
+                                                             ClassFieldsTypeDescriptor classFieldsTypeDescriptior, DataFieldDescriptor[] fields,
+                                                             StaticDataFieldDescriptor[] statics);
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern uint GetPrimitiveTypeIndex(IntPtr objWriter, int type);
 
         [DllImport(NativeObjectWriterFileName)]
         private static extern void EmitARMFnStart(IntPtr objWriter);
@@ -316,9 +311,16 @@ namespace ILCompiler.DependencyAnalysis
             return GetClassTypeIndex(_nativeObjectWriter, classTypeDescriptor);
         }
 
-        public uint GetCompleteClassTypeIndex(ClassTypeDescriptor classTypeDescriptor, ClassFieldsTypeDescriptor classFieldsTypeDescriptior, DataFieldDescriptor[] fields)
+        public uint GetCompleteClassTypeIndex(ClassTypeDescriptor classTypeDescriptor, ClassFieldsTypeDescriptor classFieldsTypeDescriptior,
+                                              DataFieldDescriptor[] fields, StaticDataFieldDescriptor[] statics)
         {
-            return GetCompleteClassTypeIndex(_nativeObjectWriter, classTypeDescriptor, classFieldsTypeDescriptior, fields);
+            return GetCompleteClassTypeIndex(_nativeObjectWriter, classTypeDescriptor, classFieldsTypeDescriptior, fields, statics);
+        }
+
+        public uint GetPrimitiveTypeIndex(TypeDesc type)
+        {
+            Debug.Assert(type.IsPrimitive, "it is not a primitive type");
+            return GetPrimitiveTypeIndex(_nativeObjectWriter, (int)type.Category);
         }
 
         [DllImport(NativeObjectWriterFileName)]
@@ -372,10 +374,42 @@ namespace ILCompiler.DependencyAnalysis
         }
 
         [DllImport(NativeObjectWriterFileName)]
-        private static extern void EmitDebugFunctionInfo(IntPtr objWriter, byte[] methodName, int methodSize);
-        public void EmitDebugFunctionInfo(int methodSize)
+        private static extern void EmitDebugEHClause(IntPtr objWriter, UInt32 TryOffset, UInt32 TryLength, UInt32 HandlerOffset, UInt32 HandlerLength);
+
+        public void EmitDebugEHClause(DebugEHClauseInfo ehClause)
         {
-            EmitDebugFunctionInfo(_nativeObjectWriter, _currentNodeZeroTerminatedName.UnderlyingArray, methodSize);
+            EmitDebugEHClause(_nativeObjectWriter, ehClause.TryOffset, ehClause.TryLength, ehClause.HandlerOffset, ehClause.HandlerLength);
+        }
+
+        public void EmitDebugEHClauseInfo(ObjectNode node)
+        {
+            var nodeWithCodeInfo = node as INodeWithCodeInfo;
+            if (nodeWithCodeInfo != null)
+            {
+                DebugEHClauseInfo[] clauses = nodeWithCodeInfo.DebugEHClauseInfos;
+                if (clauses != null)
+                {
+                    foreach (var clause in clauses)
+                    {
+                        EmitDebugEHClause(clause);
+                    }
+                }
+            }
+        }
+
+        [DllImport(NativeObjectWriterFileName)]
+        private static extern void EmitDebugFunctionInfo(IntPtr objWriter, byte[] methodName, int methodSize, UInt32 methodTypeIndex);
+        public void EmitDebugFunctionInfo(ObjectNode node, int methodSize)
+        {
+            uint methodTypeIndex = 0;
+
+            var methodNode = node as IMethodNode;
+            if (methodNode != null)
+            {
+                methodTypeIndex = _userDefinedTypeDescriptor.GetMethodFunctionIdTypeIndex(methodNode.Method);
+            }
+
+            EmitDebugFunctionInfo(_nativeObjectWriter, _currentNodeZeroTerminatedName.UnderlyingArray, methodSize, methodTypeIndex);
         }
 
         [DllImport(NativeObjectWriterFileName)]
@@ -699,12 +733,21 @@ namespace ILCompiler.DependencyAnalysis
             List<byte[]> cfis;
             if (_offsetToCfis.TryGetValue(offset, out cfis))
             {
-                foreach (byte[] cfi in cfis)
+                if (forArm)
                 {
-                    if (forArm)
-                        EmitARMExIdxCode(offset, cfi);
-                    else
+                    // Unwind insts are generated in the object file in the reversed order on arm,
+                    // so we should reverse the cfi list
+                    for (int index = cfis.Count - 1; index >= 0; index--)
+                    {
+                        EmitARMExIdxCode(offset, cfis[index]);
+                    }
+                }
+                else
+                {
+                    foreach (byte[] cfi in cfis)
+                    {
                         EmitCFICode(offset, cfi);
+                    }
                 }
             }
         }
@@ -1113,13 +1156,9 @@ namespace ILCompiler.DependencyAnalysis
 
                     if (objectWriter.HasFunctionDebugInfo())
                     {
-                        if (factory.Target.OperatingSystem == TargetOS.Windows)
-                        {
-                            // Build debug local var info.
-                            // It currently supports only Windows CodeView format.
-                            objectWriter.EmitDebugVarInfo(node);
-                        }
-                        objectWriter.EmitDebugFunctionInfo(nodeContents.Data.Length);
+                        objectWriter.EmitDebugVarInfo(node);
+                        objectWriter.EmitDebugEHClauseInfo(node);
+                        objectWriter.EmitDebugFunctionInfo(node, nodeContents.Data.Length);
                     }
                 }
 

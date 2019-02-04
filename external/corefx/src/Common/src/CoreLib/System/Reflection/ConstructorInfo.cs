@@ -7,6 +7,9 @@ using System.Globalization;
 
 namespace System.Reflection
 {
+#if MONO
+    [Serializable]
+#endif    
     public abstract partial class ConstructorInfo : MethodBase
     {
         protected ConstructorInfo() { }
@@ -15,7 +18,11 @@ namespace System.Reflection
 
         [DebuggerHidden]
         [DebuggerStepThrough]
+#if MONO
+        public object Invoke(object[] parameters) => Invoke(BindingFlags.CreateInstance, binder: null, parameters: parameters, culture: null);
+#else
         public object Invoke(object[] parameters) => Invoke(BindingFlags.Default, binder: null, parameters: parameters, culture: null);
+#endif
         public abstract object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture);
 
         public override bool Equals(object obj) => base.Equals(obj);

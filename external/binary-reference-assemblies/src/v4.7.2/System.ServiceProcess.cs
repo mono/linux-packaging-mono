@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceProcess.dll")]
@@ -19,7 +19,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System.ServiceProcess
 {
@@ -62,11 +62,11 @@ namespace System.ServiceProcess
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool CanStop { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public virtual System.Diagnostics.EventLog EventLog { get { throw null; } }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public int ExitCode { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         protected System.IntPtr ServiceHandle { get { throw null; } }
         [System.ComponentModel.TypeConverterAttribute("System.Diagnostics.Design.StringValueConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SBServiceName")]
@@ -84,7 +84,7 @@ namespace System.ServiceProcess
         public void RequestAdditionalTime(int milliseconds) { }
         public static void Run(System.ServiceProcess.ServiceBase service) { }
         public static void Run(System.ServiceProcess.ServiceBase[] services) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public void ServiceMainCallback(int argCount, System.IntPtr argPointer) { }
         public void Stop() { }
@@ -96,19 +96,19 @@ namespace System.ServiceProcess
         public ServiceController() { }
         public ServiceController(string name) { }
         public ServiceController(string name, string machineName) { }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPCanPauseAndContinue")]
         public bool CanPauseAndContinue { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPCanShutdown")]
         public bool CanShutdown { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPCanStop")]
         public bool CanStop { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPDependentServices")]
         public System.ServiceProcess.ServiceController[] DependentServices { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.ReadOnlyAttribute(true)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPDisplayName")]
         public string DisplayName { get { throw null; } set { } }
@@ -118,7 +118,7 @@ namespace System.ServiceProcess
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPMachineName")]
         public string MachineName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Runtime.InteropServices.SafeHandle ServiceHandle { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.ReadOnlyAttribute(true)]
@@ -126,16 +126,16 @@ namespace System.ServiceProcess
         [System.ComponentModel.TypeConverterAttribute("System.ServiceProcess.Design.ServiceNameConverter")]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPServiceName")]
         public string ServiceName { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPServicesDependedOn")]
         public System.ServiceProcess.ServiceController[] ServicesDependedOn { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPServiceType")]
         public System.ServiceProcess.ServiceType ServiceType { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPStartType")]
         public System.ServiceProcess.ServiceStartMode StartType { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("SPStatus")]
         public System.ServiceProcess.ServiceControllerStatus Status { get { throw null; } }
         public void Close() { }
@@ -170,7 +170,7 @@ namespace System.ServiceProcess
         Control = 6,
         None = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(621), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Event | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true, Inherited=false)]
     [System.SerializableAttribute]
     public partial class ServiceControllerPermissionAttribute : System.Security.Permissions.CodeAccessSecurityAttribute
     {
@@ -236,7 +236,7 @@ namespace System.ServiceProcess
         public string ServiceName { get { throw null; } set { } }
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("ServiceInstallerServicesDependedOn")]
         public string[] ServicesDependedOn { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceProcess.ServiceStartMode)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceProcess.ServiceStartMode.Manual)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("ServiceInstallerStartType")]
         public System.ServiceProcess.ServiceStartMode StartType { get { throw null; } set { } }
         public override void CopyFromComponent(System.ComponentModel.IComponent component) { }
@@ -245,7 +245,7 @@ namespace System.ServiceProcess
         public override void Rollback(System.Collections.IDictionary savedState) { }
         public override void Uninstall(System.Collections.IDictionary savedState) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
     public partial class ServiceProcessDescriptionAttribute : System.ComponentModel.DescriptionAttribute
     {
         public ServiceProcessDescriptionAttribute(string description) { }
@@ -254,7 +254,7 @@ namespace System.ServiceProcess
     public partial class ServiceProcessInstaller : System.Configuration.Install.ComponentInstaller
     {
         public ServiceProcessInstaller() { }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceProcess.ServiceAccount)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceProcess.ServiceAccount.User)]
         [System.ServiceProcess.ServiceProcessDescriptionAttribute("ServiceProcessInstallerAccount")]
         public System.ServiceProcess.ServiceAccount Account { get { throw null; } set { } }
         public override string HelpText { get { throw null; } }
@@ -289,6 +289,7 @@ namespace System.ServiceProcess
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SessionChangeDescription
     {
+        private int _dummyPrimitive;
         public System.ServiceProcess.SessionChangeReason Reason { get { throw null; } }
         public int SessionId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }

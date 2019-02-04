@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.Web.dll")]
@@ -19,10 +19,10 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 [assembly:System.Security.SecurityCriticalAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, Execution=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.Serialization.Json.DataContractJsonSerializer))]
@@ -82,7 +82,7 @@ namespace System.ServiceModel
         public System.ServiceModel.Channels.WebContentTypeMapper ContentTypeMapper { get { throw null; } set { } }
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
         public System.ServiceModel.EnvelopeVersion EnvelopeVersion { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute((long)524288)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
@@ -96,7 +96,7 @@ namespace System.ServiceModel
         public override string Scheme { get { throw null; } }
         public System.ServiceModel.WebHttpSecurity Security { get { throw null; } set { } }
         bool System.ServiceModel.Channels.IBindingRuntimePreferences.ReceiveSynchronously { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.TransferMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool UseDefaultWebProxy { get { throw null; } set { } }
@@ -104,11 +104,11 @@ namespace System.ServiceModel
         public System.Text.Encoding WriteEncoding { get { throw null; } set { } }
         public override System.ServiceModel.Channels.IChannelFactory<TChannel> BuildChannelFactory<TChannel>(System.ServiceModel.Channels.BindingParameterCollection parameters) { throw null; }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeReaderQuotas() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeSecurity() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeWriteEncoding() { throw null; }
     }
     public sealed partial class WebHttpSecurity
@@ -116,9 +116,9 @@ namespace System.ServiceModel
         public WebHttpSecurity() { }
         public System.ServiceModel.WebHttpSecurityMode Mode { get { throw null; } set { } }
         public System.ServiceModel.HttpTransportSecurity Transport { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeMode() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeTransport() { throw null; }
     }
     public enum WebHttpSecurityMode
@@ -219,7 +219,7 @@ namespace System.ServiceModel.Configuration
         public string ContentTypeMapper { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("crossDomainScriptAccessEnabled", DefaultValue=false)]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=(System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=(long)524288)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0)]
@@ -237,7 +237,7 @@ namespace System.ServiceModel.Configuration
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("security")]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=(System.ServiceModel.TransferMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("useDefaultWebProxy", DefaultValue=true)]
         public bool UseDefaultWebProxy { get { throw null; } set { } }
@@ -278,14 +278,14 @@ namespace System.ServiceModel.Configuration
         public string ContentTypeMapper { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("crossDomainScriptAccessEnabled", DefaultValue=false)]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("defaultOutgoingResponseFormat", DefaultValue=(System.ServiceModel.Web.WebMessageFormat)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("defaultOutgoingResponseFormat", DefaultValue=System.ServiceModel.Web.WebMessageFormat.Xml)]
         public System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { get { throw null; } set { } }
         protected internal override System.Type EndpointType { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("faultExceptionEnabled", DefaultValue=false)]
         public bool FaultExceptionEnabled { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("helpEnabled", DefaultValue=false)]
         public bool HelpEnabled { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=(System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=(long)524288)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0)]
@@ -301,7 +301,7 @@ namespace System.ServiceModel.Configuration
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("security")]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=(System.ServiceModel.TransferMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.ServiceModel.Configuration.EncodingConverter")]
         [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8")]
@@ -315,7 +315,7 @@ namespace System.ServiceModel.Configuration
     public sealed partial class WebHttpSecurityElement : System.ServiceModel.Configuration.ServiceModelConfigurationElement
     {
         public WebHttpSecurityElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.ServiceModel.WebHttpSecurityMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.ServiceModel.WebHttpSecurityMode.None)]
         public System.ServiceModel.WebHttpSecurityMode Mode { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("transport")]
@@ -362,7 +362,7 @@ namespace System.ServiceModel.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("crossDomainScriptAccessEnabled", DefaultValue=false)]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
         protected internal override System.Type EndpointType { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=(System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=(long)524288)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0)]
@@ -378,7 +378,7 @@ namespace System.ServiceModel.Configuration
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("security")]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=(System.ServiceModel.TransferMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.ServiceModel.Configuration.EncodingConverter")]
         [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8")]
@@ -505,12 +505,12 @@ namespace System.ServiceModel.Dispatcher
         public WebHttpDispatchOperationSelector(System.ServiceModel.Description.ServiceEndpoint endpoint) { }
         public virtual System.UriTemplate GetUriTemplate(string operationName) { throw null; }
         public string SelectOperation(ref System.ServiceModel.Channels.Message message) { throw null; }
-        protected virtual string SelectOperation(ref System.ServiceModel.Channels.Message message, out bool uriMatched) { uriMatched = default(bool); throw null; }
+        protected virtual string SelectOperation(ref System.ServiceModel.Channels.Message message, out bool uriMatched) { throw null; }
     }
 }
 namespace System.ServiceModel.Web
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class AspNetCacheProfileAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public AspNetCacheProfileAttribute(string cacheProfileName) { }
@@ -556,7 +556,7 @@ namespace System.ServiceModel.Web
         public System.Net.HttpStatusCode StatusCode { get { throw null; } }
         public string StatusDescription { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class JavascriptCallbackBehaviorAttribute : System.Attribute, System.ServiceModel.Description.IContractBehavior
     {
         public JavascriptCallbackBehaviorAttribute() { }
@@ -636,7 +636,7 @@ namespace System.ServiceModel.Web
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class WebGetAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public WebGetAttribute() { }
@@ -652,7 +652,7 @@ namespace System.ServiceModel.Web
         void System.ServiceModel.Description.IOperationBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.OperationDescription operationDescription, System.ServiceModel.Dispatcher.DispatchOperation dispatchOperation) { }
         void System.ServiceModel.Description.IOperationBehavior.Validate(System.ServiceModel.Description.OperationDescription operationDescription) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class WebInvokeAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public WebInvokeAttribute() { }

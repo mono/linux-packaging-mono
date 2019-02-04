@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.Routing.dll")]
@@ -19,7 +19,7 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, Execution=true)]
 namespace System.ServiceModel.Dispatcher
 {
@@ -39,28 +39,28 @@ namespace System.ServiceModel.Dispatcher
 }
 namespace System.ServiceModel.Routing
 {
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=(System.ServiceModel.SessionMode)(1), CallbackContract=typeof(System.ServiceModel.Routing.IDuplexRouterCallback))]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=System.ServiceModel.SessionMode.Required, CallbackContract=typeof(System.ServiceModel.Routing.IDuplexRouterCallback))]
     public partial interface IDuplexSessionRouter
     {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, IsOneWay=true, Action="*")]
         System.IAsyncResult BeginProcessMessage(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state);
         void EndProcessMessage(System.IAsyncResult result);
     }
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=(System.ServiceModel.SessionMode)(0))]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=System.ServiceModel.SessionMode.Allowed)]
     public partial interface IRequestReplyRouter
     {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, IsOneWay=false, Action="*", ReplyAction="*")]
         System.IAsyncResult BeginProcessRequest(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state);
         System.ServiceModel.Channels.Message EndProcessRequest(System.IAsyncResult result);
     }
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=(System.ServiceModel.SessionMode)(0))]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=System.ServiceModel.SessionMode.Allowed)]
     public partial interface ISimplexDatagramRouter
     {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, IsOneWay=true, Action="*")]
         System.IAsyncResult BeginProcessMessage(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state);
         void EndProcessMessage(System.IAsyncResult result);
     }
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=(System.ServiceModel.SessionMode)(1))]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://schemas.microsoft.com/netfx/2009/05/routing", SessionMode=System.ServiceModel.SessionMode.Required)]
     public partial interface ISimplexSessionRouter
     {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, IsOneWay=true, Action="*")]
@@ -91,22 +91,22 @@ namespace System.ServiceModel.Routing
         void System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>.Attach(System.ServiceModel.ServiceHostBase owner) { }
         void System.ServiceModel.IExtension<System.ServiceModel.ServiceHostBase>.Detach(System.ServiceModel.ServiceHostBase owner) { }
     }
-    [System.ServiceModel.Activation.AspNetCompatibilityRequirementsAttribute(RequirementsMode=(System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode)(1))]
-    [System.ServiceModel.ServiceBehaviorAttribute(AddressFilterMode=(System.ServiceModel.AddressFilterMode)(2), InstanceContextMode=(System.ServiceModel.InstanceContextMode)(0), UseSynchronizationContext=false, ValidateMustUnderstand=false)]
+    [System.ServiceModel.Activation.AspNetCompatibilityRequirementsAttribute(RequirementsMode=System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+    [System.ServiceModel.ServiceBehaviorAttribute(AddressFilterMode=System.ServiceModel.AddressFilterMode.Any, InstanceContextMode=System.ServiceModel.InstanceContextMode.PerSession, UseSynchronizationContext=false, ValidateMustUnderstand=false)]
     public sealed partial class RoutingService : System.IDisposable, System.ServiceModel.Routing.IDuplexSessionRouter, System.ServiceModel.Routing.IRequestReplyRouter, System.ServiceModel.Routing.ISimplexDatagramRouter, System.ServiceModel.Routing.ISimplexSessionRouter
     {
         internal RoutingService() { }
         void System.IDisposable.Dispose() { }
-        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=(System.ServiceModel.ImpersonationOption)(1))]
+        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=System.ServiceModel.ImpersonationOption.Allowed)]
         System.IAsyncResult System.ServiceModel.Routing.IDuplexSessionRouter.BeginProcessMessage(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state) { throw null; }
         void System.ServiceModel.Routing.IDuplexSessionRouter.EndProcessMessage(System.IAsyncResult result) { }
-        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=(System.ServiceModel.ImpersonationOption)(1))]
+        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=System.ServiceModel.ImpersonationOption.Allowed)]
         System.IAsyncResult System.ServiceModel.Routing.IRequestReplyRouter.BeginProcessRequest(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state) { throw null; }
         System.ServiceModel.Channels.Message System.ServiceModel.Routing.IRequestReplyRouter.EndProcessRequest(System.IAsyncResult result) { throw null; }
-        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=(System.ServiceModel.ImpersonationOption)(1))]
+        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=System.ServiceModel.ImpersonationOption.Allowed)]
         System.IAsyncResult System.ServiceModel.Routing.ISimplexDatagramRouter.BeginProcessMessage(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state) { throw null; }
         void System.ServiceModel.Routing.ISimplexDatagramRouter.EndProcessMessage(System.IAsyncResult result) { }
-        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=(System.ServiceModel.ImpersonationOption)(1))]
+        [System.ServiceModel.OperationBehaviorAttribute(Impersonation=System.ServiceModel.ImpersonationOption.Allowed)]
         System.IAsyncResult System.ServiceModel.Routing.ISimplexSessionRouter.BeginProcessMessage(System.ServiceModel.Channels.Message message, System.AsyncCallback callback, object state) { throw null; }
         void System.ServiceModel.Routing.ISimplexSessionRouter.EndProcessMessage(System.IAsyncResult result) { }
     }
@@ -126,7 +126,7 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class BackupEndpointCollection : System.Configuration.ConfigurationElementCollection
     {
         public BackupEndpointCollection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Name { get { throw null; } set { } }
         public void Add(System.ServiceModel.Routing.Configuration.BackupEndpointElement element) { }
         public void Clear() { }
@@ -137,7 +137,7 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class BackupEndpointElement : System.Configuration.ConfigurationElement
     {
         public BackupEndpointElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("endpointName", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("endpointName", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string EndpointName { get { throw null; } set { } }
     }
     [System.Configuration.ConfigurationCollectionAttribute(typeof(System.ServiceModel.Routing.Configuration.BackupEndpointCollection), AddItemName="backupList")]
@@ -154,17 +154,17 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class FilterElement : System.Configuration.ConfigurationElement
     {
         public FilterElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("customType", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("customType", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public string CustomType { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("filter1", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("filter1", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public string Filter1 { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("filter2", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("filter2", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public string Filter2 { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("filterData", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("filterData", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public string FilterData { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("filterType", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("filterType", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public System.ServiceModel.Routing.Configuration.FilterType FilterType { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Name { get { throw null; } set { } }
     }
     [System.Configuration.ConfigurationCollectionAttribute(typeof(System.ServiceModel.Routing.Configuration.FilterElement), AddItemName="filter")]
@@ -196,7 +196,7 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class FilterTableEntryCollection : System.Configuration.ConfigurationElementCollection
     {
         public FilterTableEntryCollection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Name { get { throw null; } set { } }
         public void Add(System.ServiceModel.Routing.Configuration.FilterTableEntryElement element) { }
         public void Clear() { }
@@ -207,13 +207,13 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class FilterTableEntryElement : System.Configuration.ConfigurationElement
     {
         public FilterTableEntryElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("backupList", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("backupList", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public string BackupList { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("endpointName", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("endpointName", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string EndpointName { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("filterName", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("filterName", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string FilterName { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("priority", DefaultValue=0, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("priority", DefaultValue=0, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public int Priority { get { throw null; } set { } }
     }
     public enum FilterType
@@ -230,9 +230,9 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class NamespaceElement : System.Configuration.ConfigurationElement
     {
         public NamespaceElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(2))]
+        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Namespace { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("prefix", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("prefix", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         public string Prefix { get { throw null; } set { } }
     }
     [System.Configuration.ConfigurationCollectionAttribute(typeof(System.ServiceModel.Routing.Configuration.NamespaceElement))]
@@ -255,7 +255,7 @@ namespace System.ServiceModel.Routing.Configuration
         public bool EnsureOrderedDispatch { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("filterTableName", DefaultValue=null)]
         public string FilterTableName { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("routeOnHeadersOnly", DefaultValue=true, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("routeOnHeadersOnly", DefaultValue=true, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public bool RouteOnHeadersOnly { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("soapProcessingEnabled", DefaultValue=true)]
         public bool SoapProcessingEnabled { get { throw null; } set { } }
@@ -264,13 +264,13 @@ namespace System.ServiceModel.Routing.Configuration
     public partial class RoutingSection : System.Configuration.ConfigurationSection
     {
         public RoutingSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("backupLists", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("backupLists", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Routing.Configuration.BackupListCollection BackupLists { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("filters", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("filters", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Routing.Configuration.FilterElementCollection Filters { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("filterTables", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("filterTables", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Routing.Configuration.FilterTableCollection FilterTables { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("namespaceTable", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("namespaceTable", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Routing.Configuration.NamespaceElementCollection NamespaceTable { get { throw null; } }
         public static System.ServiceModel.Dispatcher.MessageFilterTable<System.Collections.Generic.IEnumerable<System.ServiceModel.Description.ServiceEndpoint>> CreateFilterTable(string name) { throw null; }
     }
@@ -278,7 +278,7 @@ namespace System.ServiceModel.Routing.Configuration
     {
         public SoapProcessingExtensionElement() { }
         public override System.Type BehaviorType { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("processMessages", DefaultValue=true, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("processMessages", DefaultValue=true, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public bool ProcessMessages { get { throw null; } set { } }
         protected internal override object CreateBehavior() { throw null; }
     }

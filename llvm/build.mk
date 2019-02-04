@@ -4,6 +4,9 @@
 # make reset-llvm will checkout a version of llvm which is suitable for this version of mono
 # into $top_srcdir/llvm/llvm.
 #
+# Input variables
+# - LLVM_TARGET: if set to wasm32 will trigger a 32bits build that enable the experimental WebAssembly backend
+#
 
 top_srcdir ?= $(abspath $(CURDIR)/..)
 
@@ -42,6 +45,8 @@ $(LLVM_PATH):
 
 $(LLVM_PATH)/CMakeLists.txt: | $(LLVM_PATH)
 
+EXTRA_LLVM_ARGS = $(if $(filter $(LLVM_TARGET),wasm32), -DLLVM_BUILD_32_BITS=On -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="WebAssembly",)
+
 # -DLLVM_ENABLE_LIBXML2=Off is needed because xml2 is not used and it breaks 32-bit builds on 64-bit Linux hosts
 $(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(LLVM_PATH)/CMakeLists.txt | $(LLVM_BUILD)
 	cd $(LLVM_BUILD) && $(CMAKE) \
@@ -54,6 +59,7 @@ $(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(LLVM_PATH)/CMakeLists.txt |
 		-DLLVM_INCLUDE_EXAMPLES=Off \
 		-DLLVM_TOOLS_TO_BUILD="opt;llc;llvm-config;llvm-dis" \
 		-DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" \
+		$(EXTRA_LLVM_ARGS)	\
 		-DLLVM_ENABLE_ASSERTIONS=$(if $(INTERNAL_LLVM_ASSERTS),On,Off) \
 		-DLLVM_ENABLE_LIBXML2=Off \
 		-DHAVE_FUTIMENS=0 \

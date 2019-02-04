@@ -70,7 +70,7 @@ namespace System.IO
             return ((value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z'));
         }
 
-        private static bool EndsWithPeriodOrSpace(string path)
+        internal static bool EndsWithPeriodOrSpace(string path)
         {
             if (string.IsNullOrEmpty(path))
                 return false;
@@ -130,7 +130,7 @@ namespace System.IO
             // In any case, all internal usages should be hitting normalize path (Path.GetFullPath) before they hit this
             // shimming method. (Or making a change that doesn't impact normalization, such as adding a filename to a
             // normalized base path.)
-            if (IsPartiallyQualified(path) || IsDevice(path))
+            if (IsPartiallyQualified(path.AsSpan()) || IsDevice(path.AsSpan()))
                 return path;
 
             // Given \\server\share in longpath becomes \\?\UNC\server\share
@@ -268,19 +268,6 @@ namespace System.IO
             }
 
             return i;
-        }
-
-        private static bool StartsWithOrdinal(ReadOnlySpan<char> source, string value)
-        {
-            if (source.Length < value.Length)
-                return false;
-
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] != source[i])
-                    return false;
-            }
-            return true;
         }
 
         /// <summary>

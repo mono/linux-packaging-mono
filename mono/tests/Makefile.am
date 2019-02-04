@@ -207,7 +207,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
-	-nowarn:0197 -langversion:7.3 $(PROFILE_MCS_FLAGS)
+	-nowarn:0197 -langversion:latest $(PROFILE_MCS_FLAGS)
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 
 MCS = $(MCS_NO_LIB)
@@ -311,6 +311,7 @@ TESTS_CS_SRC=		\
 	merp-crash-test.cs		\
 	exception19.cs		\
 	exception20.cs		\
+	exception21.cs		\
 	typeload-unaligned.cs	\
 	struct.cs		\
 	valuetype-gettype.cs	\
@@ -399,6 +400,7 @@ TESTS_CS_SRC=		\
 	delegate13.cs		\
 	delegate14.cs		\
 	delegate15.cs		\
+	delegate16.cs		\
 	largeexp.cs		\
 	largeexp2.cs		\
 	marshalbyref1.cs	\
@@ -1050,11 +1052,12 @@ PLATFORM_DISABLED_TESTS=\
 	tailcall-member-function-in-valuetype.exe \
 	tailcall-rgctxb.exe
 
-# Only because this depends on an icall change that was
-# made in a later release. 
+if HOST_DARWIN
+else
 PLATFORM_DISABLED_TESTS += \
 	merp-json-valid.exe \
 	merp-crash-test.exe
+endif
 
 
 if HOST_WIN32
@@ -1062,6 +1065,12 @@ PLATFORM_DISABLED_TESTS += bug-58782-plain-throw.exe bug-58782-capture-and-throw
 
 # see https://github.com/mono/mono/issues/9739
 PLATFORM_DISABLED_TESTS += verbose.exe
+endif
+
+if HOST_DARWIN
+
+# see https://github.com/mono/mono/issues/10845
+PLATFORM_DISABLED_TESTS += monitor-wait-abort.exe
 endif
 
 if AMD64
@@ -1080,7 +1089,8 @@ if HOST_WIN32
 PLATFORM_DISABLED_TESTS += async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
 	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
 	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
-	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
+	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe \
+	thread-suspend-suspended.exe thread-suspend-selfsuspended.exe
 endif
 
 # test_virt.exe fails because callee takes more parameters than caller, 1 vs. 0, and
@@ -1484,6 +1494,15 @@ PROFILE_DISABLED_TESTS += tailcall/fsharp-deeptail/TailCallLoopGenericClassAndMe
 PROFILE_DISABLED_TESTS += tailcall/fsharp-deeptail/TailCallLoopGenericClassAndMethodAbstractInterface_int_.Method1_string_.exe
 
 endif # MONO_ARCH_GSHAREDVT_SUPPORTED
+
+if ARM64
+# Times out on ARM64.
+# https://github.com/mono/mono/issues/10783
+# https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/486/parsed_console/log.html
+# https://jenkins.mono-project.com/job/test-mono-pull-request-arm64-fullaot+llvm/471/parsed_console/log.html
+PLATFORM_DISABLED_TESTS += tailcall/2.exe
+endif # ARM64 FullAOT
+
 endif # FULL_AOT_TESTS
 
 if HYBRID_AOT_TESTS
@@ -1499,17 +1518,18 @@ CI_DISABLED_TESTS = \
 	main-returns-background-resetabort.exe \
 	main-returns-background-abort-resetabort.exe	\
 	assemblyresolve_event3.exe \
-	delegate2.exe	\
 	finally_guard.exe \
 	generic-xdomain.2.exe
 
 # failing tests which we temporarily disable for PRs
 # so they don't interfere with other people's work
-CI_PR_DISABLED_TESTS = \
-	appdomain-threadpool-unload.exe
+CI_PR_DISABLED_TESTS =
 
 # FIXME Hybrid Suspend - see https://github.com/mono/mono/issues/9959
 # CI_PR_DISABLED_TESTS += sgen-new-threads-collect.exe
+
+# https://github.com/mono/mono/issues/8997
+CI_PR_DISABLED_TESTS += finalizer-thread.exe
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 LLVM_DISABLED_TESTS = \
@@ -2969,9 +2989,9 @@ if HOST_WIN32
 libtest_la_CFLAGS=-fno-optimize-sibling-calls
 # the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
 # can't find them. So we use --kill-at to remove the @ suffix as well.
-libtest_la_LDFLAGS=-no-undefined -rpath `pwd` -Wl,--kill-at
+libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
 else
-libtest_la_LDFLAGS = -rpath `pwd`
+libtest_la_LDFLAGS = -no-undefined -rpath `pwd`
 endif
 libtest_la_SOURCES = libtest.c
 libtest_la_LIBADD = $(top_builddir)/mono/eglib/libeglib.la

@@ -26,6 +26,8 @@ namespace System.Numerics
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct BigInteger : System.IComparable, System.IComparable<System.Numerics.BigInteger>, System.IEquatable<System.Numerics.BigInteger>, System.IFormattable
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         [System.CLSCompliantAttribute(false)]
         public BigInteger(byte[] value) { throw null;}
         public BigInteger(decimal value) { throw null;}
@@ -176,6 +178,7 @@ namespace System.Numerics
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Complex : System.IEquatable<System.Numerics.Complex>, System.IFormattable
     {
+        private int _dummyPrimitive;
         public static readonly System.Numerics.Complex ImaginaryOne;
         public static readonly System.Numerics.Complex One;
         public static readonly System.Numerics.Complex Zero;

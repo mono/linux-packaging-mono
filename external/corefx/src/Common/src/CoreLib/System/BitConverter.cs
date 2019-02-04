@@ -14,15 +14,17 @@ namespace System
     // converting an array of bytes to one of the base data 
     // types, as well as for converting a base data type to an
     // array of bytes.
-    public static class BitConverter
+    public static partial class BitConverter
     {
         // This field indicates the "endianess" of the architecture.
         // The value is set to true if the architecture is
         // little endian; false if it is big endian.
+#if !MONO
 #if BIGENDIAN
         public static readonly bool IsLittleEndian /* = false */;
 #else
         public static readonly bool IsLittleEndian = true;
+#endif
 #endif
 
         // Converts a Boolean into an array of bytes with length one.
@@ -380,6 +382,22 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(length), SR.Format(SR.ArgumentOutOfRange_LengthTooLarge, (int.MaxValue / 3)));
             }
 
+#if __MonoCS__ //use old impl for mcs
+            const string HexValues = "0123456789ABCDEF";
+            int chArrayLength = length * 3;
+
+            char[] chArray = new char[chArrayLength];
+            int i = 0;
+            int index = startIndex;
+            for (i = 0; i < chArrayLength; i += 3)
+            {
+                byte b = value[index++];
+                chArray[i] = HexValues[b >> 4];
+                chArray[i + 1] = HexValues[b & 0xF];
+                chArray[i + 2] = '-';
+            }
+            return new String(chArray, 0, chArray.Length - 1);
+#else
             return string.Create(length * 3 - 1, (value, startIndex, length), (dst, state) =>
             {
                 const string HexValues = "0123456789ABCDEF";
@@ -401,6 +419,7 @@ namespace System
                     dst[j++] = HexValues[b & 0xF];
                 }
             });
+#endif
         }
 
         // Converts an array of bytes into a String.  

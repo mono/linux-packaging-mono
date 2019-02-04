@@ -137,9 +137,11 @@ get_heap_size (void)
 }
 
 gboolean
-sgen_need_major_collection (mword space_needed)
+sgen_need_major_collection (mword space_needed, gboolean *forced)
 {
 	size_t heap_size;
+
+	*forced = FALSE;
 
 	if (sgen_get_concurrent_collection_in_progress ()) {
 		heap_size = get_heap_size ();
@@ -169,6 +171,7 @@ sgen_need_major_collection (mword space_needed)
 
 	heap_size = get_heap_size ();
 
+	*forced = heap_size > soft_heap_limit;
 	return heap_size > major_collection_trigger_size;
 }
 
@@ -355,7 +358,7 @@ sgen_memgov_collection_end (int generation, gint64 stw_time)
 		SGEN_ASSERT (0, !sgen_is_world_stopped (), "We can't log if the world is stopped");
 		mono_os_mutex_lock (&log_entries_mutex);
 		for (i = 0; i < log_entries.next_slot; i++) {
-			sgen_output_log_entry (log_entries.data [i], stw_time, generation);
+			sgen_output_log_entry ((SgenLogEntry*)log_entries.data [i], stw_time, generation);
 			sgen_free_internal (log_entries.data [i], INTERNAL_MEM_LOG_ENTRY);
 		}
 		sgen_pointer_queue_clear (&log_entries);

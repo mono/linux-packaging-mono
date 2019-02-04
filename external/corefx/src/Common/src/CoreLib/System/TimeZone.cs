@@ -27,7 +27,7 @@ using System.Globalization;
 namespace System
 {
     [Obsolete("System.TimeZone has been deprecated.  Please investigate the use of System.TimeZoneInfo instead.")]
-    public abstract class TimeZone
+    public abstract partial class TimeZone
     {
         private static volatile TimeZone currentTimeZone = null;
 

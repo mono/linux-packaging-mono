@@ -374,7 +374,7 @@ namespace System.Numerics.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono)]
         public static void IComparable_Invalid_netcore()
         {
             IComparable_Invalid("obj");

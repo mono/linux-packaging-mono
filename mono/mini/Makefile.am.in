@@ -169,6 +169,14 @@ endif
 
 noinst_LTLIBRARIES = $(mini_common_lib)
 
+noinst_LIBRARIES = libmain.a
+
+libmain_a_SOURCES = main-sgen.c
+if SUPPORT_BOEHM
+libmain_a_SOURCES += main.c
+endif
+libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+
 if LOADED_LLVM
 lib_LTLIBRARIES += libmono-llvm.la
 libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
@@ -179,35 +187,29 @@ libmono_llvm_la_LDFLAGS=-Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 endif
 endif
 
-mono_boehm_SOURCES = \
-	main.c
+# we need this to prevent automake from generating a default mono_SOURCES = mono.c
+mono_SOURCES =
 
-mono_CFLAGS = $(AM_CFLAGS)
-
-mono_boehm_CFLAGS = $(AM_CFLAGS)
+mono_boehm_SOURCES =
+mono_boehm_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 
 AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
 
-mono_sgen_SOURCES = \
-	main-sgen.c
-
-mono_SOURCES = \
-	main-sgen.c
-
-mono_sgen_CFLAGS = $(AM_CFLAGS)
+mono_sgen_SOURCES =
+mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 
 # We build this after libmono was built so it contains the date when the final
 # link was done
 if SUPPORT_BOEHM
 buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
 	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
-mono_boehm-main.$(OBJEXT): buildver-boehm.h
+libmain_a-main.$(OBJEXT): buildver-boehm.h
 endif
 
 buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
-mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
-main-sgen.$(OBJEXT): buildver-sgen.h
+
+libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
 
 if DTRACE_G_REQUIRED
 LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
@@ -238,6 +240,7 @@ LLVMMONOF=$(LLVM_LIBS) $(LLVM_LDFLAGS)
 endif
 
 mono_boehm_LDADD = \
+	libmain_a-main.$(OBJEXT) \
 	$(MONO_LIB)		\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
@@ -248,6 +251,7 @@ mono_boehm_LDFLAGS = \
 	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
 mono_sgen_LDADD = \
+	libmain_a-main-sgen.$(OBJEXT) \
 	$(MONO_SGEN_LIB)	\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
@@ -386,7 +390,6 @@ endif
 endif
 
 interp_sources =	\
-	interp/hacks.h		\
 	interp/interp.h	\
 	interp/interp-internals.h	\
 	interp/interp.c	\
@@ -642,11 +645,10 @@ endif
 
 if MONO_JEMALLOC_ENABLED
 libmonoldflags += $(JEMALLOC_LDFLAGS)
-mono_CFLAGS += $(JEMALLOC_CFLAGS)
 endif
 
 libmono_ee_interp_la_SOURCES = $(interp_sources)
-libmono_ee_interp_la_CFLAGS = $(mono_CFLAGS)
+libmono_ee_interp_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 if BITCODE
 libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
 if DISABLE_INTERPRETER
@@ -659,7 +661,7 @@ extra_libmono_dbg_source = debugger-engine.c
 endif
 
 libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
-libmono_dbg_la_CFLAGS = $(mono_CFLAGS)
+libmono_dbg_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 if BITCODE
 if DISABLE_DEBUGGER_AGENT
 libmono_dbg_la_LIBADD = libmonosgen-2.0.la
@@ -682,15 +684,17 @@ endif
 # compile time dependencies on boehm/sgen.
 #
 libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
-libmini_la_CFLAGS = $(mono_CFLAGS)
+libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 
 libmonoboehm_2_0_la_SOURCES =
-libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
+libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
+
 libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 
 libmonosgen_2_0_la_SOURCES =
-libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
+libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
+
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 
@@ -803,8 +807,8 @@ check-seq-points:
 else
 check-seq-points: mono $(regtests)
 	rm -f TestResult-op_il_seq_point.xml
-	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 endif
 
@@ -1009,4 +1013,5 @@ Makefile.am: Makefile.am.in
 
 endif
 
-CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @CXX_ADD_CFLAGS@
+# Per-library because linking doesn't like -xc++, it treats libraries as C++.
+CFLAGS := $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)

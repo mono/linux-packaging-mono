@@ -8,7 +8,9 @@ using System.Runtime.Serialization;
 namespace System.Threading
 {
     [Serializable]
+#if !MOBILE
     [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class SemaphoreFullException : SystemException
     {
         public SemaphoreFullException() : base(SR.Threading_SemaphoreFullException)

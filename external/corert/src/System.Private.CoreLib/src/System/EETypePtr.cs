@@ -41,7 +41,7 @@ namespace System
             return _value;
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj is EETypePtr)
             {
@@ -396,6 +396,7 @@ namespace System
         }
 
         [Intrinsic]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static EETypePtr EETypePtrOf<T>()
         {
             // Compilers are required to provide a low level implementation of this method.

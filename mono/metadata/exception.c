@@ -660,7 +660,11 @@ mono_get_exception_argument_internal (const char *type, const char *arg, const c
 MonoException*
 mono_get_exception_argument_null (const char *arg)
 {
-	return mono_get_exception_argument_internal ("ArgumentNullException", arg, NULL);
+	MonoException *ex;
+	MONO_ENTER_GC_UNSAFE;
+	ex = mono_get_exception_argument_internal ("ArgumentNullException", arg, NULL);
+	MONO_EXIT_GC_UNSAFE;
+	return ex;
 }
 
 /**
@@ -1146,7 +1150,7 @@ mono_exception_handle_get_native_backtrace (MonoExceptionHandle exc)
 	len = mono_array_handle_length (arr);
 	text = g_string_new_len (NULL, len * 20);
 	uint32_t gchandle;
-	void *addr = MONO_ARRAY_HANDLE_PIN (arr, gpointer, 0, &gchandle);
+	gpointer *addr = MONO_ARRAY_HANDLE_PIN (arr, gpointer, 0, &gchandle);
 	MONO_ENTER_GC_SAFE;
 	messages = backtrace_symbols (addr, len);
 	MONO_EXIT_GC_SAFE;

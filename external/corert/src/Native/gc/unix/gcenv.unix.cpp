@@ -57,6 +57,12 @@ static_assert(sizeof(uint64_t) == 8, "unsigned long isn't 8 bytes");
 #include <errno.h>
 #include <unistd.h> // sysconf
 
+#if defined(_ARM_) || defined(_ARM64_)
+#define SYSCONF_GET_NUMPROCS _SC_NPROCESSORS_CONF
+#else
+#define SYSCONF_GET_NUMPROCS _SC_NPROCESSORS_ONLN
+#endif
+
 // The number of milliseconds in a second.
 static const int tccSecondsToMilliSeconds = 1000;
 
@@ -84,7 +90,7 @@ static pthread_mutex_t g_flushProcessWriteBuffersMutex;
 bool GCToOSInterface::Initialize()
 {
     // Calculate and cache the number of processors on this machine
-    int cpuCount = sysconf(_SC_NPROCESSORS_ONLN);
+    int cpuCount = sysconf(SYSCONF_GET_NUMPROCS);
     if (cpuCount == -1)
     {
         return false;

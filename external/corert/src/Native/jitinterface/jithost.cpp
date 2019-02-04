@@ -6,27 +6,15 @@
 
 #include "dllexport.h"
 
-#ifdef _X86_
-#ifdef PLATFORM_UNIX
-#define DEFAULT_CALL_CONV __cdecl
-#else
-#define DEFAULT_CALL_CONV __stdcall
-#endif
-#else
-#define DEFAULT_CALL_CONV
-#define __cdecl
-#define __stdcall
-#endif
-
 class JitConfigProvider
 {
 public:
-    virtual int DEFAULT_CALL_CONV getIntConfigValue(
+    virtual int getIntConfigValue(
         const wchar_t* name, 
         int defaultValue
         ) = 0;
 
-    virtual int DEFAULT_CALL_CONV getStringConfigValue(
+    virtual int getStringConfigValue(
         const wchar_t* name,
         wchar_t* retBuffer,
         int retBufferLength
@@ -48,12 +36,12 @@ public:
     JitHost(JitConfigProvider* pConfigProvider)
         : pConfigProvider(pConfigProvider) { }
 
-    virtual void* allocateMemory(size_t size, bool usePageAllocator = false)
+    virtual void* allocateMemory(size_t size)
     {
         return malloc(size);
     }
 
-    virtual void freeMemory(void* block, bool usePageAllocator = false)
+    virtual void freeMemory(void* block)
     {
         free(block);
     }
@@ -87,6 +75,17 @@ public:
         )
     {
         free(value);
+    }
+
+    virtual void* allocateSlab(size_t size, size_t* pActualSize)
+    {
+        *pActualSize = size;
+        return allocateMemory(size);
+    }
+
+    virtual void freeSlab(void* slab, size_t actualSize)
+    {
+        freeMemory(slab);
     }
 };
 

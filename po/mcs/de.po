@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2019-02-04 08:06+0000\n"
+"POT-Creation-Date: 2019-02-04 19:35+0000\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -2524,18 +2524,18 @@ msgid ""
 "it returns by reference"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13332
+#: mcs/mcs/expression.cs:13336
 #, fuzzy
 msgid "An expression tree cannot contain a discard"
 msgstr ""
 "`{0}': Statische Klassen können keine benutzerdefinierten Operatoren "
 "beinhalten"
 
-#: mcs/mcs/expression.cs:13346
+#: mcs/mcs/expression.cs:13350
 msgid "Cannot infer the type of implicitly-typed discard"
 msgstr ""
 
-#: mcs/mcs/expression.cs:13352
+#: mcs/mcs/expression.cs:13356
 msgid "Cannot assign void to a discard"
 msgstr ""
 

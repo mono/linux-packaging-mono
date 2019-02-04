@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Web.Services.dll")]
@@ -19,12 +19,12 @@
 [assembly:System.Runtime.CompilerServices.ReferenceAssemblyAttribute]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
-[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute((System.Runtime.InteropServices.DllImportSearchPath)(2050))]
+[assembly:System.Runtime.InteropServices.DefaultDllImportSearchPathsAttribute(System.Runtime.InteropServices.DllImportSearchPath.AssemblyDirectory | System.Runtime.InteropServices.DllImportSearchPath.System32)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
-[assembly:System.Security.SecurityRulesAttribute((System.Security.SecurityRuleSet)(1), SkipVerificationInFullTrust=true)]
+[assembly:System.Security.SecurityRulesAttribute(System.Security.SecurityRuleSet.Level1, SkipVerificationInFullTrust=true)]
 namespace System.Web.Services
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class WebMethodAttribute : System.Attribute
     {
         public WebMethodAttribute() { }
@@ -44,26 +44,26 @@ namespace System.Web.Services
         public WebService() { }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DescriptionAttribute("The ASP.NET application object for the current request.")]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.HttpApplicationState Application { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.HttpApplicationState Application { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.HttpContext Context { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.HttpContext Context { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.HttpServerUtility Server { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.HttpServerUtility Server { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Web.SessionState.HttpSessionState Session { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Web.SessionState.HttpSessionState Session { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        public System.Web.Services.Protocols.SoapProtocolVersion SoapVersion { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        public System.Web.Services.Protocols.SoapProtocolVersion SoapVersion { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        public System.Security.Principal.IPrincipal User { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]get { throw null; } }
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public System.Security.Principal.IPrincipal User { [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=System.Web.AspNetHostingPermissionLevel.Minimal)]get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface)]
     public sealed partial class WebServiceAttribute : System.Attribute
     {
         public const string DefaultNamespace = "http://tempuri.org/";
@@ -72,7 +72,7 @@ namespace System.Web.Services
         public string Name { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=true)]
     public sealed partial class WebServiceBindingAttribute : System.Attribute
     {
         public WebServiceBindingAttribute() { }
@@ -110,7 +110,7 @@ namespace System.Web.Services.Configuration
     {
         public ProtocolElement() { }
         public ProtocolElement(System.Web.Services.Configuration.WebServiceProtocols protocol) { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", IsKey=true, DefaultValue=(System.Web.Services.Configuration.WebServiceProtocols)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", IsKey=true, DefaultValue=System.Web.Services.Configuration.WebServiceProtocols.Unknown)]
         public System.Web.Services.Configuration.WebServiceProtocols Name { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -148,7 +148,7 @@ namespace System.Web.Services.Configuration
         public SoapExtensionTypeElement() { }
         public SoapExtensionTypeElement(string type, int priority, System.Web.Services.Configuration.PriorityGroup group) { }
         public SoapExtensionTypeElement(System.Type type, int priority, System.Web.Services.Configuration.PriorityGroup group) { }
-        [System.Configuration.ConfigurationPropertyAttribute("group", IsKey=true, DefaultValue=(System.Web.Services.Configuration.PriorityGroup)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("group", IsKey=true, DefaultValue=System.Web.Services.Configuration.PriorityGroup.Low)]
         public System.Web.Services.Configuration.PriorityGroup Group { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("priority", IsKey=true, DefaultValue=0)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=0)]
@@ -259,7 +259,7 @@ namespace System.Web.Services.Configuration
     {
         public WsiProfilesElement() { }
         public WsiProfilesElement(System.Web.Services.WsiProfiles name) { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", IsKey=true, DefaultValue=(System.Web.Services.WsiProfiles)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", IsKey=true, DefaultValue=System.Web.Services.WsiProfiles.None)]
         public System.Web.Services.WsiProfiles Name { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -280,7 +280,7 @@ namespace System.Web.Services.Configuration
         public void RemoveAt(int index) { }
         public void RemoveAt(object key) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class XmlFormatExtensionAttribute : System.Attribute
     {
         public XmlFormatExtensionAttribute() { }
@@ -293,14 +293,14 @@ namespace System.Web.Services.Configuration
         public System.Type[] ExtensionPoints { get { throw null; } set { } }
         public string Namespace { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class XmlFormatExtensionPointAttribute : System.Attribute
     {
         public XmlFormatExtensionPointAttribute(string memberName) { }
         public bool AllowElements { get { throw null; } set { } }
         public string MemberName { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=true)]
     public sealed partial class XmlFormatExtensionPrefixAttribute : System.Attribute
     {
         public XmlFormatExtensionPrefixAttribute() { }
@@ -1098,7 +1098,7 @@ namespace System.Web.Services.Description
         public const string Namespace = "http://schemas.xmlsoap.org/wsdl/soap/";
         public SoapBinding() { }
         public static System.Xml.Schema.XmlSchema Schema { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingStyle)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingStyle.Document)]
         [System.Xml.Serialization.XmlAttributeAttribute("style")]
         public System.Web.Services.Description.SoapBindingStyle Style { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("transport")]
@@ -1136,7 +1136,7 @@ namespace System.Web.Services.Description
         public string[] Parts { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("parts")]
         public string PartsString { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingUse)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingUse.Default)]
         [System.Xml.Serialization.XmlAttributeAttribute("use")]
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
@@ -1168,7 +1168,7 @@ namespace System.Web.Services.Description
         public string Name { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("namespace")]
         public string Namespace { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingUse)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingUse.Default)]
         [System.Xml.Serialization.XmlAttributeAttribute("use")]
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
@@ -1190,7 +1190,7 @@ namespace System.Web.Services.Description
         public string Namespace { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("part")]
         public string Part { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingUse)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingUse.Default)]
         [System.Xml.Serialization.XmlAttributeAttribute("use")]
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
@@ -1207,7 +1207,7 @@ namespace System.Web.Services.Description
         public string Namespace { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("part")]
         public string Part { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingUse)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingUse.Default)]
         [System.Xml.Serialization.XmlAttributeAttribute("use")]
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
@@ -1217,7 +1217,7 @@ namespace System.Web.Services.Description
         public SoapOperationBinding() { }
         [System.Xml.Serialization.XmlAttributeAttribute("soapAction")]
         public string SoapAction { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.SoapBindingStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.SoapBindingStyle.Default)]
         [System.Xml.Serialization.XmlAttributeAttribute("style")]
         public System.Web.Services.Description.SoapBindingStyle Style { get { throw null; } set { } }
     }
@@ -1288,14 +1288,14 @@ namespace System.Web.Services.Description
     {
         public const string TargetNamespace = "http://microsoft.com/webReference/";
         public WebReferenceOptions() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Serialization.CodeGenerationOptions)(4))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Serialization.CodeGenerationOptions.GenerateOldAsync)]
         [System.Xml.Serialization.XmlElementAttribute("codeGenerationOptions")]
         public System.Xml.Serialization.CodeGenerationOptions CodeGenerationOptions { get { throw null; } set { } }
         public static System.Xml.Schema.XmlSchema Schema { get { throw null; } }
         [System.Xml.Serialization.XmlArrayAttribute("schemaImporterExtensions")]
         [System.Xml.Serialization.XmlArrayItemAttribute("type")]
         public System.Collections.Specialized.StringCollection SchemaImporterExtensions { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Description.ServiceDescriptionImportStyle)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Description.ServiceDescriptionImportStyle.Client)]
         [System.Xml.Serialization.XmlElementAttribute("style")]
         public System.Web.Services.Description.ServiceDescriptionImportStyle Style { get { throw null; } set { } }
         [System.Xml.Serialization.XmlElementAttribute("verbose")]
@@ -1585,7 +1585,7 @@ namespace System.Web.Services.Protocols
         public HttpGetClientProtocol() { }
         protected override System.Net.WebRequest GetWebRequest(System.Uri uri) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class HttpMethodAttribute : System.Attribute
     {
         public HttpMethodAttribute() { }
@@ -1615,20 +1615,20 @@ namespace System.Web.Services.Protocols
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowAutoRedirect { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         public System.Net.CookieContainer CookieContainer { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool EnableDecompression { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Net.IWebProxy Proxy { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool UnsafeAuthenticatedConnectionSharing { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string UserAgent { get { throw null; } set { } }
         protected void CancelAsync(object userState) { }
         public static bool GenerateXmlMappings(System.Type type, System.Collections.ArrayList mappings) { throw null; }
@@ -1681,7 +1681,7 @@ namespace System.Web.Services.Protocols
         Async = 2,
         Sync = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All)]
     public sealed partial class MatchAttribute : System.Attribute
     {
         public MatchAttribute(string pattern) { }
@@ -1788,7 +1788,7 @@ namespace System.Web.Services.Protocols
         protected override void EnsureInStage() { }
         protected override void EnsureOutStage() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class SoapDocumentMethodAttribute : System.Attribute
     {
         public SoapDocumentMethodAttribute() { }
@@ -1803,7 +1803,7 @@ namespace System.Web.Services.Protocols
         public string ResponseNamespace { get { throw null; } set { } }
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class SoapDocumentServiceAttribute : System.Attribute
     {
         public SoapDocumentServiceAttribute() { }
@@ -1843,7 +1843,7 @@ namespace System.Web.Services.Protocols
         public string Role { get { throw null; } }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Web.Services.Protocols.SoapFaultSubCode SubCode { get { throw null; } }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public static bool IsClientFaultCode(System.Xml.XmlQualifiedName code) { throw null; }
         public static bool IsMustUnderstandFaultCode(System.Xml.XmlQualifiedName code) { throw null; }
@@ -1912,7 +1912,7 @@ namespace System.Web.Services.Protocols
         [System.Xml.Serialization.XmlAttributeAttribute("role", Namespace="http://www.w3.org/2003/05/soap-envelope")]
         public string Role { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=true)]
     public sealed partial class SoapHeaderAttribute : System.Attribute
     {
         public SoapHeaderAttribute(string memberName) { }
@@ -1978,7 +1978,7 @@ namespace System.Web.Services.Protocols
     public partial class SoapHttpClientProtocol : System.Web.Services.Protocols.HttpWebClientProtocol
     {
         public SoapHttpClientProtocol() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Protocols.SoapProtocolVersion)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Protocols.SoapProtocolVersion.Default)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Web.Services.Protocols.SoapProtocolVersion SoapVersion { get { throw null; } set { } }
         protected System.IAsyncResult BeginInvoke(string methodName, object[] parameters, System.AsyncCallback callback, object asyncState) { throw null; }
@@ -2004,7 +2004,7 @@ namespace System.Web.Services.Protocols
         public System.Web.Services.Protocols.SoapHeaderCollection Headers { get { throw null; } }
         public abstract System.Web.Services.Protocols.LogicalMethodInfo MethodInfo { get; }
         public abstract bool OneWay { get; }
-        [System.ComponentModel.DefaultValueAttribute((System.Web.Services.Protocols.SoapProtocolVersion)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Web.Services.Protocols.SoapProtocolVersion.Default)]
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public virtual System.Web.Services.Protocols.SoapProtocolVersion SoapVersion { get { throw null; } }
         public System.Web.Services.Protocols.SoapMessageStage Stage { get { throw null; } }
@@ -2036,7 +2036,7 @@ namespace System.Web.Services.Protocols
         Soap11 = 1,
         Soap12 = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class SoapRpcMethodAttribute : System.Attribute
     {
         public SoapRpcMethodAttribute() { }
@@ -2051,7 +2051,7 @@ namespace System.Web.Services.Protocols
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Web.Services.Description.SoapBindingUse Use { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class SoapRpcServiceAttribute : System.Attribute
     {
         public SoapRpcServiceAttribute() { }

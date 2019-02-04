@@ -516,6 +516,7 @@ namespace System.Collections.Generic
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.QueueDebugView<T>")]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class Queue<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.ICollection, System.Collections.IEnumerable
     {
@@ -781,6 +782,7 @@ namespace System.Collections.Generic
     }
     [System.Diagnostics.DebuggerDisplayAttribute("Count = {Count}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Collections.Generic.StackDebugView<T>")]
+    [System.Runtime.CompilerServices.TypeForwardedFromAttribute("System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     [System.SerializableAttribute]
     public partial class Stack<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IReadOnlyCollection<T>, System.Collections.ICollection, System.Collections.IEnumerable
     {
@@ -9376,12 +9378,9 @@ namespace System.Security.Cryptography.X509Certificates
         public string GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType nameType, bool forIssuer) { throw null; }
         public override void Import(byte[] rawData) { }
         public override void Import(byte[] rawData, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
-        [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(byte[] rawData, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Import(string fileName) { }
-        [System.MonoTODOAttribute("SecureString is incomplete")]
         public override void Import(string fileName, System.Security.SecureString password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
-        [System.MonoTODOAttribute("missing KeyStorageFlags support")]
         public override void Import(string fileName, string password, System.Security.Cryptography.X509Certificates.X509KeyStorageFlags keyStorageFlags) { }
         public override void Reset() { }
         public override string ToString() { throw null; }

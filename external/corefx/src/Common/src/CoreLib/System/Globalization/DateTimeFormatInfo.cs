@@ -47,7 +47,9 @@ namespace System.Globalization
         NotInitialized = -1,
     }
 
-
+#if MONO
+    [Serializable]
+#endif
     public sealed class DateTimeFormatInfo : IFormatProvider, ICloneable
     {
         // cache for the invariant culture.
@@ -55,18 +57,22 @@ namespace System.Globalization
         private static volatile DateTimeFormatInfo s_invariantInfo;
 
         // an index which points to a record in Culture Data Table.
+        [NonSerialized]
         private CultureData _cultureData;
 
         // The culture name used to create this DTFI.
         private String _name = null;
 
         // The language name of the culture used to create this DTFI.
+        [NonSerialized]
         private String _langName = null;
 
         // CompareInfo usually used by the parser.
+        [NonSerialized]
         private CompareInfo _compareInfo = null;
 
         // Culture matches current DTFI. mainly used for string comparisons during parsing.
+        [NonSerialized]
         private CultureInfo _cultureInfo = null;
 
         //
@@ -310,10 +316,10 @@ namespace System.Globalization
             this.Calendar = cal;
         }
 
-        private void InitializeOverridableProperties(CultureData cultureData, CalendarId calendarId)
+        private void InitializeOverridableProperties(CultureData cultureData, int calendarId)
         {
             Debug.Assert(cultureData != null);
-            Debug.Assert(calendarId != CalendarId.UNINITIALIZED_VALUE, "[DateTimeFormatInfo.Populate] Expected initalized calendarId");
+            Debug.Assert(calendarId != (int)CalendarId.UNINITIALIZED_VALUE, "[DateTimeFormatInfo.Populate] Expected initalized calendarId");
 
             if (this.firstDayOfWeek == -1) { this.firstDayOfWeek = cultureData.IFIRSTDAYOFWEEK; }
             if (this.calendarWeekRule == -1) { this.calendarWeekRule = cultureData.IFIRSTWEEKOFYEAR; }
@@ -453,7 +459,7 @@ namespace System.Globalization
 
                 for (int i = 0; i < this.OptionalCalendars.Length; i++)
                 {
-                    if (this.OptionalCalendars[i] == value.ID)
+                    if (this.OptionalCalendars[i] == (CalendarId)value.ID)
                     {
                         // We can use this one, so do so.
 
@@ -531,7 +537,11 @@ namespace System.Globalization
             {
                 if (this.optionalCalendars == null)
                 {
+#if MONO
+                    this.optionalCalendars = _cultureData.GetCalendarIds();
+#else
                     this.optionalCalendars = _cultureData.CalendarIds;
+#endif
                 }
                 return (this.optionalCalendars);
             }
@@ -2110,7 +2120,7 @@ namespace System.Globalization
         {
             get
             {
-                switch (calendar.ID)
+                switch ((CalendarId)calendar.ID)
                 {
                     // Handle Japanese and Taiwan cases.
                     // If is y/yy, do not get (year % 100). "y" will print
@@ -2185,6 +2195,7 @@ namespace System.Globalization
         //
         // DateTimeFormatInfo tokenizer.  This is used by DateTime.Parse() to break input string into tokens.
         //
+        [NonSerialized]
         private TokenHashValue[] _dtfiTokenHash;
 
         private const int TOKEN_HASH_SIZE = 199;

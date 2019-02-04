@@ -36,6 +36,8 @@ See the LICENSE file in the project root for more information.
     <PropertyGroup>
       <NativeLibraryExtension Condition="'$(NativeCodeGen)' != 'wasm'">.a</NativeLibraryExtension>
       <NativeLibraryExtension Condition="'$(NativeCodeGen)' == 'wasm'">.bc</NativeLibraryExtension>
+      <FullRuntimeName>libRuntime</FullRuntimeName>
+      <FullRuntimeName Condition="'$(ServerGarbageCollection)' != ''">libRuntime.ServerGC</FullRuntimeName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -50,7 +52,7 @@ See the LICENSE file in the project root for more information.
       <NativeLibrary Condition="'$(IlcMultiModule)' == 'true' and $(NativeCodeGen) == ''" Include="$(SharedLibrary)" />
       <NativeLibrary Condition="$(NativeCodeGen) == '' and $(NativeLib) == ''" Include="$(IlcPath)/sdk/libbootstrapper.a" />
       <NativeLibrary Condition="$(NativeCodeGen) == '' and $(NativeLib) != ''" Include="$(IlcPath)/sdk/libbootstrapperdll.a" />
-      <NativeLibrary Condition="$(NativeCodeGen) == ''" Include="$(IlcPath)/sdk/libRuntime.a" />
+      <NativeLibrary Condition="$(NativeCodeGen) == ''" Include="$(IlcPath)/sdk/$(FullRuntimeName).a" />
       <NativeLibrary Condition="$(NativeCodeGen) == 'cpp'" Include="$(IlcPath)/sdk/libbootstrappercpp.a" />
       <NativeLibrary Condition="$(NativeCodeGen) == 'cpp'" Include="$(IlcPath)/sdk/libPortableRuntime.a" />
       <NativeLibrary Condition="$(NativeCodeGen) == 'wasm'" Include="$(IlcPath)/sdk/libbootstrappercpp.bc" />
@@ -59,6 +61,7 @@ See the LICENSE file in the project root for more information.
 
     <ItemGroup>
       <NativeLibrary Include="$(IlcPath)/sdk/libSystem.Private.CoreLib.Native$(NativeLibraryExtension)" />
+      <NativeLibrary Condition="$(NativeCodeGen) == ''" Include="$(IlcPath)/sdk/libSystem.Private.TypeLoader.Native$(NativeLibraryExtension)" />
       <NativeLibrary Include="$(IlcPath)/framework/System.Native$(NativeLibraryExtension)" />
       <NativeLibrary Include="$(IlcPath)/framework/System.Globalization.Native$(NativeLibraryExtension)" />
       <NativeLibrary Include="$(IlcPath)/framework/System.IO.Compression.Native$(NativeLibraryExtension)" />
@@ -71,26 +74,28 @@ See the LICENSE file in the project root for more information.
     <ItemGroup Condition="'$(TargetOS)' == 'OSX'">
       <NativeFramework Include="CoreFoundation" />
       <NativeFramework Include="Security" />
+      <NativeFramework Include="GSS" />
     </ItemGroup>
 
     <ItemGroup>
       <LinkerArg Include="@(NativeLibrary)" />
       <LinkerArg Include="-g" />
       <LinkerArg Include="-Wl,-rpath,'$ORIGIN'" />
+      <LinkerArg Include="-Wl,--as-needed" Condition="'$(TargetOS)' != 'OSX'" />
       <LinkerArg Include="-pthread" />
       <LinkerArg Include="-lstdc++" />
       <LinkerArg Include="-ldl" />
       <LinkerArg Include="-lm" />
       <LinkerArg Include="-lcurl" />
       <LinkerArg Include="-lz" />
-      <LinkerArg Include="-luuid" Condition="'$(TargetOS)' != 'OSX'" />
+      <LinkerArg Include="-lgssapi_krb5" Condition="'$(TargetOS)' != 'OSX'" />
       <LinkerArg Include="-lrt" Condition="'$(TargetOS)' != 'OSX'" />
       <LinkerArg Include="-licucore" Condition="'$(TargetOS)' == 'OSX'" />
       <LinkerArg Include="-dynamiclib" Condition="'$(TargetOS)' == 'OSX' and '$(NativeLib)' == 'Shared'" />
       <LinkerArg Include="-shared" Condition="'$(TargetOS)' != 'OSX' and '$(NativeLib)' == 'Shared'" />
       <LinkerArg Include="@(NativeFramework->'-framework %(Identity)')" Condition="'$(TargetOS)' == 'OSX'" />
     </ItemGroup>
-    
+
     <Exec Command="command -v $(CppLinker)" IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="_WhereLinker"/>
     </Exec>

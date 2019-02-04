@@ -16,18 +16,18 @@ namespace System.Collections
 #endif
     public struct DictionaryEntry
     {
-        private Object _key; // Do not rename (binary serialization)
-        private Object _value; // Do not rename (binary serialization)
+        private object _key; // Do not rename (binary serialization)
+        private object _value; // Do not rename (binary serialization)
 
         // Constructs a new DictionaryEnumerator by setting the Key
         // and Value fields appropriately.
-        public DictionaryEntry(Object key, Object value)
+        public DictionaryEntry(object key, object value)
         {
             _key = key;
             _value = value;
         }
 
-        public Object Key
+        public object Key
         {
             get
             {
@@ -40,7 +40,7 @@ namespace System.Collections
             }
         }
 
-        public Object Value
+        public object Value
         {
             get
             {

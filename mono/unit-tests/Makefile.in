@@ -100,7 +100,8 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
 subdir = mono/unit-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_compile_flag.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -116,76 +117,93 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_DEPENDENCIES = ../metadata/libmonoruntimesgen.la \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	../sgen/libmonosgen.la \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	../utils/libmonoutils.la
-am_libtestlib_la_OBJECTS =
+am__libtestlib_la_SOURCES_DIST = test-sgen-qsort.c test-memfuncs.c \
+	test-mono-linked-list-set.c test-conc-hashtable.c \
+	test-mono-handle.c test-mono-callspec.c test-mono-string.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_libtestlib_la_OBJECTS = libtestlib_la-test-sgen-qsort.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-memfuncs.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-linked-list-set.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-conc-hashtable.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-handle.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-callspec.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-string.lo
 libtestlib_la_OBJECTS = $(am_libtestlib_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libtestlib_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libtestlib_la_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_libtestlib_la_rpath =
-am__test_conc_hashtable_SOURCES_DIST = test-conc-hashtable.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
+am__test_conc_hashtable_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-main.$(OBJEXT)
 test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = libtestlib.la $(am__DEPENDENCIES_1) $(glib_libs) \
 	$(am__DEPENDENCIES_1)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-conc-hashtable.lo
 test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_conc_hashtable_CFLAGS) $(CFLAGS) \
 	$(test_conc_hashtable_LDFLAGS) $(LDFLAGS) -o $@
-am__test_memfuncs_SOURCES_DIST = test-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_memfuncs_OBJECTS = test_memfuncs-test-memfuncs.$(OBJEXT)
+am__test_memfuncs_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_memfuncs_OBJECTS = test_memfuncs-main.$(OBJEXT)
 test_memfuncs_OBJECTS = $(am_test_memfuncs_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-memfuncs.lo
 test_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_memfuncs_CFLAGS) \
 	$(CFLAGS) $(test_memfuncs_LDFLAGS) $(LDFLAGS) -o $@
-am__test_mono_callspec_SOURCES_DIST = test-mono-callspec.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_callspec_OBJECTS = test_mono_callspec-test-mono-callspec.$(OBJEXT)
+am__test_mono_callspec_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_callspec_OBJECTS = test_mono_callspec-main.$(OBJEXT)
 test_mono_callspec_OBJECTS = $(am_test_mono_callspec_OBJECTS)
 test_mono_callspec_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_callspec_CFLAGS) $(CFLAGS) \
 	$(test_mono_callspec_LDFLAGS) $(LDFLAGS) -o $@
-am__test_mono_handle_SOURCES_DIST = test-mono-handle.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_handle_OBJECTS = test_mono_handle-test-mono-handle.$(OBJEXT)
+am__test_mono_handle_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_handle_OBJECTS = test_mono_handle-main.$(OBJEXT)
 test_mono_handle_OBJECTS = $(am_test_mono_handle_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-handle.lo
 test_mono_handle_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_handle_CFLAGS) $(CFLAGS) \
 	$(test_mono_handle_LDFLAGS) $(LDFLAGS) -o $@
-am__test_mono_linked_list_set_SOURCES_DIST =  \
-	test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-test-mono-linked-list-set.$(OBJEXT)
+am__test_mono_linked_list_set_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-main.$(OBJEXT)
 test_mono_linked_list_set_OBJECTS =  \
 	$(am_test_mono_linked_list_set_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-linked-list-set.lo
 test_mono_linked_list_set_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_linked_list_set_CFLAGS) $(CFLAGS) \
 	$(test_mono_linked_list_set_LDFLAGS) $(LDFLAGS) -o $@
-am__test_mono_string_SOURCES_DIST = test-mono-string.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_string_OBJECTS = test_mono_string-test-mono-string.$(OBJEXT)
+am__test_mono_string_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_string_OBJECTS = test_mono_string-main.$(OBJEXT)
 test_mono_string_OBJECTS = $(am_test_mono_string_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_DEPENDENCIES =  \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(mini_libs) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(sgen_libs) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-string.lo
 test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_string_CFLAGS) $(CFLAGS) \
 	$(test_mono_string_LDFLAGS) $(LDFLAGS) -o $@
-am__test_sgen_qsort_SOURCES_DIST = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
+am__test_sgen_qsort_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-main.$(OBJEXT)
 test_sgen_qsort_OBJECTS = $(am_test_sgen_qsort_OBJECTS)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_DEPENDENCIES =  \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-sgen-qsort.lo
 test_sgen_qsort_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_sgen_qsort_CFLAGS) $(CFLAGS) $(test_sgen_qsort_LDFLAGS) \
@@ -225,7 +243,7 @@ SOURCES = $(libtestlib_la_SOURCES) $(test_conc_hashtable_SOURCES) \
 	$(test_mono_handle_SOURCES) \
 	$(test_mono_linked_list_set_SOURCES) \
 	$(test_mono_string_SOURCES) $(test_sgen_qsort_SOURCES)
-DIST_SOURCES = $(libtestlib_la_SOURCES) \
+DIST_SOURCES = $(am__libtestlib_la_SOURCES_DIST) \
 	$(am__test_conc_hashtable_SOURCES_DIST) \
 	$(am__test_memfuncs_SOURCES_DIST) \
 	$(am__test_mono_callspec_SOURCES_DIST) \
@@ -488,7 +506,7 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
-CFLAGS = @CFLAGS@
+CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
@@ -498,6 +516,7 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
+CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
 CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
 CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -571,6 +590,22 @@ MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_NATIVE_CC = @MONO_NATIVE_CC@
+MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
+MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
+MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
+MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
+MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
+MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
+MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
+MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
+MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
+MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
+MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
+MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
+MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
+MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
+MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -723,36 +758,45 @@ sgen_libs = \
 mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
 	$(am__append_2)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@noinst_LTLIBRARIES = libtestlib.la
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_SOURCES = 
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_CFLAGS = @CXX_ADD_CFLAGS@
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_SOURCES = \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-sgen-qsort.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-memfuncs.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string.c
+
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_CFLAGS = $(test_cflags) -DMAIN=test_sgen_qsort_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_LDADD = $(test_ldadd) libtestlib_la-test-sgen-qsort.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_SOURCES = test-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_CFLAGS = $(test_cflags) -DMAIN=test_memfuncs_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_LDADD = $(test_ldadd) libtestlib_la-test-memfuncs.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_memfuncs_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_SOURCES = test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_CFLAGS = $(test_cflags) -DMAIN=test_mono_linked_list_set_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_LDADD = $(test_ldadd) libtestlib_la-test-mono-linked-list-set.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_linked_list_set_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_SOURCES = test-conc-hashtable.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_CFLAGS = $(test_cflags) -DMAIN=test_conc_hashtable_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_LDADD = $(test_ldadd) libtestlib_la-test-conc-hashtable.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_conc_hashtable_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_SOURCES = test-mono-handle.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_CFLAGS = $(test_cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_LDADD = $(test_ldadd)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_CFLAGS = $(test_cflags) -DMAIN=test_mono_handle_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_LDADD = $(test_ldadd) libtestlib_la-test-mono-handle.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_handle_LDFLAGS = $(test_ldflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_SOURCES = test-mono-callspec.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_CFLAGS = $(AM_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_CFLAGS = $(AM_CFLAGS) -DMAIN=test_mono_callspec_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-mono-callspec.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_DEPENDENCIES = callspec.exe
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_SOURCES = test-mono-string.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test-cflags)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test-cflags) -DMAIN=test_mono_string_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-mono-string.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am
@@ -803,7 +847,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libtestlib.la: $(libtestlib_la_OBJECTS) $(libtestlib_la_DEPENDENCIES) $(EXTRA_libtestlib_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) $(am_libtestlib_la_rpath) $(libtestlib_la_OBJECTS) $(libtestlib_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libtestlib_la_LINK) $(am_libtestlib_la_rpath) $(libtestlib_la_OBJECTS) $(libtestlib_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -848,13 +892,20 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_memfuncs-test-memfuncs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_callspec-test-mono-callspec.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_handle-test-mono-handle.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_string-test-mono-string.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-conc-hashtable.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-memfuncs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-callspec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-handle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-linked-list-set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-sgen-qsort.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_conc_hashtable-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_memfuncs-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_callspec-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_handle-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_string-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -880,103 +931,152 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-test_conc_hashtable-test-conc-hashtable.o: test-conc-hashtable.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-test-conc-hashtable.o -MD -MP -MF $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo -c -o test_conc_hashtable-test-conc-hashtable.o `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-conc-hashtable.c' object='test_conc_hashtable-test-conc-hashtable.o' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-sgen-qsort.lo: test-sgen-qsort.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-sgen-qsort.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-sgen-qsort.Tpo -c -o libtestlib_la-test-sgen-qsort.lo `test -f 'test-sgen-qsort.c' || echo '$(srcdir)/'`test-sgen-qsort.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-sgen-qsort.Tpo $(DEPDIR)/libtestlib_la-test-sgen-qsort.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-sgen-qsort.c' object='libtestlib_la-test-sgen-qsort.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-test-conc-hashtable.o `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-sgen-qsort.lo `test -f 'test-sgen-qsort.c' || echo '$(srcdir)/'`test-sgen-qsort.c
 
-test_conc_hashtable-test-conc-hashtable.obj: test-conc-hashtable.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-test-conc-hashtable.obj -MD -MP -MF $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo -c -o test_conc_hashtable-test-conc-hashtable.obj `if test -f 'test-conc-hashtable.c'; then $(CYGPATH_W) 'test-conc-hashtable.c'; else $(CYGPATH_W) '$(srcdir)/test-conc-hashtable.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-conc-hashtable.c' object='test_conc_hashtable-test-conc-hashtable.obj' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-memfuncs.lo: test-memfuncs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-memfuncs.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-memfuncs.Tpo -c -o libtestlib_la-test-memfuncs.lo `test -f 'test-memfuncs.c' || echo '$(srcdir)/'`test-memfuncs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-memfuncs.Tpo $(DEPDIR)/libtestlib_la-test-memfuncs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-memfuncs.c' object='libtestlib_la-test-memfuncs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-test-conc-hashtable.obj `if test -f 'test-conc-hashtable.c'; then $(CYGPATH_W) 'test-conc-hashtable.c'; else $(CYGPATH_W) '$(srcdir)/test-conc-hashtable.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-memfuncs.lo `test -f 'test-memfuncs.c' || echo '$(srcdir)/'`test-memfuncs.c
 
-test_memfuncs-test-memfuncs.o: test-memfuncs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -MT test_memfuncs-test-memfuncs.o -MD -MP -MF $(DEPDIR)/test_memfuncs-test-memfuncs.Tpo -c -o test_memfuncs-test-memfuncs.o `test -f 'test-memfuncs.c' || echo '$(srcdir)/'`test-memfuncs.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_memfuncs-test-memfuncs.Tpo $(DEPDIR)/test_memfuncs-test-memfuncs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-memfuncs.c' object='test_memfuncs-test-memfuncs.o' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-mono-linked-list-set.lo: test-mono-linked-list-set.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-mono-linked-list-set.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-mono-linked-list-set.Tpo -c -o libtestlib_la-test-mono-linked-list-set.lo `test -f 'test-mono-linked-list-set.c' || echo '$(srcdir)/'`test-mono-linked-list-set.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-mono-linked-list-set.Tpo $(DEPDIR)/libtestlib_la-test-mono-linked-list-set.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-linked-list-set.c' object='libtestlib_la-test-mono-linked-list-set.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -c -o test_memfuncs-test-memfuncs.o `test -f 'test-memfuncs.c' || echo '$(srcdir)/'`test-memfuncs.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-linked-list-set.lo `test -f 'test-mono-linked-list-set.c' || echo '$(srcdir)/'`test-mono-linked-list-set.c
 
-test_memfuncs-test-memfuncs.obj: test-memfuncs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -MT test_memfuncs-test-memfuncs.obj -MD -MP -MF $(DEPDIR)/test_memfuncs-test-memfuncs.Tpo -c -o test_memfuncs-test-memfuncs.obj `if test -f 'test-memfuncs.c'; then $(CYGPATH_W) 'test-memfuncs.c'; else $(CYGPATH_W) '$(srcdir)/test-memfuncs.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_memfuncs-test-memfuncs.Tpo $(DEPDIR)/test_memfuncs-test-memfuncs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-memfuncs.c' object='test_memfuncs-test-memfuncs.obj' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-conc-hashtable.lo: test-conc-hashtable.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-conc-hashtable.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-conc-hashtable.Tpo -c -o libtestlib_la-test-conc-hashtable.lo `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-conc-hashtable.Tpo $(DEPDIR)/libtestlib_la-test-conc-hashtable.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-conc-hashtable.c' object='libtestlib_la-test-conc-hashtable.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -c -o test_memfuncs-test-memfuncs.obj `if test -f 'test-memfuncs.c'; then $(CYGPATH_W) 'test-memfuncs.c'; else $(CYGPATH_W) '$(srcdir)/test-memfuncs.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-conc-hashtable.lo `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
 
-test_mono_callspec-test-mono-callspec.o: test-mono-callspec.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-test-mono-callspec.o -MD -MP -MF $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo -c -o test_mono_callspec-test-mono-callspec.o `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo $(DEPDIR)/test_mono_callspec-test-mono-callspec.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-callspec.c' object='test_mono_callspec-test-mono-callspec.o' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-mono-handle.lo: test-mono-handle.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-mono-handle.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-mono-handle.Tpo -c -o libtestlib_la-test-mono-handle.lo `test -f 'test-mono-handle.c' || echo '$(srcdir)/'`test-mono-handle.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-mono-handle.Tpo $(DEPDIR)/libtestlib_la-test-mono-handle.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-handle.c' object='libtestlib_la-test-mono-handle.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-test-mono-callspec.o `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-handle.lo `test -f 'test-mono-handle.c' || echo '$(srcdir)/'`test-mono-handle.c
 
-test_mono_callspec-test-mono-callspec.obj: test-mono-callspec.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-test-mono-callspec.obj -MD -MP -MF $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo -c -o test_mono_callspec-test-mono-callspec.obj `if test -f 'test-mono-callspec.c'; then $(CYGPATH_W) 'test-mono-callspec.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-callspec.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo $(DEPDIR)/test_mono_callspec-test-mono-callspec.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-callspec.c' object='test_mono_callspec-test-mono-callspec.obj' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-mono-callspec.lo: test-mono-callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-mono-callspec.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-mono-callspec.Tpo -c -o libtestlib_la-test-mono-callspec.lo `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-mono-callspec.Tpo $(DEPDIR)/libtestlib_la-test-mono-callspec.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-callspec.c' object='libtestlib_la-test-mono-callspec.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-test-mono-callspec.obj `if test -f 'test-mono-callspec.c'; then $(CYGPATH_W) 'test-mono-callspec.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-callspec.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-callspec.lo `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
 
-test_mono_handle-test-mono-handle.o: test-mono-handle.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-test-mono-handle.o -MD -MP -MF $(DEPDIR)/test_mono_handle-test-mono-handle.Tpo -c -o test_mono_handle-test-mono-handle.o `test -f 'test-mono-handle.c' || echo '$(srcdir)/'`test-mono-handle.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_handle-test-mono-handle.Tpo $(DEPDIR)/test_mono_handle-test-mono-handle.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-handle.c' object='test_mono_handle-test-mono-handle.o' libtool=no @AMDEPBACKSLASH@
+libtestlib_la-test-mono-string.lo: test-mono-string.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-mono-string.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-mono-string.Tpo -c -o libtestlib_la-test-mono-string.lo `test -f 'test-mono-string.c' || echo '$(srcdir)/'`test-mono-string.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-mono-string.Tpo $(DEPDIR)/libtestlib_la-test-mono-string.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-string.c' object='libtestlib_la-test-mono-string.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -c -o test_mono_handle-test-mono-handle.o `test -f 'test-mono-handle.c' || echo '$(srcdir)/'`test-mono-handle.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-string.lo `test -f 'test-mono-string.c' || echo '$(srcdir)/'`test-mono-string.c
 
-test_mono_handle-test-mono-handle.obj: test-mono-handle.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-test-mono-handle.obj -MD -MP -MF $(DEPDIR)/test_mono_handle-test-mono-handle.Tpo -c -o test_mono_handle-test-mono-handle.obj `if test -f 'test-mono-handle.c'; then $(CYGPATH_W) 'test-mono-handle.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-handle.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_handle-test-mono-handle.Tpo $(DEPDIR)/test_mono_handle-test-mono-handle.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-handle.c' object='test_mono_handle-test-mono-handle.obj' libtool=no @AMDEPBACKSLASH@
+test_conc_hashtable-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-main.o -MD -MP -MF $(DEPDIR)/test_conc_hashtable-main.Tpo -c -o test_conc_hashtable-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-main.Tpo $(DEPDIR)/test_conc_hashtable-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_conc_hashtable-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -c -o test_mono_handle-test-mono-handle.obj `if test -f 'test-mono-handle.c'; then $(CYGPATH_W) 'test-mono-handle.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-handle.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
 
-test_mono_linked_list_set-test-mono-linked-list-set.o: test-mono-linked-list-set.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -MT test_mono_linked_list_set-test-mono-linked-list-set.o -MD -MP -MF $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Tpo -c -o test_mono_linked_list_set-test-mono-linked-list-set.o `test -f 'test-mono-linked-list-set.c' || echo '$(srcdir)/'`test-mono-linked-list-set.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Tpo $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-linked-list-set.c' object='test_mono_linked_list_set-test-mono-linked-list-set.o' libtool=no @AMDEPBACKSLASH@
+test_conc_hashtable-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-main.obj -MD -MP -MF $(DEPDIR)/test_conc_hashtable-main.Tpo -c -o test_conc_hashtable-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-main.Tpo $(DEPDIR)/test_conc_hashtable-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_conc_hashtable-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -c -o test_mono_linked_list_set-test-mono-linked-list-set.o `test -f 'test-mono-linked-list-set.c' || echo '$(srcdir)/'`test-mono-linked-list-set.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
-test_mono_linked_list_set-test-mono-linked-list-set.obj: test-mono-linked-list-set.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -MT test_mono_linked_list_set-test-mono-linked-list-set.obj -MD -MP -MF $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Tpo -c -o test_mono_linked_list_set-test-mono-linked-list-set.obj `if test -f 'test-mono-linked-list-set.c'; then $(CYGPATH_W) 'test-mono-linked-list-set.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-linked-list-set.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Tpo $(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-linked-list-set.c' object='test_mono_linked_list_set-test-mono-linked-list-set.obj' libtool=no @AMDEPBACKSLASH@
+test_memfuncs-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -MT test_memfuncs-main.o -MD -MP -MF $(DEPDIR)/test_memfuncs-main.Tpo -c -o test_memfuncs-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_memfuncs-main.Tpo $(DEPDIR)/test_memfuncs-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_memfuncs-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -c -o test_mono_linked_list_set-test-mono-linked-list-set.obj `if test -f 'test-mono-linked-list-set.c'; then $(CYGPATH_W) 'test-mono-linked-list-set.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-linked-list-set.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -c -o test_memfuncs-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
 
-test_mono_string-test-mono-string.o: test-mono-string.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -MT test_mono_string-test-mono-string.o -MD -MP -MF $(DEPDIR)/test_mono_string-test-mono-string.Tpo -c -o test_mono_string-test-mono-string.o `test -f 'test-mono-string.c' || echo '$(srcdir)/'`test-mono-string.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_string-test-mono-string.Tpo $(DEPDIR)/test_mono_string-test-mono-string.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-string.c' object='test_mono_string-test-mono-string.o' libtool=no @AMDEPBACKSLASH@
+test_memfuncs-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -MT test_memfuncs-main.obj -MD -MP -MF $(DEPDIR)/test_memfuncs-main.Tpo -c -o test_memfuncs-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_memfuncs-main.Tpo $(DEPDIR)/test_memfuncs-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_memfuncs-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -c -o test_mono_string-test-mono-string.o `test -f 'test-mono-string.c' || echo '$(srcdir)/'`test-mono-string.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -c -o test_memfuncs-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
-test_mono_string-test-mono-string.obj: test-mono-string.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -MT test_mono_string-test-mono-string.obj -MD -MP -MF $(DEPDIR)/test_mono_string-test-mono-string.Tpo -c -o test_mono_string-test-mono-string.obj `if test -f 'test-mono-string.c'; then $(CYGPATH_W) 'test-mono-string.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-string.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_string-test-mono-string.Tpo $(DEPDIR)/test_mono_string-test-mono-string.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-string.c' object='test_mono_string-test-mono-string.obj' libtool=no @AMDEPBACKSLASH@
+test_mono_callspec-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-main.o -MD -MP -MF $(DEPDIR)/test_mono_callspec-main.Tpo -c -o test_mono_callspec-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-main.Tpo $(DEPDIR)/test_mono_callspec-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_callspec-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -c -o test_mono_string-test-mono-string.obj `if test -f 'test-mono-string.c'; then $(CYGPATH_W) 'test-mono-string.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-string.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
 
-test_sgen_qsort-test-sgen-qsort.o: test-sgen-qsort.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -MT test_sgen_qsort-test-sgen-qsort.o -MD -MP -MF $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Tpo -c -o test_sgen_qsort-test-sgen-qsort.o `test -f 'test-sgen-qsort.c' || echo '$(srcdir)/'`test-sgen-qsort.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Tpo $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-sgen-qsort.c' object='test_sgen_qsort-test-sgen-qsort.o' libtool=no @AMDEPBACKSLASH@
+test_mono_callspec-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-main.obj -MD -MP -MF $(DEPDIR)/test_mono_callspec-main.Tpo -c -o test_mono_callspec-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-main.Tpo $(DEPDIR)/test_mono_callspec-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_callspec-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -c -o test_sgen_qsort-test-sgen-qsort.o `test -f 'test-sgen-qsort.c' || echo '$(srcdir)/'`test-sgen-qsort.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
-test_sgen_qsort-test-sgen-qsort.obj: test-sgen-qsort.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -MT test_sgen_qsort-test-sgen-qsort.obj -MD -MP -MF $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Tpo -c -o test_sgen_qsort-test-sgen-qsort.obj `if test -f 'test-sgen-qsort.c'; then $(CYGPATH_W) 'test-sgen-qsort.c'; else $(CYGPATH_W) '$(srcdir)/test-sgen-qsort.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Tpo $(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-sgen-qsort.c' object='test_sgen_qsort-test-sgen-qsort.obj' libtool=no @AMDEPBACKSLASH@
+test_mono_handle-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-main.o -MD -MP -MF $(DEPDIR)/test_mono_handle-main.Tpo -c -o test_mono_handle-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_handle-main.Tpo $(DEPDIR)/test_mono_handle-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_handle-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -c -o test_sgen_qsort-test-sgen-qsort.obj `if test -f 'test-sgen-qsort.c'; then $(CYGPATH_W) 'test-sgen-qsort.c'; else $(CYGPATH_W) '$(srcdir)/test-sgen-qsort.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -c -o test_mono_handle-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_mono_handle-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-main.obj -MD -MP -MF $(DEPDIR)/test_mono_handle-main.Tpo -c -o test_mono_handle-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_handle-main.Tpo $(DEPDIR)/test_mono_handle-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_handle-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -c -o test_mono_handle-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_mono_linked_list_set-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -MT test_mono_linked_list_set-main.o -MD -MP -MF $(DEPDIR)/test_mono_linked_list_set-main.Tpo -c -o test_mono_linked_list_set-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_linked_list_set-main.Tpo $(DEPDIR)/test_mono_linked_list_set-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_linked_list_set-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -c -o test_mono_linked_list_set-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_mono_linked_list_set-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -MT test_mono_linked_list_set-main.obj -MD -MP -MF $(DEPDIR)/test_mono_linked_list_set-main.Tpo -c -o test_mono_linked_list_set-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_linked_list_set-main.Tpo $(DEPDIR)/test_mono_linked_list_set-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_linked_list_set-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_linked_list_set_CFLAGS) $(CFLAGS) -c -o test_mono_linked_list_set-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_mono_string-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -MT test_mono_string-main.o -MD -MP -MF $(DEPDIR)/test_mono_string-main.Tpo -c -o test_mono_string-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_string-main.Tpo $(DEPDIR)/test_mono_string-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_string-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -c -o test_mono_string-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_mono_string-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -MT test_mono_string-main.obj -MD -MP -MF $(DEPDIR)/test_mono_string-main.Tpo -c -o test_mono_string-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_string-main.Tpo $(DEPDIR)/test_mono_string-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_string-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -c -o test_mono_string-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_sgen_qsort-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -MT test_sgen_qsort-main.o -MD -MP -MF $(DEPDIR)/test_sgen_qsort-main.Tpo -c -o test_sgen_qsort-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_sgen_qsort-main.Tpo $(DEPDIR)/test_sgen_qsort-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_sgen_qsort-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -c -o test_sgen_qsort-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_sgen_qsort-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -MT test_sgen_qsort-main.obj -MD -MP -MF $(DEPDIR)/test_sgen_qsort-main.Tpo -c -o test_sgen_qsort-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_sgen_qsort-main.Tpo $(DEPDIR)/test_sgen_qsort-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_sgen_qsort-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -c -o test_sgen_qsort-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -461,7 +461,7 @@ namespace System
             }
             
             // This is a flag to indicate if we are format the dates using Hebrew calendar.
-            bool isHebrewCalendar = (cal.ID == CalendarId.HEBREW);
+            bool isHebrewCalendar = ((CalendarId)cal.ID == CalendarId.HEBREW);
             // This is a flag to indicate if we are formating hour/minute/second only.
             bool bTimeOnly = true;
 
@@ -657,7 +657,7 @@ namespace System
                         {
                             FormatDigits(result, year, tokenLen <= 2 ? tokenLen : 2);
                         }
-                        else if (cal.ID == CalendarId.HEBREW)
+                        else if ((CalendarId)cal.ID == CalendarId.HEBREW)
                         {
                             HebrewFormatDigits(result, year);
                         }
@@ -1085,7 +1085,7 @@ namespace System
                     // thrown when we try to get the Japanese year for Gregorian year 0001.
                     // Therefore, the workaround allows them to call ToString() for time of day from a DateTime by
                     // formatting as ISO 8601 format.
-                    switch (dtfi.Calendar.ID)
+                    switch ((CalendarId)dtfi.Calendar.ID)
                     {
                         case CalendarId.JAPAN:
                         case CalendarId.TAIWAN:

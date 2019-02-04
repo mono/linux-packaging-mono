@@ -73,7 +73,6 @@ namespace System.Buffers.Text.Tests
 
         [Theory]
         [MemberData(nameof(TestData.DecimalFormatterTheoryData), MemberType = typeof(TestData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public static void TestFormatterDecimal(FormatterTestData<decimal> testData)
         {
             ValidateFormatter(testData);

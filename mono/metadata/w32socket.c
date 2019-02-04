@@ -58,6 +58,7 @@
 /* FIXME change this code to not mess so much with the internals */
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/domain-internals.h>
+#include <mono/metadata/image-internals.h>
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-memory-model.h>
 #include <mono/utils/networking.h>
@@ -158,17 +159,17 @@ mono_w32socket_getsockopt (SOCKET sock, gint level, gint optname, gpointer optva
 {
 	gint ret;
 	MONO_ENTER_GC_SAFE;
-	ret = getsockopt (sock, level, optname, optval, optlen);
+	ret = getsockopt (sock, level, optname, (char*)optval, optlen);
 	MONO_EXIT_GC_SAFE;
 	return ret;
 }
 
 static gint
-mono_w32socket_setsockopt (SOCKET sock, gint level, gint optname, const gpointer optval, socklen_t optlen)
+mono_w32socket_setsockopt (SOCKET sock, gint level, gint optname, gconstpointer optval, socklen_t optlen)
 {
 	gint ret;
 	MONO_ENTER_GC_SAFE;
-	ret = setsockopt (sock, level, optname, optval, optlen);
+	ret = setsockopt (sock, level, optname, (const char*)optval, optlen);
 	MONO_EXIT_GC_SAFE;
 	return ret;
 }
@@ -194,7 +195,7 @@ mono_w32socket_shutdown (SOCKET sock, gint how)
 }
 
 static gint
-mono_w32socket_ioctl (SOCKET sock, gint32 command, gchar *input, gint inputlen, gchar *output, gint outputlen, glong *written)
+mono_w32socket_ioctl (SOCKET sock, gint32 command, gchar *input, gint inputlen, gchar *output, gint outputlen, DWORD *written)
 {
 	gint ret;
 	MONO_ENTER_GC_SAFE;
@@ -709,7 +710,7 @@ get_socket_assembly (void)
 	if (domain->socket_assembly == NULL) {
 		MonoImage *socket_assembly;
 
-		socket_assembly = mono_image_loaded ("System");
+		socket_assembly = mono_image_loaded_internal ("System", FALSE);
 		if (!socket_assembly) {
 			MonoAssembly *sa = mono_assembly_open_predicate ("System.dll", MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, NULL);
 		
@@ -1027,70 +1028,54 @@ get_sockaddr_size (int family)
 	return size;
 }
 
-MonoObjectHandle
-ves_icall_System_Net_Sockets_Socket_LocalEndPoint_internal (gsize sock, gint32 af, gint32 *werror, MonoError *error)
+static MonoObjectHandle
+mono_w32socket_getname (gsize sock, gint32 af, gboolean local, gint32 *werror, MonoError *error)
 {
-	gchar *sa;
-	socklen_t salen;
+	gpointer sa = NULL;
+	socklen_t salen = 0;
 	int ret;
-	
+	MonoObjectHandle result = NULL_HANDLE;
+
 	*werror = 0;
 	
 	salen = get_sockaddr_size (convert_family ((MonoAddressFamily)af));
 	if (salen == 0) {
 		*werror = WSAEAFNOSUPPORT;
-		return NULL_HANDLE;
+		goto exit;
 	}
-	sa = (salen <= 128) ? (gchar *)alloca (salen) : (gchar *)g_malloc0 (salen);
+	if (salen <= 128) {
+		sa = g_alloca (salen);
+		memset (sa, 0, salen);
+	} else {
+		sa = g_malloc0 (salen);
+	}
 
-	ret = mono_w32socket_getsockname (sock, (struct sockaddr *)sa, &salen);
+	/* Note: linux returns just 2 for AF_UNIX. Always. */
+	ret = (local ? mono_w32socket_getsockname : mono_w32socket_getpeername) (sock, (struct sockaddr *)sa, &salen);
 	if (ret == SOCKET_ERROR) {
 		*werror = mono_w32socket_get_last_error ();
-		if (salen > 128)
-			g_free (sa);
-		return NULL_HANDLE;
+		goto exit;
 	}
 	
-	LOGDEBUG (g_message("%s: bound to %s port %d", __func__, inet_ntoa (((struct sockaddr_in *)&sa)->sin_addr), ntohs (((struct sockaddr_in *)&sa)->sin_port)));
+	LOGDEBUG (g_message("%s: %s to %s port %d", __func__, local ? "bound" : "connected", inet_ntoa (((struct sockaddr_in *)&sa)->sin_addr), ntohs (((struct sockaddr_in *)&sa)->sin_port)));
 
-	MonoObjectHandle result = create_object_handle_from_sockaddr ((struct sockaddr *)sa, salen, werror, error);
+	result = create_object_handle_from_sockaddr ((struct sockaddr *)sa, salen, werror, error);
+exit:
 	if (salen > 128)
 		g_free (sa);
 	return result;
 }
 
 MonoObjectHandle
+ves_icall_System_Net_Sockets_Socket_LocalEndPoint_internal (gsize sock, gint32 af, gint32 *werror, MonoError *error)
+{
+	return mono_w32socket_getname (sock, af, TRUE, werror, error);
+}
+
+MonoObjectHandle
 ves_icall_System_Net_Sockets_Socket_RemoteEndPoint_internal (gsize sock, gint32 af, gint32 *werror, MonoError *error)
 {
-	gchar *sa;
-	socklen_t salen;
-	int ret;
-	
-	error_init (error);
-	*werror = 0;
-	
-	salen = get_sockaddr_size (convert_family ((MonoAddressFamily)af));
-	if (salen == 0) {
-		*werror = WSAEAFNOSUPPORT;
-		return MONO_HANDLE_NEW (MonoObject, NULL);
-	}
-	sa = (salen <= 128) ? (gchar *)alloca (salen) : (gchar *)g_malloc0 (salen);
-	/* Note: linux returns just 2 for AF_UNIX. Always. */
-
-	ret = mono_w32socket_getpeername (sock, (struct sockaddr *)sa, &salen);
-	if (ret == SOCKET_ERROR) {
-		*werror = mono_w32socket_get_last_error ();
-		if (salen > 128)
-			g_free (sa);
-		return MONO_HANDLE_NEW (MonoObject, NULL);
-	}
-	
-	LOGDEBUG (g_message("%s: connected to %s port %d", __func__, inet_ntoa (((struct sockaddr_in *)&sa)->sin_addr), ntohs (((struct sockaddr_in *)&sa)->sin_port)));
-
-	MonoObjectHandle result = create_object_handle_from_sockaddr ((struct sockaddr *)sa, salen, werror, error);
-	if (salen > 128)
-		g_free (sa);
-	return result;
+	return mono_w32socket_getname (sock, af, FALSE, werror, error);
 }
 
 static struct sockaddr*
@@ -1257,6 +1242,7 @@ ves_icall_System_Net_Sockets_Socket_Poll_internal (gsize sock, gint mode,
 	mono_pollfd *pfds;
 	int ret;
 	time_t start;
+	gint rtimeout;
 
 	error_init (error);
 	*werror = 0;
@@ -1277,6 +1263,7 @@ ves_icall_System_Net_Sockets_Socket_Poll_internal (gsize sock, gint mode,
 	}
 
 	timeout = (timeout >= 0) ? (timeout / 1000) : -1;
+	rtimeout = timeout;
 	start = time (NULL);
 
 	do {
@@ -1290,7 +1277,7 @@ ves_icall_System_Net_Sockets_Socket_Poll_internal (gsize sock, gint mode,
 			int err = errno;
 			int sec = time (NULL) - start;
 			
-			timeout -= sec * 1000;
+			timeout = rtimeout - sec * 1000;
 			if (timeout < 0) {
 				timeout = 0;
 			}
@@ -1566,7 +1553,7 @@ Socket_to_SOCKET (MonoObjectHandle sockobj)
 	if (MONO_HANDLE_IS_NULL (safe_handle))
 		return -1;
 
-	return (SOCKET)MONO_HANDLE_GETVAL (safe_handle, handle);
+	return (SOCKET)(gsize)MONO_HANDLE_GETVAL (safe_handle, handle);
 }
 
 #define POLL_ERRORS (MONO_POLLERR | MONO_POLLHUP | MONO_POLLNVAL)
@@ -1636,6 +1623,7 @@ ves_icall_System_Net_Sockets_Socket_Select_internal (MonoArrayHandle sockets, gi
 	MonoClass *sock_arr_class;
 	time_t start;
 	uintptr_t socks_size;
+	gint32 rtimeout;
 
 	error_init (error);
 	*werror = 0;
@@ -1655,6 +1643,7 @@ ves_icall_System_Net_Sockets_Socket_Select_internal (MonoArrayHandle sockets, gi
 	}
 
 	timeout = (timeout >= 0) ? (timeout / 1000) : -1;
+	rtimeout = timeout;
 	start = time (NULL);
 	do {
 		MONO_ENTER_GC_SAFE;
@@ -1667,7 +1656,7 @@ ves_icall_System_Net_Sockets_Socket_Select_internal (MonoArrayHandle sockets, gi
 			int err = errno;
 			int sec = time (NULL) - start;
 
-			timeout -= sec * 1000;
+			timeout = rtimeout - sec * 1000;
 			if (timeout < 0)
 				timeout = 0;
 			errno = err;
@@ -1781,7 +1770,7 @@ ves_icall_System_Net_Sockets_Socket_GetSocketOption_obj_internal (gsize sock, gi
 		
 	case SocketOptionName_SendTimeout:
 	case SocketOptionName_ReceiveTimeout:
-		ret = mono_w32socket_getsockopt (sock, system_level, system_name, (char *)&time_ms, &time_ms_size);
+		ret = mono_w32socket_getsockopt (sock, system_level, system_name, &time_ms, &time_ms_size);
 		break;
 
 #ifdef SO_PEERCRED
@@ -1846,7 +1835,7 @@ ves_icall_System_Net_Sockets_Socket_GetSocketOption_obj_internal (gsize sock, gi
 		static MonoImage *mono_posix_image = NULL;
 		
 		if (mono_posix_image == NULL) {
-			mono_posix_image = mono_image_loaded ("Mono.Posix");
+			mono_posix_image = mono_image_loaded_internal ("Mono.Posix", FALSE);
 			if (!mono_posix_image) {
 				MonoAssembly *sa = mono_assembly_open_predicate ("Mono.Posix.dll", MONO_ASMCTX_DEFAULT, NULL, NULL, NULL, NULL);
 				if (!sa) {
@@ -2178,14 +2167,14 @@ ves_icall_System_Net_Sockets_Socket_SetSocketOption_internal (gsize sock, gint32
 				/* int_val is interface index */
 				struct ip_mreqn mreq = {{0}};
 				mreq.imr_ifindex = int_val;
-				ret = mono_w32socket_setsockopt (sock, system_level, system_name, (char *) &mreq, sizeof (mreq));
+				ret = mono_w32socket_setsockopt (sock, system_level, system_name, &mreq, sizeof (mreq));
 				break;
 			}
 			int_val = GUINT32_TO_BE (int_val);
 #endif /* HAVE_STRUCT_IP_MREQN */
 #endif /* HOST_WIN32 */
 			/* int_val is in_addr */
-			ret = mono_w32socket_setsockopt (sock, system_level, system_name, (char *) &int_val, sizeof (int_val));
+			ret = mono_w32socket_setsockopt (sock, system_level, system_name, &int_val, sizeof (int_val));
 			break;
 		case SocketOptionName_DontFragment:
 #ifdef HAVE_IP_MTU_DISCOVER
@@ -2198,7 +2187,7 @@ ves_icall_System_Net_Sockets_Socket_SetSocketOption_internal (gsize sock, gint32
 #endif
 			
 		default:
-			ret = mono_w32socket_setsockopt (sock, system_level, system_name, (char *) &int_val, sizeof (int_val));
+			ret = mono_w32socket_setsockopt (sock, system_level, system_name, &int_val, sizeof (int_val));
 		}
 	}
 
@@ -2255,10 +2244,15 @@ ves_icall_System_Net_Sockets_Socket_Shutdown_internal (gsize sock, gint32 how, g
 gint
 ves_icall_System_Net_Sockets_Socket_IOControl_internal (gsize sock, gint32 code, MonoArrayHandle input, MonoArrayHandle output, gint32 *werror, MonoError *error)
 {
+#ifdef HOST_WIN32
+	DWORD output_bytes = 0;
+#else
 	glong output_bytes = 0;
+#endif
 	gchar *i_buffer, *o_buffer;
 	gint i_len, o_len;
-	uint32_t i_gchandle, o_gchandle;
+	uint32_t i_gchandle = 0;
+	uint32_t o_gchandle = 0;
 	gint ret;
 
 	error_init (error);
@@ -2288,10 +2282,8 @@ ves_icall_System_Net_Sockets_Socket_IOControl_internal (gsize sock, gint32 code,
 
 	ret = mono_w32socket_ioctl (sock, code, i_buffer, i_len, o_buffer, o_len, &output_bytes);
 
-	if (i_gchandle)
-		mono_gchandle_free (i_gchandle);
-	if (o_gchandle)
-		mono_gchandle_free (o_gchandle);
+	mono_gchandle_free (i_gchandle);
+	mono_gchandle_free (o_gchandle);
 
 	if (ret == SOCKET_ERROR) {
 		*werror = mono_w32socket_get_last_error ();
@@ -2385,18 +2377,21 @@ addrinfo_to_IPHostEntry_handles (MonoAddressInfo *info, MonoStringHandleOut h_na
 			goto leave;
 	}
 
-	gint32 count = 0;
+	gint32 count;
+	count = 0;
 	for (ai = info->entries; ai != NULL; ai = ai->next) {
 		if (ai->family != AF_INET && ai->family != AF_INET6)
 			continue;
 		count++;
 	}
 
-	int addr_index = 0;
+	int addr_index;
+	addr_index = 0;
 	MONO_HANDLE_ASSIGN (h_addr_list, mono_array_new_handle (domain, mono_get_string_class (), count, error));
 	goto_if_nok (error, leave);
 
-	gboolean name_assigned = FALSE;
+	gboolean name_assigned;
+	name_assigned = FALSE;
 	for (ai = info->entries; ai != NULL; ai = ai->next) {
 		MonoAddress maddr;
 		char buffer [INET6_ADDRSTRLEN]; /* Max. size for IPv6 */
@@ -2631,7 +2626,7 @@ mono_network_cleanup (void)
 	mono_networking_shutdown ();
 }
 
-void
+ICALL_EXPORT void
 ves_icall_cancel_blocking_socket_operation (MonoThreadObjectHandle thread, MonoError *error)
 {
 	error_init (error);

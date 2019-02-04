@@ -4,8 +4,12 @@
 // ----------------------------------------------------------------------------------
 // Interop library code
 //
-// Marshalling helpers used by MCG
-//
+// Marshalling helpers used by MCG generated stub
+// McgMarshal covers full marshalling surface area and is entrypoint for all marshalling support.
+// In long term:
+//  1. MCG generated code should  call McgMarshal to do marshalling
+//  2. Public Marhshal API should call McgMarshal to do marshalling
+
 // NOTE:
 //   These source code are being published to InternalAPIs and consumed by RH builds
 //   Use PublishInteropAPI.bat to keep the InternalAPI copies in sync
@@ -143,7 +147,7 @@ namespace System.Runtime.InteropServices
         }
 
 #if ENABLE_MIN_WINRT
-        public static unsafe void SetExceptionErrorCode(Exception exception, int errorCode)
+        public static unsafe void SetExceptionErrorCode(Exception exception, int errorCode)	
         {
             InteropExtensions.SetExceptionErrorCode(exception, errorCode);
         }
@@ -364,6 +368,149 @@ namespace System.Runtime.InteropServices
         {
             return PInvokeMarshal.ByValAnsiStringToString(pchBuffer, charCount);
         }
+
+        /// <summary>
+        /// CoTaskMemAlloc + ZeroMemory
+        /// @TODO - we can probably optimize the zero memory part later
+        /// </summary>
+        public unsafe static void* CoTaskMemAllocAndZeroMemory(IntPtr size)
+        {
+            void *ptr = (void*)PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((void*)size));
+            if (ptr == null)
+                return ptr;
+
+            byte *pByte = (byte*)ptr;
+            long lSize = size.ToInt64();
+            while (lSize > 0)
+            {
+                lSize--;
+                (*pByte++) = 0;
+            }
+
+            return ptr;
+        }
+
+        /// <summary>
+        /// Free allocated memory. The allocated memory should be allocated by CoTaskMemAlloc
+        /// </summary>
+        public static void SafeCoTaskMemFree(IntPtr allocatedMemory)
+        {
+            if (allocatedMemory != IntPtr.Zero)
+                PInvokeMarshal.CoTaskMemFree(allocatedMemory);
+        }
+
+        /// <summary>
+        /// Free allocated memory. The allocated memory should be allocated by CoTaskMemAlloc
+        /// </summary>
+        public static unsafe void SafeCoTaskMemFree(void* pv)
+        {
+            if (pv != null)
+                PInvokeMarshal.CoTaskMemFree(new IntPtr(pv));
+        }
+
+        /// <summary>
+        /// Allocate a buffer with enough size to store the unicode characters saved in source
+        /// Buffer is allocated with CoTaskMemAlloc
+        /// </summary>
+        public unsafe static void *AllocUnicodeBuffer(string source)
+        {
+            if (source == null)
+                return null;
+
+            int byteLen = checked((source.Length + 1) * 2);
+
+            char* pBuf = (char*)PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)byteLen));
+            if (pBuf == null)
+                throw new System.OutOfMemoryException();
+
+            return pBuf;
+        }
+
+        /// <summary>
+        /// Copy unicode characters in source into dest, and terminating with null
+        /// </summary>
+        public unsafe static void CopyUnicodeString(string source, void* _dest)
+        {
+            if (source == null)
+                return;
+
+            char* dest = (char *)_dest;
+            fixed (char* pSource = source)
+            {
+                int len = source.Length;
+                char* src = pSource;
+
+                // Copy characters one by one, including the null terminator
+                for (int i = 0; i <= len; ++i)
+                {
+                    *(dest++) = *(src++);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert String to BSTR 
+        /// </summary>
+        public unsafe static ushort* ConvertStringToBSTR(
+                ushort* ptrToFirstCharInBSTR,
+                string strManaged)
+        {
+            if (strManaged == null)
+                return null;
+
+            if (ptrToFirstCharInBSTR == null)
+            {
+                // If caller don't provided buffer, allocate the buffer and create string using SysAllocStringLen
+                fixed (char* ch = strManaged)
+                {
+                    return (ushort*) ExternalInterop.SysAllocStringLen(ch, (uint)strManaged.Length);
+                }
+            }
+            else 
+            {
+                // If caller provided a buffer, construct the BSTR manually. 
+
+                // set length
+                *((int*)ptrToFirstCharInBSTR - 1) = checked(strManaged.Length * 2);
+
+                // copy characters from the managed string
+                fixed (char* ch = strManaged)
+                {
+                    InteropExtensions.Memcpy(
+                        (System.IntPtr)ptrToFirstCharInBSTR,
+                        (System.IntPtr)ch,
+                        (strManaged.Length + 1) * 2);
+                }
+
+                return ptrToFirstCharInBSTR;
+            }
+        }
+
+        /// <summary>
+        /// Convert BSTR to String 
+        /// </summary>
+        public unsafe static string ConvertBSTRToString(ushort* bstr)
+        {
+            if (bstr == null)
+                return null;
+            return new string((char*)bstr, 0, (int)ExternalInterop.SysStringLen(bstr));
+        }
+
+        /// <summary>
+        /// Free Allocated BSTR
+        /// </summary>
+        public static unsafe void SysFreeString(void* pBSTR)
+        {
+            SysFreeString(new IntPtr(pBSTR));
+        }
+
+        /// <summary>
+        /// Free Allocated BSTR
+        /// </summary>
+        public unsafe static void SysFreeString(IntPtr pBSTR)
+        {
+            ExternalInterop.SysFreeString(pBSTR);
+        } 
 #endif
 
 #if ENABLE_MIN_WINRT
@@ -975,13 +1122,34 @@ namespace System.Runtime.InteropServices
 #endregion
 
         /// <summary>
-        /// This method returns HR for the exception being thrown.
+        /// This method propagate the exception being thrown.
         /// 1. On Windows8+, WinRT scenarios we do the following.
         ///      a. Check whether the exception has any IRestrictedErrorInfo associated with it.
         ///          If so, it means that this exception was actually caused by a native exception in which case we do simply use the same
         ///              message and stacktrace.
         ///      b.  If not, this is actually a managed exception and in this case we RoOriginateLanguageException with the msg, hresult and the IErrorInfo
         ///          associated with the managed exception. This helps us to retrieve the same exception in case it comes back to native.
+        /// 2. On win8 and for classic COM scenarios.
+        ///     a. This method should not be called
+        /// </summary>
+        /// <param name="ex"></param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static bool PropagateException(Exception ex)
+        {
+#if ENABLE_WINRT
+            return ExceptionHelpers.PropagateException(ex);
+#else
+            // TODO : ExceptionHelpers should be platform specific , move it to
+            // seperate source files
+            return true;
+#endif
+        }
+
+        /// <summary>
+        /// This method returns HR for the exception being thrown.
+        /// 1. On Windows8+, WinRT scenarios 
+        ///     The work to propagate the exception should have already performed in the exception filter
+        ///     by calling PropagateException()
         /// 2. On win8 and for classic COM scenarios.
         ///     a. We create IErrorInfo for the given Exception object and SetErrorInfo with the given IErrorInfo.
         /// </summary>

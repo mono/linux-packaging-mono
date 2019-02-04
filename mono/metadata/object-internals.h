@@ -5,7 +5,10 @@
 #ifndef __MONO_OBJECT_INTERNALS_H__
 #define __MONO_OBJECT_INTERNALS_H__
 
+#include <mono/utils/mono-forward-internal.h>
 #include <mono/metadata/object-forward.h>
+#include <mono/metadata/handle-decl.h>
+
 #include <mono/metadata/object.h>
 #include <mono/metadata/threads.h>
 #include <mono/metadata/reflection.h>
@@ -358,7 +361,7 @@ struct _MonoIUnknownVTable
 
 struct _MonoIUnknown
 {
-	MonoIUnknownVTable const * const vtable;
+	const MonoIUnknownVTable *vtable;
 };
 
 typedef struct {
@@ -441,7 +444,7 @@ struct _MonoInternalThread {
 	gpointer unused3;
 	gunichar2  *name;
 	guint32	    name_len;
-	guint32	    state;
+	guint32	    state;      /* must be accessed while longlived->synch_cs is locked */
 	MonoException *abort_exc;
 	int abort_state_handle;
 	guint64 tid;	/* This is accessed as a gsize in the code (so it can hold a 64bit pointer on systems that need it), but needs to reserve 64 bits of space on all machines as it corresponds to a field in managed code */
@@ -455,7 +458,10 @@ struct _MonoInternalThread {
 	gpointer appdomain_refs;
 	/* This is modified using atomic ops, so keep it a gint32 */
 	gint32 __interruption_requested;
-	MonoCoopMutex *synch_cs;
+	/* data that must live as long as this managed object is not finalized
+	 * or as long as the underlying thread is attached, whichever is
+	 * longer */
+	MonoLongLivedThreadData *longlived;
 	MonoBoolean threadpool_thread;
 	MonoBoolean thread_interrupt_requested;
 	int stack_size;
@@ -491,7 +497,7 @@ struct _MonoInternalThread {
 
 struct _MonoThread {
 	MonoObject obj;
-	struct _MonoInternalThread *internal_thread;
+	MonoInternalThread *internal_thread;
 	MonoObject *start_obj;
 	MonoException *pending_exception;
 };
@@ -918,12 +924,12 @@ TYPED_HANDLE_DECL (MonoReflectionMonoEvent);
 
 typedef struct {
 	MonoObject object;
+	guint32 AttrsImpl;	
 	MonoReflectionType *ClassImpl;
 	MonoObject *DefaultValueImpl;
 	MonoObject *MemberImpl;
 	MonoString *NameImpl;
 	gint32 PositionImpl;
-	guint32 AttrsImpl;
 	MonoObject *MarshalAsImpl;
 } MonoReflectionParameter;
 
@@ -958,9 +964,6 @@ struct _MonoReflectionAssembly {
 	MonoBoolean from_byte_array;
 	MonoString *name;
 };
-
-/* Safely access System.Reflection.Assembly from native code */
-TYPED_HANDLE_DECL (MonoReflectionAssembly);
 
 typedef struct {
 	MonoReflectionType *utype;
@@ -1329,9 +1332,6 @@ struct _MonoReflectionTypeBuilder {
 	gint32 state;
 };
 
-/* Safely access System.Reflection.Emit.TypeBuilder from native code */
-TYPED_HANDLE_DECL (MonoReflectionTypeBuilder);
-
 typedef struct {
 	MonoReflectionType type;
 	MonoReflectionType *element_type;
@@ -1610,6 +1610,12 @@ mono_image_build_metadata (MonoReflectionModuleBuilder *module, MonoError *error
 int
 mono_get_constant_value_from_blob (MonoDomain* domain, MonoTypeEnum type, const char *blob, void *value, MonoError *error);
 
+gboolean
+mono_metadata_read_constant_value (const char *blob, MonoTypeEnum type, void *value, MonoError *error);
+
+char*
+mono_string_from_blob (const char *str, MonoError *error);
+
 void
 mono_release_type_locks (MonoInternalThread *thread);
 
@@ -1771,6 +1777,8 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 gpointer
 mono_method_alloc_generic_virtual_trampoline (MonoDomain *domain, int size);
 
+#define mono_method_alloc_generic_virtual_trampoline(domain, size) (g_cast (mono_method_alloc_generic_virtual_trampoline ((domain), (size))))
+
 typedef enum {
 	MONO_UNHANDLED_POLICY_LEGACY,
 	MONO_UNHANDLED_POLICY_CURRENT
@@ -1805,13 +1813,10 @@ mono_class_is_reflection_method_or_constructor (MonoClass *klass);
 MonoObject *
 mono_get_object_from_blob (MonoDomain *domain, MonoType *type, const char *blob, MonoError *error);
 
-MonoObjectHandle
-mono_class_get_ref_info (MonoClass *klass);
-
 gboolean
 mono_class_has_ref_info (MonoClass *klass);
 
-MonoObject*
+MonoReflectionTypeBuilder*
 mono_class_get_ref_info_raw (MonoClass *klass);
 
 void
@@ -1953,10 +1958,10 @@ MonoString*
 mono_string_new_wtf8_len_checked (MonoDomain *domain, const char *text, guint length, MonoError *error);
 
 MonoString *
-mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error);
+mono_string_new_utf16_checked (MonoDomain *domain, const gunichar2 *text, gint32 len, MonoError *error);
 
 MonoStringHandle
-mono_string_new_utf16_handle (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error);
+mono_string_new_utf16_handle (MonoDomain *domain, const gunichar2 *text, gint32 len, MonoError *error);
 
 MonoStringHandle
 mono_string_new_utf8_len_handle (MonoDomain *domain, const char *text, guint length, MonoError *error);
@@ -2075,10 +2080,6 @@ void
 ves_icall_DynamicMethod_create_dynamic_method (MonoReflectionDynamicMethodHandle mb, MonoError *error);
 
 ICALL_EXPORT
-MonoReflectionTypeHandle
-ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilderHandle tb, MonoError *error);
-
-ICALL_EXPORT
 void
 ves_icall_EnumBuilder_setup_enum_type (MonoReflectionTypeHandle enumtype,
 				       MonoReflectionTypeHandle t,
@@ -2115,6 +2116,6 @@ gpointer
 mono_object_get_data (MonoObject *o);
 
 gpointer
-mono_vtype_get_field_addr (guint8 *vtype, MonoClassField *field);
+mono_vtype_get_field_addr (gpointer vtype, MonoClassField *field);
 
 #endif /* __MONO_OBJECT_INTERNALS_H__ */

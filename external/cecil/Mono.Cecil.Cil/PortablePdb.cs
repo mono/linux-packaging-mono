@@ -158,7 +158,6 @@ namespace Mono.Cecil.Cil {
 		public ISymbolReader GetSymbolReader (ModuleDefinition module, string fileName)
 		{
 			Mixin.CheckModule (module);
-			Mixin.CheckFileName (fileName);
 
 			var header = module.GetDebugHeader ();
 			var entry = header.GetEmbeddedPortablePdbEntry ();
@@ -451,6 +450,8 @@ namespace Mono.Cecil.Cil {
 
 			var directory = new ImageDebugDirectory {
 				Type = ImageDebugType.EmbeddedPortablePdb,
+				MajorVersion = 0x0100,
+				MinorVersion = 0x0100,
 			};
 
 			var data = new MemoryStream ();

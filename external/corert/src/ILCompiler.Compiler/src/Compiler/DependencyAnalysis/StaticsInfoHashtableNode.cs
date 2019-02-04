@@ -70,7 +70,7 @@ namespace ILCompiler.DependencyAnalysis
                     dependencies.Add(factory.Indirection(factory.TypeNonGCStaticsSymbol(metadataType)), "Non-GC statics indirection for StaticsInfoHashtable");
                 }
 
-                if (metadataType.ThreadStaticFieldSize.AsInt > 0)
+                if (metadataType.ThreadGcStaticFieldSize.AsInt > 0)
                 {
                     if (factory.Target.Abi == TargetAbi.ProjectN)
                     {
@@ -116,7 +116,7 @@ namespace ILCompiler.DependencyAnalysis
                     ISymbolNode nonGCStaticIndirection = factory.Indirection(factory.TypeNonGCStaticsSymbol(metadataType));
                     bag.AppendUnsigned(BagElementKind.NonGcStaticData, _nativeStaticsReferences.GetIndex(nonGCStaticIndirection));
                 }
-                if (metadataType.ThreadStaticFieldSize.AsInt > 0)
+                if (metadataType.ThreadGcStaticFieldSize.AsInt > 0)
                 {
                     if (factory.Target.Abi == TargetAbi.ProjectN)
                     {
@@ -148,6 +148,6 @@ namespace ILCompiler.DependencyAnalysis
         }
 
         protected internal override int Phase => (int)ObjectNodePhase.Ordered;
-        protected internal override int ClassCode => (int)ObjectNodeOrder.StaticsInfoHashtableNode;
+        public override int ClassCode => (int)ObjectNodeOrder.StaticsInfoHashtableNode;
     }
 }

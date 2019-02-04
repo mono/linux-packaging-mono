@@ -95,33 +95,26 @@ if (CLR_CMAKE_PLATFORM_UNIX)
     add_compile_options(-Wno-null-arithmetic)
     add_compile_options(-Wno-null-conversion)
 
-    if (CLR_CMAKE_PLATFORM_ARCH_AMD64 OR CLR_CMAKE_PLATFORM_ARCH_I386)
+    # Since 6 version, clang generates pragma-pack warnings, so disable it because we use pshpack[1..8].h/poppack.h
+    add_compile_options(-Wno-pragmas)
+
+    if(CLR_CMAKE_PLATFORM_ARCH_AMD64 OR CLR_CMAKE_PLATFORM_ARCH_I386)
         # Allow 16 byte compare-exchange
         add_compile_options(-mcx16)
     endif()
 
-    if (CLR_CMAKE_PLATFORM_ARCH_ARM)
-        # Because we don't use CMAKE_C_COMPILER/CMAKE_CXX_COMPILER to use clang
-        # we have to set the triple by adding a compiler argument
+    if(CLR_CMAKE_PLATFORM_ARCH_ARM)
+        add_compile_options(-march=armv7-a)
         if(TOOLCHAIN STREQUAL arm-linux-gnueabi)
-            add_compile_options(-target armv7-linux-gnueabi)
             add_compile_options(-mfloat-abi=softfp)
-        else ()
-            add_compile_options(-target armv7-linux-gnueabihf)
-        endif ()
+        endif()
         add_compile_options(-mthumb)
         add_compile_options(-mfpu=vfpv3)
     endif()
     
-    if (CLR_CMAKE_PLATFORM_ARCH_ARM64)
-        # Because we don't use CMAKE_C_COMPILER/CMAKE_CXX_COMPILER to use clang
-        # we have to set the triple by adding a compiler argument
-        add_compile_options(-target aarch64-linux-gnu)
-    endif ()
-
-    if (CLR_CMAKE_PLATFORM_ARCH_AMD64)
+    if(CLR_CMAKE_PLATFORM_ARCH_AMD64)
         add_definitions(-DUNIX_AMD64_ABI)
-    elseif (CLR_CMAKE_PLATFORM_ARCH_I386)
+    elseif(CLR_CMAKE_PLATFORM_ARCH_I386)
         add_definitions(-DUNIX_X86_ABI)
     endif()
 
@@ -228,7 +221,10 @@ if(NOT WIN32)
     add_subdirectory(System.Private.CoreLib.Native)
 endif(NOT WIN32)
 
-# Build ObjWriter on Linux only
-if(CMAKE_SYSTEM_NAME STREQUAL Linux AND OBJWRITER_BUILD)
+if(NOT CLR_CMAKE_PLATFORM_WASM)
+    add_subdirectory(System.Private.TypeLoader.Native)
+endif(NOT CLR_CMAKE_PLATFORM_WASM)
+
+if(OBJWRITER_BUILD)
     add_subdirectory(ObjWriter/llvmCap)
 endif()

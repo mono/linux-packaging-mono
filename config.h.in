@@ -191,9 +191,6 @@
 /* Have access */
 #undef HAVE_ACCESS
 
-/* Has the 'aintl' function */
-#undef HAVE_AINTL
-
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
 
@@ -386,9 +383,6 @@
 /* Define to 1 if you have the `fgetpwent' function. */
 #undef HAVE_FGETPWENT
 
-/* Define to 1 if you have the `finite' function. */
-#undef HAVE_FINITE
-
 /* struct flock64 */
 #undef HAVE_FLOCK64
 
@@ -485,6 +479,9 @@
 /* Have getprotobyname */
 #undef HAVE_GETPROTOBYNAME
 
+/* Have getprotobyname_r */
+#undef HAVE_GETPROTOBYNAME_R
+
 /* Define to 1 if you have the `getpwent' function. */
 #undef HAVE_GETPWENT
 
@@ -512,14 +509,17 @@
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
 
+/* GSS/GSS.h */
+#undef HAVE_GSSFW_HEADERS
+
+/* GSS_SPNEGO_MECHANISM */
+#undef HAVE_GSS_SPNEGO_MECHANISM
+
 /* ICANON */
 #undef HAVE_ICANON
 
 /* Define to 1 if you have the <iconv.h> header file. */
 #undef HAVE_ICONV_H
-
-/* Define to 1 if you have the <ieeefp.h> header file. */
-#undef HAVE_IEEEFP_H
 
 /* Have if_nametoindex */
 #undef HAVE_IF_NAMETOINDEX
@@ -587,12 +587,6 @@
 /* Have IP_PMTUDISC_DO */
 #undef HAVE_IP_PMTUDISC_DO
 
-/* Define to 1 if you have the `isfinite' function. */
-#undef HAVE_ISFINITE
-
-/* isinf available */
-#undef HAVE_ISINF
-
 /* Define to 1 if you have the `kill' function. */
 #undef HAVE_KILL
 
@@ -629,9 +623,6 @@
 /* Define to 1 if you have the <linux/serial.h> header file. */
 #undef HAVE_LINUX_SERIAL_H
 
-/* Define to 1 if you have the <localcharset.h> header file. */
-#undef HAVE_LOCALCHARSET_H
-
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
@@ -659,7 +650,7 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Have mincore */
+/* Define to 1 if you have the `mincore' function. */
 #undef HAVE_MINCORE
 
 /* Define to 1 if you have the `mkdtemp' function. */
@@ -673,6 +664,9 @@
 
 /* mkstemps */
 #undef HAVE_MKSTEMPS
+
+/* Define to 1 if you have the `mlock' function. */
+#undef HAVE_MLOCK
 
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
@@ -689,6 +683,9 @@
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
 
+/* Define to 1 if you have the `munlock' function. */
+#undef HAVE_MUNLOCK
+
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
 
@@ -700,6 +697,9 @@
 
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
+
+/* Define to 1 if you have the `nl_langinfo' function. */
+#undef HAVE_NL_LANGINFO
 
 /* _NSGetEnviron */
 #undef HAVE_NSGETENVIRON
@@ -885,9 +885,6 @@
 /* Define to 1 if you have the <signal.h> header file. */
 #undef HAVE_SIGNAL_H
 
-/* Have signbit */
-#undef HAVE_SIGNBIT
-
 /* Can get interface list */
 #undef HAVE_SIOCGIFCONF
 
@@ -983,6 +980,9 @@
 
 /* Define to 1 if the system has the type `struct flock'. */
 #undef HAVE_STRUCT_FLOCK
+
+/* Define to 1 if the system has the type `struct flock64'. */
+#undef HAVE_STRUCT_FLOCK64
 
 /* Define to 1 if the system has the type `struct iovec'. */
 #undef HAVE_STRUCT_IOVEC
@@ -1227,9 +1227,6 @@
 /* Have tm_gmtoff */
 #undef HAVE_TM_GMTOFF
 
-/* Define to 1 if you have the `trunc' function. */
-#undef HAVE_TRUNC
-
 /* Define to 1 if you have the `ttyname_r' function. */
 #undef HAVE_TTYNAME_R
 
@@ -1287,9 +1284,6 @@
 /* Have system zlib */
 #undef HAVE_ZLIB
 
-/* Define to 1 if you have the `_finite' function. */
-#undef HAVE__FINITE
-
 /* ... */
 #undef HOST_AMD64
 
@@ -1326,7 +1320,7 @@
 /* ... */
 #undef HOST_SPARC64
 
-/* Host wasm */
+/* ... */
 #undef HOST_WASM
 
 /* Host Platform is Win32 */
@@ -1370,6 +1364,9 @@
 
 /* The architecture this is running on */
 #undef MONO_ARCHITECTURE
+
+/* 64 bit mode with 4 byte longs and pointers */
+#undef MONO_ARCH_ILP32
 
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
@@ -1521,7 +1518,7 @@
 /* ... */
 #undef TARGET_SPARC64
 
-/* Target wasm */
+/* ... */
 #undef TARGET_WASM
 
 /* The JIT/AOT targets WatchOS */
@@ -1562,9 +1559,6 @@
 #  undef WORDS_BIGENDIAN
 # endif
 #endif
-
-/* 64 bit mode with 4 byte longs and pointers */
-#undef __mono_ilp32__
 
 /* ... */
 #undef __mono_ppc64__

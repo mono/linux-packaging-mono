@@ -63,6 +63,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)] // Requires base Stream span API
         public void DerivedMemoryStream_ReadWriteSpanCalled_ReadWriteArrayUsed()
         {
             var s = new ReadWriteOverridingMemoryStream();
