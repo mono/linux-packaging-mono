@@ -1393,6 +1393,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
+ mono_regression_test_step@Base 5.20.0.184
  mono_reraise_exception@Base 5.4.0.199
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
@@ -1450,8 +1451,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_signature_is_instance@Base 4.1.0.1738
  mono_signature_param_is_out@Base 4.1.0.1738
  mono_signature_vararg_start@Base 4.1.0.1738
- mono_signbit_double@Base 4.1.0.1738
- mono_signbit_float@Base 4.1.0.1738
  mono_stack_walk@Base 4.1.0.1738
  mono_stack_walk_async_safe@Base 4.1.0.1738
  mono_stack_walk_no_il@Base 4.1.0.1738
@@ -1590,6 +1589,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_ascii_strcasecmp@Base 5.8.0.22
  monoeg_ascii_strup@Base 5.8.0.22
  monoeg_ascii_toupper@Base 5.8.0.22
+ monoeg_assert_abort@Base 5.20.0.184
+ monoeg_assertion_disable_global@Base 5.20.0.184
  monoeg_assertion_message@Base 5.8.0.22
  monoeg_g_array_append_vals@Base 5.8.0.22
  monoeg_g_array_free@Base 5.8.0.22
@@ -1700,6 +1701,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_markup_parse_context_free@Base 5.8.0.22
  monoeg_g_markup_parse_context_new@Base 5.8.0.22
  monoeg_g_markup_parse_context_parse@Base 5.8.0.22
+ monoeg_g_mem_get_vtable@Base 5.20.0.184
  monoeg_g_mem_set_vtable@Base 5.8.0.22
  monoeg_g_memdup@Base 5.8.0.22
  monoeg_g_mkdir_with_parents@Base 5.8.0.22
@@ -1856,7 +1858,5 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_try_realloc@Base 5.8.0.22
  monoeg_unichar_break_type@Base 5.8.0.22
  monoeg_unichar_isspace@Base 5.8.0.22
- monoeg_utf8_find_prev_char@Base 5.8.0.22
  monoeg_utf8_get_char_validated@Base 5.8.0.22
- monoeg_utf8_prev_char@Base 5.8.0.22
  monoeg_utf8_to_ucs4@Base 5.8.0.22

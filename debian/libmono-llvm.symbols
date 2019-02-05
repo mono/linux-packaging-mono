@@ -22,7 +22,6 @@
  mono_aot_get_method_name@Base 5.14.0.87
  mono_aot_get_plt_symbol@Base 5.14.0.87
  mono_aot_is_direct_callable@Base 5.14.0.87
- mono_aot_is_linkonce_method@Base 5.14.0.87
  mono_aot_is_shared_got_offset@Base 5.14.0.87
  mono_aot_mark_unused_llvm_plt_entry@Base 5.14.0.87
  mono_aot_patch_info_dup@Base 5.14.0.87
