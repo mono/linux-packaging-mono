@@ -1571,6 +1571,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_ascii_strcasecmp@Base 5.7.0.181
  monoeg_ascii_strup@Base 5.7.0.181
  monoeg_ascii_toupper@Base 5.7.0.181
+ monoeg_assert_abort@Base 5.23.0.608
+ monoeg_assertion_disable_global@Base 5.23.0.608
  monoeg_assertion_message@Base 5.7.0.181
  monoeg_g_array_append_vals@Base 5.7.0.181
  monoeg_g_array_free@Base 5.7.0.181
@@ -1681,6 +1683,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_markup_parse_context_free@Base 5.7.0.181
  monoeg_g_markup_parse_context_new@Base 5.7.0.181
  monoeg_g_markup_parse_context_parse@Base 5.7.0.181
+ monoeg_g_mem_get_vtable@Base 5.23.0.608
  monoeg_g_mem_set_vtable@Base 5.7.0.181
  monoeg_g_memdup@Base 5.7.0.181
  monoeg_g_mkdir_with_parents@Base 5.7.0.181
