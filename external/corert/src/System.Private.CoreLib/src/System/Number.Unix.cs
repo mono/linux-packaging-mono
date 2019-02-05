@@ -33,7 +33,7 @@ namespace System
             number.sign = double.IsNegative(value);
             *dst = '\0';
 
-            if (value == 0.0)
+            if (BitConverter.DoubleToInt64Bits (value) == 0)
             {
                 for (int j = 0; j < precision; j++)
                 {
