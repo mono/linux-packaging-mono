@@ -489,8 +489,7 @@ Depends: ${misc:Depends},
          libmono-webbrowser4.0-cil (= ${source:Version}),
          libmono-webmatrix-data4.0-cil (= ${source:Version}),
          libmono-windowsbase4.0-cil (= ${source:Version}),
-         libmono-xbuild-tasks4.0-cil (= ${source:Version}),
-         libnunit-cil-dev (>= 2.4)
+         libmono-xbuild-tasks4.0-cil (= ${source:Version})
 Description: Mono Base Class Libraries (BCL) - Development files
  This package contains development headers for the Mono Base Class Libraries.
  .
