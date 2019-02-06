@@ -24345,8 +24345,7 @@ namespace System.Threading
         public AutoResetEvent(bool initialState) : base (default(bool), default(System.Threading.EventResetMode)) { }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("IsCancellationRequested = {IsCancellationRequested}")]
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CancellationToken
     {
@@ -24364,6 +24363,7 @@ namespace System.Threading
         public System.Threading.CancellationTokenRegistration Register(System.Action callback, bool useSynchronizationContext) { throw null; }
         public System.Threading.CancellationTokenRegistration Register(System.Action<object> callback, object state) { throw null; }
         public System.Threading.CancellationTokenRegistration Register(System.Action<object> callback, object state, bool useSynchronizationContext) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public System.Threading.CancellationTokenRegistration Register(System.Action<object> callback, object state, bool useSynchronizationContext, bool useExecutionContext) { throw null; }
         public void ThrowIfCancellationRequested() { }
     }
     [System.Runtime.CompilerServices.IsReadOnlyAttribute]
@@ -24379,8 +24379,6 @@ namespace System.Threading
         public static bool operator !=(System.Threading.CancellationTokenRegistration left, System.Threading.CancellationTokenRegistration right) { throw null; }
         public bool Unregister() { throw null; }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
     public partial class CancellationTokenSource : System.IDisposable
     {
         public CancellationTokenSource() { }
