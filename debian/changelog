@@ -1,3 +1,9 @@
+mono (5.20.0.189-0xamarin1) preview; urgency=medium
+
+  * New release - mono-5.20.0.189.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 07 Feb 2019 08:32:31 +0000
+
 mono (5.20.0.185-0xamarin1) preview; urgency=medium
 
   * New release - mono-5.20.0.185.tar.bz2
