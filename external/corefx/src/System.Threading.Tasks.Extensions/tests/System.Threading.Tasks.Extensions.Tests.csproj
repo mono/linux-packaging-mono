@@ -12,10 +12,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Release|AnyCPU'" />
   <ItemGroup>
     <Compile Include="AsyncMethodBuilderAttributeTests.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == 'netcoreapp'">
     <Compile Include="AsyncValueTaskMethodBuilderTests.cs" />
+    <Compile Include="ManualResetValueTaskSourceTests.cs" />
     <Compile Include="ValueTaskTests.cs" />
     <Compile Include="$(CommonTestPath)\System\Threading\Tasks\Sources\ManualResetValueTaskSource.cs">
       <Link>Common\System\Threading\Tasks\Sources\ManualResetValueTaskSource.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Threading\Tasks\Sources\ManualResetValueTaskSourceFactory.cs">
+      <Link>Common\System\Threading\Tasks\Sources\ManualResetValueTaskSourceFactory.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

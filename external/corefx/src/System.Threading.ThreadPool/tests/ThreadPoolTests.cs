@@ -81,6 +81,7 @@ namespace System.Threading.ThreadPools.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "https://github.com/mono/mono/issues/12808")]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "ThreadPool.SetMinThreads and SetMaxThreads are not supported on UapAot.")]
         public static void SetMinMaxThreadsTest()
         {
@@ -186,6 +187,7 @@ namespace System.Threading.ThreadPools.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "https://github.com/mono/mono/issues/12808")]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Triggers an assertion failure.")]
         private static void SetMinThreadsTo0Test()
         {
