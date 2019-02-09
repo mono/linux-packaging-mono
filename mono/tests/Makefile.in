@@ -574,10 +574,13 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @AOT_FULL_INTERP_LLVM_TESTS_TRUE@	transparentproxy.exe \
 @AOT_FULL_INTERP_LLVM_TESTS_TRUE@	finalizer-exception.exe
 
+# https://github.com/mono/mono/issues/12839
+@HOST_WIN32_TRUE@am__append_35 = block_guard_restore_aligment_on_exit.exe
+
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_35 = \
+@ARM_TRUE@am__append_36 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -630,13 +633,13 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_36 = \
+@ARM64_TRUE@am__append_37 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_37 = \
+@AMD64_TRUE@am__append_38 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1316,9 +1319,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	nested_type_visibility.cs dynamic-method-churn.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
-	bug-gh-9507.cs $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13)
+	bug-gh-9507.cs async-generic-enum.cs $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) \
+	$(am__append_12) $(am__append_13)
 # These tests are produced by splitting up tailcall-interface-conservestack.il.
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@TAILCALL_INTERFACE_CONSERVESTACK_IL = \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	tailcall/interface-conservestack/1.il \
@@ -1660,7 +1663,7 @@ CI_DISABLED_TESTS = \
 # https://github.com/mono/mono/issues/11417
 CI_PR_DISABLED_TESTS = finalizer-thread.exe \
 	appdomain-threadpool-unload.exe finalizer-abort.exe \
-	process-stress-2.exe process-stress-3.exe
+	process-stress-2.exe process-stress-3.exe $(am__append_35)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1869,7 +1872,7 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_35) $(am__append_36) $(am__append_37)
+	$(am__append_36) $(am__append_37) $(am__append_38)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
