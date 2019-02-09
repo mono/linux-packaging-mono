@@ -2,10 +2,10 @@
 ../test-helpers/NunitHelpers.cs
 ../test-helpers/TestResourceHelper.cs
 Mono/DataConverter.cs
-Mono/MonoNativePlatform.cs
-Mono/MonoNativePlatformType.cs
 Test/Microsoft.Win32/RegistryKeyTest.cs
 Test/Mono/DataConvertTest.cs
+Test/Mono/MonoNativePlatform.cs
+Test/Mono/MonoNativePlatformType.cs
 Test/Mono/NativePlatformTest.cs
 Test/System.Collections.Concurrent/CollectionStressTestHelper.cs
 Test/System.Collections.Concurrent/ConcurrentDictionaryTests.cs

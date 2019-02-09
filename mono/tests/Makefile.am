@@ -711,7 +711,8 @@ TESTS_CS_SRC=		\
 	generic-unmanaged-constraint.cs \
 	bug-10834.cs \
 	bug-10837.cs	\
-	bug-gh-9507.cs
+	bug-gh-9507.cs	\
+	async-generic-enum.cs
 
 # some tests fail to compile on mcs
 if CSC_IS_ROSLYN
@@ -1680,6 +1681,11 @@ CI_PR_DISABLED_TESTS += process-stress-2.exe
 
 # https://github.com/mono/mono/issues/11417
 CI_PR_DISABLED_TESTS += process-stress-3.exe
+
+if HOST_WIN32
+# https://github.com/mono/mono/issues/12839
+CI_PR_DISABLED_TESTS += block_guard_restore_aligment_on_exit.exe
+endif
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 LLVM_DISABLED_TESTS = \
