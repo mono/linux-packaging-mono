@@ -400,8 +400,9 @@ TEST_RUNNER = ../test-runner.exe --runtime $(RUNTIME) --runtime-args \
 @HOST_WIN32_FALSE@	$(if $(V), --verbose,)
 @HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --runtime $(if \
 @HOST_WIN32_TRUE@	$(MONO_EXECUTABLE),$(shell cygpath -w -a \
-@HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),mono) \
-@HOST_WIN32_TRUE@	$(if $(V), --verbose,)
+@HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed \
+@HOST_WIN32_TRUE@	's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME)) $(if \
+@HOST_WIN32_TRUE@	$(V), --verbose,)
 
 ### tools
 GACUTIL = $(mcs_topdir)/class/lib/build/gacutil.exe
@@ -642,6 +643,9 @@ uninstall-am:
 	pdf-am ps ps-am tags-am test-am test-bundle-am \
 	test-bundle-local test-local uninstall uninstall-am
 
+
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
 
 ### Test cases
 

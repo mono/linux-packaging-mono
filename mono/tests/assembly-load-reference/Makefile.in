@@ -80,7 +80,7 @@ host_triplet = @host@
 target_triplet = @target@
 DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs README
-@HOST_WIN32_TRUE@am__append_1 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(top_builddir)/runtime/mono-wrapper)"
+@HOST_WIN32_TRUE@am__append_1 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME))"
 @HOST_WIN32_FALSE@am__append_2 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$(top_builddir)/runtime/mono-wrapper)"
 @FULL_AOT_TESTS_TRUE@am__append_3 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 @HYBRID_AOT_TESTS_TRUE@am__append_4 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
@@ -643,6 +643,9 @@ uninstall-am:
 TEST_RUNTIME_ARGS ?= $(RUNTIME_ARGS)
 TEST_AOT_BUILD_FLAGS ?= $(AOT_BUILD_FLAGS)
 TEST_AOT_RUN_FLAGS ?= $(AOT_RUN_FLAGS)
+
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
 
 ### Test cases
 
