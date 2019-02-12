@@ -170,17 +170,18 @@ am__libmono_native_compat_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/huffman.c \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/bit_reader.c \
 	../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c \
-	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
+	pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+	pal-android.h pal-android.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type-compat.c
@@ -213,18 +214,18 @@ am__objects_1 = libmono_native_compat_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_compat_la-huffman.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_compat_la-bit_reader.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_compat_la-dictionary.lo
-am__objects_2 = libmono_native_compat_la-pal-android.lo \
-	libmono_native_compat_la-pal-icalls.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
-am__objects_3 = libmono_native_compat_la-pal-icalls.lo \
+am__objects_2 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
-am__objects_4 = $(am__objects_3)
+am__objects_3 = $(am__objects_2)
+am__objects_4 = libmono_native_compat_la-pal-android.lo \
+	libmono_native_compat_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
 am__objects_5 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_6 = $(am__objects_5)
 am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
@@ -233,10 +234,11 @@ am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
 	$(am__objects_6)
-am__objects_8 = $(am__objects_3) $(am__objects_6)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_2)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
+am__objects_8 = $(am__objects_2) $(am__objects_6)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_8)
 am_libmono_native_compat_la_OBJECTS = $(am__objects_1) \
@@ -293,17 +295,18 @@ am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/huffman.c \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/bit_reader.c \
 	../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c \
-	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
+	pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+	pal-android.h pal-android.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type-unified.c
@@ -335,18 +338,18 @@ am__objects_10 = libmono_native_unified_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_unified_la-huffman.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_unified_la-bit_reader.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_unified_la-dictionary.lo
-am__objects_11 = libmono_native_unified_la-pal-android.lo \
-	libmono_native_unified_la-pal-icalls.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
-am__objects_12 = libmono_native_unified_la-pal-icalls.lo \
+am__objects_11 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
-am__objects_13 = $(am__objects_12)
+am__objects_12 = $(am__objects_11)
+am__objects_13 = libmono_native_unified_la-pal-android.lo \
+	libmono_native_unified_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
 am__objects_14 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_15 = $(am__objects_14)
 am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
@@ -355,10 +358,11 @@ am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
 	$(am__objects_15)
-am__objects_17 = $(am__objects_12) $(am__objects_15)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_11)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
+am__objects_17 = $(am__objects_11) $(am__objects_15)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_17)
 am_libmono_native_unified_la_OBJECTS = $(am__objects_10) \
@@ -411,17 +415,18 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/huffman.c \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/bit_reader.c \
 	../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c \
-	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
+	pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+	pal-android.h pal-android.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type.c
@@ -453,18 +458,18 @@ am__objects_19 = libmono_native_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_la-huffman.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/dec/libmono_native_la-bit_reader.lo \
 	../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_la-dictionary.lo
-am__objects_20 = libmono_native_la-pal-android.lo \
-	libmono_native_la-pal-icalls.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
-am__objects_21 = libmono_native_la-pal-icalls.lo \
+am__objects_20 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
-am__objects_22 = $(am__objects_21)
+am__objects_21 = $(am__objects_20)
+am__objects_22 = libmono_native_la-pal-android.lo \
+	libmono_native_la-pal-icalls.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
 am__objects_23 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_24 = $(am__objects_23)
 am__objects_25 = libmono_native_la-pal-icalls.lo \
@@ -473,10 +478,11 @@ am__objects_25 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
 	$(am__objects_24)
-am__objects_26 = $(am__objects_21) $(am__objects_24)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_20)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
+am__objects_26 = $(am__objects_20) $(am__objects_24)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_26)
 am_libmono_native_la_OBJECTS = $(am__objects_19) $(am__objects_27) \
@@ -918,6 +924,7 @@ ios_sources = pal-icalls.h pal-icalls.c \
 	$(am__append_2)
 linux_sources = $(unix_sources)
 aix_sources = $(unix_sources)
+freebsd_sources = $(unix_sources)
 android_sources = \
 	pal-android.h \
 	pal-android.c \
@@ -948,7 +955,8 @@ gss_sources = \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(unix_sources) $(gss_sources)
+EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(freebsd) $(unix_sources) $(gss_sources)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(freebsd_sources)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
@@ -1137,13 +1145,13 @@ clean-libLTLIBRARIES:
 	../../external/corefx/src/Native/AnyOS/brotli/common/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(am__dirstamp):
 	@$(MKDIR_P) ../../external/corefx/src/Native/Unix/System.Net.Security.Native
@@ -1212,13 +1220,13 @@ libmono-native-compat.la: $(libmono_native_compat_la_OBJECTS) $(libmono_native_c
 	../../external/corefx/src/Native/AnyOS/brotli/common/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo: ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/$(am__dirstamp)
@@ -1281,13 +1289,13 @@ libmono-native-unified.la: $(libmono_native_unified_la_OBJECTS) $(libmono_native
 	../../external/corefx/src/Native/AnyOS/brotli/common/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
-	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo: ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/$(am__dirstamp)
@@ -1643,13 +1651,6 @@ libmono_native_compat_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_compat_la-dictionary.lo `test -f '../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c
 
-libmono_native_compat_la-pal-android.lo: pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT libmono_native_compat_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_compat_la-pal-android.Tpo -c -o libmono_native_compat_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_compat_la-pal-android.Tpo $(DEPDIR)/libmono_native_compat_la-pal-android.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_compat_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o libmono_native_compat_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-
 libmono_native_compat_la-pal-icalls.lo: pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT libmono_native_compat_la-pal-icalls.lo -MD -MP -MF $(DEPDIR)/libmono_native_compat_la-pal-icalls.Tpo -c -o libmono_native_compat_la-pal-icalls.lo `test -f 'pal-icalls.c' || echo '$(srcdir)/'`pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_compat_la-pal-icalls.Tpo $(DEPDIR)/libmono_native_compat_la-pal-icalls.Plo
@@ -1664,12 +1665,26 @@ libmono_native_compat_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_io.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_io.c
 
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networkstatistics.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networkstatistics.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networkstatistics.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
 
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_random.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
@@ -1678,19 +1693,12 @@ libmono_native_compat_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networking.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+libmono_native_compat_la-pal-android.lo: pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT libmono_native_compat_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_compat_la-pal-android.Tpo -c -o libmono_native_compat_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_compat_la-pal-android.Tpo $(DEPDIR)/libmono_native_compat_la-pal-android.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_compat_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o libmono_native_compat_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
 
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo: ../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_compat_la-pal_gssapi.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo `test -f '../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
@@ -1902,13 +1910,6 @@ libmono_native_unified_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_unified_la-dictionary.lo `test -f '../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c
 
-libmono_native_unified_la-pal-android.lo: pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT libmono_native_unified_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo -c -o libmono_native_unified_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo $(DEPDIR)/libmono_native_unified_la-pal-android.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_unified_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o libmono_native_unified_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-
 libmono_native_unified_la-pal-icalls.lo: pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT libmono_native_unified_la-pal-icalls.lo -MD -MP -MF $(DEPDIR)/libmono_native_unified_la-pal-icalls.Tpo -c -o libmono_native_unified_la-pal-icalls.lo `test -f 'pal-icalls.c' || echo '$(srcdir)/'`pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_unified_la-pal-icalls.Tpo $(DEPDIR)/libmono_native_unified_la-pal-icalls.Plo
@@ -1923,12 +1924,26 @@ libmono_native_unified_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_io.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_io.c
 
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networkstatistics.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networkstatistics.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networkstatistics.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
 
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_random.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
@@ -1937,19 +1952,12 @@ libmono_native_unified_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networking.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+libmono_native_unified_la-pal-android.lo: pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT libmono_native_unified_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo -c -o libmono_native_unified_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo $(DEPDIR)/libmono_native_unified_la-pal-android.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_unified_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o libmono_native_unified_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
 
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo: ../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_unified_la-pal_gssapi.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo `test -f '../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
@@ -2161,13 +2169,6 @@ libmono_native_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/AnyOS/brotli/common/libmono_native_la-dictionary.lo `test -f '../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c
 
-libmono_native_la-pal-android.lo: pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT libmono_native_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_la-pal-android.Tpo -c -o libmono_native_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_la-pal-android.Tpo $(DEPDIR)/libmono_native_la-pal-android.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o libmono_native_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
-
 libmono_native_la-pal-icalls.lo: pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT libmono_native_la-pal-icalls.lo -MD -MP -MF $(DEPDIR)/libmono_native_la-pal-icalls.Tpo -c -o libmono_native_la-pal-icalls.lo `test -f 'pal-icalls.c' || echo '$(srcdir)/'`pal-icalls.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_la-pal-icalls.Tpo $(DEPDIR)/libmono_native_la-pal-icalls.Plo
@@ -2182,12 +2183,26 @@ libmono_native_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_io.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_io.c
 
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
+
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networkstatistics.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networkstatistics.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networkstatistics.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
 
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_random.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
@@ -2196,19 +2211,12 @@ libmono_native_la-pal-icalls.lo: pal-icalls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_random.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_random.c
 
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networking.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo' libtool=yes @AMDEPBACKSLASH@
+libmono_native_la-pal-android.lo: pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT libmono_native_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_la-pal-android.Tpo -c -o libmono_native_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_la-pal-android.Tpo $(DEPDIR)/libmono_native_la-pal-android.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pal-android.c' object='libmono_native_la-pal-android.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_networking.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_networking.c
-
-../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o libmono_native_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
 
 ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo: ../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_la-pal_gssapi.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo `test -f '../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c
