@@ -283,8 +283,11 @@ namespace Mono.Cecil {
 		TargetArchitecture architecture;
 		ModuleAttributes attributes;
 		ModuleCharacteristics characteristics;
-		internal ushort linker_version = 8;
 		Guid mvid;
+
+		internal ushort linker_version = 8;
+		internal ushort subsystem_major = 4;
+		internal ushort subsystem_minor = 0;
 		internal uint timestamp;
 
 		internal AssemblyDefinition assembly;
@@ -303,6 +306,10 @@ namespace Mono.Cecil {
 		TypeDefinitionCollection types;
 
 		internal Collection<CustomDebugInformation> custom_infos;
+
+#if !READ_ONLY
+		internal MetadataBuilder metadata_builder;
+#endif
 
 		public bool IsMain {
 			get { return kind != ModuleKind.NetModule; }
@@ -616,6 +623,8 @@ namespace Mono.Cecil {
 			this.attributes = image.Attributes;
 			this.characteristics = image.Characteristics;
 			this.linker_version = image.LinkerVersion;
+			this.subsystem_major = image.SubSystemMajor;
+			this.subsystem_minor = image.SubSystemMinor;
 			this.file_name = image.FileName;
 			this.timestamp = image.Timestamp;
 
