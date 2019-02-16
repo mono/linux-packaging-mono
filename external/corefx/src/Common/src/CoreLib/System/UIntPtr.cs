@@ -20,9 +20,9 @@ namespace System
 #if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
-    public struct UIntPtr : IEquatable<UIntPtr>, ISerializable
+    public readonly struct UIntPtr : IEquatable<UIntPtr>, ISerializable
     {
-        private unsafe void* _value; // Do not rename (binary serialization)
+        private readonly unsafe void* _value; // Do not rename (binary serialization)
 
         [Intrinsic]
         public static readonly UIntPtr Zero;

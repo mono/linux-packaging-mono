@@ -2643,6 +2643,7 @@ namespace System.ComponentModel
         public string PropertyName { get { throw null; } }
         public string TypeName { get { throw null; } }
     }
+    [System.ComponentModel.DefaultEventAttribute("DoWork")]
     public partial class BackgroundWorker : System.ComponentModel.Component
     {
         public BackgroundWorker() { }
@@ -3359,7 +3360,7 @@ namespace System.ComponentModel
         bool IsChanged { get; }
         void AcceptChanges();
     }
-    [System.ObsoleteAttribute("This interface has been deprecated. Add a TypeDescriptionProvider to handle type TypeDescriptor.ComObjectType instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("This interface has been deprecated. Add a TypeDescriptionProvider to handle type TypeDescriptor.ComObjectType instead.  https://go.microsoft.com/fwlink/?linkid=14202")]
     public partial interface IComNativeDescriptorHandler
     {
         System.ComponentModel.AttributeCollection GetAttributes(object component);
@@ -5232,7 +5233,7 @@ namespace System.ComponentModel.Design.Serialization
     }
     public delegate void ResolveNameEventHandler(object sender, System.ComponentModel.Design.Serialization.ResolveNameEventArgs e);
     [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple=true, Inherited=true)]
-    [System.ObsoleteAttribute("This attribute has been deprecated. Use DesignerSerializerAttribute instead.  For example, to specify a root designer for CodeDom, use DesignerSerializerAttribute(...,typeof(TypeCodeDomSerializer)).  http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("This attribute has been deprecated. Use DesignerSerializerAttribute instead.  For example, to specify a root designer for CodeDom, use DesignerSerializerAttribute(...,typeof(TypeCodeDomSerializer)).  https://go.microsoft.com/fwlink/?linkid=14202")]
     public sealed partial class RootDesignerSerializerAttribute : System.Attribute
     {
         public RootDesignerSerializerAttribute(string serializerTypeName, string baseSerializerTypeName, bool reloadable) { }
@@ -6787,6 +6788,7 @@ namespace System.Diagnostics
         public ProcessStartInfo() { }
         public ProcessStartInfo(string fileName) { }
         public ProcessStartInfo(string fileName, string arguments) { }
+        public System.Collections.ObjectModel.Collection<string> ArgumentList { get { throw null; } }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         [System.ComponentModel.SettingsBindableAttribute(true)]
@@ -6842,6 +6844,7 @@ namespace System.Diagnostics
         [System.Diagnostics.MonitoringDescriptionAttribute("Whether the process output is written to the Process instance's StandardOutput member.")]
         public bool RedirectStandardOutput { get { throw null; } set { } }
         public System.Text.Encoding StandardErrorEncoding { get { throw null; } set { } }
+        public System.Text.Encoding StandardInputEncoding { get { throw null; } set { } }
         public System.Text.Encoding StandardOutputEncoding { get { throw null; } set { } }
         [System.ComponentModel.NotifyParentPropertyAttribute(true)]
         public string UserName { get { throw null; } set { } }
@@ -7336,7 +7339,7 @@ namespace System.Diagnostics
 }
 namespace System.Diagnostics.CodeAnalysis
 {
-    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Event | System.AttributeTargets.Method | System.AttributeTargets.Property | System.AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Event | System.AttributeTargets.Method | System.AttributeTargets.Property | System.AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
     public sealed partial class ExcludeFromCodeCoverageAttribute : System.Attribute
     {
         public ExcludeFromCodeCoverageAttribute() { }
@@ -7577,15 +7580,6 @@ namespace System.IO.CoreFX
         protected void OnRenamed(System.IO.RenamedEventArgs e) { }
         public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType) { throw null; }
         public System.IO.WaitForChangedResult WaitForChanged(System.IO.WatcherChangeTypes changeType, int timeout) { throw null; }
-    }
-}
-namespace System.IO.Enumeration
-{
-    public static partial class FileSystemName
-    {
-        public static bool MatchesSimpleExpression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase = true) { throw null; }
-        public static bool MatchesWin32Expression(System.ReadOnlySpan<char> expression, System.ReadOnlySpan<char> name, bool ignoreCase = true) { throw null; }
-        public static string TranslateWin32Expression(string expression) { throw null; }
     }
 }
 namespace System.IO.Ports
@@ -8191,7 +8185,7 @@ namespace System.Net
         public override void Close() { }
         public override System.IO.Stream GetResponseStream() { throw null; }
     }
-    [System.ObsoleteAttribute("This class has been deprecated. Please use WebRequest.DefaultWebProxy instead to access and set the global default proxy. Use 'null' instead of GetEmptyWebProxy. http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("This class has been deprecated. Please use WebRequest.DefaultWebProxy instead to access and set the global default proxy. Use 'null' instead of GetEmptyWebProxy. https://go.microsoft.com/fwlink/?linkid=14202")]
     public partial class GlobalProxySelection
     {
         public GlobalProxySelection() { }
@@ -8651,7 +8645,9 @@ namespace System.Net
         public IPAddress(byte[] address) { }
         public IPAddress(byte[] address, long scopeid) { }
         public IPAddress(long newAddress) { }
-        [System.ObsoleteAttribute("This property has been deprecated. It is address family dependent. Please use IPAddress.Equals method to perform comparisons. http://go.microsoft.com/fwlink/?linkid=14202")]
+        public IPAddress(System.ReadOnlySpan<byte> address) { }
+        public IPAddress(System.ReadOnlySpan<byte> address, long scopeid) { }
+        [System.ObsoleteAttribute("This property has been deprecated. It is address family dependent. Please use IPAddress.Equals method to perform comparisons. https://go.microsoft.com/fwlink/?linkid=14202")]
         public long Address { get { throw null; } set { } }
         public System.Net.Sockets.AddressFamily AddressFamily { get { throw null; } }
         public bool IsIPv4MappedToIPv6 { get { throw null; } }
@@ -8672,9 +8668,13 @@ namespace System.Net
         public static short NetworkToHostOrder(short network) { throw null; }
         public static int NetworkToHostOrder(int network) { throw null; }
         public static long NetworkToHostOrder(long network) { throw null; }
+        public static System.Net.IPAddress Parse(System.ReadOnlySpan<char> ipSpan) { throw null; }
         public static System.Net.IPAddress Parse(string ipString) { throw null; }
         public override string ToString() { throw null; }
+        public bool TryFormat(System.Span<char> destination, out int charsWritten) { throw null; }
+        public static bool TryParse(System.ReadOnlySpan<char> ipSpan, out System.Net.IPAddress address) { throw null; }
         public static bool TryParse(string ipString, out System.Net.IPAddress address) { throw null; }
+        public bool TryWriteBytes(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
     [System.SerializableAttribute]
     public partial class IPEndPoint : System.Net.EndPoint
@@ -10948,6 +10948,7 @@ namespace System.Net.Security
         public virtual int KeyExchangeStrength { get { throw null; } }
         public override long Length { get { throw null; } }
         public virtual System.Security.Cryptography.X509Certificates.X509Certificate LocalCertificate { get { throw null; } }
+        public System.Net.Security.SslApplicationProtocol NegotiatedApplicationProtocol { get { throw null; } }
         public override long Position { get { throw null; } set { } }
         public override int ReadTimeout { get { throw null; } set { } }
         public virtual System.Security.Cryptography.X509Certificates.X509Certificate RemoteCertificate { get { throw null; } }
@@ -11337,6 +11338,7 @@ namespace System.Net.Sockets
         public int Receive(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
         public int Receive(System.Span<byte> buffer) { throw null; }
         public int Receive(System.Span<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
+        public int Receive(System.Span<byte> buffer, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
         public bool ReceiveAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public int ReceiveFrom(byte[] buffer, int offset, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
         public int ReceiveFrom(byte[] buffer, int size, System.Net.Sockets.SocketFlags socketFlags, ref System.Net.EndPoint remoteEP) { throw null; }
@@ -11359,6 +11361,7 @@ namespace System.Net.Sockets
         public int Send(System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
         public int Send(System.ReadOnlySpan<byte> buffer) { throw null; }
         public int Send(System.ReadOnlySpan<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
+        public int Send(System.ReadOnlySpan<byte> buffer, System.Net.Sockets.SocketFlags socketFlags, out System.Net.Sockets.SocketError errorCode) { throw null; }
         public bool SendAsync(System.Net.Sockets.SocketAsyncEventArgs e) { throw null; }
         public void SendFile(string fileName) { }
         public void SendFile(string fileName, byte[] preBuffer, byte[] postBuffer, System.Net.Sockets.TransmitFileOptions flags) { }
@@ -11405,6 +11408,7 @@ namespace System.Net.Sockets
         protected virtual void OnCompleted(System.Net.Sockets.SocketAsyncEventArgs e) { }
         public void SetBuffer(byte[] buffer, int offset, int count) { }
         public void SetBuffer(int offset, int count) { }
+        public void SetBuffer(System.Memory<byte> buffer) { }
     }
     public enum SocketAsyncOperation
     {
@@ -11608,6 +11612,7 @@ namespace System.Net.Sockets
         public static System.Threading.Tasks.Task<System.Net.Sockets.SocketReceiveMessageFromResult> ReceiveMessageFromAsync(this System.Net.Sockets.Socket socket, System.ArraySegment<byte> buffer, System.Net.Sockets.SocketFlags socketFlags, System.Net.EndPoint remoteEndPoint) { throw null; }
         public static System.Threading.Tasks.Task<int> SendAsync(this System.Net.Sockets.Socket socket, System.ArraySegment<byte> buffer, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
         public static System.Threading.Tasks.Task<int> SendAsync(this System.Net.Sockets.Socket socket, System.Collections.Generic.IList<System.ArraySegment<byte>> buffers, System.Net.Sockets.SocketFlags socketFlags) { throw null; }
+        public static System.Threading.Tasks.ValueTask<int> SendAsync(this System.Net.Sockets.Socket socket, System.ReadOnlyMemory<byte> buffer, System.Net.Sockets.SocketFlags socketFlags, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public static System.Threading.Tasks.Task<int> SendToAsync(this System.Net.Sockets.Socket socket, System.ArraySegment<byte> buffer, System.Net.Sockets.SocketFlags socketFlags, System.Net.EndPoint remoteEP) { throw null; }
     }
     public enum SocketType
@@ -12367,11 +12372,6 @@ namespace System.Security.Cryptography
         public bool MoveNext() { throw null; }
         public void Reset() { }
     }
-    public static partial class CryptographicOperations
-    {
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static bool FixedTimeEquals(System.ReadOnlySpan<byte> left, System.ReadOnlySpan<byte> right) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public static void ZeroMemory(System.Span<byte> buffer) { }
-    }
     public sealed partial class Oid
     {
         public Oid() { }
@@ -12454,6 +12454,16 @@ namespace System.Security.Cryptography.X509Certificates
         Root = 6,
         TrustedPeople = 7,
         TrustedPublisher = 8,
+    }
+    public sealed partial class SubjectAlternativeNameBuilder
+    {
+        public SubjectAlternativeNameBuilder() { }
+        public void AddDnsName(string dnsName) { }
+        public void AddEmailAddress(string emailAddress) { }
+        public void AddIpAddress(System.Net.IPAddress ipAddress) { }
+        public void AddUri(System.Uri uri) { }
+        public void AddUserPrincipalName(string upn) { }
+        public System.Security.Cryptography.X509Certificates.X509Extension Build(bool critical = false) { throw null; }
     }
     [System.MonoTODOAttribute("Some X500DistinguishedNameFlags options aren't supported, like DoNotUsePlusSign, DoNotUseQuotes and ForceUTF8Encoding")]
     public sealed partial class X500DistinguishedName : System.Security.Cryptography.AsnEncodedData

@@ -492,39 +492,39 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 # Tests which needs named Mutex support
 
 # Test which needs System.Web support
-@AOT_FULL_INTERP_TESTS_TRUE@am__append_33 = appdomain1.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-loader.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-threadpool-unload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-asmload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	assemblyresolve_event6.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-335131.2.exe bug-415577.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	cross-domain.exe dataslot.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	delegate9.exe domain-stress.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-marshalbyref.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-unloading.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-xdomain.2.exe hostname.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	marshal-valuetypes.exe monitor.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	pinvoke3.exe remoting4.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	stackframes-async.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	thread6.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_33 = appdomain1.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-loader.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-threadpool-unload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-asmload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	assemblyresolve_event6.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	bug-335131.2.exe bug-415577.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	cross-domain.exe dataslot.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	delegate9.exe domain-stress.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-unloading.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-xdomain.2.exe hostname.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	marshal-valuetypes.exe monitor.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	pinvoke3.exe remoting4.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	stackframes-async.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	thread6.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	xdomain-threads.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
 
 # https://github.com/mono/mono/issues/12839
 @HOST_WIN32_TRUE@am__append_34 = block_guard_restore_aligment_on_exit.exe
@@ -1088,7 +1088,7 @@ MKBUNDLE = \
 	PKG_CONFIG_PATH=$(top_builddir):$(PKG_CONFIG_PATH) \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
-@AOT_FULL_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
+@FULL_AOT_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
@@ -1906,7 +1906,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
 	$(INTERNALSVISIBLETO_TEST_SRC) \
 	$(INTERNALSVISIBLETO_TEST_LIB_SRC) weakattribute.cs
-@AOT_FULL_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
+@FULL_AOT_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 @FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -2814,6 +2814,9 @@ testinterp: test-runner.exe compile-tests
 
 testfullaotinterp: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--full-aot-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
+
+testllvmonlyinterp: test-runner.exe compile-tests
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--llvmonly-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
 
 testjitspeed: $(JITTEST_PROG) compile-tests
 	for i in $(TESTS_BENCH); do	\
