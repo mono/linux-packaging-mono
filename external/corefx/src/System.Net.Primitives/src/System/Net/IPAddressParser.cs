@@ -16,7 +16,7 @@ namespace System.Net
 
         internal static unsafe IPAddress Parse(ReadOnlySpan<char> ipSpan, bool tryParse)
         {
-            if (ipSpan.IndexOf(':') >= 0)
+            if (ipSpan.Contains(':'))
             {
                 // The address is parsed as IPv6 if and only if it contains a colon. This is valid because
                 // we don't support/parse a port specification at the end of an IPv4 address.
@@ -45,6 +45,13 @@ namespace System.Net
             char* addressString = stackalloc char[MaxIPv4StringLength];
             int charsWritten = IPv4AddressToStringHelper(address, addressString);
             return new string(addressString, 0, charsWritten);
+        }
+
+        internal static unsafe void IPv4AddressToString(uint address, StringBuilder destination)
+        {
+            char* addressString = stackalloc char[MaxIPv4StringLength];
+            int charsWritten = IPv4AddressToStringHelper(address, addressString);
+            destination.Append(addressString, charsWritten);
         }
 
         internal static unsafe bool IPv4AddressToString(uint address, Span<char> formatted, out int charsWritten)
@@ -124,7 +131,7 @@ namespace System.Net
                 {
                     buffer.Append(':');
                 }
-                buffer.Append(IPAddressParser.IPv4AddressToString(ExtractIPv4Address(address)));
+                IPv4AddressToString(ExtractIPv4Address(address), buffer);
             }
             else
             {
@@ -245,7 +252,8 @@ namespace System.Net
         private static void AppendSections(ushort[] address, int fromInclusive, int toExclusive, StringBuilder buffer)
         {
             // Find the longest sequence of zeros to be combined into a "::"
-            (int zeroStart, int zeroEnd) = IPv6AddressHelper.FindCompressionRange(address, fromInclusive, toExclusive);
+            ReadOnlySpan<ushort> addressSpan = new ReadOnlySpan<ushort>(address, fromInclusive, toExclusive - fromInclusive);
+            (int zeroStart, int zeroEnd) = IPv6AddressHelper.FindCompressionRange(addressSpan);
             bool needsColon = false;
 
             // Output all of the numbers before the zero sequence

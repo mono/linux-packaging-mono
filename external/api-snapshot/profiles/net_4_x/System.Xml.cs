@@ -1153,7 +1153,7 @@ namespace System.Xml
         [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
         public override System.Uri ResolveUri(System.Uri baseUri, string relativeUri) { throw null; }
     }
-    [System.ObsoleteAttribute("Use XmlReader created by XmlReader.Create() method using appropriate XmlReaderSettings instead. http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("Use XmlReader created by XmlReader.Create() method using appropriate XmlReaderSettings instead. https://go.microsoft.com/fwlink/?linkid=14202")]
     [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
     public partial class XmlValidatingReader : System.Xml.XmlReader, System.Xml.IXmlLineInfo, System.Xml.IXmlNamespaceResolver
     {
@@ -1618,7 +1618,7 @@ namespace System.Xml.Schema
         [System.Xml.Serialization.XmlElementAttribute("sequence", typeof(System.Xml.Schema.XmlSchemaSequence))]
         public override System.Xml.Schema.XmlSchemaObjectCollection Items { get { throw null; } }
     }
-    [System.ObsoleteAttribute("Use System.Xml.Schema.XmlSchemaSet for schema compilation and validation. http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("Use System.Xml.Schema.XmlSchemaSet for schema compilation and validation. https://go.microsoft.com/fwlink/?linkid=14202")]
     public sealed partial class XmlSchemaCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public XmlSchemaCollection() { }
@@ -2655,7 +2655,7 @@ namespace System.Xml.Serialization
         public object UnreferencedObject { get { throw null; } }
     }
     public delegate void UnreferencedObjectEventHandler(object sender, System.Xml.Serialization.UnreferencedObjectEventArgs e);
-    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class XmlAnyAttributeAttribute : System.Attribute
     {
         public XmlAnyAttributeAttribute() { }
@@ -2888,7 +2888,7 @@ namespace System.Xml.Serialization
         public string TypeName { get { throw null; } }
         public string TypeNamespace { get { throw null; } }
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class XmlNamespaceDeclarationsAttribute : System.Attribute
     {
         public XmlNamespaceDeclarationsAttribute() { }

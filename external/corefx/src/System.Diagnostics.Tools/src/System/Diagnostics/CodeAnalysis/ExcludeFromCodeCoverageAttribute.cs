@@ -4,7 +4,7 @@
 
 namespace System.Diagnostics.CodeAnalysis
 {
-    [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Event, Inherited = false, AllowMultiple = false)]
+    [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Event | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
     public sealed class ExcludeFromCodeCoverageAttribute: Attribute
     {
         public ExcludeFromCodeCoverageAttribute()

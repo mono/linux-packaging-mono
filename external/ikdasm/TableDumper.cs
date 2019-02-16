@@ -80,6 +80,9 @@ namespace Ildasm
 			case MetadataTableIndex.AssemblyRef:
 				DumpAssemblyRefTable (w);
 				break;
+			case MetadataTableIndex.Module:
+				DumpModuleTable (w);
+				break;
 			case MetadataTableIndex.ModuleRef:
 				DumpModuleRefTable (w);
 				break;
@@ -159,6 +162,16 @@ namespace Ildasm
 					w.WriteLine ();
 				}
 				w.WriteLine ();
+				rowIndex ++;
+			}
+		}
+
+		void DumpModuleTable (TextWriter w) {
+			var t = module.ModuleTable;
+			w.WriteLine ("Module Table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				w.WriteLine (String.Format ("{0}: {1} {2} {{{3}}}", rowIndex, module.GetString (r.Name), r.Generation, module.GetGuid (r.Mvid).ToString ().ToUpper ()));
 				rowIndex ++;
 			}
 		}
@@ -469,6 +482,7 @@ namespace Ildasm
 		}
 
 		static Guid StateMachineHoistedLocalScopesGuid = new Guid ("6da9a61e-f8c7-4874-be62-68bc5630df71");
+		static Guid SourceLinkGuid = new Guid ("cc110556-a091-4d38-9fec-25ab9a351a6a");
 
 		public void DumpCustomDebugInfoTable (TextWriter w) {
 			var t = module.CustomDebugInformation;
@@ -479,6 +493,8 @@ namespace Ildasm
 				string kind = "";
 				if (g == StateMachineHoistedLocalScopesGuid)
 					kind = "<state-machine hoisted local scopes>";
+				else if (g == SourceLinkGuid)
+					kind = "<source link>";
 				else
 					kind = g.ToString ();
 				int parent_kind = r.Parent & 0x1f;
@@ -491,6 +507,12 @@ namespace Ildasm
 						int len = blob.ReadInt32 ();
 						w.WriteLine (String.Format ("\t0x{0:x}-0x{1:x}", start_offset, start_offset + len));
 					}
+				} else if (g == SourceLinkGuid) {
+					var blob = module.GetBlob (r.Value);
+					var bytes = blob.ReadBytes (blob.Length);
+					Console.WriteLine ("======================================");
+					Console.Write (Encoding.UTF8.GetString (bytes));
+					Console.WriteLine ("======================================");
 				}
 				rowIndex ++;
 			}

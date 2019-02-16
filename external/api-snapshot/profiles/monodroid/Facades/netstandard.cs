@@ -819,6 +819,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.GopherStyleUriParser))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Guid))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.HttpStyleUriParser))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.IAsyncDisposable))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.IAsyncResult))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ICloneable))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.IComparable))]

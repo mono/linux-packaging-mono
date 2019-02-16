@@ -80,6 +80,21 @@ namespace System.IO
             GC.SuppressFinalize(this);
         }
 
+#if MONO // Copied from CoreFX-master (NS2.1)
+        public virtual ValueTask DisposeAsync()
+        {
+            try
+            {
+                Dispose();
+                return default;
+            }
+            catch (Exception exc)
+            {
+                return new ValueTask(Task.FromException(exc));
+            }
+        }
+#endif
+
         // Clears all buffers for this TextWriter and causes any buffered data to be
         // written to the underlying device. This default method is empty, but
         // descendant classes can override the method to provide the appropriate

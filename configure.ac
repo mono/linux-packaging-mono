@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [6.1.0.131],
+AC_INIT(mono, [6.1.0.157],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -48,7 +48,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=26CB76A6-673F-4126-99F0-E98277541B92
+MONO_CORLIB_VERSION=1A1222D8-4B4D-4EB4-B4FC-8227F50AB114
 
 #
 # Put a quoted #define in config.h.
@@ -1221,6 +1221,7 @@ elif test x$with_runtime_preset = xbitcode; then
    enable_cooperative_suspend_default=yes
    # FIXME: use TEST_PROFILE=testing_aot_full
    TEST_PROFILE=testing_aot_bitcode
+   PLATFORM_TEST_HARNESS_EXCLUDES=BitcodeNotSupported
    enable_llvm_default=yes
 
    mono_feature_disable_com='yes'
@@ -1239,6 +1240,7 @@ elif test x$with_runtime_preset = xbitcodeinterp; then
    enable_cooperative_suspend_default=yes
    # FIXME: use TEST_PROFILE=testing_aot_full_interp
    TEST_PROFILE=testing_aot_bitcode_interp
+   PLATFORM_TEST_HARNESS_EXCLUDES=BitcodeNotSupported
    enable_llvm_default=yes
 
    # mscorlib.dll aot compilation crashes
@@ -1460,9 +1462,10 @@ AM_CONDITIONAL(INSTALL_ORBIS, [test "x$with_orbis" != "xno"])
 AM_CONDITIONAL(INSTALL_UNREAL, [test "x$with_unreal" != "xno"])
 AM_CONDITIONAL(INSTALL_WASM, [test "x$with_wasm" != "xno"])
 AM_CONDITIONAL(INSTALL_NETCORE, [test "x$with_core" != "xno"])
-AM_CONDITIONAL(FULL_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full"] || [test "x$TEST_PROFILE" = "xwinaot"] || [test "x$TEST_PROFILE" = "xorbis"] || [test "x$TEST_PROFILE" = "xwasm"])
+
 AM_CONDITIONAL(HYBRID_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_hybrid"] || [test "x$TEST_PROFILE" = "xunreal"])
-AM_CONDITIONAL(AOT_FULL_INTERP_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full_interp"])
+AM_CONDITIONAL(FULL_AOT_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full"] || [test "x$TEST_PROFILE" = "xtesting_aot_bitcode"] || [test "x$TEST_PROFILE" = "xwinaot"] || [test "x$TEST_PROFILE" = "xorbis"] || [test "x$TEST_PROFILE" = "xwasm"])
+AM_CONDITIONAL(FULL_AOT_INTERP_TESTS, [test "x$TEST_PROFILE" = "xtesting_aot_full_interp"] || [test "x$TEST_PROFILE" = "xtesting_aot_bitcode_interp"])
 AM_CONDITIONAL(DEFAULT_TESTS, [test "x$TEST_PROFILE" = "xnet_4_x"])
 
 default_profile=net_4_x

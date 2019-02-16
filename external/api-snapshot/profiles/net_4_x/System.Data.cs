@@ -963,10 +963,10 @@ namespace System.Data
         public override string ImportSchemaType(System.Xml.Schema.XmlSchemaType type, System.Xml.Schema.XmlSchemaObject context, System.Xml.Serialization.XmlSchemas schemas, System.Xml.Serialization.XmlSchemaImporter importer, System.CodeDom.CodeCompileUnit compileUnit, System.CodeDom.CodeNamespace mainNamespace, System.Xml.Serialization.CodeGenerationOptions options, System.CodeDom.Compiler.CodeDomProvider codeProvider) { throw null; }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.All)]
-    [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
+    [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  https://go.microsoft.com/fwlink/?linkid=14202", false)]
     public partial class DataSysDescriptionAttribute : System.ComponentModel.DescriptionAttribute
     {
-        [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
+        [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  https://go.microsoft.com/fwlink/?linkid=14202", false)]
         public DataSysDescriptionAttribute(string description) { }
         public override string Description { get { throw null; } }
     }
@@ -2734,11 +2734,13 @@ namespace System.Data.Common
         public static System.Data.Common.DbProviderFactory GetFactory(System.Data.Common.DbConnection connection) { throw null; }
         public static System.Data.Common.DbProviderFactory GetFactory(System.Data.DataRow providerRow) { throw null; }
         public static System.Data.Common.DbProviderFactory GetFactory(string providerInvariantName) { throw null; }
+        public static System.Data.Common.DbProviderFactory GetFactory(string providerInvariantName, bool throwOnError) { throw null; }
         public static System.Data.DataTable GetFactoryClasses() { throw null; }
         public static System.Collections.Generic.IEnumerable<string> GetProviderInvariantNames() { throw null; }
         public static void RegisterFactory(string providerInvariantName, System.Data.Common.DbProviderFactory factory) { }
         public static void RegisterFactory(string providerInvariantName, string factoryTypeAssemblyQualifiedName) { }
         public static void RegisterFactory(string providerInvariantName, System.Type providerFactoryClass) { }
+        public static bool TryGetFactory(string providerInvariantName, out System.Data.Common.DbProviderFactory factory) { throw null; }
         public static bool UnregisterFactory(string providerInvariantName) { throw null; }
     }
     public partial class DbProviderFactoriesConfigurationHandler : System.Configuration.IConfigurationSectionHandler
