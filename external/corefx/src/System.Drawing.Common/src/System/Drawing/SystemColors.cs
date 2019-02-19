@@ -4,6 +4,9 @@
 
 namespace System.Drawing
 {
+#if MONODROID
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#endif
     public static class SystemColors
     {
         public static Color ActiveBorder => ColorUtil.FromKnownColor(KnownColor.ActiveBorder);

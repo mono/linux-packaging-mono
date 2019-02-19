@@ -2613,13 +2613,13 @@ check-local:
 	$$ok
 
 array-coop-bigvt.cs: array-coop-bigvt.sh array-coop-1.cs array-coop-2.cs
-	 . $(srcdir)/array-coop-bigvt.sh $(srcdir) > $@
+	 $(srcdir)/array-coop-bigvt.sh $(srcdir) > $@
 
 array-coop-smallvt.cs: array-coop-smallvt.sh array-coop-1.cs array-coop-2.cs
-	 . $(srcdir)/array-coop-smallvt.sh $(srcdir) > $@
+	 $(srcdir)/array-coop-smallvt.sh $(srcdir) > $@
 
 array-coop-int.cs: array-coop-int.sh array-coop-1.cs array-coop-2.cs
-	 . $(srcdir)/array-coop-int.sh $(srcdir) > $@
+	 $(srcdir)/array-coop-int.sh $(srcdir) > $@
 
 # This test is also slow, though its sleep can be dialed down.
 #TAILCALL_DISABLED_TESTS_RUN += tailcall/coreclr/JIT/Methodical/tailcall_v4/hijacking.exe

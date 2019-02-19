@@ -199,6 +199,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\IEquatable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IFormatProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IFormattable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Index.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IndexOutOfRangeException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\InsufficientExecutionStackException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\InvalidCastException.cs" />
@@ -273,6 +274,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\PlatformNotSupportedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Progress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Random.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Range.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\RankException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ReadOnlySpan.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ReadOnlySpan.Fast.cs" />
