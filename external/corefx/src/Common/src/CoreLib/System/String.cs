@@ -458,6 +458,19 @@ namespace System
             return (value == null || 0u >= (uint)value.Length) ? true : false;
         }
 
+        [System.Runtime.CompilerServices.IndexerName("Chars")]
+        public char this[Index index]
+        {
+            get
+            {
+                int actualIndex = index.GetOffset(Length);
+                return this[actualIndex];
+            }
+        }
+
+        [System.Runtime.CompilerServices.IndexerName("Chars")]
+        public string this[Range range] => Substring(range);
+
         public static bool IsNullOrWhiteSpace(string value)
         {
             if (value == null) return true;
@@ -648,7 +661,7 @@ namespace System
 
         //
         // IConvertible implementation
-        // 
+        //
 
         public TypeCode GetTypeCode()
         {

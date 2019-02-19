@@ -143,11 +143,13 @@ namespace System
                                 {
                                     goto case '/';
                                 }
+#if !MONO // zoneId can be a string, see https://github.com/dotnet/corefx/issues/27529
                                 else if (name[i] < '0' || name[i] > '9')
                                 {
                                     // scope ID must only contain digits
                                     return false;
                                 }
+#endif
                             }
                             break;
                         case ']':

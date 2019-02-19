@@ -225,7 +225,11 @@ namespace System.Net
                         if (c < '0' || c > '9')
                         {
                             scope = 0;
+#if MONO // zoneId can be a string, see https://github.com/dotnet/corefx/issues/27529
+                            return true;
+#else
                             return false;
+#endif
                         }
                         result = (result * 10) + (c - '0');
                         if (result > uint.MaxValue)

@@ -262,13 +262,23 @@ namespace Mono.Linker.Steps {
 			if (Annotations.IsMarked (method))
 				return;
 
+			var isInstantiated = Annotations.IsInstantiated (method.DeclaringType);
+
 			// We don't need to mark overrides until it is possible that the type could be instantiated
 			// Note : The base type is interface check should be removed once we have base type sweeping
-			if (!Annotations.IsInstantiated (method.DeclaringType) && @base.DeclaringType.IsInterface)
+			if (@base.DeclaringType.IsInterface && !isInstantiated && !IsInterfaceImplementationMarked (method.DeclaringType, @base.DeclaringType))
+				return;
+
+			if (!isInstantiated && !@base.IsAbstract)
 				return;
 
 			MarkMethod (method);
 			ProcessVirtualMethod (method);
+		}
+
+		bool IsInterfaceImplementationMarked (TypeDefinition type, TypeDefinition interfaceType)
+		{
+			return type.HasInterface (@interfaceType, out InterfaceImplementation implementation) && Annotations.IsMarked (implementation);
 		}
 
 		void MarkMarshalSpec (IMarshalInfoProvider spec)
@@ -1790,7 +1800,14 @@ namespace Mono.Linker.Steps {
 			Annotations.MarkInstantiated (type);
 
 			MarkInterfaceImplementations (type);
-			MarkMethodsIf (type.Methods, IsVirtualAndHasPreservedParent);
+
+			foreach (var method in type.Methods) {
+				if (method.IsFinalizer ())
+					MarkMethod (method);
+				else if (IsVirtualAndHasPreservedParent (method))
+					MarkMethod (method);
+			}
+
 			DoAdditionalInstantiatedTypeProcessing (type);
 		}
 
@@ -1992,12 +2009,27 @@ namespace Mono.Linker.Steps {
 			foreach (Instruction instruction in body.Instructions)
 				MarkInstruction (instruction);
 
+			MarkInterfacesNeededByBodyStack (body);
+
 			MarkThingsUsedViaReflection (body);
 
 			PostMarkMethodBody (body);
 		}
 
 		partial void PostMarkMethodBody (MethodBody body);
+
+		void MarkInterfacesNeededByBodyStack (MethodBody body)
+		{
+			// If a type could be on the stack in the body and an interface it implements could be on the stack on the body
+			// then we need to mark that interface implementation.  When this occurs it is not safe to remove the interface implementation from the type
+			// even if the type is never instantiated
+			var implementations = MethodBodyScanner.GetReferencedInterfaces (_context.Annotations, body);
+			if (implementations == null)
+				return;
+
+			foreach (var implementation in implementations)
+				MarkInterfaceImplementation (implementation);
+		}
 
 		protected virtual void MarkThingsUsedViaReflection (MethodBody body)
 		{

@@ -15,6 +15,9 @@ using System.Threading;
 
 namespace System.Drawing
 {
+#if MONODROID
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#endif
     public class ColorConverter : TypeConverter
     {
         private static readonly Lazy<StandardValuesCollection> s_valuesLazy = new Lazy<StandardValuesCollection>(() => {
