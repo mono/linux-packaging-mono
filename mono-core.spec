@@ -116,6 +116,8 @@ Provides:       mono(mscorlib) = 2.0.0.0
 Provides:       mono(mscorlib) = 4.0.0.0
 Provides:	mono(Mono.Configuration.Crypto) = 4.0.0.0
 
+%define debug_package %{nil}
+
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 %define __find_provides env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/redhat/find-provides && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-provides; } | sort | uniq'
