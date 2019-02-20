@@ -36,6 +36,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		llvm_llc_opt_default_path.patch
+Patch1:		use_python3_not_unversioned_for_genmdesc.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -44,9 +45,6 @@ BuildRequires:  cmake
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
-%if 0%{?rhel} >= 8
-BuildRequires:  python-unversioned-command
-%endif
 %if 0%{?rhel} < 7
 BuildRequires:  devtoolset-2-toolchain
 %endif
@@ -140,6 +138,9 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{version}
 %patch0 -p1
+%if 0%{?rhel} >= 8
+%patch1 -p1
+%endif
 
 %build
 %{?scl:scl enable %{scl} - << \EOF}
