@@ -1,0 +1,13 @@
+diff --git a/mono/mini/Makefile.am.in b/mono/mini/Makefile.am.in
+index 65399906806..4538c5ba428 100755
+--- a/mono/mini/Makefile.am.in
++++ b/mono/mini/Makefile.am.in
+@@ -775,7 +775,7 @@ MemoryIntrinsics.dll: MemoryIntrinsics.il
+ 
+ GENMDESC_OPTS=
+ 
+-GENMDESC_PRG=python $(srcdir)/genmdesc.py $(target_define) $(srcdir)
++GENMDESC_PRG=python3 $(srcdir)/genmdesc.py $(target_define) $(srcdir)
+ 
+ cpu-wasm.h: mini-ops.h cpu-wasm.md
+ 	$(GENMDESC_PRG) cpu-wasm.h wasm_desc $(srcdir)/cpu-wasm.md
