@@ -36,7 +36,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		llvm_llc_opt_default_path.patch
-Patch1:		use_python3_not_unversioned_for_genmdesc.patch
+Patch1:		use_python3_not_unversioned.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
