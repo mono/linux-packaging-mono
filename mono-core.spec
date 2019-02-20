@@ -44,6 +44,9 @@ BuildRequires:  cmake
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 8
+BuildRequires:  python-unversioned-command
+%endif
 %if 0%{?rhel} < 7
 BuildRequires:  devtoolset-2-toolchain
 %endif
