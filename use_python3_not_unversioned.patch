@@ -11,3 +11,13 @@ index 65399906806..4538c5ba428 100755
  
  cpu-wasm.h: mini-ops.h cpu-wasm.md
  	$(GENMDESC_PRG) cpu-wasm.h wasm_desc $(srcdir)/cpu-wasm.md
+diff --git a/scripts/mono-heapviz b/scripts/mono-heapviz
+index 27b6f7f6023..c4a4847bbe6 100755
+--- a/scripts/mono-heapviz
++++ b/scripts/mono-heapviz
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ 
+ # Generate a heap visualization for SGen from the heap dump written by
+ # mono if the MONO_GC_DEBUG is set to something like
