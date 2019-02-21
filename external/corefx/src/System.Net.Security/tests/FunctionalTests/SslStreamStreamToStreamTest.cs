@@ -55,7 +55,11 @@ namespace System.Net.Security.Tests
                 Task t2 = server.AuthenticateAsServerAsync(certificate);
 
                 await Assert.ThrowsAsync<AuthenticationException>(() => t1);
-                await t2;
+                // Mono closes the connection during the handshake.
+                if (PlatformDetection.IsMono)
+                    await Assert.ThrowsAsync<VirtualNetwork.VirtualNetworkConnectionBroken>(() => t2);
+                else
+                    await t2;
             }
         }
 
@@ -75,9 +79,15 @@ namespace System.Net.Security.Tests
             using (var server = new SslStream(serverStream, false, null, selectionCallback))
             using (X509Certificate2 certificate = Configuration.Certificates.GetServerCertificate())
             {
-                await Assert.ThrowsAsync<NotSupportedException>(async () =>
-                    await TestConfiguration.WhenAllOrAnyFailedWithTimeout(client.AuthenticateAsClientAsync(certificate.GetNameInfo(X509NameType.SimpleName, false)), server.AuthenticateAsServerAsync(certificate))
-                );
+                var clientJob = client.AuthenticateAsClientAsync(certificate.GetNameInfo(X509NameType.SimpleName, false));
+
+                await Assert.ThrowsAsync<NotSupportedException>(() => server.AuthenticateAsServerAsync(certificate));
+
+                // Mono terminates the connection when the server handshake fails.
+                if (PlatformDetection.IsMono)
+                    await Assert.ThrowsAsync<VirtualNetwork.VirtualNetworkConnectionBroken>(() => clientJob);
+                else
+                    await TestConfiguration.WhenAllOrAnyFailedWithTimeout(clientJob);
             }
         }
 
@@ -360,7 +370,7 @@ namespace System.Net.Security.Tests
 
                 await clientSslStream.WriteAsync(new byte[] { 2 }, 0, 1);
 
-                if (PlatformDetection.IsFullFramework)
+                if (PlatformDetection.IsFullFramework || PlatformDetection.IsMono)
                 {
                     await Assert.ThrowsAsync<ObjectDisposedException>(() => serverReadTask);
                 }
@@ -426,7 +436,7 @@ namespace System.Net.Security.Tests
                         // Do normal reads as requested until the read mode is set
                         // to 1.  Then do a single read of only 10 bytes to read only
                         // part of the message, and subsequently return EOF.
-                        if (readMode == 0)
+                        if (readMode == 0 || count < 15)
                         {
                             return serverNetworkStream.Read(buffer, offset, count);
                         }
