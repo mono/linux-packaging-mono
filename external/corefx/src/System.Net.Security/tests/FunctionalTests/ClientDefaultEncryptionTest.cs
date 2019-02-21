@@ -75,6 +75,7 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono ignores EncryptionPolicy")]
         public async Task ClientDefaultEncryption_ServerNoEncryption_NoConnect()
         {
             using (var serverNoEncryption = new DummyTcpServer(

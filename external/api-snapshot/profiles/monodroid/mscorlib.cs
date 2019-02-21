@@ -2144,9 +2144,9 @@ namespace System
         Utc = 1,
     }
     [System.SerializableAttribute]
-    public partial struct DateTimeOffset : System.IComparable, System.IComparable<System.DateTimeOffset>, System.IEquatable<System.DateTimeOffset>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
+    public readonly partial struct DateTimeOffset : System.IComparable, System.IComparable<System.DateTimeOffset>, System.IEquatable<System.DateTimeOffset>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.DateTimeOffset MaxValue;
         public static readonly System.DateTimeOffset MinValue;
         public static readonly System.DateTimeOffset UnixEpoch;
@@ -2467,9 +2467,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Double : System.IComparable, System.IComparable<double>, System.IConvertible, System.IEquatable<double>, System.IFormattable
+    public readonly partial struct Double : System.IComparable, System.IComparable<double>, System.IConvertible, System.IEquatable<double>, System.IFormattable
     {
-        private double _dummyPrimitive;
+        private readonly double _dummyPrimitive;
         public const double Epsilon = 4.94065645841247E-324;
         public const double MaxValue = 1.7976931348623157E+308;
         public const double MinValue = -1.7976931348623157E+308;
@@ -4205,9 +4205,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Single : System.IComparable, System.IComparable<float>, System.IConvertible, System.IEquatable<float>, System.IFormattable
+    public readonly partial struct Single : System.IComparable, System.IComparable<float>, System.IConvertible, System.IEquatable<float>, System.IFormattable
     {
-        private float _dummyPrimitive;
+        private readonly float _dummyPrimitive;
         public const float Epsilon = 1.401298E-45f;
         public const float MaxValue = 3.40282347E+38f;
         public const float MinValue = -3.40282347E+38f;
@@ -4573,9 +4573,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct TimeSpan : System.IComparable, System.IComparable<System.TimeSpan>, System.IEquatable<System.TimeSpan>, System.IFormattable
+    public readonly partial struct TimeSpan : System.IComparable, System.IComparable<System.TimeSpan>, System.IEquatable<System.TimeSpan>, System.IFormattable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.TimeSpan MaxValue;
         public static readonly System.TimeSpan MinValue;
         public const long TicksPerDay = (long)864000000000;
@@ -21765,6 +21765,7 @@ namespace System.Security.Cryptography
         public virtual bool TryDecrypt(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.RSAEncryptionPadding padding, out int bytesWritten) { throw null; }
         public virtual bool TryEncrypt(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.RSAEncryptionPadding padding, out int bytesWritten) { throw null; }
         protected virtual bool TryHashData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding, out int bytesWritten) { throw null; }
         public virtual bool TrySignHash(System.ReadOnlySpan<byte> hash, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding, out int bytesWritten) { throw null; }
         public bool VerifyData(byte[] data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public virtual bool VerifyData(byte[] data, int offset, int count, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
@@ -24522,6 +24523,7 @@ namespace System.Threading
         private readonly object _dummy;
         public System.Threading.CancellationToken Token { get { throw null; } }
         public void Dispose() { }
+        public System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Threading.CancellationTokenRegistration other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -25270,6 +25272,7 @@ namespace System.Threading
         public bool Change(uint dueTime, uint period) { throw null; }
         public void Dispose() { }
         public bool Dispose(System.Threading.WaitHandle notifyObject) { throw null; }
+        public System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate void TimerCallback(object state);

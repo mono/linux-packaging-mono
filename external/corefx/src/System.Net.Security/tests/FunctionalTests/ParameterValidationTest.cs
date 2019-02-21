@@ -23,6 +23,7 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono ignores EncryptionPolicy")]
         public async Task SslStreamConstructor_BadEncryptionPolicy_ThrowException()
         {
             using (var _remoteServer = new DummyTcpServer(

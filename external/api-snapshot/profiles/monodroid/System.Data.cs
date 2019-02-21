@@ -808,6 +808,7 @@ namespace System.Data
         object System.ComponentModel.ICustomTypeDescriptor.GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) { throw null; }
     }
     [System.ComponentModel.DefaultPropertyAttribute("DataSetName")]
+    [System.ComponentModel.ToolboxItemAttribute("Microsoft.VSDesigner.Data.VS.DataSetToolboxItem, Microsoft.VSDesigner, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Xml.Serialization.XmlRootAttribute("DataSet")]
     [System.Xml.Serialization.XmlSchemaProviderAttribute("GetDataSetSchema")]
     [System.SerializableAttribute]

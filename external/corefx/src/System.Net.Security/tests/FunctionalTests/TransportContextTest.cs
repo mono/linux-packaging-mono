@@ -12,6 +12,7 @@ using Xunit;
 
 namespace System.Net.Security.Tests
 {
+    [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
     public class TransportContextTest
     {
         // The following method is invoked by the RemoteCertificateValidationDelegate.

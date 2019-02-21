@@ -9,6 +9,7 @@ using Xunit;
 
 namespace System.Net.Security.Tests
 {
+    [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
     public class LoggingTest : RemoteExecutorTestBase
     {
         [Fact]

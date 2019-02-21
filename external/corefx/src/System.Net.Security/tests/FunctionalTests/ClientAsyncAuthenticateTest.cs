@@ -42,6 +42,7 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono ignores EncryptionPolicy")]
         public async Task ClientAsyncAuthenticate_ServerNoEncryption_NoConnect()
         {
             await Assert.ThrowsAsync<IOException>(() => ClientAsyncSslHelper(EncryptionPolicy.NoEncryption));
@@ -57,11 +58,12 @@ namespace System.Net.Security.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public async Task ClientAsyncAuthenticate_Ssl2WithSelf_Success()
         {
             // Test Ssl2 against itself.  This is a standalone test as even on versions where Windows supports Ssl2,
             // it appears to have rules around not using it when other protocols are mentioned.
-            if (!PlatformDetection.IsWindows10Version1607OrGreater)
+            if (!PlatformDetection.IsMono && !PlatformDetection.IsWindows10Version1607OrGreater)
             {
 #pragma warning disable 0618
                 await ClientAsyncSslHelper(SslProtocols.Ssl2, SslProtocols.Ssl2);
@@ -114,9 +116,12 @@ namespace System.Net.Security.Tests
         private static IEnumerable<object[]> ProtocolMismatchData()
         {
 #pragma warning disable 0618
-            yield return new object[] { SslProtocols.Ssl2, SslProtocols.Ssl3, typeof(Exception) };
-            yield return new object[] { SslProtocols.Ssl2, SslProtocols.Tls12, typeof(Exception) };
-            yield return new object[] { SslProtocols.Ssl3, SslProtocols.Tls12, typeof(Exception) };
+            if (!PlatformDetection.IsMono)
+            {
+                yield return new object[] { SslProtocols.Ssl2, SslProtocols.Ssl3, typeof(Exception) };
+                yield return new object[] { SslProtocols.Ssl2, SslProtocols.Tls12, typeof(Exception) };
+                yield return new object[] { SslProtocols.Ssl3, SslProtocols.Tls12, typeof(Exception) };
+            }
 #pragma warning restore 0618
             yield return new object[] { SslProtocols.Tls, SslProtocols.Tls11, typeof(IOException) };
             yield return new object[] { SslProtocols.Tls, SslProtocols.Tls12, typeof(IOException) };
