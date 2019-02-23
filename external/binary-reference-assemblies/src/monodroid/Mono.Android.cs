@@ -21,14 +21,3 @@
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.SecurityCriticalAttribute]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
-namespace System.Drawing
-{
-    public struct Color {}
-    public enum KnownColor {}
-    public struct Point {}
-    public struct PointF {}
-    public struct Rectangle {}
-    public struct RectangleF {}
-    public struct Size {}
-    public struct SizeF {}
-}
