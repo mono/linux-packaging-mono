@@ -548,6 +548,12 @@ def iterate_dir(dir, with_links=False, with_dirs=False, summary=False):
         dirs = dirs + 1
         if with_dirs:
             yield root
+        if with_dirs and with_links:
+            for subdir in subdirs:
+                path = os.path.join(root, subdir)
+                if os.path.islink(path):
+                    links = links + 1
+                    yield path
         for file in filelist:
             path = os.path.join(root, file)
             if os.path.islink(path):

@@ -39,7 +39,6 @@ namespace System
         public static bool IsNotWinRTSupported => !IsWinRTSupported;
         public static bool IsNotMacOsHighSierraOrHigher => !IsMacOsHighSierraOrHigher;
 
-        public static bool IsSsl2AndSsl3Supported => false;
         public static bool SupportsX509Chain => true;
         public static bool SupportsCertRevocation => true;
 

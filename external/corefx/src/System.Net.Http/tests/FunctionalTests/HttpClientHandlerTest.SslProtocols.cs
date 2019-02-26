@@ -260,7 +260,7 @@ namespace System.Net.Http.Functional.Tests
             {
                 // Mono does not allow Ssl2 or Ssl3; an attempt to set it via `SslOptions` will be
                 // silently ignored and the default of Tls 1.0 min / Tls 1.2 max will be used.
-                if (!PlatformDetection.IsSsl2AndSsl3Supported)
+                if (PlatformDetection.IsMono)
                     return;
             }
             using (HttpClientHandler handler = CreateHttpClientHandler())
