@@ -47,6 +47,7 @@ BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 %if 0%{?rhel} >= 8
 BuildRequires:	python36
+%define __python3 /usr/bin/python3
 %endif
 %if 0%{?rhel} < 7
 BuildRequires:  devtoolset-2-toolchain
