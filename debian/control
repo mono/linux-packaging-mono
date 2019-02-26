@@ -196,7 +196,6 @@ Depends: ${misc:Depends},
          libmono-2.0-1 (= ${binary:Version}),
          libmono-profiler (= ${binary:Version}),
          mono-utils (= ${binary:Version}),
-         mono-jay (= ${binary:Version}),
          mono-devel (= ${source:Version}),
          mono-mcs (= ${source:Version}),
          mono-roslyn (= ${source:Version}),
@@ -3116,22 +3115,6 @@ Description: Mono GAC tool (for CLI 4.0)
  This package includes a version of the GAC (Global Assembly Cache) tool 
  (gacutil) used by Mono to store shared CIL (Common Intermediate Language) 
  libraries, for CLI 4.0
-
-Package: mono-jay
-Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: LALR(1) parser generator oriented to Java/CLI
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- Jay is a Yacc implementation oriented to Java-like input syntax. It
- takes a grammar, specified in BNF and augmented with semantic actions,
- and generates tables and an interpreter which recognizes the language
- defined by the grammar and executes the semantic actions as their
- corresponding phrases are recognized.
 
 Package: mono-csharp-shell
 Section: shells
