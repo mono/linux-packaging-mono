@@ -4,7 +4,7 @@ class FontConfigPackage (Package):
         Package.__init__(self, 'fontconfig', '2.10.2',
                          configure_flags=['--disable-docs'],
                          sources=[
-                             'http://www.fontconfig.org/release/%{name}-%{version}.tar.gz'
+                             'https://www.freedesktop.org/software/fontconfig/release/%{name}-%{version}.tar.gz'
                          ],
                          # note: a non-empty DESTDIR keeps fc-cache from running at
                          # install-time

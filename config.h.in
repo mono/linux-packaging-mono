@@ -128,6 +128,9 @@
 /* Enable checked build */
 #undef ENABLE_CHECKED_BUILD
 
+/* Enable private types checked build */
+#undef ENABLE_CHECKED_BUILD_CRASH_REPORTING
+
 /* Enable GC checked build */
 #undef ENABLE_CHECKED_BUILD_GC
 
@@ -200,6 +203,9 @@
 /* Define to 1 if you have the <android/legacy_signal_inlines.h> header file.
    */
 #undef HAVE_ANDROID_LEGACY_SIGNAL_INLINES_H
+
+/* Define to 1 if you have the <android/ndk-version.h> header file. */
+#undef HAVE_ANDROID_NDK_VERSION_H
 
 /* Define to 1 if you have the <android/versioning.h> header file. */
 #undef HAVE_ANDROID_VERSIONING_H
@@ -1262,6 +1268,9 @@
 
 /* Define to 1 if you have the `vsyslog' function. */
 #undef HAVE_VSYSLOG
+
+/* Define to 1 if you have the `waitpid' function. */
+#undef HAVE_WAITPID
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H

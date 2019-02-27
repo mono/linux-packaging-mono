@@ -1622,7 +1622,7 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 #endif
 		}
 		if (op == MINT_LDELEMA || op == MINT_LDELEMA_TC) {
-			ADD_CODE (td, get_data_item_index (td, target_method->klass));
+			ADD_CODE (td, get_data_item_index (td, m_class_get_element_class (target_method->klass)));
 			ADD_CODE (td, 1 + m_class_get_rank (target_method->klass));
 		}
 
@@ -1635,9 +1635,11 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 		ADD_CODE(td, get_data_item_index (td, (void *)mono_interp_get_imethod (domain, target_method, error)));
 		mono_error_assert_ok (error);
 	} else {
+#ifndef MONO_ARCH_HAS_NO_PROPER_MONOCTX
 		/* Try using fast icall path for simple signatures */
 		if (native && !method->dynamic)
 			op = interp_icall_op_for_sig (csignature);
+#endif
 		if (calli)
 			ADD_CODE(td, native ? ((op != -1) ? MINT_CALLI_NAT_FAST : MINT_CALLI_NAT) : MINT_CALLI);
 		else if (is_virtual)
@@ -2007,10 +2009,6 @@ save_seq_points (TransformData *td, MonoJitInfo *jinfo)
 	mono_atomic_fetch_add_i32 (&mono_jit_stats.allocated_seq_points_size, seq_info_size);
 
 	g_byte_array_free (array, TRUE);
-
-	mono_domain_lock (domain);
-	g_hash_table_insert (domain_jit_info (domain)->seq_points, rtm->method, info);
-	mono_domain_unlock (domain);
 
 	jinfo->seq_points = info;
 }
@@ -5292,9 +5290,6 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 
 	return_if_nok (error);
 
-	// FIXME: Add a different callback ?
-	MONO_PROFILER_RAISE (jit_done, (method, imethod->jinfo));
-
 	/* Copy changes back */
 	imethod = real_imethod;
 	mono_os_mutex_lock (&calc_section);
@@ -5305,7 +5300,16 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 		mono_memory_barrier ();
 		imethod->transformed = TRUE;
 		mono_atomic_fetch_add_i32 (&mono_jit_stats.methods_with_interp, 1);
+
 	}
 	mono_os_mutex_unlock (&calc_section);
+
+	mono_domain_lock (domain);
+	if (!g_hash_table_lookup (domain_jit_info (domain)->seq_points, imethod->method))
+		g_hash_table_insert (domain_jit_info (domain)->seq_points, imethod->method, imethod->jinfo->seq_points);
+	mono_domain_unlock (domain);
+
+	// FIXME: Add a different callback ?
+	MONO_PROFILER_RAISE (jit_done, (method, imethod->jinfo));
 }
 

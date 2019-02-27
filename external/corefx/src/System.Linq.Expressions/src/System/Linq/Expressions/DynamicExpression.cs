@@ -152,7 +152,11 @@ namespace System.Linq.Expressions
                 return dynVisitor.VisitDynamic(this);
             }
 
+#if MONO
+            return visitor.VisitDynamic(this);
+#else
             return base.Accept(visitor);
+#endif
         }
 
         /// <summary>
