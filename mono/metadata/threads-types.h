@@ -498,6 +498,7 @@ mono_set_pending_exception_handle (MonoExceptionHandle exc);
 #define MONO_MAX_THREAD_NAME_LEN 140
 #define MONO_MAX_SUMMARY_THREADS 32
 #define MONO_MAX_SUMMARY_FRAMES 80
+#define MONO_MAX_SUMMARY_EXCEPTIONS 15
 
 typedef struct {
 	gboolean is_managed;
@@ -513,7 +514,9 @@ typedef struct {
 		// symbolicated string on release builds
 		const char *name;
 #endif
-
+		const char *filename;
+		guint32 image_size;
+		guint32 time_date_stamp;
 	} managed_data;
 	struct {
 		intptr_t ip;
@@ -525,8 +528,15 @@ typedef struct {
 } MonoFrameSummary;
 
 typedef struct {
-	intptr_t offset_free_hash;
-	intptr_t offset_rich_hash;
+	MonoClass *managed_exc_type;
+
+	int num_managed_frames;
+	MonoFrameSummary managed_frames [MONO_MAX_SUMMARY_FRAMES];
+} MonoExcSummary;
+
+typedef struct {
+	guint64 offset_free_hash;
+	guint64 offset_rich_hash;
 } MonoStackHash;
 
 typedef struct {
@@ -545,7 +555,6 @@ typedef struct {
 
 	char name [MONO_MAX_THREAD_NAME_LEN];
 
-	intptr_t managed_thread_ptr;
 	intptr_t info_addr;
 	intptr_t native_thread_id;
 
@@ -559,12 +568,13 @@ typedef struct {
 	int num_unmanaged_frames;
 	MonoFrameSummary unmanaged_frames [MONO_MAX_SUMMARY_FRAMES];
 
+	int num_exceptions;
+	MonoExcSummary exceptions [MONO_MAX_SUMMARY_EXCEPTIONS];
+
 	MonoStackHash hashes;
 
 	MonoContext *ctx;
 	MonoContext ctx_mem;
-
-	MonoClass *managed_exc_type;
 } MonoThreadSummary;
 
 gboolean

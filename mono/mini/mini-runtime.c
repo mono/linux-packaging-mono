@@ -3408,8 +3408,9 @@ is_addr_implicit_null_check (void *addr)
 
 MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 {
-	MonoJitInfo *ji;
+	MonoJitInfo *ji = NULL;
 	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
+	MonoDomain *domain = mono_domain_get ();
 	gpointer fault_addr = NULL;
 #ifdef HAVE_SIG_INFO
 	MONO_SIG_HANDLER_INFO_TYPE *info = MONO_SIG_HANDLER_GET_INFO ();
@@ -3449,7 +3450,8 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 	}
 #endif
 
-	ji = mono_jit_info_table_find_internal (mono_domain_get (), mono_arch_ip_from_context (ctx), TRUE, TRUE);
+	if (domain)
+		ji = mono_jit_info_table_find_internal (domain, mono_arch_ip_from_context (ctx), TRUE, TRUE);
 
 #ifdef MONO_ARCH_SIGSEGV_ON_ALTSTACK
 	if (mono_handle_soft_stack_ovf (jit_tls, ji, ctx, info, (guint8*)info->si_addr))
@@ -3467,7 +3469,7 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 	}
 #endif
 
-	if (jit_tls->stack_size &&
+	if (jit_tls && jit_tls->stack_size &&
 		ABS ((guint8*)fault_addr - ((guint8*)jit_tls->end_of_stack - jit_tls->stack_size)) < 8192 * sizeof (gpointer)) {
 		/*
 		 * The hard-guard page has been hit: there is not much we can do anymore
@@ -4199,6 +4201,15 @@ mono_interp_entry_from_trampoline (gpointer ccontext, gpointer imethod)
 	mini_get_interp_callbacks ()->entry_from_trampoline (ccontext, imethod);
 }
 
+void
+mono_interp_to_native_trampoline (gpointer addr, gpointer ccontext)
+{
+	mini_get_interp_callbacks ()->to_native_trampoline (addr, ccontext);
+}
+
+static const char*
+mono_get_runtime_build_version (void);
+
 MonoDomain *
 mini_init (const char *filename, const char *runtime_version)
 {
@@ -4264,6 +4275,7 @@ mini_init (const char *filename, const char *runtime_version)
 	callbacks.create_ftnptr = mini_create_ftnptr;
 	callbacks.get_addr_from_ftnptr = mini_get_addr_from_ftnptr;
 	callbacks.get_runtime_build_info = mono_get_runtime_build_info;
+	callbacks.get_runtime_build_version = mono_get_runtime_build_version;
 	callbacks.set_cast_details = mono_set_cast_details;
 	callbacks.debug_log = mini_get_dbg_callbacks ()->debug_log;
 	callbacks.debug_log_is_enabled = mini_get_dbg_callbacks ()->debug_log_is_enabled;
@@ -4378,6 +4390,8 @@ mini_init (const char *filename, const char *runtime_version)
 #endif
 
 	mono_thread_info_signals_init ();
+
+	mono_init_native_crash_info ();
 
 #ifndef MONO_CROSS_COMPILE
 	mono_runtime_install_handlers ();
@@ -4764,6 +4778,7 @@ register_icalls (void)
 	register_icall_no_wrapper (mono_tls_set_lmf_addr, "mono_tls_set_lmf_addr", "void ptr");
 
 	register_icall_no_wrapper (mono_interp_entry_from_trampoline, "mono_interp_entry_from_trampoline", "void ptr ptr");
+	register_icall_no_wrapper (mono_interp_to_native_trampoline, "mono_interp_to_native_trampoline", "void ptr ptr");
 
 #ifdef MONO_ARCH_HAS_REGISTER_ICALL
 	mono_arch_register_icall ();
@@ -4943,6 +4958,12 @@ void
 mono_set_verbose_level (guint32 level)
 {
 	mini_verbose = level;
+}
+
+static const char*
+mono_get_runtime_build_version (void)
+{
+	return FULL_VERSION;
 }
 
 /**

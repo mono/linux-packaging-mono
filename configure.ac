@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.18.0.225],
+AC_INIT(mono, [5.18.0.268],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -46,7 +46,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # There is no ordering of corlib versions, no old or new,
 # the runtime expects an exact match.
 #
-MONO_CORLIB_VERSION=F602B559-7639-49B6-97EE-C433CE7A56F2
+MONO_CORLIB_VERSION=179F7FD7-9CE8-424E-84AF-0DF5B0B8B469
 
 #
 # Put a quoted #define in config.h.
@@ -532,6 +532,8 @@ AC_PROG_LD_GNU
 
 AC_CHECK_HEADERS(sys/filio.h sys/sockio.h netdb.h utime.h sys/utime.h semaphore.h sys/un.h linux/rtc.h sys/syscall.h sys/mkdev.h sys/uio.h sys/param.h sys/sysctl.h libproc.h sys/prctl.h copyfile.h)
 AC_CHECK_HEADERS(sys/param.h sys/socket.h sys/ipc.h sys/utsname.h alloca.h ucontext.h pwd.h sys/select.h netinet/tcp.h netinet/in.h unistd.h sys/types.h link.h asm/sigcontext.h sys/inotify.h arpa/inet.h complex.h unwind.h)
+AC_CHECK_HEADER(unistd.h, [HAVE_UNISTD_H=1], [HAVE_UNISTD_H=0])
+AC_SUBST(HAVE_UNISTD_H)
 AC_CHECK_HEADERS([linux/netlink.h linux/rtnetlink.h],
                   [], [], [#include <stddef.h>
 		  #include <sys/socket.h>
@@ -605,6 +607,7 @@ AC_CHECK_HEADERS(linux/magic.h)
 if test x$platform_android = xyes; then
 	AC_CHECK_HEADERS(machine/endian.h sys/endian.h)
 	AC_CHECK_HEADERS(android/legacy_signal_inlines.h, [have_android_signal_inlines=yes], [have_android_signal_inlines=no])
+	AC_CHECK_HEADERS(android/ndk-version.h)
 
 	# Make sure SIGRT{MIN,MAX} work - they will fail to work with unified headers if building for
 	# API level < 21 *and* android/legacy_signal_inlines.h doesn't declare (and define) the required
@@ -614,7 +617,8 @@ if test x$platform_android = xyes; then
 	if test x$have_android_signal_inlines = xyes; then
 		AC_MSG_CHECKING([Whether Android SIGRTMIN/SGRTMAX macros are valid])
 		AC_COMPILE_IFELSE([
-			AC_LANG_PROGRAM([#include <android/legacy_signal_inlines.h>],[
+			AC_LANG_PROGRAM([#include <signal.h>
+				#include <android/legacy_signal_inlines.h>],[
 				int i;
 				for (i = SIGRTMIN + 1; i < SIGRTMAX; ++i) {
 				}
@@ -2854,6 +2858,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(setpgid)
 	AC_CHECK_FUNCS(system)
 	AC_CHECK_FUNCS(fork execv execve)
+	AC_CHECK_FUNCS(waitpid)
 	AC_CHECK_FUNCS(accept4)
 	AC_CHECK_FUNCS(localtime_r)
 	AC_CHECK_FUNCS(mkdtemp)
@@ -4550,6 +4555,7 @@ AC_DEFINE(HAVE_UWP_WINAPI_SUPPORT, 0, [Don't use UWP Windows API support])
 AC_CHECK_FUNCS(strlcpy stpcpy strtok_r rewinddir vasprintf)
 AC_CHECK_FUNCS(getrlimit)
 AC_CHECK_FUNCS(fork execv execve)
+AC_CHECK_FUNCS(waitpid)
 
 AC_ARG_WITH([overridable-allocators], [  --with-overridable-allocators	allow g_*alloc/g_free to call custom allocators set via g_mem_set_vtable])
 
@@ -4572,8 +4578,6 @@ AC_CHECK_FUNCS(getpwuid_r)
 elif test x$target_ios = xno; then
 AC_CHECK_FUNCS(strndup getpwuid_r)
 fi
-
-AM_CONDITIONAL(NEED_VASPRINTF, test x$ac_cv_func_vasprintf = xno || test x$with_overridable_allocators = xyes)
 
 AC_SEARCH_LIBS(sqrtf, m)
 
@@ -5073,7 +5077,7 @@ dnl **********************
 dnl *** checked builds ***
 dnl **********************
 
-AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread, private_types],[
+AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread, private_types, crash_reporting],[
 
 	if test x$enable_checked_build != x ; then
 		AC_DEFINE(ENABLE_CHECKED_BUILD,1,[Enable checked build])
@@ -5087,6 +5091,7 @@ AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable check
 		eval "mono_checked_build_test_enable_metadata='yes'"
 		eval "mono_checked_build_test_enable_thread='yes'"
 		eval "mono_checked_build_test_enable_private_types='yes'"
+		eval "mono_checked_build_test_enable_crash_reporting='yes'"
 	fi
 
 	if test "x$mono_checked_build_test_enable_gc" = "xyes"; then
@@ -5104,9 +5109,19 @@ AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable check
 	if test "x$mono_checked_build_test_enable_private_types" = "xyes"; then
 		AC_DEFINE(ENABLE_CHECKED_BUILD_PRIVATE_TYPES, 1, [Enable private types checked build])
 	fi
+
+	if test "x$mono_checked_build_test_enable_crash_reporting" = "xyes"; then
+		# Required
+		with_overridable_allocators=yes
+		AC_DEFINE(ENABLE_OVERRIDABLE_ALLOCATORS,1,[Overridable allocator support enabled])
+
+		AC_DEFINE(ENABLE_CHECKED_BUILD_CRASH_REPORTING, 1, [Enable private types checked build])
+	fi
 ], [])
 
 dnl End of checked builds
+
+AM_CONDITIONAL(NEED_VASPRINTF, test x$ac_cv_func_vasprintf = xno || test x$with_overridable_allocators = xyes)
 
 AC_CHECK_HEADER([malloc.h], 
 		[AC_DEFINE([HAVE_USR_INCLUDE_MALLOC_H], [1], 
@@ -5140,6 +5155,26 @@ dnl **************
 AC_ARG_ENABLE(btls, [  --disable-btls             Disable the BoringTls provider], enable_btls=$enableval, enable_btls=$BTLS_SUPPORTED)
 AC_ARG_ENABLE(btls-lib, [  --disable-btls-lib             Disable building the BTLS native library], enable_btls_lib=$enableval, enable_btls_lib=$BTLS_SUPPORTED)
 AC_ARG_WITH(btls_android_ndk, [  --with-btls-android-ndk        Android NDK for BoringTls])
+AC_ARG_WITH(btls_android_api, [  --with-btls-android-api        Android NDK API level for BTLS build])
+AC_ARG_WITH(btls_android_cmake_toolchain, [  --with-btls-android-cmake-toolchain        Path to the cmake toolchain file for Android])
+AC_ARG_WITH(btls_android_ndk_asm_workaround, [  --with-btls-android-ndk-asm-workaround        Work around a problem with NDK r18+ clang compiler when compiling some AES assembly for ARM])
+
+if test "x$with_btls_android_api" = "x" ; then
+	case "$BTLS_PLATFORM" in
+		android-armv5)
+			with_btls_android_api=16" ;;
+		android-armv6)
+			with_btls_android_api=16" ;;
+		android-armv7)
+			with_btls_android_api=16 ;;
+		android-v8a)
+			with_btls_android_api=21 ;;
+		android-x86)
+			with_btls_android_api=16 ;;
+		android-x64)
+			with_btls_android_api=21 ;;
+	esac
+fi
 
 if test "x$enable_btls" = "xno"; then
    enable_btls_lib=no
@@ -5197,30 +5232,38 @@ if test "x$enable_btls" = "xyes"; then
 		esac
 		;;
 	android-armv5)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=14"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	android-armv6)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=14"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	android-armv7)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi-v7a\" -DANDROID_NATIVE_API_LEVEL=14"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi-v7a\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	android-v8a)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"arm64-v8a\" -DANDROID_NATIVE_API_LEVEL=21"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"arm64-v8a\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	android-x86)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"x86\" -DANDROID_NATIVE_API_LEVEL=14"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"x86\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	android-x64)
-		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"x86_64\" -DANDROID_NATIVE_API_LEVEL=21"
+		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"x86_64\" -DANDROID_NATIVE_API_LEVEL=$with_btls_android_api"
 		;;
 	*)
 		AC_MSG_ERROR(Invalid BTLS platform)
 	esac
 
 	if test "x$platform_android" = "xyes"; then
+	   	if test "x$with_btls_android_cmake_toolchain" = "x"; then
+		   with_btls_android_cmake_toolchain="$BTLS_ROOT/util/android-cmake/android.toolchain.cmake"
+		fi
+
+		if test "x$with_btls_android_ndk_asm_workaround" != "x"; then
+		   BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DENABLE_NDK_ARM_WORKAROUND=ON"
+		fi
+
 		btls_android=yes
-		BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=$BTLS_ROOT/util/android-cmake/android.toolchain.cmake"
+		BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=$with_btls_android_cmake_toolchain"
 		if test "x$with_btls_android_ndk" != "x"; then
 			BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DANDROID_NDK=\"$with_btls_android_ndk\""
 		else

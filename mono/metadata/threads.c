@@ -57,6 +57,10 @@
 #include <mono/metadata/exception-internals.h>
 #include <mono/utils/mono-state.h>
 
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
@@ -2691,7 +2695,7 @@ static gboolean
 mono_thread_resume (MonoInternalThread *thread)
 {
 	if ((thread->state & ThreadState_SuspendRequested) != 0) {
-		// MOSTLY_ASYNC_SAFE_PRINTF ("RESUME (1) thread %p\n", thread_get_tid (thread));
+		// g_async_safe_printf ("RESUME (1) thread %p\n", thread_get_tid (thread));
 		thread->state &= ~ThreadState_SuspendRequested;
 		MONO_ENTER_GC_SAFE;
 		mono_os_event_set (thread->suspended);
@@ -2704,11 +2708,11 @@ mono_thread_resume (MonoInternalThread *thread)
 		(thread->state & ThreadState_Aborted) != 0 || 
 		(thread->state & ThreadState_Stopped) != 0)
 	{
-		// MOSTLY_ASYNC_SAFE_PRINTF ("RESUME (2) thread %p\n", thread_get_tid (thread));
+		// g_async_safe_printf ("RESUME (2) thread %p\n", thread_get_tid (thread));
 		return FALSE;
 	}
 
-	// MOSTLY_ASYNC_SAFE_PRINTF ("RESUME (3) thread %p\n", thread_get_tid (thread));
+	// g_async_safe_printf ("RESUME (3) thread %p\n", thread_get_tid (thread));
 
 	MONO_ENTER_GC_SAFE;
 	mono_os_event_set (thread->suspended);
@@ -5289,14 +5293,11 @@ mono_thread_info_get_last_managed (MonoThreadInfo *info)
 
 	/*
 	 * The suspended thread might be holding runtime locks. Make sure we don't try taking
-	 * any runtime locks while unwinding. In coop case we shouldn't safepoint in regions
-	 * where we hold runtime locks.
+	 * any runtime locks while unwinding.
 	 */
-	if (!mono_threads_are_safepoints_enabled ())
-		mono_thread_info_set_is_async_context (TRUE);
+	mono_thread_info_set_is_async_context (TRUE);
 	mono_get_eh_callbacks ()->mono_walk_stack_with_state (last_managed, mono_thread_info_get_suspend_state (info), MONO_UNWIND_SIGNAL_SAFE, &ji);
-	if (!mono_threads_are_safepoints_enabled ())
-		mono_thread_info_set_is_async_context (FALSE);
+	mono_thread_info_set_is_async_context (FALSE);
 	return ji;
 }
 
@@ -5430,7 +5431,7 @@ async_suspend_internal (MonoInternalThread *thread, gboolean interrupt)
 
 	g_assert (thread != mono_thread_internal_current ());
 
-	// MOSTLY_ASYNC_SAFE_PRINTF ("ASYNC SUSPEND thread %p\n", thread_get_tid (thread));
+	// g_async_safe_printf ("ASYNC SUSPEND thread %p\n", thread_get_tid (thread));
 
 	thread->self_suspended = FALSE;
 
@@ -5455,7 +5456,7 @@ self_suspend_internal (void)
 
 	thread = mono_thread_internal_current ();
 
-	// MOSTLY_ASYNC_SAFE_PRINTF ("SELF SUSPEND thread %p\n", thread_get_tid (thread));
+	// g_async_safe_printf ("SELF SUSPEND thread %p\n", thread_get_tid (thread));
 
 	thread->self_suspended = TRUE;
 
@@ -5980,6 +5981,9 @@ mono_threads_summarize_one (MonoThreadSummary *out, MonoContext *ctx)
 static gboolean
 mono_threads_summarize_native_self (MonoThreadSummary *out, MonoContext *ctx)
 {
+	if (!mono_get_eh_callbacks ()->mono_summarize_managed_stack)
+		return FALSE;
+
 	memset (out, 0, sizeof (MonoThreadSummary));
 	out->ctx = ctx;
 
@@ -5990,10 +5994,6 @@ mono_threads_summarize_native_self (MonoThreadSummary *out, MonoContext *ctx)
 
 	mono_native_thread_get_name (current, out->name, MONO_MAX_SUMMARY_NAME_LEN);
 
-	// FIXME: Figure out how to store and look these up?
-	/*MonoDomain *domain = thread->obj.vtable->domain;*/
-	/*out->managed_thread_ptr = (intptr_t) get_current_thread_ptr_for_domain (domain, thread);*/
-	/*out->info_addr = (intptr_t) thread->thread_info;*/
 	return TRUE;
 }
 
@@ -6005,12 +6005,13 @@ mono_threads_summarize_one (MonoThreadSummary *out, MonoContext *ctx)
 
 	// Finish this on the same thread
 
-	if (success)
+	if (success && mono_get_eh_callbacks ()->mono_summarize_managed_stack)
 		mono_get_eh_callbacks ()->mono_summarize_managed_stack (out);
 
 	return success;
 }
 
+#define TIMEOUT_CRASH_REPORTER_FATAL 30
 #define MAX_NUM_THREADS 128
 typedef struct {
 	gint32 has_owner; // state of this memory
@@ -6025,6 +6026,99 @@ typedef struct {
 
 	gboolean silent; // print to stdout
 } SummarizerGlobalState;
+
+#if defined(HAVE_KILL) && !defined(HOST_ANDROID) && defined(HAVE_WAITPID) && ((!defined(HOST_DARWIN) && defined(SYS_fork)) || HAVE_FORK)
+#define HAVE_MONO_SUMMARIZER_SUPERVISOR 1
+#endif
+
+typedef struct {
+	MonoSemType supervisor;
+	pid_t pid;
+	pid_t supervisor_pid;
+} SummarizerSupervisorState;
+
+#ifndef HAVE_MONO_SUMMARIZER_SUPERVISOR
+static void
+summarizer_supervisor_wait (SummarizerSupervisorState *state)
+{
+	return;
+}
+
+static pid_t
+summarizer_supervisor_start (SummarizerSupervisorState *state)
+{
+	// nonzero, so caller doesn't think it's the supervisor
+	return (pid_t) 1;
+}
+
+static void
+summarizer_supervisor_end (SummarizerSupervisorState *state)
+{
+	return;
+}
+
+#else
+static void
+summarizer_supervisor_wait (SummarizerSupervisorState *state)
+{
+	sleep (TIMEOUT_CRASH_REPORTER_FATAL);
+
+	// If we haven't been SIGKILL'ed yet, we signal our parent
+	// and then exit
+#ifdef HAVE_KILL
+	g_async_safe_printf("Crash Reporter has timed out, sending SIGSEGV\n");
+	kill (state->pid, SIGSEGV);
+#else
+	g_error ("kill () is not supported by this platform");
+#endif
+
+	exit (1);
+}
+
+static pid_t
+summarizer_supervisor_start (SummarizerSupervisorState *state)
+{
+	memset (state, 0, sizeof (*state));
+	pid_t pid;
+
+	state->pid = getpid();
+
+	/*
+	* glibc fork acquires some locks, so if the crash happened inside malloc/free,
+	* it will deadlock. Call the syscall directly instead.
+	*/
+#if defined(HOST_ANDROID)
+	/* SYS_fork is defined to be __NR_fork which is not defined in some ndk versions */
+	// We disable this when we set HAVE_MONO_SUMMARIZER_SUPERVISOR above
+	g_assert_not_reached ();
+#elif !defined(HOST_DARWIN) && defined(SYS_fork)
+	pid = (pid_t) syscall (SYS_fork);
+#elif HAVE_FORK
+	pid = (pid_t) fork ();
+#else
+	g_assert_not_reached ();
+#endif
+
+	if (pid != 0)
+		state->supervisor_pid = pid;
+
+	return pid;
+}
+
+static void
+summarizer_supervisor_end (SummarizerSupervisorState *state)
+{
+#ifdef HAVE_KILL
+	kill (state->supervisor_pid, SIGKILL);
+#endif
+
+#if defined (HAVE_WAITPID)
+	// Accessed on same thread that sets it.
+	int status;
+	waitpid (state->supervisor_pid, &status, 0);
+#endif
+}
+#endif
 
 static gboolean
 summarizer_state_init (SummarizerGlobalState *state, MonoNativeThreadId current, int *my_index)
@@ -6063,7 +6157,7 @@ summarizer_signal_other_threads (SummarizerGlobalState *state, MonoNativeThreadI
 		pthread_kill (state->thread_array [i], SIGTERM);
 
 		if (!state->silent)
-			MOSTLY_ASYNC_SAFE_PRINTF("Pkilling 0x%zx from 0x%zx\n", state->thread_array [i], current);
+			g_async_safe_printf("Pkilling 0x%zx from 0x%zx\n", MONO_NATIVE_THREAD_ID_TO_UINT (state->thread_array [i]), MONO_NATIVE_THREAD_ID_TO_UINT (current));
 	#else
 		g_error ("pthread_kill () is not supported by this platform");
 	#endif
@@ -6079,10 +6173,10 @@ summarizer_post_dump (SummarizerGlobalState *state, MonoThreadSummary *this_thre
 	gpointer old = mono_atomic_cas_ptr ((volatile gpointer *)&state->all_threads [current_idx], this_thread, NULL);
 
 	if (old == GINT_TO_POINTER (-1)) {
-		MOSTLY_ASYNC_SAFE_PRINTF ("Trying to register response after dumping period ended");
+		g_async_safe_printf ("Trying to register response after dumping period ended");
 		return FALSE;
 	} else if (old != NULL) {
-		MOSTLY_ASYNC_SAFE_PRINTF ("Thread dump raced for thread slot.");
+		g_async_safe_printf ("Thread dump raced for thread slot.");
 		return FALSE;
 	} 
 
@@ -6103,7 +6197,7 @@ summarizer_post_dump (SummarizerGlobalState *state, MonoThreadSummary *this_thre
 static void
 summary_timedwait (SummarizerGlobalState *state, int timeout_seconds)
 {
-	gint64 milliseconds_in_second = 1000;
+	const gint64 milliseconds_in_second = 1000;
 	gint64 timeout_total = milliseconds_in_second * timeout_seconds;
 
 	gint64 end = mono_msec_ticks () + timeout_total;
@@ -6123,43 +6217,62 @@ summary_timedwait (SummarizerGlobalState *state, int timeout_seconds)
 	return;
 }
 
+static MonoThreadSummary *
+summarizer_try_read_thread (SummarizerGlobalState *state, int index)
+{
+	gpointer old_value = NULL;
+	gpointer new_value = GINT_TO_POINTER(-1);
+
+	do {
+		old_value = state->all_threads [index];
+	} while (mono_atomic_cas_ptr ((volatile gpointer *) &state->all_threads [index], new_value, old_value) != old_value);
+
+	MonoThreadSummary *thread = (MonoThreadSummary *) old_value;
+	return thread;
+}
+
 static void
-summarizer_state_term (SummarizerGlobalState *state, gchar **out, gchar *mem, size_t provided_size)
+summarizer_state_term (SummarizerGlobalState *state, gchar **out, gchar *mem, size_t provided_size, MonoThreadSummary *controlling)
 {
 	// See the array writes
 	mono_memory_barrier ();
 
-	mono_summarize_native_state_begin (mem, provided_size);
+	MonoThreadSummary *threads [MAX_NUM_THREADS];
+	memset (threads, 0, sizeof(threads));
+
+	mono_summarize_timeline_phase_log (MonoSummaryManagedStacks);
 	for (int i=0; i < state->nthreads; i++) {
-		gpointer old_value = NULL;
-		while (TRUE) {
-			// Lock array slot with sentinel and get value set previously
-			// This lets late dumpers know that they're late.
-			gpointer new_old_value = mono_atomic_cas_ptr ((volatile gpointer *) &state->all_threads [i], GINT_TO_POINTER(-1), old_value);
-
-			if (new_old_value != old_value)
-				old_value = new_old_value;
-			else
-				break;
-		}
-
-		MonoThreadSummary *thread = (MonoThreadSummary *) old_value;
-		if (!thread)
+		threads [i] = summarizer_try_read_thread (state, i);
+		if (!threads [i])
 			continue;
 
 		// We are doing this dump on the controlling thread because this isn't
-		// an async context. There's still some reliance on malloc here, but it's
+		// an async context sometimes. There's still some reliance on malloc here, but it's
 		// much more stable to do it all from the controlling thread.
-		mono_get_eh_callbacks ()->mono_summarize_managed_stack (thread);
+		//
+		// This is non-null, checked in mono_threads_summarize
+		// with early exit there
+		mono_get_eh_callbacks ()->mono_summarize_managed_stack (threads [i]);
+	}
 
-		mono_summarize_native_state_add_thread (thread, thread->ctx);
+	MonoStateWriter writer;
+	memset (&writer, 0, sizeof (writer));
 
+	mono_summarize_timeline_phase_log (MonoSummaryStateWriter);
+	mono_summarize_native_state_begin (&writer, mem, provided_size);
+	for (int i=0; i < state->nthreads; i++) {
+		MonoThreadSummary *thread = threads [i];
+		if (!thread)
+			continue;
+
+		mono_summarize_native_state_add_thread (&writer, thread, thread->ctx, thread == controlling);
 		// Set non-shared state to notify the waiting thread to clean up
 		// without having to keep our shared state alive
 		mono_atomic_store_i32 (&thread->done, 0x1);
 		mono_os_sem_post (&thread->done_wait);
 	}
-	*out = mono_summarize_native_state_end ();
+	*out = mono_summarize_native_state_end (&writer);
+	mono_summarize_timeline_phase_log (MonoSummaryStateWriterDone);
 
 	mono_os_sem_destroy (&state->update);
 
@@ -6179,7 +6292,7 @@ summarizer_state_wait (MonoThreadSummary *thread)
 }
 
 gboolean
-mono_threads_summarize_execute (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gboolean silent, gchar *mem, size_t provided_size)
+mono_threads_summarize_execute (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gboolean silent, gchar *working_mem, size_t provided_size)
 {
 	static SummarizerGlobalState state;
 
@@ -6188,47 +6301,56 @@ mono_threads_summarize_execute (MonoContext *ctx, gchar **out, MonoStackHash *ha
 	gboolean this_thread_controls = summarizer_state_init (&state, current, &current_idx);
 
 	if (this_thread_controls) {
+		mono_summarize_timeline_phase_log (MonoSummarySuspendHandshake);
 		state.silent = silent;
 		summarizer_signal_other_threads (&state, current, current_idx);
+		mono_summarize_timeline_phase_log (MonoSummaryUnmanagedStacks);
 	}
 
-	MonoThreadSummary this_thread;
+	MonoStateMem mem;
+	gboolean success = mono_state_alloc_mem (&mem, (long) current, sizeof (MonoThreadSummary));
+	if (!success)
+		return FALSE;
 
-	if (mono_threads_summarize_native_self (&this_thread, ctx)) {
+	MonoThreadSummary *this_thread = (MonoThreadSummary *) mem.mem;
+
+	if (mono_threads_summarize_native_self (this_thread, ctx)) {
 		// Init the synchronization between the controlling thread and the 
 		// providing thread
-		mono_os_sem_init (&this_thread.done_wait, 0);
+		mono_os_sem_init (&this_thread->done_wait, 0);
 
 		// Store a reference to our stack memory into global state
-		gboolean success = summarizer_post_dump (&state, &this_thread, current_idx);
+		gboolean success = summarizer_post_dump (&state, this_thread, current_idx);
 		if (!success && !state.silent)
-			MOSTLY_ASYNC_SAFE_PRINTF("Thread 0x%zx reported itself.\n", current);
+			g_async_safe_printf("Thread 0x%zx reported itself.\n", MONO_NATIVE_THREAD_ID_TO_UINT (current));
 	} else if (!state.silent) {
-			MOSTLY_ASYNC_SAFE_PRINTF("Thread 0x%zx couldn't report itself.\n", current);
+		g_async_safe_printf("Thread 0x%zx couldn't report itself.\n", MONO_NATIVE_THREAD_ID_TO_UINT (current));
 	}
 
 	// From summarizer, wait and dump.
 	if (this_thread_controls) {
 		if (!state.silent)
-			MOSTLY_ASYNC_SAFE_PRINTF("Entering thread summarizer pause from 0x%zx\n", current);
+			g_async_safe_printf("Entering thread summarizer pause from 0x%zx\n", MONO_NATIVE_THREAD_ID_TO_UINT (current));
 
 		// Wait up to 2 seconds for all of the other threads to catch up
 		summary_timedwait (&state, 2);
 
 		if (!state.silent)
-			MOSTLY_ASYNC_SAFE_PRINTF("Finished thread summarizer pause from 0x%zx.\n", current);
+			g_async_safe_printf("Finished thread summarizer pause from 0x%zx.\n", MONO_NATIVE_THREAD_ID_TO_UINT (current));
 
 		// Dump and cleanup all the stack memory
-		summarizer_state_term (&state, out, mem, provided_size);
+		summarizer_state_term (&state, out, working_mem, provided_size, this_thread);
 	} else {
 		// Wait here, keeping our stack memory alive
 		// for the dumper
-		summarizer_state_wait (&this_thread);
+		summarizer_state_wait (this_thread);
 	}
 
 	// FIXME: How many threads should be counted?
 	if (hashes)
-		*hashes = this_thread.hashes;
+		*hashes = this_thread->hashes;
+
+	mono_state_free_mem (&mem);
 
 	return TRUE;
 }
@@ -6236,6 +6358,9 @@ mono_threads_summarize_execute (MonoContext *ctx, gchar **out, MonoStackHash *ha
 gboolean 
 mono_threads_summarize (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gboolean silent, gboolean signal_handler_controller, gchar *mem, size_t provided_size)
 {
+	if (!mono_get_eh_callbacks ()->mono_summarize_managed_stack)
+		return FALSE;
+
 	// The staggered values are due to the need to use inc_i64 for the first value
 	static gint64 next_pending_request_id = 0;
 	static gint64 request_available_to_run = 1;
@@ -6267,7 +6392,13 @@ mono_threads_summarize (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gb
 			if (!already_async)
 				mono_thread_info_set_is_async_context (TRUE);
 
-			success = mono_threads_summarize_execute (ctx, out, hashes, silent, mem, provided_size);
+			SummarizerSupervisorState synch;
+			if (summarizer_supervisor_start (&synch)) {
+				success = mono_threads_summarize_execute (ctx, out, hashes, silent, mem, provided_size);
+				summarizer_supervisor_end (&synch);
+			} else {
+				summarizer_supervisor_wait (&synch);
+			}
 
 			if (!already_async)
 				mono_thread_info_set_is_async_context (FALSE);
@@ -6277,11 +6408,12 @@ mono_threads_summarize (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gb
 			break;
 		} else if (signal_handler_controller) {
 			// We're done. We can't do anything.
-			MOSTLY_ASYNC_SAFE_PRINTF ("Attempted to dump for critical failure when already in dump. Error reporting crashed?");
+			g_async_safe_printf ("Attempted to dump for critical failure when already in dump. Error reporting crashed?");
+			mono_summarize_double_fault_log ();
 			break;
 		} else {
 			if (!silent)
-				MOSTLY_ASYNC_SAFE_PRINTF ("Waiting for in-flight dump to complete.");
+				g_async_safe_printf ("Waiting for in-flight dump to complete.");
 			sleep (2);
 		}
 	}

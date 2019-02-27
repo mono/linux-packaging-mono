@@ -60,7 +60,13 @@ $code=<<___;
 ___
 $code.=<<___ if ($flavour =~ /64/);
 #if !defined(__clang__)
-.arch  armv8-a+crypto
+.arch   armv8-a+crypto
+#elif defined(ANDROID) && defined(__clang__) 
+#if __clang_major__ > 3
+.arch   armv8-a+crypto
+#else
+.arch   armv8-a+crypto,+neon
+#endif
 #endif
 ___
 $code.=".fpu	neon\n.code	32\n"	if ($flavour !~ /64/);
