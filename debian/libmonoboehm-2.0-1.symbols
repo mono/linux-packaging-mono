@@ -1590,6 +1590,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_ascii_strcasecmp@Base 5.8.0.22
  monoeg_ascii_strup@Base 5.8.0.22
  monoeg_ascii_toupper@Base 5.8.0.22
+ monoeg_assert_abort@Base 5.18.0.268
+ monoeg_assertion_disable_global@Base 5.18.0.268
  monoeg_assertion_message@Base 5.8.0.22
  monoeg_g_array_append_vals@Base 5.8.0.22
  monoeg_g_array_free@Base 5.8.0.22
