@@ -32,6 +32,7 @@ namespace NUnit
     /// these classes but only implements what is needed within the framework.
     /// </summary>
 #if CLR_2_0 || CLR_4_0
+    [System.Serializable]
     public class ObjectList : System.Collections.Generic.List<object>
     {
         /// <summary>

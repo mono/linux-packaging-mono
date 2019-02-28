@@ -30,6 +30,7 @@ namespace NUnit.Framework.Internal
     /// TestAssembly is a TestSuite that represents the execution
     /// of tests in a managed assembly.
     /// </summary>
+    [System.Serializable]
     public class TestAssembly : TestSuite
     {
         /// <summary>

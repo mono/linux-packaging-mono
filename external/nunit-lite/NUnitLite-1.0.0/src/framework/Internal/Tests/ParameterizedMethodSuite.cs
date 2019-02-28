@@ -30,10 +30,13 @@ namespace NUnit.Framework.Internal
     /// ParameterizedMethodSuite holds a collection of individual
     /// TestMethods with their arguments applied.
     /// </summary>
+    [System.Serializable]
     public class ParameterizedMethodSuite : TestSuite
     {
+        [System.NonSerialized]
         private MethodInfo _method;
         private bool _isTheory;
+        private bool _isGenericMethod;
 
         /// <summary>
         /// Construct from a MethodInfo
@@ -44,6 +47,9 @@ namespace NUnit.Framework.Internal
         {
             _method = method;
             _isTheory = method.IsDefined(typeof(TheoryAttribute), true);
+#if CLR_2_0 || CLR_4_0
+            _isGenericMethod = method.ContainsGenericParameters;
+#endif
             this.maintainTestOrder = true;
         }
 
@@ -66,10 +72,8 @@ namespace NUnit.Framework.Internal
                 if (_isTheory)
                     return "Theory";
 
-#if CLR_2_0 || CLR_4_0
-                if (this.Method.ContainsGenericParameters)
+                if (_isGenericMethod)
                     return "GenericMethod";
-#endif
                 
                 return "ParameterizedMethod";
             }

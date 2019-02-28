@@ -54,6 +54,9 @@ namespace NUnitLite.Runner
         private string outFile;
         private string includeCategory;
         private string excludeCategory;
+        private string android;
+        private string ios;
+        private string webassembly;
 
         private bool error = false;
 
@@ -168,6 +171,39 @@ namespace NUnitLite.Runner
             get
             {
                 return excludeCategory;
+            }
+        }
+
+        /// <summary>
+        /// Gets the android app to run the tests from
+        /// </summary>
+        public string Android
+        {
+            get
+            {
+                return android;
+            }
+        }
+
+        /// <summary>
+        /// Gets the iOS app to run the tests from
+        /// </summary>
+        public string iOS
+        {
+            get
+            {
+                return ios;
+            }
+        }
+
+        /// <summary>
+        /// Gets the WebAssembly process to run the tests from
+        /// </summary>
+        public string WebAssembly
+        {
+            get
+            {
+                return webassembly;
             }
         }
 
@@ -348,6 +384,15 @@ namespace NUnitLite.Runner
                     {
                         InvalidOption(option);
                     }
+                    break;
+                case "android":
+                    android = val;
+                    break;
+                case "ios":
+                    ios = val;
+                    break;
+                case "webassembly":
+                    webassembly = val;
                     break;
                 default:
                     InvalidOption(option);

@@ -15,6 +15,7 @@ namespace NUnit.Framework.Internal
     /// may be of any type. Null values are not permitted, since
     /// a null entry represents the absence of the key.
     /// </summary>
+    [System.Serializable]
     public class PropertyBag : IPropertyBag
     {
 #if CLR_2_0 || CLR_4_0

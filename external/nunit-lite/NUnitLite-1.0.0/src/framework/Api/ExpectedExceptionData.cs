@@ -30,16 +30,19 @@ namespace NUnit.Framework.Api
     /// ExpectedExceptionData is a struct used within the framework
     /// to encapsulate information about an expected exception.
     /// </summary>
+    [System.Serializable]
     public struct ExpectedExceptionData
     {
         #region Fields
 
+        [System.NonSerialized]
         private Type expectedExceptionType;
         private string expectedExceptionName;
         private string expectedMessage;
         private MessageMatch matchType;
         private string userMessage;
         private string handlerName;
+        [System.NonSerialized]
         private MethodInfo exceptionHandler;
 
         #endregion

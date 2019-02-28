@@ -1365,6 +1365,9 @@
 /* Host Platform is Darwin */
 #undef HOST_DARWIN
 
+/* Targeting the Fuchsia platform */
+#undef HOST_FUCHSIA
+
 /* ... */
 #undef HOST_MIPS
 
