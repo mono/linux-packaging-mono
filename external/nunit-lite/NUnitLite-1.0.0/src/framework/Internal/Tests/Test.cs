@@ -32,6 +32,7 @@ namespace NUnit.Framework.Internal
 	/// <summary>
 	/// The Test abstract class represents a test within the framework.
 	/// </summary>
+    [System.Serializable]
 	public abstract class Test : ITest, IComparable
     {
         #region Fields
@@ -66,6 +67,7 @@ namespace NUnit.Framework.Internal
         /// <summary>
         /// The System.Type of the fixture for this test, if there is one
         /// </summary>
+        [System.NonSerialized]
         private Type fixtureType;
 
         /// <summary>
@@ -76,11 +78,13 @@ namespace NUnit.Framework.Internal
         /// <summary>
         /// The SetUp methods.
         /// </summary>
+        [System.NonSerialized]
         protected MethodInfo[] setUpMethods;
 
         /// <summary>
         /// The teardown methods
         /// </summary>
+        [System.NonSerialized]
         protected MethodInfo[] tearDownMethods;
 
         #endregion

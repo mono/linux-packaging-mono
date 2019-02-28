@@ -38,6 +38,7 @@ namespace NUnit.Framework.Internal
     /// the Test interface might make it easier to process exceptions
     /// in an object that aggregates a TestMethod in the future.
     /// </summary>
+    [System.Serializable]
 	public class TestMethod : Test
 	{
 		#region Fields
@@ -45,6 +46,7 @@ namespace NUnit.Framework.Internal
 		/// <summary>
 		/// The test method
 		/// </summary>
+        [System.NonSerialized]
 		internal MethodInfo method;
 
         /// <summary>

@@ -6,6 +6,7 @@ namespace NUnit.Framework.Internal
     /// <summary>
     /// Represents the result of running a test suite
     /// </summary>
+    [System.Serializable]
     public class TestSuiteResult : TestResult
     {
         private int passCount = 0;

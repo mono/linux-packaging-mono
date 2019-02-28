@@ -37,6 +37,7 @@ namespace NUnit.Framework.Internal
     /// <summary>
     /// TestSuite represents a composite test, which contains other tests.
     /// </summary>
+    [System.Serializable]
 	public class TestSuite : Test
 	{
 		#region Fields
