@@ -57,6 +57,7 @@ namespace NUnitLite.Runner
         private string android;
         private string ios;
         private string webassembly;
+        private string remote;
 
         private bool error = false;
 
@@ -204,6 +205,17 @@ namespace NUnitLite.Runner
             get
             {
                 return webassembly;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Remote process to run the tests from
+        /// </summary>
+        public string Remote
+        {
+            get
+            {
+                return remote;
             }
         }
 
@@ -393,6 +405,9 @@ namespace NUnitLite.Runner
                     break;
                 case "webassembly":
                     webassembly = val;
+                    break;
+                case "remote":
+                    remote = val;
                     break;
                 default:
                     InvalidOption(option);
