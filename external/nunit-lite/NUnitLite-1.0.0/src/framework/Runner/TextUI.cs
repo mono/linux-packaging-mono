@@ -95,6 +95,28 @@ namespace NUnitLite.Runner
             this.finallyDelegate.HandleUnhandledExc(e.ExceptionObject as Exception);
         }
 
+        ITestAssemblyRunner DefaultRunner ()
+        {
+            return new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);;
+        }
+
+#if MONODROID_TOOLS
+        ITestAssemblyRunner AndroidRunner (string app)
+        {
+            return new Xamarin.AndroidTestAssemblyRunner(app);
+        }
+#elif MONOTOUCH_TOOLS
+        ITestAssemblyRunner iOSRunner (string app)
+        {
+            throw new NotImplementedException ();
+        }
+#elif WASM_TOOLS
+        ITestAssemblyRunner WebAssemblyRunner (string app)
+        {
+            throw new NotImplementedException ();
+        }
+#endif
+
         #endregion
 
         #region Public Methods
@@ -112,19 +134,30 @@ namespace NUnitLite.Runner
             if (runner == null) {
 #if MONODROID_TOOLS
                 if (!string.IsNullOrEmpty (commandLineOptions.Android)) {
-                    runner = new Xamarin.AndroidTestAssemblyRunner(commandLineOptions.Android);
+                    runner = AndroidRunner (commandLineOptions.Android);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("android:")) {
+                    Xamarin.AndroidRemoteRunner.App = commandLineOptions.Remote.Substring (8);
+                    runner = DefaultRunner ();
                 } else
 #elif MONOTOUCH_TOOLS
                 if (!string.IsNullOrEmpty (commandLineOptions.iOS)) {
+                    runner = iOSRunner (commandLineOptions.iOS);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("ios:")) {
+                    // Xamarin.iOSRemoteRunner.App = commandLineOptions.Remote.Substring (4);
+                    // runner = DefaultRunner ();
                     throw new NotImplementedException ();
                 } else
 #elif WASM_TOOLS
                 if (!string.IsNullOrEmpty (commandLineOptions.WebAssembly)) {
+                    runner = WebAssemblyRunner (commandLineOptions.WebAssembly);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("wasm:")) {
+                    // Xamarin.WebAssemblyRemoteRunner.App = commandLineOptions.Remote.Substring (5);
+                    // runner = DefaultRunner ();
                     throw new NotImplementedException ();
                 } else
 #endif
                 {
-                    runner = new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);
+                    runner = DefaultRunner ();
                 }
             }
 
