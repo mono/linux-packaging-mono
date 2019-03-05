@@ -16455,7 +16455,6 @@ namespace System.Runtime.Remoting
     {
         public static string ApplicationId { get { throw null; } }
         public static string ApplicationName { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static System.Runtime.Remoting.CustomErrorsModes CustomErrorsMode { get { throw null; } set { } }
         public static string ProcessId { get { throw null; } }
         [System.ObsoleteAttribute("Use Configure(String,Boolean)")]

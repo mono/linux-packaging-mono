@@ -78,9 +78,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+DIST_COMMON = $(srcdir)/../common_mixed.mk $(srcdir)/Makefile.in \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs
 subdir = mono/tests/llvmonly-mixed
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
@@ -410,6 +410,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
+CLEANFILES = *.dll *.exe *.pdb
 AOTDIR = linker-output
 AOT_TMPDIR = aot-tmp
 SOURCES = \
@@ -420,11 +421,10 @@ SOURCES = \
 # interponly.dll is not AOT-ed
 ASSEMBLIES = mscorlib.dll tests.exe TestDriver.dll
 AOT_IMAGES = $(patsubst %,$(AOTDIR)/%$(PLATFORM_AOT_SUFFIX),$(ASSEMBLIES))
-CLEANFILES = *.dll *.exe *.pdb
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/../common_mixed.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -445,6 +445,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(srcdir)/../common_mixed.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -671,6 +672,9 @@ uninstall-am:
 	test-local uninstall uninstall-am
 
 
+clean-local:
+	$(RM) -rf $(AOTDIR) $(AOT_TMPDIR)
+
 tests.exe: $(srcdir)/tests.cs TestDriver.dll interponly.dll
 	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -r:TestDriver.dll -r:interponly.dll -target:exe -out:$@  $<
 
@@ -704,9 +708,6 @@ $(AOTDIR)/tests.exe: $(AOTDIR)/TestDriver.dll $(AOTDIR)/interponly.dll
 
 @ENABLE_LLVM_TRUE@check: $(AOT_IMAGES)
 @ENABLE_LLVM_TRUE@	MONO_PATH=$(AOTDIR) $(MONO_EXE) --aot-path=$(AOTDIR) --llvmonly-interp $(AOTDIR)/tests.exe
-
-clean-local:
-	$(RM) -rf $(AOTDIR) $(AOT_TMPDIR)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
