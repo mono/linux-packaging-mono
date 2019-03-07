@@ -8583,6 +8583,7 @@ namespace System.Net
     [System.SerializableAttribute]
     public partial class HttpWebResponse : System.Net.WebResponse, System.IDisposable, System.Runtime.Serialization.ISerializable
     {
+        public HttpWebResponse() { }
         [System.ObsoleteAttribute("Serialization is obsoleted for this type", false)]
         protected HttpWebResponse(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public string CharacterSet { get { throw null; } }
