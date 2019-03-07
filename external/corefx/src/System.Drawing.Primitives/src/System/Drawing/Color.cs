@@ -18,6 +18,9 @@ namespace System.Drawing
     [TypeConverter(typeof(ColorConverter))]
     [Editor ("System.Drawing.Design.ColorEditor, " + Consts.AssemblySystem_Drawing_Design, typeof (System.Drawing.Design.UITypeEditor))]
 #endif
+#if MONODROID
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#endif
     public readonly struct Color : IEquatable<Color>
     {
         public static readonly Color Empty = new Color();

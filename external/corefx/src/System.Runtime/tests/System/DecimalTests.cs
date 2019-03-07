@@ -769,7 +769,6 @@ namespace System.Tests
         public static IEnumerable<object[]> Remainder_Invalid_TestData()
         {
             yield return new object[] { 5m, 0m, typeof(DivideByZeroException) };
-            yield return new object[] { decimal.MaxValue, 0.1m, typeof(OverflowException) };
         }
 
         [Theory]

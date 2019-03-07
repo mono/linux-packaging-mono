@@ -21,6 +21,9 @@ namespace System.Drawing
 #if FEATURE_TYPECONVERTER
     [TypeConverter (typeof (SizeConverter))]
 #endif
+#if MONODROID
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#endif
     public struct Size : IEquatable<Size>
     {
         /// <summary>
