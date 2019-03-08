@@ -207,8 +207,11 @@
 /* Define to 1 if you have the <android/versioning.h> header file. */
 #undef HAVE_ANDROID_VERSIONING_H
 
-/* arc4random */
+/* Define to 1 if you have the `arc4random' function. */
 #undef HAVE_ARC4RANDOM
+
+/* arc4random_buf */
+#undef HAVE_ARC4RANDOM_BUF
 
 /* ARM v5 */
 #undef HAVE_ARMV5
@@ -416,7 +419,7 @@
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
-/* getdomainname */
+/* Define to 1 if you have the `getdomainname' function. */
 #undef HAVE_GETDOMAINNAME
 
 /* getdomainname with size_t namelen */
@@ -662,7 +665,7 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
-/* mkstemps */
+/* Define to 1 if you have the `mkstemps' function. */
 #undef HAVE_MKSTEMPS
 
 /* Define to 1 if you have the `mlock' function. */
@@ -1196,6 +1199,9 @@
 
 /* TCPSTATE enum in netinet/tcp.h */
 #undef HAVE_TCP_H_TCPSTATE_ENUM
+
+/* TCP_KEEPALIVE */
+#undef HAVE_TCP_H_TCP_KEEPALIVE
 
 /* tcp/var.h */
 #undef HAVE_TCP_VAR_H
