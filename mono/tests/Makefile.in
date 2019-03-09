@@ -1018,7 +1018,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed
+SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed fullaot-mixed
 BUILT_SOURCES = $(ARRAY_COOP_CS) $(TAILCALL_FSHARP_DEEPTAIL_IL) \
 	$(TAILCALL_INTERFACE_CONSERVESTACK_IL)
 ARRAY_COOP_CS = \
@@ -1855,11 +1855,12 @@ TESTS_TAILCALL_RUN = $(filter-out $(TAILCALL_DISABLED_TESTS_RUN),$(TESTS_TAILCAL
 # Generated tests for runtime invoke
 
 # Tests for the Mono lldb plugin
-EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
-	$(TESTS_IL_SRC) $(TESTS_BENCH_SRC) $(TESTS_STRESS_SRC) \
-	stress-runner.pl array-coop-1.cs array-coop-2.cs \
-	array-coop-bigvt.cs array-coop-int.cs array-coop-smallvt.cs \
-	array-coop-bigvt.sh array-coop-smallvt.sh array-coop-int.sh \
+EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
+	$(TESTS_CS_SRC) $(TESTS_IL_SRC) $(TESTS_BENCH_SRC) \
+	$(TESTS_STRESS_SRC) stress-runner.pl array-coop-1.cs \
+	array-coop-2.cs array-coop-bigvt.cs array-coop-int.cs \
+	array-coop-smallvt.cs array-coop-bigvt.sh \
+	array-coop-smallvt.sh array-coop-int.sh \
 	tailcall-interface-conservestack.il \
 	tailcall/fsharp-deeptail.il $(TEST_TAILCALL_CS_SRC) \
 	$(TEST_TAILCALL_IL_SRC) load-missing.il t-missing.cs \
