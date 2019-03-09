@@ -218,7 +218,8 @@ class GtkPackage (GitHubPackage):
 		# https://devdiv.visualstudio.com/DevDiv/_workitems/edit/737323
 		'patches/gtk/gtk-nsview-subview-focus-fixes.patch',
 		'patches/gtk/gtk-nsview-focus-tabbing.patch',
-		'patches/gtk/popup-combo-box-with-arrows.patch'
+		'patches/gtk/popup-combo-box-with-arrows.patch',
+		'patches/gtk/0001-prevent-gdk-quartz-window-delegate-replacement.patch'
             ])
 
     def prep(self):

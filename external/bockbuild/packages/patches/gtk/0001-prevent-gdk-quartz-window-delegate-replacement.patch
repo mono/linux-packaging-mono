@@ -1,0 +1,21 @@
+diff --git a/gdk/quartz/GdkQuartzWindow.c b/gdk/quartz/GdkQuartzWindow.c
+index e8e0de5c7..435c856be 100644
+--- a/gdk/quartz/GdkQuartzWindow.c
++++ b/gdk/quartz/GdkQuartzWindow.c
+@@ -259,6 +259,16 @@
+   return [super makeFirstResponder:responder];
+ }
+ 
++-(void)setDelegate:(id<NSWindowDelegate>)delegate
++{
++  if ([super delegate] == nil) {
++    [super setDelegate:delegate];
++  } else {
++    // If we allow the window delegate to be replaced, everything breaks.
++    g_critical ("Setting a delegate on GdkQuartzWindow is forbidden, because everything will break.");
++  }
++}
++
+ -(id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)backingType defer:(BOOL)flag screen:(NSScreen *)screen
+ {
+   self = [super initWithContentRect:contentRect
