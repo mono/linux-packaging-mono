@@ -1,3 +1,5 @@
 #include "libmonosgen-2.0-1.symbols"
 #include "libmono-llvm.symbols"
  mono_arch_get_llvm_call_info@Base 5.15.0.231
+ mono_patch_info_equal@Base 6.1.0.429
+ mono_patch_info_hash@Base 6.1.0.429

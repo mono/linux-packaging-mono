@@ -1,2 +1,3 @@
 #include "libmonosgen-2.0-1.symbols"
-
+ mono_patch_info_equal@Base 6.1.0.429
+ mono_patch_info_hash@Base 6.1.0.429
