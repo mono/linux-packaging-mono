@@ -58,6 +58,21 @@ namespace System.Security.Cryptography
         CurrentUser = 0,
         LocalMachine = 1,
     }
+    public abstract partial class DataProtector
+    {
+        protected DataProtector(string applicationName, string primaryPurpose, string[] specificPurposes) { }
+        protected string ApplicationName { get { throw null; } }
+        protected virtual bool PrependHashedPurposeToPlaintext { get { throw null; } }
+        protected string PrimaryPurpose { get { throw null; } }
+        protected System.Collections.Generic.IEnumerable<string> SpecificPurposes { get { throw null; } }
+        public static System.Security.Cryptography.DataProtector Create(string providerClass, string applicationName, string primaryPurpose, params string[] specificPurposes) { throw null; }
+        protected virtual byte[] GetHashedPurpose() { throw null; }
+        public abstract bool IsReprotectRequired(byte[] encryptedData);
+        public byte[] Protect(byte[] userData) { throw null; }
+        protected abstract byte[] ProviderProtect(byte[] userData);
+        protected abstract byte[] ProviderUnprotect(byte[] encryptedData);
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining, NoOptimization)]public byte[] Unprotect(byte[] encryptedData) { throw null; }
+    }
     public enum MemoryProtectionScope
     {
         CrossProcess = 1,

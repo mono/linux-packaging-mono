@@ -12337,6 +12337,15 @@ namespace System.Security.Authentication.ExtendedProtection.Configuration
         public void RemoveAt(int index) { }
     }
 }
+namespace System.Security.Claims
+{
+    public static partial class DynamicRoleClaimProvider
+    {
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.ObsoleteAttribute("Use ClaimsAuthenticationManager to add claims to a ClaimsIdentity", true)]
+        public static void AddDynamicRoleClaims(System.Security.Claims.ClaimsIdentity claimsIdentity, System.Collections.Generic.IEnumerable<System.Security.Claims.Claim> claims) { }
+    }
+}
 namespace System.Security.Cryptography
 {
     public partial class AsnEncodedData

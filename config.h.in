@@ -452,7 +452,7 @@
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
-/* getdomainname */
+/* Define to 1 if you have the `getdomainname' function. */
 #undef HAVE_GETDOMAINNAME
 
 /* getdomainname with size_t namelen */
@@ -713,7 +713,7 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
-/* mkstemps */
+/* Define to 1 if you have the `mkstemps' function. */
 #undef HAVE_MKSTEMPS
 
 /* Define to 1 if you have the `mlock' function. */
@@ -780,6 +780,9 @@
 #undef HAVE_POLL_H
 
 /* posix_fadvise */
+#undef HAVE_POSIX_ADVISE
+
+/* Define to 1 if you have the `posix_fadvise' function. */
 #undef HAVE_POSIX_FADVISE
 
 /* posix_fadvise64 */

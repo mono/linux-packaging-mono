@@ -529,6 +529,8 @@ namespace System
         public System.AppDomainInitializer AppDomainInitializer { get { throw null; } set { } }
         [System.MonoLimitationAttribute("it needs to be used to invoke the initializer within the created domain")]
         public string[] AppDomainInitializerArguments { get { throw null; } set { } }
+        public string AppDomainManagerAssembly { get { throw null; } set { } }
+        public string AppDomainManagerType { get { throw null; } set { } }
         public string ApplicationBase { get { throw null; } set { } }
         public string ApplicationName { get { throw null; } set { } }
         [System.MonoNotSupportedAttribute("This property exists but not considered.")]
@@ -544,6 +546,7 @@ namespace System
         public string LicenseFile { get { throw null; } set { } }
         [System.MonoLimitationAttribute("In Mono this is controlled by the --share-code flag")]
         public System.LoaderOptimization LoaderOptimization { get { throw null; } set { } }
+        public string[] PartialTrustVisibleAssemblies { get { throw null; } set { } }
         public string PrivateBinPath { get { throw null; } set { } }
         public string PrivateBinPathProbe { get { throw null; } set { } }
         public string ShadowCopyDirectories { get { throw null; } set { } }

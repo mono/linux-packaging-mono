@@ -881,7 +881,11 @@ ves_icall_System_Array_SetGenericValueImpl (MonoArray *arr, guint32 pos, gpointe
 }
 
 void
+#if ENABLE_NETCORE
+ves_icall_System_Runtime_RuntimeImports_Memmove (guint8 *destination, guint8 *source, size_t byte_count)
+#else
 ves_icall_System_Runtime_RuntimeImports_Memmove (guint8 *destination, guint8 *source, guint byte_count)
+#endif
 {
 	mono_gc_memmove_atomic (destination, source, byte_count);
 }
@@ -896,7 +900,11 @@ ves_icall_System_Runtime_RuntimeImports_Memmove_wbarrier (guint8 *destination, g
 }
 
 void
+#if ENABLE_NETCORE
+ves_icall_System_Runtime_RuntimeImports_ZeroMemory (guint8 *p, size_t byte_length)
+#else
 ves_icall_System_Runtime_RuntimeImports_ZeroMemory (guint8 *p, guint byte_length)
+#endif
 {
 	memset (p, 0, byte_length);
 }
@@ -1061,6 +1069,61 @@ ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_SufficientExecutionStac
 #endif
 	return TRUE;
 }
+
+#ifdef ENABLE_NETCORE
+MonoObjectHandle
+ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_GetUninitializedObjectInternal (MonoType *handle, MonoError *error)
+{
+	MonoClass *klass;
+
+	g_assert (handle);
+
+	klass = mono_class_from_mono_type_internal (handle);
+	if (m_class_is_string (klass)) {
+		mono_error_set_argument (error, NULL, NULL);
+		return NULL_HANDLE;
+	}
+
+	if (m_class_is_abstract (klass) || m_class_is_interface (klass) || m_class_is_gtd (klass)) {
+		mono_error_set_member_access (error, NULL, NULL);
+		return NULL_HANDLE;
+	}
+
+	if (m_class_is_byreflike (klass)) {
+		mono_error_set_not_supported (error, NULL, NULL);
+		return NULL_HANDLE;
+	}
+
+	if (m_class_is_nullable (klass))
+		return mono_object_new_handle (mono_domain_get (), m_class_get_nullable_elem_class (klass), error);
+	else
+		return mono_object_new_handle (mono_domain_get (), klass, error);
+}
+
+void
+ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_PrepareMethod (MonoMethod *method, gpointer inst_types, int n_inst_types, MonoError *error)
+{
+	if (method->flags & METHOD_ATTRIBUTE_ABSTRACT) {
+		mono_error_set_argument (error, NULL, NULL);
+		return;
+	}
+
+	MonoGenericContainer *container = NULL;
+	if (method->is_generic)
+		container = mono_method_get_generic_container (method);
+	else if (m_class_is_gtd (method->klass))
+		container = mono_class_get_generic_container (method->klass);
+	if (container) {
+		int nparams = container->type_argc + (container->parent ? container->parent->type_argc : 0);
+		if (nparams != n_inst_types) {
+			mono_error_set_argument (error, NULL, NULL);
+			return;
+		}
+	}
+
+	// FIXME: Implement
+}
+#endif
 
 MonoObjectHandle
 ves_icall_System_Object_MemberwiseClone (MonoObjectHandle this_obj, MonoError *error)
@@ -1828,6 +1891,12 @@ guint32
 ves_icall_RuntimeTypeHandle_GetAttributes (MonoReflectionTypeHandle ref_type, MonoError *error)
 {
 	MonoType *type = MONO_HANDLE_GETVAL (ref_type, type);
+
+#ifdef ENABLE_NETCORE
+	if (type->byref || type->type == MONO_TYPE_PTR || type->type == MONO_TYPE_FNPTR)
+		return TYPE_ATTRIBUTE_NOT_PUBLIC;
+#endif
+
 	MonoClass *klass = mono_class_from_mono_type_internal (type);
 	return mono_class_get_flags (klass);
 }
@@ -1905,7 +1974,6 @@ ves_icall_System_Reflection_EventInfo_internal_from_handle_type (MonoEvent *hand
 
 	return mono_event_get_object_handle (mono_domain_get (), klass, handle, error);
 }
-
 
 MonoReflectionPropertyHandle
 ves_icall_System_Reflection_RuntimePropertyInfo_internal_from_handle_type (MonoProperty *handle, MonoType *type, MonoError *error)
@@ -2219,6 +2287,9 @@ typed_reference_to_object (MonoTypedRef *tref, MonoError *error)
 	if (MONO_TYPE_IS_REFERENCE (tref->type)) {
 		MonoObject** objp = (MonoObject **)tref->value;
 		result = MONO_HANDLE_NEW (MonoObject, *objp);
+	} else if (mono_type_is_pointer (tref->type)) {
+		/* Boxed as UIntPtr */
+		result = mono_value_box_handle (mono_domain_get (), mono_get_uintptr_class (), tref->value, error);
 	} else {
 		result = mono_value_box_handle (mono_domain_get (), tref->klass, tref->value, error);
 	}
