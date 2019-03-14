@@ -1072,46 +1072,6 @@ Database connectivity for Mono.
 %{_prefix}/lib/mono/4.5/System.Data.OracleClient.dll
 %{_prefix}/lib/mono/gac/System.Data.OracleClient
 
-%package -n mono-nunit
-Summary:        NUnit Testing Framework
-License:        LGPL-2.1
-Group:          Development/Languages/Mono
-Requires:       mono-core = %{version}
-
-%description -n mono-nunit
-NUnit is a unit-testing framework for all .Net languages.  Initially
-ported from JUnit, the current release, version 2.2,  is the fourth
-major release of this  Unit based unit testing tool for Microsoft .NET.
-It is written entirely in C# and  has been completely redesigned to
-take advantage of many .NET language		 features, for example
-custom attributes and other reflection related capabilities. NUnit
-brings xUnit to all .NET languages.
-
-%files -n mono-nunit
-%defattr(-, root, root)
-%{_libdir}/pkgconfig/mono-nunit.pc
-%{_bindir}/nunit-console
-%{_bindir}/nunit-console2
-%{_bindir}/nunit-console4
-%{_prefix}/lib/mono/4.5/nunit-console-runner.dll
-%{_prefix}/lib/mono/4.5/nunit-console.exe*
-%{_prefix}/lib/mono/4.5/nunit-console.pdb
-%{_prefix}/lib/mono/4.5/nunit.core.dll
-%{_prefix}/lib/mono/4.5/nunit.core.extensions.dll
-%{_prefix}/lib/mono/4.5/nunit.core.interfaces.dll
-%{_prefix}/lib/mono/4.5/nunit.framework.dll
-%{_prefix}/lib/mono/4.5/nunit.framework.extensions.dll
-%{_prefix}/lib/mono/4.5/nunit.mocks.dll
-%{_prefix}/lib/mono/4.5/nunit.util.dll
-%{_prefix}/lib/mono/gac/nunit-console-runner
-%{_prefix}/lib/mono/gac/nunit.core
-%{_prefix}/lib/mono/gac/nunit.core.extensions
-%{_prefix}/lib/mono/gac/nunit.core.interfaces
-%{_prefix}/lib/mono/gac/nunit.framework
-%{_prefix}/lib/mono/gac/nunit.framework.extensions
-%{_prefix}/lib/mono/gac/nunit.mocks
-%{_prefix}/lib/mono/gac/nunit.util
-
 %package -n mono-devel
 Summary:        Mono development tools
 License:        LGPL-2.1
@@ -1465,7 +1425,6 @@ Requires:       mono-devel = %{version}
 Requires:       mono-extras = %{version}
 Requires:       mono-locale-extras = %{version}
 Requires:       mono-mvc = %{version}
-Requires:       mono-nunit = %{version}
 Requires:       mono-reactive = %{version}
 Requires:       mono-wcf = %{version}
 Requires:       mono-web = %{version}
