@@ -120,84 +120,6 @@ namespace System
     }
 }
 
-namespace System.Drawing
-{
-    public struct Point
-    {
-        public static readonly System.Drawing.Point Empty;
-        public Point(int x, int y) { throw null; }
-        public int X { get { throw null; } set { } }
-        public int Y { get { throw null; } set { } }
-        public static implicit operator System.Drawing.PointF (System.Drawing.Point p) { throw null; }        
-    }
-    public struct PointF
-    {
-        public static readonly System.Drawing.PointF Empty;
-        public PointF(float x, float y) { throw null; }
-        public float X { get { throw null; } set { } }
-        public float Y { get { throw null; } set { } }        
-        public override bool Equals(object obj) { throw null; }
-        public override int GetHashCode() { throw null; }
-        public static bool operator ==(System.Drawing.PointF left, System.Drawing.PointF right) { throw null; }
-        public static bool operator !=(System.Drawing.PointF left, System.Drawing.PointF right) { throw null; }
-    }
-    public struct Rectangle
-    {
-        public static readonly System.Drawing.Rectangle Empty;
-        public Rectangle(int x, int y, int width, int height) { throw null; }
-        public int X { get { throw null; } set { } }
-        public int Y { get { throw null; } set { } }        
-        public int Bottom { get { throw null; } }
-        public int Right { get { throw null; } }        
-        public int Width { get { throw null; } set { } }        
-        public int Height { get { throw null; } set { } }
-    }
-    public struct RectangleF
-    {
-        public static readonly System.Drawing.RectangleF Empty;
-        public RectangleF(System.Drawing.PointF location, System.Drawing.SizeF size) { throw null; }
-        public RectangleF(float x, float y, float width, float height) { throw null; }
-        public float Bottom { get { throw null; } }
-        public float Height { get { throw null; } set { } }
-        public float Left { get { throw null; } }
-        public System.Drawing.PointF Location { get { throw null; } set { } }
-        public float Right { get { throw null; } }
-        public System.Drawing.SizeF Size { get { throw null; } set { } }
-        public float Top { get { throw null; } }
-        public float Width { get { throw null; } set { } }
-        public float X { get { throw null; } set { } }
-        public float Y { get { throw null; } set { } }
-        public override bool Equals(object obj) { throw null; }
-        public override int GetHashCode() { throw null; }
-        public static bool operator ==(System.Drawing.RectangleF left, System.Drawing.RectangleF right) { throw null; }
-        public static implicit operator System.Drawing.RectangleF (System.Drawing.Rectangle r) { throw null; }
-        public static bool operator !=(System.Drawing.RectangleF left, System.Drawing.RectangleF right) { throw null; }
-    }
-    public struct Size
-    {
-        public static readonly System.Drawing.Size Empty;
-        public Size(int width, int height) { throw null; }
-        public int Height { get { throw null; } set { } }
-        public int Width { get { throw null; } set { } }
-        public override bool Equals(object obj) { throw null; }
-        public override int GetHashCode() { throw null; }
-        public static implicit operator System.Drawing.SizeF (System.Drawing.Size p) { throw null; }        
-        public static bool operator ==(System.Drawing.Size sz1, System.Drawing.Size sz2) { throw null; }
-        public static bool operator !=(System.Drawing.Size sz1, System.Drawing.Size sz2) { throw null; }
-    }
-    public struct SizeF
-    {
-        public static readonly System.Drawing.SizeF Empty;
-        public SizeF(float width, float height) { throw null; }
-        public float Height { get { throw null; } set { } }
-        public float Width { get { throw null; } set { } }        
-        public override bool Equals(object obj) { throw null; }
-        public override int GetHashCode() { throw null; }
-        public static bool operator ==(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) { throw null; }
-        public static bool operator !=(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) { throw null; }
-    }
-}
-
 namespace CoreGraphics
 {
     public enum CGInterpolationQuality
@@ -365,8 +287,8 @@ namespace CoreGraphics
         public CGPoint(float x, float y) { throw null; }
         public System.nfloat X { get { throw null; } set { } }
         public System.nfloat Y { get { throw null; } set { } }
-        public static explicit operator System.Drawing.PointF (CoreGraphics.CGPoint point) { throw null; }        
-        public static implicit operator CoreGraphics.CGPoint (System.Drawing.PointF point) { throw null; }
+//        public static explicit operator System.Drawing.PointF (CoreGraphics.CGPoint point) { throw null; }        
+//        public static implicit operator CoreGraphics.CGPoint (System.Drawing.PointF point) { throw null; }
     }
     public struct CGRect
     {
@@ -388,9 +310,9 @@ namespace CoreGraphics
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public static bool operator ==(CoreGraphics.CGRect left, CoreGraphics.CGRect right) { throw null; }
-        public static explicit operator System.Drawing.RectangleF (CoreGraphics.CGRect rect) { throw null; }
-        public static implicit operator CoreGraphics.CGRect (System.Drawing.Rectangle rect) { throw null; }
-        public static implicit operator CoreGraphics.CGRect (System.Drawing.RectangleF rect) { throw null; }        
+//        public static explicit operator System.Drawing.RectangleF (CoreGraphics.CGRect rect) { throw null; }
+//        public static implicit operator CoreGraphics.CGRect (System.Drawing.Rectangle rect) { throw null; }
+//        public static implicit operator CoreGraphics.CGRect (System.Drawing.RectangleF rect) { throw null; }        
         public static bool operator !=(CoreGraphics.CGRect left, CoreGraphics.CGRect right) { throw null; }
     }
     public struct CGSize
@@ -400,8 +322,8 @@ namespace CoreGraphics
         public CGSize(System.nfloat width, System.nfloat height) { throw null; }
         public System.nfloat Height { get { throw null; } set { } }
         public System.nfloat Width { get { throw null; } set { } }
-        public static explicit operator System.Drawing.SizeF (CoreGraphics.CGSize size) { throw null; }
-        public static implicit operator CoreGraphics.CGSize (System.Drawing.SizeF size) { throw null; }
+//        public static explicit operator System.Drawing.SizeF (CoreGraphics.CGSize size) { throw null; }
+//        public static implicit operator CoreGraphics.CGSize (System.Drawing.SizeF size) { throw null; }
     }
 
     public class CGColor

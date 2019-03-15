@@ -6,6 +6,8 @@ namespace System.Drawing
 {
 #if MONODROID
     [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif XAMMAC
+    [System.Runtime.CompilerServices.TypeForwardedFrom("OpenTK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
 #endif
     public static class SystemColors
     {
