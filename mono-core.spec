@@ -36,6 +36,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		llvm_llc_opt_default_path.patch
+Patch1:		use_python3_not_unversioned.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -44,6 +45,10 @@ BuildRequires:  cmake
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 8
+BuildRequires:	python36
+%define __python3 /usr/bin/python3
+%endif
 %if 0%{?rhel} < 7
 BuildRequires:  devtoolset-2-toolchain
 %endif
@@ -116,6 +121,8 @@ Provides:       mono(mscorlib) = 2.0.0.0
 Provides:       mono(mscorlib) = 4.0.0.0
 Provides:	mono(Mono.Configuration.Crypto) = 4.0.0.0
 
+%define debug_package %{nil}
+
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 %define __find_provides env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/redhat/find-provides && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-provides; } | sort | uniq'
@@ -135,6 +142,9 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{version}
 %patch0 -p1
+%if 0%{?rhel} >= 8
+%patch1 -p1
+%endif
 
 %build
 %{?scl:scl enable %{scl} - << \EOF}
