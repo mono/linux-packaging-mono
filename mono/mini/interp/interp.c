@@ -1293,7 +1293,7 @@ interp_delegate_ctor (MonoObjectHandle this_obj, MonoObjectHandle target, gpoint
 	}
 
 	g_assert (imethod->method);
-	gpointer entry = mini_get_interp_callbacks ()->create_method_pointer (imethod->method, error);
+	gpointer entry = mini_get_interp_callbacks ()->create_method_pointer (imethod->method, FALSE, error);
 	return_if_nok (error);
 
 	MONO_HANDLE_SETVAL (MONO_HANDLE_CAST (MonoDelegate, this_obj), interp_method, gpointer, imethod);
@@ -2405,7 +2405,7 @@ interp_no_native_to_managed (void)
  * interpreter. Return NULL for methods which are not supported.
  */
 static gpointer
-interp_create_method_pointer (MonoMethod *method, MonoError *error)
+interp_create_method_pointer (MonoMethod *method, gboolean compile, MonoError *error)
 {
 #ifndef MONO_ARCH_HAVE_INTERP_NATIVE_TO_MANAGED
 	return interp_no_native_to_managed;
@@ -2414,6 +2414,12 @@ interp_create_method_pointer (MonoMethod *method, MonoError *error)
 	MonoDomain *domain = mono_domain_get ();
 	MonoJitDomainInfo *info;
 	InterpMethod *imethod = mono_interp_get_imethod (domain, method, error);
+
+	if (compile) {
+		/* Return any errors from method compilation */
+		mono_interp_transform_method (imethod, (ThreadContext*)mono_native_tls_get_value (thread_context_id), error);
+		return_val_if_nok (error, NULL);
+	}
 
 	/* HACK: method_ptr of delegate should point to a runtime method*/
 	if (method->wrapper_type && (method->wrapper_type == MONO_WRAPPER_DYNAMIC_METHOD ||
@@ -3543,14 +3549,14 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 		MINT_IN_CASE(MINT_DIV_I4)
 			if (sp [-1].data.i == 0)
 				THROW_EX (mono_get_exception_divide_by_zero (), ip);
-			if (sp [-1].data.i == (-1))
+			if (sp [-1].data.i == (-1) && sp [-2].data.i == G_MININT32)
 				THROW_EX (mono_get_exception_overflow (), ip);
 			BINOP(i, /);
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_DIV_I8)
 			if (sp [-1].data.l == 0)
 				THROW_EX (mono_get_exception_divide_by_zero (), ip);
-			if (sp [-1].data.l == (-1))
+			if (sp [-1].data.l == (-1) && sp [-2].data.l == G_MININT64)
 				THROW_EX (mono_get_exception_overflow (), ip);
 			BINOP(l, /);
 			MINT_IN_BREAK;
@@ -3578,14 +3584,14 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 		MINT_IN_CASE(MINT_REM_I4)
 			if (sp [-1].data.i == 0)
 				THROW_EX (mono_get_exception_divide_by_zero (), ip);
-			if (sp [-1].data.i == (-1))
+			if (sp [-1].data.i == (-1) && sp [-2].data.i == G_MININT32)
 				THROW_EX (mono_get_exception_overflow (), ip);
 			BINOP(i, %);
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_REM_I8)
 			if (sp [-1].data.l == 0)
 				THROW_EX (mono_get_exception_divide_by_zero (), ip);
-			if (sp [-1].data.l == (-1))
+			if (sp [-1].data.l == (-1) && sp [-2].data.l == G_MININT64)
 				THROW_EX (mono_get_exception_overflow (), ip);
 			BINOP(l, %);
 			MINT_IN_BREAK;
