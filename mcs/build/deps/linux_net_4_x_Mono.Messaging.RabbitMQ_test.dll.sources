@@ -1,9 +1,4 @@
-Test/Mono.Messaging.RabbitMQ/BinaryMessageFormatterTest.cs
 Test/Mono.Messaging.RabbitMQ/FailuresTest.cs
 Test/Mono.Messaging.RabbitMQ/MessageBaseTest.cs
-Test/Mono.Messaging.RabbitMQ/MessageEnumeratorExceptionTest.cs
-Test/Mono.Messaging.RabbitMQ/MessageTest.cs
-Test/Mono.Messaging.RabbitMQ/MessagingContextPoolTest.cs
 Test/Mono.Messaging.RabbitMQ/RabbitMQMessagingProviderTest.cs
 Test/Mono.Messaging.RabbitMQ/TestUtils.cs
-Test/Mono.Messaging.RabbitMQ/XmlMessageFormatterTest.cs

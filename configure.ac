@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [6.1.0.429],
+AC_INIT(mono, [6.1.0.462],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -6382,7 +6382,6 @@ data/mono-2.pc
 data/monosgen-2.pc
 data/mono.pc
 data/mono-cairo.pc
-data/mono-nunit.pc
 data/mono-options.pc
 data/mono-lineeditor.pc
 data/monodoc.pc

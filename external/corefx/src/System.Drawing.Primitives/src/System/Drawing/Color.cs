@@ -11,15 +11,20 @@ namespace System.Drawing
 {
     [DebuggerDisplay("{NameAndARGBValue}")]
     [Serializable]
-#if !MONO
+#if MONODROID
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH || MONOTOUCH_TV
+    [System.Runtime.CompilerServices.TypeForwardedFrom("OpenTK-1.0, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH_WATCH
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.WatchOS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif XAMMAC
+    [System.Runtime.CompilerServices.TypeForwardedFrom("OpenTK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
 #endif
 #if FEATURE_TYPECONVERTER
     [TypeConverter(typeof(ColorConverter))]
     [Editor ("System.Drawing.Design.ColorEditor, " + Consts.AssemblySystem_Drawing_Design, typeof (System.Drawing.Design.UITypeEditor))]
-#endif
-#if MONODROID
-    [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
 #endif
     public readonly struct Color : IEquatable<Color>
     {

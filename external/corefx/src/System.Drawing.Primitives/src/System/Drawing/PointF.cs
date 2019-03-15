@@ -12,11 +12,18 @@ namespace System.Drawing
     ///    define a point in a two-dimensional plane.
     /// </summary>
     [Serializable]
-#if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
-#endif
 #if MONODROID
     [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.iOS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH_TV
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.TVOS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH_WATCH
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.WatchOS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif XAMMAC
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.Mac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
 #endif
     public struct PointF : IEquatable<PointF>
     {
