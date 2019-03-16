@@ -65,6 +65,7 @@ namespace Mono.Debugger.Soft
         internal AssemblyMirror() { }
         public Mono.Debugger.Soft.AppDomainMirror Domain { get { throw null; } }
         public Mono.Debugger.Soft.MethodMirror EntryPoint { get { throw null; } }
+        public bool HasDebugInfo { get { throw null; } }
         public bool HasFetchedPdb { get { throw null; } }
         public bool HasPdb { get { throw null; } }
         public bool IsDynamic { get { throw null; } }
