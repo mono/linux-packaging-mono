@@ -509,8 +509,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  eg_utf8_to_utf16_with_nuls@Base 5.7.0.181
  eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
- g_printv@Base 5.15.0.216
- g_utf16_len@Base 5.21.0.610
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
@@ -1702,6 +1700,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_print@Base 5.7.0.181
  monoeg_g_printerr@Base 5.7.0.181
  monoeg_g_printf@Base 5.7.0.181
+ monoeg_g_printv@Base 6.1.0.545
  monoeg_g_propagate_error@Base 5.7.0.181
  monoeg_g_ptr_array_add@Base 5.7.0.181
  monoeg_g_ptr_array_capacity@Base 5.9.0.331
@@ -1840,5 +1839,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_try_realloc@Base 5.7.0.181
  monoeg_unichar_break_type@Base 5.7.0.181
  monoeg_unichar_isspace@Base 5.7.0.181
+ monoeg_utf16_len@Base 6.1.0.545
  monoeg_utf8_get_char_validated@Base 5.7.0.181
  monoeg_utf8_to_ucs4@Base 5.7.0.181
