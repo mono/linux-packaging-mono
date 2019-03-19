@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [6.1.0.545],
+AC_INIT(mono, [6.1.0.577],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1216,6 +1216,7 @@ elif test x$with_runtime_preset = xnetcore; then
    mono_feature_disable_remoting='yes'
    mono_feature_disable_reflection_emit_save='yes'
    mono_feature_disable_appdomains='yes'
+   mono_feature_disable_cleanup='yes'
    disable_mono_native=yes
 elif test x$with_runtime_preset = xnet_4_x; then
    with_profile4_x_default=yes
