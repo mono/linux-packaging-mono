@@ -212,14 +212,18 @@ class GtkPackage (GitHubPackage):
 
                 #'patches/gtk/gtk-fix-find_nsview_at_pos-recursive.patch',
 
-		# https://devdiv.visualstudio.com/DevDiv/_workitems/edit/569768
-		'patches/gtk/gtk-imquartz-commit-on-focus-out.patch',
+                # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/569768
+                'patches/gtk/gtk-imquartz-commit-on-focus-out.patch',
 
-		# https://devdiv.visualstudio.com/DevDiv/_workitems/edit/737323
-		'patches/gtk/gtk-nsview-subview-focus-fixes.patch',
-		'patches/gtk/gtk-nsview-focus-tabbing.patch',
-		'patches/gtk/popup-combo-box-with-arrows.patch',
-		'patches/gtk/0001-prevent-gdk-quartz-window-delegate-replacement.patch'
+                # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/737323
+                'patches/gtk/gtk-nsview-subview-focus-fixes.patch',
+                'patches/gtk/gtk-nsview-focus-tabbing.patch',
+                'patches/gtk/popup-combo-box-with-arrows.patch',
+                'patches/gtk/0001-prevent-gdk-quartz-window-delegate-replacement.patch',
+                'patches/gtk/0077-fix-nsview-embedding-mouse-move-event-when-popup-window-appears.patch',
+
+                # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/821841
+                'patches/gtk/nsview-embedding-skip-hidden-subviews.patch',
             ])
 
     def prep(self):

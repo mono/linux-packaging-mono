@@ -980,8 +980,13 @@ namespace System.Security.Cryptography.Pkcs.Tests
                 {
                     signedCms.ComputeSignature(new CmsSigner(cert));
                 }
-                catch (CryptographicException) when (netfxProblem)
+                catch (CryptographicException)
                 {
+                    if (!netfxProblem)
+                    {
+                        throw;
+                    }
+
                     // When no signed or unsigned attributes are present and the signer uses
                     // IssuerAndSerial as the identifier type, NetFx uses an older PKCS7 encoding
                     // of the current CMS one.  The older encoding fails on these inputs because of a
