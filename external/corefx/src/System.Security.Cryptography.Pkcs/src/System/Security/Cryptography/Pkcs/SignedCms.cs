@@ -108,8 +108,13 @@ namespace System.Security.Cryptography.Pkcs
             {
                 return Helpers.EncodeContentInfo(_signedData, Oids.Pkcs7Signed);
             }
-            catch (CryptographicException) when (!Detached)
+            catch (CryptographicException)
             {
+                if (Detached)
+                {
+                    throw;
+                }
+
                 // If we can't write the contents back out then the most likely culprit is an
                 // indefinite length encoding in the content field.  To preserve as much input data
                 // as possible while still maintaining our expectations of sorting any SET OF values,
@@ -233,8 +238,12 @@ namespace System.Security.Cryptography.Pkcs
 
                 return rented.AsSpan(0, bytesWritten).ToArray();
             }
-            catch (Exception) when (contentType != Oids.Pkcs7Data)
+            catch (Exception)
             {
+                if (contentType == Oids.Pkcs7Data)
+                {
+                    throw;
+                }
             }
             finally
             {
