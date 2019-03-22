@@ -2612,6 +2612,7 @@ Package: mono-roslyn
 Architecture: all
 Depends: ${misc:Depends},
          ${cli:Depends},
+         mono-devel,
          libmono-corlib4.5-cil (>= ${mono:upversion}),
          libmono-corlib4.5-cil (<< ${mono:next-upversion})
 Replaces: msbuild (<< 15.5)
