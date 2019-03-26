@@ -268,8 +268,8 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	environment.h exception.c exception.h exception-internals.h \
 	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
-	icall-decl.h icall-def.h icall-internals.h icall-table.h \
-	image.c image-internals.h jit-info.c loader.c \
+	icall-decl.h icall-def.h icall-internals.h icall-signatures.h \
+	icall-table.h image.c image-internals.h jit-info.c loader.c \
 	loader-internals.h locales.c locales.h lock-tracer.c \
 	lock-tracer.h marshal.c marshal.h marshal-internals.h \
 	mempool.c mempool.h mempool-internals.h metadata.c \
@@ -438,8 +438,8 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	environment.h exception.c exception.h exception-internals.h \
 	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
-	icall-decl.h icall-def.h icall-internals.h icall-table.h \
-	image.c image-internals.h jit-info.c loader.c \
+	icall-decl.h icall-def.h icall-internals.h icall-signatures.h \
+	icall-table.h image.c image-internals.h jit-info.c loader.c \
 	loader-internals.h locales.c locales.h lock-tracer.c \
 	lock-tracer.h marshal.c marshal.h marshal-internals.h \
 	mempool.c mempool.h mempool-internals.h metadata.c \
@@ -1117,6 +1117,7 @@ common_sources = \
 	icall-decl.h		\
 	icall-def.h		\
 	icall-internals.h \
+	icall-signatures.h \
 	icall-table.h	\
 	image.c			\
 	image-internals.h	\
