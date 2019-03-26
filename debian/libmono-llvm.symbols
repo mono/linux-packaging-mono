@@ -59,6 +59,8 @@
  mono_loader_lock@Base 5.15.0.231
  mono_loader_unlock@Base 5.15.0.231
  mono_marshal_find_nonzero_bit_offset@Base 5.15.0.231
+ mono_marshal_get_aot_init_wrapper@Base 6.1.0.686
+ mono_marshal_get_aot_init_wrapper_name@Base 6.1.0.686
  mono_marshal_get_wrapper_info@Base 5.21.0.116
  mono_opcode_to_cond@Base 5.15.0.231
  mono_print_unwind_info@Base 5.15.0.231
