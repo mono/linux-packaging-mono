@@ -34,7 +34,7 @@ Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
-Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
+Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.xz
 Patch0:		llvm_llc_opt_default_path.patch
 Patch1:		use_python3_not_unversioned.patch
 BuildRequires:  autoconf
