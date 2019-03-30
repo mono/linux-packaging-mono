@@ -16,10 +16,10 @@ System.Net.Http_REFS := mscorlib System
 System.Numerics_REFS := mscorlib
 System_REFS := mscorlib bare/System.Xml
 System.Xml_REFS := mscorlib System
-Xamarin.iOS_REFS := mscorlib System
-Xamarin.TVOS_REFS := mscorlib System
-Xamarin.WatchOS_REFS := mscorlib System
-Xamarin.Mac_REFS := mscorlib
+Xamarin.iOS_REFS := mscorlib System System.Net.Http
+Xamarin.TVOS_REFS := mscorlib System System.Net.Http
+Xamarin.WatchOS_REFS := mscorlib System System.Net.Http
+Xamarin.Mac_REFS := mscorlib System.Net.Http
 OpenTK-1.0_REFS := mscorlib
 OpenTK_REFS := mscorlib
 
