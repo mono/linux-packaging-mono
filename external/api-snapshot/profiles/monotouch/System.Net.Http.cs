@@ -20,6 +20,8 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Net.Http.CFNetworkHandler))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Net.Http.NSUrlSessionHandler))]
 namespace System.Net.Http
 {
     public partial class ByteArrayContent : System.Net.Http.HttpContent
@@ -29,15 +31,6 @@ namespace System.Net.Http
         protected override System.Threading.Tasks.Task<System.IO.Stream> CreateContentReadStreamAsync() { throw null; }
         protected internal override System.Threading.Tasks.Task SerializeToStreamAsync(System.IO.Stream stream, System.Net.TransportContext context) { throw null; }
         protected internal override bool TryComputeLength(out long length) { throw null; }
-    }
-    public partial class CFNetworkHandler : System.Net.Http.HttpMessageHandler
-    {
-        public CFNetworkHandler() { }
-        public bool AllowAutoRedirect { get { throw null; } set { } }
-        public System.Net.CookieContainer CookieContainer { get { throw null; } set { } }
-        public bool UseSystemProxy { get { throw null; } set { } }
-        protected override void Dispose(bool disposing) { }
-        protected internal override System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public enum ClientCertificateOption
     {
@@ -253,18 +246,6 @@ namespace System.Net.Http
         public override void Add(System.Net.Http.HttpContent content) { }
         public void Add(System.Net.Http.HttpContent content, string name) { }
         public void Add(System.Net.Http.HttpContent content, string name, string fileName) { }
-    }
-    public partial class NSUrlSessionHandler : System.Net.Http.HttpMessageHandler
-    {
-        public NSUrlSessionHandler() { }
-        [System.CLSCompliantAttribute(false)]
-        public NSUrlSessionHandler(Foundation.NSUrlSessionConfiguration configuration) { }
-        public bool AllowAutoRedirect { get { throw null; } set { } }
-        public System.Net.ICredentials Credentials { get { throw null; } set { } }
-        public bool DisableCaching { get { throw null; } set { } }
-        public long MaxInputInMemory { get { throw null; } set { } }
-        protected override void Dispose(bool disposing) { }
-        protected internal override System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public sealed partial class ReadOnlyMemoryContent : System.Net.Http.HttpContent
     {

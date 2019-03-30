@@ -668,6 +668,7 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -1109,6 +1110,8 @@ common_sources = \
 	ee.h \
 	mini-runtime.h
 
+
+# keep in sync with mcs/class/Mono.Runtime.Tests
 test_sources = \
 	basic-calls.cs 		\
 	basic-long.cs 		\

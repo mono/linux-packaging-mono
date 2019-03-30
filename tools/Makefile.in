@@ -337,6 +337,7 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -439,7 +440,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = locale-builder sgen monograph pedump
+SUBDIRS = locale-builder sgen pedump
 all: all-recursive
 
 .SUFFIXES:
