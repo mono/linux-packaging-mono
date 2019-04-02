@@ -261,7 +261,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/chktrust
 %{_bindir}/crlupdate
 %{_bindir}/csc
-%{_bindir}/csc-dim
 %{_bindir}/csi
 %{_bindir}/vbc
 %{_bindir}/csharp
@@ -385,7 +384,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Facades/System*
 %{_prefix}/lib/mono/4.5/Facades/Microsoft*
 %{_prefix}/lib/mono/4.5/Facades/netstandard*
-%{_prefix}/lib/mono/4.5/dim/*
 %{_prefix}/lib/mono/gac/Commons.Xml.Relaxng
 %{_prefix}/lib/mono/gac/CustomMarshalers
 %{_prefix}/lib/mono/gac/I18N
