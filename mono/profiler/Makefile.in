@@ -193,8 +193,9 @@ libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 am__DEPENDENCIES_2 =
+@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(glib_libs) $(am__DEPENDENCIES_2)
+	$(glib_libs) $(am__DEPENDENCIES_3)
 am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
@@ -234,7 +235,7 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
-mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_2)
+mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_3)
 mprof_report_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(mprof_report_LDFLAGS) $(LDFLAGS) -o $@
@@ -482,6 +483,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -635,10 +637,10 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # dynamic linker will have trouble resolving everything. On iOS, the story
 # is similar to Android when running in the simulator.
 @HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HAVE_ZLIB_FALSE@zlib_dep = 
-
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@zlib_dep = 
 # The log profiler uses zlib for output compression when available.
-@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
 
 # We build a separate, static version of each profiler for use on targets
 # which do not support dynamic linking (e.g. iOS). We still want to build

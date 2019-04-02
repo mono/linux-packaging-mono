@@ -841,6 +841,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -1019,7 +1020,8 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 #
 libmonoruntime_support_la_SOURCES = $(support_sources)
 libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
-@HAVE_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = -lz
+@HAVE_STATIC_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = $(STATIC_ZLIB_PATH)
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
