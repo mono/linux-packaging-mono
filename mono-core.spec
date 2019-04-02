@@ -1137,7 +1137,6 @@ Mono development tools.
 %{_bindir}/mono-xmltool
 %{_bindir}/monodis
 %{_bindir}/monolinker
-%{_bindir}/monograph
 %{_bindir}/monop
 %{_bindir}/monop2
 %{_bindir}/mprof-report
