@@ -7,7 +7,7 @@ variables:
   value: /p:ArcadeBuild=true
 - ${{ if eq(variables.officialBuild, 'true') }}:
   - name: _BuildArgs
-    value: ${{ format('{0} /p:OfficialBuildId={1}', variables['_BuildArgs'], variables['Build.BuildNumber']) }}
+    value: ${{ format('{0} /p:OfficialBuildId=$(Build.BuildNumber)', variables['_BuildArgs']) }}
   # Provide HelixApiAccessToken for telemetry
   - group: DotNet-HelixApi-Access
 
@@ -38,7 +38,8 @@ jobs:
           - group: DotNet-Blob-Feed
           - _TeamName: .NET # required by microbuild install step
           - _SignType: real # used in the arcade templates that install microbuild.
-          - _PublishArgs: /p:DotNetPublishToBlobFeed=true
+          - _DotNetPublishToBlobFeed: true # used by arcade templates that gather build asset manifests
+          - _PublishArgs: /p:DotNetPublishToBlobFeed=$(_DotNetPublishToBlobFeed)
                           /p:DotNetPublishBlobFeedUrl=https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
                           /p:DotNetPublishBlobFeedKey=$(dotnetfeed-storage-access-key-1)
         - DotNetSignType: ${{ format('{0}', variables._SignType) }} # DotNetSignType defaults to real if not specified
@@ -47,6 +48,11 @@ jobs:
         submodules: true
       - script: eng\common\cibuild.cmd -projects $(Build.SourcesDirectory)\illink.sln
                 -configuration $(_BuildConfig) $(_BuildArgs) $(_PublishArgs)
+                -warnAsError "$false"
+                -nodeReuse "$false" # https://github.com/Microsoft/vstest/issues/1503
+        env:
+          # https://github.com/Microsoft/vstest/issues/1503#issuecomment-410732193
+          MSBUILDENSURESTDOUTFORTASKPROCESSES: 1
         ${{ if eq(variables.officialBuild, 'false') }}:
           displayName: Build illink.sln $(_BuildConfig)
         ${{ if eq(variables.officialBuild, 'true') }}:
@@ -60,6 +66,11 @@ jobs:
         submodules: true
       - script: eng/common/cibuild.sh --projects $(Build.SourcesDirectory)/illink.sln
                 --configuration $(_BuildConfig) $(_BuildArgs)
+                --warnAsError false
+                --nodeReuse false # https://github.com/Microsoft/vstest/issues/1503
+        env:
+          # https://github.com/Microsoft/vstest/issues/1503#issuecomment-410732193
+          MSBUILDENSURESTDOUTFORTASKPROCESSES: 1
         displayName: Build illink.sln $(_BuildConfig)
 
     - job: macOS
@@ -73,3 +84,9 @@ jobs:
         submodules: true
       - script: eng/common/cibuild.sh --projects $(Build.SourcesDirectory)/illink.sln
                 --configuration $(_BuildConfig) $(_BuildArgs)
+                --warnAsError false
+                --nodeReuse false # https://github.com/Microsoft/vstest/issues/1503
+        env:
+          # https://github.com/Microsoft/vstest/issues/1503#issuecomment-410732193
+          MSBUILDENSURESTDOUTFORTASKPROCESSES: 1
+        displayName: Build illink.sln $(_BuildConfig)

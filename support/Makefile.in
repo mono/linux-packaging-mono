@@ -126,7 +126,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libMonoPosixHelper_la_DEPENDENCIES = $(MPH_LIBS) $(am__DEPENDENCIES_1) \
+@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+libMonoPosixHelper_la_DEPENDENCIES = $(MPH_LIBS) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
@@ -150,8 +151,12 @@ am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_1)
 am__objects_4 = adler32.lo compress.lo crc32.lo uncompr.lo deflate.lo \
 	trees.lo zutil.lo inflate.lo infback.lo inftrees.lo inffast.lo
-@HAVE_ZLIB_FALSE@am__objects_5 = zlib-helper.lo $(am__objects_4)
-@HAVE_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	zlib-helper.lo \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	$(am__objects_4)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@	zlib-helper.lo
+@HAVE_STATIC_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_6 = minizip/ioapi.lo minizip/unzip.lo minizip/zip.lo
 am_libMonoPosixHelper_la_OBJECTS = $(am__objects_3) $(am__objects_5) \
@@ -405,6 +410,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -590,10 +596,12 @@ ZLIB_SOURCES = \
 	zlib.h  	\
 	zutil.h
 
-@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
-@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
-@HAVE_ZLIB_FALSE@Z_LIBS = 
-@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_LIBS = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_TRUE@Z_LIBS = $(STATIC_ZLIB_PATH)
 libMonoPosixHelper_la_SOURCES = \
 	$(MPH_SOURCE)				\
 	$(Z_SOURCE)				\
