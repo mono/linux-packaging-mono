@@ -1,5 +1,4 @@
 /usr/bin/csc
-/usr/bin/csc-dim
 /usr/bin/csi
 /usr/bin/vbc
 /usr/lib/mono/4.5/csc.exe*
@@ -15,5 +14,4 @@
 /usr/lib/mono/4.5/System.Reflection.Metadata.dll*
 /usr/lib/mono/4.5/System.Collections.Immutable.dll*
 /usr/lib/mono/4.5/VBCSCompiler.*
-/usr/lib/mono/4.5/dim
 /usr/lib/mono/msbuild
