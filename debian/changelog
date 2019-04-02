@@ -1,3 +1,14 @@
+mono (6.3.0.16-0nightly2) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [794dbfa] Revert "Refreshed symbols" [3d3faa3] Kill DIM [82a5668]
+    Refreshed symbols
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 02 Apr 2019 14:31:09 +0000
+
 mono (6.3.0.16-0nightly1) nightly; urgency=medium
 
   * New release - mono-6.3.0.16.tar.xz
