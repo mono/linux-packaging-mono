@@ -79,18 +79,6 @@ namespace Mono.Linker.Steps
 			}
 		}
 
-		protected static void SetAction (LinkContext context, AssemblyDefinition assembly, AssemblyAction action)
-		{
-			TryReadSymbols (context, assembly);
-
-			context.Annotations.SetAction (assembly, action);
-		}
-
-		static void TryReadSymbols (LinkContext context, AssemblyDefinition assembly)
-		{
-			context.SafeReadSymbols (assembly);
-		}
-
 		protected virtual void ProcessLibrary (AssemblyDefinition assembly)
 		{
 			ProcessLibrary (Context, assembly, _rootVisibility);
@@ -99,7 +87,7 @@ namespace Mono.Linker.Steps
 		public static void ProcessLibrary (LinkContext context, AssemblyDefinition assembly, RootVisibility rootVisibility = RootVisibility.Any)
 		{
 			var action = rootVisibility == RootVisibility.Any ? AssemblyAction.Copy : AssemblyAction.Link;
-			SetAction (context, assembly, action);
+			context.SetAction (assembly, action);
 
 			context.Tracer.Push (assembly);
 
@@ -182,7 +170,7 @@ namespace Mono.Linker.Steps
 
 		void ProcessExecutable (AssemblyDefinition assembly)
 		{
-			SetAction (Context, assembly, AssemblyAction.Link);
+			Context.SetAction (assembly, AssemblyAction.Link);
 
 			Tracer.Push (assembly);
 
