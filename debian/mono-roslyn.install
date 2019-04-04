@@ -15,5 +15,8 @@
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
 /usr/lib/mono/4.5/System.Reflection.Metadata.dll*
 /usr/lib/mono/4.5/System.Collections.Immutable.dll*
+/usr/lib/mono/4.5/System.Memory.dll*
+/usr/lib/mono/4.5/System.Runtime.CompilerServices.Unsafe.dll*
+/usr/lib/mono/4.5/System.Threading.Tasks.Extensions.dll*
 /usr/lib/mono/4.5/VBCSCompiler.*
 /usr/lib/mono/msbuild
