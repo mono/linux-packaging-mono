@@ -1,3 +1,13 @@
+mono (6.3.0.42-0nightly2) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [165f7ea] Refreshed symbols [38ab49f] Add stuff for Roslyn 3.1.0
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 04 Apr 2019 13:57:59 +0000
+
 mono (6.3.0.42-0nightly1) nightly; urgency=medium
 
   * New release - mono-6.3.0.42.tar.xz
