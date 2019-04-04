@@ -358,6 +358,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Dynamic.dll
 %{_prefix}/lib/mono/4.5/System.Json.dll
 %{_prefix}/lib/mono/4.5/System.Json.Microsoft.dll
+%{_prefix}/lib/mono/4.5/System.Memory.dll*
 %{_prefix}/lib/mono/4.5/System.Net.dll
 %{_prefix}/lib/mono/4.5/System.Net.Http.dll
 %{_prefix}/lib/mono/4.5/System.Net.Http.Formatting.dll
@@ -366,8 +367,10 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
 %{_prefix}/lib/mono/4.5/System.Reflection.Context.dll
 %{_prefix}/lib/mono/4.5/System.Reflection.Metadata.dll*
+%{_prefix}/lib/mono/4.5/System.Runtime.CompilerServices.Unsafe.dll*
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
+%{_prefix}/lib/mono/4.5/System.Threading.Tasks.Extensions.dll
 %{_prefix}/lib/mono/4.5/System.Web.Mobile.dll
 %{_prefix}/lib/mono/4.5/System.Web.RegularExpressions.dll
 %{_prefix}/lib/mono/4.5/System.Workflow.Activities.dll
