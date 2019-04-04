@@ -1,7 +1,15 @@
+#
+# NETCORETESTS_VERSION and NETCOREAPP_VERSION must be updated in sync, we are using coreclr repo for that but that's fine for now
+#
 
-NETCORESDK_VERSION=3.0.100-preview4-010759
-NETCORESDK_FILE=dotnet-sdk-$(NETCORESDK_VERSION)-osx-x64.tar.gz
-URL:=https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$(NETCORESDK_VERSION)/$(NETCORESDK_FILE)
+# Extracted MicrosoftPrivateCoreFxNETCoreAppVersion from https://github.com/dotnet/coreclr/blob/master/eng/Versions.props#L11
+NETCORETESTS_VERSION := 4.6.0-preview4.19202.4
+
+# Extracted MicrosoftNETCoreAppVersion from https://github.com/dotnet/coreclr/blob/master/eng/Versions.props#L13
+NETCOREAPP_VERSION := 3.0.0-preview4-27529-11
+
+NETCORESDK_FILE := dotnet-runtime-$(NETCOREAPP_VERSION)-osx-x64.tar.gz
+URL := https://dotnetcli.blob.core.windows.net/dotnet/Runtime/$(NETCOREAPP_VERSION)/$(NETCORESDK_FILE)
 
 $(NETCORESDK_FILE):
 	curl $(URL) --output $(NETCORESDK_FILE)
@@ -11,11 +19,10 @@ build-sample:
 	dotnet build sample/HelloWorld
 
 run-sample:
-	COMPlus_DebugWriteToStdErr=1 ./dotnet --fx-version "$(VERSION)" sample/HelloWorld/bin/Debug/netcoreapp3.0/HelloWorld.dll
+	COMPlus_DebugWriteToStdErr=1 ./dotnet --fx-version "$(NETCOREAPP_VERSION)" sample/HelloWorld/bin/Debug/netcoreapp3.0/HelloWorld.dll
 
 # COREHOST_TRACE=1 
-VERSION:=3.0.0-preview4-27514-06
-SHAREDRUNTIME:=shared/Microsoft.NETCore.App/$(VERSION)
+SHAREDRUNTIME := shared/Microsoft.NETCore.App/$(NETCOREAPP_VERSION)
 
 bcl:
 	$(MAKE) -C ../mcs/class/System.Private.CoreLib
@@ -53,12 +60,13 @@ clean:
 # '-parallel none -verbose' for debug, `-parallel all` to run all tests in parallel
 # we need COREFX_ROOT only for xunit.console.deps.json and CoreFx.Private.TestUtilities.dll
 xtest-%: prepare check-env dl-test-assets
-	ln -sf $(CURDIR)/sdk/$(NETCORESDK_VERSION)/System.Text.Encoding.CodePages.dll assets/extracted/$*/
+	echo -n "***************** $* *********************"
+	cp $(COREFX_BINDIR)/runtime/netcoreapp-OSX-Debug-x64/Newtonsoft.Json.dll assets/extracted/$*/
 	cp $(COREFX_BINDIR)/runtime/netcoreapp-OSX-Debug-x64/xunit.console.deps.json assets/extracted/$*/
 	cp $(COREFX_BINDIR)/runtime/netcoreapp-OSX-Debug-x64/CoreFx.Private.TestUtilities.dll assets/extracted/$*/
-	sed -i -e 's/9.9.9/$(VERSION)/g' assets/extracted/$*/*.runtimeconfig.json
+	sed -i -e 's/9.9.9/$(NETCOREAPP_VERSION)/g' assets/extracted/$*/*.runtimeconfig.json
 	cd assets/extracted/$* && \
-	COMPlus_DebugWriteToStdErr=1 $(CURDIR)/./dotnet --fx-version "$(VERSION)" xunit.console.dll $*.dll \
+	COMPlus_DebugWriteToStdErr=1 $(CURDIR)/./dotnet --fx-version "$(NETCOREAPP_VERSION)" xunit.console.dll $*.dll \
 		-notrait category=outerloop -notrait category=nonosxtests -notrait category=failing \
 		-notrait category=nonnetcoreapptests -noappdomain -noshadow -parallel all \
 		-html ../../../TestResult-$*.html -nunit ../../TestResult-$*-netcore-xunit.xml \
@@ -73,14 +81,24 @@ EXCLUDED_COREFX_TESTS = \
 	System.Net.NameResolution.Functional.Tests \
 	System.Net.Sockets.Tests
 
-xtestall: $(foreach workingtest, $(foreach test, $(wildcard assets/extracted/*), \
+# Tests suites which pass
+PASSING_COREFX_TESTS = \
+	System.Collections.Immutable.Tests \
+	System.Reflection.Extensions.Tests \
+	System.Runtime.CompilerServices.Unsafe.Tests \
+	System.Runtime.CompilerServices.VisualC.Tests \
+	System.Runtime.InteropServices.RuntimeInformation.Tests
+
+xtestall: dl-test-assets $(foreach workingtest, $(foreach test, $(wildcard assets/extracted/*), \
 		$(filter-out $(EXCLUDED_COREFX_TESTS), $(notdir $(test)))), $(addprefix xtest-, $(workingtest)))
 
-FEED_BASE_URL = https://dotnetfeed.blob.core.windows.net/dotnet-core
-TEST_ASSETS_URL = https://dotnetfeed.blob.core.windows.net/dotnet-core/corefx-tests/4.6.0-preview4.19156.10/OSX.x64/netcoreapp/corefx-test-assets.xml
+xtestpass: dl-test-assets $(foreach workingtest, $(foreach test, $(wildcard assets/extracted/*), \
+		$(filter $(PASSING_COREFX_TESTS), $(notdir $(test)))), $(addprefix xtest-, $(workingtest)))
 
+FEED_BASE_URL := https://dotnetfeed.blob.core.windows.net/dotnet-core
+TEST_ASSETS_URL = $(FEED_BASE_URL)/corefx-tests/$(NETCORETESTS_VERSION)/OSX.x64/netcoreapp/corefx-test-assets.xml
 corefx-test-assets.xml:
-	wget $(TEST_ASSETS_URL)
+	curl $(TEST_ASSETS_URL) --output corefx-test-assets.xml
 
 dl-test-assets: corefx-test-assets.xml .stamp-dl-test-assets
 
