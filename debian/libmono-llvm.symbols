@@ -2,6 +2,7 @@
  mini_is_gsharedvt_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_type@Base 5.15.0.231
+ mini_method_is_default_method@Base 6.3.0.115
  mini_native_type_replace_type@Base 5.15.0.231
  mini_type_is_hfa@Base 5.15.0.231
  mini_type_is_vtype@Base 5.15.0.231
