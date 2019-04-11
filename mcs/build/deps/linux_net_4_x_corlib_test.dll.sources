@@ -1,3 +1,4 @@
+../../../external/corert/src/System.Private.CoreLib/src/System/Globalization/GlobalizationMode.cs
 ../../../mono/mini/TestHelpers.cs
 ../test-helpers/NunitHelpers.cs
 ../test-helpers/TestResourceHelper.cs
@@ -548,3 +549,4 @@ Test/System/UIntPtrTest.cs
 Test/System/ValueTypeTest.cs
 Test/System/VersionTest.cs
 Test/System/WeakReferenceTest.cs
+corefx/GlobalizationMode.cs

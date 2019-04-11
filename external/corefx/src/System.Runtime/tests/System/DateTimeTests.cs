@@ -989,13 +989,16 @@ namespace System.Tests
             yield return new object[] { "2 2 2Z", CultureInfo.InvariantCulture, TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2002, 2, 2, 0, 0, 0, DateTimeKind.Utc), TimeZoneInfo.Local) };
             yield return new object[] { "#10/10/2095#\0", CultureInfo.InvariantCulture, new DateTime(2095, 10, 10, 0, 0, 0) };
 
-            DateTime today = DateTime.Today;
-            var hebrewCulture = new CultureInfo("he-IL");
-            hebrewCulture.DateTimeFormat.Calendar = new HebrewCalendar();
-            yield return new object[] { today.ToString(hebrewCulture), hebrewCulture, today };
+            if (!GlobalizationMode.Invariant)
+            {
+                DateTime today = DateTime.Today;
+                var hebrewCulture = new CultureInfo("he-IL");
+                hebrewCulture.DateTimeFormat.Calendar = new HebrewCalendar();
+                yield return new object[] { today.ToString(hebrewCulture), hebrewCulture, today };
 
-            var mongolianCulture = new CultureInfo("mn-MN");
-            yield return new object[] { today.ToString(mongolianCulture), mongolianCulture, today };
+                var mongolianCulture = new CultureInfo("mn-MN");
+                yield return new object[] { today.ToString(mongolianCulture), mongolianCulture, today };
+            }
         }
 
         [Theory]
@@ -1099,6 +1102,11 @@ namespace System.Tests
             yield return new object[] { "1234-05-06T07:00:00Z", "yyyy-MM-dd'T'HH:mm:ssFFF'Z'\'  \'", CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, new DateTime(1234, 5, 6, 7, 0, 0, 0) };
             yield return new object[] { "1234-05-06T07:00:00Z", "yyyy-MM-dd'T'HH:mm:ssFFFZ\" \"", CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1234, 5, 6, 7, 0, 0, DateTimeKind.Utc), TimeZoneInfo.Local) };
             yield return new object[] { "1234-05-06T07:00:00GMT", "yyyy-MM-dd'T'HH:mm:ssFFFZ\"  \"", CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1234, 5, 6, 7, 0, 0, DateTimeKind.Utc), TimeZoneInfo.Local) };
+
+            if (GlobalizationMode.Invariant)
+            {
+                yield break;
+            }
 
 
             var hebrewCulture = new CultureInfo("he-IL");
