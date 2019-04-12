@@ -16,6 +16,9 @@ namespace System.Drawing
         {
             var dict = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
             FillConstants(dict, typeof(Color));
+#if MONO
+            FillConstants(dict, typeof(SystemColors));
+#endif
             return dict;
         }
 

@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("MONO development team")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Development version")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2003 Various Authors")]
@@ -117,7 +117,7 @@ namespace Mono.Http.Modules
         public DigestAuthenticationModule() : base (default(string)) { }
         protected override bool AcceptCredentials(System.Web.HttpApplication app, string authentication) { throw null; }
         protected virtual string GetCurrentNonce() { throw null; }
-        protected virtual bool GetUserByName(System.Web.HttpApplication app, string username, out string password, out string[] roles) { password = default(string); roles = default(string[]); throw null; }
+        protected virtual bool GetUserByName(System.Web.HttpApplication app, string username, out string password, out string[] roles) { throw null; }
         protected virtual bool IsValidNonce(string nonce) { throw null; }
         public override void OnEndRequest(object source, System.EventArgs eventArgs) { }
     }

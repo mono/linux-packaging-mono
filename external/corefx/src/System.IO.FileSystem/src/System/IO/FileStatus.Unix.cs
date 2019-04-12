@@ -7,6 +7,8 @@ namespace System.IO
     internal struct FileStatus
     {
         private const int NanosecondsPerTick = 100;
+        private const int TicksPerMicrosecond = 10;
+        private const long TicksPerSecond = 10000000L;
 
         // The last cached stat information about the file
         private Interop.Sys.FileStatus _fileStatus;
@@ -176,7 +178,7 @@ namespace System.IO
         }
 
         internal void SetLastAccessTime(string path, DateTimeOffset time)
-            => SetAccessWriteTimes(path, time.ToUnixTimeSeconds(), null);
+            => SetAccessWriteTimes(path, time.ToUnixTimeSeconds(), ((time.Ticks - DateTime.UnixEpochTicks) % TicksPerSecond) / TicksPerMicrosecond , null, null);
 
         internal DateTimeOffset GetLastWriteTime(ReadOnlySpan<char> path, bool continueOnError = false)
         {
@@ -187,23 +189,24 @@ namespace System.IO
         }
 
         internal void SetLastWriteTime(string path, DateTimeOffset time)
-            => SetAccessWriteTimes(path, null, time.ToUnixTimeSeconds());
+            => SetAccessWriteTimes(path, null, null, time.ToUnixTimeSeconds(), ((time.Ticks - DateTime.UnixEpochTicks) % TicksPerSecond) / TicksPerMicrosecond);
 
         private DateTimeOffset UnixTimeToDateTimeOffset(long seconds, long nanoseconds)
         {
             return DateTimeOffset.FromUnixTimeSeconds(seconds).AddTicks(nanoseconds / NanosecondsPerTick).ToLocalTime();
         }
 
-        private void SetAccessWriteTimes(string path, long? accessTime, long? writeTime)
+        private void SetAccessWriteTimes(string path, long? accessSec, long? accessUSec, long? writeSec, long? writeUSec)
         {
             // force a refresh so that we have an up-to-date times for values not being overwritten
             _fileStatusInitialized = -1;
             EnsureStatInitialized(path);
-            Interop.Sys.UTimBuf buf;
-            // we use utime() not utimensat() so we drop the subsecond part
-            buf.AcTime = accessTime ?? _fileStatus.ATime;
-            buf.ModTime = writeTime ?? _fileStatus.MTime;
-            Interop.CheckIo(Interop.Sys.UTime(path, ref buf), path, InitiallyDirectory);
+            Interop.Sys.TimeValPair buf;
+            buf.ASec = accessSec ?? _fileStatus.ATime;
+            buf.AUSec = accessUSec ?? _fileStatus.ATimeNsec / 1000;
+            buf.MSec = writeSec ?? _fileStatus.MTime;
+            buf.MUSec = writeUSec ?? _fileStatus.MTimeNsec / 1000;
+            Interop.CheckIo(Interop.Sys.UTimes(path, ref buf), path, InitiallyDirectory);
             _fileStatusInitialized = -1;
         }
 

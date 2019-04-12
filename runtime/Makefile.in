@@ -85,21 +85,23 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
-@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_7 = testing_aot_hybrid
-@INSTALL_TESTING_AOT_FULL_TRUE@am__append_8 = testing_aot_full
-@INSTALL_WINAOT_TRUE@am__append_9 = winaot
-@INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
-@INSTALL_ORBIS_TRUE@am__append_11 = orbis
-@INSTALL_UNREAL_TRUE@am__append_12 = unreal
-@INSTALL_WASM_TRUE@am__append_13 = wasm
+@INSTALL_TESTING_AOT_FULL_INTERP_TRUE@am__append_7 = testing_aot_full_interp
+@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_8 = testing_aot_hybrid
+@INSTALL_TESTING_AOT_FULL_TRUE@am__append_9 = testing_aot_full
+@INSTALL_WINAOT_TRUE@am__append_10 = winaot
+@INSTALL_XAMMAC_TRUE@am__append_11 = xammac xammac_net_4_5
+@INSTALL_ORBIS_TRUE@am__append_12 = orbis
+@INSTALL_UNREAL_TRUE@am__append_13 = unreal
+@INSTALL_WASM_TRUE@am__append_14 = wasm wasm_tools
+@ENABLE_NETCORE_TRUE@am__append_15 = netcore
 
 # Mono.WebBrowser.dll fails to verify on Windows
-@HOST_WIN32_TRUE@am__append_14 = Mono.WebBrowser.dll
+@HOST_WIN32_TRUE@am__append_16 = Mono.WebBrowser.dll
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@am__append_15 = ilasm.exe
+@FULL_AOT_TESTS_TRUE@am__append_17 = ilasm.exe
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -138,6 +140,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -195,6 +198,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -213,6 +217,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -246,6 +251,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -306,6 +312,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -375,7 +382,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -408,9 +419,10 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13)
+	$(am__append_11) $(am__append_12) $(am__append_13) \
+	$(am__append_14) $(am__append_15)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
-test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
+test_profiles = $(filter-out binary_reference_assemblies monodroid_tools wasm_tools,$(build_profiles))
 MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
@@ -421,8 +433,10 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 
 # assemblies which are excluded from testing in mcs-compileall below
+
+# fails to verify with "VTable setup of type Xunit.NetCore.Extensions.SkippedTestCase failed", not sure why
 VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll \
-	$(am__append_14) $(am__append_15)
+	$(am__append_16) Xunit.NetCore.Extensions.dll $(am__append_17)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -470,6 +484,8 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+test-local: 
+test-bundle-local: 
 tags TAGS:
 
 ctags CTAGS:
@@ -578,6 +594,12 @@ ps: ps-am
 
 ps-am:
 
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am:
 
 .MAKE: check-am install-am install-strip
@@ -592,7 +614,8 @@ uninstall-am:
 	install-pdf-am install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am test test-am \
+	test-bundle-am test-bundle-local test-local uninstall \
 	uninstall-am
 
 
@@ -651,15 +674,42 @@ clean-mcs:
 
 mcs-do-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' test-profiles
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' compiler-test-profiles
 
 mcs-do-xunit-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' xunit-test-profiles
 
 mcs-do-run-test-profiles: test-support-files
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' run-test-profiles
+	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' run-compiler-test-profiles
 
 mcs-do-xunit-run-test-profiles: test-support-files
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' run-xunit-test-profiles
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)/_tmpinst/bin
+	cp -L mono-test.sh $(TEST_BUNDLE_PATH)
+	cp -L -R etc $(TEST_BUNDLE_PATH)/_tmpinst
+	rm $(TEST_BUNDLE_PATH)/_tmpinst/etc/mono/config
+	sed -e 's,$$mono_libdir,$$test_root_dir,g' -e 's,target="$(libgdiplus_install_loc)",target="$$test_root_dir/mono-libgdiplus$(libsuffix)",g' $(top_builddir)/data/config > $(TEST_BUNDLE_PATH)/_tmpinst/etc/mono/config.tmpl
+	echo '#! /bin/sh' > $(TEST_BUNDLE_PATH)/_tmpinst/bin/al
+	echo '#! /bin/sh' > $(TEST_BUNDLE_PATH)/_tmpinst/bin/mcs
+	echo '#! /bin/sh' > $(TEST_BUNDLE_PATH)/_tmpinst/bin/ilasm
+	echo '"$$MONO_EXECUTABLE" $$(dirname "$$MONO_EXECUTABLE")/net_4_x/al.exe "$$@"' >> $(TEST_BUNDLE_PATH)/_tmpinst/bin/al
+	echo '"$$MONO_EXECUTABLE" $$(dirname "$$MONO_EXECUTABLE")/net_4_x/mcs.exe "$$@"' >> $(TEST_BUNDLE_PATH)/_tmpinst/bin/mcs
+	echo '"$$MONO_EXECUTABLE" $$(dirname "$$MONO_EXECUTABLE")/net_4_x/ilasm.exe "$$@"' >> $(TEST_BUNDLE_PATH)/_tmpinst/bin/ilasm
+	chmod +x $(TEST_BUNDLE_PATH)/_tmpinst/bin/al
+	chmod +x $(TEST_BUNDLE_PATH)/_tmpinst/bin/mcs
+	chmod +x $(TEST_BUNDLE_PATH)/_tmpinst/bin/ilasm
+	for profile in $(test_profiles); do \
+		cp -L -R $(mcs_topdir)/class/lib/$$profile $(TEST_BUNDLE_PATH); \
+	done
+	cp -L $(top_srcdir)/external/xunit-binaries/*.dll $(top_srcdir)/external/xunit-binaries/*.exe $(top_srcdir)/external/xunit-binaries/*.config $(TEST_BUNDLE_PATH)/net_4_x/
+	cp -L $(top_srcdir)/external/xunit-binaries/xunit.execution.dotnet.dll $(TEST_BUNDLE_PATH)/net_4_x/tests/
+	$(MAKE) -C $(mcs_topdir)/tests test-bundle
+	$(MAKE) -C $(mcs_topdir)/errors test-bundle
+	$(MAKE) -C $(mcs_topdir)/packages test-bundle
+	$(MAKE) -C $(mcs_topdir)/tools/mono-symbolicate test-bundle
 
 # Compile all assemblies with the verifier turned on. Code must be valid but not verifiable.
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.

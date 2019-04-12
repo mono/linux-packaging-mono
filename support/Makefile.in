@@ -126,7 +126,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libMonoPosixHelper_la_DEPENDENCIES = $(MPH_LIBS) $(am__DEPENDENCIES_1) \
+@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+libMonoPosixHelper_la_DEPENDENCIES = $(MPH_LIBS) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
@@ -150,8 +151,12 @@ am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_1)
 am__objects_4 = adler32.lo compress.lo crc32.lo uncompr.lo deflate.lo \
 	trees.lo zutil.lo inflate.lo infback.lo inftrees.lo inffast.lo
-@HAVE_ZLIB_FALSE@am__objects_5 = zlib-helper.lo $(am__objects_4)
-@HAVE_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	zlib-helper.lo \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	$(am__objects_4)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@	zlib-helper.lo
+@HAVE_STATIC_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_6 = minizip/ioapi.lo minizip/unzip.lo minizip/zip.lo
 am_libMonoPosixHelper_la_OBJECTS = $(am__objects_3) $(am__objects_5) \
@@ -214,6 +219,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -289,6 +295,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -307,6 +314,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -340,6 +348,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -400,6 +409,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -469,7 +479,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -581,10 +595,12 @@ ZLIB_SOURCES = \
 	zlib.h  	\
 	zutil.h
 
-@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
-@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
-@HAVE_ZLIB_FALSE@Z_LIBS = 
-@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_LIBS = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_TRUE@Z_LIBS = $(STATIC_ZLIB_PATH)
 libMonoPosixHelper_la_SOURCES = \
 	$(MPH_SOURCE)				\
 	$(Z_SOURCE)				\
@@ -781,6 +797,8 @@ mostlyclean-libtool:
 clean-libtool:
 	-rm -rf .libs _libs
 	-rm -rf minizip/.libs minizip/_libs
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -972,6 +990,14 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
@@ -988,8 +1014,13 @@ uninstall-am: uninstall-libLTLIBRARIES
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-libLTLIBRARIES
 
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)
+	cp -L .libs/libMonoPosixHelper$(libsuffix) $(TEST_BUNDLE_PATH)/
 
 # 
 # Use this target to refresh the values in map.[ch]

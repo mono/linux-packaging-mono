@@ -9,6 +9,12 @@ namespace System.Drawing
     [SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
 #if MONODROID
     [System.Runtime.CompilerServices.TypeForwardedFrom("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH || MONOTOUCH_TV
+    [System.Runtime.CompilerServices.TypeForwardedFrom("OpenTK-1.0, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif MONOTOUCH_WATCH
+    [System.Runtime.CompilerServices.TypeForwardedFrom("Xamarin.WatchOS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
+#elif XAMMAC
+    [System.Runtime.CompilerServices.TypeForwardedFrom("OpenTK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
 #endif
 #if netcoreapp20
     internal

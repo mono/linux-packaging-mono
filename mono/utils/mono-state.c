@@ -834,25 +834,22 @@ mono_native_state_add_version (MonoStateWriter *writer)
 	mono_state_writer_printf(writer, "\"disabled\",\n");
 #endif
 
-	const char *susp_policy = mono_threads_suspend_policy_name ();
-	assert_has_space (writer);
-	mono_state_writer_indent (writer);
-	mono_state_writer_object_key (writer, "suspend");
-	mono_state_writer_printf(writer, "\"%s\",\n", susp_policy);
-
 	assert_has_space (writer);
 	mono_state_writer_indent (writer);
 	mono_state_writer_object_key (writer, "llvm_support");
 #ifdef MONO_ARCH_LLVM_SUPPORTED
 #ifdef ENABLE_LLVM
-	mono_state_writer_printf (writer, "\"%d\"\n", LLVM_API_VERSION);
+	mono_state_writer_printf(writer, "\"%d\",\n", LLVM_API_VERSION);
 #else
-	mono_state_writer_printf (writer, "\"disabled\"\n");
+	mono_state_writer_printf(writer, "\"disabled\",\n");
 #endif
 #endif
 
-	// Don't put any new fields here without adding commas above.
-	// Easier to add new fields above llvm_support
+	const char *susp_policy = mono_threads_suspend_policy_name (mono_threads_suspend_policy ());
+	assert_has_space (writer);
+	mono_state_writer_indent (writer);
+	mono_state_writer_object_key (writer, "suspend");
+	mono_state_writer_printf(writer, "\"%s\"\n", susp_policy);
 
 	assert_has_space (writer);
 	mono_state_writer_indent (writer);

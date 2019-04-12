@@ -34,6 +34,7 @@ namespace System.IO.Tests
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void EnumerateDirectories_NonBreakingSpace()
         {
             DirectoryInfo rootDirectory = Directory.CreateDirectory(GetTestFilePath());

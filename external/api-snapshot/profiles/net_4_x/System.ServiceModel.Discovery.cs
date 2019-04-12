@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("MONO development team")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Development version")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2003 Various Authors")]
@@ -79,7 +79,7 @@ namespace System.ServiceModel.Discovery
         public System.ServiceModel.Discovery.EndpointDiscoveryMetadata EndpointDiscoveryMetadata { get { throw null; } }
         public System.ServiceModel.Discovery.DiscoveryMessageSequence MessageSequence { get { throw null; } }
     }
-    [System.ServiceModel.ServiceBehaviorAttribute(InstanceContextMode=(System.ServiceModel.InstanceContextMode)(2), ConcurrencyMode=(System.ServiceModel.ConcurrencyMode)(2))]
+    [System.ServiceModel.ServiceBehaviorAttribute(InstanceContextMode=System.ServiceModel.InstanceContextMode.Single, ConcurrencyMode=System.ServiceModel.ConcurrencyMode.Multiple)]
     public partial class AnnouncementService
     {
         public AnnouncementService() { }
@@ -200,8 +200,8 @@ namespace System.ServiceModel.Discovery
         protected DiscoveryProxy(System.ServiceModel.Discovery.DiscoveryMessageSequenceGenerator messageSequenceGenerator, int duplicateMessageHistoryLength) { }
         protected virtual System.IAsyncResult BeginShouldRedirectFind(System.ServiceModel.Discovery.FindCriteria resolveCriteria, System.AsyncCallback callback, object state) { throw null; }
         protected virtual System.IAsyncResult BeginShouldRedirectResolve(System.ServiceModel.Discovery.ResolveCriteria findCriteria, System.AsyncCallback callback, object state) { throw null; }
-        protected virtual bool EndShouldRedirectFind(System.IAsyncResult result, out System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> redirectionEndpoints) { redirectionEndpoints = default(System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata>); throw null; }
-        protected virtual bool EndShouldRedirectResolve(System.IAsyncResult result, out System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> redirectionEndpoints) { redirectionEndpoints = default(System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata>); throw null; }
+        protected virtual bool EndShouldRedirectFind(System.IAsyncResult result, out System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> redirectionEndpoints) { throw null; }
+        protected virtual bool EndShouldRedirectResolve(System.IAsyncResult result, out System.Collections.ObjectModel.Collection<System.ServiceModel.Discovery.EndpointDiscoveryMetadata> redirectionEndpoints) { throw null; }
         protected abstract System.IAsyncResult OnBeginFind(System.ServiceModel.Discovery.FindRequestContext findRequestContext, System.AsyncCallback callback, object state);
         protected abstract System.IAsyncResult OnBeginOfflineAnnouncement(System.ServiceModel.Discovery.DiscoveryMessageSequence messageSequence, System.ServiceModel.Discovery.EndpointDiscoveryMetadata endpointDiscoveryMetadata, System.AsyncCallback callback, object state);
         protected abstract System.IAsyncResult OnBeginOnlineAnnouncement(System.ServiceModel.Discovery.DiscoveryMessageSequence messageSequence, System.ServiceModel.Discovery.EndpointDiscoveryMetadata endpointDiscoveryMetadata, System.AsyncCallback callback, object state);
@@ -424,10 +424,10 @@ namespace System.ServiceModel.Discovery.Configuration
     {
         public ContractTypeNameElement() { }
         public ContractTypeNameElement(string name, string ns) { }
-        [System.Configuration.ConfigurationPropertyAttribute("name", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("name", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.Configuration.StringValidatorAttribute(MinLength=0)]
         public string Name { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue="http://tempuri.org/", Options=(System.Configuration.ConfigurationPropertyOptions)(4))]
+        [System.Configuration.ConfigurationPropertyAttribute("namespace", DefaultValue="http://tempuri.org/", Options=System.Configuration.ConfigurationPropertyOptions.IsKey)]
         public string Namespace { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
     }
@@ -467,7 +467,7 @@ namespace System.ServiceModel.Discovery.Configuration
     public partial class DiscoveryEndpointElement : System.ServiceModel.Configuration.StandardEndpointElement
     {
         public DiscoveryEndpointElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("discoveryMode", DefaultValue=(System.ServiceModel.Discovery.ServiceDiscoveryMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("discoveryMode", DefaultValue=System.ServiceModel.Discovery.ServiceDiscoveryMode.Managed)]
         public System.ServiceModel.Discovery.ServiceDiscoveryMode DiscoveryMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ServiceModel.Discovery.Configuration.DiscoveryVersionConverter))]
         [System.Configuration.ConfigurationPropertyAttribute("discoveryVersion", DefaultValue="WSDiscovery11")]
@@ -548,7 +548,7 @@ namespace System.ServiceModel.Discovery.Configuration
         public ScopeElement() { }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         [System.Configuration.CallbackValidatorAttribute(CallbackMethodName="ScopeValidatorCallback", Type=typeof(System.ServiceModel.Discovery.Configuration.ScopeElement))]
-        [System.Configuration.ConfigurationPropertyAttribute("scope", Options=(System.Configuration.ConfigurationPropertyOptions)(6))]
+        [System.Configuration.ConfigurationPropertyAttribute("scope", Options=System.Configuration.ConfigurationPropertyOptions.IsKey | System.Configuration.ConfigurationPropertyOptions.IsRequired)]
         [System.MonoTODOAttribute]
         public System.Uri Scope { get { throw null; } set { } }
     }
@@ -597,7 +597,7 @@ namespace System.ServiceModel.Discovery.Configuration
     public partial class UdpDiscoveryEndpointElement : System.ServiceModel.Discovery.Configuration.DiscoveryEndpointElement
     {
         public UdpDiscoveryEndpointElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("discoveryMode", DefaultValue=(System.ServiceModel.Discovery.ServiceDiscoveryMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("discoveryMode", DefaultValue=System.ServiceModel.Discovery.ServiceDiscoveryMode.Adhoc)]
         public new System.ServiceModel.Discovery.ServiceDiscoveryMode DiscoveryMode { get { throw null; } set { } }
         protected internal override System.Type EndpointType { get { throw null; } }
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.TimeSpanConverter))]

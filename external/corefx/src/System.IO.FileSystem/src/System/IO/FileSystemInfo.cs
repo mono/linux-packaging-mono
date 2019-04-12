@@ -17,12 +17,25 @@ namespace System.IO
 
         protected FileSystemInfo(SerializationInfo info, StreamingContext context)
         {
-            throw new PlatformNotSupportedException();
+#if MONO // copy behavior from reference source
+            if (info == null)
+                throw new ArgumentNullException("info");
+
+            // Must use V1 field names here, since V1 didn't implement
+            // ISerializable.
+            FullPath = Path.GetFullPathInternal(info.GetString("FullPath"));
+            OriginalPath = info.GetString("OriginalPath");
+            _name = info.GetString("Name");
         }
+#endif
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new PlatformNotSupportedException();
+#if MONO // copy behavior from reference source
+            info.AddValue("OriginalPath", OriginalPath, typeof(String));
+            info.AddValue("FullPath", FullPath, typeof(String));
+            info.AddValue("Name", Name, typeof(String));
+#endif
         }
 
         // Full path of the directory/file

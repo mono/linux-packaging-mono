@@ -587,11 +587,7 @@ namespace System.IO
                 // If we shouldn't include subdirectories, check if this path's parent is the watch directory
                 // Check if the parent is the root. If so, then we'll continue processing based on the name.
                 // If it isn't, then this will be set to false and we'll skip the name processing since it's irrelevant.
-#if MONO
-                return _includeChildren || _fullDirectory.AsSpan().StartsWith(System.IO.Path.GetDirectoryName(eventPath.ToString()), StringComparison.OrdinalIgnoreCase);
-#else
                 return _includeChildren || _fullDirectory.AsSpan().StartsWith(System.IO.Path.GetDirectoryName(eventPath), StringComparison.OrdinalIgnoreCase);
-#endif
             }
 
             private long FindRenameChangePairedChange(
@@ -621,21 +617,15 @@ namespace System.IO
                 if (path.IsEmpty || path.Length == 0)
                     return false;
 
+                if (!isFile)
+                    return  FileSystem.DirectoryExists(path);
 #if MONO
-                if (!isFile)
-                    return Directory.Exists(path.ToString());
-
                 return path[path.Length - 1] == '/'
-                    ? false
-                    : File.Exists(path.ToString());
 #else
-                if (!isFile)
-                    return FileSystem.DirectoryExists(path);
-
                 return PathInternal.IsDirectorySeparator(path[path.Length - 1])
+#endif
                     ? false
                     : FileSystem.FileExists(path);
-#endif
             }
         }
     }

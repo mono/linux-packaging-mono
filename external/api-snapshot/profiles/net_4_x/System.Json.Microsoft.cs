@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -72,7 +72,7 @@ namespace System.Json
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Json.JsonValue>>.Contains(System.Collections.Generic.KeyValuePair<string, System.Json.JsonValue> item) { throw null; }
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Json.JsonValue>>.Remove(System.Collections.Generic.KeyValuePair<string, System.Json.JsonValue> item) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Json.JsonValue value) { value = default(System.Json.JsonValue); throw null; }
+        public bool TryGetValue(string key, out System.Json.JsonValue value) { throw null; }
         public override System.Json.JsonValue ValueOrDefault(string key) { throw null; }
     }
     [System.Runtime.Serialization.DataContractAttribute]
@@ -103,8 +103,8 @@ namespace System.Json
         public override System.Json.JsonType JsonType { get { throw null; } }
         public object Value { get { throw null; } }
         public override object ReadAs(System.Type type) { throw null; }
-        public static bool TryCreate(object value, out System.Json.JsonPrimitive result) { result = default(System.Json.JsonPrimitive); throw null; }
-        public override bool TryReadAs(System.Type type, out object value) { value = default(object); throw null; }
+        public static bool TryCreate(object value, out System.Json.JsonPrimitive result) { throw null; }
+        public override bool TryReadAs(System.Type type, out object value) { throw null; }
     }
     public enum JsonType
     {
@@ -128,14 +128,14 @@ namespace System.Json
         public event System.EventHandler<System.Json.JsonValueChangeEventArgs> Changed { add { } remove { } }
         public event System.EventHandler<System.Json.JsonValueChangeEventArgs> Changing { add { } remove { } }
         public dynamic AsDynamic() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static T CastValue<T>(System.Json.JsonValue value) { throw null; }
         public virtual bool ContainsKey(string key) { throw null; }
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, System.Json.JsonValue>> GetEnumerator() { throw null; }
         protected virtual System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, System.Json.JsonValue>> GetKeyValuePairEnumerator() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual System.Json.JsonValue GetValue(int index) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual System.Json.JsonValue GetValue(string key) { throw null; }
         public static System.Json.JsonValue Load(System.IO.Stream stream) { throw null; }
         public static System.Json.JsonValue Load(System.IO.TextReader textReader) { throw null; }
@@ -194,15 +194,15 @@ namespace System.Json
         public T ReadAs<T>(T fallback) { throw null; }
         public void Save(System.IO.Stream stream) { }
         public void Save(System.IO.TextWriter textWriter) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual System.Json.JsonValue SetValue(int index, object value) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual System.Json.JsonValue SetValue(string key, object value) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         System.Dynamic.DynamicMetaObject System.Dynamic.IDynamicMetaObjectProvider.GetMetaObject(System.Linq.Expressions.Expression parameter) { throw null; }
         public override string ToString() { throw null; }
-        public virtual bool TryReadAs(System.Type type, out object value) { value = default(object); throw null; }
-        public bool TryReadAs<T>(out T valueOfT) { valueOfT = default(T); throw null; }
+        public virtual bool TryReadAs(System.Type type, out object value) { throw null; }
+        public bool TryReadAs<T>(out T valueOfT) { throw null; }
         public virtual System.Json.JsonValue ValueOrDefault(int index) { throw null; }
         public System.Json.JsonValue ValueOrDefault(params object[] indexes) { throw null; }
         public virtual System.Json.JsonValue ValueOrDefault(string key) { throw null; }
@@ -223,7 +223,7 @@ namespace System.Json
         public int Index { get { throw null; } }
         public string Key { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class JsonValueLinqExtensions
     {
         public static System.Json.JsonArray ToJsonArray(this System.Collections.Generic.IEnumerable<System.Json.JsonValue> items) { throw null; }
@@ -232,14 +232,14 @@ namespace System.Json
 }
 namespace System.Runtime.Serialization.Json
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class JsonValueExtensions
     {
         public static System.Json.JsonValue CreateFrom(object value) { throw null; }
         public static object ReadAsType(this System.Json.JsonValue jsonValue, System.Type type) { throw null; }
         public static T ReadAsType<T>(this System.Json.JsonValue jsonValue) { throw null; }
         public static T ReadAsType<T>(this System.Json.JsonValue jsonValue, T fallback) { throw null; }
-        public static bool TryReadAsType(this System.Json.JsonValue jsonValue, System.Type type, out object value) { value = default(object); throw null; }
-        public static bool TryReadAsType<T>(this System.Json.JsonValue jsonValue, out T valueOfT) { valueOfT = default(T); throw null; }
+        public static bool TryReadAsType(this System.Json.JsonValue jsonValue, System.Type type, out object value) { throw null; }
+        public static bool TryReadAsType<T>(this System.Json.JsonValue jsonValue, out T valueOfT) { throw null; }
     }
 }

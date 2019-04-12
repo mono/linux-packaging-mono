@@ -1924,6 +1924,9 @@ namespace System.Text
                    (byteOrderMark ? 4 : 0) + (bigEndian ? 8 : 0);
         }
 
+#if MONO
+        [Serializable]
+#endif
         private sealed class Decoder : System.Text.DecoderNLS
         {
             internal int lastByte = -1;

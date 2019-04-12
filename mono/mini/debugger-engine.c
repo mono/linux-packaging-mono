@@ -175,7 +175,7 @@ insert_breakpoint (MonoSeqPointInfo *seq_points, MonoDomain *domain, MonoJitInfo
 	}
 
 	if (!it_has_sp) {
-		char *s = g_strdup_printf ("Unable to insert breakpoint at %s:%d", mono_method_full_name (jinfo_get_method (ji), TRUE), bp->il_offset);
+		char *s = g_strdup_printf ("Unable to insert breakpoint at %s:%ld", mono_method_full_name (jinfo_get_method (ji), TRUE), bp->il_offset);
 
 		mono_seq_point_iterator_init (&it, seq_points);
 		while (mono_seq_point_iterator_next (&it))
@@ -1556,4 +1556,13 @@ mono_de_cleanup (void)
 	domains_cleanup ();
 }
 
+void
+mono_debugger_free_objref (gpointer value)
+{
+	ObjRef *o = (ObjRef *)value;
+
+	mono_gchandle_free_internal (o->handle);
+
+	g_free (o);
+}
 #endif

@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Drawing.Common")]
@@ -34,11 +34,11 @@ namespace System.Drawing
         public System.Drawing.Bitmap Clone(System.Drawing.RectangleF rect, System.Drawing.Imaging.PixelFormat format) { throw null; }
         public static System.Drawing.Bitmap FromHicon(System.IntPtr hicon) { throw null; }
         public static System.Drawing.Bitmap FromResource(System.IntPtr hinstance, string bitmapName) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.IntPtr GetHbitmap() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.IntPtr GetHbitmap(System.Drawing.Color background) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public System.IntPtr GetHicon() { throw null; }
         public System.Drawing.Color GetPixel(int x, int y) { throw null; }
         public System.Drawing.Imaging.BitmapData LockBits(System.Drawing.Rectangle rect, System.Drawing.Imaging.ImageLockMode flags, System.Drawing.Imaging.PixelFormat format) { throw null; }
@@ -49,12 +49,12 @@ namespace System.Drawing
         public void SetResolution(float xDpi, float yDpi) { }
         public void UnlockBits(System.Drawing.Imaging.BitmapData bitmapdata) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     public partial class BitmapSuffixInSameAssemblyAttribute : System.Attribute
     {
         public BitmapSuffixInSameAssemblyAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     public partial class BitmapSuffixInSatelliteAssemblyAttribute : System.Attribute
     {
         public BitmapSuffixInSatelliteAssemblyAttribute() { }
@@ -239,7 +239,8 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct CharacterRange
     {
-        public CharacterRange(int First, int Length) { throw null;}
+        private int _dummyPrimitive;
+        public CharacterRange(int First, int Length) { throw null; }
         public int First { get { throw null; } set { } }
         public int Length { get { throw null; } set { } }
         public override bool Equals(object obj) { throw null; }
@@ -248,12 +249,13 @@ namespace System.Drawing
         public static bool operator !=(System.Drawing.CharacterRange cr1, System.Drawing.CharacterRange cr2) { throw null; }
     }
     [System.Diagnostics.DebuggerDisplayAttribute("{NameAndARGBValue}")]
-    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Color : System.IEquatable<System.Drawing.Color>
+    public readonly partial struct Color : System.IEquatable<System.Drawing.Color>
     {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
         public static readonly System.Drawing.Color Empty;
         public byte A { get { throw null; } }
         public static System.Drawing.Color AliceBlue { get { throw null; } }
@@ -489,34 +491,34 @@ namespace System.Drawing
         public Font(string familyName, float emSize, System.Drawing.FontStyle style, System.Drawing.GraphicsUnit unit, byte gdiCharSet) { }
         public Font(string familyName, float emSize, System.Drawing.FontStyle style, System.Drawing.GraphicsUnit unit, byte gdiCharSet, bool gdiVerticalFont) { }
         public Font(string familyName, float emSize, System.Drawing.GraphicsUnit unit) { }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Bold { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public System.Drawing.FontFamily FontFamily { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public byte GdiCharSet { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool GdiVerticalFont { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public int Height { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsSystemFont { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Italic { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string Name { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public string OriginalFontName { get { throw null; } }
         public float Size { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public float SizeInPoints { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Strikeout { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public System.Drawing.FontStyle Style { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public string SystemFontName { get { throw null; } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Underline { get { throw null; } }
         public System.Drawing.GraphicsUnit Unit { get { throw null; } }
         public object Clone() { throw null; }
@@ -754,18 +756,18 @@ namespace System.Drawing
         ~Graphics() { }
         public void Flush() { }
         public void Flush(System.Drawing.Drawing2D.FlushIntention intention) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.Drawing.Graphics FromHdc(System.IntPtr hdc) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.Drawing.Graphics FromHdc(System.IntPtr hdc, System.IntPtr hdevice) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.Drawing.Graphics FromHdcInternal(System.IntPtr hdc) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.Drawing.Graphics FromHwnd(System.IntPtr hwnd) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static System.Drawing.Graphics FromHwndInternal(System.IntPtr hwnd) { throw null; }
         public static System.Drawing.Graphics FromImage(System.Drawing.Image image) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public object GetContextInfo() { throw null; }
         public static System.IntPtr GetHalftonePalette() { throw null; }
         public System.IntPtr GetHdc() { throw null; }
@@ -786,15 +788,15 @@ namespace System.Drawing
         public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, System.Drawing.PointF origin, System.Drawing.StringFormat stringFormat) { throw null; }
         public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, System.Drawing.SizeF layoutArea) { throw null; }
         public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, System.Drawing.SizeF layoutArea, System.Drawing.StringFormat stringFormat) { throw null; }
-        public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, System.Drawing.SizeF layoutArea, System.Drawing.StringFormat stringFormat, out int charactersFitted, out int linesFilled) { charactersFitted = default(int); linesFilled = default(int); throw null; }
+        public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, System.Drawing.SizeF layoutArea, System.Drawing.StringFormat stringFormat, out int charactersFitted, out int linesFilled) { throw null; }
         public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, int width) { throw null; }
         public System.Drawing.SizeF MeasureString(string text, System.Drawing.Font font, int width, System.Drawing.StringFormat format) { throw null; }
         public void MultiplyTransform(System.Drawing.Drawing2D.Matrix matrix) { }
         public void MultiplyTransform(System.Drawing.Drawing2D.Matrix matrix, System.Drawing.Drawing2D.MatrixOrder order) { }
         public void ReleaseHdc() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public void ReleaseHdc(System.IntPtr hdc) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void ReleaseHdcInternal(System.IntPtr hdc) { }
         public void ResetClip() { }
         public void ResetTransform() { }
@@ -875,7 +877,7 @@ namespace System.Drawing
         public System.Guid[] FrameDimensionsList { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Height { get { throw null; } }
         public float HorizontalResolution { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
@@ -894,7 +896,7 @@ namespace System.Drawing
         public float VerticalResolution { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int Width { get { throw null; } }
         public object Clone() { throw null; }
         public void Dispose() { }
@@ -1303,10 +1305,11 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Point : System.IEquatable<System.Drawing.Point>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Point Empty;
-        public Point(System.Drawing.Size sz) { throw null;}
-        public Point(int dw) { throw null;}
-        public Point(int x, int y) { throw null;}
+        public Point(System.Drawing.Size sz) { throw null; }
+        public Point(int dw) { throw null; }
+        public Point(int x, int y) { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsEmpty { get { throw null; } }
         public int X { get { throw null; } set { } }
@@ -1329,13 +1332,26 @@ namespace System.Drawing
         public override string ToString() { throw null; }
         public static System.Drawing.Point Truncate(System.Drawing.PointF value) { throw null; }
     }
+    public partial class PointConverter : System.ComponentModel.TypeConverter
+    {
+        public PointConverter() { }
+        public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
+        public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
+        public override object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Collections.IDictionary propertyValues) { throw null; }
+        public override bool GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
+        public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+    }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PointF : System.IEquatable<System.Drawing.PointF>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.PointF Empty;
-        public PointF(float x, float y) { throw null;}
+        public PointF(float x, float y) { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsEmpty { get { throw null; } }
         public float X { get { throw null; } set { } }
@@ -1360,9 +1376,10 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Rectangle : System.IEquatable<System.Drawing.Rectangle>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Rectangle Empty;
-        public Rectangle(System.Drawing.Point location, System.Drawing.Size size) { throw null;}
-        public Rectangle(int x, int y, int width, int height) { throw null;}
+        public Rectangle(System.Drawing.Point location, System.Drawing.Size size) { throw null; }
+        public Rectangle(int x, int y, int width, int height) { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
         public int Bottom { get { throw null; } }
         public int Height { get { throw null; } set { } }
@@ -1404,14 +1421,27 @@ namespace System.Drawing
         public static System.Drawing.Rectangle Truncate(System.Drawing.RectangleF value) { throw null; }
         public static System.Drawing.Rectangle Union(System.Drawing.Rectangle a, System.Drawing.Rectangle b) { throw null; }
     }
+    public partial class RectangleConverter : System.ComponentModel.TypeConverter
+    {
+        public RectangleConverter() { }
+        public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
+        public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
+        public override object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Collections.IDictionary propertyValues) { throw null; }
+        public override bool GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
+        public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+    }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct RectangleF : System.IEquatable<System.Drawing.RectangleF>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.RectangleF Empty;
-        public RectangleF(System.Drawing.PointF location, System.Drawing.SizeF size) { throw null;}
-        public RectangleF(float x, float y, float width, float height) { throw null;}
+        public RectangleF(System.Drawing.PointF location, System.Drawing.SizeF size) { throw null; }
+        public RectangleF(float x, float y, float width, float height) { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
         public float Bottom { get { throw null; } }
         public float Height { get { throw null; } set { } }
@@ -1535,9 +1565,10 @@ namespace System.Drawing
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Size : System.IEquatable<System.Drawing.Size>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.Size Empty;
-        public Size(System.Drawing.Point pt) { throw null;}
-        public Size(int width, int height) { throw null;}
+        public Size(System.Drawing.Point pt) { throw null; }
+        public Size(int width, int height) { throw null; }
         public int Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsEmpty { get { throw null; } }
@@ -1564,15 +1595,28 @@ namespace System.Drawing
         public override string ToString() { throw null; }
         public static System.Drawing.Size Truncate(System.Drawing.SizeF value) { throw null; }
     }
+    public partial class SizeConverter : System.ComponentModel.TypeConverter
+    {
+        public SizeConverter() { }
+        public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
+        public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
+        public override object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Collections.IDictionary propertyValues) { throw null; }
+        public override bool GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
+        public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+    }
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct SizeF : System.IEquatable<System.Drawing.SizeF>
     {
+        private int _dummyPrimitive;
         public static readonly System.Drawing.SizeF Empty;
-        public SizeF(System.Drawing.PointF pt) { throw null;}
-        public SizeF(System.Drawing.SizeF size) { throw null;}
-        public SizeF(float width, float height) { throw null;}
+        public SizeF(System.Drawing.PointF pt) { throw null; }
+        public SizeF(System.Drawing.SizeF size) { throw null; }
+        public SizeF(float width, float height) { throw null; }
         public float Height { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
         public bool IsEmpty { get { throw null; } }
@@ -1593,6 +1637,18 @@ namespace System.Drawing
         public System.Drawing.PointF ToPointF() { throw null; }
         public System.Drawing.Size ToSize() { throw null; }
         public override string ToString() { throw null; }
+    }
+    public partial class SizeFConverter : System.ComponentModel.TypeConverter
+    {
+        public SizeFConverter() { }
+        public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType) { throw null; }
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType) { throw null; }
+        public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) { throw null; }
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType) { throw null; }
+        public override object CreateInstance(System.ComponentModel.ITypeDescriptorContext context, System.Collections.IDictionary propertyValues) { throw null; }
+        public override bool GetCreateInstanceSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
+        public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
+        public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
     public sealed partial class SolidBrush : System.Drawing.Brush
     {
@@ -1632,7 +1688,7 @@ namespace System.Drawing
         public object Clone() { throw null; }
         public void Dispose() { }
         ~StringFormat() { }
-        public float[] GetTabStops(out float firstTabOffset) { firstTabOffset = default(float); throw null; }
+        public float[] GetTabStops(out float firstTabOffset) { throw null; }
         public void SetDigitSubstitution(int language, System.Drawing.StringDigitSubstitute substitute) { }
         public void SetMeasurableCharacterRanges(System.Drawing.CharacterRange[] ranges) { }
         public void SetTabStops(float firstTabOffset, float[] tabStops) { }
@@ -1831,7 +1887,7 @@ namespace System.Drawing
         public void TranslateTransform(float dx, float dy) { }
         public void TranslateTransform(float dx, float dy, System.Drawing.Drawing2D.MatrixOrder order) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public partial class ToolboxBitmapAttribute : System.Attribute
     {
         public static readonly System.Drawing.ToolboxBitmapAttribute Default;
@@ -1927,7 +1983,7 @@ namespace System.Drawing.Drawing2D
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         ~CustomLineCap() { }
-        public void GetStrokeCaps(out System.Drawing.Drawing2D.LineCap startCap, out System.Drawing.Drawing2D.LineCap endCap) { startCap = default(System.Drawing.Drawing2D.LineCap); endCap = default(System.Drawing.Drawing2D.LineCap); }
+        public void GetStrokeCaps(out System.Drawing.Drawing2D.LineCap startCap, out System.Drawing.Drawing2D.LineCap endCap) { throw null; }
         public void SetStrokeCaps(System.Drawing.Drawing2D.LineCap startCap, System.Drawing.Drawing2D.LineCap endCap) { }
     }
     public enum DashCap
@@ -2069,10 +2125,10 @@ namespace System.Drawing.Drawing2D
         ~GraphicsPathIterator() { }
         public bool HasCurve() { throw null; }
         public int NextMarker(System.Drawing.Drawing2D.GraphicsPath path) { throw null; }
-        public int NextMarker(out int startIndex, out int endIndex) { startIndex = default(int); endIndex = default(int); throw null; }
-        public int NextPathType(out byte pathType, out int startIndex, out int endIndex) { pathType = default(byte); startIndex = default(int); endIndex = default(int); throw null; }
-        public int NextSubpath(System.Drawing.Drawing2D.GraphicsPath path, out bool isClosed) { isClosed = default(bool); throw null; }
-        public int NextSubpath(out int startIndex, out int endIndex, out bool isClosed) { startIndex = default(int); endIndex = default(int); isClosed = default(bool); throw null; }
+        public int NextMarker(out int startIndex, out int endIndex) { throw null; }
+        public int NextPathType(out byte pathType, out int startIndex, out int endIndex) { throw null; }
+        public int NextSubpath(System.Drawing.Drawing2D.GraphicsPath path, out bool isClosed) { throw null; }
+        public int NextSubpath(out int startIndex, out int endIndex, out bool isClosed) { throw null; }
         public void Rewind() { }
     }
     public sealed partial class GraphicsState : System.MarshalByRefObject
@@ -3340,17 +3396,17 @@ namespace System.Drawing.Printing
     {
         public PrintDocument() { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Drawing.Printing.PageSettings DefaultPageSettings { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("document")]
         public string DocumentName { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool OriginAtMargins { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Drawing.Printing.PrintController PrintController { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Drawing.Printing.PrinterSettings PrinterSettings { get { throw null; } set { } }
         public event System.Drawing.Printing.PrintEventHandler BeginPrint { add { } remove { } }
         public event System.Drawing.Printing.PrintEventHandler EndPrint { add { } remove { } }
@@ -3426,7 +3482,7 @@ namespace System.Drawing.Printing
             int System.Collections.ICollection.Count { get { throw null; } }
             bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
             object System.Collections.ICollection.SyncRoot { get { throw null; } }
-            [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+            [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
             public int Add(System.Drawing.Printing.PaperSize paperSize) { throw null; }
             public void CopyTo(System.Drawing.Printing.PaperSize[] paperSizes, int index) { }
             public System.Collections.IEnumerator GetEnumerator() { throw null; }
@@ -3441,7 +3497,7 @@ namespace System.Drawing.Printing
             int System.Collections.ICollection.Count { get { throw null; } }
             bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
             object System.Collections.ICollection.SyncRoot { get { throw null; } }
-            [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+            [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
             public int Add(System.Drawing.Printing.PaperSource paperSource) { throw null; }
             public void CopyTo(System.Drawing.Printing.PaperSource[] paperSources, int index) { }
             public System.Collections.IEnumerator GetEnumerator() { throw null; }
@@ -3456,7 +3512,7 @@ namespace System.Drawing.Printing
             int System.Collections.ICollection.Count { get { throw null; } }
             bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
             object System.Collections.ICollection.SyncRoot { get { throw null; } }
-            [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+            [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
             public int Add(System.Drawing.Printing.PrinterResolution printerResolution) { throw null; }
             public void CopyTo(System.Drawing.Printing.PrinterResolution[] printerResolutions, int index) { }
             public System.Collections.IEnumerator GetEnumerator() { throw null; }
@@ -3471,7 +3527,7 @@ namespace System.Drawing.Printing
             int System.Collections.ICollection.Count { get { throw null; } }
             bool System.Collections.ICollection.IsSynchronized { get { throw null; } }
             object System.Collections.ICollection.SyncRoot { get { throw null; } }
-            [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+            [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
             public int Add(string value) { throw null; }
             public void CopyTo(string[] strings, int index) { }
             public System.Collections.IEnumerator GetEnumerator() { throw null; }

@@ -204,7 +204,7 @@ mono_arch_create_vars (MonoCompile *cfg)
 	CallInfo *cinfo;
 	MonoType *sig_ret;
 
-	sig = mono_method_signature (cfg->method);
+	sig = mono_method_signature_internal (cfg->method);
 
 	if (!cfg->arch.cinfo)
 		cfg->arch.cinfo = get_call_info (cfg->mempool, sig);
@@ -271,7 +271,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 void
 mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 {
-	MonoType *ret = mini_get_underlying_type (mono_method_signature (method)->ret);
+	MonoType *ret = mini_get_underlying_type (mono_method_signature_internal (method)->ret);
 
 	if (!ret->byref) {
 		if (ret->type == MONO_TYPE_R4) {
@@ -291,18 +291,6 @@ mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 void
 mono_arch_flush_icache (guint8 *code, gint size)
 {
-}
-
-const char*
-mono_arch_fregname (int reg)
-{
-	return "freg0";
-}
-
-const char*
-mono_arch_regname (int reg)
-{
-	return "r0";
 }
 
 LLVMCallInfo*
@@ -349,12 +337,24 @@ mono_arch_get_llvm_call_info (MonoCompile *cfg, MonoMethodSignature *sig)
 }
 
 gboolean
-mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig, MonoMethodSignature *callee_sig)
+mono_arch_tailcall_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig, MonoMethodSignature *callee_sig, gboolean virtual_)
 {
 	return FALSE;
 }
 
 #endif // DISABLE_JIT
+
+const char*
+mono_arch_fregname (int reg)
+{
+	return "freg0";
+}
+
+const char*
+mono_arch_regname (int reg)
+{
+	return "r0";
+}
 
 int
 mono_arch_get_argument_info (MonoMethodSignature *csig, int param_count, MonoJitArgumentInfo *arg_info)
@@ -396,7 +396,7 @@ G_END_DECLS
 #endif // HOST_WASM
 
 gpointer
-mono_arch_get_this_arg_from_call (mgreg_t *regs, guint8 *code)
+mono_arch_get_this_arg_from_call (host_mgreg_t *regs, guint8 *code)
 {
 	g_error ("mono_arch_get_this_arg_from_call");
 }
@@ -448,14 +448,14 @@ mono_arch_free_jit_tls_data (MonoJitTlsData *tls)
 
 
 MonoMethod*
-mono_arch_find_imt_method (mgreg_t *regs, guint8 *code)
+mono_arch_find_imt_method (host_mgreg_t *regs, guint8 *code)
 {
 	g_error ("mono_arch_find_static_call_vtable");
 	return (MonoMethod*) regs [MONO_ARCH_IMT_REG];
 }
 
 MonoVTable*
-mono_arch_find_static_call_vtable (mgreg_t *regs, guint8 *code)
+mono_arch_find_static_call_vtable (host_mgreg_t *regs, guint8 *code)
 {
 	g_error ("mono_arch_find_static_call_vtable");
 	return (MonoVTable*) regs [MONO_ARCH_RGCTX_REG];
@@ -481,7 +481,7 @@ mono_arch_cpu_optimizations (guint32 *exclude_mask)
 	return 0;
 }
 
-mgreg_t
+host_mgreg_t
 mono_arch_context_get_int_reg (MonoContext *ctx, int reg)
 {
 	g_error ("mono_arch_context_get_int_reg");
@@ -524,6 +524,12 @@ mono_runtime_cleanup_handlers (void)
 
 void
 mono_init_native_crash_info (void)
+{
+	return;
+}
+
+void
+mono_cleanup_native_crash_info (void)
 {
 	return;
 }
@@ -592,7 +598,7 @@ mono_arch_patch_code_new (MonoCompile *cfg, MonoDomain *domain, guint8 *code, Mo
 /*
 The following functions don't belong here, but are due to laziness.
 */
-gboolean mono_w32file_get_volume_information (const gunichar2 *path, gunichar2 *volumename, gint volumesize, gint *outserial, gint *maxcomp, gint *fsflags, gunichar2 *fsbuffer, gint fsbuffersize);
+gboolean mono_w32file_get_file_system_type (const gunichar2 *path, gunichar2 *fsbuffer, gint fsbuffersize);
 
 G_BEGIN_DECLS
 
@@ -607,7 +613,7 @@ G_END_DECLS
 
 //w32file-wasm.c
 gboolean
-mono_w32file_get_volume_information (const gunichar2 *path, gunichar2 *volumename, gint volumesize, gint *outserial, gint *maxcomp, gint *fsflags, gunichar2 *fsbuffer, gint fsbuffersize)
+mono_w32file_get_file_system_type (const gunichar2 *path, gunichar2 *fsbuffer, gint fsbuffersize)
 {
 	glong len;
 	gboolean status = FALSE;
@@ -628,6 +634,9 @@ G_BEGIN_DECLS
 
 //llvm builtin's that we should not have used in the first place
 
+#include <sys/types.h>
+#include <pwd.h>
+#include <uuid/uuid.h>
 
 //libc / libpthread missing bits from musl or shit we didn't detect :facepalm:
 int pthread_getschedparam (pthread_t thread, int *policy, struct sched_param *param)
@@ -707,6 +716,30 @@ sem_timedwait (sem_t *sem, const struct timespec *abs_timeout)
 	g_error ("sem_timedwait");
 	return 0;
 	
+}
+
+ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+
+ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count)
+{
+	g_error ("sendfile");
+	return 0;
+}
+
+int
+getpwnam_r (const char *name, struct passwd *pwd, char *buffer, size_t bufsize,
+			struct passwd **result)
+{
+	g_error ("getpwnam_r");
+	return 0;
+}
+
+int
+getpwuid_r (uid_t uid, struct passwd *pwd, char *buffer, size_t bufsize,
+			struct passwd **result)
+{
+	g_error ("getpwuid_r");
+	return 0;
 }
 
 G_END_DECLS

@@ -72,9 +72,7 @@ typedef gsize (*MonoThreadStart)(gpointer);
 
 #endif /* #ifdef HOST_WIN32 */
 
-#ifndef MONO_INFINITE_WAIT
 #define MONO_INFINITE_WAIT ((guint32) 0xFFFFFFFF)
-#endif
 
 typedef struct {
 	MonoRefCount ref;
@@ -145,10 +143,13 @@ enum {
 
 	STATE_MAX				= 0x09,
 
-	THREAD_STATE_MASK			= 0x00FF,
+	THREAD_STATE_MASK			= 0x007F,
 	THREAD_SUSPEND_COUNT_MASK	= 0xFF00,
 	THREAD_SUSPEND_COUNT_SHIFT	= 8,
 	THREAD_SUSPEND_COUNT_MAX	= 0xFF,
+
+	THREAD_SUSPEND_NO_SAFEPOINTS_MASK          = 0x0080,
+	THREAD_SUSPEND_NO_SAFEPOINTS_SHIFT = 7,
 
 	SELF_SUSPEND_STATE_INDEX = 0,
 	ASYNC_SUSPEND_STATE_INDEX = 1,
@@ -267,7 +268,8 @@ typedef struct _MonoThreadInfo {
 	gint32 profiler_signal_ack;
 
 #ifdef USE_WINDOWS_BACKEND
-	gint32 thread_wait_info;
+	gint32 win32_apc_info;
+	gpointer win32_apc_info_io_handle;
 #endif
 
 	/*
@@ -701,6 +703,8 @@ MonoDoBlockingResult mono_threads_transition_do_blocking (THREAD_INFO_TYPE* info
 MonoDoneBlockingResult mono_threads_transition_done_blocking (THREAD_INFO_TYPE* info, const char* func);
 MonoAbortBlockingResult mono_threads_transition_abort_blocking (THREAD_INFO_TYPE* info, const char* func);
 gboolean mono_threads_transition_peek_blocking_suspend_requested (THREAD_INFO_TYPE* info);
+void mono_threads_transition_begin_no_safepoints (THREAD_INFO_TYPE* info, const char *func);
+void mono_threads_transition_end_no_safepoints (THREAD_INFO_TYPE* info, const char *func);
 
 G_EXTERN_C // due to THREAD_INFO_TYPE varying
 MonoThreadUnwindState* mono_thread_info_get_suspend_state (THREAD_INFO_TYPE *info);
@@ -719,6 +723,8 @@ int mono_thread_info_suspend_count (THREAD_INFO_TYPE *info);
 int mono_thread_info_current_state (THREAD_INFO_TYPE *info);
 const char* mono_thread_state_name (int state);
 gboolean mono_thread_is_gc_unsafe_mode (void);
+G_EXTERN_C // due to THREAD_INFO_TYPE varying
+gboolean mono_thread_info_will_not_safepoint (THREAD_INFO_TYPE *info);
 
 /* Suspend phases:
  *
@@ -787,6 +793,24 @@ void mono_threads_join_unlock (void);
 #ifdef HOST_WASM
 typedef void (*background_job_cb)(void);
 void mono_threads_schedule_background_job (background_job_cb cb);
+#endif
+
+#ifdef USE_WINDOWS_BACKEND
+
+void
+mono_win32_enter_alertable_wait (THREAD_INFO_TYPE *info);
+
+void
+mono_win32_leave_alertable_wait (THREAD_INFO_TYPE *info);
+
+void
+mono_win32_enter_blocking_io_call (THREAD_INFO_TYPE *info, HANDLE io_handle);
+
+void
+mono_win32_leave_blocking_io_call (THREAD_INFO_TYPE *info, HANDLE io_handle);
+
+void
+mono_win32_interrupt_wait (PVOID thread_info, HANDLE native_thread_handle, DWORD tid);
 #endif
 
 #endif /* __MONO_THREADS_H__ */

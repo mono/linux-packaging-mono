@@ -25,7 +25,11 @@ common_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h
 
 macos_sources = $(unix_sources)
 
@@ -42,6 +46,8 @@ ios_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
 
 linux_sources = $(unix_sources)
+
+aix_sources = $(unix_sources)
 
 android_sources = \
 	pal-android.h \
@@ -80,7 +86,7 @@ macos_sources += $(gss_sources)
 ios_sources += $(gss_sources)
 endif
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(unix_sources) $(gss_sources)
+EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(unix_sources) $(gss_sources)
 
 if MONO_NATIVE_PLATFORM_MACOS
 platform_sources = $(macos_sources)
@@ -91,8 +97,12 @@ else
 if MONO_NATIVE_PLATFORM_LINUX
 platform_sources = $(linux_sources)
 else
+if MONO_NATIVE_PLATFORM_AIX
+platform_sources = $(aix_sources)
+else
 if MONO_NATIVE_PLATFORM_ANDROID
 platform_sources = $(android_sources)
+endif
 endif
 endif
 endif
@@ -156,4 +166,6 @@ libmono_native_unified_la_CCASFLAGS = $(MONO_NATIVE_UNIFIED_CCASFLAGS)
 
 libmono_native_unified_la_LIBADD = $(MONO_NATIVE_LIBADD)
 
-
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)
+	cp -L .libs/libmono-native$(libsuffix) $(TEST_BUNDLE_PATH)/

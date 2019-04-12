@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -23,7 +23,7 @@
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 namespace System.Net.Http
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpRequestMessageExtensions
     {
         public static System.Net.Http.HttpResponseMessage CreateResponse<T>(this System.Net.Http.HttpRequestMessage request, System.Net.HttpStatusCode statusCode, T value) { throw null; }
@@ -41,15 +41,15 @@ namespace System.Net.Http
         public static System.Threading.SynchronizationContext GetSynchronizationContext(this System.Net.Http.HttpRequestMessage request) { throw null; }
         public static void RegisterForDispose(this System.Net.Http.HttpRequestMessage request, System.IDisposable resource) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpResponseMessageExtensions
     {
-        public static bool TryGetContentValue<T>(this System.Net.Http.HttpResponseMessage response, out T value) { value = default(T); throw null; }
+        public static bool TryGetContentValue<T>(this System.Net.Http.HttpResponseMessage response, out T value) { throw null; }
     }
 }
 namespace System.Net.Http.Formatting
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class MediaTypeFormatterExtensions
     {
         public static void AddUriPathExtensionMapping(this System.Net.Http.Formatting.MediaTypeFormatter formatter, string uriPathExtension, System.Net.Http.Headers.MediaTypeHeaderValue mediaType) { }
@@ -66,20 +66,20 @@ namespace System.Net.Http.Formatting
 }
 namespace System.Web.Http
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     [System.CLSCompliantAttribute(false)]
     public sealed partial class AcceptVerbsAttribute : System.Attribute
     {
         public AcceptVerbsAttribute(params string[] methods) { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class ActionNameAttribute : System.Attribute
     {
         public ActionNameAttribute(string name) { }
         public string Name { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public sealed partial class AllowAnonymousAttribute : System.Attribute
     {
         public AllowAnonymousAttribute() { }
@@ -98,7 +98,7 @@ namespace System.Web.Http
         public virtual System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> ExecuteAsync(System.Web.Http.Controllers.HttpControllerContext controllerContext, System.Threading.CancellationToken cancellationToken) { throw null; }
         protected virtual void Initialize(System.Web.Http.Controllers.HttpControllerContext controllerContext) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public partial class AuthorizeAttribute : System.Web.Http.Filters.AuthorizationFilterAttribute
     {
         public AuthorizeAttribute() { }
@@ -108,23 +108,23 @@ namespace System.Web.Http
         protected virtual void HandleUnauthorizedRequest(System.Web.Http.Controllers.HttpActionContext actionContext) { }
         public override void OnAuthorization(System.Web.Http.Controllers.HttpActionContext actionContext) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2052), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Parameter, Inherited=true, AllowMultiple=false)]
     public sealed partial class FromBodyAttribute : System.Attribute
     {
         public FromBodyAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2052), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Parameter, Inherited=true, AllowMultiple=false)]
     public sealed partial class FromUriAttribute : System.Web.Http.ModelBinding.ModelBinderAttribute
     {
         public FromUriAttribute() { }
         public override System.Collections.Generic.IEnumerable<System.Web.Http.ValueProviders.ValueProviderFactory> GetValueProviderFactories(System.Web.Http.HttpConfiguration configuration) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpBindNeverAttribute : System.Web.Http.ModelBinding.HttpBindingBehaviorAttribute
     {
         public HttpBindNeverAttribute() : base (default(System.Web.Http.ModelBinding.HttpBindingBehavior)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpBindRequiredAttribute : System.Web.Http.ModelBinding.HttpBindingBehaviorAttribute
     {
         public HttpBindRequiredAttribute() : base (default(System.Web.Http.ModelBinding.HttpBindingBehavior)) { }
@@ -145,43 +145,43 @@ namespace System.Web.Http
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpDeleteAttribute : System.Attribute
     {
         public HttpDeleteAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpGetAttribute : System.Attribute
     {
         public HttpGetAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpHeadAttribute : System.Attribute
     {
         public HttpHeadAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpOptionsAttribute : System.Attribute
     {
         public HttpOptionsAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpPatchAttribute : System.Attribute
     {
         public HttpPatchAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpPostAttribute : System.Attribute
     {
         public HttpPostAttribute() { }
         public System.Collections.ObjectModel.Collection<System.Net.Http.HttpMethod> HttpMethods { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpPutAttribute : System.Attribute
     {
         public HttpPutAttribute() { }
@@ -220,9 +220,9 @@ namespace System.Web.Http
         void System.Collections.Generic.ICollection<System.Web.Http.Routing.IHttpRoute>.Add(System.Web.Http.Routing.IHttpRoute route) { }
         bool System.Collections.Generic.ICollection<System.Web.Http.Routing.IHttpRoute>.Remove(System.Web.Http.Routing.IHttpRoute route) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public virtual bool TryGetValue(string name, out System.Web.Http.Routing.IHttpRoute route) { route = default(System.Web.Http.Routing.IHttpRoute); throw null; }
+        public virtual bool TryGetValue(string name, out System.Web.Http.Routing.IHttpRoute route) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpRouteCollectionExtensions
     {
         public static System.Web.Http.Routing.IHttpRoute MapHttpRoute(this System.Web.Http.HttpRouteCollection routes, string name, string routeTemplate) { throw null; }
@@ -247,12 +247,12 @@ namespace System.Web.Http
         LocalOnly = 0,
         Never = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class NonActionAttribute : System.Attribute
     {
         public NonActionAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public partial class QueryableAttribute : System.Web.Http.Filters.ActionFilterAttribute
     {
         public QueryableAttribute() { }
@@ -267,7 +267,7 @@ namespace System.Web.Http
         public static readonly System.Web.Http.RouteParameter Optional;
         public override string ToString() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class ServicesExtensions
     {
         public static System.Web.Http.Controllers.IHttpActionInvoker GetActionInvoker(this System.Web.Http.Services.DefaultServices services) { throw null; }
@@ -322,14 +322,14 @@ namespace System.Web.Http.Controllers
         public System.Net.Http.HttpRequestMessage Request { get { throw null; } }
         public System.Net.Http.HttpResponseMessage Response { get { throw null; } set { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpActionContextExtensions
     {
         public static System.Web.Http.ModelBinding.IModelBinder GetBinder(this System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.ModelBinding.ModelBindingContext bindingContext) { throw null; }
         public static System.Web.Http.Metadata.ModelMetadataProvider GetMetadataProvider(this System.Web.Http.Controllers.HttpActionContext actionContext) { throw null; }
         public static System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidatorProvider> GetValidatorProviders(this System.Web.Http.Controllers.HttpActionContext actionContext) { throw null; }
         public static System.Collections.Generic.IEnumerable<System.Web.Http.Validation.ModelValidator> GetValidators(this System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.Metadata.ModelMetadata metadata) { throw null; }
-        public static bool TryGetBinder(this System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.ModelBinding.ModelBindingContext bindingContext, out System.Web.Http.ModelBinding.IModelBinder binder) { binder = default(System.Web.Http.ModelBinding.IModelBinder); throw null; }
+        public static bool TryGetBinder(this System.Web.Http.Controllers.HttpActionContext actionContext, System.Web.Http.ModelBinding.ModelBindingContext bindingContext, out System.Web.Http.ModelBinding.IModelBinder binder) { throw null; }
     }
     public abstract partial class HttpActionDescriptor
     {
@@ -349,7 +349,7 @@ namespace System.Web.Http.Controllers
         public virtual System.Collections.ObjectModel.Collection<System.Web.Http.Filters.IFilter> GetFilters() { throw null; }
         public abstract System.Collections.ObjectModel.Collection<System.Web.Http.Controllers.HttpParameterDescriptor> GetParameters();
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpControllerConfigurationAttribute : System.Attribute
     {
         public HttpControllerConfigurationAttribute() { }
@@ -504,7 +504,7 @@ namespace System.Web.Http.Description
         public virtual bool ShouldExploreAction(string actionVariableValue, System.Web.Http.Controllers.HttpActionDescriptor actionDescriptor, System.Web.Http.Routing.IHttpRoute route) { throw null; }
         public virtual bool ShouldExploreController(string controllerVariableValue, System.Web.Http.Controllers.HttpControllerDescriptor controllerDescriptor, System.Web.Http.Routing.IHttpRoute route) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, AllowMultiple=false)]
     public sealed partial class ApiExplorerSettingsAttribute : System.Attribute
     {
         public ApiExplorerSettingsAttribute() { }
@@ -603,7 +603,7 @@ namespace System.Web.Http.Filters
         public ActionDescriptorFilterProvider() { }
         public System.Collections.Generic.IEnumerable<System.Web.Http.Filters.FilterInfo> GetFilters(System.Web.Http.HttpConfiguration configuration, System.Web.Http.Controllers.HttpActionDescriptor actionDescriptor) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public abstract partial class ActionFilterAttribute : System.Web.Http.Filters.FilterAttribute, System.Web.Http.Filters.IActionFilter, System.Web.Http.Filters.IFilter
     {
         protected ActionFilterAttribute() { }
@@ -611,7 +611,7 @@ namespace System.Web.Http.Filters
         public virtual void OnActionExecuting(System.Web.Http.Controllers.HttpActionContext actionContext) { }
         System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> System.Web.Http.Filters.IActionFilter.ExecuteActionFilterAsync(System.Web.Http.Controllers.HttpActionContext actionContext, System.Threading.CancellationToken cancellationToken, System.Func<System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>> continuation) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public abstract partial class AuthorizationFilterAttribute : System.Web.Http.Filters.FilterAttribute, System.Web.Http.Filters.IAuthorizationFilter, System.Web.Http.Filters.IFilter
     {
         protected AuthorizationFilterAttribute() { }
@@ -623,14 +623,14 @@ namespace System.Web.Http.Filters
         public ConfigurationFilterProvider() { }
         public System.Collections.Generic.IEnumerable<System.Web.Http.Filters.FilterInfo> GetFilters(System.Web.Http.HttpConfiguration configuration, System.Web.Http.Controllers.HttpActionDescriptor actionDescriptor) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public abstract partial class ExceptionFilterAttribute : System.Web.Http.Filters.FilterAttribute, System.Web.Http.Filters.IExceptionFilter, System.Web.Http.Filters.IFilter
     {
         protected ExceptionFilterAttribute() { }
         public virtual void OnException(System.Web.Http.Filters.HttpActionExecutedContext actionExecutedContext) { }
         System.Threading.Tasks.Task System.Web.Http.Filters.IExceptionFilter.ExecuteExceptionFilterAsync(System.Web.Http.Filters.HttpActionExecutedContext actionExecutedContext, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public abstract partial class FilterAttribute : System.Attribute, System.Web.Http.Filters.IFilter
     {
         protected FilterAttribute() { }
@@ -791,7 +791,7 @@ namespace System.Web.Http.ModelBinding
         public CancellationTokenParameterBinding(System.Web.Http.Controllers.HttpParameterDescriptor descriptor) : base (default(System.Web.Http.Controllers.HttpParameterDescriptor)) { }
         public override System.Threading.Tasks.Task ExecuteBindingAsync(System.Web.Http.Metadata.ModelMetadataProvider metadataProvider, System.Web.Http.Controllers.HttpActionContext actionContext, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(3100), AllowMultiple=false, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Parameter | System.AttributeTargets.Struct, AllowMultiple=false, Inherited=false)]
     public abstract partial class CustomModelBinderAttribute : System.Attribute
     {
         protected CustomModelBinderAttribute() { }
@@ -832,7 +832,7 @@ namespace System.Web.Http.ModelBinding
         Optional = 0,
         Required = 2,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public partial class HttpBindingBehaviorAttribute : System.Attribute
     {
         public HttpBindingBehaviorAttribute(System.Web.Http.ModelBinding.HttpBindingBehavior behavior) { }
@@ -854,7 +854,7 @@ namespace System.Web.Http.ModelBinding
         public override bool CanReadType(System.Type type) { throw null; }
         public override System.Threading.Tasks.Task<object> ReadFromStreamAsync(System.Type type, System.IO.Stream stream, System.Net.Http.Headers.HttpContentHeaders contentHeaders, System.Net.Http.Formatting.IFormatterLogger formatterLogger) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2052), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Parameter, Inherited=true, AllowMultiple=false)]
     public partial class ModelBinderAttribute : System.Attribute
     {
         public ModelBinderAttribute() { }
@@ -947,7 +947,7 @@ namespace System.Web.Http.ModelBinding
         public bool Remove(string key) { throw null; }
         public void SetModelValue(string key, System.Web.Http.ValueProviders.ValueProviderResult value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Web.Http.ModelBinding.ModelState value) { value = default(System.Web.Http.ModelBinding.ModelState); throw null; }
+        public bool TryGetValue(string key, out System.Web.Http.ModelBinding.ModelState value) { throw null; }
     }
 }
 namespace System.Web.Http.ModelBinding.Binders
@@ -1411,7 +1411,7 @@ namespace System.Web.Http.ValueProviders
         bool ContainsPrefix(string prefix);
         System.Web.Http.ValueProviders.ValueProviderResult GetValue(string key);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2116), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method | System.AttributeTargets.Parameter, Inherited=true, AllowMultiple=false)]
     public sealed partial class ValueProviderAttribute : System.Web.Http.ModelBinding.ModelBinderAttribute
     {
         public ValueProviderAttribute(System.Type valueProviderFactory) { }

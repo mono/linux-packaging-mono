@@ -408,7 +408,7 @@ mono_string_from_utf32 (/*const*/ mono_unichar4 *data)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">mono_unichar2*
-mono_string_to_utf16 (MonoString *s)
+mono_string_to_utf16 (MonoString *string_obj)
 
 </div>
             <p />
@@ -425,7 +425,7 @@ mono_string_to_utf16 (MonoString *s)
 
 <a name="api:mono_string_to_utf8"></a>
 <div class="mapi">
-    <div class="mapi-entry mapi-strike"><code>mono_string_to_utf8</code></div><br /><div class='mapi-deprecated'><b>Deprecated:</b>  Use <code>mono_string_to_utf8_checked</code> to avoid having an exception arbitrarily raised.</div>
+    <div class="mapi-entry mapi-strike"><code>mono_string_to_utf8</code></div><br /><div class='mapi-deprecated'><b>Deprecated:</b>  Use <code>mono_string_to_utf8_checked_internal</code> to avoid having an exception arbitrarily raised.</div>
     <div class="mapi-height-container">
         <div class="mapi-ptr-container"></div>
         <div class="mapi-description">
@@ -456,7 +456,7 @@ mono_string_to_utf8 (MonoString *s)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">char*
-mono_string_to_utf8_checked (MonoString *s, MonoError *error)
+mono_string_to_utf8_checked (MonoString *string_obj, MonoError *error)
 
 </div>
             <p />
@@ -480,7 +480,7 @@ mono_string_to_utf8_checked (MonoString *s, MonoError *error)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">mono_unichar4*
-mono_string_to_utf32 (MonoString *s)
+mono_string_to_utf32 (MonoString *string_obj)
 
 </div>
             <p />
@@ -559,7 +559,7 @@ mono_string_hash (MonoString *s)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoString*
-mono_string_intern (MonoString *str)
+mono_string_intern (MonoString *str_raw)
 
 </div>
             <p />
@@ -569,7 +569,7 @@ mono_string_intern (MonoString *str)
 </div>
              <div class="mapi-section">Description</div>
              <div>
- Interns the string passed.  </div>
+ Interns the string passed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -584,7 +584,7 @@ mono_string_intern (MonoString *str)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoString*
-mono_string_is_interned (MonoString *o)
+mono_string_is_interned (MonoString *str_raw)
 
 </div>
             <p />
@@ -627,7 +627,7 @@ mono_string_new_wrapper (const char *text)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gunichar2*
+            <div class="mapi-prototype">mono_unichar2*
 mono_string_chars (MonoString *s)
 
 </div>

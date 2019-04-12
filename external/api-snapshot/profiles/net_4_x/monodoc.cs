@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
@@ -2020,11 +2020,12 @@ namespace Lucene.Net.Index
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct TermVectorOffsetInfo : System.IEquatable<Lucene.Net.Index.TermVectorOffsetInfo>
     {
+        private int _dummyPrimitive;
         [System.NonSerializedAttribute]
         public static readonly Lucene.Net.Index.TermVectorOffsetInfo[] EMPTY_OFFSET_INFO;
         [System.NonSerializedAttribute]
         public static readonly Lucene.Net.Index.TermVectorOffsetInfo Null;
-        public TermVectorOffsetInfo(int startOffset, int endOffset) { throw null;}
+        public TermVectorOffsetInfo(int startOffset, int endOffset) { throw null; }
         public int EndOffset { get { throw null; } set { } }
         public int StartOffset { get { throw null; } set { } }
         public bool Equals(Lucene.Net.Index.TermVectorOffsetInfo other) { throw null; }
@@ -4599,7 +4600,7 @@ namespace Lucene.Net.Support
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(System.Collections.Generic.KeyValuePair<TKey, TValue> item) { throw null; }
         void System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair<TKey, TValue>[] array, int arrayIndex) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(TKey key, out TValue value) { value = default(TValue); throw null; }
+        public bool TryGetValue(TKey key, out TValue value) { throw null; }
     }
     public partial interface IChecksum
     {
@@ -4657,7 +4658,7 @@ namespace Lucene.Net.Support
         public static float Parse(string s, System.IFormatProvider provider) { throw null; }
         public static string ToString(float f) { throw null; }
         public static string ToString(float f, string format) { throw null; }
-        public static bool TryParse(string s, out float f) { f = default(float); throw null; }
+        public static bool TryParse(string s, out float f) { throw null; }
     }
     public partial class TextSupport
     {
@@ -4723,7 +4724,7 @@ namespace Lucene.Net.Support
         void System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair<TKey, TValue>[] array, int arrayIndex) { }
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(System.Collections.Generic.KeyValuePair<TKey, TValue> item) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(TKey key, out TValue value) { value = default(TValue); throw null; }
+        public bool TryGetValue(TKey key, out TValue value) { throw null; }
     }
 }
 namespace Lucene.Net.Support.Compatibility
@@ -5290,7 +5291,7 @@ namespace Monodoc
     }
     public static partial class DocStorageExtensions
     {
-        public static bool TryRetrieve(this Monodoc.IDocStorage storage, string id, out System.IO.Stream stream) { stream = default(System.IO.Stream); throw null; }
+        public static bool TryRetrieve(this Monodoc.IDocStorage storage, string id, out System.IO.Stream stream) { throw null; }
     }
     public enum DocumentType
     {
@@ -5337,19 +5338,19 @@ namespace Monodoc
         public System.Xml.XmlReader GetHelpXml(string id) { throw null; }
         public virtual System.Xml.XmlDocument GetHelpXmlWithChanges(string id) { throw null; }
         public virtual System.IO.Stream GetImage(string url) { throw null; }
-        public virtual string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { node = default(Monodoc.Node); context = default(System.Collections.Generic.Dictionary<string, string>); throw null; }
+        public virtual string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { throw null; }
         public virtual string GetPublicUrl(Monodoc.Node node) { throw null; }
         public virtual string GetText(string id) { throw null; }
         [System.ObsoleteAttribute("Use RenderUrl")]
-        public string GetText(string url, out Monodoc.Node node) { node = default(Monodoc.Node); throw null; }
+        public string GetText(string url, out Monodoc.Node node) { throw null; }
         public virtual bool IsGeneratedContent(string id) { throw null; }
-        public virtual bool IsMultiPart(string id, out System.Collections.Generic.IEnumerable<string> parts) { parts = default(System.Collections.Generic.IEnumerable<string>); throw null; }
+        public virtual bool IsMultiPart(string id, out System.Collections.Generic.IEnumerable<string> parts) { throw null; }
         public virtual bool IsRawContent(string id) { throw null; }
         public virtual Monodoc.Node MatchNode(string url) { throw null; }
         public virtual void PopulateIndex(Monodoc.IndexMaker index_maker) { }
         public virtual void PopulateSearchableIndex(Lucene.Net.Index.IndexWriter writer) { }
         [System.ObsoleteAttribute("Use RenderUrl")]
-        public string RenderNamespaceLookup(string url, out Monodoc.Node node) { node = default(Monodoc.Node); throw null; }
+        public string RenderNamespaceLookup(string url, out Monodoc.Node node) { throw null; }
         public virtual void RenderPreviewDocs(System.Xml.XmlNode newNode, System.Xml.XmlWriter writer) { }
         public void Save() { }
     }
@@ -5479,10 +5480,10 @@ namespace Monodoc
         public bool GenerateIndex() { throw null; }
         public bool GenerateSearchIndex() { throw null; }
         public static Monodoc.HelpSource GetHelpSource(string provider, string basefilepath) { throw null; }
-        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, Monodoc.HelpSource hintSource, out string internalId, out System.Collections.Generic.Dictionary<string, string> context, out Monodoc.Node node) { internalId = default(string); context = default(System.Collections.Generic.Dictionary<string, string>); node = default(Monodoc.Node); throw null; }
-        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, out string internalId, out System.Collections.Generic.Dictionary<string, string> context) { internalId = default(string); context = default(System.Collections.Generic.Dictionary<string, string>); throw null; }
-        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, out string internalId, out System.Collections.Generic.Dictionary<string, string> context, out Monodoc.Node node) { internalId = default(string); context = default(System.Collections.Generic.Dictionary<string, string>); node = default(Monodoc.Node); throw null; }
-        public Monodoc.HelpSource GetHelpSourceAndIdFromName(string name, out string internalId, out Monodoc.Node node) { internalId = default(string); node = default(Monodoc.Node); throw null; }
+        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, Monodoc.HelpSource hintSource, out string internalId, out System.Collections.Generic.Dictionary<string, string> context, out Monodoc.Node node) { throw null; }
+        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, out string internalId, out System.Collections.Generic.Dictionary<string, string> context) { throw null; }
+        public Monodoc.HelpSource GetHelpSourceAndIdForUrl(string url, out string internalId, out System.Collections.Generic.Dictionary<string, string> context, out Monodoc.Node node) { throw null; }
+        public Monodoc.HelpSource GetHelpSourceAndIdFromName(string name, out string internalId, out Monodoc.Node node) { throw null; }
         public Monodoc.HelpSource GetHelpSourceFromId(int id) { throw null; }
         [System.ObsoleteAttribute("Use RawGenerator directly")]
         public System.Xml.XmlDocument GetHelpXml(string id) { throw null; }
@@ -5494,7 +5495,7 @@ namespace Monodoc
         [System.ObsoleteAttribute]
         public string GetTitle(string url) { throw null; }
         public static Monodoc.RootTree LoadTree() { throw null; }
-        public static Monodoc.RootTree LoadTree(string basedir, bool includeExternal=true) { throw null; }
+        public static Monodoc.RootTree LoadTree(string basedir, bool includeExternal = true) { throw null; }
         public static Monodoc.RootTree LoadTree(string indexDir, System.Xml.XmlDocument docTree, System.Collections.Generic.IEnumerable<string> sourceFiles) { throw null; }
         public Monodoc.Node LookupEntryPoint(string name) { throw null; }
         public static void MakeIndex() { }
@@ -5504,9 +5505,9 @@ namespace Monodoc
         [System.ObsoleteAttribute("Use GenerateSearchIndex")]
         public static void MakeSearchIndex(Monodoc.RootTree root) { }
         [System.ObsoleteAttribute("Use the RenderUrl variant accepting a generator")]
-        public string RenderUrl(string url, out Monodoc.Node n) { n = default(Monodoc.Node); throw null; }
-        public TOutput RenderUrl<TOutput>(string url, Monodoc.IDocGenerator<TOutput> generator, Monodoc.HelpSource hintSource=null) { throw null; }
-        public TOutput RenderUrl<TOutput>(string url, Monodoc.IDocGenerator<TOutput> generator, out Monodoc.Node node, Monodoc.HelpSource hintSource=null) { node = default(Monodoc.Node); throw null; }
+        public string RenderUrl(string url, out Monodoc.Node n) { throw null; }
+        public TOutput RenderUrl<TOutput>(string url, Monodoc.IDocGenerator<TOutput> generator, Monodoc.HelpSource hintSource = null) { throw null; }
+        public TOutput RenderUrl<TOutput>(string url, Monodoc.IDocGenerator<TOutput> generator, out Monodoc.Node node, Monodoc.HelpSource hintSource = null) { throw null; }
     }
     public partial class SearchableIndex
     {
@@ -5589,7 +5590,7 @@ namespace Monodoc
     }
     public static partial class TypeUtils
     {
-        public static bool GetNamespaceAndType(string url, out string ns, out string type) { ns = default(string); type = default(string); throw null; }
+        public static bool GetNamespaceAndType(string url, out string ns, out string type) { throw null; }
     }
 }
 namespace Monodoc.Caches
@@ -5649,7 +5650,7 @@ namespace Monodoc.Ecma
         public override bool Equals(object other) { throw null; }
         public override int GetHashCode() { throw null; }
         public string ToCompleteMemberName(Monodoc.Ecma.EcmaDesc.Format format) { throw null; }
-        public string ToCompleteTypeName(char innerTypeSeparator='.') { throw null; }
+        public string ToCompleteTypeName(char innerTypeSeparator = '.') { throw null; }
         public string ToEcmaCref() { throw null; }
         public override string ToString() { throw null; }
         public enum Format
@@ -5693,7 +5694,7 @@ namespace Monodoc.Ecma
         public EcmaUrlParser() { }
         public void IsValid(string input) { }
         public Monodoc.Ecma.EcmaDesc Parse(string input) { throw null; }
-        public bool TryParse(string input, out Monodoc.Ecma.EcmaDesc desc) { desc = default(Monodoc.Ecma.EcmaDesc); throw null; }
+        public bool TryParse(string input, out Monodoc.Ecma.EcmaDesc desc) { throw null; }
         protected object yyDefault(object first) { throw null; }
         public void yyerror(string message) { }
         public void yyerror(string message, string[] expected) { }
@@ -5814,7 +5815,7 @@ namespace Monodoc.Providers
         protected override string UriPrefix { get { throw null; } }
         public override bool CanHandleUrl(string url) { throw null; }
         public override Monodoc.DocumentType GetDocumentTypeForId(string id) { throw null; }
-        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { node = default(Monodoc.Node); context = default(System.Collections.Generic.Dictionary<string, string>); throw null; }
+        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { throw null; }
         public override Monodoc.Node MatchNode(string url) { throw null; }
     }
     public partial class AddinsProvider : Monodoc.Provider
@@ -5832,8 +5833,8 @@ namespace Monodoc.Providers
         public override System.IO.Stream GetCachedHelpStream(string id) { throw null; }
         public override Monodoc.DocumentType GetDocumentTypeForId(string id) { throw null; }
         public override System.IO.Stream GetHelpStream(string id) { throw null; }
-        public string GetInternalIdForInternalUrl(string internalUrl, out string hash) { hash = default(string); throw null; }
-        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { node = default(Monodoc.Node); context = default(System.Collections.Generic.Dictionary<string, string>); throw null; }
+        public string GetInternalIdForInternalUrl(string internalUrl, out string hash) { throw null; }
+        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { throw null; }
         public override string GetPublicUrl(Monodoc.Node node) { throw null; }
         public override Monodoc.Node MatchNode(string url) { throw null; }
         public override void PopulateIndex(Monodoc.IndexMaker index_maker) { }
@@ -5864,7 +5865,7 @@ namespace Monodoc.Providers
         public override System.IO.Stream GetHelpStream(string id) { throw null; }
         public override string GetText(string id) { throw null; }
         public override bool IsGeneratedContent(string id) { throw null; }
-        public override bool IsMultiPart(string id, out System.Collections.Generic.IEnumerable<string> parts) { parts = default(System.Collections.Generic.IEnumerable<string>); throw null; }
+        public override bool IsMultiPart(string id, out System.Collections.Generic.IEnumerable<string> parts) { throw null; }
         public override void PopulateSearchableIndex(Lucene.Net.Index.IndexWriter writer) { }
     }
     public partial class EcmaSpecProvider : Monodoc.Provider
@@ -5876,7 +5877,7 @@ namespace Monodoc.Providers
     public partial class EcmaUncompiledHelpSource : Monodoc.Providers.EcmaHelpSource
     {
         public readonly string BasePath;
-        public EcmaUncompiledHelpSource(string base_file, bool markName=true) { }
+        public EcmaUncompiledHelpSource(string base_file, bool markName = true) { }
         public new string Name { get { throw null; } }
         protected override string UriPrefix { get { throw null; } }
         public override System.IO.Stream GetImage(string url) { throw null; }
@@ -5900,7 +5901,7 @@ namespace Monodoc.Providers
         public ErrorHelpSource(string base_file, bool create) { }
         protected override string UriPrefix { get { throw null; } }
         public override Monodoc.DocumentType GetDocumentTypeForId(string id) { throw null; }
-        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { node = default(Monodoc.Node); context = default(System.Collections.Generic.Dictionary<string, string>); throw null; }
+        public override string GetInternalIdForUrl(string url, out Monodoc.Node node, out System.Collections.Generic.Dictionary<string, string> context) { throw null; }
         public override string GetText(string id) { throw null; }
         public override bool IsGeneratedContent(string id) { throw null; }
         public override void PopulateIndex(Monodoc.IndexMaker index_maker) { }

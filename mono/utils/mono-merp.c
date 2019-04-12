@@ -109,7 +109,7 @@ typedef struct {
 	size_t moduleOffset;
 
 	const char *osVersion; 
-	int uiLidArg; // Application LCID 
+	int uiLidArg; // MONO_LOCALE_INVARIANT 0x007F
 
 	char systemModel [100];
 	const char *systemManufacturer;
@@ -237,8 +237,6 @@ static int merp_file_permissions = S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH;
 static gboolean
 mono_merp_write_params (MERPStruct *merp)
 {
-	g_async_safe_printf("Writing MERP params to: %s\n", merp->merpFilePath);
-
 	int handle = g_open (merp->merpFilePath, O_TRUNC | O_WRONLY | O_CREAT, merp_file_permissions);
 	g_assertf (handle != -1, "Could not open MERP file at %s", merp->merpFilePath);
 
@@ -351,7 +349,7 @@ mono_init_merp (const intptr_t crashed_pid, const char *signal, MonoStackHash *h
 
 	merp->moduleOffset = 0;
 
-	merp->uiLidArg = ves_icall_System_Threading_Thread_current_lcid ();
+	merp->uiLidArg = MONO_LOCALE_INVARIANT;
 
 	merp->osVersion = os_version_string ();
 
@@ -369,8 +367,6 @@ mono_init_merp (const intptr_t crashed_pid, const char *signal, MonoStackHash *h
 static gboolean
 mono_merp_write_fingerprint_payload (const char *non_param_data, const MERPStruct *merp)
 {
-	g_async_safe_printf("Writing MERP crash file to: %s\n", merp->crashLogPath);
-
 	int handle = g_open (merp->crashLogPath, O_TRUNC | O_WRONLY | O_CREAT, merp_file_permissions);
 	g_assertf (handle != -1, "Could not open crash log file at %s", merp->crashLogPath);
 
@@ -423,8 +419,6 @@ mono_write_wer_template (MERPStruct *merp)
 	// and when mono is embedded and used to run functions without an entry point,
 	// there is no image that would make any semantic sense to send either. 
 	// It's a nuanced problem, each way we can run mono would need a separate fix.
-
-	g_async_safe_printf("Writing MERP XML file to: %s\n", merp->werXmlPath);
 
 	int handle = g_open (merp->werXmlPath, O_WRONLY | O_CREAT | O_TRUNC, merp_file_permissions);
 	g_assertf (handle != -1, "Could not open WER XML file at %s", merp->werXmlPath);

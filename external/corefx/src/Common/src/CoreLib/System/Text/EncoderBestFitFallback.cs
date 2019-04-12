@@ -12,6 +12,9 @@ using System.Threading;
 
 namespace System.Text
 {
+#if MONO
+    [Serializable]
+#endif
     internal class InternalEncoderBestFitFallback : EncoderFallback
     {
         // Our variables

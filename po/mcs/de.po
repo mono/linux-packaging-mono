@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2019-04-12 08:07+0000\n"
+"POT-Creation-Date: 2019-04-12 13:43+0000\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -1151,16 +1151,16 @@ msgid ""
 "lambda expressions or query expressions"
 msgstr ""
 
-#: mcs/mcs/class.cs:3977
+#: mcs/mcs/class.cs:3968
+#, csharp-format
+msgid "Field or property cannot be of type `{0}'"
+msgstr ""
+
+#: mcs/mcs/class.cs:3980
 #, csharp-format
 msgid ""
 "Field or auto-implemented property cannot be of type `{0}' unless it is an "
 "instance member of a ref struct"
-msgstr ""
-
-#: mcs/mcs/class.cs:3981
-#, csharp-format
-msgid "Field or property cannot be of type `{0}'"
 msgstr ""
 
 #: mcs/mcs/const.cs:103

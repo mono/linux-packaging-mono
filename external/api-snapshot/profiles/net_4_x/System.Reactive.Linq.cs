@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.2.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Open Technologies, Inc.")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Retail")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Open Technologies, Inc.  All rights reserved.")]
@@ -47,7 +47,9 @@ namespace System.Reactive
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct TimeInterval<T> : System.IEquatable<System.Reactive.TimeInterval<T>>
     {
-        public TimeInterval(T value, System.TimeSpan interval) { throw null;}
+        private readonly T _value;
+        private int _dummyPrimitive;
+        public TimeInterval(T value, System.TimeSpan interval) { throw null; }
         public System.TimeSpan Interval { get { throw null; } }
         public T Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -65,7 +67,9 @@ namespace System.Reactive
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Timestamped<T> : System.IEquatable<System.Reactive.Timestamped<T>>
     {
-        public Timestamped(T value, System.DateTimeOffset timestamp) { throw null;}
+        private readonly T _value;
+        private int _dummyPrimitive;
+        public Timestamped(T value, System.DateTimeOffset timestamp) { throw null; }
         public System.DateTimeOffset Timestamp { get { throw null; } }
         public T Value { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -241,8 +245,8 @@ namespace System.Reactive.Joins
 }
 namespace System.Reactive.Linq
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), Inherited=false, AllowMultiple=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, Inherited=false, AllowMultiple=false)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class LocalQueryMethodImplementationTypeAttribute : System.Attribute
     {
         public LocalQueryMethodImplementationTypeAttribute(System.Type targetType) { }

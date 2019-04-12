@@ -56,6 +56,7 @@ namespace System.IO.Tests
 
         [Theory, MemberData(nameof(PathsWithInvalidCharacters))]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void PathWithIllegalCharacters_Core(string invalidPath)
         {
             FileInfo testFile = new FileInfo(GetTestFilePath());

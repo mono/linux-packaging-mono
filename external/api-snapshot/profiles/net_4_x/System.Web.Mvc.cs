@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("3.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -26,7 +26,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Web.Mvc.TagRenderMode))]
 namespace System.Web.Mvc
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class AcceptVerbsAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public AcceptVerbsAttribute(params string[] verbs) { }
@@ -43,7 +43,7 @@ namespace System.Web.Mvc
         public abstract object Execute(System.Web.Mvc.ControllerContext controllerContext, System.Collections.Generic.IDictionary<string, object> parameters);
         public virtual object[] GetCustomAttributes(bool inherit) { throw null; }
         public virtual object[] GetCustomAttributes(System.Type attributeType, bool inherit) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Please call System.Web.Mvc.FilterProviders.Providers.GetFilters() now.", true)]
         public virtual System.Web.Mvc.FilterInfo GetFilters() { throw null; }
         public abstract System.Web.Mvc.ParameterDescriptor[] GetParameters();
@@ -68,7 +68,7 @@ namespace System.Web.Mvc
         public virtual System.Collections.Generic.IDictionary<string, object> ActionParameters { get { throw null; } set { } }
         public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public abstract partial class ActionFilterAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IActionFilter, System.Web.Mvc.IResultFilter
     {
         protected ActionFilterAttribute() { }
@@ -77,20 +77,20 @@ namespace System.Web.Mvc
         public virtual void OnResultExecuted(System.Web.Mvc.ResultExecutedContext filterContext) { }
         public virtual void OnResultExecuting(System.Web.Mvc.ResultExecutingContext filterContext) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public abstract partial class ActionMethodSelectorAttribute : System.Attribute
     {
         protected ActionMethodSelectorAttribute() { }
         public abstract bool IsValidForRequest(System.Web.Mvc.ControllerContext controllerContext, System.Reflection.MethodInfo methodInfo);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class ActionNameAttribute : System.Web.Mvc.ActionNameSelectorAttribute
     {
         public ActionNameAttribute(string name) { }
         public string Name { get { throw null; } }
         public override bool IsValidName(System.Web.Mvc.ControllerContext controllerContext, string actionName, System.Reflection.MethodInfo methodInfo) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public abstract partial class ActionNameSelectorAttribute : System.Attribute
     {
         protected ActionNameSelectorAttribute() { }
@@ -102,7 +102,7 @@ namespace System.Web.Mvc
         public abstract void ExecuteResult(System.Web.Mvc.ControllerContext context);
     }
     public delegate bool ActionSelector(System.Web.Mvc.ControllerContext controllerContext);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1156), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Property, AllowMultiple=true)]
     public sealed partial class AdditionalMetadataAttribute : System.Attribute, System.Web.Mvc.IMetadataAware
     {
         public AdditionalMetadataAttribute(string name, object value) { }
@@ -132,7 +132,7 @@ namespace System.Web.Mvc
     {
         public static bool IsAjaxRequest(this System.Web.HttpRequestBase request) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class AllowHtmlAttribute : System.Attribute, System.Web.Mvc.IMetadataAware
     {
         public AllowHtmlAttribute() { }
@@ -191,7 +191,7 @@ namespace System.Web.Mvc
         System.IAsyncResult System.Web.Mvc.Async.IAsyncController.BeginExecute(System.Web.Routing.RequestContext requestContext, System.AsyncCallback callback, object state) { throw null; }
         void System.Web.Mvc.Async.IAsyncController.EndExecute(System.IAsyncResult asyncResult) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public partial class AsyncTimeoutAttribute : System.Web.Mvc.ActionFilterAttribute
     {
         public AsyncTimeoutAttribute(int duration) { }
@@ -207,7 +207,7 @@ namespace System.Web.Mvc
         public virtual System.Web.Mvc.ActionDescriptor ActionDescriptor { get { throw null; } set { } }
         public System.Web.Mvc.ActionResult Result { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public partial class AuthorizeAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public AuthorizeAttribute() { }
@@ -219,7 +219,7 @@ namespace System.Web.Mvc
         public virtual void OnAuthorization(System.Web.Mvc.AuthorizationContext filterContext) { }
         protected virtual System.Web.HttpValidationStatus OnCacheAuthorization(System.Web.HttpContextBase httpContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(2052), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Parameter, AllowMultiple=false, Inherited=true)]
     public sealed partial class BindAttribute : System.Attribute
     {
         public BindAttribute() { }
@@ -248,7 +248,7 @@ namespace System.Web.Mvc
         public ByteArrayModelBinder() { }
         public virtual object BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class ChildActionOnlyAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public ChildActionOnlyAttribute() { }
@@ -269,7 +269,7 @@ namespace System.Web.Mvc
         public ClientDataTypeModelValidatorProvider() { }
         public override System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelValidator> GetValidators(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class CompareAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute, System.Web.Mvc.IClientValidatable
     {
         public CompareAttribute(string otherProperty) { }
@@ -471,7 +471,7 @@ namespace System.Web.Mvc
         public ControllerInstanceFilterProvider() { }
         public System.Collections.Generic.IEnumerable<System.Web.Mvc.Filter> GetFilters(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ActionDescriptor actionDescriptor) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(3100), AllowMultiple=false, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Parameter | System.AttributeTargets.Struct, AllowMultiple=false, Inherited=false)]
     public abstract partial class CustomModelBinderAttribute : System.Attribute
     {
         protected CustomModelBinderAttribute() { }
@@ -657,7 +657,7 @@ namespace System.Web.Mvc
         public int Order { get { throw null; } protected set { } }
         public System.Web.Mvc.FilterScope Scope { get { throw null; } protected set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public abstract partial class FilterAttribute : System.Attribute, System.Web.Mvc.IMvcFilter
     {
         protected FilterAttribute() { }
@@ -752,7 +752,7 @@ namespace System.Web.Mvc
     {
         public static System.Web.Mvc.GlobalFilterCollection Filters { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
     public partial class HandleErrorAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IExceptionFilter
     {
         public HandleErrorAttribute() { }
@@ -769,7 +769,7 @@ namespace System.Web.Mvc
         public string ControllerName { get { throw null; } }
         public System.Exception Exception { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(132), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public sealed partial class HiddenInputAttribute : System.Attribute
     {
         public HiddenInputAttribute() { }
@@ -824,7 +824,7 @@ namespace System.Web.Mvc
         public HtmlHelper(System.Web.Mvc.ViewContext viewContext, System.Web.Mvc.IViewDataContainer viewDataContainer, System.Web.Routing.RouteCollection routeCollection) : base (default(System.Web.Mvc.ViewContext), default(System.Web.Mvc.IViewDataContainer)) { }
         public new System.Web.Mvc.ViewDataDictionary<TModel> ViewData { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpDeleteAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public HttpDeleteAttribute() { }
@@ -839,7 +839,7 @@ namespace System.Web.Mvc
         public HttpFileCollectionValueProviderFactory() { }
         public override System.Web.Mvc.IValueProvider GetValueProvider(System.Web.Mvc.ControllerContext controllerContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpGetAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public HttpGetAttribute() { }
@@ -850,7 +850,7 @@ namespace System.Web.Mvc
         public HttpNotFoundResult() : base (default(int)) { }
         public HttpNotFoundResult(string statusDescription) : base (default(int)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpPostAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public HttpPostAttribute() { }
@@ -861,7 +861,7 @@ namespace System.Web.Mvc
         public HttpPostedFileBaseModelBinder() { }
         public object BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class HttpPutAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public HttpPutAttribute() { }
@@ -1038,7 +1038,7 @@ namespace System.Web.Mvc
         public LinqBinaryModelBinder() { }
         public override object BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(3100), AllowMultiple=false, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Parameter | System.AttributeTargets.Struct, AllowMultiple=false, Inherited=false)]
     public sealed partial class ModelBinderAttribute : System.Web.Mvc.CustomModelBinderAttribute
     {
         public ModelBinderAttribute(System.Type binderType) { }
@@ -1066,7 +1066,7 @@ namespace System.Web.Mvc
         public bool Remove(System.Collections.Generic.KeyValuePair<System.Type, System.Web.Mvc.IModelBinder> item) { throw null; }
         public bool Remove(System.Type key) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(System.Type key, out System.Web.Mvc.IModelBinder value) { value = default(System.Web.Mvc.IModelBinder); throw null; }
+        public bool TryGetValue(System.Type key, out System.Web.Mvc.IModelBinder value) { throw null; }
     }
     public partial class ModelBinderProviderCollection : System.Collections.ObjectModel.Collection<System.Web.Mvc.IModelBinderProvider>
     {
@@ -1227,7 +1227,7 @@ namespace System.Web.Mvc
         public bool Remove(string key) { throw null; }
         public void SetModelValue(string key, System.Web.Mvc.ValueProviderResult value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Web.Mvc.ModelState value) { value = default(System.Web.Mvc.ModelState); throw null; }
+        public bool TryGetValue(string key, out System.Web.Mvc.ModelState value) { throw null; }
     }
     public partial class ModelValidationResult
     {
@@ -1343,18 +1343,18 @@ namespace System.Web.Mvc
         public virtual System.Web.Mvc.ValueProviderResult GetValue(string key) { throw null; }
         public virtual System.Web.Mvc.ValueProviderResult GetValue(string key, bool skipValidation) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public sealed partial class NoAsyncTimeoutAttribute : System.Web.Mvc.AsyncTimeoutAttribute
     {
         public NoAsyncTimeoutAttribute() : base (default(int)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class NonActionAttribute : System.Web.Mvc.ActionMethodSelectorAttribute
     {
         public NonActionAttribute() { }
         public override bool IsValidForRequest(System.Web.Mvc.ControllerContext controllerContext, System.Reflection.MethodInfo methodInfo) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public partial class OutputCacheAttribute : System.Web.Mvc.ActionFilterAttribute, System.Web.Mvc.IExceptionFilter
     {
         public OutputCacheAttribute() { }
@@ -1400,7 +1400,7 @@ namespace System.Web.Mvc
         public PartialViewResult() { }
         protected override System.Web.Mvc.ViewEngineResult FindView(System.Web.Mvc.ControllerContext context) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class PreApplicationStartCode
     {
         public static void Start() { }
@@ -1495,7 +1495,7 @@ namespace System.Web.Mvc
         public RegularExpressionAttributeAdapter(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context, System.ComponentModel.DataAnnotations.RegularExpressionAttribute attribute) : base (default(System.Web.Mvc.ModelMetadata), default(System.Web.Mvc.ControllerContext), default(System.ComponentModel.DataAnnotations.RegularExpressionAttribute)) { }
         public override System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelClientValidationRule> GetClientValidationRules() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public partial class RemoteAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute, System.Web.Mvc.IClientValidatable
     {
         protected RemoteAttribute() { }
@@ -1519,7 +1519,7 @@ namespace System.Web.Mvc
         public RequiredAttributeAdapter(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context, System.ComponentModel.DataAnnotations.RequiredAttribute attribute) : base (default(System.Web.Mvc.ModelMetadata), default(System.Web.Mvc.ControllerContext), default(System.ComponentModel.DataAnnotations.RequiredAttribute)) { }
         public override System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelClientValidationRule> GetClientValidationRules() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public partial class RequireHttpsAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public RequireHttpsAttribute() { }
@@ -1579,7 +1579,7 @@ namespace System.Web.Mvc
         public string Text { get { throw null; } set { } }
         public string Value { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class SessionStateAttribute : System.Attribute
     {
         public SessionStateAttribute(System.Web.SessionState.SessionStateBehavior behavior) { }
@@ -1620,7 +1620,7 @@ namespace System.Web.Mvc
         void System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.CopyTo(System.Collections.Generic.KeyValuePair<string, object>[] array, int index) { }
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.Remove(System.Collections.Generic.KeyValuePair<string, object> keyValuePair) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out object value) { value = default(object); throw null; }
+        public bool TryGetValue(string key, out object value) { throw null; }
     }
     public partial class TemplateInfo
     {
@@ -1671,14 +1671,14 @@ namespace System.Web.Mvc
         public ValidatableObjectAdapter(System.Web.Mvc.ModelMetadata metadata, System.Web.Mvc.ControllerContext context) : base (default(System.Web.Mvc.ModelMetadata), default(System.Web.Mvc.ControllerContext)) { }
         public override System.Collections.Generic.IEnumerable<System.Web.Mvc.ModelValidationResult> Validate(object container) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
     public sealed partial class ValidateAntiForgeryTokenAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public ValidateAntiForgeryTokenAttribute() { }
         public string Salt { get { throw null; } set { } }
         public void OnAuthorization(System.Web.Mvc.AuthorizationContext filterContext) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(68), Inherited=true, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Method, Inherited=true, AllowMultiple=false)]
     public partial class ValidateInputAttribute : System.Web.Mvc.FilterAttribute, System.Web.Mvc.IAuthorizationFilter
     {
         public ValidateInputAttribute(bool enableValidation) { }
@@ -1718,7 +1718,7 @@ namespace System.Web.Mvc
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         bool System.Web.Mvc.IValueProvider.ContainsPrefix(string prefix) { throw null; }
         System.Web.Mvc.ValueProviderResult System.Web.Mvc.IValueProvider.GetValue(string key) { throw null; }
-        public bool TryGetValue(string key, out System.Web.Mvc.ValueProviderResult value) { value = default(System.Web.Mvc.ValueProviderResult); throw null; }
+        public bool TryGetValue(string key, out System.Web.Mvc.ValueProviderResult value) { throw null; }
     }
     public static partial class ValueProviderFactories
     {
@@ -1789,7 +1789,7 @@ namespace System.Web.Mvc
         public bool Remove(string key) { throw null; }
         protected virtual void SetModel(object value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out object value) { value = default(object); throw null; }
+        public bool TryGetValue(string key, out object value) { throw null; }
     }
     public partial class ViewDataDictionary<TModel> : System.Web.Mvc.ViewDataDictionary
     {
@@ -1934,10 +1934,10 @@ namespace System.Web.Mvc
         public System.Web.Mvc.UrlHelper Url { get { throw null; } }
         public dynamic ViewBag { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Mvc.ViewContext ViewContext { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Web.Mvc.ViewDataDictionary ViewData { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string ViewDataKey { get { throw null; } set { } }

@@ -21,6 +21,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void InvalidFileOptionsThrow()
         {
             AssertExtensions.Throws<ArgumentOutOfRangeException>("options", () => CreateFileStream(GetTestFilePath(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, c_DefaultBufferSize, ~FileOptions.None));
@@ -68,6 +69,7 @@ namespace System.IO.Tests
         [InlineData(FileOptions.Encrypted)]
         [InlineData(FileOptions.Asynchronous | FileOptions.Encrypted)]
         [InlineData(FileOptions.Asynchronous | FileOptions.DeleteOnClose | FileOptions.Encrypted | FileOptions.RandomAccess | FileOptions.SequentialScan | FileOptions.WriteThrough)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void ValidFileOptions_Encrypted(FileOptions option)
         {
             try { ValidFileOptions(option); }

@@ -144,6 +144,10 @@ am__libmono_native_compat_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
 	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
@@ -162,7 +166,9 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = libmono_native_compat_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_errno.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_maphardwaretype.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_memory.lo
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_memory.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo
 am__objects_2 = libmono_native_compat_la-pal-android.lo \
 	libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
@@ -184,7 +190,8 @@ am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
 	$(am__objects_6)
 am__objects_8 = $(am__objects_3) $(am__objects_6)
-@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_2)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_2)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_8)
@@ -216,6 +223,10 @@ am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
 	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
@@ -233,7 +244,9 @@ am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 am__objects_10 = libmono_native_unified_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_errno.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_maphardwaretype.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_memory.lo
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_memory.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo
 am__objects_11 = libmono_native_unified_la-pal-android.lo \
 	libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
@@ -255,7 +268,8 @@ am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
 	$(am__objects_15)
 am__objects_17 = $(am__objects_12) $(am__objects_15)
-@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_11)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_11)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_17)
@@ -283,6 +297,10 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
 	pal-android.h pal-android.c pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
@@ -300,7 +318,9 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 am__objects_19 = libmono_native_la-mono-native-platform.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_errno.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_maphardwaretype.lo \
-	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_memory.lo
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_memory.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo \
+	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo
 am__objects_20 = libmono_native_la-pal-android.lo \
 	libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
@@ -322,7 +342,8 @@ am__objects_25 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
 	$(am__objects_24)
 am__objects_26 = $(am__objects_21) $(am__objects_24)
-@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_20)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_20)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_26)
@@ -340,6 +361,10 @@ am__EXTRA_libmono_native_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
 	pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
@@ -402,6 +427,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -479,6 +505,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -497,6 +524,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -530,6 +558,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -590,6 +619,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -659,7 +689,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -695,7 +729,11 @@ common_sources = \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h
+	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+	../../external/corefx/src/Native/Unix/System.Native/pal_time.h
 
 macos_sources = $(unix_sources) $(am__append_1)
 ios_sources = pal-icalls.h pal-icalls.c \
@@ -709,6 +747,7 @@ ios_sources = pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
 	$(am__append_2)
 linux_sources = $(unix_sources)
+aix_sources = $(unix_sources)
 android_sources = \
 	pal-android.h \
 	pal-android.c \
@@ -739,8 +778,9 @@ gss_sources = \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(unix_sources) $(gss_sources)
-@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
+EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(unix_sources) $(gss_sources)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
+@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)
 @MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
 @MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(ios_sources)
 @MONO_NATIVE_PLATFORM_MACOS_TRUE@platform_sources = $(macos_sources)
@@ -860,6 +900,10 @@ clean-libLTLIBRARIES:
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_memory.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
@@ -887,6 +931,10 @@ libmono-native-compat.la: $(libmono_native_compat_la_OBJECTS) $(libmono_native_c
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_memory.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
@@ -907,6 +955,10 @@ libmono-native-unified.la: $(libmono_native_unified_la_OBJECTS) $(libmono_native
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_maphardwaretype.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_memory.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
+	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
 ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo: ../../external/corefx/src/Native/Unix/System.Native/$(am__dirstamp) \
 	../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/$(am__dirstamp)
@@ -942,6 +994,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_networkstatistics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_random.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_tcpstate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_time.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_uid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_errno.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_maphardwaretype.Plo@am__quote@
@@ -950,6 +1004,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_networkstatistics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_random.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_tcpstate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_time.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_uid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_errno.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_maphardwaretype.Plo@am__quote@
@@ -958,6 +1014,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_networkstatistics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_random.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_tcpstate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_time.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_uid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_compat_la-pal_gssapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_la-pal_gssapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../external/corefx/src/Native/Unix/System.Net.Security.Native/$(DEPDIR)/libmono_native_unified_la-pal_gssapi.Plo@am__quote@
@@ -1025,6 +1083,20 @@ libmono_native_compat_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_memory.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_memory.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_uid.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_uid.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_uid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_time.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_time.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_compat_la-pal_time.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_time.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
 
 libmono_native_compat_la-pal-android.lo: pal-android.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_compat_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_compat_la_CFLAGS) $(CFLAGS) -MT libmono_native_compat_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_compat_la-pal-android.Tpo -c -o libmono_native_compat_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
@@ -1117,6 +1189,20 @@ libmono_native_unified_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_memory.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
 
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_uid.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_uid.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_uid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_time.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_time.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_unified_la-pal_time.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_time.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+
 libmono_native_unified_la-pal-android.lo: pal-android.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_unified_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_unified_la_CFLAGS) $(CFLAGS) -MT libmono_native_unified_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo -c -o libmono_native_unified_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_unified_la-pal-android.Tpo $(DEPDIR)/libmono_native_unified_la-pal-android.Plo
@@ -1208,6 +1294,20 @@ libmono_native_la-mono-native-platform.lo: mono-native-platform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_memory.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_memory.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_memory.c
 
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_uid.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_uid.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_uid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_uid.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_uid.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_uid.c
+
+../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo: ../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo -MD -MP -MF ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_time.Tpo -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_time.Tpo ../../external/corefx/src/Native/Unix/System.Native/$(DEPDIR)/libmono_native_la-pal_time.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../external/corefx/src/Native/Unix/System.Native/pal_time.c' object='../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -c -o ../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_time.lo `test -f '../../external/corefx/src/Native/Unix/System.Native/pal_time.c' || echo '$(srcdir)/'`../../external/corefx/src/Native/Unix/System.Native/pal_time.c
+
 libmono_native_la-pal-android.lo: pal-android.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmono_native_la_CPPFLAGS) $(CPPFLAGS) $(libmono_native_la_CFLAGS) $(CFLAGS) -MT libmono_native_la-pal-android.lo -MD -MP -MF $(DEPDIR)/libmono_native_la-pal-android.Tpo -c -o libmono_native_la-pal-android.lo `test -f 'pal-android.c' || echo '$(srcdir)/'`pal-android.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_native_la-pal-android.Tpo $(DEPDIR)/libmono_native_la-pal-android.Plo
@@ -1278,6 +1378,8 @@ clean-libtool:
 	-rm -rf .libs _libs
 	-rm -rf ../../external/corefx/src/Native/Unix/System.Native/.libs ../../external/corefx/src/Native/Unix/System.Native/_libs
 	-rm -rf ../../external/corefx/src/Native/Unix/System.Net.Security.Native/.libs ../../external/corefx/src/Native/Unix/System.Net.Security.Native/_libs
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1471,6 +1573,14 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
@@ -1487,8 +1597,13 @@ uninstall-am: uninstall-libLTLIBRARIES
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-libLTLIBRARIES
 
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)
+	cp -L .libs/libmono-native$(libsuffix) $(TEST_BUNDLE_PATH)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

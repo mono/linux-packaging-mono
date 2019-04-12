@@ -40,8 +40,6 @@ namespace System.IO.Compression
                 throw new ObjectDisposedException(nameof(BrotliDecoder), SR.BrotliDecoder_Disposed);
         }
 
-        internal OperationStatus Decompress(ReadOnlyMemory<byte> source, Memory<byte> destination, out int bytesConsumed, out int bytesWritten) => Decompress(source.Span, destination.Span, out bytesConsumed, out bytesWritten);
-
         public OperationStatus Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             EnsureInitialized();
@@ -61,7 +59,11 @@ namespace System.IO.Compression
                     fixed (byte* inBytes = &MemoryMarshal.GetReference(source))
                     fixed (byte* outBytes = &MemoryMarshal.GetReference(destination))
                     {
-                        int brotliResult = Interop.Brotli.BrotliDecoderDecompressStream(_state, ref availableInput, &inBytes, ref availableOutput, &outBytes, out size_t totalOut);
+                        // MCS bug workaround:
+                        byte* inBytesPtr = inBytes;
+                        byte* outBytesPtr = outBytes;
+
+                        int brotliResult = Interop.Brotli.BrotliDecoderDecompressStream(_state, ref availableInput, &inBytesPtr, ref availableOutput, &outBytesPtr, out size_t totalOut);
                         if (brotliResult == 0) // Error
                         {
                             return OperationStatus.InvalidData;

@@ -60,6 +60,7 @@
 #include <mono/metadata/mempool-internals.h>
 #include <mono/metadata/attach.h>
 #include <mono/utils/mono-math.h>
+#include <mono/utils/mono-errno.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/mono-logger-internals.h>
@@ -234,9 +235,9 @@ MONO_SIG_HANDLER_FUNC (static, sigabrt_signal_handler)
 
 MONO_SIG_HANDLER_FUNC (static, sigterm_signal_handler)
 {
+#ifndef DISABLE_CRASH_REPORTING
 	MONO_SIG_HANDLER_GET_CONTEXT;
 
-#ifndef DISABLE_CRASH_REPORTING
 	// Note: this is only run from the non-controlling thread
 	MonoContext mctx;
 	gchar *output = NULL;
@@ -283,7 +284,7 @@ MONO_SIG_HANDLER_FUNC (static, profiler_signal_handler)
 	if (mono_thread_info_get_small_id () == -1 ||
 	    !mono_domain_get () ||
 	    !mono_tls_get_jit_tls ()) {
-		errno = old_errno;
+		mono_set_errno (old_errno);
 		return;
 	}
 
@@ -302,7 +303,7 @@ MONO_SIG_HANDLER_FUNC (static, profiler_signal_handler)
 
 	mono_hazard_pointer_restore_for_signal_handler (hp_save_index);
 
-	errno = old_errno;
+	mono_set_errno (old_errno);
 
 	mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
 }
@@ -990,9 +991,8 @@ dump_native_stacktrace (const char *signal, void *ctx)
 		pid_t pid;
 		int status;
 		pid_t crashed_pid = getpid ();
-
-		MonoStackHash hashes;
 		gchar *output = NULL;
+		MonoStackHash hashes;
 
 #ifndef DISABLE_CRASH_REPORTING
 		MonoStateMem merp_mem;
@@ -1112,7 +1112,6 @@ dump_native_stacktrace (const char *signal, void *ctx)
 			_exit (1);
 		}
 
-		mono_runtime_printf_err ("\nDebug info from gdb:\n");
 		waitpid (pid, &status, 0);
 
 		if (double_faulted) {
@@ -1124,9 +1123,17 @@ dump_native_stacktrace (const char *signal, void *ctx)
 		}
 
 #ifndef DISABLE_CRASH_REPORTING
+		if (output) {
+			// We've already done our gdb dump and our telemetry steps. Before exiting,
+			// see if we can notify any attached debugger instances.
+			//
+			// At this point we are accepting that the below step might end in a crash
+			mini_get_dbg_callbacks ()->send_crash (output, &hashes, 0 /* wait # seconds */);
+		}
 		output = NULL;
 		mono_state_free_mem (&merp_mem);
 #endif
+
 	}
 #endif
 #else
@@ -1176,6 +1183,12 @@ mono_init_native_crash_info (void)
 	lldb_path = g_find_program_in_path ("lldb");
 }
 
+void
+mono_cleanup_native_crash_info (void)
+{
+	g_free (gdb_path);
+	g_free (lldb_path);
+}
 
 static gboolean
 native_stack_with_gdb (pid_t crashed_pid, const char **argv, int commands, char* commands_filename)

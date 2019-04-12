@@ -183,8 +183,9 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
 	debugger-state-machine.h xdebug.c mini-llvm.h mini-llvm-cpp.h \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
-	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
-	intrinsics.c mini-profiler.c interp-stubs.c aot-runtime.h ee.h \
+	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
+	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
+	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
 	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
 	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
@@ -195,7 +196,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
 	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
 	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	exceptions-ppc.c tramp-ppc.c mini-riscv.c mini-riscv.h \
+	exceptions-riscv.c tramp-riscv.c mini-s390x.c mini-s390x.h \
 	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
 	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
 	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
@@ -203,7 +205,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c
+	mini-windows-dlldac.c main-core.c
 am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -223,9 +225,10 @@ am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-mini-gc.lo libmini_la-debugger-agent-stubs.lo \
 	libmini_la-xdebug.lo libmini_la-alias-analysis.lo \
 	libmini_la-mini-cross-helpers.lo libmini_la-arch-stubs.lo \
-	libmini_la-type-checking.lo libmini_la-lldb.lo \
-	libmini_la-memory-access.lo libmini_la-intrinsics.lo \
-	libmini_la-mini-profiler.lo libmini_la-interp-stubs.lo
+	libmini_la-type-checking.lo libmini_la-calls.lo \
+	libmini_la-lldb.lo libmini_la-memory-access.lo \
+	libmini_la-intrinsics.lo libmini_la-mini-profiler.lo \
+	libmini_la-interp-stubs.lo libmini_la-llvmonly-runtime.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_3 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
@@ -250,38 +253,44 @@ am__objects_8 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
 	libmini_la-tramp-mips.lo
 am__objects_9 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
 	libmini_la-tramp-ppc.lo
-am__objects_10 = libmini_la-mini-s390x.lo \
+am__objects_10 = libmini_la-mini-riscv.lo \
+	libmini_la-exceptions-riscv.lo libmini_la-tramp-riscv.lo
+am__objects_11 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_11 = libmini_la-mini-sparc.lo \
+am__objects_12 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_12 = libmini_la-mini-wasm.lo \
+am__objects_13 = libmini_la-mini-wasm.lo \
 	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
 	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
-am__objects_13 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
+am__objects_14 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
 	libmini_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_14 = $(am__objects_13)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_14 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_14 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_14 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_14 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_14 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_14 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_14 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_14 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_14 = $(am__objects_6)
-@AMD64_TRUE@am__objects_14 = $(am__objects_5)
-am__objects_15 = libmini_la-mini-darwin.lo
-am__objects_16 = libmini_la-mini-posix.lo
-am__objects_17 = libmini_la-mini-windows.lo \
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_15 = $(am__objects_14)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_15 = $(am__objects_13)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_TRUE@am__objects_15 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_15 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_15 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_15 = $(am__objects_6)
+@AMD64_TRUE@am__objects_15 = $(am__objects_5)
+am__objects_16 = libmini_la-mini-darwin.lo
+am__objects_17 = libmini_la-mini-posix.lo
+am__objects_18 = libmini_la-mini-windows.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_18 = $(am__objects_17)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_18 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_16)
-@HOST_DARWIN_TRUE@am__objects_18 = $(am__objects_15) $(am__objects_16)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_19 = $(am__objects_18)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_19 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_17)
+@HOST_DARWIN_TRUE@am__objects_19 = $(am__objects_16) $(am__objects_17)
+@ENABLE_NETCORE_TRUE@am__objects_20 = libmini_la-main-core.lo
 am_libmini_la_OBJECTS = $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_14) $(am__objects_18)
+	$(am__objects_4) $(am__objects_15) $(am__objects_19) \
+	$(am__objects_20)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -292,9 +301,9 @@ am__v_lt_1 =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@WASM_FALSE@am__objects_19 = libmono_dbg_la-debugger-engine.lo
+@WASM_FALSE@am__objects_21 = libmono_dbg_la-debugger-engine.lo
 am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	libmono_dbg_la-debugger-state-machine.lo $(am__objects_19)
+	libmono_dbg_la-debugger-state-machine.lo $(am__objects_21)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -306,10 +315,10 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_20 = interp/libmono_ee_interp_la-interp.lo \
+am__objects_22 = interp/libmono_ee_interp_la-interp.lo \
 	interp/libmono_ee_interp_la-mintops.lo \
 	interp/libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_20)
+am_libmono_ee_interp_la_OBJECTS = $(am__objects_22)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -394,11 +403,11 @@ mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_21 =
+am__objects_23 =
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_21)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_23)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_21)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_23)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
 	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
@@ -433,7 +442,6 @@ AM_V_CC = $(am__v_CC_@AM_V@)
 am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
 am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
-CCLD = $(CC)
 LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -447,7 +455,6 @@ AM_V_CXX = $(am__v_CXX_@AM_V@)
 am__v_CXX_ = $(am__v_CXX_@AM_DEFAULT_V@)
 am__v_CXX_0 = @echo "  CXX     " $@;
 am__v_CXX_1 = 
-CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -474,6 +481,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 HEADERS = $(libmonoinclude_HEADERS)
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -551,6 +559,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -569,6 +578,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -602,6 +612,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -662,6 +673,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -731,7 +743,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -752,6 +768,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
+CXXLD = $(MONO_CXXLD)
+CCLD = $(MONO_CXXLD)
 count = 100000
 mtest = for_loop
 monodir = $(top_builddir)
@@ -793,7 +811,7 @@ MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE) $(MOBILE_RUNTIME_ARG)
 TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
 INTERP_RUNTIME = $(MINI_RUNTIME) --interpreter
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
-MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) $(CSC) -langversion:7.2 -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
+MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 AM_CFLAGS = \
 	-I$(top_srcdir) 	\
@@ -959,6 +977,12 @@ s390x_sources = \
 	exceptions-s390x.c	\
 	tramp-s390x.c
 
+riscv_sources = \
+	mini-riscv.c \
+	mini-riscv.h \
+	exceptions-riscv.c \
+	tramp-riscv.c
+
 darwin_sources = \
 	mini-darwin.c
 
@@ -996,6 +1020,9 @@ interp_libs = libmono-ee-interp.la
 
 @ENABLE_LLVM_TRUE@llvm_runtime_sources = \
 @ENABLE_LLVM_TRUE@	llvm-runtime.cpp
+
+@ENABLE_NETCORE_TRUE@netcore_sources = \
+@ENABLE_NETCORE_TRUE@	main-core.c
 
 common_sources = \
 	mini.c			\
@@ -1066,12 +1093,15 @@ common_sources = \
 	arch-stubs.c		\
 	llvm-runtime.h	\
 	type-checking.c \
+	calls.c			\
 	lldb.h			\
 	lldb.c	\
 	memory-access.c	\
 	intrinsics.c \
 	mini-profiler.c	\
 	interp-stubs.c \
+	llvmonly-runtime.h \
+	llvmonly-runtime.c \
 	aot-runtime.h	\
 	ee.h \
 	mini-runtime.h
@@ -1130,6 +1160,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_sources = $(mips_sources)
 @POWERPC64_TRUE@arch_sources = $(ppc_sources)
 @POWERPC_TRUE@arch_sources = $(ppc_sources)
+@RISCV32_TRUE@arch_sources = $(riscv_sources)
+@RISCV64_TRUE@arch_sources = $(riscv_sources)
 @S390X_TRUE@arch_sources = $(s390x_sources)
 @SPARC64_TRUE@arch_sources = $(sparc_sources)
 @SPARC_TRUE@arch_sources = $(sparc_sources)
@@ -1141,6 +1173,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_built = cpu-mips.h
 @POWERPC64_TRUE@arch_built = cpu-ppc64.h
 @POWERPC_TRUE@arch_built = cpu-ppc.h
+@RISCV32_TRUE@arch_built = cpu-riscv32.h
+@RISCV64_TRUE@arch_built = cpu-riscv64.h
 @S390X_TRUE@arch_built = cpu-s390x.h
 @SPARC64_TRUE@arch_built = cpu-sparc.h
 @SPARC_TRUE@arch_built = cpu-sparc.h
@@ -1152,6 +1186,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@arch_define = __mips__
 @POWERPC64_TRUE@arch_define = __ppc64__
 @POWERPC_TRUE@arch_define = __ppc__
+@RISCV32_TRUE@arch_define = __riscv
+@RISCV64_TRUE@arch_define = __riscv
 @S390X_TRUE@arch_define = __s390__
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
@@ -1163,6 +1199,8 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @MIPS_TRUE@target_define = TARGET_MIPS
 @POWERPC64_TRUE@target_define = TARGET_POWERPC
 @POWERPC_TRUE@target_define = TARGET_POWERPC
+@RISCV32_TRUE@target_define = TARGET_RISCV32
+@RISCV64_TRUE@target_define = TARGET_RISCV64
 @S390X_TRUE@target_define = TARGET_S390X
 @SPARC64_TRUE@target_define = TARGET_SPARC
 @SPARC_TRUE@target_define = TARGET_SPARC
@@ -1194,7 +1232,7 @@ dbg_libs = libmono-dbg.la
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
 # compile time dependencies on boehm/sgen.
 #
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
+libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources) $(netcore_sources)
 libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
@@ -1234,7 +1272,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 FULLAOT_LIBS_DISABLED = $(am__append_9)
 FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
-FULLAOT_AOT_ARGS = $(if $(HYBRID),hybrid,full,interp)
+FULLAOT_AOT_ARGS = $(if $(HYBRID),hybrid,full,interp),$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)
 FULLAOT_ARGS = $(if $(HYBRID),--hybrid-aot,--full-aot)
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
 
@@ -1256,6 +1294,7 @@ EXTRA_DIST = TestDriver.cs \
 	$(mips_sources) cpu-mips.md 		\
 	$(sparc_sources) cpu-sparc.md 		\
 	$(s390x_sources) cpu-s390x.md 		\
+	$(riscv_sources) cpu-riscv32.md cpu-riscv64.md \
 	$(windows_sources)			\
 	$(darwin_sources) Info.plist		\
 	$(posix_sources)					\
@@ -1476,6 +1515,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-arch-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-branch-opts.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-calls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-cfgdump.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-cfold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-debug-mini.Plo@am__quote@
@@ -1490,6 +1530,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-exceptions-wasm.Plo@am__quote@
@@ -1503,7 +1544,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-linear-scan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-liveness.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-llvmonly-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-main-core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-memory-access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64-gsharedvt.Plo@am__quote@
@@ -1525,6 +1568,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-ppc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-sparc.Plo@am__quote@
@@ -1550,6 +1594,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-wasm.Plo@am__quote@
@@ -1901,6 +1946,13 @@ libmini_la-type-checking.lo: type-checking.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-type-checking.lo `test -f 'type-checking.c' || echo '$(srcdir)/'`type-checking.c
 
+libmini_la-calls.lo: calls.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-calls.lo -MD -MP -MF $(DEPDIR)/libmini_la-calls.Tpo -c -o libmini_la-calls.lo `test -f 'calls.c' || echo '$(srcdir)/'`calls.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-calls.Tpo $(DEPDIR)/libmini_la-calls.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='calls.c' object='libmini_la-calls.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-calls.lo `test -f 'calls.c' || echo '$(srcdir)/'`calls.c
+
 libmini_la-lldb.lo: lldb.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-lldb.lo -MD -MP -MF $(DEPDIR)/libmini_la-lldb.Tpo -c -o libmini_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-lldb.Tpo $(DEPDIR)/libmini_la-lldb.Plo
@@ -1935,6 +1987,13 @@ libmini_la-interp-stubs.lo: interp-stubs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp-stubs.c' object='libmini_la-interp-stubs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-interp-stubs.lo `test -f 'interp-stubs.c' || echo '$(srcdir)/'`interp-stubs.c
+
+libmini_la-llvmonly-runtime.lo: llvmonly-runtime.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-llvmonly-runtime.lo -MD -MP -MF $(DEPDIR)/libmini_la-llvmonly-runtime.Tpo -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-llvmonly-runtime.Tpo $(DEPDIR)/libmini_la-llvmonly-runtime.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='llvmonly-runtime.c' object='libmini_la-llvmonly-runtime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -2097,6 +2156,27 @@ libmini_la-tramp-ppc.lo: tramp-ppc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tramp-ppc.lo `test -f 'tramp-ppc.c' || echo '$(srcdir)/'`tramp-ppc.c
 
+libmini_la-mini-riscv.lo: mini-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-riscv.Tpo -c -o libmini_la-mini-riscv.lo `test -f 'mini-riscv.c' || echo '$(srcdir)/'`mini-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-riscv.Tpo $(DEPDIR)/libmini_la-mini-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-riscv.c' object='libmini_la-mini-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-riscv.lo `test -f 'mini-riscv.c' || echo '$(srcdir)/'`mini-riscv.c
+
+libmini_la-exceptions-riscv.lo: exceptions-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-exceptions-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-exceptions-riscv.Tpo -c -o libmini_la-exceptions-riscv.lo `test -f 'exceptions-riscv.c' || echo '$(srcdir)/'`exceptions-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-exceptions-riscv.Tpo $(DEPDIR)/libmini_la-exceptions-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='exceptions-riscv.c' object='libmini_la-exceptions-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-exceptions-riscv.lo `test -f 'exceptions-riscv.c' || echo '$(srcdir)/'`exceptions-riscv.c
+
+libmini_la-tramp-riscv.lo: tramp-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-tramp-riscv.lo -MD -MP -MF $(DEPDIR)/libmini_la-tramp-riscv.Tpo -c -o libmini_la-tramp-riscv.lo `test -f 'tramp-riscv.c' || echo '$(srcdir)/'`tramp-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-tramp-riscv.Tpo $(DEPDIR)/libmini_la-tramp-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tramp-riscv.c' object='libmini_la-tramp-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tramp-riscv.lo `test -f 'tramp-riscv.c' || echo '$(srcdir)/'`tramp-riscv.c
+
 libmini_la-mini-s390x.lo: mini-s390x.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-s390x.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-s390x.Tpo -c -o libmini_la-mini-s390x.lo `test -f 'mini-s390x.c' || echo '$(srcdir)/'`mini-s390x.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-s390x.Tpo $(DEPDIR)/libmini_la-mini-s390x.Plo
@@ -2244,6 +2324,13 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
 
+libmini_la-main-core.lo: main-core.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-main-core.lo -MD -MP -MF $(DEPDIR)/libmini_la-main-core.Tpo -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-main-core.Tpo $(DEPDIR)/libmini_la-main-core.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-core.c' object='libmini_la-main-core.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
+
 libmono_dbg_la-debugger-agent.lo: debugger-agent.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-agent.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-agent.Tpo -c -o libmono_dbg_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_dbg_la-debugger-agent.Tpo $(DEPDIR)/libmono_dbg_la-debugger-agent.Plo
@@ -2337,6 +2424,8 @@ uninstall-libmonoincludeHEADERS:
 	@list='$(libmonoinclude_HEADERS)'; test -n "$(libmonoincludedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(libmonoincludedir)'; $(am__uninstall_files_from_dir)
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -2537,6 +2626,14 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-libmonoincludeHEADERS
 
@@ -2558,18 +2655,16 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
+	test-bundle-am test-bundle-local test-local uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-libmonoincludeHEADERS
 
 
-@ENABLE_LLVM_TRUE@-include $(mono_build_root)/llvm/llvm_config.mk
+@ENABLE_LLVM_TRUE@include $(mono_build_root)/llvm/llvm_config.mk
 
-@ENABLE_LLVM_TRUE@print-llvm-info:
-@ENABLE_LLVM_TRUE@	echo "cflags: $(LLVM_CFLAGS)"
-@ENABLE_LLVM_TRUE@	echo "cxxflags: $(LLVM_CXXFLAGS)"
-@ENABLE_LLVM_TRUE@	echo "ldflags: $(LLVM_LDFLAGS)"
-@ENABLE_LLVM_TRUE@	echo "libs: $(LLVM_LIBS)"
+@ENABLE_LLVM_TRUE@$(mono_build_root)/llvm/llvm_config.mk:
+@ENABLE_LLVM_TRUE@	$(MAKE) -C $(top_builddir)/llvm $(mono_build_root)/llvm/llvm_config.mk
 
 @HOST_WIN32_TRUE@export HOST_CC
 
@@ -2672,8 +2767,24 @@ cpu-s390x.h: mini-ops.h cpu-s390x.md
 cpu-mips.h: mini-ops.h cpu-mips.md
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
 
+cpu-riscv32.h: cpu-riscv32.md
+	$(GENMDESC_PRG) cpu-riscv32.h riscv32_cpu_desc $(srcdir)/cpu-riscv32.md
+
+cpu-riscv64.h: cpu-riscv64.md
+	$(GENMDESC_PRG) cpu-riscv64.h riscv64_cpu_desc $(srcdir)/cpu-riscv64.md
+
 testi: mono test.exe
 	$(MINI_RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
+
+test-local: $(regtests)
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)/tests/mini
+	cp -L $(regtests) TestDriver.dll MemoryIntrinsics.dll generics-variant-types.dll $(TEST_BUNDLE_PATH)/tests/mini/
+	cp -L mono-sgen $(TEST_BUNDLE_PATH)/
+	chmod +x $(TEST_BUNDLE_PATH)/mono-sgen
+@SUPPORT_BOEHM_TRUE@	cp -L mono-boehm $(TEST_BUNDLE_PATH)/
+@SUPPORT_BOEHM_TRUE@	chmod +x $(TEST_BUNDLE_PATH)/mono-boehm
 
 # ensure the tests are actually correct
 checktests: $(regtests)
@@ -2733,12 +2844,12 @@ fullaotmixedcheck:
 fullaotcheck: $(mono) $(fullaot_regtests) $(fullaot_testing_deps)
 	rm -rf $(FULLAOT_TMP_DIR)
 	mkdir $(FULLAOT_TMP_DIR)
-	$(MAKE) fullaot-libs AOT_FLAGS="$(FULLAOT_AOT_ARGS),$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" GSHAREDVT=$(GSHAREDVT)
-	cp $(regtests) $(fullaot_regtests) $(fullaot_testing_deps) $(FULLAOT_TMP_DIR)/
-	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="$(FULLAOT_AOT_ARGS),$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" $(FULLAOT_TMP_DIR)/{$(fullaot_testing_deps_commas),*.exe} || exit 1
+	$(MAKE) fullaot-libs AOT_FLAGS="$(FULLAOT_AOT_ARGS)"
+	cp $(fullaot_regtests) $(fullaot_testing_deps) $(FULLAOT_TMP_DIR)/
+	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="$(FULLAOT_AOT_ARGS)" $(FULLAOT_TMP_DIR)/{$(fullaot_testing_deps_commas),*.exe} || exit 1
 	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) $(FULLAOT_TMP_DIR)/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(FULLAOT_ARGS) $(FULLAOT_TMP_DIR)/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
-	if test x$(MIXED) == x1; then failed=0;i=0; while test $$i -lt 900; do i=`expr $$i + 1`; bash -c "echo -n '.'"; MONO_PATH=$(FULLAOT_TMP_DIR) MONO_DEBUG=aot-skip=$$i ./mono --full-aot-interp $(FULLAOT_TMP_DIR)/basic.exe > $(FULLAOT_TMP_DIR)/mixed.log || failed=1; if test $$failed -eq 1; then echo "Failed at $$i"; exit $$failed; fi; done; fi
+	if test x$(MIXED) == x1; then failed=0;i=0; while test $$i -lt 900; do i=`expr $$i + 1`; bash -c "echo -n '.'"; MONO_PATH=$(FULLAOT_TMP_DIR) MONO_DEBUG=aot-skip=$$i $(top_builddir)/runtime/mono-wrapper --full-aot-interp $(FULLAOT_TMP_DIR)/basic.exe > $(FULLAOT_TMP_DIR)/mixed.log || failed=1; if test $$failed -eq 1; then echo "Failed at $$i"; exit $$failed; fi; done; fi
 
 # This can run in parallel
 fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
@@ -2746,11 +2857,11 @@ fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
 fullaot-tmp/%.dylib: $(CLASS)/%
 	cp $(CLASS)/$* fullaot-tmp/
 	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH="fullaot-tmp/$(PLATFORM_PATH_SEPARATOR)$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	MONO_PATH="fullaot-tmp/$(PLATFORM_PATH_SEPARATOR)$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
 	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
-	$(MAKE) fullaotcheck LLVM=1
+	$(MAKE) fullaotcheck LLVM=1 GSHAREDVT=1
 
 llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp

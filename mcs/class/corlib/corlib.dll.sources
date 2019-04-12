@@ -1,3 +1,5 @@
+#include System.IO.platformnotsupported.sources
+
 Assembly/AssemblyInfo.cs
 ../../build/common/Consts.cs
 ../../build/common/Locale.cs
@@ -125,10 +127,15 @@ System/TermInfoDriver.cs
 System/TermInfoNumbers.cs
 System/TermInfoReader.cs
 System/TermInfoStrings.cs
-System/TimeZone.cs
+corefx/TimeZone.cs
+../../../external/corefx/src/Common/src/CoreLib/System/TimeZone.cs
+../../../external/corefx/src/Common/src/CoreLib/System/CurrentSystemTimeZone.cs
+corefx/CurrentSystemTimeZone.cs
+corefx/TimeZoneInfo.cs
 System/TimeZoneInfo.cs
 System/TimeZoneInfo.Android.cs
 System/TimeZoneInfo.MonoTouch.cs
+System/TimeZoneInfo.WebAssembly.cs
 System/TimeZoneInfo.Serialization.cs
 System/TimeZoneInfo.WinRT.cs
 ../../build/common/MonoTODOAttribute.cs
@@ -170,6 +177,7 @@ System.Diagnostics.Tracing/EventFieldFormat.cs
 System.Diagnostics.Tracing/EventFieldTags.cs
 System.Diagnostics.Tracing/EventIgnoreAttribute.cs
 System.Diagnostics.Tracing/EventManifestOptions.cs
+System.Diagnostics.Tracing/EventSourceCreatedEventArgs.cs
 System.Diagnostics.SymbolStore/ISymbolBinder.cs
 System.Diagnostics.SymbolStore/ISymbolBinder1.cs
 System.Diagnostics.SymbolStore/ISymbolDocument.cs
@@ -181,7 +189,7 @@ System.Diagnostics.SymbolStore/ISymbolScope.cs
 System.Diagnostics.SymbolStore/ISymbolVariable.cs
 System.Diagnostics.SymbolStore/ISymbolWriter.cs
 System.Diagnostics.SymbolStore/SymAddressKind.cs
-System.Diagnostics.SymbolStore/SymbolToken.cs
+../../../external/corefx/src/System.Diagnostics.StackTrace/src/System/Diagnostics/SymbolStore/SymbolToken.cs
 System.Diagnostics.SymbolStore/SymDocumentType.cs
 System.Diagnostics.SymbolStore/SymLanguageType.cs
 System.Diagnostics.SymbolStore/SymLanguageVendor.cs
@@ -189,16 +197,16 @@ System.Globalization/CultureInfo.cs
 System.Globalization/IdnMapping.cs
 System.Globalization/RegionInfo.cs
 System.Globalization/RegionInfo.MonoTouch.cs
-System.IO/Directory.cs
-System.IO/DirectoryInfo.cs
 System.IO/DriveInfo.cs
 ../../../external/corefx/src/System.IO.FileSystem.DriveInfo/src/System/IO/DriveType.cs
-System.IO/File.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/File.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/FileAccess.cs
 ../../../external/corefx/src/System.Runtime/src/System/IO/FileAttributes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/FileMode.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/FileOptions.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/FileShare.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Iterator.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/ReadLinesIterator.cs
 System.IO/FileStream.cs
 System.IO/FileStreamAsyncResult.cs
 System.IO/HGlobalUnmanagedMemoryStream.cs
@@ -239,14 +247,15 @@ System.Reflection/FieldInfo.cs
 System.Reflection/LocalVariableInfo.cs
 System.Reflection/MethodBody.cs
 System.Reflection/Module.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/Module.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ModuleResolveEventHandler.cs
-System.Reflection/MonoAssembly.cs
-System.Reflection/MonoEvent.cs
-System.Reflection/MonoField.cs
-System.Reflection/MonoMethod.cs
-System.Reflection/MonoModule.cs
-System.Reflection/MonoParameterInfo.cs
-System.Reflection/MonoProperty.cs
+System.Reflection/RuntimeAssembly.cs
+System.Reflection/RuntimeModule.cs
+System.Reflection/RuntimeEventInfo.cs
+System.Reflection/RuntimePropertyInfo.cs
+System.Reflection/RuntimeParameterInfo.cs
+System.Reflection/RuntimeFieldInfo.cs
+System.Reflection/RuntimeMethodInfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ParameterInfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/PortableExecutableKinds.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/PropertyInfo.cs
@@ -377,7 +386,7 @@ System.Runtime.InteropServices/RegistrationClassContext.cs
 ../../../external/corefx/src/System.Runtime.InteropServices/src/System/Runtime/InteropServices/RegistrationConnectionType.cs
 System.Runtime.InteropServices/STATSTG.cs
 System.Runtime.InteropServices/RegistrationServices.cs
-System.Runtime.InteropServices/SafeBuffer.cs
+../../../external/corert/src/System.Private.CoreLib/shared/System/Runtime/InteropServices/SafeBuffer.cs
 System.Runtime.InteropServices/SafeHandle.cs
 System.Runtime.InteropServices/SYSKIND.cs
 System.Runtime.InteropServices/TYPELIBATTR.cs
@@ -818,6 +827,7 @@ System.Security.Principal/WindowsIdentity.cs
 System.Security.Principal/WindowsImpersonationContext.cs
 System.Security.Principal/WindowsPrincipal.cs
 System.Text/EncodingHelper.cs
+System.Text/EncodingHelper.WebAssembly.cs
 System.Threading/CompressedStack.cs
 System.Threading/HostExecutionContext.cs
 System.Threading/HostExecutionContextManager.cs
@@ -878,7 +888,6 @@ ReferenceSources/Type.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/AccessViolationException.cs
 ../referencesource/mscorlib/system/activator.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/AggregateException.cs
-../referencesource/mscorlib/system/appdomainattributes.cs
 ../../../external/corefx/src/System.Runtime.Extensions/src/System/AppDomainUnloadedException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ApplicationException.cs
 ../../../external/corefx/src/System.Runtime.Extensions/src/System/ApplicationId.cs
@@ -902,7 +911,7 @@ ReferenceSources/Type.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/CharEnumerator.cs
 ../../../external/corefx/src/System.Console/src/System/ConsoleCancelEventArgs.cs
 ../../../external/corefx/src/System.Console/src/System/ConsoleColor.cs
-../referencesource/mscorlib/system/consolekey.cs
+../../../external/corefx/src/System.Console/src/System/ConsoleKey.cs
 ../../../external/corefx/src/System.Console/src/System/ConsoleKeyInfo.cs
 ../../../external/corefx/src/System.Console/src/System/ConsoleModifiers.cs
 ../../../external/corefx/src/System.Console/src/System/ConsoleSpecialKey.cs
@@ -913,9 +922,10 @@ ReferenceSources/Type.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Convert.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Convert.Base64.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/DataMisalignedException.cs
-../referencesource/mscorlib/system/datetime.cs
+../../../external/corefx/src/Common/src/CoreLib/System/DateTime.cs
+corefx/DateTime.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/DateTimeKind.cs
-../referencesource/mscorlib/system/datetimeoffset.cs
+../../../external/corefx/src/Common/src/CoreLib/System/DateTimeOffset.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/DayOfWeek.cs
 #../../../external/corert/src/System.Private.CoreLib/src/System/Decimal.cs
 #../../../external/corert/src/System.Private.CoreLib/src/System/Decimal.DecCalc.cs
@@ -942,6 +952,7 @@ corert/Decimal.DecCalc.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Guid.cs
 ../referencesource/mscorlib/system/iappdomain.cs
 ../referencesource/mscorlib/system/iappdomainsetup.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IAsyncDisposable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IAsyncResult.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ICloneable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IComparable.cs
@@ -963,7 +974,6 @@ corert/Decimal.DecCalc.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IObservable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IObserver.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IProgress.cs
-../referencesource/mscorlib/system/iserviceobjectprovider.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/InvalidTimeZoneException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Lazy.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/LazyThreadSafetyMode.cs
@@ -996,7 +1006,7 @@ coreclr/Math.CoreCLR.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ParamsArray.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/PlatformNotSupportedException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Progress.cs
-../referencesource/mscorlib/system/random.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Random.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/RankException.cs
 ../referencesource/mscorlib/system/resid.cs
 ../referencesource/mscorlib/system/rttype.cs
@@ -1009,13 +1019,15 @@ coreclr/Math.CoreCLR.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/StringFreezingAttribute.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/SystemException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/TimeoutException.cs
-../referencesource/mscorlib/system/timespan.cs
+../../../external/corefx/src/Common/src/CoreLib/System/TimeSpan.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ThreadAttributes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ThreadStaticAttribute.cs
 ../referencesource/mscorlib/system/throwhelper.cs
 ../referencesource/mscorlib/system/timezoneinfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/TimeZoneNotFoundException.cs
-../referencesource/mscorlib/system/type.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Type.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Type.Enum.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Type.Helpers.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/TypeAccessException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/TypeInitializationException.cs
 ../referencesource/mscorlib/system/typeloadexception.cs
@@ -1030,6 +1042,9 @@ coreclr/Math.CoreCLR.cs
 ../referencesource/mscorlib/system/unityserializationholder.cs
 ../referencesource/mscorlib/system/unsafecharbuffer.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Version.cs
+
+../../../external/corefx/src/Common/src/CoreLib/System/Collections/Generic/IAsyncEnumerable.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Collections/Generic/IAsyncEnumerator.cs
 
 ../referencesource/mscorlib/system/AppContext/AppContext.cs
 ../referencesource/mscorlib/system/AppContext/AppContextSwitches.cs
@@ -1060,6 +1075,7 @@ ReferenceSources/AppContextDefaultValues.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/BidiCategory.cs
 ../referencesource/mscorlib/system/globalization/calendar.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/CalendarAlgorithmType.cs
+../../../external/corert/src/System.Private.CoreLib/shared/System/Globalization/ISOWeek.cs
 ../referencesource/mscorlib/system/globalization/CalendricalCalculationsHelper.cs
 ../referencesource/mscorlib/system/globalization/calendardata.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/CalendarWeekRule.cs
@@ -1072,10 +1088,10 @@ ReferenceSources/AppContextDefaultValues.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/CultureNotFoundException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/CultureTypes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DaylightTime.cs
-../referencesource/mscorlib/system/globalization/datetimeformat.cs
-../referencesource/mscorlib/system/globalization/datetimeformatinfo.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DateTimeFormat.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DateTimeFormatInfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DateTimeFormatInfoScanner.cs
-../referencesource/mscorlib/system/globalization/datetimeparse.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DateTimeParse.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DateTimeStyles.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Globalization/DigitShapes.cs
 ../referencesource/mscorlib/system/globalization/eastasianlunisolarcalendar.cs
@@ -1113,29 +1129,30 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/io/__hresults.cs
 ../referencesource/mscorlib/system/io/binaryreader.cs
 ../referencesource/mscorlib/system/io/binarywriter.cs
-../referencesource/mscorlib/system/io/bufferedstream.cs
-../referencesource/mscorlib/system/io/directory.cs
+../../../external/corefx/src/System.Runtime.Extensions/src/System/IO/BufferedStream.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Directory.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/DirectoryNotFoundException.cs
 ../../../external/corefx/src/System.IO.FileSystem.DriveInfo/src/System/IO/DriveNotFoundException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/EndOfStreamException.cs
-../referencesource/mscorlib/system/io/ioexception.cs
-../referencesource/mscorlib/system/io/fileinfo.cs
-../referencesource/mscorlib/system/io/fileloadexception.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/IOException.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/FileInfo.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/FileLoadException.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/IO/FileLoadException.CoreRT.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/FileNotFoundException.cs
-../referencesource/mscorlib/system/io/filesysteminfo.cs
-../referencesource/mscorlib/system/io/filesystemenumerable.cs
-../referencesource/mscorlib/system/io/memorystream.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/FileSystemInfo.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/MemoryStream.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/PathTooLongException.cs
-../referencesource/mscorlib/system/io/pinnedbuffermemorystream.cs
-../referencesource/mscorlib/system/io/stream.cs
-../referencesource/mscorlib/system/io/streamreader.cs
-../referencesource/mscorlib/system/io/streamwriter.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/PinnedBufferMemoryStream.cs
+../../../external/corert/src/System.Private.CoreLib/shared/System/IO/Stream.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/IO/Stream.CoreRT.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/StreamReader.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/StreamWriter.cs
 ../referencesource/mscorlib/system/io/stringreader.cs
 ../referencesource/mscorlib/system/io/stringwriter.cs
-../referencesource/mscorlib/system/io/textreader.cs
-../referencesource/mscorlib/system/io/textwriter.cs
-../referencesource/mscorlib/system/io/unmanagedmemoryaccessor.cs
-../referencesource/mscorlib/system/io/unmanagedmemorystream.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/TextReader.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/TextWriter.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/UnmanagedMemoryStream.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/UnmanagedMemoryAccessor.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/IO/UnmanagedMemoryStreamWrapper.cs
 
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/AmbiguousMatchException.cs
@@ -1184,7 +1201,9 @@ ReferenceSources/AppContextDefaultValues.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MemberInfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MemberTypes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MethodAttributes.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MethodBase.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MethodImplAttributes.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/MethodInfo.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/Missing.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ObfuscateAssemblyAttribute.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ObfuscationAttribute.cs
@@ -1198,11 +1217,22 @@ ReferenceSources/AppContextDefaultValues.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ResourceAttributes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/ResourceLocation.cs
 ../../../external/corefx/src/System.Runtime/src/System/Reflection/RuntimeReflectionExtensions.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureArrayType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureByRefType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureConstructedGenericType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureGenericMethodParameterType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureGenericParameterType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureHasElementType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignaturePointerType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureType.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/SignatureTypeExtensions.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TargetException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TargetInvocationException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TargetParameterCountException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TypeAttributes.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TypeFilter.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TypeDelegator.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Reflection/TypeInfo.cs
 
 ../../../external/corefx/src/System.Reflection.TypeExtensions/src/System/Reflection/TypeExtensions.cs
 ../../../external/corefx/src/System.Reflection.TypeExtensions/src/System/Reflection/Requires.cs
@@ -1210,10 +1240,6 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/reflection/CustomAttributeExtensions.cs
 ../referencesource/mscorlib/system/reflection/mdimport.cs
 ../referencesource/mscorlib/system/reflection/memberinfoserializationholder.cs
-../referencesource/mscorlib/system/reflection/methodbase.cs
-../referencesource/mscorlib/system/reflection/methodinfo.cs
-../referencesource/mscorlib/system/reflection/typedelegator.cs
-../referencesource/mscorlib/system/reflection/typeinfo.cs
 
 ../referencesource/mscorlib/system/reflection/emit/methodbuilder.cs
 ../referencesource/mscorlib/system/reflection/emit/symboltype.cs
@@ -1373,7 +1399,8 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/security/cryptography/dsa.cs
 ../referencesource/mscorlib/system/security/cryptography/dsasignaturedeformatter.cs
 ../referencesource/mscorlib/system/security/cryptography/dsasignatureformatter.cs
-../referencesource/mscorlib/system/security/cryptography/hashalgorithm.cs
+../../../external/corefx/src/System.Security.Cryptography.Primitives/src/System/Security/Cryptography/HashAlgorithm.cs
+../../../external/corefx/src/System.Security.Cryptography.Primitives/src/System/Security/Cryptography/CryptographicOperations.cs
 ../referencesource/mscorlib/system/security/cryptography/HashAlgorithmName.cs
 ../referencesource/mscorlib/system/security/cryptography/hmac.cs
 ../referencesource/mscorlib/system/security/cryptography/hmacmd5.cs
@@ -1422,8 +1449,6 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/security/cryptography/tripledescryptoserviceprovider.cs
 ../referencesource/mscorlib/system/security/cryptography/utils.cs
 
-../referencesource/mscorlib/system/security/cryptography/x509certificates/x509utils.cs
-
 ../../../external/corefx/src/System.Security.Claims/src/System/Security/Claims/GenericIdentity.cs
 
 ../referencesource/mscorlib/system/security/util/hex.cs
@@ -1454,10 +1479,7 @@ ReferenceSources/AppContextDefaultValues.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Text/UTF7Encoding.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Text/UTF8Encoding.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Text/ValueStringBuilder.cs
-../referencesource/mscorlib/system/text/codepageencoding.cs
 ../referencesource/mscorlib/system/text/encoding.cs
-../referencesource/mscorlib/system/text/mlangcodepageencoding.cs
-../referencesource/mscorlib/system/text/surrogateencoder.cs
 
 ../../../external/corefx/src/Common/src/CoreLib/System/ISpanFormattable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Text/StringBuilder.cs
@@ -1533,6 +1555,8 @@ corefx/BinaryEnums.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/LazyInitializer.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/LockRecursionException.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/ManualResetEvent.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Threading/Tasks/Sources/ManualResetValueTaskSourceCore.cs
+
 ../referencesource/mscorlib/system/threading/monitor.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/ParameterizedThreadStart.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/SemaphoreFullException.cs
@@ -1581,8 +1605,12 @@ corefx/SynchronizationContext.cs
 corefx/SR.cs
 corefx/SR.missing.cs
 corefx/CompareInfo.cs
+corefx/CryptoConfigForwarder.cs
+corefx/DefaultBinder.cs
 corefx/GlobalizationMode.cs
 corefx/Interop.GetRandomBytes.Mono.cs
+corefx/MethodInfo.cs
+corefx/RandomNumberGenerator.cs
 corefx/RuntimeImports.cs
 corefx/TimeSpanParse.cs
 
@@ -1591,11 +1619,11 @@ corert/AddrofIntrinsics.cs
 corert/EnvironmentAugments.cs
 corert/RelocatedTypeAttribute.cs
 corert/RuntimeThread.cs
-corert/Stream.cs
 corert/Task.cs
 corert/ThreadPool.cs
 corert/ThreadPoolBoundHandle.platformnotsupported.cs
 corert/Type.cs
+corert/RtType.cs
 corert/PreAllocatedOverlapped.platformnotsupported.cs
 corert/RuntimeAugments.cs
 ../../../external/corert/src/Common/src/Interop/Unix/System.Private.CoreLib.Native/Interop.Number.cs
@@ -1673,7 +1701,7 @@ corert/RuntimeAugments.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Tuple.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/TupleExtensions.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/ValueTuple.cs
-../../../external/corefx//src/Common/src/CoreLib/System/Nullable.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Nullable.cs
 
 ../../../external/corefx/src/Common/src/CoreLib/System/Buffers/ArrayPool.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Buffers/ArrayPoolEventSource.cs
@@ -1719,8 +1747,12 @@ corert/RuntimeAugments.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Numerics/Vector.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Numerics/Vector_Operations.cs
 
+../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/AsyncIteratorMethodBuilder.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/AsyncIteratorStateMachineAttribute.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/AsyncMethodBuilderAttribute.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/AsyncValueTaskMethodBuilder.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/ConfiguredAsyncDisposable.cs
+../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/ConfiguredCancelableAsyncEnumerable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/ConfiguredValueTaskAwaitable.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/IntrinsicAttribute.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Runtime/CompilerServices/IsReadOnlyAttribute.cs
@@ -1771,8 +1803,13 @@ corert/RuntimeAugments.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/Tasks/ValueTask.cs
 ../../../external/corefx/src/Common/src/CoreLib/System/Threading/Tasks/Sources/IValueTaskSource.cs
 
+../../../external/corefx/src/Common/src/System/MutableDecimal.cs
+
 ../../../external/corefx/src/Common/src/System/Collections/Concurrent/ConcurrentQueue_Segment.cs
 
+../../../external/corefx/src/Common/src/System/Collections/Generic/ArrayBuilder.cs
+../../../external/corefx/src/Common/src/System/Collections/Generic/EnumerableHelpers.cs
+../../../external/corefx/src/Common/src/System/Collections/Generic/LargeArrayBuilder.cs
 ../../../external/corefx/src/Common/src/System/Collections/Generic/LowLevelDictionary.cs
 ../../../external/corefx/src/Common/src/System/Collections/Generic/ReferenceEqualityComparer.cs
 
@@ -1780,6 +1817,10 @@ corert/RuntimeAugments.cs
 ../../../external/corefx/src/Common/src/System/Threading/Tasks/RendezvousAwaitable.cs
 
 ../../../external/corefx/src/System.Collections/src/System/Collections/Generic/CollectionExtensions.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/Queue.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/QueueDebugView.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/Stack.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/StackDebugView.cs
 
 ../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/CDSCollectionETWBCLProvider.cs
 ../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs
@@ -1789,6 +1830,8 @@ corert/RuntimeAugments.cs
 ../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/OrderablePartitioner.cs
 ../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/Partitioner.cs
 ../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/PartitionerStatic.cs
+
+../../../external/corefx/src/System.ComponentModel/src/System/IServiceProvider.cs
 
 ../../../external/corefx/src/System.Memory/src/System/Pinnable.cs
 ../../../external/corefx/src/System.Memory/src/System/SequencePosition.cs
@@ -1808,7 +1851,8 @@ corert/RuntimeAugments.cs
 # Once that's done, we still need these parts here - but their namespace should be changed back to System, to make them become part of the "Number" class.
 ../../../external/corefx/src/System.Memory/src/System/Number/*.cs
 
-../../../external/corefx/src/Common/src/System/MutableDecimal.cs
+../../../external/corefx/src/System.Runtime.Extensions/src/System/LoaderOptimization.cs
+../../../external/corefx/src/System.Runtime.Extensions/src/System/LoaderOptimizationAttribute.cs
 
 ../../../external/corefx/src/System.Runtime.InteropServices.RuntimeInformation/src/System/Runtime/InteropServices/RuntimeInformation/OSPlatform.cs
 ../../../external/corefx/src/System.Runtime.InteropServices.RuntimeInformation/src/System/Runtime/InteropServices/RuntimeInformation/Architecture.cs
@@ -1828,3 +1872,24 @@ corefx/Mono.SafePasswordHandle.Unix.cs
 ../../../external/corefx/src/System.Threading.Tasks.Parallel/src/System/Threading/Tasks/*.cs
 
 ../../../external/corefx/src/Common/src/System/NotImplemented.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/Error.cs
+../../../external/corefx/src/Common/src/CoreLib/System/IO/StreamHelpers.CopyValidation.cs
+
+../../../external/corefx/src/Common/src/CoreLib/System/IO/PathInternal.cs
+../../../external/corefx/src/Common/src/System/IO/PathInternal.CaseSensitivity.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/DirectoryInfo.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/EnumerationOptions.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/SearchTarget.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/MatchType.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/MatchCasing.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Enumeration/FileSystemEnumerableFactory.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Enumeration/FileSystemEntry.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Enumeration/FileSystemEnumerable.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Enumeration/FileSystemEnumerator.cs
+../../../external/corefx/src/System.IO.FileSystem/src/System/IO/Enumeration/FileSystemName.cs
+../../../external/corefx/src/Common/src/System/Text/ValueUtf8Converter.cs
+corefx/DirectoryInfo.cs
+corefx/FileInfo.cs
+corefx/Directory.cs
+corefx/MonoLinqHelper.cs
+corefx/File.cs

@@ -1371,7 +1371,7 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 
 						/* Save the result */
 						if (dest_var->backend.is_pinvoke)
-							size = mono_class_native_size (mono_class_from_mono_type (dest_var->inst_vtype), NULL);
+							size = mono_class_native_size (mono_class_from_mono_type_internal (dest_var->inst_vtype), NULL);
 						else
 							size = mono_type_size (dest_var->inst_vtype, NULL);
 						switch (size) {
@@ -1566,11 +1566,11 @@ mono_decompose_array_access_opts (MonoCompile *cfg)
 						dest->dreg = ins->dreg;
 					} else {
 						MonoClass *array_class = mono_class_create_array (ins->inst_newa_class, 1);
-						ERROR_DECL_VALUE (vt_error);
-						MonoVTable *vtable = mono_class_vtable_checked (cfg->domain, array_class, &vt_error);
+						ERROR_DECL (vt_error);
+						MonoVTable *vtable = mono_class_vtable_checked (cfg->domain, array_class, vt_error);
 						MonoMethod *managed_alloc = mono_gc_get_managed_array_allocator (array_class);
 
-						mono_error_assert_ok (&vt_error); /*This shall not fail since we check for this condition on OP_NEWARR creation*/
+						mono_error_assert_ok (vt_error); /*This shall not fail since we check for this condition on OP_NEWARR creation*/
 						NEW_VTABLECONST (cfg, iargs [0], vtable);
 						MONO_ADD_INS (cfg->cbb, iargs [0]);
 						MONO_INST_NEW (cfg, iargs [1], OP_MOVE);

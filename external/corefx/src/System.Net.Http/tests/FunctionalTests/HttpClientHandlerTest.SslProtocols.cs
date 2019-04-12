@@ -256,6 +256,13 @@ namespace System.Net.Http.Functional.Tests
         {
             if (!BackendSupportsSslConfiguration)
                 return;
+            if (allowedProtocol == SslProtocols.Ssl2 || allowedProtocol == SslProtocols.Ssl3)
+            {
+                // Mono does not allow Ssl2 or Ssl3; an attempt to set it via `SslOptions` will be
+                // silently ignored and the default of Tls 1.0 min / Tls 1.2 max will be used.
+                if (!PlatformDetection.IsSsl2AndSsl3Supported)
+                    return;
+            }
             using (HttpClientHandler handler = CreateHttpClientHandler())
             using (var client = new HttpClient(handler))
             {

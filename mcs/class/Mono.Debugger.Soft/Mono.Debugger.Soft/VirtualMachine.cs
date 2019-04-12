@@ -5,7 +5,6 @@ using System.Net;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using Mono.Cecil.Metadata;
 
 namespace Mono.Debugger.Soft
 {
@@ -807,6 +806,9 @@ namespace Mono.Debugger.Soft
 					break;
 				case EventType.UserLog:
 					l.Add (new UserLogEvent (vm, req_id, thread_id, ei.Level, ei.Category, ei.Message));
+					break;
+				case EventType.Crash:
+					l.Add (new CrashEvent (vm, req_id, thread_id, ei.Dump, ei.Hash));
 					break;
 				}
 			}

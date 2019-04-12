@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("Mono.CodeContracts.dll")]
@@ -22,8 +22,9 @@ namespace Mono.CodeContracts.Rewrite
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AssemblyRef
     {
-        public AssemblyRef(Mono.CodeContracts.Rewrite.AssemblyRef.TwoStreams streams) { throw null;}
-        public AssemblyRef(string filename) { throw null;}
+        private object _dummy;
+        public AssemblyRef(Mono.CodeContracts.Rewrite.AssemblyRef.TwoStreams streams) { throw null; }
+        public AssemblyRef(string filename) { throw null; }
         public string Filename { get { throw null; } }
         public bool IsFilename { get { throw null; } }
         public bool IsSet { get { throw null; } }
@@ -34,7 +35,8 @@ namespace Mono.CodeContracts.Rewrite
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct TwoStreams
         {
-            public TwoStreams(System.IO.Stream assembly, System.IO.Stream symbols) { throw null;}
+            private object _dummy;
+            public TwoStreams(System.IO.Stream assembly, System.IO.Stream symbols) { throw null; }
             public System.IO.Stream Assembly { get { throw null; } }
             public System.IO.Stream Symbols { get { throw null; } }
         }
@@ -115,11 +117,11 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
         public override Mono.CodeContracts.Static.Analysis.Numerical.DisInterval ImmutableVersion() { throw null; }
         protected override bool IsFiniteBound(Mono.CodeContracts.Static.Analysis.Numerical.Rational n) { throw null; }
         public override Mono.CodeContracts.Static.Analysis.Numerical.DisInterval Join(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval that) { throw null; }
-        public override Mono.CodeContracts.Static.Analysis.Numerical.DisInterval Join(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval that, bool widening, out bool weaker) { weaker = default(bool); throw null; }
+        public override Mono.CodeContracts.Static.Analysis.Numerical.DisInterval Join(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval that, bool widening, out bool weaker) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.Interval JoinAll(Mono.CodeContracts.Static.DataStructures.Sequence<Mono.CodeContracts.Static.Analysis.Numerical.Interval> list) { throw null; }
         public override bool LessEqual(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval that) { throw null; }
         public override Mono.CodeContracts.Static.Analysis.Numerical.DisInterval Meet(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval that) { throw null; }
-        public static Mono.CodeContracts.Static.DataStructures.Sequence<Mono.CodeContracts.Static.Analysis.Numerical.Interval> Normalize(Mono.CodeContracts.Static.DataStructures.Sequence<Mono.CodeContracts.Static.Analysis.Numerical.Interval> intervals, out bool isBottom) { isBottom = default(bool); throw null; }
+        public static Mono.CodeContracts.Static.DataStructures.Sequence<Mono.CodeContracts.Static.Analysis.Numerical.Interval> Normalize(Mono.CodeContracts.Static.DataStructures.Sequence<Mono.CodeContracts.Static.Analysis.Numerical.Interval> intervals, out bool isBottom) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.DisInterval operator +(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval left, Mono.CodeContracts.Static.Analysis.Numerical.DisInterval right) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.DisInterval operator /(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval left, Mono.CodeContracts.Static.Analysis.Numerical.DisInterval right) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.DisInterval operator *(Mono.CodeContracts.Static.Analysis.Numerical.DisInterval left, Mono.CodeContracts.Static.Analysis.Numerical.DisInterval right) { throw null; }
@@ -184,7 +186,7 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
         public bool Includes(long x) { throw null; }
         protected override bool IsFiniteBound(Mono.CodeContracts.Static.Analysis.Numerical.Rational n) { throw null; }
         public override Mono.CodeContracts.Static.Analysis.Numerical.Interval Join(Mono.CodeContracts.Static.Analysis.Numerical.Interval that) { throw null; }
-        public override Mono.CodeContracts.Static.Analysis.Numerical.Interval Join(Mono.CodeContracts.Static.Analysis.Numerical.Interval that, bool widening, out bool weaker) { weaker = default(bool); throw null; }
+        public override Mono.CodeContracts.Static.Analysis.Numerical.Interval Join(Mono.CodeContracts.Static.Analysis.Numerical.Interval that, bool widening, out bool weaker) { throw null; }
         public override bool LessEqual(Mono.CodeContracts.Static.Analysis.Numerical.Interval that) { throw null; }
         public bool LessEqual(System.Collections.Generic.IEnumerable<Mono.CodeContracts.Static.Analysis.Numerical.Interval> right) { throw null; }
         public override Mono.CodeContracts.Static.Analysis.Numerical.Interval Meet(Mono.CodeContracts.Static.Analysis.Numerical.Interval that) { throw null; }
@@ -195,7 +197,7 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
         public static Mono.CodeContracts.Static.Analysis.Numerical.Interval operator -(Mono.CodeContracts.Static.Analysis.Numerical.Interval l, Mono.CodeContracts.Static.Analysis.Numerical.Interval r) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.Interval operator -(Mono.CodeContracts.Static.Analysis.Numerical.Interval l) { throw null; }
         public bool OverlapsWith(Mono.CodeContracts.Static.Analysis.Numerical.Interval that) { throw null; }
-        public bool TryGetSingletonFiniteInt32(out int value) { value = default(int); throw null; }
+        public bool TryGetSingletonFiniteInt32(out int value) { throw null; }
         public override Mono.CodeContracts.Static.Analysis.Numerical.Interval Widen(Mono.CodeContracts.Static.Analysis.Numerical.Interval that) { throw null; }
     }
     public abstract partial class IntervalBase<TInterval, TNumeric> : Mono.CodeContracts.Static.Lattices.IAbstractDomain<TInterval> where TInterval : Mono.CodeContracts.Static.Analysis.Numerical.IntervalBase<TInterval, TNumeric>
@@ -223,6 +225,7 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Rational : System.IEquatable<Mono.CodeContracts.Static.Analysis.Numerical.Rational>
     {
+        private int _dummyPrimitive;
         public static Mono.CodeContracts.Static.Analysis.Numerical.Rational MaxValue;
         public static Mono.CodeContracts.Static.Analysis.Numerical.Rational MinusInfinity;
         public static readonly Mono.CodeContracts.Static.Analysis.Numerical.Rational MinusOne;
@@ -279,11 +282,11 @@ namespace Mono.CodeContracts.Static.Analysis.Numerical
         public static Mono.CodeContracts.Static.Analysis.Numerical.Rational operator -(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, long i) { throw null; }
         public static Mono.CodeContracts.Static.Analysis.Numerical.Rational operator -(Mono.CodeContracts.Static.Analysis.Numerical.Rational value) { throw null; }
         public override string ToString() { throw null; }
-        public static bool TryAdd(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { result = default(Mono.CodeContracts.Static.Analysis.Numerical.Rational); throw null; }
-        public static bool TryDivide(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { result = default(Mono.CodeContracts.Static.Analysis.Numerical.Rational); throw null; }
-        public static bool TryMultiply(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { result = default(Mono.CodeContracts.Static.Analysis.Numerical.Rational); throw null; }
-        public static bool TrySubtract(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { result = default(Mono.CodeContracts.Static.Analysis.Numerical.Rational); throw null; }
-        public static bool TryUnaryMinus(Mono.CodeContracts.Static.Analysis.Numerical.Rational value, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { result = default(Mono.CodeContracts.Static.Analysis.Numerical.Rational); throw null; }
+        public static bool TryAdd(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { throw null; }
+        public static bool TryDivide(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { throw null; }
+        public static bool TryMultiply(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { throw null; }
+        public static bool TrySubtract(Mono.CodeContracts.Static.Analysis.Numerical.Rational l, Mono.CodeContracts.Static.Analysis.Numerical.Rational r, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { throw null; }
+        public static bool TryUnaryMinus(Mono.CodeContracts.Static.Analysis.Numerical.Rational value, out Mono.CodeContracts.Static.Analysis.Numerical.Rational result) { throw null; }
     }
     public partial class RationalThreshold : Mono.CodeContracts.Static.Analysis.Numerical.Threshold<Mono.CodeContracts.Static.Analysis.Numerical.Rational>
     {
@@ -455,17 +458,18 @@ namespace Mono.CodeContracts.Static.Lattices
     {
         public static string BottomSymbolIfAny<T>(this Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> domain) { throw null; }
         public static bool IsNormal<T>(this Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> domain) { throw null; }
-        public static bool TryTrivialJoin<T>(this T left, T right, out T result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { result = default(T); throw null; }
-        public static bool TryTrivialLessEqual<T>(this T left, T right, out bool result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { result = default(bool); throw null; }
-        public static bool TryTrivialMeet<T>(this T left, T right, out T result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { result = default(T); throw null; }
+        public static bool TryTrivialJoin<T>(this T left, T right, out T result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { throw null; }
+        public static bool TryTrivialLessEqual<T>(this T left, T right, out bool result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { throw null; }
+        public static bool TryTrivialMeet<T>(this T left, T right, out T result) where T : Mono.CodeContracts.Static.Lattices.IAbstractDomain<T> { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FlatDomain<T> : Mono.CodeContracts.Static.Lattices.IAbstractDomain<Mono.CodeContracts.Static.Lattices.FlatDomain<T>>, System.IEquatable<Mono.CodeContracts.Static.Lattices.FlatDomain<T>> where T : System.IEquatable<T>
     {
+        private int _dummyPrimitive;
         public static readonly Mono.CodeContracts.Static.Lattices.FlatDomain<T> BottomValue;
         public static readonly Mono.CodeContracts.Static.Lattices.FlatDomain<T> TopValue;
         public readonly T Value;
-        public FlatDomain(T value) { throw null;}
+        public FlatDomain(T value) { throw null; }
         public Mono.CodeContracts.Static.Lattices.FlatDomain<T> Bottom { get { throw null; } }
         public bool IsBottom { get { throw null; } }
         public bool IsTop { get { throw null; } }
@@ -475,7 +479,7 @@ namespace Mono.CodeContracts.Static.Lattices
         public bool Equals(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that) { throw null; }
         public Mono.CodeContracts.Static.Lattices.FlatDomain<T> ImmutableVersion() { throw null; }
         public Mono.CodeContracts.Static.Lattices.FlatDomain<T> Join(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that) { throw null; }
-        public Mono.CodeContracts.Static.Lattices.FlatDomain<T> Join(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that, bool widening, out bool weaker) { weaker = default(bool); throw null; }
+        public Mono.CodeContracts.Static.Lattices.FlatDomain<T> Join(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that, bool widening, out bool weaker) { throw null; }
         public bool LessEqual(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that) { throw null; }
         public Mono.CodeContracts.Static.Lattices.FlatDomain<T> Meet(Mono.CodeContracts.Static.Lattices.FlatDomain<T> that) { throw null; }
         public static implicit operator Mono.CodeContracts.Static.Lattices.FlatDomain<T> (T value) { throw null; }

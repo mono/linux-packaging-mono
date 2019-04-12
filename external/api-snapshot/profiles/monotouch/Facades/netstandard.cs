@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("netstandard")]
@@ -711,7 +711,6 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.DivideByZeroException))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.DllNotFoundException))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Color))]
-[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Color.ColorType))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Point))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.PointF))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Drawing.Rectangle))]

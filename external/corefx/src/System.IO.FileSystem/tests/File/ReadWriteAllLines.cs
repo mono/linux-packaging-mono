@@ -38,6 +38,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void NullLines()
         {
             string path = GetTestFilePath();
@@ -128,6 +129,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void DisposingEnumeratorClosesFile()
         {
             string path = GetTestFilePath();
@@ -226,6 +228,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void NullLines()
         {
             string path = GetTestFilePath();
@@ -316,6 +319,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void DisposingEnumeratorClosesFile()
         {
             string path = GetTestFilePath();

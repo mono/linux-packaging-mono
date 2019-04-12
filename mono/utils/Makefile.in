@@ -98,8 +98,9 @@ DIST_COMMON = $(top_srcdir)/mk/common.mk $(srcdir)/Makefile.in \
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_16 = mono-hwcap-wasm.c
-@CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
+@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__append_16 = mono-hwcap-riscv.c
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_17 = mono-hwcap-wasm.c
+@CROSS_COMPILE_TRUE@am__append_18 = mono-hwcap-cross.c
 subdir = mono/utils
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -134,26 +135,26 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-counters.c mono-compiler.h mono-complex.h mono-dl.c \
 	mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c \
 	mono-dl-wasm.c mono-dl.h mono-dl-windows-internals.h \
-	mono-log-windows.c mono-log-common.c mono-log-posix.c \
-	mono-log-android.c mono-log-darwin.c \
-	mono-log-flight-recorder.c mono-merp.c mono-merp.h \
-	mono-state.h mono-state.c mono-internal-hash.c \
+	mono-experiments.h mono-experiments.c mono-log-windows.c \
+	mono-log-common.c mono-log-posix.c mono-log-android.c \
+	mono-log-darwin.c mono-log-flight-recorder.c mono-merp.c \
+	mono-merp.h mono-state.h mono-state.c mono-internal-hash.c \
 	mono-internal-hash.h mono-io-portability.c \
 	mono-io-portability.h monobitset.c mono-filemap.c mono-mmap.c \
-	mono-mmap-windows.c mono-mmap.h mono-mmap-internals.h \
-	mono-mmap-windows-internals.h mono-os-mutex.h mono-os-mutex.c \
-	mono-flight-recorder.h mono-flight-recorder.c mono-os-wait.h \
-	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
-	mono-networkinterfaces.c mono-networkinterfaces.h \
-	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
-	mono-proclib-windows-internals.h mono-publib.c mono-jemalloc.c \
-	mono-string.h mono-time.c mono-time.h strenc.h strenc.c \
-	mono-uri.c mono-poll.c mono-path.c mono-os-semaphore.h \
-	mono-coop-semaphore.h mono-sigcontext.h mono-stdlib.c \
-	mono-property-hash.h mono-property-hash.c mono-value-hash.h \
-	mono-value-hash.c freebsd-elf_common.h freebsd-elf32.h \
-	freebsd-elf64.h freebsd-dwarf.h dtrace.h gc_wrapper.h \
-	mono-error.c mono-error-internals.h monobitset.h \
+	mono-mmap-windows.c mono-mmap-wasm.c mono-mmap.h \
+	mono-mmap-internals.h mono-mmap-windows-internals.h \
+	mono-os-mutex.h mono-os-mutex.c mono-flight-recorder.h \
+	mono-flight-recorder.c mono-os-wait.h mono-coop-mutex.h \
+	mono-once.h mono-lazy-init.h mono-networkinterfaces.c \
+	mono-networkinterfaces.h mono-proclib.c mono-proclib-windows.c \
+	mono-proclib.h mono-proclib-windows-internals.h mono-publib.c \
+	mono-jemalloc.c mono-string.h mono-time.c mono-time.h strenc.h \
+	strenc.c mono-uri.c mono-poll.c mono-path.c \
+	mono-os-semaphore.h mono-coop-semaphore.h mono-sigcontext.h \
+	mono-stdlib.c mono-property-hash.h mono-property-hash.c \
+	mono-value-hash.h mono-value-hash.c freebsd-elf_common.h \
+	freebsd-elf32.h freebsd-elf64.h freebsd-dwarf.h dtrace.h \
+	gc_wrapper.h mono-error.c mono-error-internals.h monobitset.h \
 	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
 	mono-forward-internal.h mono-machine.h mono-math.h \
 	mono-membar.h mono-path.h mono-poll.h mono-uri.h mono-stdlib.h \
@@ -185,8 +186,8 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
 	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
 	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
-	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-wasm.c \
-	mono-hwcap-cross.c
+	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
+	mono-hwcap-wasm.c mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-os-event-win32.lo \
 @HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo
@@ -200,6 +201,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-mono-dl-darwin.lo \
 	libmonoutils_la-mono-dl-posix.lo \
 	libmonoutils_la-mono-dl-wasm.lo \
+	libmonoutils_la-mono-experiments.lo \
 	libmonoutils_la-mono-log-windows.lo \
 	libmonoutils_la-mono-log-common.lo \
 	libmonoutils_la-mono-log-posix.lo \
@@ -212,6 +214,7 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 	libmonoutils_la-monobitset.lo libmonoutils_la-mono-filemap.lo \
 	libmonoutils_la-mono-mmap.lo \
 	libmonoutils_la-mono-mmap-windows.lo \
+	libmonoutils_la-mono-mmap-wasm.lo \
 	libmonoutils_la-mono-os-mutex.lo \
 	libmonoutils_la-mono-flight-recorder.lo \
 	libmonoutils_la-mono-networkinterfaces.lo \
@@ -276,16 +279,17 @@ am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__objects_17 = libmonoutils_la-mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_18 = libmonoutils_la-mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_19 = libmonoutils_la-mono-hwcap-s390x.lo
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-wasm.lo
-@CROSS_COMPILE_TRUE@am__objects_21 =  \
+@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-riscv.lo
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_21 = libmonoutils_la-mono-hwcap-wasm.lo
+@CROSS_COMPILE_TRUE@am__objects_22 =  \
 @CROSS_COMPILE_TRUE@	libmonoutils_la-mono-hwcap-cross.lo
-am__objects_22 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
+am__objects_23 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
 	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21)
-am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_22)
+	$(am__objects_20) $(am__objects_21) $(am__objects_22)
+am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_23)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 libmonoutils_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -374,6 +378,7 @@ am__recursive_targets = \
   $(am__extra_recursive_targets)
 AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
 	distdir
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -474,6 +479,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -492,6 +498,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -525,6 +532,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -585,6 +593,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -654,7 +663,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -714,6 +727,8 @@ monoutils_sources = \
 	mono-dl-wasm.c	\
 	mono-dl.h		\
 	mono-dl-windows-internals.h	\
+	mono-experiments.h	\
+	mono-experiments.c	\
 	mono-log-windows.c	\
 	mono-log-common.c	\
 	mono-log-posix.c	\
@@ -732,6 +747,7 @@ monoutils_sources = \
 	mono-filemap.c		\
 	mono-mmap.c  		\
 	mono-mmap-windows.c  		\
+	mono-mmap-wasm.c  		\
 	mono-mmap.h  		\
 	mono-mmap-internals.h	\
 	mono-mmap-windows-internals.h	\
@@ -870,7 +886,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17)
+	$(am__append_16) $(am__append_17) $(am__append_18)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
 libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
@@ -891,7 +907,7 @@ libmonoutilsinclude_HEADERS = \
 	mono-dl-fallback.h	\
 	mono-counters.h
 
-EXTRA_DIST = mono-embed.h mono-embed.c ../../support/libm/complex.c
+EXTRA_DIST = mono-errno.h mono-embed.h mono-embed.c ../../support/libm/complex.c mono-experiments.def
 DIST_SUBDIRS = jemalloc
 @MONO_JEMALLOC_ENABLED_TRUE@SUBDIRS = jemalloc
 all: $(BUILT_SOURCES)
@@ -980,6 +996,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-dl-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-dl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-experiments.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-filemap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-flight-recorder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-arm.Plo@am__quote@
@@ -987,6 +1004,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-cross.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-ppc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Plo@am__quote@
@@ -1005,6 +1023,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-logger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-md5.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-merp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-mmap-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-mmap-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-mmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-networkinterfaces.Plo@am__quote@
@@ -1183,6 +1202,13 @@ libmonoutils_la-mono-dl-wasm.lo: mono-dl-wasm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-dl-wasm.lo `test -f 'mono-dl-wasm.c' || echo '$(srcdir)/'`mono-dl-wasm.c
 
+libmonoutils_la-mono-experiments.lo: mono-experiments.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-experiments.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-experiments.Tpo -c -o libmonoutils_la-mono-experiments.lo `test -f 'mono-experiments.c' || echo '$(srcdir)/'`mono-experiments.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-experiments.Tpo $(DEPDIR)/libmonoutils_la-mono-experiments.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-experiments.c' object='libmonoutils_la-mono-experiments.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-experiments.lo `test -f 'mono-experiments.c' || echo '$(srcdir)/'`mono-experiments.c
+
 libmonoutils_la-mono-log-windows.lo: mono-log-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-log-windows.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-log-windows.Tpo -c -o libmonoutils_la-mono-log-windows.lo `test -f 'mono-log-windows.c' || echo '$(srcdir)/'`mono-log-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-log-windows.Tpo $(DEPDIR)/libmonoutils_la-mono-log-windows.Plo
@@ -1280,6 +1306,13 @@ libmonoutils_la-mono-mmap-windows.lo: mono-mmap-windows.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-mmap-windows.c' object='libmonoutils_la-mono-mmap-windows.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-mmap-windows.lo `test -f 'mono-mmap-windows.c' || echo '$(srcdir)/'`mono-mmap-windows.c
+
+libmonoutils_la-mono-mmap-wasm.lo: mono-mmap-wasm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-mmap-wasm.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-mmap-wasm.Tpo -c -o libmonoutils_la-mono-mmap-wasm.lo `test -f 'mono-mmap-wasm.c' || echo '$(srcdir)/'`mono-mmap-wasm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-mmap-wasm.Tpo $(DEPDIR)/libmonoutils_la-mono-mmap-wasm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-mmap-wasm.c' object='libmonoutils_la-mono-mmap-wasm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-mmap-wasm.lo `test -f 'mono-mmap-wasm.c' || echo '$(srcdir)/'`mono-mmap-wasm.c
 
 libmonoutils_la-mono-os-mutex.lo: mono-os-mutex.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-os-mutex.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-os-mutex.Tpo -c -o libmonoutils_la-mono-os-mutex.lo `test -f 'mono-os-mutex.c' || echo '$(srcdir)/'`mono-os-mutex.c
@@ -1757,6 +1790,13 @@ libmonoutils_la-mono-hwcap-s390x.lo: mono-hwcap-s390x.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-hwcap-s390x.lo `test -f 'mono-hwcap-s390x.c' || echo '$(srcdir)/'`mono-hwcap-s390x.c
 
+libmonoutils_la-mono-hwcap-riscv.lo: mono-hwcap-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-hwcap-riscv.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Tpo -c -o libmonoutils_la-mono-hwcap-riscv.lo `test -f 'mono-hwcap-riscv.c' || echo '$(srcdir)/'`mono-hwcap-riscv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Tpo $(DEPDIR)/libmonoutils_la-mono-hwcap-riscv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-hwcap-riscv.c' object='libmonoutils_la-mono-hwcap-riscv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-hwcap-riscv.lo `test -f 'mono-hwcap-riscv.c' || echo '$(srcdir)/'`mono-hwcap-riscv.c
+
 libmonoutils_la-mono-hwcap-wasm.lo: mono-hwcap-wasm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-hwcap-wasm.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Tpo -c -o libmonoutils_la-mono-hwcap-wasm.lo `test -f 'mono-hwcap-wasm.c' || echo '$(srcdir)/'`mono-hwcap-wasm.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Tpo $(DEPDIR)/libmonoutils_la-mono-hwcap-wasm.Plo
@@ -1831,6 +1871,8 @@ $(am__recursive_targets):
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -2062,6 +2104,14 @@ ps: ps-recursive
 
 ps-am:
 
+test: test-recursive
+
+test-am: test-local
+
+test-bundle: test-bundle-recursive
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-libmonoutilsincludeHEADERS
 
 .MAKE: $(am__recursive_targets) all check install install-am \
@@ -2080,7 +2130,8 @@ uninstall-am: uninstall-libmonoutilsincludeHEADERS
 	installcheck installcheck-am installdirs installdirs-am \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	pdf pdf-am ps ps-am tags tags-am test-am test-bundle-am \
+	test-bundle-local test-local uninstall uninstall-am \
 	uninstall-libmonoutilsincludeHEADERS
 
 

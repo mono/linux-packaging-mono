@@ -109,6 +109,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void Wait_SetConcurrent ()
 		{
 			for (int i = 0; i < 10000; ++i) {
@@ -129,6 +130,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void Wait_DisposeWithCancel ()
 		{
 			var token = new CancellationTokenSource ();
@@ -159,6 +161,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void SetAfterDisposeTest ()
 		{
 			ParallelTestHelper.Repeat (delegate {
@@ -221,6 +224,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void WaitHandleConsistencyTest ()
 		{
 			var mre = new ManualResetEventSlim ();
@@ -240,6 +244,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void WaitWithCancellationTokenAndNotImmediateSetTest ()
 		{
 			var mres = new ManualResetEventSlim ();
@@ -249,6 +254,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void WaitWithCancellationTokenAndCancel ()
 		{
 			var mres = new ManualResetEventSlim ();

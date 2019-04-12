@@ -39,6 +39,10 @@ namespace System
         public static bool IsNotWinRTSupported => !IsWinRTSupported;
         public static bool IsNotMacOsHighSierraOrHigher => !IsMacOsHighSierraOrHigher;
 
+        public static bool IsSsl2AndSsl3Supported => false;
+        public static bool SupportsX509Chain => true;
+        public static bool SupportsCertRevocation => true;
+
         public static bool IsDomainJoinedMachine => !Environment.MachineName.Equals(Environment.UserDomainName, StringComparison.OrdinalIgnoreCase);
 
         // Officially, .Net Native only supports processes running in an AppContainer. However, the majority of tests still work fine

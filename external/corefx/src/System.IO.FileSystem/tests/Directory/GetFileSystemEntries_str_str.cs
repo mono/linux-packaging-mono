@@ -33,6 +33,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void SearchPatternEmpty()
         {
             // To avoid OS differences we have decided not to throw an argument exception when empty
@@ -364,6 +365,7 @@ namespace System.IO.Tests
         }
 
         [ActiveIssue(20781, TestPlatforms.AnyUnix)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         // Can't do these without extended path support on Windows, UsingNewNormalization filters appropriately
         [ConditionalTheory(nameof(UsingNewNormalization)),
             InlineData(

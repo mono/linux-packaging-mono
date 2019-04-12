@@ -113,6 +113,7 @@ namespace System.IO.Tests
 
         [Fact]
         [PlatformSpecific(TestPlatforms.AnyUnix)]  // Deleting non-existent path doesn't throw
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void Unix_NonExistentPath_Nop()
         {
             Delete(Path.Combine(TestDirectory, GetTestFileName(), "C"));
@@ -199,6 +200,7 @@ namespace System.IO.Tests
             InlineData(":bar:$DATA")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX File not yet imported")]
         public void WindowsDeleteAlternateDataStream(string streamName)
         {
             FileInfo testFile = Create(GetTestFilePath());

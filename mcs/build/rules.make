@@ -27,15 +27,19 @@ Q_MCS=$(if $(V),,@echo "$(if $(MCS_MODE),MCS,CSC)     [$(intermediate)$(PROFILE_
 Q_AOT=$(if $(V),,@echo "AOT     [$(intermediate)$(PROFILE_DIRECTORY)] $(notdir $(@))";)
 
 ifndef BUILD_TOOLS_PROFILE
-ifeq ($(PROFILE),basic)
-BUILD_TOOLS_PROFILE = basic
-else
 BUILD_TOOLS_PROFILE = build
 endif
+
+ifeq ("$(ENABLE_COMPILER_SERVER)","1")
+COMPILER_SERVER_ARGS=/shared:$(COMPILER_SERVER_PIPENAME)
+CSC_LOCATION=$(SERVER_CSC_LOCATION)
+else
+COMPILER_SERVER_ARGS:=
+CSC_LOCATION=$(STANDALONE_CSC_LOCATION)
 endif
 
-USE_MCS_FLAGS = /codepage:$(CODEPAGE) /nologo /noconfig /deterministic $(LOCAL_MCS_FLAGS) $(PLATFORM_MCS_FLAGS) $(PROFILE_MCS_FLAGS) $(MCS_FLAGS)
-USE_MBAS_FLAGS = /codepage:$(CODEPAGE) $(LOCAL_MBAS_FLAGS) $(PLATFORM_MBAS_FLAGS) $(PROFILE_MBAS_FLAGS) $(MBAS_FLAGS)
+USE_MCS_FLAGS = $(COMPILER_SERVER_ARGS) /codepage:$(CODEPAGE) /nologo /noconfig /deterministic $(LOCAL_MCS_FLAGS) $(PLATFORM_MCS_FLAGS) $(PROFILE_MCS_FLAGS) $(MCS_FLAGS)
+USE_MBAS_FLAGS = $(COMPILER_SERVER_ARGS) /codepage:$(CODEPAGE) $(LOCAL_MBAS_FLAGS) $(PLATFORM_MBAS_FLAGS) $(PROFILE_MBAS_FLAGS) $(MBAS_FLAGS)
 USE_CFLAGS = $(LOCAL_CFLAGS) $(CFLAGS) $(CPPFLAGS)
 CSCOMPILE = $(Q_MCS) $(MCS) $(USE_MCS_FLAGS)
 CSC_RUNTIME_FLAGS = --aot-path=$(abspath $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)) --gc-params=nursery-size=64m
@@ -54,11 +58,9 @@ INTERNAL_CSC_LOCATION = $(CSC_LOCATION)
 INTERNAL_CSC = CSC_SDK_PATH_DISABLED= $(RUNTIME) $(RUNTIME_FLAGS) $(CSC_RUNTIME_FLAGS) $(INTERNAL_CSC_LOCATION)
 
 RESGEN = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/resgen.exe
-STRING_REPLACER = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/tmp/cil-stringreplacer.exe
+STRING_REPLACER = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/cil-stringreplacer.exe
 ILASM = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/ilasm.exe
-GENSOURCES_LIBDIR = $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)
-GENSOURCES_CS = $(topdir)/build/gensources.cs
-GENSOURCES_EXE = $(topdir)/build/gensources.exe
+GENSOURCES = MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)/gensources.exe
 
 depsdir = $(topdir)/build/deps
 
@@ -74,9 +76,6 @@ export MKINSTALLDIRS
 export BOOTSTRAP_MCS
 export DESTDIR
 export RESGEN
-export GENSOURCES_LIBDIR
-export GENSOURCES_CS
-export GENSOURCES_EXE
 
 # Get this so the platform.make platform-check rule doesn't become the
 # default target
@@ -145,11 +144,11 @@ endif
 # mcs/class/lib/$(PROFILE)/
 ifndef TOP_LEVEL_DO
 
-ifdef ALWAYS_AOT
+ifneq ($(or $(ALWAYS_AOT_BCL), $(ALWAYS_AOT_TESTS)),)
 TOP_LEVEL_DO = do-all-aot
 else
 TOP_LEVEL_DO = do-all
-endif # ALWAYS_AOT
+endif
 
 endif # !TOP_LEVEL_DO
 
@@ -181,15 +180,23 @@ do-all-aot:
 # be able to evaluate the .dylibs to make
 ifneq ("$(wildcard $(topdir)/class/lib/$(PROFILE))","")
 
+ifdef ALWAYS_AOT_BCL
 AOT_PROFILE_ASSEMBLIES := $(sort $(patsubst .//%,%,$(filter-out %.dll.dll %.exe.dll %bare% %plaincore% %secxml% %Facades% %ilasm%,$(filter %.dll %.exe,$(wildcard $(topdir)/class/lib/$(PROFILE)/*)))))
-AOT_PROFILE_TESTS := $(sort $(patsubst .//%,%,$(filter-out %.dll.dll %.exe.dll %bare% %plaincore% %secxml% %Facades% %ilasm%,$(filter %.dll %.exe,$(wildcard $(topdir)/class/lib/$(PROFILE)/tests/*)))))
 AOT_PROFILE_ASSEMBLIES_OUT := $(patsubst %,%$(PLATFORM_AOT_SUFFIX),$(AOT_PROFILE_ASSEMBLIES))
+
+AOT_PROFILE_FACADES := $(sort $(patsubst .//%,%,$(filter-out %.dll.dll %.exe.dll %bare% %plaincore% %secxml% %Facades% %ilasm%,$(filter %.dll %.exe,$(wildcard $(topdir)/class/lib/$(PROFILE)/Facades/*)))))
+AOT_PROFILE_FACADES_OUT := $(patsubst %,%$(PLATFORM_AOT_SUFFIX),$(AOT_PROFILE_FACADES))
+endif
+
+ifdef ALWAYS_AOT_TESTS
+AOT_PROFILE_TESTS := $(sort $(patsubst .//%,%,$(filter-out %.dll.dll %.exe.dll %bare% %plaincore% %secxml% %Facades% %ilasm%,$(filter %.dll %.exe,$(wildcard $(topdir)/class/lib/$(PROFILE)/tests/*)))))
 AOT_PROFILE_TESTS_OUT := $(patsubst %,%$(PLATFORM_AOT_SUFFIX),$(AOT_PROFILE_TESTS))
+endif
 
 # This can run in parallel
 .PHONY: aot-all-profile
 ifdef AOT_BUILD_FLAGS
-aot-all-profile: $(AOT_PROFILE_ASSEMBLIES_OUT) $(AOT_PROFILE_TESTS_OUT)
+aot-all-profile: $(AOT_PROFILE_ASSEMBLIES_OUT) $(AOT_PROFILE_TESTS_OUT) $(AOT_PROFILE_FACADES_OUT)
 else
 aot-all-profile:
 	echo AOT_BUILD_FLAGS not set, skipping AOT.
@@ -197,12 +204,12 @@ endif
 
 %.dll$(PLATFORM_AOT_SUFFIX): %.dll
 	@ mkdir -p $<_bitcode_tmp
-	$(Q_AOT) MONO_PATH="$(topdir)/class/lib/$(PROFILE)" $(RUNTIME) $(RUNTIME_FLAGS) $(AOT_BUILD_FLAGS),temp-path=$<_bitcode_tmp --verbose $< > $@.aot-log
+	$(Q_AOT) MONO_PATH="$(topdir)/class/lib/$(PROFILE)" $(RUNTIME) $(RUNTIME_FLAGS) $(AOT_BUILD_FLAGS),temp-path=$<_bitcode_tmp $<
 	@ rm -rf $<_bitcode_tmp
 
 %.exe$(PLATFORM_AOT_SUFFIX): %.exe
 	@ mkdir -p $<_bitcode_tmp
-	$(Q_AOT) MONO_PATH="$(topdir)/class/lib/$(PROFILE)" $(RUNTIME) $(RUNTIME_FLAGS) $(AOT_BUILD_FLAGS),temp-path=$<_bitcode_tmp --verbose $< > $@.aot-log
+	$(Q_AOT) MONO_PATH="$(topdir)/class/lib/$(PROFILE)" $(RUNTIME) $(RUNTIME_FLAGS) $(AOT_BUILD_FLAGS),temp-path=$<_bitcode_tmp $<
 	@ rm -rf $<_bitcode_tmp
 
 endif #ifneq ("$(wildcard $(topdir)/class/lib/$(PROFILE))","")
@@ -340,7 +347,7 @@ dist-default:
 ## Documentation stuff
 
 Q_MDOC =$(if $(V),,@echo "MDOC    [$(PROFILE_DIRECTORY)] $(notdir $(@))";)
-MDOC   =$(Q_MDOC) MONO_PATH="$(topdir)/class/lib/$(DEFAULT_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(topdir)/class/lib/$(DEFAULT_PROFILE)/mdoc.exe
+MDOC   =$(Q_MDOC) MONO_PATH="$(topdir)/class/lib/$(PROFILE_DIRECTORY)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(topdir)/class/lib/$(PROFILE_DIRECTORY)/mdoc.exe
 
 Q_MDOC_UP=$(if $(V),,@echo "MDOC-UP [$(PROFILE_DIRECTORY)] $(notdir $(@))";)
-MDOC_UP  =$(Q_MDOC_UP) MONO_PATH="$(topdir)/class/lib/$(DEFAULT_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(topdir)/class/lib/$(DEFAULT_PROFILE)/mdoc.exe update --delete -o Documentation/en
+MDOC_UP  =$(Q_MDOC_UP) MONO_PATH="$(topdir)/class/lib/$(PROFILE_DIRECTORY)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(topdir)/class/lib/$(PROFILE_DIRECTORY)/mdoc.exe update --delete -o Documentation/en

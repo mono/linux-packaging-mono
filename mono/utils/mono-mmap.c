@@ -149,6 +149,10 @@ mono_mem_account_register_counters (void)
 // Windows specific implementation in mono-mmap-windows.c
 #define HAVE_VALLOC_ALIGNED
 
+#elif defined(HOST_WASM)
+// WebAssembly implementation in mono-mmap-wasm.c
+#define HAVE_VALLOC_ALIGNED
+
 #else
 
 static void* malloced_shared_area = NULL;
@@ -223,6 +227,22 @@ get_darwin_version (void)
 }
 #endif
 
+static int use_mmap_jit;
+
+/**
+ * mono_setmmapjit:
+ * \param flag indicating whether to enable or disable the use of MAP_JIT in mmap
+ *
+ * Call this method to enable or disable the use of MAP_JIT to create the pages
+ * for the JIT to use.   This is only needed for scenarios where Mono is bundled
+ * as an App in MacOS
+ */
+void
+mono_setmmapjit (int flag)
+{
+	use_mmap_jit = flag;
+}
+
 /**
  * mono_valloc:
  * \param addr memory address
@@ -250,8 +270,15 @@ mono_valloc (void *addr, size_t length, int flags, MonoMemAccountType type)
 		mflags |= MAP_FIXED;
 	if (flags & MONO_MMAP_32BIT)
 		mflags |= MAP_32BIT;
+
+#ifdef HOST_WASM
+	if (length == 0)
+		/* emscripten throws an exception on 0 length */
+		return NULL;
+#endif
+
 #if defined(__APPLE__) && defined(MAP_JIT)
-	if (flags & MONO_MMAP_JIT) {
+	if ((flags & MONO_MMAP_JIT) && use_mmap_jit) {
 		if (get_darwin_version () >= DARWIN_VERSION_MOJAVE) {
 			mflags |= MAP_JIT;
 		}
@@ -329,6 +356,12 @@ mono_file_map (size_t length, int flags, int fd, guint64 offset, void **ret_hand
 		mflags |= MAP_FIXED;
 	if (flags & MONO_MMAP_32BIT)
 		mflags |= MAP_32BIT;
+
+#ifdef HOST_WASM
+	if (length == 0)
+		/* emscripten throws an exception on 0 length */
+		return NULL;
+#endif
 
 	BEGIN_CRITICAL_SECTION;
 	ptr = mmap (0, length, prot, mflags, fd, offset);

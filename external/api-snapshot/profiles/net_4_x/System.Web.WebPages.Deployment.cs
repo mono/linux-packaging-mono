@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -24,7 +24,7 @@
 [assembly:System.Web.PreApplicationStartMethodAttribute(typeof(System.Web.WebPages.Deployment.PreApplicationStartCode), "Start")]
 namespace System.Web.WebPages.Deployment
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class PreApplicationStartCode
     {
         public static void Start() { }
@@ -32,7 +32,7 @@ namespace System.Web.WebPages.Deployment
     public static partial class WebPagesDeployment
     {
         public static string GetAssemblyPath(System.Version version) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.Collections.Generic.IDictionary<string, System.Version> GetIncompatibleDependencies(string appPath) { throw null; }
         public static System.Version GetMaxVersion() { throw null; }
         [System.ObsoleteAttribute("This method is obsolete and is meant for legacy code. Use GetVersionWithoutEnabled instead.")]

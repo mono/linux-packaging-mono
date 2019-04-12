@@ -2066,7 +2066,7 @@ namespace Ildasm
 
         void WriteCustomModifiers(LineWriter lw, CustomModifiers mods)
         {
-            foreach (var mod in mods.Reverse())
+            foreach (var mod in mods)
             {
                 lw.Write(" {0}(", mod.IsRequired ? "modreq" : "modopt");
                 if (mod.Type.__IsBuiltIn)
