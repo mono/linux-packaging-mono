@@ -1,3 +1,13 @@
+mono (6.0.0.172-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [9b15482] Refreshed symbols [03ee94b] Remove dependency on nunit
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 12 Apr 2019 16:21:26 +0000
+
 mono (6.0.0.172-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.0.0.172.tar.xz
