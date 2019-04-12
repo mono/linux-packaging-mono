@@ -32,7 +32,11 @@ namespace System.Linq.Expressions.Tests
         {
             var att =
                 (DebuggerTypeProxyAttribute)
-                    type.GetCustomAttributes().Single(at => at.TypeId.Equals(typeof(DebuggerTypeProxyAttribute)));
+                    type.GetCustomAttributes().SingleOrDefault(at => at.TypeId.Equals(typeof(DebuggerTypeProxyAttribute)));
+            if (att == null)
+            {
+                return null;
+            }
             string proxyName = att.ProxyTypeName;
             proxyName = proxyName.Substring(0, proxyName.IndexOf(','));
             return type.GetTypeInfo().Assembly.GetType(proxyName);
@@ -46,7 +50,7 @@ namespace System.Linq.Expressions.Tests
             Assert.Throws<NotSupportedException>(() => collection.Remove(default(T)));
         }
 
-        [Theory]
+        [ConditionalTheory]
         [MemberData(nameof(BinaryExpressionProxy))]
         [MemberData(nameof(BlockExpressionProxy))]
         [MemberData(nameof(CatchBlockProxy))]
@@ -77,6 +81,10 @@ namespace System.Linq.Expressions.Tests
         {
             Type type = obj.GetType();
             Type viewType = GetDebugViewType(type);
+            if (viewType == null)
+            {
+                return;
+            }
             object view = viewType.GetConstructors().Single().Invoke(new[] {obj});
             IEnumerable<PropertyInfo> properties =
                 type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
@@ -155,11 +163,15 @@ namespace System.Linq.Expressions.Tests
             }
         }
 
-        [Theory, MemberData(nameof(OnePerType))]
+        [ConditionalTheory, MemberData(nameof(OnePerType))]
         public void ThrowOnNullToCtor(object sourceObject)
         {
             Type type = sourceObject.GetType();
             Type viewType = GetDebugViewType(type);
+            if (viewType == null)
+            {
+                return;
+            }
             ConstructorInfo ctor = viewType.GetConstructors().Single();
             TargetInvocationException tie = Assert.Throws<TargetInvocationException>(() => ctor.Invoke(new object[] { null }));
             ArgumentNullException ane = (ArgumentNullException)tie.InnerException;

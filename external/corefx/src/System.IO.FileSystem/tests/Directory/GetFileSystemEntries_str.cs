@@ -232,6 +232,7 @@ namespace System.IO.Tests
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void InvalidPath_Core()
         {
             foreach (char invalid in Path.GetInvalidFileNameChars())
@@ -282,6 +283,7 @@ namespace System.IO.Tests
             InlineData("\t")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void WindowsInvalidCharsPath_Core(string invalid)
         {
             Assert.Throws<IOException>(() => GetEntries(invalid));

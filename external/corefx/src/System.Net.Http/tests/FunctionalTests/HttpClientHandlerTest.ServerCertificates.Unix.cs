@@ -71,6 +71,7 @@ namespace System.Net.Http.Functional.Tests
 
         [Fact]
         [PlatformSpecific(~TestPlatforms.OSX)] // Not implemented
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public void HttpClientUsesSslCertEnvironmentVariables()
         {
             // We set SSL_CERT_DIR and SSL_CERT_FILE to empty locations.

@@ -35,6 +35,7 @@
 #include <mono/utils/w32api.h>
 
 #include <errno.h>
+#include <mono/utils/mono-errno.h>
 
 #if defined(__MACH__)
 #include <mono/utils/mach-support.h>
@@ -461,6 +462,11 @@ register_thread (MonoThreadInfo *info)
 	info->internal_thread_gchandle = G_MAXUINT32;
 
 	info->profiler_signal_ack = 1;
+
+#ifdef USE_WINDOWS_BACKEND
+	info->win32_apc_info = 0;
+	info->win32_apc_info_io_handle = INVALID_HANDLE_VALUE;
+#endif
 
 	mono_threads_suspend_register (info);
 
@@ -900,7 +906,7 @@ mono_thread_info_init (size_t info_size)
 	g_assert (res);
 
 	if ((sleepLimit = g_getenv ("MONO_SLEEP_ABORT_LIMIT")) != NULL) {
-		errno = 0;
+		mono_set_errno (0);
 		long threshold = strtol(sleepLimit, NULL, 10);
 		if ((errno == 0) && (threshold >= 40))  {
 			sleepAbortDuration = threshold;

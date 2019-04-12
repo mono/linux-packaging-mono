@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Novell, Inc")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Novell, Inc. All rights reserved.")]
@@ -20,13 +20,13 @@
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 namespace Microsoft.Web.Infrastructure
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class HttpContextHelper
     {
         [System.Security.SecuritySafeCriticalAttribute]
         public static void ExecuteInNullContext(System.Action action) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class InfrastructureHelper
     {
         [System.Security.SecuritySafeCriticalAttribute]
@@ -37,7 +37,7 @@ namespace Microsoft.Web.Infrastructure
 }
 namespace Microsoft.Web.Infrastructure.DynamicModuleHelper
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class DynamicModuleUtility
     {
         [System.Security.SecuritySafeCriticalAttribute]
@@ -46,45 +46,45 @@ namespace Microsoft.Web.Infrastructure.DynamicModuleHelper
 }
 namespace Microsoft.Web.Infrastructure.DynamicValidationHelper
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class ValidationUtility
     {
         [System.Security.SecuritySafeCriticalAttribute]
         public static void EnableDynamicValidation(System.Web.HttpContext context) { }
         [System.Security.SecuritySafeCriticalAttribute]
-        public static void GetUnvalidatedCollections(System.Web.HttpContext context, out System.Func<System.Collections.Specialized.NameValueCollection> formGetter, out System.Func<System.Collections.Specialized.NameValueCollection> queryStringGetter) { formGetter = default(System.Func<System.Collections.Specialized.NameValueCollection>); queryStringGetter = default(System.Func<System.Collections.Specialized.NameValueCollection>); }
+        public static void GetUnvalidatedCollections(System.Web.HttpContext context, out System.Func<System.Collections.Specialized.NameValueCollection> formGetter, out System.Func<System.Collections.Specialized.NameValueCollection> queryStringGetter) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
         public static System.Nullable<bool> IsValidationEnabled(System.Web.HttpContext context) { throw null; }
     }
 }
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }

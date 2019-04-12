@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("0.2.3.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Command Line Parsing Utilities")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Options.dll")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -23,7 +23,7 @@ namespace Mono.Options
     }
     public partial class Command
     {
-        public Command(string name, string help=null) { }
+        public Command(string name, string help = null) { }
         public Mono.Options.CommandSet CommandSet { get { throw null; } }
         public string Help { get { throw null; } }
         public string Name { get { throw null; } }
@@ -33,8 +33,8 @@ namespace Mono.Options
     }
     public partial class CommandSet : System.Collections.ObjectModel.KeyedCollection<string, Mono.Options.Command>
     {
-        public CommandSet(string suite, System.Converter<string, string> localizer=null) { }
-        public CommandSet(string suite, System.IO.TextWriter output, System.IO.TextWriter error, System.Converter<string, string> localizer=null) { }
+        public CommandSet(string suite, System.Converter<string, string> localizer = null) { }
+        public CommandSet(string suite, System.IO.TextWriter output, System.IO.TextWriter error, System.Converter<string, string> localizer = null) { }
         public System.IO.TextWriter Error { get { throw null; } }
         public System.Converter<string, string> MessageLocalizer { get { throw null; } }
         public System.IO.TextWriter Out { get { throw null; } }
@@ -54,7 +54,7 @@ namespace Mono.Options
         public Mono.Options.CommandSet Add<T>(string prototype, string description, System.Action<T> action) { throw null; }
         public Mono.Options.CommandSet Add<TKey, TValue>(string prototype, Mono.Options.OptionAction<TKey, TValue> action) { throw null; }
         public Mono.Options.CommandSet Add<TKey, TValue>(string prototype, string description, Mono.Options.OptionAction<TKey, TValue> action) { throw null; }
-        public System.Collections.Generic.IEnumerable<string> GetCompletions(string prefix=null) { throw null; }
+        public System.Collections.Generic.IEnumerable<string> GetCompletions(string prefix = null) { throw null; }
         protected override string GetKeyForItem(Mono.Options.Command item) { throw null; }
         public int Run(System.Collections.Generic.IEnumerable<string> arguments) { throw null; }
     }
@@ -124,7 +124,7 @@ namespace Mono.Options
         protected override string GetKeyForItem(Mono.Options.Option item) { throw null; }
         [System.ObsoleteAttribute("Use KeyedCollection.this[string]")]
         protected Mono.Options.Option GetOptionForName(string option) { throw null; }
-        protected bool GetOptionParts(string argument, out string flag, out string name, out string sep, out string value) { flag = default(string); name = default(string); sep = default(string); value = default(string); throw null; }
+        protected bool GetOptionParts(string argument, out string flag, out string name, out string sep, out string value) { throw null; }
         protected override void InsertItem(int index, Mono.Options.Option item) { }
         public System.Collections.Generic.List<string> Parse(System.Collections.Generic.IEnumerable<string> arguments) { throw null; }
         protected virtual bool Parse(string argument, Mono.Options.OptionContext c) { throw null; }
@@ -173,7 +173,7 @@ namespace Mono.Options
     {
         public ResponseFileSource() { }
         public override string Description { get { throw null; } }
-        public override bool GetArguments(string value, out System.Collections.Generic.IEnumerable<string> replacement) { replacement = default(System.Collections.Generic.IEnumerable<string>); throw null; }
+        public override bool GetArguments(string value, out System.Collections.Generic.IEnumerable<string> replacement) { throw null; }
         public override string[] GetNames() { throw null; }
     }
 }

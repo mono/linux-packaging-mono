@@ -32,6 +32,9 @@ public static class MountHelper
     /// <summary>Creates a symbolic link using command line tools</summary>
     /// <param name="linkPath">The existing file</param>
     /// <param name="targetPath"></param>
+#if MONO && MOBILE// No external process support
+    public static bool CreateSymbolicLink(string linkpath, string targetPath, bool isDirectory) => throw new PlatformNotSupportedException();
+#else
     public static bool CreateSymbolicLink(string linkPath, string targetPath, bool isDirectory)
     {
         Process symLinkProcess = new Process();
@@ -59,6 +62,7 @@ public static class MountHelper
             return false;
         }
     }
+#endif
 
     public static void Mount(String volumeName, String mountPoint)
     {

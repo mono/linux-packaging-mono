@@ -1183,6 +1183,9 @@ namespace System.Text
                    CodePage + (_emitUTF32ByteOrderMark ? 4 : 0) + (_bigEndian ? 8 : 0);
         }
 
+#if MONO
+        [Serializable]
+#endif
         private sealed class UTF32Decoder : DecoderNLS
         {
             // Need a place to store any extra bytes we may have picked up

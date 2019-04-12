@@ -108,6 +108,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
         public void InconsistentFileAccessThrows()
         {
             string fileName = GetTestFilePath();

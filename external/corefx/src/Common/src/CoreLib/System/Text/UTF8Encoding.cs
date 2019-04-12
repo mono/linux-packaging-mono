@@ -2536,6 +2536,9 @@ namespace System.Text
                    UTF8_CODEPAGE + (_emitUTF8Identifier ? 1 : 0);
         }
 
+#if MONO
+        [Serializable]
+#endif
         private sealed class UTF8Encoder : EncoderNLS
         {
             // We must save a high surrogate value until the next call, looking
@@ -2565,6 +2568,9 @@ namespace System.Text
             }
         }
 
+#if MONO
+        [Serializable]
+#endif
         private sealed class UTF8Decoder : DecoderNLS
         {
             // We'll need to remember the previous information. See the comments around definition

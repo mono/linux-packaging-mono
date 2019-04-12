@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.5.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.dll")]
@@ -21,32 +21,32 @@
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -246,7 +246,7 @@ namespace System.ServiceModel
         Transport = 0,
         TransportWithMessageCredential = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class CallbackBehaviorAttribute : System.Attribute, System.ServiceModel.Description.IEndpointBehavior
     {
         public CallbackBehaviorAttribute() { }
@@ -464,7 +464,7 @@ namespace System.ServiceModel
         Reentrant = 1,
         Single = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1092), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method, Inherited=false)]
     public sealed partial class DataContractFormatAttribute : System.Attribute
     {
         public DataContractFormatAttribute() { }
@@ -647,7 +647,7 @@ namespace System.ServiceModel
         public static System.ServiceModel.FaultCode CreateSenderFaultCode(System.ServiceModel.FaultCode subCode) { throw null; }
         public static System.ServiceModel.FaultCode CreateSenderFaultCode(string name, string ns) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), Inherited=false, AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false, AllowMultiple=true)]
     public sealed partial class FaultContractAttribute : System.Attribute
     {
         public FaultContractAttribute(System.Type detailType) { }
@@ -884,13 +884,13 @@ namespace System.ServiceModel
         public InvalidMessageContractException(string message) { }
         public InvalidMessageContractException(string message, System.Exception innerException) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false)]
     public partial class MessageBodyMemberAttribute : System.ServiceModel.MessageContractMemberAttribute
     {
         public MessageBodyMemberAttribute() { }
         public int Order { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(12))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct)]
     public sealed partial class MessageContractAttribute : System.Attribute
     {
         public MessageContractAttribute() { }
@@ -916,12 +916,12 @@ namespace System.ServiceModel
         UserName = 2,
         Windows = 1,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false)]
     public sealed partial class MessageHeaderArrayAttribute : System.ServiceModel.MessageHeaderAttribute
     {
         public MessageHeaderArrayAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false)]
     public partial class MessageHeaderAttribute : System.ServiceModel.MessageContractMemberAttribute
     {
         public MessageHeaderAttribute() { }
@@ -956,13 +956,13 @@ namespace System.ServiceModel
         public bool Relay { get { throw null; } set { } }
         public System.ServiceModel.Channels.MessageHeader GetUntypedHeader(string name, string ns) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10240), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter | System.AttributeTargets.ReturnValue, Inherited=false)]
     public sealed partial class MessageParameterAttribute : System.Attribute
     {
         public MessageParameterAttribute() { }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(384), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, Inherited=false)]
     public sealed partial class MessagePropertyAttribute : System.Attribute
     {
         public MessagePropertyAttribute() { }
@@ -1113,7 +1113,7 @@ namespace System.ServiceModel
         public OperationContextScope(System.ServiceModel.OperationContext context) { }
         public void Dispose() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class OperationContractAttribute : System.Attribute
     {
         public OperationContractAttribute() { }
@@ -1244,7 +1244,7 @@ namespace System.ServiceModel
         public ServiceActivationException(string message) { }
         public ServiceActivationException(string message, System.Exception innerException) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1028), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface, Inherited=false)]
     public sealed partial class ServiceContractAttribute : System.Attribute
     {
         public ServiceContractAttribute() { }
@@ -1256,7 +1256,7 @@ namespace System.ServiceModel
         public System.Net.Security.ProtectionLevel ProtectionLevel { get { throw null; } set { } }
         public System.ServiceModel.SessionMode SessionMode { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1092), AllowMultiple=true, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method, AllowMultiple=true, Inherited=true)]
     public sealed partial class ServiceKnownTypeAttribute : System.Attribute
     {
         public ServiceKnownTypeAttribute(string methodName) { }
@@ -1341,7 +1341,7 @@ namespace System.ServiceModel
         Mtom = 1,
         Text = 0,
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1092), Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method, Inherited=false)]
     public sealed partial class XmlSerializerFormatAttribute : System.Attribute
     {
         public XmlSerializerFormatAttribute() { }
@@ -1666,8 +1666,8 @@ namespace System.ServiceModel.Channels
         protected abstract bool OnTryCreateException(System.ServiceModel.Channels.Message message, System.ServiceModel.Channels.MessageFault fault, out System.Exception exception);
         [System.MonoTODOAttribute]
         protected abstract bool OnTryCreateFaultMessage(System.Exception exception, out System.ServiceModel.Channels.Message message);
-        public bool TryCreateException(System.ServiceModel.Channels.Message message, System.ServiceModel.Channels.MessageFault fault, out System.Exception exception) { exception = default(System.Exception); throw null; }
-        public bool TryCreateFaultMessage(System.Exception exception, out System.ServiceModel.Channels.Message message) { message = default(System.ServiceModel.Channels.Message); throw null; }
+        public bool TryCreateException(System.ServiceModel.Channels.Message message, System.ServiceModel.Channels.MessageFault fault, out System.Exception exception) { throw null; }
+        public bool TryCreateFaultMessage(System.Exception exception, out System.ServiceModel.Channels.Message message) { throw null; }
     }
     [System.ObsoleteAttribute("Use AllowCookies.")]
     public partial class HttpCookieContainerBindingElement : System.ServiceModel.Channels.BindingElement
@@ -1715,7 +1715,7 @@ namespace System.ServiceModel.Channels
         protected HttpTransportBindingElement(System.ServiceModel.Channels.HttpTransportBindingElement elementToBeCloned) { }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowCookies { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Net.AuthenticationSchemes)(32768))]
+        [System.ComponentModel.DefaultValueAttribute(System.Net.AuthenticationSchemes.Anonymous)]
         public System.Net.AuthenticationSchemes AuthenticationScheme { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool BypassProxyOnLocal { get { throw null; } set { } }
@@ -1724,7 +1724,7 @@ namespace System.ServiceModel.Channels
         public bool DecompressionEnabled { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy ExtendedProtectionPolicy { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool KeepAliveEnabled { get { throw null; } set { } }
@@ -1736,12 +1736,12 @@ namespace System.ServiceModel.Channels
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.UriTypeConverter))]
         public System.Uri ProxyAddress { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Net.AuthenticationSchemes)(32768))]
+        [System.ComponentModel.DefaultValueAttribute(System.Net.AuthenticationSchemes.Anonymous)]
         public System.Net.AuthenticationSchemes ProxyAuthenticationScheme { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute("")]
         public string Realm { get { throw null; } set { } }
         public override string Scheme { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.TransferMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool UnsafeConnectionNtlmAuthentication { get { throw null; } set { } }
@@ -2104,7 +2104,7 @@ namespace System.ServiceModel.Channels
         bool System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.Remove(System.Collections.Generic.KeyValuePair<string, object> pair) { throw null; }
         System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String,System.Object>>.GetEnumerator() { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string name, out object value) { value = default(object); throw null; }
+        public bool TryGetValue(string name, out object value) { throw null; }
     }
     public enum MessageState
     {
@@ -2821,8 +2821,8 @@ namespace System.ServiceModel.Security
         public void AddParts(System.ServiceModel.Security.MessagePartSpecification parts) { }
         public void AddParts(System.ServiceModel.Security.MessagePartSpecification parts, string action) { }
         public void MakeReadOnly() { }
-        public bool TryGetParts(string action, bool excludeChannelScope, out System.ServiceModel.Security.MessagePartSpecification parts) { parts = default(System.ServiceModel.Security.MessagePartSpecification); throw null; }
-        public bool TryGetParts(string action, out System.ServiceModel.Security.MessagePartSpecification parts) { parts = default(System.ServiceModel.Security.MessagePartSpecification); throw null; }
+        public bool TryGetParts(string action, bool excludeChannelScope, out System.ServiceModel.Security.MessagePartSpecification parts) { throw null; }
+        public bool TryGetParts(string action, out System.ServiceModel.Security.MessagePartSpecification parts) { throw null; }
     }
     public abstract partial class SecureConversationVersion
     {

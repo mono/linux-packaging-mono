@@ -62,58 +62,11 @@ void   mono_object_register_finalizer               (MonoObject  *obj);
 void
 mono_object_register_finalizer_handle (MonoObjectHandle obj);
 
-ICALL_EXPORT
-void
-ves_icall_System_GC_InternalCollect (int generation, MonoError *error);
-
-ICALL_EXPORT
-gint64
-ves_icall_System_GC_GetTotalMemory (MonoBoolean forceCollection, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GC_KeepAlive (MonoObjectHandle obj, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GC_ReRegisterForFinalize (MonoObjectHandle obj, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GC_SuppressFinalize (MonoObjectHandle obj, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GC_WaitForPendingFinalizers (MonoError *error);
-
-ICALL_EXPORT
-MonoObjectHandle
-ves_icall_System_GCHandle_GetTarget (guint32 handle, MonoError *error);
-
-ICALL_EXPORT
-guint32
-ves_icall_System_GCHandle_GetTargetHandle (MonoObjectHandle obj, guint32 handle, gint32 type, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GCHandle_FreeHandle (guint32 handle, MonoError *error);
-
-ICALL_EXPORT
-gpointer
-ves_icall_System_GCHandle_GetAddrOfPinnedObject (guint32 handle, MonoError *error);
-
-ICALL_EXPORT
-void
-ves_icall_System_GC_register_ephemeron_array (MonoObjectHandle array, MonoError *error);
-
-ICALL_EXPORT
-MonoObjectHandle
-ves_icall_System_GC_get_ephemeron_tombstone (MonoError *error);
-
 extern void mono_gc_init (void);
 extern void mono_gc_base_init (void);
 extern void mono_gc_cleanup (void);
 extern void mono_gc_base_cleanup (void);
+extern void mono_gc_init_icalls (void);
 
 /*
  * Return whenever the current thread is registered with the GC (i.e. started
@@ -135,10 +88,6 @@ void mono_gchandle_set_target (guint32 gchandle, MonoObject *obj);
 
 /*Ephemeron functionality. Sgen only*/
 gboolean    mono_gc_ephemeron_array_add (MonoObject *obj);
-
-ICALL_EXPORT
-MonoBoolean
-ves_icall_System_GCHandle_CheckCurrentDomain (guint32 gchandle, MonoError *error);
 
 /* User defined marking function */
 /* It should work like this:
@@ -282,12 +231,6 @@ typedef void (*MonoRangeCopyFunction)(gpointer, gconstpointer, int size);
 
 MonoRangeCopyFunction
 mono_gc_get_range_copy_func (void);
-
-
-/* helper for the managed alloc support */
-ICALL_EXPORT
-MonoString *
-ves_icall_string_alloc (int length);
 
 /* 
  * Functions supplied by the runtime and called by the GC. Currently only used

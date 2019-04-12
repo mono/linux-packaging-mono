@@ -54,4 +54,8 @@
 #define BROTLI_WINDOW_GAP 16
 #define BROTLI_MAX_BACKWARD_LIMIT(W) (((size_t)1 << (W)) - BROTLI_WINDOW_GAP)
 
+#ifndef DLLEXPORT
+#define DLLEXPORT __attribute__ ((__visibility__ ("default")))
+#endif
+
 #endif  /* BROTLI_COMMON_CONSTANTS_H_ */

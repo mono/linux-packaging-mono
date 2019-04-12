@@ -19,7 +19,11 @@ namespace System.Reflection
         public virtual Guid ModuleVersionId { get { throw NotImplemented.ByDesign; } }
         public virtual string ScopeName { get { throw NotImplemented.ByDesign; } }
         public ModuleHandle ModuleHandle => GetModuleHandleImpl();
+#if MONO // make internal as it's CoreRT change only
+        internal virtual ModuleHandle GetModuleHandleImpl() => ModuleHandle.EmptyHandle;
+#else
         protected virtual ModuleHandle GetModuleHandleImpl() => ModuleHandle.EmptyHandle; // Not an api but declared protected because of Reflection.Core/Corelib divide (when built by CoreRt)
+#endif
         public virtual void GetPEKind(out PortableExecutableKinds peKind, out ImageFileMachine machine) { throw NotImplemented.ByDesign; }
         public virtual bool IsResource() { throw NotImplemented.ByDesign; }
 

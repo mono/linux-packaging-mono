@@ -1007,7 +1007,7 @@ mono_class_inflate_generic_type (MonoType *type, MonoGenericContext *context)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean
+            <div class="mapi-prototype">mono_bool
 mono_class_init (MonoClass *klass)
 
 </div>
@@ -1020,8 +1020,8 @@ mono_class_init (MonoClass *klass)
              <div class="mapi-section">Description</div>
              <div>
 <p />
- Compute the <code>instance_size</code>, <code>class_size</code> and other infos that cannot be 
- computed at <code>mono_class_get</code> time. Also compute vtable_size if possible. 
+ Compute the <code>instance_size</code>, <code>class_size</code> and other infos that cannot be
+ computed at <code>mono_class_get</code> time. Also compute vtable_size if possible.
  Initializes the following fields in <i>klass</i>:
  - all the fields initialized by <code>mono_class_init_sizes</code>
  - has_cctor

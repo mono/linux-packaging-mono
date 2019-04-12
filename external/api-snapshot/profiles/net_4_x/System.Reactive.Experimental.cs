@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.2.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reactive.ExperimentalAttribute]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Open Technologies, Inc.")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Retail")]
@@ -21,7 +21,7 @@
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 namespace System.Reactive
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=false, Inherited=true)]
     [System.Reactive.ExperimentalAttribute]
     public sealed partial class ExperimentalAttribute : System.Attribute
     {

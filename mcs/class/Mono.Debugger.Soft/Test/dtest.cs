@@ -80,7 +80,8 @@ public class DebuggerTests
 
 	Diag.ProcessStartInfo CreateStartInfo (string[] args) {
 		var pi = new Diag.ProcessStartInfo ();
-
+		pi.RedirectStandardOutput = true;
+		pi.RedirectStandardError = true;
 		if (runtime != null) {
 			pi.FileName = runtime;
 		} else {
@@ -2153,6 +2154,8 @@ public class DebuggerTests
 		Assert.AreEqual (frame.Method.DeclaringType.Assembly, m.Assembly);
 		Assert.AreEqual (frame.Method.DeclaringType.Assembly.ManifestModule, m);
 
+		Assert.AreEqual ("{}\n", m.SourceLink.Replace ("\r\n", "\n"));
+
 		// This is no longer true on 4.0
 		//Assert.AreEqual ("Assembly", frame.Method.DeclaringType.Assembly.GetAssemblyObject ().Type.Name);
 
@@ -2450,6 +2453,58 @@ public class DebuggerTests
 		}
 
 		vm = null;
+	}
+
+	[Test]
+	[Category("NotOnWindows")]
+	public void Crash () {
+		string [] existingCrashFileEntries = Directory.GetFiles (".", "mono_crash*.json");
+
+		bool success = false;
+		for (int i = 0 ; i < 10; i++) {
+			try {
+				vm.Detach ();
+				Start (new string [] { dtest_app_path, "crash-vm" });
+				Event e = run_until ("crash");
+				while (!success) {
+					vm.Resume ();
+					e = GetNextEvent ();
+					var crash = e as CrashEvent;
+					if (crash == null)
+						continue;
+
+					success = true;
+					Assert.AreNotEqual (0, crash.Dump.Length);
+
+					break;
+				}
+			} catch (VMDisconnectedException vmDisconnect) { //expected behavior because of unreliability of the crash reporter.
+					success = false;
+			} finally {
+				try {
+					vm.Detach ();
+				} catch (VMDisconnectedException vmDisconnect) { //expected behavior because of unreliability of the crash reporter.
+					success = false;
+				} finally {
+					vm = null;
+				}
+			}
+			if (success) 
+				break;
+			//try again because of unreliability of the crash reporter.
+			TearDown();
+			SetUp();
+		}
+
+		// delete crash files created by this test
+		string [] crashFileEntries = Directory.GetFiles (".", "mono_crash*.json");
+		foreach (string f in crashFileEntries) {
+			if (!existingCrashFileEntries.Contains (f))
+				File.Delete(f);
+		}
+
+		if (!success)
+			Assert.Fail ("Didn't get crash event");
 	}
 
 	[Test]
@@ -3189,7 +3244,8 @@ public class DebuggerTests
 
 		e = GetNextEvent ();
 		Assert.IsInstanceOfType (typeof (ThreadDeathEvent), e);
-		Assert.AreEqual (ThreadState.Stopped, e.Thread.ThreadState);
+		// https://github.com/mono/mono/issues/11416
+		// Assert.AreEqual (ThreadState.Stopped, e.Thread.ThreadState);
 	}
 #endif
 
@@ -4420,11 +4476,11 @@ public class DebuggerTests
 		e = run_until ("threadpool_bp");
 		var req = create_step (e);
 		e = step_out (); // leave threadpool_bp
+		
 		e = step_out (); // leave threadpool_io
 	}
 
 	[Test]
-	[Category("NotWorking")] // flaky, see https://github.com/mono/mono/issues/6997
 	public void StepOutAsync () {
 		vm.Detach ();
 		Start (new string [] { dtest_app_path, "step-out-void-async" });
@@ -4438,8 +4494,8 @@ public class DebuggerTests
 		vm.Resume ();
 		var e3 = GetNextEvent ();
 		//after step-out from async void, execution should continue
-		//and runtime should exit
-		Assert.IsTrue (e3 is VMDeathEvent, e3.GetType().FullName);
+		//and runtime should Step
+		Assert.IsTrue (e3 is StepEvent, e3.GetType().FullName);
 		vm = null;
 	}
 
@@ -4563,6 +4619,23 @@ public class DebuggerTests
 		thisObj = (StructMirror)variable;
 		thisType = thisObj.Type;
 		AssertValue ("f1", thisObj["value"]);
+	}
+
+	[Test]
+	public void CheckElapsedTime() {
+		Event e = run_until ("elapsed_time");
+
+		var req = create_step(e);
+		req.Enable();
+		e = step_once();
+		e = step_over(); //Thread.Sleep(200)
+		Assert.IsTrue (e.Thread. ElapsedTime() >= 200);
+		e = step_over(); //Thread.Sleep(00);
+		Assert.IsTrue (e.Thread.ElapsedTime() < 200);
+		e = step_over(); //Thread.Sleep(100);
+		Assert.IsTrue (e.Thread.ElapsedTime() >= 100 && e.Thread. ElapsedTime() < 300);
+		e = step_over(); //Thread.Sleep(300);
+		Assert.IsTrue (e.Thread. ElapsedTime() >= 300);
 	}
 
 	[Test]
@@ -4735,6 +4808,26 @@ public class DebuggerTests
 		AssertValue (2.0, mirror["d"]);
 	}
 
+	[Test]
+	public void FieldWithUnsafeCastValue() {
+		Event e = run_until("field_with_unsafe_cast_value");
+		var req = create_step(e);
+		req.Enable();
+		e = step_once();
+		e = step_over();
+		e = step_over();
+		e = step_over();
+		e = step_over();
+		e = step_over();
+		var frame = e.Thread.GetFrames () [0];
+		var ginst = frame.Method.GetLocal ("bytes");
+		Value variable = frame.GetValue (ginst);
+		StructMirror thisObj = (StructMirror)variable;
+		TypeMirror thisType = thisObj.Type;
+		variable = thisObj.InvokeMethod(e.Thread, thisType.GetMethod("ToString"), null);
+		AssertValue ("abc", variable);
+
+	}
 	[Test]
 	public void IfPropertyStepping () {
 		Event e = run_until ("if_property_stepping");

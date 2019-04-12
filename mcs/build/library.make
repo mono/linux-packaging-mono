@@ -60,10 +60,8 @@ endif
 the_libdir_base = $(topdir)/class/$(lib_dir)/$(PROFILE_DIRECTORY)/$(if $(LIBRARY_SUBDIR),$(LIBRARY_SUBDIR)/)
 
 ifdef RESOURCE_STRINGS
-ifneq (basic, $(PROFILE))
 RESOURCE_STRINGS_FILES += $(RESOURCE_STRINGS:%=--resourcestrings:%)
 IL_REPLACE_FILES += $(IL_REPLACE:%=--ilreplace:%)
-endif
 endif
 
 ifdef ENFORCE_LIBRARY_WARN_AS_ERROR
@@ -72,6 +70,11 @@ ifndef MCS_MODE
 LIB_MCS_FLAGS += -warnaserror
 endif
 endif
+endif
+
+# add sourcelink information if we're building a portable PDB
+ifneq (, $(findstring debug:portable, $(PROFILE_MCS_FLAGS)))
+LIB_MCS_FLAGS += -sourcelink:$(topdir)/build/common/sourcelink.json
 endif
 
 the_libdir = $(the_libdir_base)$(intermediate)
@@ -286,18 +289,13 @@ endif
 # The library
 
 # If the directory contains the per profile include file, generate list file.
-# TODO: depend on all *.sources for now and figure out how to list only needed files later
-PROFILE_sources = $(wildcard *.sources)
-
-ifneq "x" "x$(PROFILE_RUNTIME)"
-GENSOURCES_RUNTIME=$(PROFILE_RUNTIME)
-else
-GENSOURCES_RUNTIME=MONO_PATH="$(GENSOURCES_LIBDIR)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME)
-endif
+# TODO: depend on all *.sources (except tests) for now and figure out how to list only needed files later
+PROFILE_sources = $(filter-out %test.dll.exclude.sources %test.dll.sources, $(wildcard *.sources))
+PROFILE_excludes = $(filter-out %test.dll.exclude.sources %test.dll.sources, $(wildcard *.exclude.sources))
 
 sourcefile = $(depsdir)/$(PROFILE_PLATFORM)_$(PROFILE)_$(LIBRARY_SUBDIR)_$(LIBRARY).sources
-$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(depsdir)/.stamp $(GENSOURCES_CS)
-	$(GENSOURCES_RUNTIME) --debug $(GENSOURCES_EXE) --strict "$@" "$(LIBRARY)" "$(PROFILE_PLATFORM)" "$(PROFILE)"
+$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(depsdir)/.stamp
+	$(GENSOURCES) --strict --platformsdir:$(topdir)/build "$@" "$(LIBRARY)" "$(PROFILE_PLATFORM)" "$(PROFILE)"
 
 library_CLEAN_FILES += $(sourcefile)
 
@@ -354,7 +352,7 @@ library_CLEAN_FILES += $(PROFILE)_$(LIBRARY_NAME)_aot.log
 
 ifdef PLATFORM_AOT_SUFFIX
 $(the_lib)$(PLATFORM_AOT_SUFFIX): $(the_lib)
-	$(Q_AOT) MONO_PATH='$(the_libdir_base)' > $(PROFILE)_$(LIBRARY_NAME)_aot.log 2>&1 $(RUNTIME) $(AOT_BUILD_FLAGS) --debug $(the_lib)
+	$(Q_AOT) MONO_PATH='$(the_libdir_base)' $(RUNTIME) $(AOT_BUILD_FLAGS) --debug $(the_lib)
 
 all-local-aot: $(the_lib)$(PLATFORM_AOT_SUFFIX)
 endif

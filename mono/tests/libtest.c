@@ -8,6 +8,7 @@
 #include <time.h>
 #include <math.h>
 #include <setjmp.h>
+#include "../utils/mono-errno.h"
 
 #ifndef HOST_WIN32
 #include <dlfcn.h>
@@ -20,10 +21,15 @@
 #include <pthread.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef WIN32
 #define STDCALL __stdcall
 #else
 #define STDCALL
+#define __thiscall /* nothing */
 #endif
 
 #ifdef __GNUC__
@@ -76,14 +82,10 @@ static void* marshal_alloc0 (gsize size)
 static char* marshal_strdup (const char *str)
 {
 #ifdef WIN32
-	int len;
-	char *buf;
-
 	if (!str)
 		return NULL;
 
-	len = strlen (str);
-	buf = (char *) CoTaskMemAlloc (len + 1);
+	char *buf = (char *) CoTaskMemAlloc (strlen (str) + 1);
 	return strcpy (buf, str);
 #else
 	return g_strdup (str);
@@ -93,10 +95,8 @@ static char* marshal_strdup (const char *str)
 static gunichar2* marshal_bstr_alloc(const gchar* str)
 {
 #ifdef WIN32
-	gunichar2* ret = NULL;
-	gunichar2* temp = NULL;
-	temp = g_utf8_to_utf16 (str, -1, NULL, NULL, NULL);
-	ret = SysAllocString (temp);
+	gunichar2* temp = g_utf8_to_utf16 (str, -1, NULL, NULL, NULL);
+	gunichar2* ret = SysAllocString (temp);
 	g_free (temp);
 	return ret;
 #else
@@ -1770,7 +1770,7 @@ mono_test_last_error (int err)
 #ifdef WIN32
 	SetLastError (err);
 #else
-	errno = err;
+	mono_set_errno (err);
 #endif
 }
 
@@ -1781,7 +1781,7 @@ mono_test_asany (void *ptr, int what)
 	case 1:
 		return (*(int*)ptr == 5) ? 0 : 1;
 	case 2:
-		return strcmp (ptr, "ABC") == 0 ? 0 : 1;
+		return strcmp ((const char*)ptr, "ABC") == 0 ? 0 : 1;
 	case 3: {
 		simplestruct2 ss = *(simplestruct2*)ptr;
 
@@ -2065,7 +2065,7 @@ typedef void (STDCALL *CustomOutParamDelegate) (void **pptr);
 LIBTEST_API int STDCALL 
 mono_test_marshal_custom_out_param_delegate (CustomOutParamDelegate del)
 {
-	void* pptr = del;
+	void* pptr = (void*)del;
 
 	del (&pptr);
 
@@ -2479,7 +2479,7 @@ add_delegate (int i, int j)
 LIBTEST_API gpointer STDCALL 
 mono_test_marshal_return_fnptr (void)
 {
-	return &add_delegate;
+	return (gpointer)&add_delegate;
 }
 
 LIBTEST_API int STDCALL 
@@ -3376,6 +3376,7 @@ struct MonoComObject
 static GUID IID_ITest = {0, 0, 0, {0,0,0,0,0,0,0,1}};
 static GUID IID_IMonoUnknown = {0, 0, 0, {0xc0,0,0,0,0,0,0,0x46}};
 static GUID IID_IMonoDispatch = {0x00020400, 0, 0, {0xc0,0,0,0,0,0,0,0x46}};
+static GUID IID_INotImplemented = {0x12345678, 0, 0, {0x9a, 0xbc, 0xde, 0xf0, 0, 0, 0, 0}};
 
 LIBTEST_API int STDCALL
 MonoQueryInterface(MonoComObject* pUnk, gpointer riid, gpointer* ppv)
@@ -3651,11 +3652,10 @@ typedef struct _TestStruct {
 static gpointer
 lookup_mono_symbol (const char *symbol_name)
 {
-	gpointer symbol;
-	if (g_module_symbol (g_module_open (NULL, G_MODULE_BIND_LAZY), symbol_name, &symbol))
-		return symbol;
-	else
-		return NULL;
+	gpointer symbol = NULL;
+	const gboolean success = g_module_symbol (g_module_open (NULL, G_MODULE_BIND_LAZY), symbol_name, &symbol);
+	g_assertf (success, "%s", symbol_name);
+	return success ? symbol : NULL;
 }
 
 LIBTEST_API gpointer STDCALL
@@ -4801,7 +4801,7 @@ mono_test_marshal_safearray_out_1dim_vt_bstr_empty (SAFEARRAY** safearray)
 	dimensions [0].lLbound = 0;
 	dimensions [0].cElements = 0;
 
-	pSA= SafeArrayCreate (VT_VARIANT, 1, dimensions);
+	pSA = SafeArrayCreate (VT_VARIANT, 1, dimensions);
 	*safearray = pSA;
 	return S_OK;
 }
@@ -5524,7 +5524,7 @@ mono_test_marshal_thread_attach (SimpleDelegate del)
 	int res;
 	pthread_t t;
 
-	res = pthread_create (&t, NULL, (gpointer (*)(gpointer))call_managed, del);
+	res = pthread_create (&t, NULL, (gpointer (*)(gpointer))call_managed, (gpointer)del);
 	g_assert (res == 0);
 	pthread_join (t, NULL);
 
@@ -5556,7 +5556,7 @@ mono_test_marshal_thread_attach_large_vt (SimpleDelegate del)
 	int res;
 	pthread_t t;
 
-	res = pthread_create (&t, NULL, (gpointer (*)(gpointer))call_managed_large_vt, del);
+	res = pthread_create (&t, NULL, (gpointer (*)(gpointer))call_managed_large_vt, (gpointer)del);
 	g_assert (res == 0);
 	pthread_join (t, NULL);
 
@@ -5607,7 +5607,6 @@ mono_test_marshal_return_lpstr (void)
 	return res;
 }
 
-
 LIBTEST_API gunichar2* STDCALL
 mono_test_marshal_return_lpwstr (void)
 {
@@ -5620,136 +5619,91 @@ mono_test_marshal_return_lpwstr (void)
 	return res;
 }
 
-typedef struct {
+typedef
+#if defined (HOST_WIN32) && defined (HOST_X86) && defined (__GNUC__)
+// Workaround gcc ABI bug. It returns the struct in ST0 instead of edx:eax.
+// Mono and Visual C++ agree.
+union
+#else
+struct
+#endif
+{
 	double d;
 } SingleDoubleStruct;
 
 LIBTEST_API SingleDoubleStruct STDCALL
 mono_test_marshal_return_single_double_struct (void)
 {
-	SingleDoubleStruct res;
-
-	res.d = 3.0;
-
+	SingleDoubleStruct res = {3.0};
 	return res;
 }
 
-
-#ifndef TARGET_X86
+LIBTEST_API int STDCALL
+mono_test_has_thiscall_globals (void)
+{
+// Visual C++ does not accept __thiscall on global functions, only
+// member function and function pointers. Gcc accepts it also on global functions.
+#if defined (HOST_X86) && defined (HOST_WIN32) && !defined (_MSC_VER)
+	return 1;
+#else
+	return 0;
+#endif
+}
 
 LIBTEST_API int STDCALL
-mono_test_has_thiscall (void)
+mono_test_has_thiscall_pointers (void)
 {
+#if defined (HOST_X86) && defined (HOST_WIN32)
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 LIBTEST_API int
+#ifndef _MSC_VER
+__thiscall
+#endif
 _mono_test_native_thiscall1 (int arg)
 {
 	return arg;
 }
 
 LIBTEST_API int
+#ifndef _MSC_VER
+__thiscall
+#endif
 _mono_test_native_thiscall2 (int arg, int arg2)
 {
 	return arg + (arg2^1);
 }
 
 LIBTEST_API int
+#ifndef _MSC_VER
+__thiscall
+#endif
 _mono_test_native_thiscall3 (int arg, int arg2, int arg3)
 {
 	return arg + (arg2^1) + (arg3^2);
 }
 
 LIBTEST_API int STDCALL
-_mono_test_managed_thiscall1 (int (*fn)(int), int arg)
+_mono_test_managed_thiscall1 (int (__thiscall*fn)(int), int arg)
 {
 	return fn(arg);
 }
 
 LIBTEST_API int STDCALL
-_mono_test_managed_thiscall2 (int (*fn)(int,int), int arg, int arg2)
+_mono_test_managed_thiscall2 (int (__thiscall*fn)(int,int), int arg, int arg2)
 {
 	return fn(arg, arg2);
 }
 
 LIBTEST_API int STDCALL
-_mono_test_managed_thiscall3 (int (*fn)(int,int,int), int arg, int arg2, int arg3)
+_mono_test_managed_thiscall3 (int (__thiscall*fn)(int,int,int), int arg, int arg2, int arg3)
 {
 	return fn(arg, arg2, arg3);
 }
-
-#elif defined(__GNUC__)
-
-LIBTEST_API int STDCALL
-mono_test_has_thiscall (void)
-{
-	return 1;
-}
-
-#define def_asm_fn(name) \
-	"\t.align 4\n" \
-	"\t.globl _" #name "\n" \
-	"_" #name ":\n" \
-	"\t.globl __" #name "\n" \
-	"__" #name ":\n"
-
-asm(".text\n"
-
-def_asm_fn(mono_test_native_thiscall1)
-"\tmovl %ecx,%eax\n"
-"\tret\n"
-
-def_asm_fn(mono_test_native_thiscall2)
-"\tmovl %ecx,%eax\n"
-"\tmovl 4(%esp),%ecx\n"
-"\txorl $1,%ecx\n"
-"\taddl %ecx,%eax\n"
-"\tret $4\n"
-
-def_asm_fn(mono_test_native_thiscall3)
-"\tmovl %ecx,%eax\n"
-"\tmovl 4(%esp),%ecx\n"
-"\txorl $1,%ecx\n"
-"\taddl %ecx,%eax\n"
-"\tmovl 8(%esp),%ecx\n"
-"\txorl $2,%ecx\n"
-"\taddl %ecx,%eax\n"
-"\tret $8\n"
-
-def_asm_fn(mono_test_managed_thiscall1)
-"\tpopl %eax\n"
-"\tpopl %edx\n"
-"\tpopl %ecx\n"
-"\tpushl %eax\n"
-"\tjmp *%edx\n"
-
-def_asm_fn(mono_test_managed_thiscall2)
-"\tpopl %eax\n"
-"\tpopl %edx\n"
-"\tpopl %ecx\n"
-"\tpushl %eax\n"
-"\tjmp *%edx\n"
-
-def_asm_fn(mono_test_managed_thiscall3)
-"\tpopl %eax\n"
-"\tpopl %edx\n"
-"\tpopl %ecx\n"
-"\tpushl %eax\n"
-"\tjmp *%edx\n"
-
-);
-
-#else
-
-LIBTEST_API int STDCALL
-mono_test_has_thiscall (void)
-{
-	return 0;
-}
-
-#endif
-
 
 typedef struct {
 	char f1;
@@ -7604,7 +7558,7 @@ LIBTEST_API void STDCALL
 mono_test_native_to_managed_exception_rethrow (NativeToManagedExceptionRethrowFunc func)
 {
 	pthread_t t;
-	pthread_create (&t, NULL, mono_test_native_to_managed_exception_rethrow_thread, func);
+	pthread_create (&t, NULL, mono_test_native_to_managed_exception_rethrow_thread, (gpointer)func);
 	pthread_join (t, NULL);
 }
 #endif
@@ -7717,6 +7671,16 @@ mono_test_cleanup_ftptr_eh_callback (void)
 {
 	mono_test_init_symbols ();
 	sym_mono_install_ftnptr_eh_callback (NULL);
+}
+
+LIBTEST_API int STDCALL
+mono_test_cominterop_ccw_queryinterface (MonoComObject *pUnk)
+{
+	void *pp;
+	int hr = pUnk->vtbl->QueryInterface (pUnk, &IID_INotImplemented, &pp);
+
+	// Return true if we can't get INotImplemented
+	return pUnk == NULL && hr == S_OK;
 }
 
 LIBTEST_API void STDCALL

@@ -351,6 +351,8 @@ struct MonoVTable {
 
 	guint32     imt_collisions_bitmap;
 	MonoRuntimeGenericContext *runtime_generic_context;
+	/* interp virtual method table */
+	gpointer *interp_vtable;
 	/* do not add any fields after vtable, the structure is dynamically extended */
 	/* vtable contains function pointers to methods or their trampolines, at the
 	 end there may be a slot containing the pointer to the static fields */
@@ -832,6 +834,9 @@ mono_class_get_context (MonoClass *klass);
 MONO_PROFILER_API MonoMethodSignature*
 mono_method_signature_checked (MonoMethod *m, MonoError *err);
 
+MONO_PROFILER_API MonoMethodSignature*
+mono_method_signature_internal (MonoMethod *m);
+
 MonoGenericContext*
 mono_method_get_context_general (MonoMethod *method, gboolean uninflated);
 
@@ -901,7 +906,6 @@ typedef struct {
 	MonoClass *array_class;
 	MonoClass *delegate_class;
 	MonoClass *multicastdelegate_class;
-	MonoClass *asyncresult_class;
 	MonoClass *manualresetevent_class;
 	MonoClass *typehandle_class;
 	MonoClass *fieldhandle_class;
@@ -922,25 +926,18 @@ typedef struct {
 	MonoClass *appdomain_class;
 	MonoClass *field_info_class;
 	MonoClass *method_info_class;
-	MonoClass *stringbuilder_class;
-	MonoClass *math_class;
 	MonoClass *stack_frame_class;
-	MonoClass *stack_trace_class;
 	MonoClass *marshal_class;
 	MonoClass *typed_reference_class;
 	MonoClass *argumenthandle_class;
 	MonoClass *monitor_class;
 	MonoClass *generic_ilist_class;
 	MonoClass *generic_nullable_class;
-	MonoClass *handleref_class;
 	MonoClass *attribute_class;
-	MonoClass *customattribute_data_class;
 	MonoClass *critical_finalizer_object; /* MAYBE NULL */
 	MonoClass *generic_ireadonlylist_class;
 	MonoClass *generic_ienumerator_class;
-	MonoClass *threadpool_wait_callback_class;
 	MonoMethod *threadpool_perform_wait_callback_method;
-	MonoClass *console_class;
 } MonoDefaults;
 
 #ifdef DISABLE_REMOTING
@@ -1003,10 +1000,14 @@ GENERATE_GET_CLASS_WITH_CACHE_DECL (variant)
 
 #endif
 
+GENERATE_GET_CLASS_WITH_CACHE_DECL (appdomain)
+GENERATE_GET_CLASS_WITH_CACHE_DECL (appdomain_setup)
+
 GENERATE_GET_CLASS_WITH_CACHE_DECL (appdomain_unloaded_exception)
 
 GENERATE_GET_CLASS_WITH_CACHE_DECL (valuetype)
 
+GENERATE_TRY_GET_CLASS_WITH_CACHE_DECL(handleref)
 /* If you need a MonoType, use one of the mono_get_*_type () functions in class-inlines.h */
 extern MonoDefaults mono_defaults;
 
@@ -1113,7 +1114,7 @@ mono_type_get_full_name (MonoClass *klass);
 char *
 mono_method_get_name_full (MonoMethod *method, gboolean signature, gboolean ret, MonoTypeNameFormat format);
 
-char *
+MONO_PROFILER_API char *
 mono_method_get_full_name (MonoMethod *method);
 
 const char*
@@ -1228,6 +1229,9 @@ gboolean mono_is_corlib_image (MonoImage *image);
 MonoType*
 mono_field_get_type_checked (MonoClassField *field, MonoError *error);
 
+MonoType*
+mono_field_get_type_internal (MonoClassField *field);
+
 MonoClassField*
 mono_class_get_fields_internal (MonoClass* klass, gpointer *iter);
 
@@ -1263,6 +1267,9 @@ mono_class_from_name_checked (MonoImage *image, const char* name_space, const ch
 
 MonoClass *
 mono_class_from_name_case_checked (MonoImage *image, const char* name_space, const char *name, MonoError *error);
+
+MONO_PROFILER_API MonoClass *
+mono_class_from_mono_type_internal (MonoType *type);
 
 MonoClassField*
 mono_field_from_token_checked (MonoImage *image, uint32_t token, MonoClass **retklass, MonoGenericContext *context, MonoError *error);

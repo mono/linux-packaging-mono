@@ -193,8 +193,9 @@ libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 am__DEPENDENCIES_2 =
+@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(glib_libs) $(am__DEPENDENCIES_2)
+	$(glib_libs) $(am__DEPENDENCIES_3)
 am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
@@ -234,7 +235,7 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
-mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_2)
+mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_3)
 mprof_report_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(mprof_report_LDFLAGS) $(LDFLAGS) -o $@
@@ -291,6 +292,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 DATA = $(suppression_DATA)
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -366,6 +368,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -384,6 +387,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -417,6 +421,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -477,6 +482,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -546,7 +552,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -593,7 +603,7 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # sampling infrastructure depends on signals being available.
 #
 # See: https://bugzilla.xamarin.com/show_bug.cgi?id=57011
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@ENABLE_HYBRID_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = testlog
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = run-test
 @BITCODE_FALSE@@HOST_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 
 # On Apple hosts, we want to allow undefined symbols when building the
@@ -626,10 +636,10 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # dynamic linker will have trouble resolving everything. On iOS, the story
 # is similar to Android when running in the simulator.
 @HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HAVE_ZLIB_FALSE@zlib_dep = 
-
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@zlib_dep = 
 # The log profiler uses zlib for output compression when available.
-@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
 
 # We build a separate, static version of each profiler for use on targets
 # which do not support dynamic linking (e.g. iOS). We still want to build
@@ -906,6 +916,8 @@ uninstall-suppressionDATA:
 	@list='$(suppression_DATA)'; test -n "$(suppressiondir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(suppressiondir)'; $(am__uninstall_files_from_dir)
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1098,6 +1110,14 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-suppressionDATA
 
@@ -1116,7 +1136,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	install-suppressionDATA installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
+	test-bundle-am test-bundle-local test-local uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-suppressionDATA
 
@@ -1124,8 +1145,18 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 %.exe: %.cs
 	$(MCS) -out:$@ $<
 
-testlog: $(PLOG_TESTS)
-	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir)
+test-local: $(PLOG_TESTS)
+
+test-bundle-local:
+	mkdir -p $(TEST_BUNDLE_PATH)/tests/profiler/
+	cp -L .libs/libmono-profiler-log$(libsuffix) $(TEST_BUNDLE_PATH)/
+	cp -L $(PLOG_TESTS) $(TEST_BUNDLE_PATH)/tests/profiler/
+	cp -L ptestrunner.pl $(TEST_BUNDLE_PATH)/tests/profiler/
+	cp -L mprof-report $(TEST_BUNDLE_PATH)/
+	chmod +x $(TEST_BUNDLE_PATH)/mprof-report
+
+run-test: test
+	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir) nunit TestResult-profiler.xml
 
 check-local: $(check_targets)
 

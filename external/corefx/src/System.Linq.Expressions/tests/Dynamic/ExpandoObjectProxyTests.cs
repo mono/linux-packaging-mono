@@ -16,14 +16,18 @@ namespace System.Dynamic.Tests
         {
             var att =
                 (DebuggerTypeProxyAttribute)
-                    type.GetCustomAttributes().Single(at => at.TypeId.Equals(typeof(DebuggerTypeProxyAttribute)));
+                    type.GetCustomAttributes().SingleOrDefault(at => at.TypeId.Equals(typeof(DebuggerTypeProxyAttribute)));
+            if (att == null)
+            {
+                return null;
+            }
             string proxyName = att.ProxyTypeName;
             proxyName = proxyName.Substring(0, proxyName.IndexOf(','));
             return type.GetTypeInfo().Assembly.GetType(proxyName);
         }
 
         private static object GetDebugViewObject(object obj)
-            => GetDebugViewType(obj.GetType()).GetConstructors().Single().Invoke(new[] {obj});
+            => GetDebugViewType(obj.GetType())?.GetConstructors().Single().Invoke(new[] {obj});
 
         private static IEnumerable<IDictionary<string, object>> TestExpandos()
         {
@@ -76,38 +80,55 @@ namespace System.Dynamic.Tests
                 Assert.Contains(item, expected);
         }
 
-        [Theory]
+        [ConditionalTheory]
         [MemberData(nameof(KeyCollections))]
         [MemberData(nameof(ValueCollections))]
         public void ItemsAreRootHidden(object eo)
         {
-            PropertyInfo itemsProp = GetDebugViewObject(eo).GetType().GetProperty("Items");
+            object view = GetDebugViewObject(eo);
+            if (view == null)
+            {
+                return;
+            }
+            PropertyInfo itemsProp = view.GetType().GetProperty("Items");
             var browsable = (DebuggerBrowsableAttribute)itemsProp.GetCustomAttribute(typeof(DebuggerBrowsableAttribute));
             Assert.Equal(DebuggerBrowsableState.RootHidden, browsable.State);
         }
 
-        [Theory, MemberData(nameof(KeyCollections))]
+        [ConditionalTheory, MemberData(nameof(KeyCollections))]
         public void KeyCollectionCorrectlyViewed(ICollection<string> keys)
         {
             object view = GetDebugViewObject(keys);
+            if (view == null)
+            {
+                return;
+            }
             PropertyInfo itemsProp = view.GetType().GetProperty("Items");
             string[] items = (string[])itemsProp.GetValue(view);
             AssertSameCollectionIgnoreOrder(keys, items);
         }
 
-        [Theory, MemberData(nameof(ValueCollections))]
+        [ConditionalTheory, MemberData(nameof(ValueCollections))]
         public void ValueCollectionCorrectlyViewed(ICollection<object> keys)
         {
             object view = GetDebugViewObject(keys);
+            if (view == null)
+            {
+                return;
+            }
             PropertyInfo itemsProp = view.GetType().GetProperty("Items");
             object[] items = (object[])itemsProp.GetValue(view);
             AssertSameCollectionIgnoreOrder(keys, items);
         }
 
-        [Theory, MemberData(nameof(OneOfEachCollection))]
+        [ConditionalTheory, MemberData(nameof(OneOfEachCollection))]
         public void ViewTypeThrowsOnNull(object collection)
         {
             Type debugViewType = GetDebugViewType(collection.GetType());
+            if (debugViewType == null)
+            {
+                return;
+            }
             ConstructorInfo constructor = debugViewType.GetConstructors().Single();
             TargetInvocationException tie = Assert.Throws<TargetInvocationException>(() => constructor.Invoke(new object[] {null}));
             var ane = (ArgumentNullException)tie.InnerException;

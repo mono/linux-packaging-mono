@@ -61,10 +61,19 @@ typedef ptrdiff_t ssize_t;
 #define MONO_PRAGMA_WARNING_PUSH() __pragma(warning (push))
 #define MONO_PRAGMA_WARNING_DISABLE(x) __pragma(warning (disable:x))
 #define MONO_PRAGMA_WARNING_POP() __pragma(warning (pop))
+
+#define MONO_DISABLE_WARNING(x) \
+		MONO_PRAGMA_WARNING_PUSH() \
+		MONO_PRAGMA_WARNING_DISABLE(x)
+
+#define MONO_RESTORE_WARNING \
+		MONO_PRAGMA_WARNING_POP()
 #else
 #define MONO_PRAGMA_WARNING_PUSH()
 #define MONO_PRAGMA_WARNING_DISABLE(x)
 #define MONO_PRAGMA_WARNING_POP()
+#define MONO_DISABLE_WARNING(x)
+#define MONO_RESTORE_WARNING
 #endif
 
 #if !defined(_MSC_VER) && !defined(HOST_SOLARIS) && !defined(_WIN32) && !defined(__CYGWIN__) && !defined(MONOTOUCH) && HAVE_VISIBILITY_HIDDEN
@@ -105,10 +114,12 @@ typedef ptrdiff_t ssize_t;
 #define MONO_COLD
 #endif
 
-#ifdef __GNUC__
+#if defined (__clang__)
+#define MONO_NO_OPTIMIZATION __attribute__ ((optnone))
+#elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 4)
 #define MONO_NO_OPTIMIZATION __attribute__ ((optimize("O0")))
 #else
-#define MONO_NO_OPTIMIZATION
+#define MONO_NO_OPTIMIZATION /* nothing */
 #endif
 
 #if defined (__GNUC__) && defined (__GNUC_MINOR__) && defined (__GNUC_PATCHLEVEL__)
@@ -202,4 +213,3 @@ ssize_t sendfile (int out_fd, int in_fd, off_t* offset, size_t count);
 #endif /* HOST_ANDROID && ANDROID_UNIFIED_HEADERS */
 
 #endif /* __UTILS_MONO_COMPILER_H__*/
-

@@ -21,8 +21,14 @@
 /* Disable support for multiple appdomains. */
 #undef DISABLE_APPDOMAINS
 
+/* Disable assertion messages. */
+#undef DISABLE_ASSERT_MESSAGES
+
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
+
+/* Disable runtime cleanup. */
+#undef DISABLE_CLEANUP
 
 /* Disable COM support */
 #undef DISABLE_COM
@@ -116,6 +122,9 @@
 /* Disable SIMD intrinsics related optimizations. */
 #undef DISABLE_SIMD
 
+/* Disable sockets */
+#undef DISABLE_SOCKETS
+
 /* Disable advanced SSA JIT optimizations */
 #undef DISABLE_SSA
 
@@ -149,6 +158,12 @@
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
 
+/* Enable feature experiments */
+#undef ENABLE_EXPERIMENTS
+
+/* Enable experiment 'null' */
+#undef ENABLE_EXPERIMENT_null
+
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
 
@@ -167,14 +182,23 @@
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
+/* Enable the LLVM back end */
+#undef ENABLE_LLVM_MSVC_ONLY
+
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
+
+/* Runtime support code for llvm enabled */
+#undef ENABLE_LLVM_RUNTIME_MSVC_ONLY
 
 /* Enable runtime support for Monodroid (Xamarin.Android) */
 #undef ENABLE_MONODROID
 
 /* Enable runtime support for Monotouch (Xamarin.iOS and Xamarin.Mac) */
 #undef ENABLE_MONOTOUCH
+
+/* Enables the support for .NET Core Features in the MonoVM */
+#undef ENABLE_NETCORE
 
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
@@ -225,11 +249,11 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Supports C99 array initialization */
-#undef HAVE_ARRAY_ELEM_INIT
-
 /* Define to 1 if you have the <asm/sigcontext.h> header file. */
 #undef HAVE_ASM_SIGCONTEXT_H
+
+/* Define to 1 if you have the `atexit' function. */
+#undef HAVE_ATEXIT
 
 /* Define to 1 if you have the <attr/xattr.h> header file. */
 #undef HAVE_ATTR_XATTR_H
@@ -249,6 +273,9 @@
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
 
+/* Define to 1 if you have the `chmod' function. */
+#undef HAVE_CHMOD
+
 /* Use classic Windows API support */
 #undef HAVE_CLASSIC_WINAPI_SUPPORT
 
@@ -263,6 +290,9 @@
 
 /* CLOCK_REALTIME */
 #undef HAVE_CLOCK_REALTIME
+
+/* Define to 1 if you have the `closelog' function. */
+#undef HAVE_CLOSELOG
 
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
@@ -404,6 +434,9 @@
 /* Define to 1 if you have the `fstatvfs' function. */
 #undef HAVE_FSTATVFS
 
+/* Define to 1 if you have the `ftruncate' function. */
+#undef HAVE_FTRUNCATE
+
 /* ftruncate64 */
 #undef HAVE_FTRUNCATE64
 
@@ -424,6 +457,9 @@
 
 /* getdomainname with size_t namelen */
 #undef HAVE_GETDOMAINNAME_SIZET
+
+/* Define to 1 if you have the `getdtablesize' function. */
+#undef HAVE_GETDTABLESIZE
 
 /* Define to 1 if you have the `getentropy' function. */
 #undef HAVE_GETENTROPY
@@ -452,6 +488,9 @@
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
 
+/* Define to 1 if you have the `gethostname' function. */
+#undef HAVE_GETHOSTNAME
+
 /* gethrtime */
 #undef HAVE_GETHRTIME
 
@@ -475,6 +514,9 @@
 
 /* getpeereid */
 #undef HAVE_GETPEEREID
+
+/* Define to 1 if you have the `getpeername' function. */
+#undef HAVE_GETPEERNAME
 
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
@@ -608,6 +650,9 @@
 /* Define to 1 if you have the <link.h> header file. */
 #undef HAVE_LINK_H
 
+/* Define to 1 if you have the <linux/if_packet.h> header file. */
+#undef HAVE_LINUX_IF_PACKET_H
+
 /* linux/in.h */
 #undef HAVE_LINUX_IN_H
 
@@ -634,6 +679,9 @@
 
 /* lseek64 */
 #undef HAVE_LSEEK64
+
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
 
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
@@ -686,6 +734,9 @@
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
 
+/* Define to 1 if you have the `msync' function. */
+#undef HAVE_MSYNC
+
 /* Define to 1 if you have the `munlock' function. */
 #undef HAVE_MUNLOCK
 
@@ -710,6 +761,9 @@
 /* No GC support. */
 #undef HAVE_NULL_GC
 
+/* Define to 1 if you have the `openlog' function. */
+#undef HAVE_OPENLOG
+
 /* O_CLOEXEC */
 #undef HAVE_O_CLOEXEC
 
@@ -726,6 +780,9 @@
 #undef HAVE_POLL_H
 
 /* posix_fadvise */
+#undef HAVE_POSIX_ADVISE
+
+/* Define to 1 if you have the `posix_fadvise' function. */
 #undef HAVE_POSIX_FADVISE
 
 /* posix_fadvise64 */
@@ -800,6 +857,9 @@
 
 /* readdir_r */
 #undef HAVE_READDIR_R
+
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
 
 /* Define to 1 if you have the `readlinkat' function. */
 #undef HAVE_READLINKAT
@@ -1200,9 +1260,6 @@
 /* TCPSTATE enum in netinet/tcp.h */
 #undef HAVE_TCP_H_TCPSTATE_ENUM
 
-/* TCP_KEEPALIVE */
-#undef HAVE_TCP_H_TCP_KEEPALIVE
-
 /* tcp/var.h */
 #undef HAVE_TCP_VAR_H
 
@@ -1251,8 +1308,14 @@
 /* Define to 1 if you have /usr/include/malloc.h. */
 #undef HAVE_USR_INCLUDE_MALLOC_H
 
+/* Define to 1 if you have the `utime' function. */
+#undef HAVE_UTIME
+
 /* Define to 1 if you have the `utimensat' function. */
 #undef HAVE_UTIMENSAT
+
+/* Define to 1 if you have the `utimes' function. */
+#undef HAVE_UTIMES
 
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
@@ -1317,6 +1380,15 @@
 /* ... */
 #undef HOST_POWERPC64
 
+/* Host is RISC-V */
+#undef HOST_RISCV
+
+/* Host is 32-bit RISC-V */
+#undef HOST_RISCV32
+
+/* Host is 64-bit RISC-V */
+#undef HOST_RISCV64
+
 /* ... */
 #undef HOST_S390X
 
@@ -1343,6 +1415,12 @@
 
 /* Build LLVM with assertions */
 #undef INTERNAL_LLVM_ASSERTS
+
+/* Build LLVM with assertions */
+#undef INTERNAL_LLVM_ASSERTS_MSVC_ONLY
+
+/* LLVM used is being build during mono build */
+#undef INTERNAL_LLVM_MSVC_ONLY
 
 /* struct ipv6_mreq with unsigned ipv6mr_interface */
 #undef IPV6MR_INTERFACE_UNSIGNED
@@ -1449,6 +1527,15 @@
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID
 
+/* RISC-V FPABI is double-precision */
+#undef RISCV_FPABI_DOUBLE
+
+/* RISC-V FPABI is single-precision */
+#undef RISCV_FPABI_SINGLE
+
+/* RISC-V FPABI is soft float */
+#undef RISCV_FPABI_SOFT
+
 /* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
@@ -1511,6 +1598,15 @@
 
 /* ... */
 #undef TARGET_PS4
+
+/* Target is RISC-V */
+#undef TARGET_RISCV
+
+/* Target is 32-bit RISC-V */
+#undef TARGET_RISCV32
+
+/* Target is 64-bit RISC-V */
+#undef TARGET_RISCV64
 
 /* ... */
 #undef TARGET_S390X

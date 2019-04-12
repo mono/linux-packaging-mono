@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("Mono.Messaging.dll")]
@@ -15,7 +15,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Messaging.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 namespace Mono.Messaging
@@ -68,6 +68,7 @@ namespace Mono.Messaging
         public void Enqueue(T context) { }
         public override string ToString() { throw null; }
     }
+    [System.SerializableAttribute]
     public partial class ConnectionException : Mono.Messaging.MonoMessagingException
     {
         public ConnectionException(Mono.Messaging.QueueReference qRef) { }
@@ -355,6 +356,7 @@ namespace Mono.Messaging
         Normal = 2,
         Report = 3,
     }
+    [System.SerializableAttribute]
     public partial class MessageUnavailableException : Mono.Messaging.MonoMessagingException
     {
         public MessageUnavailableException() { }
@@ -368,6 +370,7 @@ namespace Mono.Messaging
         public static Mono.Messaging.MessagingProviderLocator Instance { get { throw null; } }
         public static Mono.Messaging.IMessagingProvider GetProvider() { throw null; }
     }
+    [System.SerializableAttribute]
     public partial class MonoMessagingException : System.Exception
     {
         public MonoMessagingException() { }

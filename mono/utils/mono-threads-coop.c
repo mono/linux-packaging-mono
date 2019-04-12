@@ -129,6 +129,9 @@ mono_threads_state_poll_with_info (MonoThreadInfo *info)
 
 	THREADS_SUSPEND_DEBUG ("FINISH SELF SUSPEND OF %p\n", mono_thread_info_get_tid (info));
 
+	/* Fast fail if no_safepoints is set */
+	g_assert (!(info->thread_state & THREAD_SUSPEND_NO_SAFEPOINTS_MASK));
+
 	/* Fast check for pending suspend requests */
 	if (!(info->thread_state & STATE_ASYNC_SUSPEND_REQUESTED))
 		return;
@@ -574,7 +577,7 @@ threads_suspend_policy_getenv (void)
 
 static char threads_suspend_policy;
 
-static MonoThreadsSuspendPolicy
+MonoThreadsSuspendPolicy
 mono_threads_suspend_policy (void)
 {
 	int policy = threads_suspend_policy;
@@ -618,13 +621,12 @@ void
 mono_threads_suspend_override_policy (MonoThreadsSuspendPolicy new_policy)
 {
 	threads_suspend_policy = (char)mono_threads_suspend_validate_policy (new_policy);
-	g_warning ("Overriding suspend policy.  Using %s suspend.", mono_threads_suspend_policy_name ());
+	g_warning ("Overriding suspend policy.  Using %s suspend.", mono_threads_suspend_policy_name (mono_threads_suspend_policy ()));
 }
 
 const char*
-mono_threads_suspend_policy_name (void)
+mono_threads_suspend_policy_name (MonoThreadsSuspendPolicy policy)
 {
-	MonoThreadsSuspendPolicy policy = mono_threads_suspend_policy ();
 	switch (policy) {
 	case MONO_THREADS_SUSPEND_FULL_COOP:
 		return "cooperative";
@@ -641,30 +643,6 @@ gboolean
 mono_threads_is_cooperative_suspension_enabled (void)
 {
 	return (mono_threads_suspend_policy () == MONO_THREADS_SUSPEND_FULL_COOP);
-}
-
-gboolean
-mono_threads_is_blocking_transition_enabled (void)
-{
-	static int is_blocking_transition_enabled = -1;
-	if (G_UNLIKELY (is_blocking_transition_enabled == -1)) {
-		if (g_hasenv ("MONO_ENABLE_BLOCKING_TRANSITION"))
-			is_blocking_transition_enabled = 1;
-		else {
-			switch (mono_threads_suspend_policy ()) {
-			case MONO_THREADS_SUSPEND_FULL_COOP:
-			case MONO_THREADS_SUSPEND_HYBRID:
-				is_blocking_transition_enabled = 1;
-				break;
-			case MONO_THREADS_SUSPEND_FULL_PREEMPTIVE:
-				is_blocking_transition_enabled = 0;
-				break;
-			default:
-				g_assert_not_reached ();
-			}
-		}
-	}
-	return is_blocking_transition_enabled == 1;
 }
 
 gboolean
@@ -703,4 +681,18 @@ mono_threads_coop_end_global_suspend (void)
 {
 	if (mono_threads_are_safepoints_enabled ())
 		mono_polling_required = 0;
+}
+
+void
+mono_threads_enter_no_safepoints_region (const char *func)
+{
+	MONO_REQ_GC_UNSAFE_MODE;
+	mono_threads_transition_begin_no_safepoints (mono_thread_info_current (), func);
+}
+
+void
+mono_threads_exit_no_safepoints_region (const char *func)
+{
+	MONO_REQ_GC_UNSAFE_MODE;
+	mono_threads_transition_end_no_safepoints (mono_thread_info_current (), func);
 }

@@ -20,8 +20,8 @@ namespace System.Net.Http.Functional.Tests
     public abstract partial class HttpClientHandler_ServerCertificates_Test : HttpClientTestBase
     {
         private static bool ClientSupportsDHECipherSuites => (!PlatformDetection.IsWindows || PlatformDetection.IsWindows10Version1607OrGreater);
-        private bool BackendSupportsCustomCertificateHandlingAndClientSupportsDHECipherSuites =>
-            (BackendSupportsCustomCertificateHandling && ClientSupportsDHECipherSuites);
+        private static bool BackendSupportsX509Chain => PlatformDetection.SupportsX509Chain;
+        private static bool BackendSupportsCertRevocation => PlatformDetection.SupportsCertRevocation;
 
         [Fact]
         [SkipOnTargetFramework(~TargetFrameworkMonikers.Uap)]
@@ -99,36 +99,36 @@ namespace System.Net.Http.Functional.Tests
                 return;
             }
 
-            const string content = "This is a test";
-
-            int port;
-            Task<LoopbackGetRequestHttpProxy.ProxyResult> proxyTask = LoopbackGetRequestHttpProxy.StartAsync(
-                out port,
-                requireAuth: true,
-                expectCreds: true);
-            Uri proxyUrl = new Uri($"http://localhost:{port}");
-
-            HttpClientHandler handler = CreateHttpClientHandler();
-            handler.Proxy = new UseSpecifiedUriWebProxy(proxyUrl, new NetworkCredential("rightusername", "rightpassword"));
-            handler.ServerCertificateCustomValidationCallback = delegate { return true; };
-            using (var client = new HttpClient(handler))
+            var options = new LoopbackProxyServer.Options
+                { AuthenticationSchemes = AuthenticationSchemes.Basic,
+                  ConnectionCloseAfter407 = true
+                };
+            using (LoopbackProxyServer proxyServer = LoopbackProxyServer.Create(options))
             {
-                HttpResponseMessage response = await client.PostAsync(
-                    Configuration.Http.SecureRemoteEchoServer,
-                    new StringContent(content));
+                HttpClientHandler handler = CreateHttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = delegate { return true; };
+                handler.Proxy = new WebProxy(proxyServer.Uri)
+                {
+                    Credentials = new NetworkCredential("rightusername", "rightpassword")
+                };
 
-                string responseContent = await response.Content.ReadAsStringAsync();
+                const string content = "This is a test";
 
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                TestHelper.VerifyResponseBody(
-                    responseContent,
-                    response.Content.Headers.ContentMD5,
-                    false,
-                    content);
+                using (var client = new HttpClient(handler))
+                using (HttpResponseMessage response = await client.PostAsync(
+                        Configuration.Http.SecureRemoteEchoServer,
+                        new StringContent(content)))
+                {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    TestHelper.VerifyResponseBody(
+                        responseContent,
+                        response.Content.Headers.ContentMD5,
+                        false,
+                        content);
+                }
             }
-
-            // Don't await proxyTask until the HttpClient is closed, otherwise it will wait for connection timeout.
-            await proxyTask;
         }
 
         [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "UAP won't send requests through a custom proxy")]
@@ -141,30 +141,26 @@ namespace System.Net.Http.Functional.Tests
                 return;
             }
 
-            int port;
-            Task<LoopbackGetRequestHttpProxy.ProxyResult> proxyTask = LoopbackGetRequestHttpProxy.StartAsync(
-                out port,
-                requireAuth: true,
-                expectCreds: false);
-            Uri proxyUrl = new Uri($"http://localhost:{port}");
-
-            HttpClientHandler handler = CreateHttpClientHandler();
-            handler.Proxy = new UseSpecifiedUriWebProxy(proxyUrl, null);
-            handler.ServerCertificateCustomValidationCallback = delegate { return true; };
-            using (var client = new HttpClient(handler))
+            var options = new LoopbackProxyServer.Options
+                { AuthenticationSchemes = AuthenticationSchemes.Basic,
+                  ConnectionCloseAfter407 = true
+                };
+            using (LoopbackProxyServer proxyServer = LoopbackProxyServer.Create(options))
             {
-                Task<HttpResponseMessage> responseTask = client.PostAsync(
+                HttpClientHandler handler = CreateHttpClientHandler();
+                handler.Proxy = new WebProxy(proxyServer.Uri);
+                handler.ServerCertificateCustomValidationCallback = delegate { return true; };
+                using (var client = new HttpClient(handler))
+                using (HttpResponseMessage response = await client.PostAsync(
                     Configuration.Http.SecureRemoteEchoServer,
-                    new StringContent("This is a test"));
-                await TestHelper.WhenAllCompletedOrAnyFailed(proxyTask, responseTask);
-                using (responseTask.Result)
+                    new StringContent("This is a test")))
                 {
-                    Assert.Equal(HttpStatusCode.ProxyAuthenticationRequired, responseTask.Result.StatusCode);
+                    Assert.Equal(HttpStatusCode.ProxyAuthenticationRequired, response.StatusCode);
                 }
             }
         }
-        
-        [OuterLoop] // TODO: Issue #11345
+
+        [OuterLoop("Uses external server")]
         [Fact]
         public async Task UseCallback_NotSecureConnection_CallbackNotCalled()
         {
@@ -205,8 +201,8 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Theory]
         [MemberData(nameof(UseCallback_ValidCertificate_ExpectedValuesDuringCallback_Urls))]
+        [ConditionalTheory(nameof(BackendSupportsX509Chain))]
         public async Task UseCallback_ValidCertificate_ExpectedValuesDuringCallback(Uri url, bool checkRevocation)
         {
             if (!BackendSupportsCustomCertificateHandling)
@@ -234,6 +230,11 @@ namespace System.Net.Http.Functional.Tests
 
                     Assert.True(chain.ChainElements.Count > 0);
                     Assert.NotEmpty(cert.Subject);
+
+                    if (!BackendSupportsCertRevocation)
+                    {
+                        return true;
+                    }
 
                     // UWP always uses CheckCertificateRevocationList=true regardless of setting the property and
                     // the getter always returns true. So, for this next Assert, it is better to get the property
@@ -312,7 +313,7 @@ namespace System.Net.Http.Functional.Tests
 
         [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "UAP doesn't allow revocation checking to be turned off")]
         [OuterLoop] // TODO: Issue #11345
-        [ConditionalFact(nameof(ClientSupportsDHECipherSuites))]
+        [ConditionalFact(nameof(ClientSupportsDHECipherSuites), nameof(BackendSupportsX509Chain))]
         public async Task NoCallback_RevokedCertificate_NoRevocationChecking_Succeeds()
         {
             // On macOS (libcurl+darwinssl) we cannot turn revocation off.
@@ -334,7 +335,7 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Fact]
+        [ConditionalFact(nameof(BackendSupportsCertRevocation))]
         public async Task NoCallback_RevokedCertificate_RevocationChecking_Fails()
         {
             if (!BackendSupportsCustomCertificateHandling)
@@ -391,13 +392,13 @@ namespace System.Net.Http.Functional.Tests
         }
 
         [OuterLoop] // TODO: Issue #11345
-        [Theory]
         [MemberData(nameof(CertificateValidationServersAndExpectedPolicies))]
+        [ConditionalTheory(nameof(BackendSupportsX509Chain), nameof(ClientSupportsDHECipherSuites))]
         public async Task UseCallback_BadCertificate_ExpectedPolicyErrors(string url, SslPolicyErrors expectedErrors)
         {
             const int SEC_E_BUFFER_TOO_SMALL = unchecked((int)0x80090321);
 
-            if (!BackendSupportsCustomCertificateHandlingAndClientSupportsDHECipherSuites)
+            if (!BackendSupportsCustomCertificateHandling)
             {
                 return;
             }

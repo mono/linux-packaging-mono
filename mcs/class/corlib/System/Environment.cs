@@ -151,10 +151,10 @@ namespace System {
 		public static string CurrentDirectory
 		{
 			get {
-				return Directory.GetCurrentDirectory ();
+				return Directory.InsecureGetCurrentDirectory ();
 			}
 			set {
-				Directory.SetCurrentDirectory (value);
+				Directory.InsecureSetCurrentDirectory  (value);
 			}
 		}
 		
@@ -904,7 +904,16 @@ namespace System {
 		}
 #endif
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
-		internal static extern void InternalSetEnvironmentVariable (string variable, string value);
+		internal unsafe static extern void InternalSetEnvironmentVariable (char *variable, int variable_length,
+									    char *value, int value_length);
+
+		internal unsafe static void InternalSetEnvironmentVariable (string variable, string value)
+		{
+			fixed (char *fixed_variable = variable)
+			fixed (char *fixed_value = value)
+			InternalSetEnvironmentVariable (fixed_variable, variable?.Length ?? 0,
+							fixed_value,    value?.Length ?? 0);
+		}
 
 		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode=true)]
 		public static void FailFast (string message)
@@ -977,7 +986,7 @@ namespace System {
 		internal extern static string internalGetGacPath ();
 #endif
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
-		private extern static string [] GetLogicalDrivesInternal ();
+		internal extern static string [] GetLogicalDrivesInternal ();
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		private extern static string [] GetEnvironmentVariableNames ();

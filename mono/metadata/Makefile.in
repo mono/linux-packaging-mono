@@ -265,15 +265,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	culture-info.h culture-info-tables.h debug-helpers.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
-	environment.h environment-internal.h exception.c exception.h \
-	exception-internals.h w32file.c w32file.h w32file-internals.h \
+	environment.h exception.c exception.h exception-internals.h \
+	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
-	icall-internals.h icall-def.h icall-table.h image.c \
-	image-internals.h jit-info.c loader.c loader-internals.h \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h marshal-internals.h mempool.c mempool.h \
-	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h \
+	icall-decl.h icall-def.h icall-internals.h icall-table.h \
+	image.c image-internals.h jit-info.c loader.c \
+	loader-internals.h locales.c locales.h lock-tracer.c \
+	lock-tracer.h marshal.c marshal.h marshal-internals.h \
+	mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
 	method-builder-internals.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
@@ -435,15 +435,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	culture-info.h culture-info-tables.h debug-helpers.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
-	environment.h environment-internal.h exception.c exception.h \
-	exception-internals.h w32file.c w32file.h w32file-internals.h \
+	environment.h exception.c exception.h exception-internals.h \
+	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
-	icall-internals.h icall-def.h icall-table.h image.c \
-	image-internals.h jit-info.c loader.c loader-internals.h \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h marshal-internals.h mempool.c mempool.h \
-	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h \
+	icall-decl.h icall-def.h icall-internals.h icall-table.h \
+	image.c image-internals.h jit-info.c loader.c \
+	loader-internals.h locales.c locales.h lock-tracer.c \
+	lock-tracer.h marshal.c marshal.h marshal-internals.h \
+	mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
 	method-builder-internals.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
@@ -647,6 +647,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 HEADERS = $(libmonoruntimeinclude_HEADERS)
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -725,6 +726,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -743,6 +745,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -776,6 +779,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -836,6 +840,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -905,7 +910,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -1010,7 +1019,8 @@ libmonoruntime_config_la_CPPFLAGS = $(AM_CPPFLAGS) -DMONO_BINDIR=\"$(bindir)/\" 
 #
 libmonoruntime_support_la_SOURCES = $(support_sources)
 libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
-@HAVE_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = -lz
+@HAVE_STATIC_ZLIB_TRUE@libmonoruntime_support_la_LDFLAGS = $(STATIC_ZLIB_PATH)
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
@@ -1094,10 +1104,10 @@ common_sources = \
 	domain-internals.h	\
 	environment.c		\
 	environment.h		\
-	environment-internal.h	\
 	exception.c		\
 	exception.h		\
 	exception-internals.h	\
+	external-only.h		\
 	w32file.c		\
 	w32file.h		\
 	w32file-internals.h \
@@ -1106,8 +1116,9 @@ common_sources = \
 	gc-internals.h		\
 	icall.c			\
 	icalls.h		\
-	icall-internals.h \
+	icall-decl.h		\
 	icall-def.h		\
+	icall-internals.h \
 	icall-table.h	\
 	image.c			\
 	image-internals.h	\
@@ -1299,6 +1310,7 @@ libmonoruntimeinclude_HEADERS = \
 	verify.h		
 
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
+		external-only.c \
 		threadpool-io-poll.c threadpool-io-epoll.c threadpool-io-kqueue.c sgen-dynarray.h
 
 all: all-am
@@ -3402,6 +3414,8 @@ uninstall-libmonoruntimeincludeHEADERS:
 	@list='$(libmonoruntimeinclude_HEADERS)'; test -n "$(libmonoruntimeincludedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(libmonoruntimeincludedir)'; $(am__uninstall_files_from_dir)
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -3594,6 +3608,14 @@ ps: ps-am
 
 ps-am:
 
+test: test-am
+
+test-am: test-local
+
+test-bundle: test-bundle-am
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-libLTLIBRARIES \
 	uninstall-libmonoruntimeincludeHEADERS
 
@@ -3612,7 +3634,8 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES \
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-libLTLIBRARIES \
 	uninstall-libmonoruntimeincludeHEADERS
 
 @HOST_WIN32_TRUE@export HOST_CC

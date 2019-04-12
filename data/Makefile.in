@@ -84,10 +84,10 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mint.pc.in \
 	$(srcdir)/mono-2.pc.in $(srcdir)/monosgen-2.pc.in \
 	$(srcdir)/mono.pc.in $(srcdir)/mono-cairo.pc.in \
-	$(srcdir)/mono-nunit.pc.in $(srcdir)/mono-options.pc.in \
-	$(srcdir)/mono-lineeditor.pc.in $(srcdir)/monodoc.pc.in \
-	$(srcdir)/dotnet.pc.in $(srcdir)/dotnet35.pc.in \
-	$(srcdir)/wcf.pc.in $(srcdir)/cecil.pc.in \
+	$(srcdir)/mono-options.pc.in $(srcdir)/mono-lineeditor.pc.in \
+	$(srcdir)/monodoc.pc.in $(srcdir)/dotnet.pc.in \
+	$(srcdir)/dotnet35.pc.in $(srcdir)/wcf.pc.in \
+	$(srcdir)/cecil.pc.in \
 	$(srcdir)/system.web.extensions_1.0.pc.in \
 	$(srcdir)/system.web.extensions.design_1.0.pc.in \
 	$(srcdir)/system.web.mvc.pc.in $(srcdir)/system.web.mvc2.pc.in \
@@ -106,8 +106,8 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = mint.pc mono-2.pc monosgen-2.pc mono.pc \
-	mono-cairo.pc mono-nunit.pc mono-options.pc mono-lineeditor.pc \
-	monodoc.pc dotnet.pc dotnet35.pc wcf.pc cecil.pc \
+	mono-cairo.pc mono-options.pc mono-lineeditor.pc monodoc.pc \
+	dotnet.pc dotnet35.pc wcf.pc cecil.pc \
 	system.web.extensions_1.0.pc \
 	system.web.extensions.design_1.0.pc system.web.mvc.pc \
 	system.web.mvc2.pc system.web.mvc3.pc aspnetwebstack.pc \
@@ -178,6 +178,7 @@ am__recursive_targets = \
   $(am__extra_recursive_targets)
 AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
 	distdir
+am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -279,6 +280,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
+EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
@@ -297,6 +299,7 @@ HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
+HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -330,6 +333,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
+MONO_CXXLD = @MONO_CXXLD@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
@@ -390,6 +394,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
@@ -459,7 +464,11 @@ mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
+mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
+mono_msvc_build_dir = @mono_msvc_build_dir@
+mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
 mono_runtime = @mono_runtime@
+mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -486,7 +495,7 @@ EXTRA_DIST = \
 	config.in \
 	browscap.ini mono.supp mono.d README \
 	mono.pc.in mono-2.pc.in monosgen-2.pc.in mint.pc.in dotnet.pc.in dotnet35.pc.in wcf.pc.in monodoc.pc.in \
-	mono-nunit.pc.in mono-cairo.pc.in mono-options.pc.in cecil.pc.in \
+	mono-cairo.pc.in mono-options.pc.in cecil.pc.in \
 	mono-lineeditor.pc.in system.web.extensions_1.0.pc.in system.web.extensions.design_1.0.pc.in\
 	dtrace-prelink.sh system.web.mvc.pc.in system.web.mvc2.pc.in system.web.mvc3.pc.in aspnetwebstack.pc.in \
 	reactive.pc.in xbuild12.pc \
@@ -499,10 +508,10 @@ EXTRA_DIST = \
 pkgconfigdir = $(libdir)/pkgconfig
 @SUPPORT_SGEN_FALSE@SGENPCFILE = 
 @SUPPORT_SGEN_TRUE@SGENPCFILE = monosgen-2.pc
-pkgconfig_DATA = mono.pc mono-2.pc dotnet.pc dotnet35.pc wcf.pc mono-nunit.pc mono-cairo.pc mono-options.pc cecil.pc monodoc.pc mono-lineeditor.pc system.web.extensions_1.0.pc \
+pkgconfig_DATA = mono.pc mono-2.pc dotnet.pc dotnet35.pc wcf.pc mono-cairo.pc mono-options.pc cecil.pc monodoc.pc mono-lineeditor.pc system.web.extensions_1.0.pc \
 		system.web.extensions.design_1.0.pc system.web.mvc.pc system.web.mvc2.pc system.web.mvc3.pc aspnetwebstack.pc reactive.pc xbuild12.pc $(SGENPCFILE)
 
-DISTCLEANFILES = mono-2.pc mono.pc mint.pc dotnet.pc dotnet35.pc wcf.pc mono-nunit.pc mono-cairo.pc mono-options.pc cecil.pc monodoc.pc mono-lineeditor.pc system.web.extensions_1.0.pc \
+DISTCLEANFILES = mono-2.pc mono.pc mint.pc dotnet.pc dotnet35.pc wcf.pc mono-cairo.pc mono-options.pc cecil.pc monodoc.pc mono-lineeditor.pc system.web.extensions_1.0.pc \
 		system.web.extensions.design_1.0.pc system.web.mvc.pc system.web.mvc2.pc system.web.mvc3.pc aspnetwebstack.pc reactive.pc $(SGENPCFILE) mono-sgen-gdb.py
 
 mono_DATA = config \
@@ -553,8 +562,6 @@ monosgen-2.pc: $(top_builddir)/config.status $(srcdir)/monosgen-2.pc.in
 mono.pc: $(top_builddir)/config.status $(srcdir)/mono.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 mono-cairo.pc: $(top_builddir)/config.status $(srcdir)/mono-cairo.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-mono-nunit.pc: $(top_builddir)/config.status $(srcdir)/mono-nunit.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 mono-options.pc: $(top_builddir)/config.status $(srcdir)/mono-options.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
@@ -710,6 +717,8 @@ $(am__recursive_targets):
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
+test-local: 
+test-bundle-local: 
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -935,6 +944,14 @@ ps: ps-recursive
 
 ps-am:
 
+test: test-recursive
+
+test-am: test-local
+
+test-bundle: test-bundle-recursive
+
+test-bundle-am: test-bundle-local
+
 uninstall-am: uninstall-gdbDATA uninstall-monoDATA \
 	uninstall-monolldbDATA uninstall-pkgconfigDATA
 
@@ -952,7 +969,8 @@ uninstall-am: uninstall-gdbDATA uninstall-monoDATA \
 	install-strip installcheck installcheck-am installdirs \
 	installdirs-am maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags tags-am uninstall uninstall-am uninstall-gdbDATA \
+	ps ps-am tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-gdbDATA \
 	uninstall-monoDATA uninstall-monolldbDATA \
 	uninstall-pkgconfigDATA
 

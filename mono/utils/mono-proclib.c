@@ -8,6 +8,7 @@
 #include "config.h"
 #include "utils/mono-proclib.h"
 #include "utils/mono-time.h"
+#include "utils/mono-errno.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,7 +30,9 @@
 #ifdef HAVE_SYS_ERRNO_H
 #include <sys/errno.h>
 #endif
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 #include <errno.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -964,7 +967,7 @@ mono_cpu_get_data (int cpu_id, MonoCpuData data, MonoProcessError *error)
 int
 mono_atexit (void (*func)(void))
 {
-#ifdef HOST_ANDROID
+#if defined(HOST_ANDROID) || !defined(HAVE_ATEXIT)
 	/* Some versions of android libc doesn't define atexit () */
 	return 0;
 #else
@@ -1033,7 +1036,7 @@ mono_pe_file_map (gunichar2 *filename, gint32 *map_size, void **handle)
 
 		located_filename = mono_portability_find_file (filename_ext, TRUE);
 		if (!located_filename) {
-			errno = saved_errno;
+			mono_set_errno (saved_errno);
 
 			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Error opening file %s (3): %s", __func__, filename_ext, strerror (errno));
 			goto error;

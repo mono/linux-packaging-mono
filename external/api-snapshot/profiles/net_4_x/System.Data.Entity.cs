@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Data.Entity.dll")]
@@ -65,11 +65,11 @@ namespace System.Data
         public System.Data.Metadata.Edm.EntitySet GetEntitySet(System.Data.Metadata.Edm.MetadataWorkspace metadataWorkspace) { throw null; }
         public override int GetHashCode() { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializedAttribute]
         public void OnDeserialized(System.Runtime.Serialization.StreamingContext context) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializingAttribute]
         public void OnDeserializing(System.Runtime.Serialization.StreamingContext context) { }
         public static bool operator ==(System.Data.EntityKey key1, System.Data.EntityKey key2) { throw null; }
@@ -216,7 +216,7 @@ namespace System.Data.Common
         public abstract System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Metadata.Edm.EdmFunction> GetStoreFunctions();
         public abstract System.Data.Metadata.Edm.TypeUsage GetStoreType(System.Data.Metadata.Edm.TypeUsage edmType);
         public abstract System.Collections.ObjectModel.ReadOnlyCollection<System.Data.Metadata.Edm.PrimitiveType> GetStoreTypes();
-        public virtual bool SupportsEscapingLikeArgument(out char escapeCharacter) { escapeCharacter = default(char); throw null; }
+        public virtual bool SupportsEscapingLikeArgument(out char escapeCharacter) { throw null; }
     }
     [System.CLSCompliantAttribute(false)]
     public abstract partial class DbProviderServices
@@ -264,7 +264,9 @@ namespace System.Data.Common
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FieldMetadata
     {
-        public FieldMetadata(int ordinal, System.Data.Metadata.Edm.EdmMember fieldType) { throw null;}
+        private object _dummy;
+        private int _dummyPrimitive;
+        public FieldMetadata(int ordinal, System.Data.Metadata.Edm.EdmMember fieldType) { throw null; }
         public System.Data.Metadata.Edm.EdmMember FieldType { get { throw null; } }
         public int Ordinal { get { throw null; } }
     }
@@ -386,7 +388,7 @@ namespace System.Data.Common.CommandTrees
         public System.Data.Metadata.Edm.TypeUsage ResultType { get { throw null; } }
         public abstract void Accept(System.Data.Common.CommandTrees.DbExpressionVisitor visitor);
         public abstract TResultType Accept<TResultType>(System.Data.Common.CommandTrees.DbExpressionVisitor<TResultType> visitor);
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Equals(object obj) { throw null; }
         public static System.Data.Common.CommandTrees.DbExpression FromBinary(byte[] value) { throw null; }
         public static System.Data.Common.CommandTrees.DbExpression FromBoolean(System.Nullable<bool> value) { throw null; }
@@ -2776,21 +2778,21 @@ namespace System.Data.EntityClient
         public override object this[string keyword] { get { throw null; } set { } }
         public override System.Collections.ICollection Keys { get { throw null; } }
         [System.ComponentModel.DisplayNameAttribute("Metadata")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Metadata { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Name")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Name { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Provider")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Provider { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Provider Connection String")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string ProviderConnectionString { get { throw null; } set { } }
         public override void Clear() { }
         public override bool ContainsKey(string keyword) { throw null; }
         public override bool Remove(string keyword) { throw null; }
-        public override bool TryGetValue(string keyword, out object value) { value = default(object); throw null; }
+        public override bool TryGetValue(string keyword, out object value) { throw null; }
     }
     public partial class EntityDataReader : System.Data.Common.DbDataReader, System.Data.IDataRecord, System.Data.IExtendedDataRecord
     {
@@ -2827,11 +2829,11 @@ namespace System.Data.EntityClient
         public override long GetInt64(int ordinal) { throw null; }
         public override string GetName(int ordinal) { throw null; }
         public override int GetOrdinal(string name) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override System.Type GetProviderSpecificFieldType(int ordinal) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override object GetProviderSpecificValue(int ordinal) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int GetProviderSpecificValues(object[] values) { throw null; }
         public override System.Data.DataTable GetSchemaTable() { throw null; }
         public override string GetString(int ordinal) { throw null; }
@@ -2849,7 +2851,7 @@ namespace System.Data.EntityClient
         public EntityParameter(string parameterName, System.Data.DbType dbType, int size, System.Data.ParameterDirection direction, bool isNullable, byte precision, byte scale, string sourceColumn, System.Data.DataRowVersion sourceVersion, object value) { }
         public EntityParameter(string parameterName, System.Data.DbType dbType, int size, string sourceColumn) { }
         public override System.Data.DbType DbType { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override System.Data.ParameterDirection Direction { get { throw null; } set { } }
         public System.Data.Metadata.Edm.EdmType EdmType { get { throw null; } set { } }
         public override bool IsNullable { get { throw null; } set { } }
@@ -2875,7 +2877,7 @@ namespace System.Data.EntityClient
         public new System.Data.EntityClient.EntityParameter this[string parameterName] { get { throw null; } set { } }
         public override object SyncRoot { get { throw null; } }
         public System.Data.EntityClient.EntityParameter Add(System.Data.EntityClient.EntityParameter value) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int Add(object value) { throw null; }
         public System.Data.EntityClient.EntityParameter Add(string parameterName, System.Data.DbType dbType) { throw null; }
         public System.Data.EntityClient.EntityParameter Add(string parameterName, System.Data.DbType dbType, int size) { throw null; }
@@ -2938,7 +2940,7 @@ namespace System.Data.Mapping
         public int ViewCount { get { throw null; } protected set { } }
         protected abstract System.Collections.Generic.KeyValuePair<string, string> GetViewAt(int index);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class EntityViewGenerationAttribute : System.Attribute
     {
         public EntityViewGenerationAttribute(System.Type viewGenerationType) { }
@@ -3154,8 +3156,8 @@ namespace System.Data.Metadata.Edm
         public System.Data.Metadata.Edm.EntitySet GetEntitySetByName(string name, bool ignoreCase) { throw null; }
         public System.Data.Metadata.Edm.RelationshipSet GetRelationshipSetByName(string name, bool ignoreCase) { throw null; }
         public override string ToString() { throw null; }
-        public bool TryGetEntitySetByName(string name, bool ignoreCase, out System.Data.Metadata.Edm.EntitySet entitySet) { entitySet = default(System.Data.Metadata.Edm.EntitySet); throw null; }
-        public bool TryGetRelationshipSetByName(string name, bool ignoreCase, out System.Data.Metadata.Edm.RelationshipSet relationshipSet) { relationshipSet = default(System.Data.Metadata.Edm.RelationshipSet); throw null; }
+        public bool TryGetEntitySetByName(string name, bool ignoreCase, out System.Data.Metadata.Edm.EntitySet entitySet) { throw null; }
+        public bool TryGetRelationshipSetByName(string name, bool ignoreCase, out System.Data.Metadata.Edm.RelationshipSet relationshipSet) { throw null; }
     }
     public partial class EntitySet : System.Data.Metadata.Edm.EntitySetBase
     {
@@ -3254,12 +3256,12 @@ namespace System.Data.Metadata.Edm
         public T GetItem<T>(string identity, bool ignoreCase) where T : System.Data.Metadata.Edm.GlobalItem { throw null; }
         public System.Data.Metadata.Edm.EdmType GetType(string name, string namespaceName) { throw null; }
         public System.Data.Metadata.Edm.EdmType GetType(string name, string namespaceName, bool ignoreCase) { throw null; }
-        public bool TryGetEntityContainer(string name, bool ignoreCase, out System.Data.Metadata.Edm.EntityContainer entityContainer) { entityContainer = default(System.Data.Metadata.Edm.EntityContainer); throw null; }
-        public bool TryGetEntityContainer(string name, out System.Data.Metadata.Edm.EntityContainer entityContainer) { entityContainer = default(System.Data.Metadata.Edm.EntityContainer); throw null; }
-        public bool TryGetItem<T>(string identity, bool ignoreCase, out T item) where T : System.Data.Metadata.Edm.GlobalItem { item = default(T); throw null; }
-        public bool TryGetItem<T>(string identity, out T item) where T : System.Data.Metadata.Edm.GlobalItem { item = default(T); throw null; }
-        public bool TryGetType(string name, string namespaceName, bool ignoreCase, out System.Data.Metadata.Edm.EdmType type) { type = default(System.Data.Metadata.Edm.EdmType); throw null; }
-        public bool TryGetType(string name, string namespaceName, out System.Data.Metadata.Edm.EdmType type) { type = default(System.Data.Metadata.Edm.EdmType); throw null; }
+        public bool TryGetEntityContainer(string name, bool ignoreCase, out System.Data.Metadata.Edm.EntityContainer entityContainer) { throw null; }
+        public bool TryGetEntityContainer(string name, out System.Data.Metadata.Edm.EntityContainer entityContainer) { throw null; }
+        public bool TryGetItem<T>(string identity, bool ignoreCase, out T item) where T : System.Data.Metadata.Edm.GlobalItem { throw null; }
+        public bool TryGetItem<T>(string identity, out T item) where T : System.Data.Metadata.Edm.GlobalItem { throw null; }
+        public bool TryGetType(string name, string namespaceName, bool ignoreCase, out System.Data.Metadata.Edm.EdmType type) { throw null; }
+        public bool TryGetType(string name, string namespaceName, out System.Data.Metadata.Edm.EdmType type) { throw null; }
     }
     public abstract partial class MetadataItem
     {
@@ -3311,18 +3313,18 @@ namespace System.Data.Metadata.Edm
         public void LoadFromAssembly(System.Reflection.Assembly assembly, System.Action<string> logLoadMessage) { }
         [System.CLSCompliantAttribute(false)]
         public void RegisterItemCollection(System.Data.Metadata.Edm.ItemCollection collection) { }
-        public bool TryGetEdmSpaceType(System.Data.Metadata.Edm.EnumType objectSpaceType, out System.Data.Metadata.Edm.EnumType edmSpaceType) { edmSpaceType = default(System.Data.Metadata.Edm.EnumType); throw null; }
-        public bool TryGetEdmSpaceType(System.Data.Metadata.Edm.StructuralType objectSpaceType, out System.Data.Metadata.Edm.StructuralType edmSpaceType) { edmSpaceType = default(System.Data.Metadata.Edm.StructuralType); throw null; }
-        public bool TryGetEntityContainer(string name, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EntityContainer entityContainer) { entityContainer = default(System.Data.Metadata.Edm.EntityContainer); throw null; }
-        public bool TryGetEntityContainer(string name, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EntityContainer entityContainer) { entityContainer = default(System.Data.Metadata.Edm.EntityContainer); throw null; }
+        public bool TryGetEdmSpaceType(System.Data.Metadata.Edm.EnumType objectSpaceType, out System.Data.Metadata.Edm.EnumType edmSpaceType) { throw null; }
+        public bool TryGetEdmSpaceType(System.Data.Metadata.Edm.StructuralType objectSpaceType, out System.Data.Metadata.Edm.StructuralType edmSpaceType) { throw null; }
+        public bool TryGetEntityContainer(string name, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EntityContainer entityContainer) { throw null; }
+        public bool TryGetEntityContainer(string name, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EntityContainer entityContainer) { throw null; }
         [System.CLSCompliantAttribute(false)]
-        public bool TryGetItemCollection(System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.ItemCollection collection) { collection = default(System.Data.Metadata.Edm.ItemCollection); throw null; }
-        public bool TryGetItem<T>(string identity, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out T item) where T : System.Data.Metadata.Edm.GlobalItem { item = default(T); throw null; }
-        public bool TryGetItem<T>(string identity, System.Data.Metadata.Edm.DataSpace space, out T item) where T : System.Data.Metadata.Edm.GlobalItem { item = default(T); throw null; }
-        public bool TryGetObjectSpaceType(System.Data.Metadata.Edm.EnumType edmSpaceType, out System.Data.Metadata.Edm.EnumType objectSpaceType) { objectSpaceType = default(System.Data.Metadata.Edm.EnumType); throw null; }
-        public bool TryGetObjectSpaceType(System.Data.Metadata.Edm.StructuralType edmSpaceType, out System.Data.Metadata.Edm.StructuralType objectSpaceType) { objectSpaceType = default(System.Data.Metadata.Edm.StructuralType); throw null; }
-        public bool TryGetType(string name, string namespaceName, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EdmType type) { type = default(System.Data.Metadata.Edm.EdmType); throw null; }
-        public bool TryGetType(string name, string namespaceName, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EdmType type) { type = default(System.Data.Metadata.Edm.EdmType); throw null; }
+        public bool TryGetItemCollection(System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.ItemCollection collection) { throw null; }
+        public bool TryGetItem<T>(string identity, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out T item) where T : System.Data.Metadata.Edm.GlobalItem { throw null; }
+        public bool TryGetItem<T>(string identity, System.Data.Metadata.Edm.DataSpace space, out T item) where T : System.Data.Metadata.Edm.GlobalItem { throw null; }
+        public bool TryGetObjectSpaceType(System.Data.Metadata.Edm.EnumType edmSpaceType, out System.Data.Metadata.Edm.EnumType objectSpaceType) { throw null; }
+        public bool TryGetObjectSpaceType(System.Data.Metadata.Edm.StructuralType edmSpaceType, out System.Data.Metadata.Edm.StructuralType objectSpaceType) { throw null; }
+        public bool TryGetType(string name, string namespaceName, bool ignoreCase, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EdmType type) { throw null; }
+        public bool TryGetType(string name, string namespaceName, System.Data.Metadata.Edm.DataSpace dataSpace, out System.Data.Metadata.Edm.EdmType type) { throw null; }
     }
     public sealed partial class NavigationProperty : System.Data.Metadata.Edm.EdmMember
     {
@@ -3344,8 +3346,8 @@ namespace System.Data.Metadata.Edm
         public void LoadFromAssembly(System.Reflection.Assembly assembly) { }
         public void LoadFromAssembly(System.Reflection.Assembly assembly, System.Data.Metadata.Edm.EdmItemCollection edmItemCollection) { }
         public void LoadFromAssembly(System.Reflection.Assembly assembly, System.Data.Metadata.Edm.EdmItemCollection edmItemCollection, System.Action<string> logLoadMessage) { }
-        public bool TryGetClrType(System.Data.Metadata.Edm.EnumType objectSpaceType, out System.Type clrType) { clrType = default(System.Type); throw null; }
-        public bool TryGetClrType(System.Data.Metadata.Edm.StructuralType objectSpaceType, out System.Type clrType) { clrType = default(System.Type); throw null; }
+        public bool TryGetClrType(System.Data.Metadata.Edm.EnumType objectSpaceType, out System.Type clrType) { throw null; }
+        public bool TryGetClrType(System.Data.Metadata.Edm.StructuralType objectSpaceType, out System.Type clrType) { throw null; }
     }
     public enum OperationAction
     {
@@ -3425,10 +3427,13 @@ namespace System.Data.Metadata.Edm
         public new System.Data.Metadata.Edm.ReadOnlyMetadataCollection<T>.Enumerator GetEnumerator() { throw null; }
         public virtual T GetValue(string identity, bool ignoreCase) { throw null; }
         public virtual new int IndexOf(T value) { throw null; }
-        public virtual bool TryGetValue(string identity, bool ignoreCase, out T item) { item = default(T); throw null; }
+        public virtual bool TryGetValue(string identity, bool ignoreCase, out T item) { throw null; }
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public partial struct Enumerator : System.Collections.Generic.IEnumerator<T>, System.Collections.IEnumerator, System.IDisposable
         {
+            private T _current;
+            private object _dummy;
+            private int _dummyPrimitive;
             public T Current { get { throw null; } }
             object System.Collections.IEnumerator.Current { get { throw null; } }
             public void Dispose() { }
@@ -3825,7 +3830,7 @@ namespace System.Data.Objects
         public TEntity ApplyCurrentValues<TEntity>(string entitySetName, TEntity currentEntity) where TEntity : class { throw null; }
         public TEntity ApplyOriginalValues<TEntity>(string entitySetName, TEntity originalEntity) where TEntity : class { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Use ApplyCurrentValues instead")]
         public void ApplyPropertyChanges(string entitySetName, object changed) { }
         public void Attach(System.Data.Objects.DataClasses.IEntityWithKey entity) { }
@@ -3862,13 +3867,13 @@ namespace System.Data.Objects
         public void Refresh(System.Data.Objects.RefreshMode refreshMode, object entity) { }
         public int SaveChanges() { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Use SaveChanges(SaveOptions options) instead.")]
         public int SaveChanges(bool acceptChangesDuringSave) { throw null; }
         public virtual int SaveChanges(System.Data.Objects.SaveOptions options) { throw null; }
         public System.Data.Objects.ObjectResult<TElement> Translate<TElement>(System.Data.Common.DbDataReader reader) { throw null; }
         public System.Data.Objects.ObjectResult<TEntity> Translate<TEntity>(System.Data.Common.DbDataReader reader, string entitySetName, System.Data.Objects.MergeOption mergeOption) { throw null; }
-        public bool TryGetObjectByKey(System.Data.EntityKey key, out object value) { value = default(object); throw null; }
+        public bool TryGetObjectByKey(System.Data.EntityKey key, out object value) { throw null; }
     }
     public sealed partial class ObjectContextOptions
     {
@@ -3982,14 +3987,14 @@ namespace System.Data.Objects
     public abstract partial class ObjectStateEntry : System.Data.Objects.DataClasses.IEntityChangeTracker
     {
         internal ObjectStateEntry() { }
-        [System.Diagnostics.DebuggerBrowsableAttribute((System.Diagnostics.DebuggerBrowsableState)(0))]
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
         public abstract System.Data.Objects.CurrentValueRecord CurrentValues { get; }
         public abstract object Entity { get; }
         public abstract System.Data.EntityKey EntityKey { get; }
         public System.Data.Metadata.Edm.EntitySetBase EntitySet { get { throw null; } }
         public abstract bool IsRelationship { get; }
         public System.Data.Objects.ObjectStateManager ObjectStateManager { get { throw null; } }
-        [System.Diagnostics.DebuggerBrowsableAttribute((System.Diagnostics.DebuggerBrowsableState)(0))]
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
         public abstract System.Data.Common.DbDataRecord OriginalValues { get; }
         public abstract System.Data.Objects.DataClasses.RelationshipManager RelationshipManager { get; }
         public System.Data.EntityState State { get { throw null; } }
@@ -4025,9 +4030,9 @@ namespace System.Data.Objects
         public System.Data.Objects.ObjectStateEntry GetObjectStateEntry(System.Data.EntityKey key) { throw null; }
         public System.Data.Objects.ObjectStateEntry GetObjectStateEntry(object entity) { throw null; }
         public System.Data.Objects.DataClasses.RelationshipManager GetRelationshipManager(object entity) { throw null; }
-        public bool TryGetObjectStateEntry(System.Data.EntityKey key, out System.Data.Objects.ObjectStateEntry entry) { entry = default(System.Data.Objects.ObjectStateEntry); throw null; }
-        public bool TryGetObjectStateEntry(object entity, out System.Data.Objects.ObjectStateEntry entry) { entry = default(System.Data.Objects.ObjectStateEntry); throw null; }
-        public bool TryGetRelationshipManager(object entity, out System.Data.Objects.DataClasses.RelationshipManager relationshipManager) { relationshipManager = default(System.Data.Objects.DataClasses.RelationshipManager); throw null; }
+        public bool TryGetObjectStateEntry(System.Data.EntityKey key, out System.Data.Objects.ObjectStateEntry entry) { throw null; }
+        public bool TryGetObjectStateEntry(object entity, out System.Data.Objects.ObjectStateEntry entry) { throw null; }
+        public bool TryGetRelationshipManager(object entity, out System.Data.Objects.DataClasses.RelationshipManager relationshipManager) { throw null; }
     }
     public abstract partial class OriginalValueRecord : System.Data.Objects.DbUpdatableDataRecord
     {
@@ -4037,7 +4042,7 @@ namespace System.Data.Objects
     {
         public ProxyDataContractResolver() { }
         public override System.Type ResolveName(string typeName, string typeNamespace, System.Type declaredType, System.Runtime.Serialization.DataContractResolver knownTypeResolver) { throw null; }
-        public override bool TryResolveType(System.Type dataContractType, System.Type declaredType, System.Runtime.Serialization.DataContractResolver knownTypeResolver, out System.Xml.XmlDictionaryString typeName, out System.Xml.XmlDictionaryString typeNamespace) { typeName = default(System.Xml.XmlDictionaryString); typeNamespace = default(System.Xml.XmlDictionaryString); throw null; }
+        public override bool TryResolveType(System.Type dataContractType, System.Type declaredType, System.Runtime.Serialization.DataContractResolver knownTypeResolver, out System.Xml.XmlDictionaryString typeName, out System.Xml.XmlDictionaryString typeNamespace) { throw null; }
     }
     public enum RefreshMode
     {
@@ -4062,39 +4067,39 @@ namespace System.Data.Objects.DataClasses
         protected sealed override void ReportPropertyChanged(string property) { }
         protected sealed override void ReportPropertyChanging(string property) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class EdmComplexPropertyAttribute : System.Data.Objects.DataClasses.EdmPropertyAttribute
     {
         public EdmComplexPropertyAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class)]
     public sealed partial class EdmComplexTypeAttribute : System.Data.Objects.DataClasses.EdmTypeAttribute
     {
         public EdmComplexTypeAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed partial class EdmEntityTypeAttribute : System.Data.Objects.DataClasses.EdmTypeAttribute
     {
         public EdmEntityTypeAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(16))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Enum)]
     public sealed partial class EdmEnumTypeAttribute : System.Data.Objects.DataClasses.EdmTypeAttribute
     {
         public EdmEnumTypeAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64), Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false, AllowMultiple=false)]
     public sealed partial class EdmFunctionAttribute : System.Attribute
     {
         public EdmFunctionAttribute(string namespaceName, string functionName) { }
         public string FunctionName { get { throw null; } }
         public string NamespaceName { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public abstract partial class EdmPropertyAttribute : System.Attribute
     {
         internal EdmPropertyAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed partial class EdmRelationshipAttribute : System.Attribute
     {
         public EdmRelationshipAttribute(string relationshipNamespaceName, string relationshipName, string role1Name, System.Data.Metadata.Edm.RelationshipMultiplicity role1Multiplicity, System.Type role1Type, string role2Name, System.Data.Metadata.Edm.RelationshipMultiplicity role2Multiplicity, System.Type role2Type) { }
@@ -4109,7 +4114,7 @@ namespace System.Data.Objects.DataClasses
         public string Role2Name { get { throw null; } }
         public System.Type Role2Type { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class EdmRelationshipNavigationPropertyAttribute : System.Data.Objects.DataClasses.EdmPropertyAttribute
     {
         public EdmRelationshipNavigationPropertyAttribute(string relationshipNamespaceName, string relationshipName, string targetRoleName) { }
@@ -4117,14 +4122,14 @@ namespace System.Data.Objects.DataClasses
         public string RelationshipNamespaceName { get { throw null; } }
         public string TargetRoleName { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Property)]
     public sealed partial class EdmScalarPropertyAttribute : System.Data.Objects.DataClasses.EdmPropertyAttribute
     {
         public EdmScalarPropertyAttribute() { }
         public bool EntityKeyProperty { get { throw null; } set { } }
         public bool IsNullable { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(5), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class, AllowMultiple=true)]
     public sealed partial class EdmSchemaAttribute : System.Attribute
     {
         public EdmSchemaAttribute() { }
@@ -4153,11 +4158,11 @@ namespace System.Data.Objects.DataClasses
         public new System.Collections.Generic.IEnumerator<TEntity> GetEnumerator() { throw null; }
         public override void Load(System.Data.Objects.MergeOption mergeOption) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializedAttribute]
         public void OnCollectionDeserialized(System.Runtime.Serialization.StreamingContext context) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnSerializingAttribute]
         public void OnSerializing(System.Runtime.Serialization.StreamingContext context) { }
         public bool Remove(TEntity entity) { throw null; }
@@ -4200,11 +4205,11 @@ namespace System.Data.Objects.DataClasses
         public System.Data.Objects.ObjectQuery<TEntity> CreateSourceQuery() { throw null; }
         public override void Load(System.Data.Objects.MergeOption mergeOption) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializedAttribute]
         public void OnRefDeserialized(System.Runtime.Serialization.StreamingContext context) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnSerializingAttribute]
         public void OnSerializing(System.Runtime.Serialization.StreamingContext context) { }
     }
@@ -4271,7 +4276,7 @@ namespace System.Data.Objects.DataClasses
         public void Load() { }
         public abstract void Load(System.Data.Objects.MergeOption mergeOption);
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializedAttribute]
         public void OnDeserialized(System.Runtime.Serialization.StreamingContext context) { }
         void System.Data.Objects.DataClasses.IRelatedEnd.Add(System.Data.Objects.DataClasses.IEntityWithRelationships entity) { }
@@ -4296,17 +4301,17 @@ namespace System.Data.Objects.DataClasses
         public System.Data.Objects.DataClasses.IRelatedEnd GetRelatedEnd(string relationshipName, string targetRoleName) { throw null; }
         public System.Data.Objects.DataClasses.EntityReference<TTargetEntity> GetRelatedReference<TTargetEntity>(string relationshipName, string targetRoleName) where TTargetEntity : class { throw null; }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void InitializeRelatedCollection<TTargetEntity>(string relationshipName, string targetRoleName, System.Data.Objects.DataClasses.EntityCollection<TTargetEntity> entityCollection) where TTargetEntity : class { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void InitializeRelatedReference<TTargetEntity>(string relationshipName, string targetRoleName, System.Data.Objects.DataClasses.EntityReference<TTargetEntity> entityReference) where TTargetEntity : class { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnDeserializedAttribute]
         public void OnDeserialized(System.Runtime.Serialization.StreamingContext context) { }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Runtime.Serialization.OnSerializingAttribute]
         public void OnSerializing(System.Runtime.Serialization.StreamingContext context) { }
     }

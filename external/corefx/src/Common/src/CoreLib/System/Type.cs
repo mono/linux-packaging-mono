@@ -100,13 +100,21 @@ namespace System
         public bool IsCOMObject => IsCOMObjectImpl();
         protected abstract bool IsCOMObjectImpl();
         public bool IsContextful => IsContextfulImpl();
+#if MONO
+        protected virtual bool IsContextfulImpl() => typeof(ContextBoundObject).IsAssignableFrom(this);
+#else
         protected virtual bool IsContextfulImpl() => false;
+#endif
 
         public virtual bool IsCollectible => true;
 
         public virtual bool IsEnum => IsSubclassOf(typeof(Enum));
         public bool IsMarshalByRef => IsMarshalByRefImpl();
+#if MONO
+        protected virtual bool IsMarshalByRefImpl() => typeof(MarshalByRefObject).IsAssignableFrom(this);
+#else
         protected virtual bool IsMarshalByRefImpl() => false;
+#endif
         public bool IsPrimitive => IsPrimitiveImpl();
         protected abstract bool IsPrimitiveImpl();
         public bool IsValueType => IsValueTypeImpl();
@@ -346,6 +354,8 @@ namespace System
         public virtual Type MakeGenericType(params Type[] typeArguments) { throw new NotSupportedException(SR.NotSupported_SubclassOverride); }
         public virtual Type MakePointerType() { throw new NotSupportedException(); }
 
+        public static Type MakeGenericSignatureType(Type genericTypeDefinition, params Type[] typeArguments) => new SignatureConstructedGenericType(genericTypeDefinition, typeArguments);
+
         public static Type MakeGenericMethodParameter(int position)
         {
             if (position < 0)
@@ -364,9 +374,9 @@ namespace System
             return base.GetHashCode();
         }
         public virtual bool Equals(Type o) => o == null ? false : object.ReferenceEquals(this.UnderlyingSystemType, o.UnderlyingSystemType);
-
+#if !MONO
         public static Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw new PlatformNotSupportedException(SR.PlatformNotSupported_ReflectionOnly); }
-
+#endif
         public static Binder DefaultBinder
         {
             get

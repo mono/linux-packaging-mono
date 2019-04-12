@@ -33,10 +33,10 @@
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/w32handle.h>
 #include <mono/utils/w32api.h>
-
 #if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
 #include <shellapi.h>
 #endif
+#include "icall-decl.h"
 
 void
 mono_w32process_init (void)
@@ -162,7 +162,7 @@ mono_process_create_process (MonoCreateProcessCoop *coop, MonoW32ProcessInfo *mo
 					process_info);
 	}
 
-	mono_gchandle_free (cmd_gchandle);
+	mono_gchandle_free_internal (cmd_gchandle);
 
 	return result;
 }
@@ -255,11 +255,11 @@ process_get_shell_arguments (MonoCreateProcessCoop *proc_start_info, MonoStringH
 			cmd_utf8 = mono_string_handle_to_utf8 (*cmd, error);
 			goto_if_nok (error, error);
 			new_cmd = g_strdup_printf ("%s %s", spath, cmd_utf8);
-			*cmd = mono_string_new_utf8_len_handle (mono_domain_get (), new_cmd, strlen (new_cmd), error);
+			*cmd = mono_string_new_utf8_len (mono_domain_get (), new_cmd, strlen (new_cmd), error);
 			goto_if_nok (error, error);
 		}
 		else {
-			*cmd = mono_string_new_utf8_len_handle (mono_domain_get (), spath, strlen (spath), error);
+			*cmd = mono_string_new_utf8_len (mono_domain_get (), spath, strlen (spath), error);
 			goto_if_nok (error, error);
 		}
 	}
@@ -322,7 +322,7 @@ ves_icall_System_Diagnostics_Process_CreateProcess_internal (MonoW32ProcessStart
 			MONO_HANDLE_ARRAY_GETREF (var, array, i);
 			gchandle_t gchandle = 0;
 			memcpy (ptr, mono_string_handle_pin_chars (var, &gchandle), mono_string_handle_length (var) * sizeof (gunichar2));
-			mono_gchandle_free (gchandle);
+			mono_gchandle_free_internal (gchandle);
 			ptr += mono_string_handle_length (var);
 			ptr += 1; // Skip over the null-separator
 		}
@@ -393,7 +393,7 @@ ves_icall_System_Diagnostics_Process_GetProcesses_internal (void)
 		goto exit;
 	}
 
-	memcpy (mono_array_addr (procs, guint32, 0), pids, needed);
+	memcpy (mono_array_addr_internal (procs, guint32, 0), pids, needed);
 exit:
 	g_free (pids);
 	return procs;

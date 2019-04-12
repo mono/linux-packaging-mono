@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("RabbitMQ.Client.dll")]
@@ -14,7 +14,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("RabbitMQ.Client.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 namespace RabbitMQ.Client
@@ -45,7 +45,8 @@ namespace RabbitMQ.Client
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AmqpTimestamp
     {
-        public AmqpTimestamp(long unixTime) { throw null;}
+        private int _dummyPrimitive;
+        public AmqpTimestamp(long unixTime) { throw null; }
         public long UnixTime { get { throw null; } }
         public override string ToString() { throw null; }
     }
@@ -434,7 +435,7 @@ namespace RabbitMQ.Client.Apigen.Attributes
         public string m_namespaceName;
         public AmqpApigenAttribute(string namespaceName) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpAsynchronousHandlerAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public AmqpAsynchronousHandlerAttribute(string namespaceName) : base (default(string)) { }
@@ -452,7 +453,7 @@ namespace RabbitMQ.Client.Apigen.Attributes
     {
         public AmqpContentHeaderMappingAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpFieldMappingAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public string m_fieldName;
@@ -462,26 +463,26 @@ namespace RabbitMQ.Client.Apigen.Attributes
     {
         public AmqpForceOneWayAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpMethodDoNotImplementAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public AmqpMethodDoNotImplementAttribute(string namespaceName) : base (default(string)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpMethodMappingAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public string m_className;
         public string m_methodName;
         public AmqpMethodMappingAttribute(string namespaceName, string className, string methodName) : base (default(string)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpNowaitArgumentAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public string m_replacementExpression;
         public AmqpNowaitArgumentAttribute(string namespaceName) : base (default(string)) { }
         public AmqpNowaitArgumentAttribute(string namespaceName, string replacementExpression) : base (default(string)) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     public partial class AmqpUnsupportedAttribute : RabbitMQ.Client.Apigen.Attributes.AmqpApigenAttribute
     {
         public AmqpUnsupportedAttribute(string namespaceName) : base (default(string)) { }
@@ -2034,9 +2035,9 @@ namespace RabbitMQ.Client.Framing.Impl.v0_8
     {
         protected ProtocolBase() { }
         public override bool CanSendWhileClosed(RabbitMQ.Client.Impl.Command cmd) { throw null; }
-        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.IConnection CreateConnection(RabbitMQ.Client.ConnectionFactory factory, bool insist, RabbitMQ.Client.Impl.IFrameHandler frameHandler) { throw null; }
-        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.Impl.IFrameHandler CreateFrameHandler(RabbitMQ.Client.AmqpTcpEndpoint endpoint) { throw null; }
         public override RabbitMQ.Client.IModel CreateModel(RabbitMQ.Client.Impl.ISession session) { throw null; }
     }
@@ -3837,9 +3838,9 @@ namespace RabbitMQ.Client.Framing.Impl.v0_8qpid
     {
         protected ProtocolBase() { }
         public override bool CanSendWhileClosed(RabbitMQ.Client.Impl.Command cmd) { throw null; }
-        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.IConnection CreateConnection(RabbitMQ.Client.ConnectionFactory factory, bool insist, RabbitMQ.Client.Impl.IFrameHandler frameHandler) { throw null; }
-        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.Impl.IFrameHandler CreateFrameHandler(RabbitMQ.Client.AmqpTcpEndpoint endpoint) { throw null; }
         public override RabbitMQ.Client.IModel CreateModel(RabbitMQ.Client.Impl.ISession session) { throw null; }
     }
@@ -5898,9 +5899,9 @@ namespace RabbitMQ.Client.Framing.Impl.v0_9
     {
         protected ProtocolBase() { }
         public override bool CanSendWhileClosed(RabbitMQ.Client.Impl.Command cmd) { throw null; }
-        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateChannelClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.IConnection CreateConnection(RabbitMQ.Client.ConnectionFactory factory, bool insist, RabbitMQ.Client.Impl.IFrameHandler frameHandler) { throw null; }
-        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { request = default(RabbitMQ.Client.Impl.Command); replyClassId = default(int); replyMethodId = default(int); }
+        public override void CreateConnectionClose(ushort reasonCode, string reasonText, out RabbitMQ.Client.Impl.Command request, out int replyClassId, out int replyMethodId) { throw null; }
         public override RabbitMQ.Client.Impl.IFrameHandler CreateFrameHandler(RabbitMQ.Client.AmqpTcpEndpoint endpoint) { throw null; }
         public override RabbitMQ.Client.IModel CreateModel(RabbitMQ.Client.Impl.ISession session) { throw null; }
     }
@@ -9191,7 +9192,7 @@ namespace RabbitMQ.Client.Impl
     {
         public WireFormatting() { }
         public static decimal AmqpToDecimal(byte scale, uint unsignedMantissa) { throw null; }
-        public static void DecimalToAmqp(decimal value, out byte scale, out int mantissa) { scale = default(byte); mantissa = default(int); }
+        public static void DecimalToAmqp(decimal value, out byte scale, out int mantissa) { throw null; }
         public static System.Collections.IList ReadArray(RabbitMQ.Util.NetworkBinaryReader reader) { throw null; }
         public static decimal ReadDecimal(RabbitMQ.Util.NetworkBinaryReader reader) { throw null; }
         public static object ReadFieldValue(RabbitMQ.Util.NetworkBinaryReader reader) { throw null; }
@@ -9233,7 +9234,7 @@ namespace RabbitMQ.Client.MessagePatterns
         public event System.EventHandler Disconnected { add { } remove { } }
         public event System.EventHandler TimedOut { add { } remove { } }
         public virtual RabbitMQ.Client.Events.BasicDeliverEventArgs Call(RabbitMQ.Client.IBasicProperties requestProperties, byte[] body) { throw null; }
-        public virtual byte[] Call(RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { replyProperties = default(RabbitMQ.Client.IBasicProperties); throw null; }
+        public virtual byte[] Call(RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { throw null; }
         public virtual byte[] Call(byte[] body) { throw null; }
         public virtual object[] Call(params object[] args) { throw null; }
         public virtual void Cast(RabbitMQ.Client.IBasicProperties requestProperties, byte[] body) { }
@@ -9250,9 +9251,9 @@ namespace RabbitMQ.Client.MessagePatterns
         public SimpleRpcServer(RabbitMQ.Client.MessagePatterns.Subscription subscription) { }
         public bool Transactional { get { throw null; } }
         public void Close() { }
-        public virtual byte[] HandleCall(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { replyProperties = default(RabbitMQ.Client.IBasicProperties); throw null; }
+        public virtual byte[] HandleCall(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { throw null; }
         public virtual void HandleCast(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body) { }
-        public virtual byte[] HandleSimpleCall(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { replyProperties = default(RabbitMQ.Client.IBasicProperties); throw null; }
+        public virtual byte[] HandleSimpleCall(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body, out RabbitMQ.Client.IBasicProperties replyProperties) { throw null; }
         public virtual void HandleSimpleCast(bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, byte[] body) { }
         public virtual void HandleStreamMessageCall(RabbitMQ.Client.Content.IStreamMessageBuilder replyWriter, bool isRedelivered, RabbitMQ.Client.IBasicProperties requestProperties, object[] args) { }
         public void MainLoop() { }
@@ -9288,7 +9289,7 @@ namespace RabbitMQ.Client.MessagePatterns
         public void Bind(string exchangeName, string exchangeType, string routingKey) { }
         public void Close() { }
         public RabbitMQ.Client.Events.BasicDeliverEventArgs Next() { throw null; }
-        public bool Next(int millisecondsTimeout, out RabbitMQ.Client.Events.BasicDeliverEventArgs result) { result = default(RabbitMQ.Client.Events.BasicDeliverEventArgs); throw null; }
+        public bool Next(int millisecondsTimeout, out RabbitMQ.Client.Events.BasicDeliverEventArgs result) { throw null; }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         bool System.Collections.IEnumerator.MoveNext() { throw null; }
         void System.Collections.IEnumerator.Reset() { }
@@ -9301,7 +9302,7 @@ namespace RabbitMQ.Util
     {
         public BlockingCell() { }
         public object Value { get { throw null; } set { } }
-        public bool GetValue(int millisecondsTimeout, out object result) { result = default(object); throw null; }
+        public bool GetValue(int millisecondsTimeout, out object result) { throw null; }
         public static int validatedTimeout(int timeout) { throw null; }
     }
     public partial class DebugUtil
@@ -9386,7 +9387,7 @@ namespace RabbitMQ.Util
         public SharedQueue() { }
         public void Close() { }
         public object Dequeue() { throw null; }
-        public bool Dequeue(int millisecondsTimeout, out object result) { result = default(object); throw null; }
+        public bool Dequeue(int millisecondsTimeout, out object result) { throw null; }
         public object DequeueNoWait(object defaultValue) { throw null; }
         public void Enqueue(object o) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }

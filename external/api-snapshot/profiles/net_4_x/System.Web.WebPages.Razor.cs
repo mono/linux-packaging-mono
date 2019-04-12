@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -31,12 +31,12 @@ namespace System.Web.WebPages.Razor
         public System.Web.WebPages.Razor.WebPageRazorHost Host { get { throw null; } set { } }
         public string VirtualPath { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class PreApplicationStartCode
     {
         public static void Start() { }
     }
-    [System.Web.Compilation.BuildProviderAppliesToAttribute((System.Web.Compilation.BuildProviderAppliesTo)(3))]
+    [System.Web.Compilation.BuildProviderAppliesToAttribute(System.Web.Compilation.BuildProviderAppliesTo.Code | System.Web.Compilation.BuildProviderAppliesTo.Web)]
     public partial class RazorBuildProvider : System.Web.Compilation.BuildProvider
     {
         public RazorBuildProvider() { }

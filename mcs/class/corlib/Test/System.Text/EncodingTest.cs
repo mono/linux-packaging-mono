@@ -131,6 +131,25 @@ namespace MonoTests.System.Text
 			Assert.AreEqual ("Unicode (UTF-8)", Encoding.UTF8.EncodingName);
 		}
 
+#if !MOBILE && !XAMMAC_4_5 // all encodings aren't always available on mobile / XM, e.g. with linking
+		[Test] // https://github.com/mono/mono/issues/11529
+		public void AllEncodingsAreSerializable ()
+		{
+			foreach (var encoding in Encoding.GetEncodings ().Select(e => Encoding.GetEncoding (e.Name)))
+			{
+				var hashCode = encoding.GetHashCode (); 
+				var serializer = new BinaryFormatter ();
+				using (var ms = new MemoryStream ())
+				{
+					serializer.Serialize (ms, encoding);
+					ms.Position = 0;
+					var clone = (Encoding) serializer.Deserialize (ms);
+					Assert.AreEqual (encoding, clone);
+				}
+			}
+		}
+#endif
+
 		[Test] // https://github.com/mono/mono/issues/11663
 		public void EncodingIsBinaryCompatible ()
 		{
@@ -145,7 +164,8 @@ namespace MonoTests.System.Text
 				"WNyb3NvZnRCZXN0Rml0RmFsbGJhY2sBAAABAQYGAAAAAT8AAAQDAAAAJlN5c3RlbS5UZXh0LkRlY29kZXJSZXBsYWNlbWVudEZhbGxiYWNrAwAAAAp" +
 				"zdHJEZWZhdWx0G2JJc01pY3Jvc29mdEJlc3RGaXRGYWxsYmFjaytEZWNvZGVyRmFsbGJhY2srYklzTWljcm9zb2Z0QmVzdEZpdEZhbGxiYWNrAQAAA" +
 				"QEJBgAAAAAACw==";
- 			using (var ms = new MemoryStream (Convert.FromBase64String (serializedEncoding)))
+
+			using (var ms = new MemoryStream (Convert.FromBase64String (serializedEncoding)))
 			{
 				var serializer = new BinaryFormatter ();
 				var e = (Encoding) serializer.Deserialize (ms);

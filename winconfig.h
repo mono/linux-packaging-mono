@@ -107,9 +107,6 @@
 /* Enable DTrace probes */
 /* #undef ENABLE_DTRACE */
 
-/* Supports C99 array initialization */
-/* #undef HAVE_ARRAY_ELEM_INIT */
-
 /* Define to 1 if you have the <attr/xattr.h> header file. */
 /* #undef HAVE_ATTR_XATTR_H */
 
@@ -675,13 +672,6 @@
 
 /* Use mono_mutex_t */
 /* #undef USE_MONO_MUTEX */
-
-#ifdef ENABLE_LLVM
-	#define ENABLE_LLVM 1
-	#define ENABLE_LLVM_RUNTIME 1
-	#define LLVM_VERSION "3.6.0svn-mono-"
-	#define LLVM_API_VERSION 4
-#endif
 
 /* Version number of package */
 #define VERSION "#MONO_VERSION#"

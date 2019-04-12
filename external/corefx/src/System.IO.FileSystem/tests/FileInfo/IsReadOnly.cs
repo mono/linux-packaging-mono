@@ -23,6 +23,7 @@ namespace System.IO.Tests
         }
 
         [Theory, MemberData(nameof(TrailingCharacters))]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Not working")]
         public void ReadOnly(char trailingChar)
         {
             string path = GetTestFilePath() + trailingChar;

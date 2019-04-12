@@ -109,11 +109,6 @@ struct MonoJitTlsData {
 	gboolean orig_ex_ctx_set;
 
 	/* 
-	 * Stores if we need to run a chained exception in Windows.
-	 */
-	gboolean mono_win_chained_exception_needs_run;
-
-	/* 
 	 * The current exception in flight
 	 */
 	guint32 thrown_exc;
@@ -272,7 +267,12 @@ typedef struct MonoJumpInfoImtTramp {
  * object described by DATA.
  */
 struct MonoJumpInfoRgctxEntry {
-	MonoMethod *method;
+	union {
+		/* If in_mrgctx is TRUE */
+		MonoMethod *method;
+		/* If in_mrgctx is FALSE */
+		MonoClass *klass;
+	} d;
 	gboolean in_mrgctx;
 	MonoJumpInfo *data; /* describes the data to be loaded */
 	MonoRgctxInfoType info_type;
@@ -439,6 +439,7 @@ MONO_API void      mono_jit_set_domain      (MonoDomain *domain);
 
 gboolean  mono_method_same_domain           (MonoJitInfo *caller, MonoJitInfo *callee);
 gpointer  mono_create_ftnptr                (MonoDomain *domain, gpointer addr);
+MonoMethod* mono_icall_get_wrapper_method    (MonoJitICallInfo* callinfo) MONO_LLVM_INTERNAL;
 gconstpointer     mono_icall_get_wrapper       (MonoJitICallInfo* callinfo) MONO_LLVM_INTERNAL;
 gconstpointer     mono_icall_get_wrapper_full  (MonoJitICallInfo* callinfo, gboolean do_compile);
 
@@ -520,6 +521,9 @@ void
 mono_init_native_crash_info (void);
 
 void
+mono_cleanup_native_crash_info (void);
+
+void
 mono_dump_native_crash_info (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info);
 
 void
@@ -539,12 +543,6 @@ void MONO_SIG_HANDLER_SIGNATURE (mono_sigill_signal_handler) ;
 void MONO_SIG_HANDLER_SIGNATURE (mono_sigsegv_signal_handler);
 void MONO_SIG_HANDLER_SIGNATURE (mono_sigint_signal_handler) ;
 gboolean MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal);
-
-#ifdef MONO_ARCH_VARARG_ICALLS
-#define ARCH_VARARG_ICALLS 1
-#else
-#define ARCH_VARARG_ICALLS 0
-#endif
 
 #if defined (HOST_WASM)
 

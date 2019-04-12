@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Data.OracleClient.dll")]
@@ -16,39 +16,39 @@
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
-[assembly:System.Runtime.CompilerServices.DependencyAttribute("System.Data,", (System.Runtime.CompilerServices.LoadHint)(1))]
+[assembly:System.Runtime.CompilerServices.DependencyAttribute("System.Data,", System.Runtime.CompilerServices.LoadHint.Always)]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComCompatibleVersionAttribute(1, 0, 3300, 0)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Security.AllowPartiallyTrustedCallersAttribute]
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }
@@ -98,8 +98,10 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleBinary : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleBinary Null;
-        public OracleBinary(byte[] b) { throw null;}
+        public OracleBinary(byte[] b) { throw null; }
         public bool IsNull { get { throw null; } }
         public byte this[int index] { get { throw null; } }
         public int Length { get { throw null; } }
@@ -136,13 +138,14 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleBoolean : System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleBoolean False;
         public static readonly System.Data.OracleClient.OracleBoolean Null;
         public static readonly System.Data.OracleClient.OracleBoolean One;
         public static readonly System.Data.OracleClient.OracleBoolean True;
         public static readonly System.Data.OracleClient.OracleBoolean Zero;
-        public OracleBoolean(bool value) { throw null;}
-        public OracleBoolean(int value) { throw null;}
+        public OracleBoolean(bool value) { throw null; }
+        public OracleBoolean(int value) { throw null; }
         public bool IsFalse { get { throw null; } }
         public bool IsNull { get { throw null; } }
         public bool IsTrue { get { throw null; } }
@@ -202,14 +205,14 @@ namespace System.Data.OracleClient
         public OracleCommand(string commandText, System.Data.OracleClient.OracleConnection connection, System.Data.OracleClient.OracleTransaction tx) { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.Data.Oracle.Design.OracleCommandTextEditor, Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override string CommandText { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int CommandTimeout { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.CommandType)(1))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.CommandType.Text)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override System.Data.CommandType CommandType { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.Data.Design.DbConnectionEditor, Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
@@ -223,14 +226,14 @@ namespace System.Data.OracleClient
         [System.ComponentModel.BrowsableAttribute(false)]
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.ComponentModel.DesignOnlyAttribute(true)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool DesignTimeVisible { get { throw null; } set { } }
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(2))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public new System.Data.OracleClient.OracleParameterCollection Parameters { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public new System.Data.OracleClient.OracleTransaction Transaction { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.UpdateRowSource)(3))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.UpdateRowSource.Both)]
         public override System.Data.UpdateRowSource UpdatedRowSource { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         public override void Cancel() { }
@@ -241,7 +244,7 @@ namespace System.Data.OracleClient
         protected override void Dispose(bool disposing) { }
         protected override System.Data.Common.DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior) { throw null; }
         public override int ExecuteNonQuery() { throw null; }
-        public int ExecuteOracleNonQuery(out System.Data.OracleClient.OracleString rowid) { rowid = default(System.Data.OracleClient.OracleString); throw null; }
+        public int ExecuteOracleNonQuery(out System.Data.OracleClient.OracleString rowid) { throw null; }
         public object ExecuteOracleScalar() { throw null; }
         public new System.Data.OracleClient.OracleDataReader ExecuteReader() { throw null; }
         public new System.Data.OracleClient.OracleDataReader ExecuteReader(System.Data.CommandBehavior behavior) { throw null; }
@@ -255,10 +258,10 @@ namespace System.Data.OracleClient
         [System.ComponentModel.DefaultValueAttribute(null)]
         public new System.Data.OracleClient.OracleDataAdapter DataAdapter { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string QuotePrefix { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override string QuoteSuffix { get { throw null; } set { } }
         [System.MonoTODOAttribute]
         protected override void ApplyParameterInfo(System.Data.Common.DbParameter parameter, System.Data.DataRow datarow, System.Data.StatementType statementType, bool whereClause) { }
@@ -285,24 +288,24 @@ namespace System.Data.OracleClient
         public OracleConnection(string connectionString) { }
         [System.ComponentModel.DefaultValueAttribute("")]
         [System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.Data.Oracle.Design.OracleConnectionStringEditor, Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.SettingsBindableAttribute(true)]
         public override string ConnectionString { get { throw null; } set { } }
         [System.MonoTODOAttribute("Currently not respected.")]
         public override int ConnectionTimeout { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override string Database { [System.MonoTODOAttribute]get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.MonoTODOAttribute]
         public override string DataSource { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.MonoTODOAttribute]
         public override string ServerVersion { get { throw null; } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute((System.ComponentModel.DesignerSerializationVisibility)(0))]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public override System.Data.ConnectionState State { get { throw null; } }
         public event System.Data.OracleClient.OracleInfoMessageEventHandler InfoMessage { add { } remove { } }
         protected override System.Data.Common.DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel) { throw null; }
@@ -330,44 +333,44 @@ namespace System.Data.OracleClient
         public OracleConnectionStringBuilder() { }
         public OracleConnectionStringBuilder(string connectionString) { }
         [System.ComponentModel.DisplayNameAttribute("Data Source")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string DataSource { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Enlist")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool Enlist { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Integrated Security")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool IntegratedSecurity { get { throw null; } set { } }
         public override bool IsFixedSize { get { throw null; } }
         public override object this[string keyword] { get { throw null; } set { } }
         public override System.Collections.ICollection Keys { get { throw null; } }
         [System.ComponentModel.DisplayNameAttribute("Load Balance Timeout")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int LoadBalanceTimeout { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Max Pool Size")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int MaxPoolSize { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Min Pool Size")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public int MinPoolSize { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Omit Oracle Connection Name")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool OmitOracleConnectionName { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Password")]
         [System.ComponentModel.PasswordPropertyTextAttribute(true)]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string Password { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Persist Security Info")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool PersistSecurityInfo { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Pooling")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool Pooling { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("Unicode")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public bool Unicode { get { throw null; } set { } }
         [System.ComponentModel.DisplayNameAttribute("User ID")]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public string UserID { get { throw null; } set { } }
         public override System.Collections.ICollection Values { get { throw null; } }
         public override void Clear() { }
@@ -375,7 +378,7 @@ namespace System.Data.OracleClient
         public override bool Remove(string keyword) { throw null; }
         [System.MonoNotSupportedAttribute("")]
         public override bool ShouldSerialize(string keyword) { throw null; }
-        public override bool TryGetValue(string keyword, out object value) { value = default(object); throw null; }
+        public override bool TryGetValue(string keyword, out object value) { throw null; }
     }
     [System.ComponentModel.DefaultEventAttribute("RowUpdated")]
     [System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.Data.VS.OracleDataAdapterDesigner, Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -471,18 +474,19 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleDateTime : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleDateTime MaxValue;
         public static readonly System.Data.OracleClient.OracleDateTime MinValue;
         public static readonly System.Data.OracleClient.OracleDateTime Null;
-        public OracleDateTime(System.Data.OracleClient.OracleDateTime from) { throw null;}
-        public OracleDateTime(System.DateTime dt) { throw null;}
-        public OracleDateTime(int year, int month, int day) { throw null;}
-        public OracleDateTime(int year, int month, int day, System.Globalization.Calendar calendar) { throw null;}
-        public OracleDateTime(int year, int month, int day, int hour, int minute, int second) { throw null;}
-        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, System.Globalization.Calendar calendar) { throw null;}
-        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) { throw null;}
-        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, System.Globalization.Calendar calendar) { throw null;}
-        public OracleDateTime(long ticks) { throw null;}
+        public OracleDateTime(System.Data.OracleClient.OracleDateTime from) { throw null; }
+        public OracleDateTime(System.DateTime dt) { throw null; }
+        public OracleDateTime(int year, int month, int day) { throw null; }
+        public OracleDateTime(int year, int month, int day, System.Globalization.Calendar calendar) { throw null; }
+        public OracleDateTime(int year, int month, int day, int hour, int minute, int second) { throw null; }
+        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, System.Globalization.Calendar calendar) { throw null; }
+        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) { throw null; }
+        public OracleDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, System.Globalization.Calendar calendar) { throw null; }
+        public OracleDateTime(long ticks) { throw null; }
         public int Day { get { throw null; } }
         public int Hour { get { throw null; } }
         public bool IsNull { get { throw null; } }
@@ -574,12 +578,13 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleMonthSpan : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleMonthSpan MaxValue;
         public static readonly System.Data.OracleClient.OracleMonthSpan MinValue;
         public static readonly System.Data.OracleClient.OracleMonthSpan Null;
-        public OracleMonthSpan(System.Data.OracleClient.OracleMonthSpan from) { throw null;}
-        public OracleMonthSpan(int months) { throw null;}
-        public OracleMonthSpan(int years, int months) { throw null;}
+        public OracleMonthSpan(System.Data.OracleClient.OracleMonthSpan from) { throw null; }
+        public OracleMonthSpan(int months) { throw null; }
+        public OracleMonthSpan(int years, int months) { throw null; }
         public bool IsNull { get { throw null; } }
         public int Value { get { throw null; } }
         public int CompareTo(object obj) { throw null; }
@@ -606,6 +611,7 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleNumber : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleNumber E;
         public static readonly int MaxPrecision;
         public static readonly int MaxScale;
@@ -617,11 +623,11 @@ namespace System.Data.OracleClient
         public static readonly System.Data.OracleClient.OracleNumber One;
         public static readonly System.Data.OracleClient.OracleNumber PI;
         public static readonly System.Data.OracleClient.OracleNumber Zero;
-        public OracleNumber(System.Data.OracleClient.OracleNumber from) { throw null;}
-        public OracleNumber(decimal decValue) { throw null;}
-        public OracleNumber(double dblValue) { throw null;}
-        public OracleNumber(int intValue) { throw null;}
-        public OracleNumber(long longValue) { throw null;}
+        public OracleNumber(System.Data.OracleClient.OracleNumber from) { throw null; }
+        public OracleNumber(decimal decValue) { throw null; }
+        public OracleNumber(double dblValue) { throw null; }
+        public OracleNumber(int intValue) { throw null; }
+        public OracleNumber(long longValue) { throw null; }
         public bool IsNull { get { throw null; } }
         public decimal Value { get { throw null; } }
         public static System.Data.OracleClient.OracleNumber Abs(System.Data.OracleClient.OracleNumber n) { throw null; }
@@ -705,23 +711,23 @@ namespace System.Data.OracleClient
         public OracleParameter(string name, System.Data.OracleClient.OracleType oracleType, int size, string srcColumn) { }
         public OracleParameter(string name, object value) { }
         public override System.Data.DbType DbType { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         public override System.Data.ParameterDirection Direction { get { throw null; } set { } }
         public override bool IsNullable { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public int Offset { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Data.OracleClient.OracleType)(22))]
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.DefaultValueAttribute(System.Data.OracleClient.OracleType.VarChar)]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.Data.Common.DbProviderSpecificTypePropertyAttribute(true)]
         public System.Data.OracleClient.OracleType OracleType { get { throw null; } set { } }
         public override string ParameterName { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Set the precision of a decimal use the Math classes.")]
         public new byte Precision { get { throw null; } set { } }
         [System.ComponentModel.BrowsableAttribute(false)]
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Set the precision of a decimal use the Math classes.")]
         public new byte Scale { get { throw null; } set { } }
         public override int Size { get { throw null; } set { } }
@@ -729,7 +735,7 @@ namespace System.Data.OracleClient
         [System.MonoTODOAttribute]
         public override bool SourceColumnNullMapping { get { throw null; } set { } }
         public override System.Data.DataRowVersion SourceVersion { get { throw null; } set { } }
-        [System.ComponentModel.RefreshPropertiesAttribute((System.ComponentModel.RefreshProperties)(1))]
+        [System.ComponentModel.RefreshPropertiesAttribute(System.ComponentModel.RefreshProperties.All)]
         [System.ComponentModel.TypeConverterAttribute(typeof(System.ComponentModel.StringConverter))]
         public override object Value { get { throw null; } set { } }
         public void Dispose() { }
@@ -752,7 +758,7 @@ namespace System.Data.OracleClient
         public new System.Data.OracleClient.OracleParameter this[string parameterName] { get { throw null; } set { } }
         public override object SyncRoot { get { throw null; } }
         public System.Data.OracleClient.OracleParameter Add(System.Data.OracleClient.OracleParameter value) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int Add(object value) { throw null; }
         public System.Data.OracleClient.OracleParameter Add(string parameterName, System.Data.OracleClient.OracleType dataType) { throw null; }
         public System.Data.OracleClient.OracleParameter Add(string parameterName, System.Data.OracleClient.OracleType dataType, int size) { throw null; }
@@ -787,7 +793,7 @@ namespace System.Data.OracleClient
         public OraclePermission(System.Security.Permissions.PermissionState state) : base (default(System.Security.Permissions.PermissionState)) { }
         public override System.Security.IPermission Copy() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(109), AllowMultiple=true, Inherited=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true, Inherited=false)]
     [System.SerializableAttribute]
     public sealed partial class OraclePermissionAttribute : System.Data.Common.DBDataPermissionAttribute
     {
@@ -810,9 +816,11 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleString : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleString Empty;
         public static readonly System.Data.OracleClient.OracleString Null;
-        public OracleString(string s) { throw null;}
+        public OracleString(string s) { throw null; }
         public bool IsNull { get { throw null; } }
         public char this[int index] { get { throw null; } }
         public int Length { get { throw null; } }
@@ -843,15 +851,16 @@ namespace System.Data.OracleClient
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct OracleTimeSpan : System.Data.SqlTypes.INullable, System.IComparable
     {
+        private int _dummyPrimitive;
         public static readonly System.Data.OracleClient.OracleTimeSpan MaxValue;
         public static readonly System.Data.OracleClient.OracleTimeSpan MinValue;
         public static readonly System.Data.OracleClient.OracleTimeSpan Null;
-        public OracleTimeSpan(System.Data.OracleClient.OracleTimeSpan from) { throw null;}
-        public OracleTimeSpan(int hours, int minutes, int seconds) { throw null;}
-        public OracleTimeSpan(int days, int hours, int minutes, int seconds) { throw null;}
-        public OracleTimeSpan(int days, int hours, int minutes, int seconds, int milliseconds) { throw null;}
-        public OracleTimeSpan(long ticks) { throw null;}
-        public OracleTimeSpan(System.TimeSpan ts) { throw null;}
+        public OracleTimeSpan(System.Data.OracleClient.OracleTimeSpan from) { throw null; }
+        public OracleTimeSpan(int hours, int minutes, int seconds) { throw null; }
+        public OracleTimeSpan(int days, int hours, int minutes, int seconds) { throw null; }
+        public OracleTimeSpan(int days, int hours, int minutes, int seconds, int milliseconds) { throw null; }
+        public OracleTimeSpan(long ticks) { throw null; }
+        public OracleTimeSpan(System.TimeSpan ts) { throw null; }
         public int Days { get { throw null; } }
         public int Hours { get { throw null; } }
         public bool IsNull { get { throw null; } }

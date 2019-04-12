@@ -1149,6 +1149,10 @@ include/private/gc_hdrs.h include/gc.h include/gc_gcj.h include/gc_mark.h
 .S.s:
 	if $(CPP) $< >$@ ; then :; else rm -f $@; fi
 
+test:
+
+test-bundle:
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -82,6 +82,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void QueueUserWorkItem ()
 		{
 			int n = 100000;
@@ -102,6 +103,7 @@ namespace MonoTests.System.Threading
 		event WaitCallback e;
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void UnsafeQueueUserWorkItem_MulticastDelegate ()
 		{
 			CountdownEvent ev = new CountdownEvent (2);
@@ -119,6 +121,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void SetAndGetMinThreads ()
 		{
 			int workerThreads, completionPortThreads;
@@ -138,6 +141,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void SetAndGetMaxThreads ()
 		{
 			int cpuCount = Environment.ProcessorCount;
@@ -158,6 +162,7 @@ namespace MonoTests.System.Threading
 		}
 		
 		[Test]
+		[Category ("MultiThreaded")]
 		public void SetMaxPossibleThreads ()
 		{
 			var maxPossibleThreads = 0x7fff;
@@ -175,6 +180,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void GetAvailableThreads ()
 		{
 			int cpuCount = Environment.ProcessorCount;
@@ -223,6 +229,7 @@ namespace MonoTests.System.Threading
 		}
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void AsyncLocalCapture ()
 		{
 			var asyncLocal = new AsyncLocal<int>();
@@ -288,6 +295,7 @@ namespace MonoTests.System.Threading
 #endif
 
 		[Test]
+		[Category ("MultiThreaded")]
 		public void SetMinThreads ()
 		{
 			int workerThreads, cpThreads;

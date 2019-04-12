@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("MONO development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2003 Various Authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.Web.dll")]
@@ -15,7 +15,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.ServiceModel.Web.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("dummy-System.Json, PublicKey=00240000048000009400000006020000002400005253413100040000010001008D56C76F9E8649383049F383C44BE0EC204181822A6C31CF5EB7EF486944D032188EA1D3920763712CCB12D75FB77E9811149E6148E5D32FBAAB37611C1878DDC19E20EF135D0CB2CFF2BFEC3D115810C3D9069638FE4BE215DBF795861920E5AB6F7DB2E2CEEF136AC23D5DD2BF031700AEC232F6C6B1C785B4305C123B37AB")]
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
@@ -35,7 +35,7 @@ namespace System.ServiceModel
         [System.MonoTODOAttribute]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
         public System.ServiceModel.EnvelopeVersion EnvelopeVersion { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(65536)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
@@ -49,17 +49,17 @@ namespace System.ServiceModel
         public override string Scheme { get { throw null; } }
         public System.ServiceModel.WebHttpSecurity Security { get { throw null; } set { } }
         bool System.ServiceModel.Channels.IBindingRuntimePreferences.ReceiveSynchronously { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.ServiceModel.TransferMode)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool UseDefaultWebProxy { get { throw null; } set { } }
         public System.Text.Encoding WriteEncoding { get { throw null; } set { } }
         public override System.ServiceModel.Channels.BindingElementCollection CreateBindingElements() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ShouldSerializeReaderQuotas() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ShouldSerializeSecurity() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ShouldSerializeWriteEncoding() { throw null; }
     }
     public sealed partial class WebHttpSecurity
@@ -67,9 +67,9 @@ namespace System.ServiceModel
         public WebHttpSecurity() { }
         public System.ServiceModel.WebHttpSecurityMode Mode { get { throw null; } set { } }
         public System.ServiceModel.HttpTransportSecurity Transport { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ShouldSerializeMode() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public bool ShouldSerializeTransport() { throw null; }
     }
     public enum WebHttpSecurityMode
@@ -150,35 +150,35 @@ namespace System.ServiceModel.Configuration
     {
         public WebHttpBindingElement() { }
         public WebHttpBindingElement(string name) { }
-        [System.Configuration.ConfigurationPropertyAttribute("allowCookies", DefaultValue=false, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("allowCookies", DefaultValue=false, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public bool AllowCookies { get { throw null; } set { } }
         protected override System.Type BindingElementType { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("bypassProxyOnLocal", DefaultValue=false, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("bypassProxyOnLocal", DefaultValue=false, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public bool BypassProxyOnLocal { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue="StrongWildcard", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue="StrongWildcard", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue="524288", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue="524288", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue="65536", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue="65536", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647, ExcludeRange=false)]
         public int MaxBufferSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue="65536", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue="65536", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)1, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxReceivedMessageSize { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("proxyAddress", DefaultValue=null, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("proxyAddress", DefaultValue=null, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.Uri ProxyAddress { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("readerQuotas", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("readerQuotas", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("security", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("security", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue="Buffered", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue="Buffered", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("useDefaultWebProxy", DefaultValue=true, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("useDefaultWebProxy", DefaultValue=true, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public bool UseDefaultWebProxy { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute]
-        [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.Text.Encoding WriteEncoding { get { throw null; } set { } }
         protected internal override void InitializeFrom(System.ServiceModel.Channels.Binding binding) { }
         protected override void OnApplyConfiguration(System.ServiceModel.Channels.Binding binding) { }
@@ -203,22 +203,22 @@ namespace System.ServiceModel.Configuration
         public string ContentTypeMapper { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("crossDomainScriptAccessEnabled", DefaultValue=false)]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("defaultOutgoingResponseFormat", DefaultValue=(System.ServiceModel.Web.WebMessageFormat)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("defaultOutgoingResponseFormat", DefaultValue=System.ServiceModel.Web.WebMessageFormat.Xml)]
         public System.ServiceModel.Web.WebMessageFormat DefaultOutgoingResponseFormat { get { throw null; } set { } }
         protected internal override System.Type EndpointType { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("faultExceptionEnabled", DefaultValue=false)]
         public bool FaultExceptionEnabled { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("helpEnabled", DefaultValue=false)]
         public bool HelpEnabled { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=(System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=524288, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=524288, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue=65536, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue=65536, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647, ExcludeRange=false)]
         public int MaxBufferSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue=65536, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue=65536, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)1, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxReceivedMessageSize { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
@@ -226,7 +226,7 @@ namespace System.ServiceModel.Configuration
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("security")]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=(System.ServiceModel.TransferMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.ServiceModel.Configuration.EncodingConverter")]
         [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8")]
@@ -240,29 +240,29 @@ namespace System.ServiceModel.Configuration
     public sealed partial class WebHttpSecurityElement : System.Configuration.ConfigurationElement
     {
         public WebHttpSecurityElement() { }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue="None", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue="None", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.WebHttpSecurityMode Mode { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transport", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transport", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Configuration.HttpTransportSecurityElement Transport { get { throw null; } }
     }
     public sealed partial class WebMessageEncodingElement : System.ServiceModel.Configuration.BindingElementExtensionElement
     {
         public WebMessageEncodingElement() { }
         public override System.Type BindingElementType { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxReadPoolSize", Options=(System.Configuration.ConfigurationPropertyOptions)(0), DefaultValue="64")]
+        [System.Configuration.ConfigurationPropertyAttribute("maxReadPoolSize", Options=System.Configuration.ConfigurationPropertyOptions.None, DefaultValue="64")]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647, ExcludeRange=false)]
         public int MaxReadPoolSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxWritePoolSize", Options=(System.Configuration.ConfigurationPropertyOptions)(0), DefaultValue="16")]
+        [System.Configuration.ConfigurationPropertyAttribute("maxWritePoolSize", Options=System.Configuration.ConfigurationPropertyOptions.None, DefaultValue="16")]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647, ExcludeRange=false)]
         public int MaxWritePoolSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("readerQuotas", Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("readerQuotas", Options=System.Configuration.ConfigurationPropertyOptions.None)]
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("webContentTypeMapperType", Options=(System.Configuration.ConfigurationPropertyOptions)(0), DefaultValue="")]
+        [System.Configuration.ConfigurationPropertyAttribute("webContentTypeMapperType", Options=System.Configuration.ConfigurationPropertyOptions.None, DefaultValue="")]
         [System.Configuration.StringValidatorAttribute(MinLength=0, MaxLength=2147483647)]
         public string WebContentTypeMapperType { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute]
-        [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", Options=(System.Configuration.ConfigurationPropertyOptions)(0), DefaultValue="utf-8")]
+        [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", Options=System.Configuration.ConfigurationPropertyOptions.None, DefaultValue="utf-8")]
         public System.Text.Encoding WriteEncoding { get { throw null; } set { } }
         public override void ApplyConfiguration(System.ServiceModel.Channels.BindingElement bindingElement) { }
         public override void CopyFrom(System.ServiceModel.Configuration.ServiceModelExtensionElement from) { }
@@ -287,15 +287,15 @@ namespace System.ServiceModel.Configuration
         [System.Configuration.ConfigurationPropertyAttribute("crossDomainScriptAccessEnabled", DefaultValue=false)]
         public bool CrossDomainScriptAccessEnabled { get { throw null; } set { } }
         protected internal override System.Type EndpointType { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=(System.ServiceModel.HostNameComparisonMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("hostNameComparisonMode", DefaultValue=System.ServiceModel.HostNameComparisonMode.StrongWildcard)]
         public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=524288, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferPoolSize", DefaultValue=524288, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)0, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxBufferPoolSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue=65536, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxBufferSize", DefaultValue=65536, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.IntegerValidatorAttribute(MinValue=1, MaxValue=2147483647, ExcludeRange=false)]
         public int MaxBufferSize { get { throw null; } set { } }
-        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue=65536, Options=(System.Configuration.ConfigurationPropertyOptions)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("maxReceivedMessageSize", DefaultValue=65536, Options=System.Configuration.ConfigurationPropertyOptions.None)]
         [System.Configuration.LongValidatorAttribute(MinValue=(long)1, MaxValue=(long)9223372036854775807, ExcludeRange=false)]
         public long MaxReceivedMessageSize { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
@@ -303,7 +303,7 @@ namespace System.ServiceModel.Configuration
         public System.ServiceModel.Configuration.XmlDictionaryReaderQuotasElement ReaderQuotas { get { throw null; } }
         [System.Configuration.ConfigurationPropertyAttribute("security")]
         public System.ServiceModel.Configuration.WebHttpSecurityElement Security { get { throw null; } }
-        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=(System.ServiceModel.TransferMode)(0))]
+        [System.Configuration.ConfigurationPropertyAttribute("transferMode", DefaultValue=System.ServiceModel.TransferMode.Buffered)]
         public System.ServiceModel.TransferMode TransferMode { get { throw null; } set { } }
         [System.ComponentModel.TypeConverterAttribute("System.ServiceModel.Configuration.EncodingConverter")]
         [System.Configuration.ConfigurationPropertyAttribute("writeEncoding", DefaultValue="utf-8")]
@@ -416,7 +416,7 @@ namespace System.ServiceModel.Dispatcher
         protected WebHttpDispatchOperationSelector() { }
         public WebHttpDispatchOperationSelector(System.ServiceModel.Description.ServiceEndpoint endpoint) { }
         public string SelectOperation(ref System.ServiceModel.Channels.Message message) { throw null; }
-        protected virtual string SelectOperation(ref System.ServiceModel.Channels.Message message, out bool uriMatched) { uriMatched = default(bool); throw null; }
+        protected virtual string SelectOperation(ref System.ServiceModel.Channels.Message message, out bool uriMatched) { throw null; }
     }
 }
 namespace System.ServiceModel.Web
@@ -486,7 +486,7 @@ namespace System.ServiceModel.Web
         public WebChannelFactory(System.Uri remoteAddress) { }
         protected override void OnOpening() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class WebGetAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public WebGetAttribute() { }
@@ -502,7 +502,7 @@ namespace System.ServiceModel.Web
         void System.ServiceModel.Description.IOperationBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.OperationDescription operation, System.ServiceModel.Dispatcher.DispatchOperation service) { }
         void System.ServiceModel.Description.IOperationBehavior.Validate(System.ServiceModel.Description.OperationDescription operation) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(64))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class WebInvokeAttribute : System.Attribute, System.ServiceModel.Description.IOperationBehavior
     {
         public WebInvokeAttribute() { }

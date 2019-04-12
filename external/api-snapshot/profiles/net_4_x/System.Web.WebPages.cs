@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("2.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Microsoft Corporation")]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("© Microsoft Corporation. All rights reserved.")]
@@ -32,15 +32,15 @@ namespace System.Web.Helpers
     public static partial class AntiForgery
     {
         public static System.Web.HtmlString GetHtml() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This method is deprecated. Use the GetHtml() method instead. To specify a custom domain for the generated cookie, use the <httpCookies> configuration element. To specify custom data to be embedded within the token, use the static AntiForgeryConfig.AdditionalDataProvider property.", true)]
         public static System.Web.HtmlString GetHtml(System.Web.HttpContextBase httpContext, string salt, string domain, string path) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
-        public static void GetTokens(string oldCookieToken, out string newCookieToken, out string formToken) { newCookieToken = default(string); formToken = default(string); }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public static void GetTokens(string oldCookieToken, out string newCookieToken, out string formToken) { throw null; }
         public static void Validate() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(2))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static void Validate(string cookieToken, string formToken) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This method is deprecated. Use the Validate() method instead.", true)]
         public static void Validate(System.Web.HttpContextBase httpContext, string salt) { }
     }
@@ -49,7 +49,7 @@ namespace System.Web.Helpers
         public static System.Web.Helpers.IAntiForgeryAdditionalDataProvider AdditionalDataProvider { get { throw null; } set { } }
         public static string CookieName { get { throw null; } set { } }
         public static bool RequireSsl { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static bool SuppressIdentityHeuristicChecks { get { throw null; } set { } }
         public static string UniqueClaimTypeIdentifier { get { throw null; } set { } }
     }
@@ -319,13 +319,13 @@ namespace System.Web.WebPages
     {
         bool Execute(System.Web.WebPages.WebPage page);
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple=false, Inherited=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
     public sealed partial class PageVirtualPathAttribute : System.Attribute
     {
         public PageVirtualPathAttribute(string virtualPath) { }
         public string VirtualPath { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class PreApplicationStartCode
     {
         public static void Start() { }
@@ -346,7 +346,7 @@ namespace System.Web.WebPages
     }
     public static partial class ResponseExtensions
     {
-        public static void OutputCache(this System.Web.HttpResponseBase response, int numberOfSeconds, bool sliding=false, System.Collections.Generic.IEnumerable<string> varyByParams=null, System.Collections.Generic.IEnumerable<string> varyByHeaders=null, System.Collections.Generic.IEnumerable<string> varyByContentEncodings=null, System.Web.HttpCacheability cacheability=(System.Web.HttpCacheability)(4)) { }
+        public static void OutputCache(this System.Web.HttpResponseBase response, int numberOfSeconds, bool sliding = false, System.Collections.Generic.IEnumerable<string> varyByParams = null, System.Collections.Generic.IEnumerable<string> varyByHeaders = null, System.Collections.Generic.IEnumerable<string> varyByContentEncodings = null, System.Web.HttpCacheability cacheability = System.Web.HttpCacheability.Public) { }
         public static void SetStatus(this System.Web.HttpResponseBase response, int httpStatusCode) { }
         public static void SetStatus(this System.Web.HttpResponseBase response, System.Net.HttpStatusCode httpStatusCode) { }
         public static void WriteBinary(this System.Web.HttpResponseBase response, byte[] data) { }
@@ -424,17 +424,17 @@ namespace System.Web.WebPages
     public abstract partial class Validator
     {
         protected Validator() { }
-        public static System.Web.WebPages.IValidator DateTime(string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Decimal(string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator EqualsTo(string otherFieldName, string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Float(string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Integer(string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Range(double minValue, double maxValue, string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Range(int minValue, int maxValue, string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Regex(string pattern, string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Required(string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator StringLength(int maxLength, int minLength=0, string errorMessage=null) { throw null; }
-        public static System.Web.WebPages.IValidator Url(string errorMessage=null) { throw null; }
+        public static System.Web.WebPages.IValidator DateTime(string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Decimal(string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator EqualsTo(string otherFieldName, string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Float(string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Integer(string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Range(double minValue, double maxValue, string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Range(int minValue, int maxValue, string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Regex(string pattern, string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Required(string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator StringLength(int maxLength, int minLength = 0, string errorMessage = null) { throw null; }
+        public static System.Web.WebPages.IValidator Url(string errorMessage = null) { throw null; }
     }
     public partial class VirtualPathFactoryManager : System.Web.WebPages.IVirtualPathFactory
     {
@@ -499,7 +499,7 @@ namespace System.Web.WebPages
         public virtual System.Web.HttpApplicationStateBase AppState { get { throw null; } }
         public virtual System.Web.HttpContextBase Context { get { throw null; } set { } }
         public virtual string VirtualPath { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual System.Web.WebPages.IVirtualPathFactory VirtualPathFactory { get { throw null; } set { } }
         protected internal void BeginContext(int startPosition, int length, bool isLiteral) { }
         protected internal void BeginContext(System.IO.TextWriter writer, int startPosition, int length, bool isLiteral) { }
@@ -509,7 +509,7 @@ namespace System.Web.WebPages
         protected internal void EndContext(System.IO.TextWriter writer, int startPosition, int length, bool isLiteral) { }
         protected internal void EndContext(System.IO.TextWriter writer, string virtualPath, int startPosition, int length, bool isLiteral) { }
         protected internal void EndContext(string virtualPath, int startPosition, int length, bool isLiteral) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public abstract void Execute();
         protected internal virtual System.IO.TextWriter GetOutputWriter() { throw null; }
         public virtual string Href(string path, params object[] pathParts) { throw null; }
@@ -683,7 +683,7 @@ namespace System.Web.WebPages.Html
         public bool Remove(string key) { throw null; }
         public void SetModelValue(string key, object value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public bool TryGetValue(string key, out System.Web.WebPages.Html.ModelState value) { value = default(System.Web.WebPages.Html.ModelState); throw null; }
+        public bool TryGetValue(string key, out System.Web.WebPages.Html.ModelState value) { throw null; }
     }
     public partial class SelectListItem
     {
@@ -764,7 +764,7 @@ namespace System.Web.WebPages.Scope
         public virtual bool Remove(object key) { throw null; }
         public virtual void SetValue(object key, object value) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
-        public virtual bool TryGetValue(object key, out object value) { value = default(object); throw null; }
+        public virtual bool TryGetValue(object key, out object value) { throw null; }
     }
     public partial class StaticScopeStorageProvider : System.Web.WebPages.Scope.IScopeStorageProvider
     {

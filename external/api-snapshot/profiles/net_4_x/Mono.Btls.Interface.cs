@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("MONO development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2016 Xamarin")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Mono.Btls.Interface")]
@@ -27,9 +27,9 @@ namespace Mono.Btls.Interface
     }
     public static partial class BtlsProvider
     {
-        public static System.Security.Cryptography.X509Certificates.X509Certificate CreateCertificate(byte[] data, Mono.Btls.Interface.BtlsX509Format format, bool disallowFallback=false) { throw null; }
-        public static System.Security.Cryptography.X509Certificates.X509Certificate2 CreateCertificate2(byte[] data, Mono.Btls.Interface.BtlsX509Format format, bool disallowFallback=false) { throw null; }
-        public static System.Security.Cryptography.X509Certificates.X509Certificate2 CreateCertificate2(byte[] data, string password, bool disallowFallback=false) { throw null; }
+        public static System.Security.Cryptography.X509Certificates.X509Certificate CreateCertificate(byte[] data, Mono.Btls.Interface.BtlsX509Format format, bool disallowFallback = false) { throw null; }
+        public static System.Security.Cryptography.X509Certificates.X509Certificate2 CreateCertificate2(byte[] data, Mono.Btls.Interface.BtlsX509Format format, bool disallowFallback = false) { throw null; }
+        public static System.Security.Cryptography.X509Certificates.X509Certificate2 CreateCertificate2(byte[] data, string password, bool disallowFallback = false) { throw null; }
         public static System.Security.Cryptography.X509Certificates.X509Chain CreateChain() { throw null; }
         public static Mono.Btls.Interface.BtlsX509 CreateNative(byte[] data, Mono.Btls.Interface.BtlsX509Format format) { throw null; }
         public static Mono.Btls.Interface.BtlsX509Chain CreateNativeChain() { throw null; }
@@ -245,32 +245,32 @@ namespace Mono.Btls.Interface
 }
 namespace System
 {
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoDocumentationNoteAttribute : System.MonoTODOAttribute
     {
         public MonoDocumentationNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoExtensionAttribute : System.MonoTODOAttribute
     {
         public MonoExtensionAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoInternalNoteAttribute : System.MonoTODOAttribute
     {
         public MonoInternalNoteAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoLimitationAttribute : System.MonoTODOAttribute
     {
         public MonoLimitationAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoNotSupportedAttribute : System.MonoTODOAttribute
     {
         public MonoNotSupportedAttribute(string comment) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.All, AllowMultiple=true)]
     internal partial class MonoTODOAttribute : System.Attribute
     {
         public MonoTODOAttribute() { }

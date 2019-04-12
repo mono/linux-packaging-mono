@@ -3833,6 +3833,15 @@ namespace System.Collections
 }
 namespace System.Collections.Generic
 {
+    public partial interface IAsyncEnumerable<out T>
+    {
+        System.Collections.Generic.IAsyncEnumerator<T> GetAsyncEnumerator(System.Threading.CancellationToken cancellationToken = default);
+    }
+    public partial interface IAsyncEnumerator<out T> : System.IAsyncDisposable
+    {
+        T Current { get; }
+        System.Threading.Tasks.ValueTask<bool> MoveNextAsync();
+    }
     public partial interface ICollection<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable
     {
         int Count { get; }

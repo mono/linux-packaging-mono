@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace System.Net.Http
 {
-    public class StreamContent : HttpContent
+    public partial class StreamContent : HttpContent
     {
         private Stream _content;
         private int _bufferSize;

@@ -29,6 +29,12 @@ namespace System.Text
         }
 
 #if MONO
+        internal Latin1Encoding(SerializationInfo info, StreamingContext context) :
+            base(Encoding.ISO_8859_1)
+        {
+            DeserializeEncoding(info, context);
+        }
+
         // ISerializable implementation, serialize it as a CodePageEncoding
         [System.Security.SecurityCritical]  // auto-generated_required
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)

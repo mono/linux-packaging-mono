@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyConfigurationAttribute("Development version")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) 2007, 2008 Andreia Gaita")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("Managed Wrapper for xulrunner engine, to support WebBrowser")]

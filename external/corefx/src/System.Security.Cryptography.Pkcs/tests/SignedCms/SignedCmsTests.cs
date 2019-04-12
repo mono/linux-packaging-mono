@@ -4,6 +4,7 @@
 
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
 using Test.Cryptography;
 using Xunit;
 
@@ -423,6 +424,38 @@ namespace System.Security.Cryptography.Pkcs.Tests
                 cms.Decode(encoded);
             }
 
+            cms.CheckSignature(true);
+        }
+
+        [Fact]
+        public static void AddSignerWithNegativeSerial()
+        {
+            const string expectedSerial = "FD319CB1514B06AF49E00522277E43C8";
+
+            ContentInfo contentInfo = new ContentInfo(new byte[] { 9, 8, 7, 6, 5 });
+            SignedCms cms = new SignedCms(contentInfo, false);
+
+            using (X509Certificate2 cert = Certificates.NegativeSerialNumber.TryGetCertificateWithPrivateKey())
+            {
+                Assert.Equal(expectedSerial, cert.SerialNumber);
+
+                CmsSigner signer = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, cert);
+                signer.IncludeOption = X509IncludeOption.EndCertOnly;
+
+                cms.ComputeSignature(signer);
+            }
+
+            SignerInfoCollection signers = cms.SignerInfos;
+            Assert.Equal(1, signers.Count);
+
+            SignerInfo signerInfo = signers[0];
+            Assert.Equal(SubjectIdentifierType.IssuerAndSerialNumber, signerInfo.SignerIdentifier.Type);
+
+            X509IssuerSerial issuerSerial = (X509IssuerSerial)signerInfo.SignerIdentifier.Value;
+            Assert.Equal(expectedSerial, issuerSerial.SerialNumber);
+
+            Assert.NotNull(signerInfo.Certificate);
+            // Assert.NoThrow
             cms.CheckSignature(true);
         }
 
@@ -891,16 +924,6 @@ namespace System.Security.Cryptography.Pkcs.Tests
             cms.CheckSignature(true);
         }
 
-        [Fact]
-        public static void SignerInfoCollection_Indexer_MinusOne ()
-        {
-            SignedCms cms = new SignedCms();
-            cms.Decode(SignedDocuments.RsaPkcs1OneSignerIssuerAndSerialNumber);
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => cms.SignerInfos[-1]);
-            Assert.Throws<ArgumentOutOfRangeException>(() => cms.SignerInfos[1]);
-        }
-
         [Theory]
         [InlineData(SubjectIdentifierType.IssuerAndSerialNumber)]
         [InlineData(SubjectIdentifierType.SubjectKeyIdentifier)]
@@ -957,8 +980,13 @@ namespace System.Security.Cryptography.Pkcs.Tests
                 {
                     signedCms.ComputeSignature(new CmsSigner(cert));
                 }
-                catch (CryptographicException) when (netfxProblem)
+                catch (CryptographicException)
                 {
+                    if (!netfxProblem)
+                    {
+                        throw;
+                    }
+
                     // When no signed or unsigned attributes are present and the signer uses
                     // IssuerAndSerial as the identifier type, NetFx uses an older PKCS7 encoding
                     // of the current CMS one.  The older encoding fails on these inputs because of a
@@ -975,6 +1003,87 @@ namespace System.Security.Cryptography.Pkcs.Tests
 
             Assert.Equal(oidValue, signedCms.ContentInfo.ContentType.Value);
             Assert.Equal(contentHex, signedCms.ContentInfo.Content.ByteArrayToHex());
+        }
+
+        [Fact]
+        public static void VerifyUnsortedAttributeSignature()
+        {
+            SignedCms cms = new SignedCms();
+            cms.Decode(SignedDocuments.DigiCertTimeStampToken);
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+        }
+
+        [Fact]
+        public static void VerifyUnsortedAttributeSignature_ImportExportImport()
+        {
+            SignedCms cms = new SignedCms();
+            cms.Decode(SignedDocuments.DigiCertTimeStampToken);
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+
+            byte[] exported = cms.Encode();
+            cms = new SignedCms();
+            cms.Decode(exported);
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+        }
+
+        [Fact]
+        public static void AddSignerToUnsortedAttributeSignature()
+        {
+            SignedCms cms = new SignedCms();
+            cms.Decode(SignedDocuments.DigiCertTimeStampToken);
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+
+            using (X509Certificate2 cert = Certificates.RSAKeyTransferCapi1.TryGetCertificateWithPrivateKey())
+            {
+                cms.ComputeSignature(
+                    new CmsSigner(
+                        SubjectIdentifierType.IssuerAndSerialNumber,
+                        cert));
+
+                cms.ComputeSignature(
+                    new CmsSigner(
+                        SubjectIdentifierType.SubjectKeyIdentifier,
+                        cert));
+            }
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+
+            byte[] exported = cms.Encode();
+            cms = new SignedCms();
+            cms.Decode(exported);
+
+            // Assert.NoThrows
+            cms.CheckSignature(true);
+        }
+
+        [Fact]
+        public static void CheckSignature_Pkcs1_RsaWithSha256()
+        {
+            SignedCms signedCms = new SignedCms();
+            signedCms.Decode(SignedDocuments.RsaPkcs1Sha256WithRsa);
+
+            // Assert.NoThrows
+            signedCms.CheckSignature(true);
+        }
+
+        [Fact]
+        public static void CheckSignature_Pkcs1_Sha1_Declared_Sha256WithRsa()
+        {
+            SignedCms signedCms = new SignedCms();
+            signedCms.Decode(SignedDocuments.RsaPkcs1SignedSha1DeclaredSha256WithRsa);
+
+            Assert.Throws<CryptographicException>(() => {
+                signedCms.CheckSignature(true);
+            });
         }
 
         [Theory]
@@ -1042,6 +1151,22 @@ namespace System.Security.Cryptography.Pkcs.Tests
             CheckSignedEncrypted(
                 SignedDocuments.SignedCmsOverEnvelopedCms_SKID_CoreFx,
                 SubjectIdentifierType.SubjectKeyIdentifier);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public static void ReadAndWriteDocumentWithIndefiniteLengthContent(bool checkSignature)
+        {
+            SignedCms cms = new SignedCms();
+            cms.Decode(SignedDocuments.IndefiniteLengthContentDocument);
+
+            if (checkSignature)
+            {
+                cms.CheckSignature(true);
+            }
+
+            cms.Encode();
         }
 
         private static void CheckSignedEncrypted(byte[] docBytes, SubjectIdentifierType expectedType)

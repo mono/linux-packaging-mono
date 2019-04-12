@@ -104,7 +104,38 @@ namespace System.Security.Cryptography.Pkcs
                 throw new InvalidOperationException(SR.Cryptography_Cms_MessageNotSigned);
             }
 
-            return Helpers.EncodeContentInfo(_signedData, Oids.Pkcs7Signed);
+            try
+            {
+                return Helpers.EncodeContentInfo(_signedData, Oids.Pkcs7Signed);
+            }
+            catch (CryptographicException)
+            {
+                if (Detached)
+                {
+                    throw;
+                }
+
+                // If we can't write the contents back out then the most likely culprit is an
+                // indefinite length encoding in the content field.  To preserve as much input data
+                // as possible while still maintaining our expectations of sorting any SET OF values,
+                // do the following:
+                // * Write the DER normalized version of the SignedData in detached mode.
+                // * BER-decode that structure
+                // * Copy the content field over
+                // * BER-write the modified structure.
+
+                SignedDataAsn copy = _signedData;
+                copy.EncapContentInfo.Content = null;
+                Debug.Assert(_signedData.EncapContentInfo.Content != null);
+
+                using (AsnWriter detachedWriter = AsnSerializer.Serialize(copy, AsnEncodingRules.DER))
+                {
+                    copy = AsnSerializer.Deserialize<SignedDataAsn>(detachedWriter.Encode(), AsnEncodingRules.BER);
+                }
+                
+                copy.EncapContentInfo.Content = _signedData.EncapContentInfo.Content;
+                return Helpers.EncodeContentInfo(copy, Oids.Pkcs7Signed, AsnEncodingRules.BER);
+            }
         }
 
         public void Decode(byte[] encodedMessage)
@@ -207,8 +238,12 @@ namespace System.Security.Cryptography.Pkcs
 
                 return rented.AsSpan(0, bytesWritten).ToArray();
             }
-            catch (Exception) when (contentType != Oids.Pkcs7Data)
+            catch (Exception)
             {
+                if (contentType == Oids.Pkcs7Data)
+                {
+                    throw;
+                }
             }
             finally
             {

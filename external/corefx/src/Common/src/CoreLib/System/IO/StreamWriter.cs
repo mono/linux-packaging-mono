@@ -23,7 +23,11 @@ namespace System.IO
         // write perf.  Note that for UTF-8, we end up allocating a 4K byte buffer,
         // which means we take advantage of adaptive buffering code.
         // The performance using UnicodeEncoding is acceptable.  
+#if MONO
+        internal const int DefaultBufferSize = 1024;   // char[]
+#else
         private const int DefaultBufferSize = 1024;   // char[]
+#endif
         private const int DefaultFileStreamBufferSize = 4096;
         private const int MinBufferSize = 128;
 
@@ -70,8 +74,11 @@ namespace System.IO
         // Even Close() will hit the exception as it would try to flush the unwritten data. 
         // Maybe we can add a DiscardBufferedData() method to get out of such situation (like 
         // StreamReader though for different reason). Either way, the buffered data will be lost!
+#if !MONO
         private static Encoding UTF8NoBOM => EncodingCache.UTF8NoBOM;
-
+#else
+        private static Encoding UTF8NoBOM => EncodingHelper.UTF8Unmarked;
+#endif
 
         internal StreamWriter() : base(null)
         { // Ask for CurrentCulture all the time 

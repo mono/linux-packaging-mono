@@ -71,6 +71,8 @@ monoutils_sources = \
 	mono-dl-wasm.c	\
 	mono-dl.h		\
 	mono-dl-windows-internals.h	\
+	mono-experiments.h	\
+	mono-experiments.c	\
 	mono-log-windows.c	\
 	mono-log-common.c	\
 	mono-log-posix.c	\
@@ -89,6 +91,7 @@ monoutils_sources = \
 	mono-filemap.c		\
 	mono-mmap.c  		\
 	mono-mmap-windows.c  		\
+	mono-mmap-wasm.c  		\
 	mono-mmap.h  		\
 	mono-mmap-internals.h	\
 	mono-mmap-windows-internals.h	\
@@ -290,6 +293,10 @@ if S390X
 arch_sources += mono-hwcap-s390x.c
 endif
 
+if RISCV
+arch_sources += mono-hwcap-riscv.c
+endif
+
 if HOST_WASM
 arch_sources += mono-hwcap-wasm.c
 endif
@@ -321,7 +328,7 @@ libmonoutilsinclude_HEADERS = 	\
 	mono-dl-fallback.h	\
 	mono-counters.h
 
-EXTRA_DIST = mono-embed.h mono-embed.c ../../support/libm/complex.c
+EXTRA_DIST = mono-errno.h mono-embed.h mono-embed.c ../../support/libm/complex.c mono-experiments.def
 
 DIST_SUBDIRS = jemalloc
 

@@ -4,7 +4,7 @@
 
 [assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
 [assembly:System.CLSCompliantAttribute(true)]
-[assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
+[assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Mono development team")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("(c) Various Mono authors")]
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.Xml.dll")]
@@ -15,7 +15,7 @@
 [assembly:System.Reflection.AssemblyTitleAttribute("System.Xml.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly:System.Resources.SatelliteContractVersionAttribute("4.0.0.0")]
-[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute((System.Runtime.CompilerServices.CompilationRelaxations)(8))]
+[assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(System.Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Data.SqlXml, PublicKey=00000000000000000400000000000000")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.ServiceModel.Friend, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293")]
 [assembly:System.Runtime.CompilerServices.InternalsVisibleToAttribute("System.Xml.Linq, PublicKey=00000000000000000400000000000000")]
@@ -48,11 +48,11 @@ namespace System.Xml
         Indented = 1,
         None = 0,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
     public partial interface IApplicationResourceStreamResolver
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
         System.IO.Stream GetApplicationResourceStream(System.Uri relativeUri);
     }
@@ -887,11 +887,11 @@ namespace System.Xml
         public virtual string ReadElementContentAsString() { throw null; }
         public virtual string ReadElementContentAsString(string localName, string namespaceURI) { throw null; }
         public virtual System.Threading.Tasks.Task<string> ReadElementContentAsStringAsync() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string ReadElementString() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string ReadElementString(string name) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string ReadElementString(string localname, string ns) { throw null; }
         public virtual void ReadEndElement() { }
         public virtual string ReadInnerXml() { throw null; }
@@ -901,7 +901,7 @@ namespace System.Xml
         public virtual void ReadStartElement() { }
         public virtual void ReadStartElement(string name) { }
         public virtual void ReadStartElement(string localname, string ns) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual string ReadString() { throw null; }
         public virtual System.Xml.XmlReader ReadSubtree() { throw null; }
         public virtual bool ReadToDescendant(string name) { throw null; }
@@ -920,7 +920,7 @@ namespace System.Xml
     public sealed partial class XmlReaderSettings
     {
         public XmlReaderSettings() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
         public XmlReaderSettings(System.Xml.XmlResolver resolver) { }
         public bool Async { get { throw null; } set { } }
@@ -1001,7 +1001,7 @@ namespace System.Xml
         public override void WriteContentTo(System.Xml.XmlWriter w) { }
         public override void WriteTo(System.Xml.XmlWriter w) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
     public partial class XmlTextReader : System.Xml.XmlReader, System.Xml.IXmlLineInfo, System.Xml.IXmlNamespaceResolver
     {
@@ -1082,7 +1082,7 @@ namespace System.Xml
         string System.Xml.IXmlNamespaceResolver.LookupNamespace(string prefix) { throw null; }
         string System.Xml.IXmlNamespaceResolver.LookupPrefix(string namespaceName) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class XmlTextWriter : System.Xml.XmlWriter
     {
         public XmlTextWriter(System.IO.Stream w, System.Text.Encoding encoding) { }
@@ -1353,16 +1353,16 @@ namespace System.Xml
         public System.Xml.XmlWriterSettings Clone() { throw null; }
         public void Reset() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
     public partial class XmlXapResolver : System.Xml.XmlResolver
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
         public XmlXapResolver() { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override object GetEntity(System.Uri absoluteUri, string role, System.Type ofObjectToReturn) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("This API supports the .NET Framework infrastructure and is not intended to be used directly from your code.", true)]
         public static void RegisterApplicationResourceStreamResolver(System.Xml.IApplicationResourceStreamResolver appStreamResolver) { }
     }
@@ -1441,22 +1441,22 @@ namespace System.Xml.Schema
         public const string InstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
         public const string Namespace = "http://www.w3.org/2001/XMLSchema";
         public XmlSchema() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaForm)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaForm.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("attributeFormDefault")]
         public System.Xml.Schema.XmlSchemaForm AttributeFormDefault { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Xml.Schema.XmlSchemaObjectTable AttributeGroups { get { throw null; } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Xml.Schema.XmlSchemaObjectTable Attributes { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("blockDefault")]
         public System.Xml.Schema.XmlSchemaDerivationMethod BlockDefault { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaForm)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaForm.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("elementFormDefault")]
         public System.Xml.Schema.XmlSchemaForm ElementFormDefault { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Xml.Schema.XmlSchemaObjectTable Elements { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("finalDefault")]
         public System.Xml.Schema.XmlSchemaDerivationMethod FinalDefault { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
@@ -1534,7 +1534,7 @@ namespace System.Xml.Schema
         public XmlSchemaAny() { }
         [System.Xml.Serialization.XmlAttributeAttribute("namespace")]
         public string Namespace { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaContentProcessing)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaContentProcessing.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("processContents")]
         public System.Xml.Schema.XmlSchemaContentProcessing ProcessContents { get { throw null; } set { } }
     }
@@ -1543,7 +1543,7 @@ namespace System.Xml.Schema
         public XmlSchemaAnyAttribute() { }
         [System.Xml.Serialization.XmlAttributeAttribute("namespace")]
         public string Namespace { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaContentProcessing)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaContentProcessing.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("processContents")]
         public System.Xml.Schema.XmlSchemaContentProcessing ProcessContents { get { throw null; } set { } }
     }
@@ -1570,7 +1570,7 @@ namespace System.Xml.Schema
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.Xml.Serialization.XmlAttributeAttribute("fixed")]
         public string FixedValue { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaForm)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaForm.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("form")]
         public System.Xml.Schema.XmlSchemaForm Form { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("name")]
@@ -1583,7 +1583,7 @@ namespace System.Xml.Schema
         public System.Xml.Schema.XmlSchemaSimpleType SchemaType { get { throw null; } set { } }
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public System.Xml.XmlQualifiedName SchemaTypeName { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaUse)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaUse.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("use")]
         public System.Xml.Schema.XmlSchemaUse Use { get { throw null; } set { } }
     }
@@ -1710,7 +1710,7 @@ namespace System.Xml.Schema
         public System.Xml.Schema.XmlSchemaObjectTable AttributeUses { get { throw null; } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Xml.Schema.XmlSchemaAnyAttribute AttributeWildcard { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("block")]
         public System.Xml.Schema.XmlSchemaDerivationMethod Block { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
@@ -1814,7 +1814,7 @@ namespace System.Xml.Schema
     public partial class XmlSchemaElement : System.Xml.Schema.XmlSchemaParticle
     {
         public XmlSchemaElement() { }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("block")]
         public System.Xml.Schema.XmlSchemaDerivationMethod Block { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
@@ -1831,7 +1831,7 @@ namespace System.Xml.Schema
         [System.ObsoleteAttribute("This property has been deprecated. Please use ElementSchemaType property that returns a strongly typed element type. http://go.microsoft.com/fwlink/?linkid=14202")]
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public object ElementType { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("final")]
         public System.Xml.Schema.XmlSchemaDerivationMethod Final { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
@@ -1839,7 +1839,7 @@ namespace System.Xml.Schema
         [System.ComponentModel.DefaultValueAttribute(null)]
         [System.Xml.Serialization.XmlAttributeAttribute("fixed")]
         public string FixedValue { get { throw null; } set { } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaForm)(0))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaForm.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("form")]
         public System.Xml.Schema.XmlSchemaForm Form { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -2291,7 +2291,7 @@ namespace System.Xml.Schema
         public System.Xml.Schema.XmlSchemaDatatype Datatype { get { throw null; } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public System.Xml.Schema.XmlSchemaDerivationMethod DerivedBy { get { throw null; } }
-        [System.ComponentModel.DefaultValueAttribute((System.Xml.Schema.XmlSchemaDerivationMethod)(256))]
+        [System.ComponentModel.DefaultValueAttribute(System.Xml.Schema.XmlSchemaDerivationMethod.None)]
         [System.Xml.Serialization.XmlAttributeAttribute("final")]
         public System.Xml.Schema.XmlSchemaDerivationMethod Final { get { throw null; } set { } }
         [System.Xml.Serialization.XmlIgnoreAttribute]
@@ -2530,7 +2530,7 @@ namespace System.Xml.Serialization
         internal SchemaImporter() { }
         public System.Xml.Serialization.Advanced.SchemaImporterExtensionCollection Extensions { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class SoapAttributeAttribute : System.Attribute
     {
         public SoapAttributeAttribute() { }
@@ -2570,7 +2570,7 @@ namespace System.Xml.Serialization
         public void ExportMembersMapping(System.Xml.Serialization.XmlMembersMapping xmlMembersMapping) { }
         public void ExportTypeMapping(System.Xml.Serialization.XmlTypeMapping xmlTypeMapping) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class SoapElementAttribute : System.Attribute
     {
         public SoapElementAttribute() { }
@@ -2579,19 +2579,19 @@ namespace System.Xml.Serialization
         public string ElementName { get { throw null; } set { } }
         public bool IsNullable { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(256))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field)]
     public partial class SoapEnumAttribute : System.Attribute
     {
         public SoapEnumAttribute() { }
         public SoapEnumAttribute(string name) { }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class SoapIgnoreAttribute : System.Attribute
     {
         public SoapIgnoreAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1100), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true)]
     public partial class SoapIncludeAttribute : System.Attribute
     {
         public SoapIncludeAttribute(System.Type type) { }
@@ -2638,7 +2638,7 @@ namespace System.Xml.Serialization
         public string MemberName { get { throw null; } set { } }
         public System.Xml.XmlQualifiedName MemberType { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1052))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct)]
     public partial class SoapTypeAttribute : System.Attribute
     {
         public SoapTypeAttribute() { }
@@ -2655,12 +2655,12 @@ namespace System.Xml.Serialization
         public object UnreferencedObject { get { throw null; } }
     }
     public delegate void UnreferencedObjectEventHandler(object sender, System.Xml.Serialization.UnreferencedObjectEventArgs e);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlAnyAttributeAttribute : System.Attribute
     {
         public XmlAnyAttributeAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=true)]
     public partial class XmlAnyElementAttribute : System.Attribute
     {
         public XmlAnyElementAttribute() { }
@@ -2681,7 +2681,7 @@ namespace System.Xml.Serialization
         public void Insert(int index, System.Xml.Serialization.XmlAnyElementAttribute attribute) { }
         public void Remove(System.Xml.Serialization.XmlAnyElementAttribute attribute) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlArrayAttribute : System.Attribute
     {
         public XmlArrayAttribute() { }
@@ -2692,7 +2692,7 @@ namespace System.Xml.Serialization
         public string Namespace { get { throw null; } set { } }
         public int Order { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=true)]
     public partial class XmlArrayItemAttribute : System.Attribute
     {
         public XmlArrayItemAttribute() { }
@@ -2718,7 +2718,7 @@ namespace System.Xml.Serialization
         public void Insert(int index, System.Xml.Serialization.XmlArrayItemAttribute attribute) { }
         public void Remove(System.Xml.Serialization.XmlArrayItemAttribute attribute) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class XmlAttributeAttribute : System.Attribute
     {
         public XmlAttributeAttribute() { }
@@ -2768,7 +2768,7 @@ namespace System.Xml.Serialization
         public System.Xml.Serialization.XmlTextAttribute XmlText { get { throw null; } set { } }
         public System.Xml.Serialization.XmlTypeAttribute XmlType { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlChoiceIdentifierAttribute : System.Attribute
     {
         public XmlChoiceIdentifierAttribute() { }
@@ -2791,12 +2791,13 @@ namespace System.Xml.Serialization
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XmlDeserializationEvents
     {
+        private object _dummy;
         public System.Xml.Serialization.XmlAttributeEventHandler OnUnknownAttribute { get { throw null; } set { } }
         public System.Xml.Serialization.XmlElementEventHandler OnUnknownElement { get { throw null; } set { } }
         public System.Xml.Serialization.XmlNodeEventHandler OnUnknownNode { get { throw null; } set { } }
         public System.Xml.Serialization.UnreferencedObjectEventHandler OnUnreferencedObject { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=true)]
     public partial class XmlElementAttribute : System.Attribute
     {
         public XmlElementAttribute() { }
@@ -2832,19 +2833,19 @@ namespace System.Xml.Serialization
         public object ObjectBeingDeserialized { get { throw null; } }
     }
     public delegate void XmlElementEventHandler(object sender, System.Xml.Serialization.XmlElementEventArgs e);
-    [System.AttributeUsageAttribute((System.AttributeTargets)(256))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field)]
     public partial class XmlEnumAttribute : System.Attribute
     {
         public XmlEnumAttribute() { }
         public XmlEnumAttribute(string name) { }
         public string Name { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class XmlIgnoreAttribute : System.Attribute
     {
         public XmlIgnoreAttribute() { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1100), AllowMultiple=true)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Method | System.AttributeTargets.Struct, AllowMultiple=true)]
     public partial class XmlIncludeAttribute : System.Attribute
     {
         public XmlIncludeAttribute(System.Type type) { }
@@ -2887,7 +2888,7 @@ namespace System.Xml.Serialization
         public string TypeName { get { throw null; } }
         public string TypeNamespace { get { throw null; } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlNamespaceDeclarationsAttribute : System.Attribute
     {
         public XmlNamespaceDeclarationsAttribute() { }
@@ -2932,7 +2933,7 @@ namespace System.Xml.Serialization
         public System.Xml.Serialization.SoapAttributes SoapAttributes { get { throw null; } set { } }
         public System.Xml.Serialization.XmlAttributes XmlAttributes { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(9244))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.ReturnValue | System.AttributeTargets.Struct)]
     public partial class XmlRootAttribute : System.Attribute
     {
         public XmlRootAttribute() { }
@@ -2980,7 +2981,7 @@ namespace System.Xml.Serialization
         public System.Xml.Serialization.XmlTypeMapping ImportSchemaType(System.Xml.XmlQualifiedName typeName, System.Type baseType, bool baseTypeCanBeIndirect) { throw null; }
         public System.Xml.Serialization.XmlTypeMapping ImportTypeMapping(System.Xml.XmlQualifiedName name) { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1036))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Interface | System.AttributeTargets.Struct)]
     public sealed partial class XmlSchemaProviderAttribute : System.Attribute
     {
         public XmlSchemaProviderAttribute(string methodName) { }
@@ -3060,13 +3061,13 @@ namespace System.Xml.Serialization
         protected bool ReadNull() { throw null; }
         protected System.Xml.XmlQualifiedName ReadNullableQualifiedName() { throw null; }
         protected string ReadNullableString() { throw null; }
-        protected bool ReadReference(out string fixupReference) { fixupReference = default(string); throw null; }
+        protected bool ReadReference(out string fixupReference) { throw null; }
         protected object ReadReferencedElement() { throw null; }
         protected object ReadReferencedElement(string name, string ns) { throw null; }
         protected void ReadReferencedElements() { }
-        protected object ReadReferencingElement(string name, string ns, bool elementCanBeType, out string fixupReference) { fixupReference = default(string); throw null; }
-        protected object ReadReferencingElement(string name, string ns, out string fixupReference) { fixupReference = default(string); throw null; }
-        protected object ReadReferencingElement(out string fixupReference) { fixupReference = default(string); throw null; }
+        protected object ReadReferencingElement(string name, string ns, bool elementCanBeType, out string fixupReference) { throw null; }
+        protected object ReadReferencingElement(string name, string ns, out string fixupReference) { throw null; }
+        protected object ReadReferencingElement(out string fixupReference) { throw null; }
         protected System.Xml.Serialization.IXmlSerializable ReadSerializable(System.Xml.Serialization.IXmlSerializable serializable) { throw null; }
         protected System.Xml.Serialization.IXmlSerializable ReadSerializable(System.Xml.Serialization.IXmlSerializable serializable, bool wrappedAny) { throw null; }
         protected string ReadString(string value) { throw null; }
@@ -3267,7 +3268,7 @@ namespace System.Xml.Serialization
         public void Serialize(System.Xml.XmlWriter xmlWriter, object o, System.Xml.Serialization.XmlSerializerNamespaces namespaces, string encodingStyle) { }
         public void Serialize(System.Xml.XmlWriter xmlWriter, object o, System.Xml.Serialization.XmlSerializerNamespaces namespaces, string encodingStyle, string id) { }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1052), AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct, AllowMultiple=false)]
     public sealed partial class XmlSerializerAssemblyAttribute : System.Attribute
     {
         public XmlSerializerAssemblyAttribute() { }
@@ -3310,7 +3311,7 @@ namespace System.Xml.Serialization
         public void Add(string prefix, string ns) { }
         public System.Xml.XmlQualifiedName[] ToArray() { throw null; }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Assembly)]
     public sealed partial class XmlSerializerVersionAttribute : System.Attribute
     {
         public XmlSerializerVersionAttribute() { }
@@ -3320,7 +3321,7 @@ namespace System.Xml.Serialization
         public System.Type Type { get { throw null; } set { } }
         public string Version { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(10624))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class XmlTextAttribute : System.Attribute
     {
         public XmlTextAttribute() { }
@@ -3328,7 +3329,7 @@ namespace System.Xml.Serialization
         public string DataType { get { throw null; } set { } }
         public System.Type Type { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute((System.AttributeTargets)(1052))]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct)]
     public partial class XmlTypeAttribute : System.Attribute
     {
         public XmlTypeAttribute() { }
@@ -3377,7 +3378,7 @@ namespace System.Xml.Serialization.Configuration
     public sealed partial class DateTimeSerializationSection : System.Configuration.ConfigurationSection
     {
         public DateTimeSerializationSection() { }
-        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=(System.Xml.Serialization.Configuration.DateTimeSerializationSection.DateTimeSerializationMode)(1))]
+        [System.Configuration.ConfigurationPropertyAttribute("mode", DefaultValue=System.Xml.Serialization.Configuration.DateTimeSerializationSection.DateTimeSerializationMode.Roundtrip)]
         public System.Xml.Serialization.Configuration.DateTimeSerializationSection.DateTimeSerializationMode Mode { get { throw null; } set { } }
         protected override System.Configuration.ConfigurationPropertyCollection Properties { get { throw null; } }
         public enum DateTimeSerializationMode
@@ -3451,7 +3452,7 @@ namespace System.Xml.Serialization.Configuration
 }
 namespace System.Xml.XmlConfiguration
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlReaderSection : System.Configuration.ConfigurationSection
     {
         public XmlReaderSection() { }
@@ -3460,7 +3461,7 @@ namespace System.Xml.XmlConfiguration
         [System.Configuration.ConfigurationPropertyAttribute("prohibitDefaultResolver", DefaultValue="false")]
         public string ProhibitDefaultResolverString { get { throw null; } set { } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XsltConfigSection : System.Configuration.ConfigurationSection
     {
         public XsltConfigSection() { }
@@ -3850,58 +3851,70 @@ namespace System.Xml.Xsl
 }
 namespace System.Xml.Xsl.Runtime
 {
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AncestorDocOrderIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter, bool orSelf) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AncestorIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter, bool orSelf) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AttributeContentIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct AttributeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ContentIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ContentMergeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public System.Xml.Xsl.Runtime.IteratorResult MoveNext(System.Xml.XPath.XPathNavigator input) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DecimalAggregator
     {
+        private int _dummyPrimitive;
         public decimal AverageResult { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
         public decimal MaximumResult { get { throw null; } }
@@ -3913,42 +3926,51 @@ namespace System.Xml.Xsl.Runtime
         public void Minimum(decimal value) { }
         public void Sum(decimal value) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DescendantIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator input, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter, bool orSelf) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DescendantMergeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlNavigatorFilter filter, bool orSelf) { }
         public System.Xml.Xsl.Runtime.IteratorResult MoveNext(System.Xml.XPath.XPathNavigator input) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DifferenceIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { }
         public System.Xml.Xsl.Runtime.SetIteratorResult MoveNext(System.Xml.XPath.XPathNavigator nestedNavigator) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DodSequenceMerge
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public void AddSequence(System.Collections.Generic.IList<System.Xml.XPath.XPathNavigator> sequence) { }
         public void Create(System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { }
         public System.Collections.Generic.IList<System.Xml.XPath.XPathNavigator> MergeSequences() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct DoubleAggregator
     {
+        private int _dummyPrimitive;
         public double AverageResult { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
         public double MaximumResult { get { throw null; } }
@@ -3960,42 +3982,49 @@ namespace System.Xml.Xsl.Runtime
         public void Minimum(double value) { }
         public void Sum(double value) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ElementContentIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, string localName, string ns) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FollowingSiblingIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FollowingSiblingMergeIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public System.Xml.Xsl.Runtime.IteratorResult MoveNext(System.Xml.XPath.XPathNavigator navigator) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct IdIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, string value) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Int32Aggregator
     {
+        private int _dummyPrimitive;
         public int AverageResult { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
         public int MaximumResult { get { throw null; } }
@@ -4007,10 +4036,11 @@ namespace System.Xml.Xsl.Runtime
         public void Minimum(int value) { }
         public void Sum(int value) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Int64Aggregator
     {
+        private int _dummyPrimitive;
         public long AverageResult { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
         public long MaximumResult { get { throw null; } }
@@ -4022,78 +4052,91 @@ namespace System.Xml.Xsl.Runtime
         public void Minimum(long value) { }
         public void Sum(long value) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct IntersectIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { }
         public System.Xml.Xsl.Runtime.SetIteratorResult MoveNext(System.Xml.XPath.XPathNavigator nestedNavigator) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public enum IteratorResult
     {
         HaveCurrentNode = 2,
         NeedInputNode = 1,
         NoMoreNodes = 0,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct NamespaceIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct NodeKindContentIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.XPath.XPathNodeType nodeType) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct NodeRangeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator start, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter, System.Xml.XPath.XPathNavigator end) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ParentIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PrecedingIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PrecedingSiblingDocOrderIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct PrecedingSiblingIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public enum SetIteratorResult
     {
         HaveCurrentNode = 4,
@@ -4102,38 +4145,42 @@ namespace System.Xml.Xsl.Runtime
         NeedRightNode = 3,
         NoMoreNodes = 0,
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct StringConcat
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public string Delimiter { get { throw null; } set { } }
         public void Clear() { }
         public void Concat(string value) { }
         public string GetResult() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct UnionIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { }
         public System.Xml.Xsl.Runtime.SetIteratorResult MoveNext(System.Xml.XPath.XPathNavigator nestedNavigator) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlCollation
     {
         internal XmlCollation() { }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlILIndex
     {
         internal XmlILIndex() { }
         public void Add(string key, System.Xml.XPath.XPathNavigator navigator) { }
         public System.Xml.Xsl.Runtime.XmlQueryNodeSequence Lookup(string key) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class XmlILStorageConverter
     {
         public static System.Xml.Schema.XmlAtomicValue BooleanToAtomicValue(bool value, int index, System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { throw null; }
@@ -4150,7 +4197,7 @@ namespace System.Xml.Xsl.Runtime
         public static System.Xml.Schema.XmlAtomicValue TimeSpanToAtomicValue(System.TimeSpan value, int index, System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { throw null; }
         public static System.Xml.Schema.XmlAtomicValue XmlQualifiedNameToAtomicValue(System.Xml.XmlQualifiedName value, int index, System.Xml.Xsl.Runtime.XmlQueryRuntime runtime) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public abstract partial class XmlNavigatorFilter
     {
         protected XmlNavigatorFilter() { }
@@ -4161,7 +4208,7 @@ namespace System.Xml.Xsl.Runtime
         public abstract bool MoveToNextContent(System.Xml.XPath.XPathNavigator navigator);
         public abstract bool MoveToPreviousSibling(System.Xml.XPath.XPathNavigator navigator);
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlQueryContext
     {
         internal XmlQueryContext() { }
@@ -4175,7 +4222,7 @@ namespace System.Xml.Xsl.Runtime
         public bool LateBoundFunctionExists(string name, string namespaceUri) { throw null; }
         public void OnXsltMessageEncountered(string message) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlQueryItemSequence : System.Xml.Xsl.Runtime.XmlQuerySequence<System.Xml.XPath.XPathItem>
     {
         public static readonly new System.Xml.Xsl.Runtime.XmlQueryItemSequence Empty;
@@ -4186,7 +4233,7 @@ namespace System.Xml.Xsl.Runtime
         public static System.Xml.Xsl.Runtime.XmlQueryItemSequence CreateOrReuse(System.Xml.Xsl.Runtime.XmlQueryItemSequence seq) { throw null; }
         public static System.Xml.Xsl.Runtime.XmlQueryItemSequence CreateOrReuse(System.Xml.Xsl.Runtime.XmlQueryItemSequence seq, System.Xml.XPath.XPathItem item) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlQueryNodeSequence : System.Xml.Xsl.Runtime.XmlQuerySequence<System.Xml.XPath.XPathNavigator>, System.Collections.Generic.ICollection<System.Xml.XPath.XPathItem>, System.Collections.Generic.IEnumerable<System.Xml.XPath.XPathItem>, System.Collections.Generic.IList<System.Xml.XPath.XPathItem>, System.Collections.IEnumerable
     {
         public static readonly new System.Xml.Xsl.Runtime.XmlQueryNodeSequence Empty;
@@ -4213,7 +4260,7 @@ namespace System.Xml.Xsl.Runtime
         void System.Collections.Generic.IList<System.Xml.XPath.XPathItem>.Insert(int index, System.Xml.XPath.XPathItem value) { }
         void System.Collections.Generic.IList<System.Xml.XPath.XPathItem>.RemoveAt(int index) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlQueryOutput : System.Xml.XmlWriter
     {
         internal XmlQueryOutput() { }
@@ -4284,7 +4331,7 @@ namespace System.Xml.Xsl.Runtime
         public override void WriteWhitespace(string ws) { }
         public void XsltCopyOf(System.Xml.XPath.XPathNavigator navigator) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XmlQueryRuntime
     {
         internal XmlQueryRuntime() { }
@@ -4303,9 +4350,9 @@ namespace System.Xml.Xsl.Runtime
         public void DebugSetGlobalValue(string name, object value) { }
         public System.Collections.Generic.IList<System.Xml.XPath.XPathNavigator> DocOrderDistinct(System.Collections.Generic.IList<System.Xml.XPath.XPathNavigator> seq) { throw null; }
         public bool EarlyBoundFunctionExists(string name, string namespaceUri) { throw null; }
-        public System.Xml.XPath.XPathNavigator EndRtfConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { output = default(System.Xml.Xsl.Runtime.XmlQueryOutput); throw null; }
-        public System.Collections.Generic.IList<System.Xml.XPath.XPathItem> EndSequenceConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { output = default(System.Xml.Xsl.Runtime.XmlQueryOutput); throw null; }
-        public bool FindIndex(System.Xml.XPath.XPathNavigator context, int indexId, out System.Xml.Xsl.Runtime.XmlILIndex index) { index = default(System.Xml.Xsl.Runtime.XmlILIndex); throw null; }
+        public System.Xml.XPath.XPathNavigator EndRtfConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { throw null; }
+        public System.Collections.Generic.IList<System.Xml.XPath.XPathItem> EndSequenceConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { throw null; }
+        public bool FindIndex(System.Xml.XPath.XPathNavigator context, int indexId, out System.Xml.Xsl.Runtime.XmlILIndex index) { throw null; }
         public string GenerateId(System.Xml.XPath.XPathNavigator navigator) { throw null; }
         public string GetAtomizedName(int index) { throw null; }
         public System.Xml.Xsl.Runtime.XmlCollation GetCollation(int index) { throw null; }
@@ -4325,12 +4372,12 @@ namespace System.Xml.Xsl.Runtime
         public System.Xml.XmlQualifiedName ParseTagName(string tagName, string ns) { throw null; }
         public void SendMessage(string message) { }
         public void SetGlobalValue(int index, object value) { }
-        public void StartRtfConstruction(string baseUri, out System.Xml.Xsl.Runtime.XmlQueryOutput output) { output = default(System.Xml.Xsl.Runtime.XmlQueryOutput); }
-        public void StartSequenceConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { output = default(System.Xml.Xsl.Runtime.XmlQueryOutput); }
+        public void StartRtfConstruction(string baseUri, out System.Xml.Xsl.Runtime.XmlQueryOutput output) { throw null; }
+        public void StartSequenceConstruction(out System.Xml.Xsl.Runtime.XmlQueryOutput output) { throw null; }
         public System.Xml.XPath.XPathNavigator TextRtfConstruction(string text, string baseUri) { throw null; }
         public void ThrowException(string text) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public partial class XmlQuerySequence<T> : System.Collections.Generic.ICollection<T>, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>, System.Collections.ICollection, System.Collections.IEnumerable, System.Collections.IList
     {
         public static readonly System.Xml.Xsl.Runtime.XmlQuerySequence<T> Empty;
@@ -4371,10 +4418,12 @@ namespace System.Xml.Xsl.Runtime
         void System.Collections.IList.Remove(object value) { }
         void System.Collections.IList.RemoveAt(int index) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XmlSortKeyAccumulator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Array Keys { get { throw null; } }
         public void AddDateTimeSortKey(System.Xml.Xsl.Runtime.XmlCollation collation, System.DateTime value) { }
         public void AddDecimalSortKey(System.Xml.Xsl.Runtime.XmlCollation collation, decimal value) { }
@@ -4386,47 +4435,55 @@ namespace System.Xml.Xsl.Runtime
         public void Create() { }
         public void FinishSortKeys() { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XPathFollowingIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator input, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XPathFollowingMergeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public System.Xml.Xsl.Runtime.IteratorResult MoveNext(System.Xml.XPath.XPathNavigator input) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XPathPrecedingDocOrderIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator input, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XPathPrecedingIterator
     {
+        private object _dummy;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.XPath.XPathNavigator context, System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public bool MoveNext() { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct XPathPrecedingMergeIterator
     {
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Xml.XPath.XPathNavigator Current { get { throw null; } }
         public void Create(System.Xml.Xsl.Runtime.XmlNavigatorFilter filter) { }
         public System.Xml.Xsl.Runtime.IteratorResult MoveNext(System.Xml.XPath.XPathNavigator input) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class XsltConvert
     {
         public static System.Collections.Generic.IList<System.Xml.XPath.XPathNavigator> EnsureNodeSet(System.Collections.Generic.IList<System.Xml.XPath.XPathItem> listItems) { throw null; }
@@ -4451,7 +4508,7 @@ namespace System.Xml.Xsl.Runtime
         public static string ToString(double value) { throw null; }
         public static string ToString(System.Xml.XPath.XPathItem item) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public static partial class XsltFunctions
     {
         public static string BaseUri(System.Xml.XPath.XPathNavigator navigator) { throw null; }
@@ -4475,7 +4532,7 @@ namespace System.Xml.Xsl.Runtime
         public static System.Xml.XPath.XPathItem SystemProperty(System.Xml.XmlQualifiedName name) { throw null; }
         public static string Translate(string arg, string mapString, string transString) { throw null; }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class XsltLibrary
     {
         internal XsltLibrary() { }
