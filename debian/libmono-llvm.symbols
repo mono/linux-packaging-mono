@@ -30,6 +30,7 @@
  mono_bblock_add_inst@Base 5.15.0.231
  mono_call_inst_add_outarg_reg@Base 5.15.0.231
  mono_class_get_cctor@Base 5.15.0.231
+ mono_class_get_generic_class@Base 6.3.0.202
  mono_class_load_from_name@Base 5.15.0.231
  mono_create_jit_trampoline@Base 5.15.0.231
  mono_dl_close@Base 5.15.0.231

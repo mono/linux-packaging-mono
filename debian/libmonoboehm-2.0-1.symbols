@@ -627,6 +627,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_get_namespace@Base 4.1.0.1738
  mono_class_get_nested_types@Base 4.1.0.1738
  mono_class_get_nesting_type@Base 4.1.0.1738
+ mono_class_get_nullable_param@Base 6.3.0.202
  mono_class_get_parent@Base 4.1.0.1738
  mono_class_get_properties@Base 4.1.0.1738
  mono_class_get_property_from_name@Base 4.1.0.1738
@@ -643,6 +644,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_is_assignable_from@Base 4.1.0.1738
  mono_class_is_delegate@Base 4.1.0.1738
  mono_class_is_enum@Base 4.1.0.1738
+ mono_class_is_nullable@Base 6.3.0.202
  mono_class_is_subclass_of@Base 4.1.0.1738
  mono_class_is_valid_enum@Base 4.1.0.1738
  mono_class_is_valuetype@Base 4.1.0.1738
@@ -1408,6 +1410,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_set_is_debugger_attached@Base 4.1.0.1738
  mono_set_rootdir@Base 4.1.0.1738
  mono_set_signal_chaining@Base 4.1.0.1738
+ mono_setmmapjit@Base 6.3.0.202
  mono_sha1_final@Base 4.1.0.1738
  mono_sha1_get_digest@Base 4.1.0.1738
  mono_sha1_get_digest_from_file@Base 4.1.0.1738
