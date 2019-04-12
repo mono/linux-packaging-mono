@@ -40,6 +40,7 @@
  mono_find_jit_icall_by_name@Base 5.14.0.87
  mono_get_block_region_notry@Base 5.14.0.87
  mono_icall_get_wrapper@Base 5.14.0.87
+ mono_icall_get_wrapper_method@Base 6.0.0.172
  mono_inst_name@Base 5.14.0.87
  mono_is_power_of_two@Base 5.14.0.87
  mono_ji_type_to_string@Base 5.14.0.87
@@ -52,6 +53,7 @@
  mono_llvm_emit_aot_module@Base 5.14.0.87
  mono_llvm_emit_call@Base 5.14.0.87
  mono_llvm_emit_method@Base 5.14.0.87
+ mono_llvm_fixup_aot_module@Base 6.0.0.172
  mono_llvm_free_domain_info@Base 5.14.0.87
  mono_llvm_init@Base 5.14.0.87
  mono_loader_lock@Base 5.14.0.87

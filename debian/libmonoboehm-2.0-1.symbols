@@ -509,7 +509,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
  free_list_index_of@Base 4.1.0.1738
- g_printv@Base 5.16.0.100
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
@@ -600,6 +599,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_enum_basetype@Base 4.1.0.1738
  mono_class_from_generic_parameter@Base 4.1.0.1738
  mono_class_from_mono_type@Base 4.1.0.1738
+ mono_class_from_mono_type_internal@Base 6.0.0.172
  mono_class_from_name@Base 4.1.0.1738
  mono_class_from_name_case@Base 4.1.0.1738
  mono_class_from_typeref@Base 4.1.0.1738
@@ -1156,6 +1156,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_method_get_class@Base 4.1.0.1738
  mono_method_get_context@Base 4.9.0.1707
  mono_method_get_flags@Base 4.1.0.1738
+ mono_method_get_full_name@Base 6.0.0.172
  mono_method_get_generic_container@Base 4.1.0.1738
  mono_method_get_header@Base 4.1.0.1738
  mono_method_get_header_checked@Base 4.5.0.149
@@ -1179,6 +1180,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_method_print_code@Base 4.1.0.1738
  mono_method_signature@Base 4.1.0.1738
  mono_method_signature_checked@Base 4.9.0.1707
+ mono_method_signature_internal@Base 6.0.0.172
  mono_method_verify@Base 4.1.0.1738
  mono_mlist_alloc@Base 4.1.0.1738
  mono_mlist_append@Base 4.1.0.1738
@@ -1210,8 +1212,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_object_get_class@Base 4.1.0.1738
  mono_object_get_domain@Base 4.1.0.1738
  mono_object_get_size@Base 4.1.0.1738
+ mono_object_get_size_internal@Base 6.0.0.172
  mono_object_get_virtual_method@Base 4.1.0.1738
  mono_object_get_vtable@Base 5.11.0.133
+ mono_object_get_vtable_internal@Base 6.0.0.172
  mono_object_hash@Base 4.1.0.1738
  mono_object_isinst@Base 4.1.0.1738
  mono_object_isinst_mbyref@Base 4.1.0.1738
@@ -1430,6 +1434,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_set_is_debugger_attached@Base 4.1.0.1738
  mono_set_rootdir@Base 4.1.0.1738
  mono_set_signal_chaining@Base 4.1.0.1738
+ mono_setmmapjit@Base 6.0.0.172
  mono_sha1_final@Base 4.1.0.1738
  mono_sha1_get_digest@Base 4.1.0.1738
  mono_sha1_get_digest_from_file@Base 4.1.0.1738
@@ -1580,7 +1585,9 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_verify_corlib@Base 4.1.0.1738
  mono_vfree@Base 4.1.0.1738
  mono_vtable_class@Base 5.11.0.133
+ mono_vtable_class_internal@Base 6.0.0.172
  mono_vtable_domain@Base 5.11.0.133
+ mono_vtable_domain_internal@Base 6.0.0.172
  mono_vtable_get_static_field_data@Base 4.1.0.1738
  mono_win32_compat_CopyMemory@Base 4.1.0.1738
  mono_win32_compat_FillMemory@Base 4.1.0.1738
@@ -1720,6 +1727,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_print@Base 5.8.0.22
  monoeg_g_printerr@Base 5.8.0.22
  monoeg_g_printf@Base 5.8.0.22
+ monoeg_g_printv@Base 6.0.0.172
  monoeg_g_propagate_error@Base 5.8.0.22
  monoeg_g_ptr_array_add@Base 5.8.0.22
  monoeg_g_ptr_array_capacity@Base 5.10.0.53
@@ -1858,5 +1866,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_try_realloc@Base 5.8.0.22
  monoeg_unichar_break_type@Base 5.8.0.22
  monoeg_unichar_isspace@Base 5.8.0.22
+ monoeg_utf16_len@Base 6.0.0.172
  monoeg_utf8_get_char_validated@Base 5.8.0.22
  monoeg_utf8_to_ucs4@Base 5.8.0.22
