@@ -1710,7 +1710,7 @@ mono_create_tls_get (MonoCompile *cfg, MonoTlsKey key)
 		EMIT_NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_GET_TLS_TRAMP, GUINT_TO_POINTER(key));
 		return mini_emit_calli (cfg, mono_icall_sig_ptr, NULL, addr, NULL, NULL);
 	} else {
-		gpointer getter = mono_tls_get_tls_getter (key, FALSE);
+		gpointer getter = (gpointer)mono_tls_get_tls_getter (key);
 		return mono_emit_jit_icall (cfg, getter, NULL);
 	}
 }
@@ -3760,7 +3760,7 @@ mono_method_check_inlining (MonoCompile *cfg, MonoMethod *method)
 	    header.has_clauses)
 		return FALSE;
 
-	if (cfg->method->flags & METHOD_ATTRIBUTE_REQSECOBJ)
+	if (method->flags & METHOD_ATTRIBUTE_REQSECOBJ)
 		/* Used to mark methods containing StackCrawlMark locals */
 		return FALSE;
 
