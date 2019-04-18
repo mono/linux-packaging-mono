@@ -5,7 +5,6 @@
 ../../../mono/mini/basic-float.cs
 ../../../mono/mini/basic-long.cs
 ../../../mono/mini/basic-math.cs
-../../../mono/mini/basic-simd.cs
 ../../../mono/mini/basic-vectors.cs
 ../../../mono/mini/basic.cs
 ../../../mono/mini/bench.cs
