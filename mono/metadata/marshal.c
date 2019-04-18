@@ -265,12 +265,13 @@ mono_marshal_init (void)
 		register_icall (mono_marshal_free_array, "mono_marshal_free_array", mono_icall_sig_void_ptr_int32, FALSE);
 		register_icall (mono_string_to_byvalstr, "mono_string_to_byvalstr", mono_icall_sig_void_ptr_ptr_int32, FALSE);
 		register_icall (mono_string_to_byvalwstr, "mono_string_to_byvalwstr", mono_icall_sig_void_ptr_ptr_int32, FALSE);
-		register_dyn_icall (g_free, "g_free", mono_icall_sig_void_ptr, FALSE);
+		// Because #define g_free monoeg_g_free.
+		register_icall (g_free, "monoeg_g_free", mono_icall_sig_void_ptr, FALSE);
 		register_icall_no_wrapper (mono_object_isinst_icall, "mono_object_isinst_icall", mono_icall_sig_object_object_ptr);
 		register_icall (mono_struct_delete_old, "mono_struct_delete_old", mono_icall_sig_void_ptr_ptr, FALSE);
 		register_icall (mono_delegate_begin_invoke, "mono_delegate_begin_invoke", mono_icall_sig_object_object_ptr, FALSE);
 		register_icall (mono_delegate_end_invoke, "mono_delegate_end_invoke", mono_icall_sig_object_object_ptr, FALSE);
-		register_dyn_icall (mono_gc_wbarrier_generic_nostore_internal, "wb_generic_internal", mono_icall_sig_void_ptr, FALSE);
+		register_icall (mono_gc_wbarrier_generic_nostore_internal, "mono_gc_wbarrier_generic_nostore_internal", mono_icall_sig_void_ptr, FALSE);
 		register_icall (mono_gchandle_get_target_internal, "mono_gchandle_get_target_internal", mono_icall_sig_object_int32, TRUE);
 		register_icall (mono_marshal_isinst_with_cache, "mono_marshal_isinst_with_cache", mono_icall_sig_object_object_ptr_ptr, FALSE);
 		register_icall (mono_threads_enter_gc_safe_region_unbalanced, "mono_threads_enter_gc_safe_region_unbalanced", mono_icall_sig_ptr_ptr, TRUE);
