@@ -1774,7 +1774,7 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 	}
 
 	CHECK_STACK (td, csignature->param_count + csignature->hasthis);
-	if (!calli && op == -1 && (!is_virtual || (target_method->flags & METHOD_ATTRIBUTE_VIRTUAL) == 0) &&
+	if (!td->gen_sdb_seq_points && !calli && op == -1 && (!is_virtual || (target_method->flags & METHOD_ATTRIBUTE_VIRTUAL) == 0) &&
 		(target_method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) == 0 && 
 		(target_method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) == 0 &&
 		!(target_method->iflags & METHOD_IMPL_ATTRIBUTE_NOINLINING)) {
@@ -4914,8 +4914,7 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 				PUSH_VT (td, sizeof(gpointer));
 				interp_add_ins (td, MINT_LDTOKEN);
 				td->last_ins->data [0] = get_data_item_index (td, handle);
-				SET_TYPE (td->sp, stack_type [mt], klass);
-				td->sp++;
+				PUSH_TYPE (td, stack_type [mt], klass);
 				td->ip += 5;
 			}
 
@@ -5049,8 +5048,7 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 
 					if (!MONO_TYPE_IS_VOID (info->sig->ret)) {
 						int mt = mint_type (info->sig->ret);
-						td->sp ++;
-						SET_SIMPLE_TYPE(td->sp - 1, stack_type [mt]);
+						PUSH_SIMPLE_TYPE(td, stack_type [mt]);
 					}
 					break;
 				}
