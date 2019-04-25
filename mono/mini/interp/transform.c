@@ -1210,6 +1210,9 @@ interp_handle_intrinsics (TransformData *td, MonoMethod *target_method, MonoMeth
 			td->ip += 5;
 			return TRUE;
 		}
+	} else if (in_corlib && !strcmp (klass_name_space, "System") && !strcmp (klass_name, "RuntimeMethodHandle") && !strcmp (tm, "GetFunctionPointer") && csignature->param_count == 1) {
+		// We must intrinsify this method on interp so we don't return a pointer to native code entering interpreter
+		*op = MINT_LDFTN_DYNAMIC;
 	}
 	return FALSE;
 }
@@ -4821,8 +4824,7 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 				PUSH_VT (td, sizeof(gpointer));
 				ADD_CODE (td, MINT_LDTOKEN);
 				ADD_CODE (td, get_data_item_index (td, handle));
-				SET_TYPE (td->sp, stack_type [mt], klass);
-				td->sp++;
+				PUSH_TYPE (td, stack_type [mt], klass);
 				td->ip += 5;
 			}
 
@@ -4956,8 +4958,7 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 
 					if (!MONO_TYPE_IS_VOID (info->sig->ret)) {
 						int mt = mint_type (info->sig->ret);
-						td->sp ++;
-						SET_SIMPLE_TYPE(td->sp - 1, stack_type [mt]);
+						PUSH_SIMPLE_TYPE(td, stack_type [mt]);
 					}
 					break;
 				}

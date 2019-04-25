@@ -315,12 +315,14 @@ namespace System.IO.Tests
             Assert.False(Exists(component));
         }
 
+#if !MONODROID
         [Theory,
             MemberData(nameof(UncPathsWithoutShareName))]
         public void UncPathWithoutShareNameAsPath_ReturnsFalse(string component)
         {
             Assert.False(Exists(component));
         }
+#endif
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // max directory length not fixed on Unix
