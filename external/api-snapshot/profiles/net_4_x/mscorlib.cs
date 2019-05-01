@@ -9255,6 +9255,7 @@ namespace System.IO
     public static partial class Directory
     {
         public static System.IO.DirectoryInfo CreateDirectory(string path) { throw null; }
+        public static System.IO.DirectoryInfo CreateDirectory(string path, System.Security.AccessControl.DirectorySecurity directorySecurity) { throw null; }
         public static void Delete(string path) { }
         public static void Delete(string path, bool recursive) { }
         public static System.Collections.Generic.IEnumerable<string> EnumerateDirectories(string path) { throw null; }
@@ -9311,7 +9312,9 @@ namespace System.IO
         public System.IO.DirectoryInfo Parent { get { throw null; } }
         public System.IO.DirectoryInfo Root { get { throw null; } }
         public void Create() { }
+        public void Create(System.Security.AccessControl.DirectorySecurity directorySecurity) { }
         public System.IO.DirectoryInfo CreateSubdirectory(string path) { throw null; }
+        public System.IO.DirectoryInfo CreateSubdirectory(string path, System.Security.AccessControl.DirectorySecurity directorySecurity) { throw null; }
         public override void Delete() { }
         public void Delete(bool recursive) { }
         public System.Collections.Generic.IEnumerable<System.IO.DirectoryInfo> EnumerateDirectories() { throw null; }
@@ -9424,6 +9427,7 @@ namespace System.IO
         public static System.IO.FileStream Create(string path) { throw null; }
         public static System.IO.FileStream Create(string path, int bufferSize) { throw null; }
         public static System.IO.FileStream Create(string path, int bufferSize, System.IO.FileOptions options) { throw null; }
+        public static System.IO.FileStream Create(string path, int bufferSize, System.IO.FileOptions options, System.Security.AccessControl.FileSecurity fileSecurity) { throw null; }
         public static System.IO.StreamWriter CreateText(string path) { throw null; }
         public static void Decrypt(string path) { }
         public static void Delete(string path) { }
