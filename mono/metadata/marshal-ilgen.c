@@ -1485,7 +1485,16 @@ handle_enum:
 	}
 
 	if (sig->ret->byref) {
+		int pos;
+
 		/* perform indirect load and return by value */
+#ifdef ENABLE_NETCORE
+		mono_mb_emit_byte (mb, CEE_DUP);
+		pos = mono_mb_emit_branch (mb, CEE_BRTRUE);
+		mono_mb_emit_exception_full (mb, "Mono", "NullByRefReturnException", NULL);
+		mono_mb_patch_branch (mb, pos);
+#endif
+
 		int ldind_op;
 		MonoType* ret_byval = m_class_get_byval_arg (mono_class_from_mono_type_internal (sig->ret));
 		g_assert (!ret_byval->byref);
@@ -6330,9 +6339,6 @@ emit_native_icall_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 	GCSafeTransitionBuilder gc_safe_transition_builder;
 
 	(void) mono_lookup_internal_call_full (method, FALSE, &uses_handles, &foreign_icall);
-
-	/* If it uses handles and MonoError, it had better check exceptions */
-	g_assert (!uses_handles || check_exceptions);
 
 	if (G_UNLIKELY (foreign_icall)) {
 		/* FIXME: we only want the transitions for hybrid suspend.  Q: What to do about AOT? */

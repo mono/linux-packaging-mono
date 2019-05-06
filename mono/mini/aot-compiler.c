@@ -1117,7 +1117,8 @@ arch_init (MonoAotCompile *acfg)
 	if (acfg->aot_opts.mtriple && strstr (acfg->aot_opts.mtriple, "darwin")) {
 		g_string_append (acfg->llc_args, "-mattr=+v6");
 	} else {
-		g_string_append (acfg->llc_args, " -march=arm");
+		if (!(acfg->aot_opts.mtriple && strstr (acfg->aot_opts.mtriple, "thumb")))
+			g_string_append (acfg->llc_args, " -march=arm");
 
 		if (acfg->aot_opts.mtriple && strstr (acfg->aot_opts.mtriple, "ios"))
 			g_string_append (acfg->llc_args, " -mattr=+v7");
@@ -4353,6 +4354,79 @@ add_gc_wrappers (MonoAotCompile *acfg)
 	}
 }
 
+static gboolean
+contains_disable_reflection_attribute (MonoCustomAttrInfo *cattr)
+{
+	for (int i = 0; i < cattr->num_attrs; ++i) {
+		MonoCustomAttrEntry *attr = &cattr->attrs [i];
+
+		if (!attr->ctor)
+			return FALSE;
+
+		if (strcmp (m_class_get_name_space (attr->ctor->klass), "System.Runtime.CompilerServices"))
+			return FALSE;
+
+		if (strcmp (m_class_get_name (attr->ctor->klass), "DisablePrivateReflectionAttribute"))
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+gboolean
+mono_aot_can_specialize (MonoMethod *method)
+{
+	if (!method)
+		return FALSE;
+
+	if (method->wrapper_type != MONO_WRAPPER_NONE)
+		return FALSE;
+
+	// If it's not private, we can't specialize
+	if ((method->flags & METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) != METHOD_ATTRIBUTE_PRIVATE)
+		return FALSE;
+
+	// If it has the attribute disabling the specialization, we can't specialize
+	//
+	// Set by linker, indicates that the method can be found through reflection
+	// and that call-site specialization shouldn't be done.
+	//
+	// Important that this attribute is used for *nothing else*
+	//
+	// If future authors make use of it (to disable more optimizations),
+	// change this place to use a new attribute.
+	ERROR_DECL (cattr_error);
+	MonoCustomAttrInfo *cattr = mono_custom_attrs_from_class_checked (method->klass, cattr_error);
+
+	if (!is_ok (cattr_error)) {
+		mono_error_cleanup (cattr_error);
+		goto cleanup_false;
+	} else if (cattr && contains_disable_reflection_attribute (cattr)) {
+		goto cleanup_true;
+	}
+
+	cattr = mono_custom_attrs_from_method_checked (method, cattr_error);
+
+	if (!is_ok (cattr_error)) {
+		mono_error_cleanup (cattr_error);
+		goto cleanup_false;
+	} else if (cattr && contains_disable_reflection_attribute (cattr)) {
+		goto cleanup_true;
+	} else {
+		goto cleanup_false;
+	}
+
+cleanup_false:
+	if (cattr)
+		mono_custom_attrs_free (cattr);
+	return FALSE;
+
+cleanup_true:
+	if (cattr)
+		mono_custom_attrs_free (cattr);
+	return TRUE;
+}
+
 static void
 add_wrappers (MonoAotCompile *acfg)
 {
@@ -6127,7 +6201,7 @@ emit_and_reloc_code (MonoAotCompile *acfg, MonoMethod *method, guint8 *code, gui
 				if (direct_call) {
 					int call_size;
 
-					arch_emit_label_address (acfg, direct_call_target, external_call, FALSE, patch_info, &call_size);
+					arch_emit_direct_call (acfg, direct_call_target, external_call, FALSE, patch_info, &call_size);
 					i += call_size - INST_LEN;
 				} else {
 					int code_size;
@@ -6426,6 +6500,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 	case MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR:
 		encode_value (patch_info->data.uindex, p, &p);
 		break;
+	case MONO_PATCH_INFO_LDSTR_LIT:
 	case MONO_PATCH_INFO_JIT_ICALL:
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL: {
@@ -6433,9 +6508,8 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 
 		encode_value (len, p, &p);
 
-		memcpy (p, patch_info->data.name, len);
-		p += len;
-		*p++ = '\0';
+		memcpy (p, patch_info->data.name, len + 1);
+		p += len + 1;
 		break;
 	}
 	case MONO_PATCH_INFO_LDSTR: {
@@ -6554,15 +6628,6 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 				break;
 			}
 		}
-		break;
-	}
-	case MONO_PATCH_INFO_LDSTR_LIT: {
-		const char *s = (const char *)patch_info->data.target;
-		int len = strlen (s);
-
-		encode_value (len, p, &p);
-		memcpy (p, s, len + 1);
-		p += len + 1;
 		break;
 	}
 	case MONO_PATCH_INFO_VIRT_METHOD:
