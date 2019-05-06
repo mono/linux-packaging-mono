@@ -459,6 +459,7 @@ top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @SUPPORT_SGEN_TRUE@sgen_dirs = sgen
 @BTLS_TRUE@btls_dirs = btls
+@ENABLE_NETCORE_TRUE@btls_dirs = 
 @MONO_NATIVE_TRUE@native_dirs = native
 @CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_FALSE@SUBDIRS = $(btls_dirs) eglib arch utils cil $(sgen_dirs) metadata mini dis tests unit-tests benchmark profiler $(native_dirs)
 @CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@SUBDIRS = $(btls_dirs) eglib arch utils $(sgen_dirs) metadata mini profiler $(native_dirs)

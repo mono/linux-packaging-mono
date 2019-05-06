@@ -33,6 +33,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Runtime.CompilerServices.ExtensionAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.Aes))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Threading.LazyThreadSafetyMode))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Threading.LockRecursionException))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.TimeZoneInfo))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.TimeZoneNotFoundException))]
 namespace Microsoft.Win32.SafeHandles
@@ -74,6 +75,8 @@ namespace Microsoft.Win32.SafeHandles
     public sealed partial class SafePipeHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
         public SafePipeHandle(System.IntPtr preexistingHandle, bool ownsHandle) : base (default(bool)) { }
+        public override bool IsInvalid { get { throw null; } }
+        protected override void Dispose(bool disposing) { }
         protected override bool ReleaseHandle() { throw null; }
     }
 }
@@ -568,7 +571,9 @@ namespace System.IO.Pipes
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options, System.Security.Principal.TokenImpersonationLevel impersonationLevel) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeClientStream(string serverName, string pipeName, System.IO.Pipes.PipeDirection direction, System.IO.Pipes.PipeOptions options, System.Security.Principal.TokenImpersonationLevel impersonationLevel, System.IO.HandleInheritability inheritability) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
+        public override int InBufferSize { get { throw null; } }
         public int NumberOfServerInstances { get { throw null; } }
+        public override int OutBufferSize { get { throw null; } }
         protected internal override void CheckPipePropertyOperations() { }
         public void Connect() { }
         public void Connect(int timeout) { }
@@ -591,12 +596,13 @@ namespace System.IO.Pipes
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity, System.IO.HandleInheritability inheritability) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
         public NamedPipeServerStream(string pipeName, System.IO.Pipes.PipeDirection direction, int maxNumberOfServerInstances, System.IO.Pipes.PipeTransmissionMode transmissionMode, System.IO.Pipes.PipeOptions options, int inBufferSize, int outBufferSize, System.IO.Pipes.PipeSecurity pipeSecurity, System.IO.HandleInheritability inheritability, System.IO.Pipes.PipeAccessRights additionalAccessRights) : base (default(System.IO.Pipes.PipeDirection), default(int)) { }
+        public override int InBufferSize { get { throw null; } }
+        public override int OutBufferSize { get { throw null; } }
         public System.IAsyncResult BeginWaitForConnection(System.AsyncCallback callback, object state) { throw null; }
         public void Disconnect() { }
         public void EndWaitForConnection(System.IAsyncResult asyncResult) { }
         ~NamedPipeServerStream() { }
         public string GetImpersonationUserName() { throw null; }
-        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Flags=System.Security.Permissions.SecurityPermissionFlag.ControlPrincipal)]
         public void RunAsClient(System.IO.Pipes.PipeStreamImpersonationWorker impersonationWorker) { }
         public void WaitForConnection() { }
         public System.Threading.Tasks.Task WaitForConnectionAsync() { throw null; }

@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.3.0.341],
+AC_INIT(mono, [6.3.0.480],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -62,7 +62,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=8678BDEC-A621-42D3-B0F5-862BA3A90DC8
+MONO_CORLIB_VERSION=72b17ed6-e833-40ad-bc8b-d021b15b8d6e
 
 #
 # Put a quoted #define in config.h.
@@ -6410,7 +6410,9 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
 # Update all submodules recursively to ensure everything is checked out
-(cd $srcdir && scripts/update_submodules.sh)
+if test "x$with_core" != "xonly"; then
+	(cd $srcdir && scripts/update_submodules.sh)
+fi
 
 AC_OUTPUT([
 Makefile
@@ -6419,7 +6421,6 @@ acceptance-tests/Makefile
 llvm/Makefile
 scripts/mono-find-provides
 scripts/mono-find-requires
-mcs/class/System.Private.CoreLib/Makefile
 mk/Makefile
 mono/Makefile
 mono/btls/Makefile
@@ -6457,7 +6458,6 @@ mono/profiler/Makefile
 mono/eglib/Makefile
 mono/eglib/eglib-config.h
 mono/eglib/test/Makefile
-netcore/Makefile
 m4/Makefile
 ikvm-native/Makefile
 scripts/Makefile
@@ -6541,6 +6541,10 @@ fi
     echo "RUNTIME = $mono_build_root/runtime/mono-wrapper" >> $mcs_topdir/build/config.make
     echo "ILDISASM = $mono_build_root/runtime/monodis-wrapper" >> $mcs_topdir/build/config.make
     echo "JAY_CFLAGS = $JAY_CFLAGS" >> $mcs_topdir/build/config.make
+    echo "RID = $RID" >> $mcs_topdir/build/config.make
+    echo "COREARCH = $COREARCH" >> $mcs_topdir/build/config.make
+    echo "CORETARGETS = $CORETARGETS" >> $mcs_topdir/build/config.make
+    echo "VERSION = $VERSION" >> $mcs_topdir/build/config.make
 
     case $INSTALL in
     [[\\/$]]* | ?:[[\\/]]* ) mcs_INSTALL=$INSTALL ;;
@@ -6579,6 +6583,7 @@ fi
       echo "XTEST_PLATFORM ?= unix" >> $mcs_topdir/build/config.make
     fi
 
+    echo "PLATFORM_AOT_PREFIX = $PLATFORM_AOT_PREFIX" >> $mcs_topdir/build/config.make
     if test "x$PLATFORM_AOT_SUFFIX" != "x"; then
       echo "PLATFORM_AOT_SUFFIX = $PLATFORM_AOT_SUFFIX" >> $mcs_topdir/build/config.make
     fi

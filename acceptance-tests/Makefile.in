@@ -6006,6 +6006,8 @@ check-profiler-stress:
 	cd profiler-stress && $(MCS) -debug -define:ARCH_$(arch_target) -target:exe $(addprefix -r:, $(SYS_REFS)) -out:runner.exe @runner.exe.sources
 	cd profiler-stress && $(RUNTIME) runner.exe
 check-roslyn:
+	@echo "Runnning roslyn tests using mono from PATH:"
+	mono --version
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
 	cd $(ROSLYN_PATH); \
 	./build.sh --restore --build --test --mono || exit; \

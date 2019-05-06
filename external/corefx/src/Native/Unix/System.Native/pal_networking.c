@@ -764,6 +764,7 @@ static void ConvertMessageHeaderToMsghdr(struct msghdr* header, const struct Mes
     header->msg_iovlen = (__typeof__(header->msg_iovlen))iovlen;
     header->msg_control = messageHeader->ControlBuffer;
     header->msg_controllen = (uint32_t)messageHeader->ControlBufferLen;
+    header->msg_flags = 0;
 }
 
 int32_t SystemNative_GetControlMessageBufferSize(int32_t isIPv4, int32_t isIPv6)
@@ -1221,7 +1222,7 @@ int32_t SystemNative_ReceiveMessage(intptr_t socket, struct MessageHeader* messa
 
     assert((int32_t)header.msg_namelen <= messageHeader->SocketAddressLen);
     messageHeader->SocketAddressLen = Min((int32_t)header.msg_namelen, messageHeader->SocketAddressLen);
-    
+
     assert(header.msg_controllen <= (size_t)messageHeader->ControlBufferLen);
     messageHeader->ControlBufferLen = Min((int32_t)header.msg_controllen, messageHeader->ControlBufferLen);
 
@@ -1257,7 +1258,7 @@ int32_t SystemNative_SendMessage(intptr_t socket, struct MessageHeader* messageH
     ConvertMessageHeaderToMsghdr(&header, messageHeader, fd);
 
     ssize_t res;
-    while ((res = sendmsg(fd, &header, flags)) < 0 && errno == EINTR);
+    while ((res = sendmsg(fd, &header, socketFlags)) < 0 && errno == EINTR);
     if (res != -1)
     {
         *sent = res;
