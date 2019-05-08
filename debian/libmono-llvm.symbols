@@ -1,3 +1,4 @@
+ mini_exception_id_by_name@Base 6.3.0.560
  mini_get_underlying_type@Base 5.15.0.231
  mini_is_gsharedvt_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_klass@Base 5.15.0.231
@@ -16,6 +17,7 @@
  mono_alloc_ireg_ref@Base 5.15.0.231
  mono_alloc_lreg@Base 5.15.0.231
  mono_alloc_preg@Base 5.15.0.231
+ mono_aot_can_specialize@Base 6.3.0.560
  mono_aot_get_direct_call_symbol@Base 5.15.0.231
  mono_aot_get_got_offset@Base 5.15.0.231
  mono_aot_get_mangled_method_name@Base 5.15.0.231
