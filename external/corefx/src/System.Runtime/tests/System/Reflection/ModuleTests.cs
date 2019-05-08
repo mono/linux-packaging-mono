@@ -218,6 +218,7 @@ namespace System.Reflection.Tests
         public static IEnumerable<object[]> Methods =>
             Module.GetMethods().Select(m => new object[] { m });
 
+#if !MONODROID
         [Theory]
         [MemberData(nameof(Methods))]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.Resolve apis not supported on UapAot.")]
@@ -225,6 +226,7 @@ namespace System.Reflection.Tests
         {
             Assert.Equal(t, Module.ResolveMethod(t.MetadataToken));
         }
+#endif
 
         public static IEnumerable<object[]> BadResolveMethods =>
             new[]
@@ -248,6 +250,7 @@ namespace System.Reflection.Tests
         public static IEnumerable<object[]> Fields =>
             Module.GetFields().Select(f => new object[] { f });
 
+#if !MONODROID
         [Theory]
         [MemberData(nameof(Fields))]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Module.Resolve apis not supported on UapAot.")]
@@ -255,6 +258,7 @@ namespace System.Reflection.Tests
         {
             Assert.Equal(t, Module.ResolveField(t.MetadataToken));
         }
+#endif
 
         public static IEnumerable<object[]> BadResolveFields =>
             new[]

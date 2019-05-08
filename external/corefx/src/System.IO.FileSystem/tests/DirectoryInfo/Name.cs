@@ -8,12 +8,14 @@ namespace System.IO.Tests
 {
     public class DirectoryInfo_Name : FileSystemTest
     {
+#if !MONODROID
         [Fact]
         public void CurrentDirectory()
         {
             var info = new DirectoryInfo(".");
             Assert.Equal(Path.GetFileName(Directory.GetCurrentDirectory()), info.Name);
         }
+#endif
 
         [Fact]
         public void UNCShareName()

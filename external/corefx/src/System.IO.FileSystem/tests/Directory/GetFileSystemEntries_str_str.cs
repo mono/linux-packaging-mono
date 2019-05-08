@@ -905,6 +905,7 @@ namespace System.IO.Tests
             });
         }
 
+#if !MONODROID
         [Fact]
         [PlatformSpecific(TestPlatforms.AnyUnix)]  // Unix-invalid search patterns throws no exception 
         public void UnixSearchPatternInvalid()
@@ -912,6 +913,7 @@ namespace System.IO.Tests
             GetEntries(TestDirectory, "\0");
             GetEntries(TestDirectory, string.Format("te{0}st", "\0".ToString()));
         }
+#endif
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)]  // ? in search pattern returns results
@@ -986,6 +988,7 @@ namespace System.IO.Tests
             }
         }
 
+#if !MONODROID
         [Theory,
             InlineData("         "),
             InlineData(" "),
@@ -1024,6 +1027,7 @@ namespace System.IO.Tests
                 Assert.Contains(Path.Combine(testDir.FullName, valid), GetEntries(testDir.FullName, valid));
             }
         }
+#endif
 
         #endregion
     }

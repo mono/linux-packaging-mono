@@ -247,12 +247,14 @@ namespace System.IO.Tests
             Assert.False(Exists(component));
         }
 
+#if !MONODROID
         [Theory,
             MemberData(nameof(UncPathsWithoutShareName))]
         public void UncPathWithoutShareNameAsPath_ReturnsFalse(string component)
         {
             Assert.False(Exists(component));
         }
+#endif
 
         [Theory,
             MemberData(nameof(PathsWithComponentLongerThanMaxComponent))]

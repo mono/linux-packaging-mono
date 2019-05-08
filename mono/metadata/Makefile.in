@@ -168,11 +168,10 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libmonoruntimeincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	$(glib_libs) \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../utils/libmonoutils.la \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	../sgen/libmonosgen.la \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@	libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_FALSE@libmono_icall_table_la_DEPENDENCIES = $(glib_libs) \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_FALSE@	../utils/libmonoutils.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_FALSE@	../sgen/libmonosgen.la \
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_FALSE@	libmonoruntimesgen.la
 am__libmono_icall_table_la_SOURCES_DIST = icall-table.c
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_OBJECTS = libmono_icall_table_la-icall-table.lo
 libmono_icall_table_la_OBJECTS = $(am_libmono_icall_table_la_OBJECTS)
@@ -186,11 +185,11 @@ libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_icall_table_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_ICALL_TABLES_TRUE@am_libmono_icall_table_la_rpath = -rpath \
 @DISABLE_ICALL_TABLES_TRUE@	$(libdir)
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	$(glib_libs) \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../utils/libmonoutils.la \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	../sgen/libmonosgen.la \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@	libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@libmono_ilgen_la_DEPENDENCIES =  \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@	$(glib_libs) \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@	../utils/libmonoutils.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@	../sgen/libmonosgen.la \
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@	libmonoruntimesgen.la
 am__libmono_ilgen_la_SOURCES_DIST = method-builder-ilgen.c \
 	method-builder-ilgen.h method-builder-ilgen-internals.h \
 	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
@@ -1048,7 +1047,8 @@ libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_FALSE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@WASM_TRUE@libmono_icall_table_la_LIBADD = # empty to avoid duplicate symbols when enabling dynamic linking
 
 #
 # This library contains code to generate IL at runtime
@@ -1065,7 +1065,8 @@ libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @ENABLE_ILGEN_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@WASM_TRUE@libmono_ilgen_la_LIBADD = # empty to avoid duplicate symbols when enabling dynamic linking
 CLEANFILES = mono-bundle.stamp
 null_sources = \
 	console-null.c
