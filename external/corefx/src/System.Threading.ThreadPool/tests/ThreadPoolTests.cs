@@ -250,7 +250,7 @@ namespace System.Threading.ThreadPools.Tests
                             Assert.True(toUnregister.Unregister(threadDone));
                         }
                         test();
-                        backgroundAsyncLocalValue = asyncLocal.Value;
+                        Volatile.Write(ref backgroundAsyncLocalValue, asyncLocal.Value);
                     }
                     catch (Exception ex)
                     {
@@ -288,7 +288,7 @@ namespace System.Threading.ThreadPools.Tests
                 },
                 obj);
             waitForBackgroundWork(false);
-            Assert.Equal(1, backgroundAsyncLocalValue);
+            Assert.Equal(1, Volatile.Read(ref backgroundAsyncLocalValue));
 
             ThreadPool.UnsafeQueueUserWorkItem(
                 state =>
@@ -300,7 +300,7 @@ namespace System.Threading.ThreadPools.Tests
                 },
                 obj);
             waitForBackgroundWork(false);
-            Assert.Equal(0, backgroundAsyncLocalValue);
+            Assert.Equal(0, Volatile.Read(ref backgroundAsyncLocalValue));
 
             registeredWaitHandle =
                 ThreadPool.RegisterWaitForSingleObject(
@@ -317,7 +317,7 @@ namespace System.Threading.ThreadPools.Tests
                     UnexpectedTimeoutMilliseconds,
                     false);
             waitForBackgroundWork(true);
-            Assert.Equal(1, backgroundAsyncLocalValue);
+            Assert.Equal(1, Volatile.Read(ref backgroundAsyncLocalValue));
 
             registeredWaitHandle =
                 ThreadPool.UnsafeRegisterWaitForSingleObject(
@@ -334,7 +334,7 @@ namespace System.Threading.ThreadPools.Tests
                     UnexpectedTimeoutMilliseconds,
                     false);
             waitForBackgroundWork(true);
-            Assert.Equal(0, backgroundAsyncLocalValue);
+            Assert.Equal(0, Volatile.Read(ref backgroundAsyncLocalValue));
         }
 
         [Fact]

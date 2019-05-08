@@ -72,6 +72,7 @@
 #include <mono/mini/jit-icalls.h>
 #include <mono/mini/debugger-agent.h>
 #include <mono/mini/ee.h>
+#include <mono/mini/trace.h>
 
 #ifdef TARGET_ARM
 #include <mono/mini/mini-arm.h>
@@ -4804,10 +4805,18 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 			MINT_IN_BREAK;
 		}
 		MINT_IN_CASE(MINT_LDSFLDA) {
-			MonoClassField *field = (MonoClassField*)imethod->data_items[*(guint16 *)(ip + 1)];
-			sp->data.p = mono_class_static_field_address (imethod->domain, field);
-			EXCEPTION_CHECKPOINT;
-			ip += 2;
+			MonoVTable *vtable = (MonoVTable*) imethod->data_items [*(guint16*)(ip + 1)];
+			INIT_VTABLE (vtable);
+			sp->data.p = imethod->data_items [*(guint16*)(ip + 2)];
+			ip += 3;
+			++sp;
+			MINT_IN_BREAK;
+		}
+
+		MINT_IN_CASE(MINT_LDSSFLDA) {
+			guint32 offset = READ32(ip + 1);
+			sp->data.p = mono_get_special_static_data (offset);
+			ip += 3;
 			++sp;
 			MINT_IN_BREAK;
 		}
@@ -6012,6 +6021,28 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 				g_free (prof_ctx);
 			}
 
+			MINT_IN_BREAK;
+		}
+
+		MINT_IN_CASE(MINT_TRACE_ENTER) {
+			ip += 1;
+
+			MonoProfilerCallContext *prof_ctx = g_alloca (sizeof (MonoProfilerCallContext));
+			prof_ctx->interp_frame = frame;
+			prof_ctx->method = imethod->method;
+
+			mono_trace_enter_method (imethod->method, prof_ctx);
+			MINT_IN_BREAK;
+		}
+
+		MINT_IN_CASE(MINT_TRACE_EXIT) {
+			ip += 1;
+
+			MonoProfilerCallContext *prof_ctx = g_alloca (sizeof (MonoProfilerCallContext));
+			prof_ctx->interp_frame = frame;
+			prof_ctx->method = imethod->method;
+
+			mono_trace_leave_method (imethod->method, prof_ctx);
 			MINT_IN_BREAK;
 		}
 

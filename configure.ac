@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.3.0.480],
+AC_INIT(mono, [6.3.0.560],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -4940,14 +4940,15 @@ AC_SEARCH_LIBS(dlopen, dl)
 old_ldflags="${LDFLAGS}"
 # GNU specific option, this confuses IBM ld, but do offer alternatives when possible
 if test $lt_cv_prog_gnu_ld = yes; then
-	LDFLAGS="${LDFLAGS} -Wl,-export-dynamic"
+	LDFLAGS="${LDFLAGS} -Wl,-export-dynamic,-Bsymbolic"
 else
 	case $host in
 	*-*-aix*|*-*-os400*)
+		LDFLAGS="${LDFLAGS} -bsymbolic"
 		;;
 	*)
 		dnl Try to use export-dynamic anyways
-		LDFLAGS="${LDFLAGS} -Wl,-export-dynamic"
+		LDFLAGS="${LDFLAGS} -Wl,-export-dynamic,-Bsymbolic"
 		;;
 	esac
 fi

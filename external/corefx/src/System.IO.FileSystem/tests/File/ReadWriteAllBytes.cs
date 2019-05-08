@@ -130,6 +130,7 @@ namespace System.IO.Tests
             Assert.Equal(0, File.ReadAllBytes(path).Length);
         }
 
+#if !MONODROID
         [Theory]
         [PlatformSpecific(TestPlatforms.Linux)]
         [InlineData("/proc/cmdline")]
@@ -173,5 +174,6 @@ namespace System.IO.Tests
         {
             Assert.InRange(File.ReadAllBytes(path).Length, 1, int.MaxValue);
         }
+#endif
     }
 }

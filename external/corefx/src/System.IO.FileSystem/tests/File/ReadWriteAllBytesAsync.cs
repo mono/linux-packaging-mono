@@ -144,6 +144,7 @@ namespace System.IO.Tests
             Assert.Equal(0, (await File.ReadAllBytesAsync(path)).Length);
         }
 
+#if !MONODROID
         [Theory]
         [PlatformSpecific(TestPlatforms.Linux)]
         [InlineData("/proc/cmdline")]
@@ -187,5 +188,6 @@ namespace System.IO.Tests
         {
             Assert.InRange((await File.ReadAllBytesAsync(path)).Length, 1, int.MaxValue);
         }
+#endif
     }
 }

@@ -29,6 +29,7 @@ namespace System.IO.Tests
             Assert.False(File.Exists(fileName));
         }
 
+#if !MONODROID
         [Fact]
         public void FileShareDeleteNewRename()
         {
@@ -42,6 +43,7 @@ namespace System.IO.Tests
                 Assert.True(File.Exists(newFileName));
             }
         }
+#endif
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
@@ -67,6 +69,7 @@ namespace System.IO.Tests
             Assert.False(File.Exists(fileName));
         }
 
+#if !MONODROID
         [Fact]
         public void FileShareDeleteExistingRename()
         {
@@ -86,6 +89,7 @@ namespace System.IO.Tests
                 Assert.True(File.Exists(newFileName));
             }
         }
+#endif
 
         [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // file sharing restriction limitations on Unix
