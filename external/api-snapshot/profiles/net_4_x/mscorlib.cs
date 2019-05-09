@@ -11993,7 +11993,6 @@ namespace System.Reflection.Emit
         public override bool IsDynamic { get { throw null; } }
         public override string Location { get { throw null; } }
         public override System.Reflection.Module ManifestModule { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool ReflectionOnly { get { throw null; } }
         public void AddResourceFile(string name, string fileName) { }
         public void AddResourceFile(string name, string fileName, System.Reflection.ResourceAttributes attribute) { }
