@@ -277,18 +277,18 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
 	icall-decl.h icall-def.h icall-internals.h icall-signatures.h \
-	icall-table.h image.c image-internals.h jit-info.c loader.c \
-	loader-internals.h locales.c locales.h lock-tracer.c \
-	lock-tracer.h marshal.c marshal.h marshal-internals.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder-internals.h method-builder.c mono-basic-block.c \
-	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
-	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
-	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h normalization-tables.h \
+	icall-table.h image.c image-internals.h jit-icall-reg.h \
+	jit-info.c loader.c loader-internals.h locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h \
+	marshal-internals.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder-internals.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
+	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.h object.c object-forward.h \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
@@ -447,18 +447,18 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	external-only.h w32file.c w32file.h w32file-internals.h \
 	filewatcher.c filewatcher.h gc-internals.h icall.c icalls.h \
 	icall-decl.h icall-def.h icall-internals.h icall-signatures.h \
-	icall-table.h image.c image-internals.h jit-info.c loader.c \
-	loader-internals.h locales.c locales.h lock-tracer.c \
-	lock-tracer.h marshal.c marshal.h marshal-internals.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder-internals.h method-builder.c mono-basic-block.c \
-	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
-	debug-internals.h mono-endian.c mono-endian.h mono-hash.c \
-	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h normalization-tables.h \
+	icall-table.h image.c image-internals.h jit-icall-reg.h \
+	jit-info.c loader.c loader-internals.h locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h \
+	marshal-internals.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder-internals.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
+	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.h object.c object-forward.h \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
@@ -1141,6 +1141,7 @@ common_sources = \
 	icall-table.h	\
 	image.c			\
 	image-internals.h	\
+	jit-icall-reg.h		\
 	jit-info.c		\
 	loader.c		\
 	loader-internals.h	\
