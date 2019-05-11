@@ -154,7 +154,7 @@ icallarray_print (const char *format, ...)
 static GENERATE_GET_CLASS_WITH_CACHE (module, "System.Reflection", "Module")
 
 static void
-array_set_value_impl (MonoArrayHandle arr, MonoObjectHandle value, guint32 pos, MonoError *error);
+array_set_value_impl (MonoArrayHandle arr, MonoObjectHandle value, guint32 pos, gboolean strict, MonoError *error);
 
 static MonoArrayHandle
 type_array_from_modifiers (MonoImage *image, MonoType *type, int optional, MonoError *error);
@@ -178,6 +178,8 @@ mono_icall_get_file_path_prefix (const gchar *path)
 	return "file://";
 }
 #endif /* HOST_WIN32 */
+
+MonoJitICallInfos mono_jit_icall_info;
 
 MonoObjectHandle
 ves_icall_System_Array_GetValueImpl (MonoArrayHandle array, guint32 pos, MonoError *error)
@@ -252,7 +254,7 @@ ves_icall_System_Array_GetValue (MonoArrayHandle arr, MonoArrayHandle indices, M
 void
 ves_icall_System_Array_SetValueImpl (MonoArrayHandle arr, MonoObjectHandle value, guint32 pos, MonoError *error)
 {
-	array_set_value_impl (arr, value, pos, error);
+	array_set_value_impl (arr, value, pos, FALSE, error);
 }
 
 static inline void
@@ -263,7 +265,7 @@ set_invalid_cast (MonoError *error, MonoClass *src_class, MonoClass *dst_class)
 }
 
 static void
-array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle, guint32 pos, MonoError *error)
+array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle, guint32 pos, gboolean strict, MonoError *error)
 {
 	MonoClass *ac, *vc, *ec;
 	gint32 esize, vsize;
@@ -273,6 +275,8 @@ array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle,
 	gint64 i64 = 0;
 	gdouble r64 = 0;
 	gboolean castOk = FALSE;
+	gboolean et_isenum = FALSE;
+	gboolean vt_isenum = FALSE;
 
 	error_init (error);
 
@@ -312,18 +316,20 @@ array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle,
 
 #ifdef ENABLE_NETCORE
 #define WIDENING_MSG NULL
+#define WIDENING_ARG NULL
 #else
 #define WIDENING_MSG "not a widening conversion"
+#define WIDENING_ARG "value"
 #endif
 
 #define NO_WIDENING_CONVERSION G_STMT_START{				\
-		mono_error_set_argument (error, "value", WIDENING_MSG); \
+		mono_error_set_argument (error, WIDENING_ARG, WIDENING_MSG); \
 		break;							\
 	}G_STMT_END
 
 #define CHECK_WIDENING_CONVERSION(extra) G_STMT_START{			\
 		if (esize < vsize + (extra)) {				\
-			mono_error_set_argument (error, "value", WIDENING_MSG); \
+			mono_error_set_argument (error, WIDENING_ARG, WIDENING_MSG); \
 			break;						\
 		}							\
 	}G_STMT_END
@@ -409,10 +415,20 @@ array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle,
 
 	vsize = mono_class_value_size (vc, NULL);
 
-	if (et == MONO_TYPE_VALUETYPE && m_class_is_enumtype (m_class_get_byval_arg (ec)->data.klass))
+	et_isenum = et == MONO_TYPE_VALUETYPE && m_class_is_enumtype (m_class_get_byval_arg (ec)->data.klass);
+	vt_isenum = vt == MONO_TYPE_VALUETYPE && m_class_is_enumtype (m_class_get_byval_arg (vc)->data.klass);
+
+#if ENABLE_NETCORE
+	if (strict && et_isenum && !vt_isenum) {
+		INVALID_CAST;
+		goto leave;
+	}
+#endif
+
+	if (et_isenum)
 		et = mono_class_enum_basetype_internal (m_class_get_byval_arg (ec)->data.klass)->type;
 
-	if (vt == MONO_TYPE_VALUETYPE && m_class_is_enumtype (m_class_get_byval_arg (vc)->data.klass))
+	if (vt_isenum)
 		vt = mono_class_enum_basetype_internal (m_class_get_byval_arg (vc)->data.klass)->type;
 
 #define ASSIGN_UNSIGNED(etype) G_STMT_START{\
@@ -657,7 +673,7 @@ ves_icall_System_Array_SetValue (MonoArrayHandle arr, MonoObjectHandle value,
 			return;
 		}
 
-		array_set_value_impl (arr, value, idx, error);
+		array_set_value_impl (arr, value, idx, TRUE, error);
 		return;
 	}
 	
@@ -681,7 +697,7 @@ ves_icall_System_Array_SetValue (MonoArrayHandle arr, MonoObjectHandle value,
 		pos = pos * dim.length + idx - dim.lower_bound;
 	}
 
-	array_set_value_impl (arr, value, pos, error);
+	array_set_value_impl (arr, value, pos, TRUE, error);
 }
 
 MonoArrayHandle
@@ -4529,6 +4545,7 @@ handle_parent:
 		guint32 flags = 0;
 		if (method)
 			flags = method->flags;
+#if !ENABLE_NETCORE  
 		if ((prop->get && ((prop->get->flags & METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == METHOD_ATTRIBUTE_PUBLIC)) ||
 			(prop->set && ((prop->set->flags & METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == METHOD_ATTRIBUTE_PUBLIC))) {
 			if (bflags & BFLAGS_Public)
@@ -4541,6 +4558,10 @@ handle_parent:
 		}
 		if (!match)
 			continue;
+#endif
+// for .NET Core we load both public and nonpublic
+// private properties in subclasses can hide public properties with the same name in Parents
+
 		match = 0;
 		if (flags & METHOD_ATTRIBUTE_STATIC) {
 			if (bflags & BFLAGS_Static)
@@ -5070,15 +5091,21 @@ fail:
 	return NULL_HANDLE_ARRAY;
 }
 
-MonoStringHandle
-ves_icall_System_Reflection_RuntimeAssembly_GetAotId (MonoError *error)
+MonoBoolean
+ves_icall_System_Reflection_RuntimeAssembly_GetAotIdInternal (MonoArrayHandle guid_h, MonoError *error)
 {
-	char *guid = mono_runtime_get_aotid ();
-	if (guid == NULL)
-		return MONO_HANDLE_CAST (MonoString, mono_new_null ());
-	MonoStringHandle res = mono_string_new_handle (mono_domain_get (), guid, error);
-	g_free (guid);
-	return res;
+	g_assert (mono_array_handle_length (guid_h) == 16);
+
+	guint8 *aotid = mono_runtime_get_aotid_arr ();
+	if (!aotid) {
+		return FALSE;
+	} else {
+		MONO_ENTER_NO_SAFEPOINTS;
+		guint8 *data = (guint8*) mono_array_addr_with_size_internal (MONO_HANDLE_RAW (guid_h), 1, 0);
+		memcpy (data, aotid, 16);
+		MONO_EXIT_NO_SAFEPOINTS;
+		return TRUE;
+	}
 }
 
 static MonoAssemblyName*
@@ -5460,7 +5487,6 @@ ves_icall_GetCurrentMethod (MonoError *error)
 
 	return mono_method_get_object_handle (mono_domain_get (), m, NULL, error);
 }
-
 
 static MonoMethod*
 mono_method_get_equivalent_method (MonoMethod *method, MonoClass *klass)
@@ -6289,12 +6315,25 @@ leave:
 	return ret;
 }
 
-MonoStringHandle
-ves_icall_System_Reflection_RuntimeModule_GetGuidInternal (MonoImage *image, MonoError *error)
+void
+ves_icall_System_Reflection_RuntimeModule_GetGuidInternal (MonoImage *image, MonoArrayHandle guid_h, MonoError *error)
 {
-	MonoDomain *domain = mono_domain_get ();
+	g_assert (mono_array_handle_length (guid_h) == 16);
 
-	return mono_string_new_handle (domain, image->guid, error);
+	if (!image->metadata_only) {
+		g_assert (image->heap_guid.data);
+		g_assert (image->heap_guid.size >= 16);
+
+		MONO_ENTER_NO_SAFEPOINTS;
+		guint8 *data = (guint8*) mono_array_addr_with_size_internal (MONO_HANDLE_RAW (guid_h), 1, 0);
+		memcpy (data, (guint8*)image->heap_guid.data, 16);
+		MONO_EXIT_NO_SAFEPOINTS;
+	} else {
+		MONO_ENTER_NO_SAFEPOINTS;
+		guint8 *data = (guint8*) mono_array_addr_with_size_internal (MONO_HANDLE_RAW (guid_h), 1, 0);
+		memset (data, 0, 16);
+		MONO_EXIT_NO_SAFEPOINTS;
+	}
 }
 
 #ifndef HOST_WIN32
@@ -9097,50 +9136,78 @@ mono_register_jit_icall_wrapper (MonoJitICallInfo *info, gconstpointer wrapper)
 	mono_icall_unlock ();
 }
 
-MonoJitICallInfo *
-mono_register_jit_icall_full (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean avoid_wrapper, const char *c_symbol)
-{
-	MonoJitICallInfo *info;
+// The few functions that are registered multiple times need to be known here.
 
+void
+mono_no_trampolines (void); // prototype to avoid warning
+
+void
+mono_no_trampolines (void)
+{
+	g_assert_not_reached ();
+}
+
+// temporary -- later will just be NULL
+static void
+mono_jit_icall_info_free (gpointer info)
+{
+	if (!mono_is_jit_icall_info (info))
+		g_free (info);
+}
+
+MonoJitICallInfo *
+mono_register_jit_icall_info (MonoJitICallInfo *info, gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean avoid_wrapper, const char *c_symbol)
+{
 	g_assert (func);
 	g_assert (name);
+
+	// temporarily allow NULL, until conversion to static storage complete
+	if (info)
+		g_assert (mono_is_jit_icall_info (info));
+	else
+		info = g_new0 (MonoJitICallInfo, 1);
 
 	mono_icall_lock ();
 
 	if (!jit_icall_hash_name) {
-		jit_icall_hash_name = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
+		jit_icall_hash_name = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, mono_jit_icall_info_free);
 		jit_icall_hash_addr = g_hash_table_new (NULL, NULL);
 	}
 
-	if ((info = (MonoJitICallInfo *)g_hash_table_lookup (jit_icall_hash_name, name))) {
-		g_warning ("jit icall already defined \"%s\" \"%s\" %p %p\n", name, info->name, func, info->func);
-		g_assert_not_reached ();
+	// Do not allow duplicate registration, either name or function or info,
+	// except the function mono_no_trampolines is reused.
+
+	MonoJitICallInfo const * const existing_infos [ ] = {
+		(MonoJitICallInfo *)g_hash_table_lookup (jit_icall_hash_name, name),
+		(MonoJitICallInfo *)g_hash_table_lookup (jit_icall_hash_addr, (gpointer)func),
+	};
+	for (int i = 0; i < 2; ++i) {
+		MonoJitICallInfo const * const existing_info = existing_infos [i];
+
+		g_assertf (!existing_info || func == (gpointer)mono_no_trampolines,
+			"jit icall info already hashed name:%s existing_name:%s func:%p existing_func:%p i:%d\n",
+			name, existing_info->name, func, existing_info->func, i);
 	}
 
-	info = g_new0 (MonoJitICallInfo, 1);
-	
+	g_assertf (!info->inited, "%s", name);
+
 	info->name = name;
 	info->func = func;
 	info->sig = sig;
 	info->c_symbol = c_symbol;
 
-	if (avoid_wrapper) {
-		info->wrapper = func;
-	} else {
-		info->wrapper = NULL;
-	}
+	// Fill in wrapper ahead of time, to just be func, to avoid
+	// later initializing it to anything else. So therefore, no wrapper.
+	info->wrapper = avoid_wrapper ? func : NULL;
 
 	g_hash_table_insert (jit_icall_hash_name, (gpointer)info->name, info);
 	g_hash_table_insert (jit_icall_hash_addr, (gpointer)func, info);
 
+	g_assertf (!info->inited, "%s", name);
+	info->inited = TRUE;
+
 	mono_icall_unlock ();
 	return info;
-}
-
-MonoJitICallInfo *
-mono_register_jit_icall (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean no_wrapper)
-{
-	return mono_register_jit_icall_full (func, name, sig, no_wrapper, NULL);
 }
 
 int

@@ -127,6 +127,7 @@ mono_runtime_object_init_handle (MonoObjectHandle this_obj, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
+	HANDLE_FUNCTION_ENTER ();
 	error_init (error);
 
 	MonoClass * const klass = MONO_HANDLE_GETVAL (this_obj, vtable)->klass;
@@ -140,10 +141,10 @@ mono_runtime_object_init_handle (MonoObjectHandle this_obj, MonoError *error)
 		mono_runtime_invoke_checked (method, raw, NULL, error);
 		mono_gchandle_free_internal (gchandle);
 	} else {
-		mono_runtime_invoke_handle (method, this_obj, NULL, error);
+		mono_runtime_invoke_handle_void (method, this_obj, NULL, error);
 	}
 
-	return is_ok (error);
+	HANDLE_FUNCTION_RETURN_VAL (is_ok (error));
 }
 
 /**
@@ -4831,7 +4832,7 @@ create_unhandled_exception_eventargs (MonoObjectHandle exc, MonoError *error)
 	obj = mono_object_new_handle (mono_domain_get (), klass, error);
 	goto_if_nok (error, return_null);
 
-	mono_runtime_invoke_handle (method, obj, args, error);
+	mono_runtime_invoke_handle_void (method, obj, args, error);
 	goto_if_nok (error, return_null);
 	return obj;
 
