@@ -45,6 +45,7 @@
  mono_get_block_region_notry@Base 5.15.0.231
  mono_get_jit_icall_info@Base 6.3.0.651
  mono_icall_get_wrapper@Base 5.15.0.231
+ mono_icall_get_wrapper_full@Base 6.3.0.658
  mono_icall_get_wrapper_method@Base 5.21.0.527
  mono_inst_name@Base 5.15.0.231
  mono_is_power_of_two@Base 5.15.0.231
