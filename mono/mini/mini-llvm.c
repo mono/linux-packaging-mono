@@ -7732,7 +7732,7 @@ emit_method_inner (EmitContext *ctx)
 	}
 
 	if (!cfg->llvm_only && cfg->compile_aot && mono_threads_are_safepoints_enabled () && requires_safepoint)
-		LLVMSetGC (method, "mono");
+		LLVMSetGC (method, "coreclr");
 	LLVMSetLinkage (method, LLVMPrivateLinkage);
 
 	mono_llvm_add_func_attr (method, LLVM_ATTR_UW_TABLE);
@@ -9938,17 +9938,6 @@ emit_default_dbg_loc (EmitContext *ctx, LLVMBuilderRef builder)
 #endif
 }
 
-void
-default_mono_llvm_unhandled_exception (void)
-{
-	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
-	MonoObject *target = mono_gchandle_get_target_internal (jit_tls->thrown_exc);
-
-	mono_unhandled_exception_internal (target);
-	mono_invoke_unhandled_exception_hook (target);
-	g_assert_not_reached ();
-}
-
 /*
   DESIGN:
   - Emit LLVM IR from the mono IR using the LLVM C API.
@@ -10066,11 +10055,6 @@ mono_llvm_free_domain_info (MonoDomain *domain)
 
 void
 mono_llvm_init (void)
-{
-}
-
-void
-default_mono_llvm_unhandled_exception (void)
 {
 }
 
@@ -10328,8 +10312,6 @@ static void
 llvm_jit_finalize_method (EmitContext *ctx)
 {
 	MonoCompile *cfg = ctx->cfg;
-
-#if LLVM_API_VERSION > 100
 	MonoDomain *domain = mono_domain_get ();
 	MonoJitDomainInfo *domain_info;
 	int nvars = g_hash_table_size (ctx->jit_callees);
@@ -10369,9 +10351,6 @@ llvm_jit_finalize_method (EmitContext *ctx)
 		i ++;
 	}
 	mono_domain_unlock (domain);
-#else
-	g_assert_not_reached ();
-#endif
 }
 
 #else
