@@ -2049,6 +2049,8 @@ namespace System.Linq.Expressions
         public System.Delegate Compile() { throw null; }
         public System.Delegate Compile(bool preferInterpretation) { throw null; }
         public System.Delegate Compile(System.Runtime.CompilerServices.DebugInfoGenerator debugInfoGenerator) { throw null; }
+        public void CompileToMethod(System.Reflection.Emit.MethodBuilder method) { }
+        public void CompileToMethod(System.Reflection.Emit.MethodBuilder method, System.Runtime.CompilerServices.DebugInfoGenerator debugInfoGenerator) { }
     }
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.Linq.Expressions.Expression.ListInitExpressionProxy")]
     public sealed partial class ListInitExpression : System.Linq.Expressions.Expression
@@ -2452,6 +2454,10 @@ namespace System.Runtime.CompilerServices
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("do not use this method", true)]
         public static object ExpandoTrySetValue(System.Dynamic.ExpandoObject expando, object indexClass, int index, object value, string name, bool ignoreCase) { throw null; }
+        [System.ObsoleteAttribute("do not use this method")]
+        public static System.Runtime.CompilerServices.IRuntimeVariables MergeRuntimeVariables(System.Runtime.CompilerServices.IRuntimeVariables first, System.Runtime.CompilerServices.IRuntimeVariables second, int[] indexes) { throw null; }
+        [System.ObsoleteAttribute("do not use this method")]
+        public static System.Linq.Expressions.Expression Quote(System.Linq.Expressions.Expression expression, object hoistedLocals, object[] locals) { throw null; }
     }
     public partial class StrongBox<T> : System.Runtime.CompilerServices.IStrongBox
     {
