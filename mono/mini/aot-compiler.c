@@ -6468,9 +6468,6 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 	case MONO_PATCH_INFO_GC_NURSERY_START:
 	case MONO_PATCH_INFO_GC_NURSERY_BITS:
 		break;
-	case MONO_PATCH_INFO_METHOD_REL:
-		encode_value ((gint)patch_info->data.offset, p, &p);
-		break;
 	case MONO_PATCH_INFO_SWITCH: {
 		gpointer *table = (gpointer *)patch_info->data.table->table;
 		int k;
@@ -13281,7 +13278,8 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options,
 	acfg->aot_opts.nftnptr_arg_trampolines = 128;
 #endif
 	acfg->aot_opts.nunbox_arbitrary_trampolines = 256;
-	acfg->aot_opts.llvm_path = g_strdup ("");
+	if (!acfg->aot_opts.llvm_path)
+		acfg->aot_opts.llvm_path = g_strdup ("");
 	acfg->aot_opts.temp_path = g_strdup ("");
 #ifdef MONOTOUCH
 	acfg->aot_opts.use_trampolines_page = TRUE;
