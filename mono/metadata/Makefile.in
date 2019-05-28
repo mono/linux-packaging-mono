@@ -283,12 +283,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
 	metadata.c metadata-verify.c metadata-internals.h \
 	method-builder.h method-builder-internals.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
-	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
+	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
+	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.h object.c object-forward.h \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
@@ -453,12 +454,13 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
 	metadata.c metadata-verify.c metadata-internals.h \
 	method-builder.h method-builder-internals.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash.c mono-hash.h mono-conc-hash.c \
-	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
+	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
+	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h monitor.h normalization-tables.h \
 	number-formatter.h number-ms.h object.c object-forward.h \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
@@ -1163,12 +1165,14 @@ common_sources = \
 	method-builder.c 	\
 	mono-basic-block.c	\
 	mono-basic-block.h	\
+	mono-config-internals.h	\
 	mono-config.c		\
 	mono-debug.h		\
 	mono-debug.c		\
 	debug-internals.h	\
 	mono-endian.c		\
 	mono-endian.h		\
+	mono-hash-internals.h	\
 	mono-hash.c		\
 	mono-hash.h		\
 	mono-conc-hash.c		\

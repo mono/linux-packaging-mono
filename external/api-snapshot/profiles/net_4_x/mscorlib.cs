@@ -3649,7 +3649,7 @@ namespace System
     [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public readonly partial struct Memory<T>
+    public readonly partial struct Memory<T> : System.IEquatable<System.Memory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -4021,18 +4021,9 @@ namespace System
         public override bool Equals(object value) { throw null; }
         public bool Equals(System.Range other) { throw null; }
         public override int GetHashCode() { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Range.OffsetAndLength GetOffsetAndLength(int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public [System.Runtime.CompilerServices.TupleElementNamesAttribute(new string[]{ "Offset", "Length"})]System.ValueTuple<int, int> GetOffsetAndLength(int length) { throw null; }
         public static System.Range StartAt(System.Index start) { throw null; }
         public override string ToString() { throw null; }
-        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public readonly partial struct OffsetAndLength
-        {
-            private readonly int _dummyPrimitive;
-            public OffsetAndLength(int offset, int length) { throw null; }
-            public int Length { get { throw null; } }
-            public int Offset { get { throw null; } }
-            public void Deconstruct(out int offset, out int length) { throw null; }
-        }
     }
     [System.SerializableAttribute]
     public partial class RankException : System.SystemException
@@ -4045,7 +4036,7 @@ namespace System
     [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public readonly partial struct ReadOnlyMemory<T>
+    public readonly partial struct ReadOnlyMemory<T> : System.IEquatable<System.ReadOnlyMemory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -7170,6 +7161,7 @@ namespace System.Collections.ObjectModel
         bool System.Collections.IList.IsReadOnly { get { throw null; } }
         object System.Collections.IList.this[int index] { get { throw null; } set { } }
         public void Add(T item) { }
+        public void AddRange(System.Collections.Generic.IEnumerable<T> collection) { }
         public void Clear() { }
         protected virtual void ClearItems() { }
         public bool Contains(T item) { throw null; }
@@ -7178,9 +7170,15 @@ namespace System.Collections.ObjectModel
         public int IndexOf(T item) { throw null; }
         public void Insert(int index, T item) { }
         protected virtual void InsertItem(int index, T item) { }
+        protected virtual void InsertItemsRange(int index, System.Collections.Generic.IEnumerable<T> collection) { }
+        public void InsertRange(int index, System.Collections.Generic.IEnumerable<T> collection) { }
         public bool Remove(T item) { throw null; }
         public void RemoveAt(int index) { }
         protected virtual void RemoveItem(int index) { }
+        protected virtual void RemoveItemsRange(int index, int count) { }
+        public void RemoveRange(int index, int count) { }
+        protected virtual void ReplaceItemsRange(int index, int count, System.Collections.Generic.IEnumerable<T> collection) { }
+        public void ReplaceRange(int index, int count, System.Collections.Generic.IEnumerable<T> collection) { }
         protected virtual void SetItem(int index, T item) { }
         void System.Collections.ICollection.CopyTo(System.Array array, int index) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
