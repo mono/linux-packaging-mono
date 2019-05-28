@@ -8,6 +8,15 @@ using System.Text;
 
 internal static class DllImports
 {
+#if MONO && MOBILE
+    internal static int GetLogicalDrives() => throw new PlatformNotSupportedException();
+
+    internal static bool GetDiskFreeSpaceEx(String drive, out long freeBytesForUser, out long totalBytes, out long freeBytes) => throw new PlatformNotSupportedException();
+
+    internal static bool GetVolumeInformation(String drive, [Out]StringBuilder volumeName, int volumeNameBufLen, out int volSerialNumber, out int maxFileNameLen, out int fileSystemFlags, [Out]StringBuilder fileSystemName, int fileSystemNameBufLen) => throw new PlatformNotSupportedException();
+
+    internal static int GetDriveType(string drive) => throw new PlatformNotSupportedException();
+#else
     [DllImport("kernel32.dll", SetLastError = true)]
     internal static extern int GetLogicalDrives();
 
@@ -19,5 +28,6 @@ internal static class DllImports
 
     [DllImport("kernel32.dll", EntryPoint = "GetDriveTypeW", CharSet = CharSet.Unicode, SetLastError = true, BestFitMapping = false)]
     internal static extern int GetDriveType(string drive);
+#endif
 }
 
