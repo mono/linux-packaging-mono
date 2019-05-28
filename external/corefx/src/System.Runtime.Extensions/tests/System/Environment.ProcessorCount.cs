@@ -64,8 +64,12 @@ namespace System.Tests
         private static extern long sysconf(int name);
 #endif
 
+#if MONO && MOBILE
+        internal static void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo) => throw new PlatformNotSupportedException();
+#else
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+#endif
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct SYSTEM_INFO
