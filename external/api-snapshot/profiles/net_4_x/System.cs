@@ -8767,6 +8767,7 @@ namespace System.Net
         Tls = 192,
         Tls11 = 768,
         Tls12 = 3072,
+        Tls13 = 12288,
     }
     public partial class ServicePoint
     {
@@ -12224,6 +12225,7 @@ namespace System.Security.Authentication
         Tls11 = 768,
         [System.MonoTODOAttribute("unsupported")]
         Tls12 = 3072,
+        Tls13 = 12288,
     }
 }
 namespace System.Security.Authentication.ExtendedProtection

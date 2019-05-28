@@ -584,7 +584,7 @@ namespace System
                         if (tokenLen <= 2)
                         {
                             int day = cal.GetDayOfMonth(dateTime);
-                            if (isHebrewCalendar)
+                            if (isHebrewCalendar && !GlobalizationMode.Invariant)
                             {
                                 // For Hebrew calendar, we need to convert numbers to Hebrew text for yyyy, MM, and dd values.
                                 HebrewFormatDigits(result, day);
@@ -612,7 +612,7 @@ namespace System
                         int month = cal.GetMonth(dateTime);
                         if (tokenLen <= 2)
                         {
-                            if (isHebrewCalendar)
+                            if (isHebrewCalendar && !GlobalizationMode.Invariant)
                             {
                                 // For Hebrew calendar, we need to convert numbers to Hebrew text for yyyy, MM, and dd values.
                                 HebrewFormatDigits(result, month);
@@ -624,7 +624,7 @@ namespace System
                         }
                         else
                         {
-                            if (isHebrewCalendar)
+                            if (isHebrewCalendar && !GlobalizationMode.Invariant)
                             {
                                 result.Append(FormatHebrewMonthName(dateTime, month, tokenLen, dtfi));
                             }
@@ -670,7 +670,7 @@ namespace System
                         {
                             FormatDigits(result, year, tokenLen <= 2 ? tokenLen : 2);
                         }
-                        else if (isHebrewCalendar)
+                        else if (isHebrewCalendar && !GlobalizationMode.Invariant)
                         {
                             HebrewFormatDigits(result, year);
                         }
