@@ -103,16 +103,17 @@ target_triplet = @target@
 @DISABLE_INTERPRETER_TRUE@am__append_1 = $(interp_libs)
 @SUPPORT_BOEHM_TRUE@am__append_2 = main.c
 @LOADED_LLVM_TRUE@am__append_3 = libmono-llvm.la
-@BITCODE_TRUE@am__append_4 = -no-undefined
-@FULL_AOT_TESTS_TRUE@am__append_5 = builtin-types.exe
-@MONO_JEMALLOC_ENABLED_TRUE@am__append_6 = $(JEMALLOC_LDFLAGS)
-@DISABLE_DEBUGGER_AGENT_TRUE@am__append_7 = $(dbg_libs)
-@DISABLE_DEBUGGER_AGENT_FALSE@am__append_8 = $(dbg_libs)
+@ENABLE_STATIC_GCC_LIBS_TRUE@am__append_4 = -all-static
+@BITCODE_TRUE@am__append_5 = -no-undefined
+@FULL_AOT_TESTS_TRUE@am__append_6 = builtin-types.exe
+@MONO_JEMALLOC_ENABLED_TRUE@am__append_7 = $(JEMALLOC_LDFLAGS)
+@DISABLE_DEBUGGER_AGENT_TRUE@am__append_8 = $(dbg_libs)
+@DISABLE_DEBUGGER_AGENT_FALSE@am__append_9 = $(dbg_libs)
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
 # on mobile profiles
-@FULL_AOT_TESTS_TRUE@am__append_9 = \
+@FULL_AOT_TESTS_TRUE@am__append_10 = \
 @FULL_AOT_TESTS_TRUE@	Mono.Posix.dll \
 @FULL_AOT_TESTS_TRUE@	System.Configuration.dll
 
@@ -685,6 +686,7 @@ SHELL = @SHELL@
 SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
+STATIC_GCC_LIBS = @STATIC_GCC_LIBS@
 STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
 TEST_PROFILE = @TEST_PROFILE@
@@ -841,15 +843,15 @@ monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
 @HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info 1:0:0 \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_4) \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_6)
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_5) \
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_7)
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
 @HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_4) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_6)
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_5) \
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_7)
 @HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
-@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_4) \
-@HOST_WIN32_TRUE@	$(am__append_6)
+@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_5) \
+@HOST_WIN32_TRUE@	$(am__append_7)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
 @SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
@@ -863,10 +865,10 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
 lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_3) \
-	$(am__append_7)
+	$(am__append_8)
 @SHARED_MONO_FALSE@mini_common_lib = 
 @SHARED_MONO_TRUE@mini_common_lib = libmini.la
-noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_8)
+noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_9)
 noinst_LIBRARIES = libmain.a
 libmain_a_SOURCES = main-sgen.c $(am__append_2)
 libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
@@ -914,7 +916,8 @@ mono_sgen_LDADD = \
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
-mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
+mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) \
+	$(monobin_platform_ldflags) $(am__append_4)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDADD = $(mono_sgen_LDADD)
 
 # Create monow.exe, linked for the 'windows' subsystem
@@ -1165,7 +1168,7 @@ regtests_UNIVERSAL = \
 	basic-vectors.exe	\
 	ratests.exe
 
-regtests_DISABLED = $(am__append_5)
+regtests_DISABLED = $(am__append_6)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
@@ -1282,7 +1285,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
-FULLAOT_LIBS_DISABLED = $(am__append_9)
+FULLAOT_LIBS_DISABLED = $(am__append_10)
 FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 FULLAOT_AOT_ARGS = $(if $(HYBRID),hybrid,full,interp),$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)

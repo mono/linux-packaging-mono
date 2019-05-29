@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [6.0.0.265],
+AC_INIT(mono, [6.0.0.271],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1532,6 +1532,13 @@ if test x$USE_NLS = xprofile_default; then
 	AC_SUBST([USE_NLS])
 	AC_MSG_RESULT([$USE_NLS])
 fi
+
+AC_ARG_ENABLE(static-gcc-libs, [  --enable-static-gcc-libs      Statically link GCC support libs (for MinGW32)])
+if test "x$enable_static_gcc_libs" = "xyes"; then
+	# llvm/build.mk doesn't use automake, so make a regular make variable for it.
+	AC_SUBST(STATIC_GCC_LIBS,1)
+fi
+AM_CONDITIONAL(ENABLE_STATIC_GCC_LIBS, test "x$enable_static_gcc_libs" = "xyes")
 
 AC_ARG_ENABLE(minimal, [  --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier, 
