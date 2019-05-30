@@ -21,6 +21,11 @@ using System.Threading;
 using System.Threading.Tasks;
 public static class MountHelper
 {
+#if MONO && MOBILE
+    private static bool GetVolumeNameForVolumeMountPoint(String volumeName, StringBuilder uniqueVolumeName, int uniqueNameBufferCapacity) => throw new PlatformNotSupportedException();
+    private static bool SetVolumeMountPoint(String mountPoint, String uniqueVolumeName) => throw new PlatformNotSupportedException();
+    private static bool DeleteVolumeMountPoint(String mountPoint) => throw new PlatformNotSupportedException();
+#else
     [DllImport("kernel32.dll", EntryPoint = "GetVolumeNameForVolumeMountPointW", CharSet = CharSet.Unicode, BestFitMapping = false, SetLastError = true)]
     private static extern bool GetVolumeNameForVolumeMountPoint(String volumeName, StringBuilder uniqueVolumeName, int uniqueNameBufferCapacity);
     // unique volume name must be "\\?\Volume{GUID}\"
@@ -28,6 +33,7 @@ public static class MountHelper
     private static extern bool SetVolumeMountPoint(String mountPoint, String uniqueVolumeName);
     [DllImport("kernel32.dll", EntryPoint = "DeleteVolumeMountPointW", CharSet = CharSet.Unicode, BestFitMapping = false, SetLastError = true)]
     private static extern bool DeleteVolumeMountPoint(String mountPoint);
+#endif
 
     /// <summary>Creates a symbolic link using command line tools</summary>
     /// <param name="linkPath">The existing file</param>
