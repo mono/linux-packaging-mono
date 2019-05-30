@@ -93,7 +93,11 @@ namespace System.IO
             return s_osEnabled == State.True;
         }
 
+#if MONO && MOBILE
+        private static bool RtlAreLongPathsEnabled() => throw new PlatformNotSupportedException();
+#else
         [DllImport("ntdll", ExactSpelling = true)]
         private static extern bool RtlAreLongPathsEnabled();
+#endif
     }
 }

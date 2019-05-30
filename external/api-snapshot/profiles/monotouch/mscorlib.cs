@@ -421,6 +421,27 @@ namespace System
         [System.ObsoleteAttribute("Use an overload that does not take an Evidence parameter")]
         public object CreateInstanceFromAndUnwrap(string assemblyName, string typeName, bool ignoreCase, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, object[] args, System.Globalization.CultureInfo culture, object[] activationAttributes, System.Security.Policy.Evidence securityAttributes) { throw null; }
         public object CreateInstanceFromAndUnwrap(string assemblyName, string typeName, object[] activationAttributes) { throw null; }
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access) { throw null; }
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Collections.Generic.IEnumerable<System.Reflection.Emit.CustomAttributeBuilder> assemblyAttributes) { throw null; }
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Collections.Generic.IEnumerable<System.Reflection.Emit.CustomAttributeBuilder> assemblyAttributes, System.Security.SecurityContextSource securityContextSource) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.Policy.Evidence evidence) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions) { throw null; }
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir) { throw null; }
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, bool isSynchronized, System.Collections.Generic.IEnumerable<System.Reflection.Emit.CustomAttributeBuilder> assemblyAttributes) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions, bool isSynchronized) { throw null; }
+        [System.ObsoleteAttribute("Declarative security for assembly level is no longer enforced")]
+        public System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions, bool isSynchronized, System.Collections.Generic.IEnumerable<System.Reflection.Emit.CustomAttributeBuilder> assemblyAttributes) { throw null; }
         public void DoCallBack(System.CrossAppDomainDelegate callBackDelegate) { }
         public int ExecuteAssembly(string assemblyFile) { throw null; }
         [System.ObsoleteAttribute("Use an overload that does not take an Evidence parameter")]
@@ -5759,6 +5780,15 @@ namespace System
         System.Runtime.Remoting.ObjectHandle CreateInstanceFrom(string assemblyFile, string typeName);
         System.Runtime.Remoting.ObjectHandle CreateInstanceFrom(string assemblyFile, string typeName, bool ignoreCase, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, object[] args, System.Globalization.CultureInfo culture, object[] activationAttributes, System.Security.Policy.Evidence securityAttributes);
         System.Runtime.Remoting.ObjectHandle CreateInstanceFrom(string assemblyFile, string typeName, object[] activationAttributes);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.Policy.Evidence evidence);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions);
+        System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, string dir, System.Security.Policy.Evidence evidence, System.Security.PermissionSet requiredPermissions, System.Security.PermissionSet optionalPermissions, System.Security.PermissionSet refusedPermissions, bool isSynchronized);
         void DoCallBack(System.CrossAppDomainDelegate theDelegate);
         bool Equals(object other);
         int ExecuteAssembly(string assemblyFile);
@@ -11913,14 +11943,60 @@ namespace System.Reflection.Emit
 {
     public partial class AssemblyBuilder : System.Reflection.Assembly
     {
-        public AssemblyBuilder() { }
+        internal AssemblyBuilder() { }
+        public override string CodeBase { get { throw null; } }
+        public override System.Reflection.MethodInfo EntryPoint { get { throw null; } }
+        public override string EscapedCodeBase { get { throw null; } }
+        public override System.Security.Policy.Evidence Evidence { get { throw null; } }
+        public override string FullName { get { throw null; } }
+        public override bool GlobalAssemblyCache { get { throw null; } }
+        public override string ImageRuntimeVersion { get { throw null; } }
+        public override bool IsDynamic { get { throw null; } }
+        public override string Location { get { throw null; } }
+        public override System.Reflection.Module ManifestModule { get { throw null; } }
+        public override bool ReflectionOnly { get { throw null; } }
+        public void AddResourceFile(string name, string fileName) { }
+        public void AddResourceFile(string name, string fileName, System.Reflection.ResourceAttributes attribute) { }
         public static System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access) { throw null; }
         public static System.Reflection.Emit.AssemblyBuilder DefineDynamicAssembly(System.Reflection.AssemblyName name, System.Reflection.Emit.AssemblyBuilderAccess access, System.Collections.Generic.IEnumerable<System.Reflection.Emit.CustomAttributeBuilder> assemblyAttributes) { throw null; }
         public System.Reflection.Emit.ModuleBuilder DefineDynamicModule(string name) { throw null; }
+        public System.Reflection.Emit.ModuleBuilder DefineDynamicModule(string name, bool emitSymbolInfo) { throw null; }
+        public System.Reflection.Emit.ModuleBuilder DefineDynamicModule(string name, string fileName) { throw null; }
+        public System.Reflection.Emit.ModuleBuilder DefineDynamicModule(string name, string fileName, bool emitSymbolInfo) { throw null; }
+        public System.Resources.IResourceWriter DefineResource(string name, string description, string fileName) { throw null; }
+        public System.Resources.IResourceWriter DefineResource(string name, string description, string fileName, System.Reflection.ResourceAttributes attribute) { throw null; }
+        public void DefineUnmanagedResource(byte[] resource) { }
+        public void DefineUnmanagedResource(string resourceFileName) { }
+        public void DefineVersionInfoResource() { }
+        public void DefineVersionInfoResource(string product, string productVersion, string company, string copyright, string trademark) { }
+        public override bool Equals(object obj) { throw null; }
+        public override object[] GetCustomAttributes(bool inherit) { throw null; }
+        public override object[] GetCustomAttributes(System.Type attributeType, bool inherit) { throw null; }
         public System.Reflection.Emit.ModuleBuilder GetDynamicModule(string name) { throw null; }
+        public override System.Type[] GetExportedTypes() { throw null; }
+        public override System.IO.FileStream GetFile(string name) { throw null; }
+        public override System.IO.FileStream[] GetFiles(bool getResourceModules) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public override System.Reflection.Module[] GetLoadedModules(bool getResourceModules) { throw null; }
+        public override System.Reflection.ManifestResourceInfo GetManifestResourceInfo(string resourceName) { throw null; }
+        public override string[] GetManifestResourceNames() { throw null; }
+        public override System.IO.Stream GetManifestResourceStream(string name) { throw null; }
+        public override System.IO.Stream GetManifestResourceStream(System.Type type, string name) { throw null; }
+        public override System.Reflection.Module GetModule(string name) { throw null; }
+        public override System.Reflection.Module[] GetModules(bool getResourceModules) { throw null; }
+        public override System.Reflection.AssemblyName GetName(bool copiedName) { throw null; }
+        public override System.Reflection.AssemblyName[] GetReferencedAssemblies() { throw null; }
+        public override System.Reflection.Assembly GetSatelliteAssembly(System.Globalization.CultureInfo culture) { throw null; }
+        public override System.Reflection.Assembly GetSatelliteAssembly(System.Globalization.CultureInfo culture, System.Version version) { throw null; }
+        public override System.Type GetType(string name, bool throwOnError, bool ignoreCase) { throw null; }
+        public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
+        public void Save(string assemblyFileName) { }
+        public void Save(string assemblyFileName, System.Reflection.PortableExecutableKinds portableExecutableKind, System.Reflection.ImageFileMachine imageFileMachine) { }
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod) { }
+        public void SetEntryPoint(System.Reflection.MethodInfo entryMethod, System.Reflection.Emit.PEFileKinds fileKind) { }
+        public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -11935,14 +12011,19 @@ namespace System.Reflection.Emit
     }
     public partial class ConstructorBuilder : System.Reflection.ConstructorInfo
     {
-        public ConstructorBuilder() { }
+        internal ConstructorBuilder() { }
         public override System.Reflection.MethodAttributes Attributes { get { throw null; } }
+        public override System.Reflection.CallingConventions CallingConvention { get { throw null; } }
         public override System.Type DeclaringType { get { throw null; } }
         public bool InitLocals { get { throw null; } set { } }
         public override System.RuntimeMethodHandle MethodHandle { get { throw null; } }
+        public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override System.Type ReflectedType { get { throw null; } }
+        [System.ObsoleteAttribute]
+        public System.Type ReturnType { get { throw null; } }
         public string Signature { get { throw null; } }
+        public void AddDeclarativeSecurity(System.Security.Permissions.SecurityAction action, System.Security.PermissionSet pset) { }
         public System.Reflection.Emit.ParameterBuilder DefineParameter(int iSequence, System.Reflection.ParameterAttributes attributes, string strParamName) { throw null; }
         public override object[] GetCustomAttributes(bool inherit) { throw null; }
         public override object[] GetCustomAttributes(System.Type attributeType, bool inherit) { throw null; }
@@ -11959,6 +12040,8 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetImplementationFlags(System.Reflection.MethodImplAttributes attributes) { }
         public void SetMethodBody(byte[] il, int maxStack, byte[] localSignature, System.Collections.Generic.IEnumerable<System.Reflection.Emit.ExceptionHandler> exceptionHandlers, System.Collections.Generic.IEnumerable<int> tokenFixups) { }
+        public void SetSymCustomAttribute(string name, byte[] data) { }
+        public override string ToString() { throw null; }
     }
     public partial class CustomAttributeBuilder
     {
@@ -12004,12 +12087,14 @@ namespace System.Reflection.Emit
         public override System.Type DeclaringType { get { throw null; } }
         public bool InitLocals { get { throw null; } set { } }
         public override System.RuntimeMethodHandle MethodHandle { get { throw null; } }
-        public override System.Reflection.MethodImplAttributes MethodImplementationFlags { get { throw null; } }
+        public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override System.Type ReflectedType { get { throw null; } }
         public override System.Reflection.ParameterInfo ReturnParameter { get { throw null; } }
         public override System.Type ReturnType { get { throw null; } }
         public override System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes { get { throw null; } }
+        public sealed override System.Delegate CreateDelegate(System.Type delegateType) { throw null; }
+        public sealed override System.Delegate CreateDelegate(System.Type delegateType, object target) { throw null; }
         public System.Reflection.Emit.ParameterBuilder DefineParameter(int position, System.Reflection.ParameterAttributes attributes, string parameterName) { throw null; }
         public override System.Reflection.MethodInfo GetBaseDefinition() { throw null; }
         public override object[] GetCustomAttributes(bool inherit) { throw null; }
@@ -12021,6 +12106,7 @@ namespace System.Reflection.Emit
         public override System.Reflection.ParameterInfo[] GetParameters() { throw null; }
         public override object Invoke(object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] parameters, System.Globalization.CultureInfo culture) { throw null; }
         public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
+        public override string ToString() { throw null; }
     }
     public sealed partial class EnumBuilder : System.Reflection.TypeInfo
     {
@@ -12031,11 +12117,8 @@ namespace System.Reflection.Emit
         public override System.Type DeclaringType { get { throw null; } }
         public override string FullName { get { throw null; } }
         public override System.Guid GUID { get { throw null; } }
-        public override bool IsByRefLike { get { throw null; } }
         public override bool IsConstructedGenericType { get { throw null; } }
-        public override bool IsSZArray { get { throw null; } }
         public override bool IsTypeDefinition { get { throw null; } }
-        public override bool IsVariableBoundArray { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override string Namespace { get { throw null; } }
@@ -12073,6 +12156,7 @@ namespace System.Reflection.Emit
         protected override bool HasElementTypeImpl() { throw null; }
         public override object InvokeMember(string name, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object target, object[] args, System.Reflection.ParameterModifier[] modifiers, System.Globalization.CultureInfo culture, string[] namedParameters) { throw null; }
         protected override bool IsArrayImpl() { throw null; }
+        public override bool IsAssignableFrom(System.Reflection.TypeInfo typeInfo) { throw null; }
         protected override bool IsByRefImpl() { throw null; }
         protected override bool IsCOMObjectImpl() { throw null; }
         public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
@@ -12088,7 +12172,7 @@ namespace System.Reflection.Emit
     }
     public partial class EventBuilder
     {
-        public EventBuilder() { }
+        internal EventBuilder() { }
         public void AddOtherMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
         public System.Reflection.Emit.EventToken GetEventToken() { throw null; }
         public void SetAddOnMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
@@ -12134,6 +12218,8 @@ namespace System.Reflection.Emit
         public override System.Type DeclaringType { get { throw null; } }
         public override System.RuntimeFieldHandle FieldHandle { get { throw null; } }
         public override System.Type FieldType { get { throw null; } }
+        public override int MetadataToken { get { throw null; } }
+        public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override System.Type ReflectedType { get { throw null; } }
         public override object[] GetCustomAttributes(bool inherit) { throw null; }
@@ -12144,6 +12230,8 @@ namespace System.Reflection.Emit
         public void SetConstant(object defaultValue) { }
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
+        [System.ObsoleteAttribute("An alternate API is available: Emit the MarshalAs custom attribute instead.")]
+        public void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
         public void SetOffset(int iOffset) { }
         public override void SetValue(object obj, object val, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Globalization.CultureInfo culture) { }
     }
@@ -12186,14 +12274,9 @@ namespace System.Reflection.Emit
         public override System.Reflection.GenericParameterAttributes GenericParameterAttributes { get { throw null; } }
         public override int GenericParameterPosition { get { throw null; } }
         public override System.Guid GUID { get { throw null; } }
-        public override bool IsByRefLike { get { throw null; } }
-        public override bool IsConstructedGenericType { get { throw null; } }
         public override bool IsGenericParameter { get { throw null; } }
         public override bool IsGenericType { get { throw null; } }
         public override bool IsGenericTypeDefinition { get { throw null; } }
-        public override bool IsSZArray { get { throw null; } }
-        public override bool IsTypeDefinition { get { throw null; } }
-        public override bool IsVariableBoundArray { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override string Namespace { get { throw null; } }
@@ -12213,6 +12296,7 @@ namespace System.Reflection.Emit
         public override System.Reflection.FieldInfo GetField(string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
         public override System.Reflection.FieldInfo[] GetFields(System.Reflection.BindingFlags bindingAttr) { throw null; }
         public override System.Type[] GetGenericArguments() { throw null; }
+        public override System.Type[] GetGenericParameterConstraints() { throw null; }
         public override System.Type GetGenericTypeDefinition() { throw null; }
         public override int GetHashCode() { throw null; }
         public override System.Type GetInterface(string name, bool ignoreCase) { throw null; }
@@ -12229,10 +12313,12 @@ namespace System.Reflection.Emit
         protected override bool HasElementTypeImpl() { throw null; }
         public override object InvokeMember(string name, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object target, object[] args, System.Reflection.ParameterModifier[] modifiers, System.Globalization.CultureInfo culture, string[] namedParameters) { throw null; }
         protected override bool IsArrayImpl() { throw null; }
+        public override bool IsAssignableFrom(System.Reflection.TypeInfo typeInfo) { throw null; }
         public override bool IsAssignableFrom(System.Type c) { throw null; }
         protected override bool IsByRefImpl() { throw null; }
         protected override bool IsCOMObjectImpl() { throw null; }
         public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
+        public override bool IsInstanceOfType(object o) { throw null; }
         protected override bool IsPointerImpl() { throw null; }
         protected override bool IsPrimitiveImpl() { throw null; }
         public override bool IsSubclassOf(System.Type c) { throw null; }
@@ -12252,7 +12338,7 @@ namespace System.Reflection.Emit
     public partial class ILGenerator
     {
         internal ILGenerator() { }
-        public int ILOffset { get { throw null; } }
+        public virtual int ILOffset { get { throw null; } }
         public virtual void BeginCatchBlock(System.Type exceptionType) { }
         public virtual void BeginExceptFilterBlock() { }
         public virtual System.Reflection.Emit.Label BeginExceptionBlock() { throw null; }
@@ -12289,6 +12375,7 @@ namespace System.Reflection.Emit
         public virtual void EndExceptionBlock() { }
         public virtual void EndScope() { }
         public virtual void MarkLabel(System.Reflection.Emit.Label loc) { }
+        public virtual void MarkSequencePoint(System.Diagnostics.SymbolStore.ISymbolDocumentWriter document, int startLine, int startColumn, int endLine, int endColumn) { }
         public virtual void ThrowException(System.Type excType) { }
         public virtual void UsingNamespace(string usingNamespace) { }
     }
@@ -12322,7 +12409,6 @@ namespace System.Reflection.Emit
         public override bool ContainsGenericParameters { get { throw null; } }
         public override System.Type DeclaringType { get { throw null; } }
         public bool InitLocals { get { throw null; } set { } }
-        public override bool IsConstructedGenericMethod { get { throw null; } }
         public override bool IsGenericMethod { get { throw null; } }
         public override bool IsGenericMethodDefinition { get { throw null; } }
         public override System.RuntimeMethodHandle MethodHandle { get { throw null; } }
@@ -12333,6 +12419,7 @@ namespace System.Reflection.Emit
         public override System.Type ReturnType { get { throw null; } }
         public override System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes { get { throw null; } }
         public string Signature { get { throw null; } }
+        public void AddDeclarativeSecurity(System.Security.Permissions.SecurityAction action, System.Security.PermissionSet pset) { }
         public void CreateMethodBody(byte[] il, int count) { }
         public System.Reflection.Emit.GenericTypeParameterBuilder[] DefineGenericParameters(params string[] names) { throw null; }
         public System.Reflection.Emit.ParameterBuilder DefineParameter(int position, System.Reflection.ParameterAttributes attributes, string strParamName) { throw null; }
@@ -12355,11 +12442,25 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetImplementationFlags(System.Reflection.MethodImplAttributes attributes) { }
+        [System.ObsoleteAttribute("An alternate API is available: Emit the MarshalAs custom attribute instead.")]
+        public void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
         public void SetMethodBody(byte[] il, int maxStack, byte[] localSignature, System.Collections.Generic.IEnumerable<System.Reflection.Emit.ExceptionHandler> exceptionHandlers, System.Collections.Generic.IEnumerable<int> tokenFixups) { }
         public void SetParameters(params System.Type[] parameterTypes) { }
         public void SetReturnType(System.Type returnType) { }
         public void SetSignature(System.Type returnType, System.Type[] returnTypeRequiredCustomModifiers, System.Type[] returnTypeOptionalCustomModifiers, System.Type[] parameterTypes, System.Type[][] parameterTypeRequiredCustomModifiers, System.Type[][] parameterTypeOptionalCustomModifiers) { }
+        public void SetSymCustomAttribute(string name, byte[] data) { }
         public override string ToString() { throw null; }
+    }
+    public partial class MethodRental : System.Runtime.InteropServices._MethodRental
+    {
+        internal MethodRental() { }
+        public const int JitImmediate = 1;
+        public const int JitOnDemand = 0;
+        public static void SwapMethodBody(System.Type cls, int methodtoken, System.IntPtr rgIL, int methodSize, int flags) { }
+        void System.Runtime.InteropServices._MethodRental.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
+        void System.Runtime.InteropServices._MethodRental.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
+        void System.Runtime.InteropServices._MethodRental.GetTypeInfoCount(out uint pcTInfo) { throw null; }
+        void System.Runtime.InteropServices._MethodRental.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public readonly partial struct MethodToken : System.IEquatable<System.Reflection.Emit.MethodToken>
@@ -12377,15 +12478,22 @@ namespace System.Reflection.Emit
         internal ModuleBuilder() { }
         public override System.Reflection.Assembly Assembly { get { throw null; } }
         public override string FullyQualifiedName { get { throw null; } }
+        public override int MetadataToken { get { throw null; } }
+        public override System.Guid ModuleVersionId { get { throw null; } }
         public override string Name { get { throw null; } }
+        public override string ScopeName { get { throw null; } }
         public void CreateGlobalFunctions() { }
+        public System.Diagnostics.SymbolStore.ISymbolDocumentWriter DefineDocument(string url, System.Guid language, System.Guid languageVendor, System.Guid documentType) { throw null; }
         public System.Reflection.Emit.EnumBuilder DefineEnum(string name, System.Reflection.TypeAttributes visibility, System.Type underlyingType) { throw null; }
         public System.Reflection.Emit.MethodBuilder DefineGlobalMethod(string name, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes) { throw null; }
         public System.Reflection.Emit.MethodBuilder DefineGlobalMethod(string name, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] requiredReturnTypeCustomModifiers, System.Type[] optionalReturnTypeCustomModifiers, System.Type[] parameterTypes, System.Type[][] requiredParameterTypeCustomModifiers, System.Type[][] optionalParameterTypeCustomModifiers) { throw null; }
         public System.Reflection.Emit.MethodBuilder DefineGlobalMethod(string name, System.Reflection.MethodAttributes attributes, System.Type returnType, System.Type[] parameterTypes) { throw null; }
         public System.Reflection.Emit.FieldBuilder DefineInitializedData(string name, byte[] data, System.Reflection.FieldAttributes attributes) { throw null; }
+        public void DefineManifestResource(string name, System.IO.Stream stream, System.Reflection.ResourceAttributes attribute) { }
         public System.Reflection.Emit.MethodBuilder DefinePInvokeMethod(string name, string dllName, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes, System.Runtime.InteropServices.CallingConvention nativeCallConv, System.Runtime.InteropServices.CharSet nativeCharSet) { throw null; }
         public System.Reflection.Emit.MethodBuilder DefinePInvokeMethod(string name, string dllName, string entryName, System.Reflection.MethodAttributes attributes, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes, System.Runtime.InteropServices.CallingConvention nativeCallConv, System.Runtime.InteropServices.CharSet nativeCharSet) { throw null; }
+        public System.Resources.IResourceWriter DefineResource(string name, string description) { throw null; }
+        public System.Resources.IResourceWriter DefineResource(string name, string description, System.Reflection.ResourceAttributes attribute) { throw null; }
         public System.Reflection.Emit.TypeBuilder DefineType(string name) { throw null; }
         public System.Reflection.Emit.TypeBuilder DefineType(string name, System.Reflection.TypeAttributes attr) { throw null; }
         public System.Reflection.Emit.TypeBuilder DefineType(string name, System.Reflection.TypeAttributes attr, System.Type parent) { throw null; }
@@ -12394,23 +12502,45 @@ namespace System.Reflection.Emit
         public System.Reflection.Emit.TypeBuilder DefineType(string name, System.Reflection.TypeAttributes attr, System.Type parent, System.Reflection.Emit.PackingSize packingSize, int typesize) { throw null; }
         public System.Reflection.Emit.TypeBuilder DefineType(string name, System.Reflection.TypeAttributes attr, System.Type parent, System.Type[] interfaces) { throw null; }
         public System.Reflection.Emit.FieldBuilder DefineUninitializedData(string name, int size, System.Reflection.FieldAttributes attributes) { throw null; }
+        public void DefineUnmanagedResource(byte[] resource) { }
+        public void DefineUnmanagedResource(string resourceFileName) { }
         public override bool Equals(object obj) { throw null; }
         public System.Reflection.MethodInfo GetArrayMethod(System.Type arrayClass, string methodName, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes) { throw null; }
         public System.Reflection.Emit.MethodToken GetArrayMethodToken(System.Type arrayClass, string methodName, System.Reflection.CallingConventions callingConvention, System.Type returnType, System.Type[] parameterTypes) { throw null; }
         public System.Reflection.Emit.MethodToken GetConstructorToken(System.Reflection.ConstructorInfo con) { throw null; }
         public System.Reflection.Emit.MethodToken GetConstructorToken(System.Reflection.ConstructorInfo constructor, System.Collections.Generic.IEnumerable<System.Type> optionalParameterTypes) { throw null; }
+        public override object[] GetCustomAttributes(bool inherit) { throw null; }
+        public override object[] GetCustomAttributes(System.Type attributeType, bool inherit) { throw null; }
+        public override System.Reflection.FieldInfo GetField(string name, System.Reflection.BindingFlags bindingAttr) { throw null; }
+        public override System.Reflection.FieldInfo[] GetFields(System.Reflection.BindingFlags bindingFlags) { throw null; }
         public System.Reflection.Emit.FieldToken GetFieldToken(System.Reflection.FieldInfo field) { throw null; }
         public override int GetHashCode() { throw null; }
+        protected override System.Reflection.MethodInfo GetMethodImpl(string name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConvention, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) { throw null; }
+        public override System.Reflection.MethodInfo[] GetMethods(System.Reflection.BindingFlags bindingFlags) { throw null; }
         public System.Reflection.Emit.MethodToken GetMethodToken(System.Reflection.MethodInfo method) { throw null; }
         public System.Reflection.Emit.MethodToken GetMethodToken(System.Reflection.MethodInfo method, System.Collections.Generic.IEnumerable<System.Type> optionalParameterTypes) { throw null; }
         public System.Reflection.Emit.SignatureToken GetSignatureToken(byte[] sigBytes, int sigLength) { throw null; }
         public System.Reflection.Emit.SignatureToken GetSignatureToken(System.Reflection.Emit.SignatureHelper sigHelper) { throw null; }
         public System.Reflection.Emit.StringToken GetStringConstant(string str) { throw null; }
+        public System.Diagnostics.SymbolStore.ISymbolWriter GetSymWriter() { throw null; }
+        public override System.Type GetType(string className) { throw null; }
+        public override System.Type GetType(string className, bool ignoreCase) { throw null; }
+        public override System.Type GetType(string className, bool throwOnError, bool ignoreCase) { throw null; }
+        public override System.Type[] GetTypes() { throw null; }
         public System.Reflection.Emit.TypeToken GetTypeToken(string name) { throw null; }
         public System.Reflection.Emit.TypeToken GetTypeToken(System.Type type) { throw null; }
+        public override bool IsDefined(System.Type attributeType, bool inherit) { throw null; }
+        public override bool IsResource() { throw null; }
         public bool IsTransient() { throw null; }
+        public override System.Reflection.FieldInfo ResolveField(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
+        public override System.Reflection.MemberInfo ResolveMember(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
+        public override System.Reflection.MethodBase ResolveMethod(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
+        public override byte[] ResolveSignature(int metadataToken) { throw null; }
+        public override string ResolveString(int metadataToken) { throw null; }
+        public override System.Type ResolveType(int metadataToken, System.Type[] genericTypeArguments, System.Type[] genericMethodArguments) { throw null; }
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
+        public void SetSymCustomAttribute(string name, byte[] data) { }
         public void SetUserEntryPoint(System.Reflection.MethodInfo entryPoint) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -12713,16 +12843,18 @@ namespace System.Reflection.Emit
     public partial class ParameterBuilder
     {
         internal ParameterBuilder() { }
-        public int Attributes { get { throw null; } }
+        public virtual int Attributes { get { throw null; } }
         public bool IsIn { get { throw null; } }
         public bool IsOptional { get { throw null; } }
         public bool IsOut { get { throw null; } }
-        public string Name { get { throw null; } }
-        public int Position { get { throw null; } }
+        public virtual string Name { get { throw null; } }
+        public virtual int Position { get { throw null; } }
         public virtual System.Reflection.Emit.ParameterToken GetToken() { throw null; }
         public virtual void SetConstant(object defaultValue) { }
         public void SetCustomAttribute(System.Reflection.ConstructorInfo con, byte[] binaryAttribute) { }
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
+        [System.ObsoleteAttribute("An alternate API is available: Emit the MarshalAs custom attribute instead.")]
+        public virtual void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public readonly partial struct ParameterToken : System.IEquatable<System.Reflection.Emit.ParameterToken>
@@ -12784,7 +12916,7 @@ namespace System.Reflection.Emit
         public static bool operator ==(System.Reflection.Emit.PropertyToken a, System.Reflection.Emit.PropertyToken b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.PropertyToken a, System.Reflection.Emit.PropertyToken b) { throw null; }
     }
-    public partial class SignatureHelper
+    public partial class SignatureHelper : System.Runtime.InteropServices._SignatureHelper
     {
         internal SignatureHelper() { }
         public void AddArgument(System.Type clsArgument) { }
@@ -12792,7 +12924,9 @@ namespace System.Reflection.Emit
         public void AddArgument(System.Type argument, System.Type[] requiredCustomModifiers, System.Type[] optionalCustomModifiers) { }
         public void AddArguments(System.Type[] arguments, System.Type[][] requiredCustomModifiers, System.Type[][] optionalCustomModifiers) { }
         public void AddSentinel() { }
+        public override bool Equals(object obj) { throw null; }
         public static System.Reflection.Emit.SignatureHelper GetFieldSigHelper(System.Reflection.Module mod) { throw null; }
+        public override int GetHashCode() { throw null; }
         public static System.Reflection.Emit.SignatureHelper GetLocalVarSigHelper() { throw null; }
         public static System.Reflection.Emit.SignatureHelper GetLocalVarSigHelper(System.Reflection.Module mod) { throw null; }
         public static System.Reflection.Emit.SignatureHelper GetMethodSigHelper(System.Reflection.CallingConventions callingConvention, System.Type returnType) { throw null; }
@@ -12804,6 +12938,11 @@ namespace System.Reflection.Emit
         public static System.Reflection.Emit.SignatureHelper GetPropertySigHelper(System.Reflection.Module mod, System.Type returnType, System.Type[] parameterTypes) { throw null; }
         public static System.Reflection.Emit.SignatureHelper GetPropertySigHelper(System.Reflection.Module mod, System.Type returnType, System.Type[] requiredReturnTypeCustomModifiers, System.Type[] optionalReturnTypeCustomModifiers, System.Type[] parameterTypes, System.Type[][] requiredParameterTypeCustomModifiers, System.Type[][] optionalParameterTypeCustomModifiers) { throw null; }
         public byte[] GetSignature() { throw null; }
+        void System.Runtime.InteropServices._SignatureHelper.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
+        void System.Runtime.InteropServices._SignatureHelper.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
+        void System.Runtime.InteropServices._SignatureHelper.GetTypeInfoCount(out uint pcTInfo) { throw null; }
+        void System.Runtime.InteropServices._SignatureHelper.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
+        public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public readonly partial struct SignatureToken : System.IEquatable<System.Reflection.Emit.SignatureToken>
@@ -12865,23 +13004,18 @@ namespace System.Reflection.Emit
         public override System.Reflection.Assembly Assembly { get { throw null; } }
         public override string AssemblyQualifiedName { get { throw null; } }
         public override System.Type BaseType { get { throw null; } }
+        public override bool ContainsGenericParameters { get { throw null; } }
         public override System.Reflection.MethodBase DeclaringMethod { get { throw null; } }
         public override System.Type DeclaringType { get { throw null; } }
         public override string FullName { get { throw null; } }
         public override System.Reflection.GenericParameterAttributes GenericParameterAttributes { get { throw null; } }
         public override int GenericParameterPosition { get { throw null; } }
         public override System.Guid GUID { get { throw null; } }
-        public override bool IsByRefLike { get { throw null; } }
         public override bool IsConstructedGenericType { get { throw null; } }
         public override bool IsGenericParameter { get { throw null; } }
         public override bool IsGenericType { get { throw null; } }
         public override bool IsGenericTypeDefinition { get { throw null; } }
-        public override bool IsSecurityCritical { get { throw null; } }
-        public override bool IsSecuritySafeCritical { get { throw null; } }
-        public override bool IsSecurityTransparent { get { throw null; } }
-        public override bool IsSZArray { get { throw null; } }
         public override bool IsTypeDefinition { get { throw null; } }
-        public override bool IsVariableBoundArray { get { throw null; } }
         public override System.Reflection.Module Module { get { throw null; } }
         public override string Name { get { throw null; } }
         public override string Namespace { get { throw null; } }
@@ -12891,6 +13025,7 @@ namespace System.Reflection.Emit
         public override System.RuntimeTypeHandle TypeHandle { get { throw null; } }
         public System.Reflection.Emit.TypeToken TypeToken { get { throw null; } }
         public override System.Type UnderlyingSystemType { get { throw null; } }
+        public void AddDeclarativeSecurity(System.Security.Permissions.SecurityAction action, System.Security.PermissionSet pset) { }
         public void AddInterfaceImplementation(System.Type interfaceType) { }
         public System.Type CreateType() { throw null; }
         public System.Reflection.TypeInfo CreateTypeInfo() { throw null; }
@@ -12954,6 +13089,7 @@ namespace System.Reflection.Emit
         protected override bool HasElementTypeImpl() { throw null; }
         public override object InvokeMember(string name, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object target, object[] args, System.Reflection.ParameterModifier[] modifiers, System.Globalization.CultureInfo culture, string[] namedParameters) { throw null; }
         protected override bool IsArrayImpl() { throw null; }
+        public override bool IsAssignableFrom(System.Reflection.TypeInfo typeInfo) { throw null; }
         public override bool IsAssignableFrom(System.Type c) { throw null; }
         protected override bool IsByRefImpl() { throw null; }
         protected override bool IsCOMObjectImpl() { throw null; }
@@ -12962,6 +13098,7 @@ namespace System.Reflection.Emit
         protected override bool IsPointerImpl() { throw null; }
         protected override bool IsPrimitiveImpl() { throw null; }
         public override bool IsSubclassOf(System.Type c) { throw null; }
+        protected override bool IsValueTypeImpl() { throw null; }
         public override System.Type MakeArrayType() { throw null; }
         public override System.Type MakeArrayType(int rank) { throw null; }
         public override System.Type MakeByRefType() { throw null; }
@@ -12982,6 +13119,22 @@ namespace System.Reflection.Emit
         public override int GetHashCode() { throw null; }
         public static bool operator ==(System.Reflection.Emit.TypeToken a, System.Reflection.Emit.TypeToken b) { throw null; }
         public static bool operator !=(System.Reflection.Emit.TypeToken a, System.Reflection.Emit.TypeToken b) { throw null; }
+    }
+    [System.ObsoleteAttribute("An alternate API is available: Emit the MarshalAs custom attribute instead.")]
+    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
+    [System.SerializableAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public sealed partial class UnmanagedMarshal
+    {
+        internal UnmanagedMarshal() { }
+        public System.Runtime.InteropServices.UnmanagedType BaseType { get { throw null; } }
+        public int ElementCount { get { throw null; } }
+        public System.Runtime.InteropServices.UnmanagedType GetUnmanagedType { get { throw null; } }
+        public System.Guid IIDGuid { get { throw null; } }
+        public static System.Reflection.Emit.UnmanagedMarshal DefineByValArray(int elemCount) { throw null; }
+        public static System.Reflection.Emit.UnmanagedMarshal DefineByValTStr(int elemCount) { throw null; }
+        public static System.Reflection.Emit.UnmanagedMarshal DefineLPArray(System.Runtime.InteropServices.UnmanagedType elemType) { throw null; }
+        public static System.Reflection.Emit.UnmanagedMarshal DefineUnmanagedMarshal(System.Runtime.InteropServices.UnmanagedType unmanagedType) { throw null; }
     }
 }
 namespace System.Reflection.Metadata
@@ -14725,12 +14878,9 @@ namespace System.Runtime.InteropServices
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void FreeCoTaskMem(System.IntPtr ptr) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static void FreeHGlobal(System.IntPtr hglobal) { }
-        public static System.Guid GenerateGuidForType(System.Type type) { throw null; }
-        public static string GenerateProgIdForType(System.Type type) { throw null; }
         public static System.IntPtr GetComInterfaceForObject(object o, System.Type T) { throw null; }
         public static System.IntPtr GetComInterfaceForObject(object o, System.Type T, System.Runtime.InteropServices.CustomQueryInterfaceMode mode) { throw null; }
         public static System.IntPtr GetComInterfaceForObject<T, TInterface>(T o) { throw null; }
-        public static object GetComObjectData(object obj, object key) { throw null; }
         public static System.Delegate GetDelegateForFunctionPointer(System.IntPtr ptr, System.Type t) { throw null; }
         public static TDelegate GetDelegateForFunctionPointer<TDelegate>(System.IntPtr ptr) { throw null; }
         public static int GetExceptionCode() { throw null; }
@@ -14738,11 +14888,9 @@ namespace System.Runtime.InteropServices
         public static System.Exception GetExceptionForHR(int errorCode, System.IntPtr errorInfo) { throw null; }
         public static System.IntPtr GetFunctionPointerForDelegate(System.Delegate d) { throw null; }
         public static System.IntPtr GetFunctionPointerForDelegate<TDelegate>(TDelegate d) { throw null; }
-        public static System.IntPtr GetHINSTANCE(System.Reflection.Module m) { throw null; }
         public static int GetHRForException(System.Exception e) { throw null; }
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static int GetHRForLastWin32Error() { throw null; }
-        public static System.IntPtr GetIDispatchForObject(object o) { throw null; }
         public static System.IntPtr GetIUnknownForObject(object o) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static int GetLastWin32Error() { throw null; }
@@ -14754,7 +14902,6 @@ namespace System.Runtime.InteropServices
         public static object[] GetObjectsForNativeVariants(System.IntPtr aSrcNativeVariant, int cVars) { throw null; }
         public static T[] GetObjectsForNativeVariants<T>(System.IntPtr aSrcNativeVariant, int cVars) { throw null; }
         public static int GetStartComSlot(System.Type t) { throw null; }
-        public static object GetTypedObjectForIUnknown(System.IntPtr pUnk, System.Type t) { throw null; }
         public static System.Type GetTypeFromCLSID(System.Guid clsid) { throw null; }
         public static string GetTypeInfoName(System.Runtime.InteropServices.ComTypes.ITypeInfo typeInfo) { throw null; }
         public static object GetUniqueObjectForIUnknown(System.IntPtr unknown) { throw null; }
@@ -14816,7 +14963,6 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr SecureStringToCoTaskMemUnicode(System.Security.SecureString s) { throw null; }
         public static System.IntPtr SecureStringToGlobalAllocAnsi(System.Security.SecureString s) { throw null; }
         public static System.IntPtr SecureStringToGlobalAllocUnicode(System.Security.SecureString s) { throw null; }
-        public static bool SetComObjectData(object obj, object key, object data) { throw null; }
         [System.Runtime.InteropServices.ComVisibleAttribute(true)]
         public static int SizeOf(object structure) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static int SizeOf(System.Type t) { throw null; }
