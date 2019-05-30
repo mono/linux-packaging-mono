@@ -11857,8 +11857,6 @@ namespace System.Reflection.Emit
         internal AssemblyBuilder() { }
         public override string CodeBase { get { throw null; } }
         public override System.Reflection.MethodInfo EntryPoint { get { throw null; } }
-        public override string EscapedCodeBase { get { throw null; } }
-        public override System.Security.Policy.Evidence Evidence { get { throw null; } }
         public override string FullName { get { throw null; } }
         public override bool GlobalAssemblyCache { get { throw null; } }
         public override string ImageRuntimeVersion { get { throw null; } }
@@ -11907,7 +11905,6 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod, System.Reflection.Emit.PEFileKinds fileKind) { }
-        public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -12093,7 +12090,7 @@ namespace System.Reflection.Emit
         public void SetRemoveOnMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct EventToken : System.IEquatable<System.Reflection.Emit.EventToken>
+    public readonly partial struct EventToken
     {
         public static readonly System.Reflection.Emit.EventToken Empty;
         public int Token { get { throw null; } }
@@ -12147,7 +12144,7 @@ namespace System.Reflection.Emit
         public override void SetValue(object obj, object val, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Globalization.CultureInfo culture) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct FieldToken : System.IEquatable<System.Reflection.Emit.FieldToken>
+    public readonly partial struct FieldToken
     {
         public static readonly System.Reflection.Emit.FieldToken Empty;
         public int Token { get { throw null; } }
@@ -12374,7 +12371,7 @@ namespace System.Reflection.Emit
         void System.Runtime.InteropServices._MethodRental.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct MethodToken : System.IEquatable<System.Reflection.Emit.MethodToken>
+    public readonly partial struct MethodToken
     {
         public static readonly System.Reflection.Emit.MethodToken Empty;
         public int Token { get { throw null; } }
@@ -12768,7 +12765,7 @@ namespace System.Reflection.Emit
         public virtual void SetMarshal(System.Reflection.Emit.UnmanagedMarshal unmanagedMarshal) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct ParameterToken : System.IEquatable<System.Reflection.Emit.ParameterToken>
+    public readonly partial struct ParameterToken
     {
         public static readonly System.Reflection.Emit.ParameterToken Empty;
         public int Token { get { throw null; } }
@@ -12817,7 +12814,7 @@ namespace System.Reflection.Emit
         public override void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] index, System.Globalization.CultureInfo culture) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct PropertyToken : System.IEquatable<System.Reflection.Emit.PropertyToken>
+    public readonly partial struct PropertyToken
     {
         public static readonly System.Reflection.Emit.PropertyToken Empty;
         public int Token { get { throw null; } }
@@ -12856,7 +12853,7 @@ namespace System.Reflection.Emit
         public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct SignatureToken : System.IEquatable<System.Reflection.Emit.SignatureToken>
+    public readonly partial struct SignatureToken
     {
         public static readonly System.Reflection.Emit.SignatureToken Empty;
         public int Token { get { throw null; } }
@@ -12899,7 +12896,7 @@ namespace System.Reflection.Emit
         Varpush = 27,
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct StringToken : System.IEquatable<System.Reflection.Emit.StringToken>
+    public readonly partial struct StringToken
     {
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -13021,7 +13018,7 @@ namespace System.Reflection.Emit
         public override string ToString() { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
-    public readonly partial struct TypeToken : System.IEquatable<System.Reflection.Emit.TypeToken>
+    public readonly partial struct TypeToken
     {
         public static readonly System.Reflection.Emit.TypeToken Empty;
         public int Token { get { throw null; } }
