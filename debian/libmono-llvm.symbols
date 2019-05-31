@@ -2,6 +2,7 @@
  mini_get_underlying_type@Base 5.15.0.231
  mini_is_gsharedvt_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_klass@Base 5.15.0.231
+ mini_is_gsharedvt_variable_signature@Base 6.3.0.788
  mini_is_gsharedvt_variable_type@Base 5.15.0.231
  mini_method_is_default_method@Base 6.3.0.115
  mini_native_type_replace_type@Base 5.15.0.231
@@ -31,12 +32,15 @@
  mono_arch_create_vars@Base 5.15.0.231
  mono_bblock_add_inst@Base 5.15.0.231
  mono_call_inst_add_outarg_reg@Base 5.15.0.231
+ mono_class_enum_basetype_internal@Base 6.3.0.788
  mono_class_get_cctor@Base 5.15.0.231
  mono_class_get_generic_class@Base 6.3.0.202
  mono_class_load_from_name@Base 5.15.0.231
+ mono_compile_create_var@Base 6.3.0.788
  mono_create_jit_trampoline@Base 5.15.0.231
  mono_dl_close@Base 5.15.0.231
  mono_dl_symbol@Base 5.15.0.231
+ mono_debug_get_seq_points@Base 6.3.0.788
  mono_domain_code_reserve@Base 5.15.0.231
  mono_domain_lock@Base 5.15.0.231
  mono_domain_unlock@Base 5.15.0.231
@@ -69,9 +73,11 @@
  mono_marshal_get_aot_init_wrapper_name@Base 6.1.0.686
  mono_marshal_get_wrapper_info@Base 5.21.0.116
  mono_opcode_to_cond@Base 5.15.0.231
+ mono_print_ins@Base 6.3.0.788
  mono_print_unwind_info@Base 5.15.0.231
  mono_resolve_patch_target@Base 5.15.0.231
  mono_resume_unwind@Base 5.15.0.231
+ mono_rgctx_info_type_to_str@Base 6.3.0.788
  mono_threads_suspend_policy@Base 6.3.0.42
  mono_type_to_regmove@Base 5.15.0.231
  mono_unwind_decode_fde@Base 5.15.0.231

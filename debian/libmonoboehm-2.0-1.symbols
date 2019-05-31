@@ -742,6 +742,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_debug_lookup_method@Base 4.1.0.1738
  mono_debug_lookup_method_addresses@Base 4.1.0.1738
  mono_debug_lookup_source_location@Base 4.1.0.1738
+ mono_debug_method_lookup_location@Base 6.3.0.788
  mono_debug_open_image_from_memory@Base 4.1.0.1738
  mono_debug_open_mono_symbols@Base 4.1.0.1738
  mono_debug_print_stack_frame@Base 4.1.0.1738
