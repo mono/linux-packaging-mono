@@ -17,6 +17,7 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.InteropServices.ComVisibleAttribute(false)]
 [assembly:System.Runtime.InteropServices.GuidAttribute("fd225bb4-fa53-44b2-a6db-85f5e48dcb54")]
+[assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 namespace Mono.Cecil
 {
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -1597,6 +1598,7 @@ namespace Mono.Cecil
     public sealed partial class WriterParameters
     {
         public WriterParameters() { }
+        public bool DeterministicMvid { get { throw null; } set { } }
         public System.Reflection.StrongNameKeyPair StrongNameKeyPair { get { throw null; } set { } }
         public System.IO.Stream SymbolStream { get { throw null; } set { } }
         public Mono.Cecil.Cil.ISymbolWriterProvider SymbolWriterProvider { get { throw null; } set { } }

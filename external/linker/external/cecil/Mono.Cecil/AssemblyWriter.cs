@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Security.Cryptography;
 
 using Mono;
 using Mono.Collections.Generic;
@@ -28,8 +29,6 @@ using BlobIndex = System.UInt32;
 using GuidIndex = System.UInt32;
 
 namespace Mono.Cecil {
-
-#if !READ_ONLY
 
 	using ModuleRow      = Row<StringIndex, GuidIndex>;
 	using TypeRefRow     = Row<CodedRID, StringIndex, StringIndex>;
@@ -103,26 +102,75 @@ namespace Mono.Cecil {
 			if (symbol_writer_provider == null && parameters.WriteSymbols)
 				symbol_writer_provider = new DefaultSymbolWriterProvider ();
 
-#if !NET_CORE
 			if (parameters.StrongNameKeyPair != null && name != null) {
 				name.PublicKey = parameters.StrongNameKeyPair.PublicKey;
 				module.Attributes |= ModuleAttributes.StrongNameSigned;
 			}
-#endif
 
-			using (var symbol_writer = GetSymbolWriter (module, fq_name, symbol_writer_provider, parameters)) {
-				var metadata = new MetadataBuilder (module, fq_name, timestamp, symbol_writer_provider, symbol_writer);
-				BuildMetadata (module, metadata);
+			if (parameters.DeterministicMvid)
+				module.Mvid = Guid.Empty;
+			var metadata = new MetadataBuilder (module, fq_name, timestamp, symbol_writer_provider);
+			try {
+				module.metadata_builder = metadata;
 
-				var writer = ImageWriter.CreateWriter (module, metadata, stream);
-				stream.value.SetLength (0);
-				writer.WriteImage ();
+				using (var symbol_writer = GetSymbolWriter (module, fq_name, symbol_writer_provider, parameters)) {
+					metadata.SetSymbolWriter (symbol_writer);
+					BuildMetadata (module, metadata);
 
-#if !NET_CORE
-				if (parameters.StrongNameKeyPair != null)
-					CryptoService.StrongName (stream.value, writer, parameters.StrongNameKeyPair);
-#endif
+					var writer = ImageWriter.CreateWriter (module, metadata, stream);
+					stream.value.SetLength (0);
+					writer.WriteImage ();
+
+					if (parameters.StrongNameKeyPair != null)
+						CryptoService.StrongName (stream.value, writer, parameters.StrongNameKeyPair);
+					if (parameters.DeterministicMvid) {
+						module.Mvid = ComputeGuid (stream.value);
+						writer.PatchMvid (module.Mvid);
+					}
+				}
+			} finally {
+				module.metadata_builder = null;
 			}
+		}
+
+		static void CopyStreamChunk (Stream stream, Stream dest_stream, byte [] buffer, int length)
+		{
+			while (length > 0) {
+				int read = stream.Read (buffer, 0, System.Math.Min (buffer.Length, length));
+				dest_stream.Write (buffer, 0, read);
+				length -= read;
+			}
+		}
+
+		static byte [] ComputeHash (Stream stream)
+		{
+			const int buffer_size = 8192;
+
+			var sha1 = new SHA1Managed ();
+
+			stream.Seek (0, SeekOrigin.Begin);
+			var buffer = new byte [buffer_size];
+
+			using (var crypto_stream = new CryptoStream (Stream.Null, sha1, CryptoStreamMode.Write))
+				CopyStreamChunk (stream, crypto_stream, buffer, (int) stream.Length);
+			return sha1.Hash;
+		}
+
+		static unsafe Guid ComputeGuid (Stream stream)
+		{
+			byte[] hashCode = ComputeHash (stream);
+
+			// From corefx/src/System.Reflection.Metadata/src/System/Reflection/Metadata/BlobContentId.cs
+			Guid guid = default(Guid);
+			byte* guidPtr = (byte*)&guid;
+			for (var i = 0; i < 16; i++) {
+				guidPtr[i] = hashCode[i];
+			}
+			// modify the guid data so it decodes to the form of a "random" guid ala rfc4122
+			guidPtr[7] = (byte)((guidPtr[7] & 0x0f) | (4 << 4));
+			guidPtr[8] = (byte)((guidPtr[8] & 0x3f) | (2 << 6));
+
+			return guid;
 		}
 
 		static void BuildMetadata (ModuleDefinition module, MetadataBuilder metadata)
@@ -209,10 +257,10 @@ namespace Mono.Cecil {
 
 		public sealed override void Sort ()
 		{
-			Array.Sort (rows, 0, length, this);
+			MergeSort<TRow>.Sort (rows, 0, this.length, this);
 		}
 
-		protected int Compare (uint x, uint y)
+		protected static int Compare (uint x, uint y)
 		{
 			return x == y ? 0 : x > y ? 1 : -1;
 		}
@@ -796,7 +844,7 @@ namespace Mono.Cecil {
 
 		readonly internal ModuleDefinition module;
 		readonly internal ISymbolWriterProvider symbol_writer_provider;
-		readonly internal ISymbolWriter symbol_writer;
+		internal ISymbolWriter symbol_writer;
 		readonly internal TextMap text_map;
 		readonly internal string fq_name;
 		readonly internal uint timestamp;
@@ -846,8 +894,6 @@ namespace Mono.Cecil {
 		readonly TypeSpecTable typespec_table;
 		readonly MethodSpecTable method_spec_table;
 
-		readonly bool portable_pdb;
-
 		internal MetadataBuilder metadata_builder;
 
 		readonly DocumentTable document_table;
@@ -862,25 +908,13 @@ namespace Mono.Cecil {
 		readonly Dictionary<ImportScopeRow, MetadataToken> import_scope_map;
 		readonly Dictionary<string, MetadataToken> document_map;
 
-		public MetadataBuilder (ModuleDefinition module, string fq_name, uint timestamp, ISymbolWriterProvider symbol_writer_provider, ISymbolWriter symbol_writer)
+		public MetadataBuilder (ModuleDefinition module, string fq_name, uint timestamp, ISymbolWriterProvider symbol_writer_provider)
 		{
 			this.module = module;
 			this.text_map = CreateTextMap ();
 			this.fq_name = fq_name;
 			this.timestamp = timestamp;
 			this.symbol_writer_provider = symbol_writer_provider;
-
-			if (symbol_writer == null && module.HasImage && module.Image.HasDebugTables ()) {
-				symbol_writer = new PortablePdbWriter (this, module);
-			}
-
-			this.symbol_writer = symbol_writer;
-
-			var pdb_writer = symbol_writer as IMetadataSymbolWriter;
-			if (pdb_writer != null) {
-				portable_pdb = true;
-				pdb_writer.SetMetadata (this);
-			}
 
 			this.code = new CodeWriter (this);
 			this.data = new DataBuffer ();
@@ -916,9 +950,6 @@ namespace Mono.Cecil {
 			method_spec_map = new Dictionary<MethodSpecRow, MetadataToken> (row_equality_comparer);
 			generic_parameters = new Collection<GenericParameter> ();
 
-			if (!portable_pdb)
-				return;
-
 			this.document_table = GetTable<DocumentTable> (Table.Document);
 			this.method_debug_information_table = GetTable<MethodDebugInformationTable> (Table.MethodDebugInformation);
 			this.local_scope_table = GetTable<LocalScopeTable> (Table.LocalScope);
@@ -937,7 +968,6 @@ namespace Mono.Cecil {
 			this.module = module;
 			this.text_map = new TextMap ();
 			this.symbol_writer_provider = writer_provider;
-			this.portable_pdb = true;
 
 			this.string_heap = new StringHeapBuffer ();
 			this.guid_heap = new GuidHeapBuffer ();
@@ -959,6 +989,14 @@ namespace Mono.Cecil {
 
 			this.document_map = new Dictionary<string, MetadataToken> ();
 			this.import_scope_map = new Dictionary<ImportScopeRow, MetadataToken> (row_equality_comparer);
+		}
+
+		public void SetSymbolWriter (ISymbolWriter writer)
+		{
+			symbol_writer = writer;
+
+			if (symbol_writer == null && module.HasImage && module.Image.HasDebugTables ())
+				symbol_writer = new PortablePdbWriter (this, module);
 		}
 
 		TextMap CreateTextMap ()
@@ -1050,10 +1088,6 @@ namespace Mono.Cecil {
 
 			if (module.EntryPoint != null)
 				entry_point = LookupToken (module.EntryPoint);
-
-			var pdb_writer = symbol_writer as IMetadataSymbolWriter;
-			if (pdb_writer != null)
-				pdb_writer.WriteModule ();
 		}
 
 		void BuildAssembly ()
@@ -1209,10 +1243,8 @@ namespace Mono.Cecil {
 			var table = GetTable<FileTable> (Table.File);
 			var hash = resource.Hash;
 
-#if !NET_CORE
 			if (hash.IsNullOrEmpty ())
 				hash = CryptoService.ComputeHash (resource.File);
-#endif
 
 			return (uint) table.AddRow (new FileRow (
 				FileAttributes.ContainsNoMetaData,
@@ -1445,8 +1477,7 @@ namespace Mono.Cecil {
 			if (type.HasInterfaces)
 				AddInterfaces (type);
 
-			if (type.HasLayoutInfo)
-				AddLayoutInfo (type);
+			AddLayoutInfo (type);
 
 			if (type.HasFields)
 				AddFields (type);
@@ -1557,12 +1588,36 @@ namespace Mono.Cecil {
 
 		void AddLayoutInfo (TypeDefinition type)
 		{
-			var table = GetTable<ClassLayoutTable> (Table.ClassLayout);
+			if (type.HasLayoutInfo) {
+				var table = GetTable<ClassLayoutTable> (Table.ClassLayout);
 
-			table.AddRow (new ClassLayoutRow (
-				(ushort) type.PackingSize,
-				(uint) type.ClassSize,
-				type.token.RID));
+				table.AddRow (new ClassLayoutRow (
+					(ushort) type.PackingSize,
+					(uint) type.ClassSize,
+					type.token.RID));
+
+				return;
+			}
+
+			if (type.IsValueType && HasNoInstanceField (type)) {
+				var table = GetTable<ClassLayoutTable> (Table.ClassLayout);
+
+				table.AddRow (new ClassLayoutRow (0, 1, type.token.RID));
+			}
+		}
+
+		static bool HasNoInstanceField (TypeDefinition type)
+		{
+			if (!type.HasFields)
+				return true;
+
+			var fields = type.Fields;
+
+			for (int i = 0; i < fields.Count; i++)
+				if (!fields [i].IsStatic)
+					return false;
+
+			return true;
 		}
 
 		void AddNestedTypes (TypeDefinition type)
@@ -1907,7 +1962,7 @@ namespace Mono.Cecil {
 
 		static ElementType GetConstantType (Type type)
 		{
-			switch (type.GetTypeCode ()) {
+			switch (Type.GetTypeCode (type)) {
 			case TypeCode.Boolean:
 				return ElementType.Boolean;
 			case TypeCode.Byte:
@@ -2967,7 +3022,7 @@ namespace Mono.Cecil {
 			if (value == null)
 				throw new ArgumentNullException ();
 
-			switch (value.GetType ().GetTypeCode ()) {
+			switch (Type.GetTypeCode (value.GetType ())) {
 			case TypeCode.Boolean:
 				WriteByte ((byte) (((bool) value) ? 1 : 0));
 				break;
@@ -3162,7 +3217,7 @@ namespace Mono.Cecil {
 
 		void WriteTypeReference (TypeReference type)
 		{
-			WriteUTF8String (TypeParser.ToParseable (type));
+			WriteUTF8String (TypeParser.ToParseable (type, top_level: false));
 		}
 
 		public void WriteMarshalInfo (MarshalInfo marshal_info)
@@ -3279,8 +3334,6 @@ namespace Mono.Cecil {
 			}
 		}
 	}
-
-#endif
 
 	static partial class Mixin {
 
