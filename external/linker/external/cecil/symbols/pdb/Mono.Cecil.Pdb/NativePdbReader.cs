@@ -35,12 +35,11 @@ namespace Mono.Cecil.Pdb {
 			this.pdb_file = file;
 		}
 
-#if !READ_ONLY
 		public ISymbolWriterProvider GetWriterProvider ()
 		{
 			return new NativePdbWriterProvider ();
 		}
-#endif
+
 		/*
 		uint Magic = 0x53445352;
 		Guid Signature;
@@ -60,8 +59,6 @@ namespace Mono.Cecil.Pdb {
 			var directory = entry.Directory;
 
 			if (directory.Type != ImageDebugType.CodeView)
-				return false;
-			if (directory.MajorVersion != 0 || directory.MinorVersion != 0)
 				return false;
 
 			var data = entry.Data;
@@ -185,12 +182,12 @@ namespace Mono.Cecil.Pdb {
 				parent.variables = new Collection<VariableDebugInformation> (scope.slots.Length);
 
 				foreach (PdbSlot slot in scope.slots) {
-					if (slot.flags == 1) // parameter names
+					if ((slot.flags & 1) != 0) // parameter names
 						continue;
 
 					var index = (int) slot.slot;
 					var variable = new VariableDebugInformation (index, slot.name);
-					if (slot.flags == 4)
+					if ((slot.flags & 4) != 0)
 						variable.IsDebuggerHidden = true;
 					parent.variables.Add (variable);
 				}
@@ -280,7 +277,7 @@ namespace Mono.Cecil.Pdb {
 					target = new ImportTarget (ImportTargetKind.ImportNamespace) { @namespace = value };
 					break;
 				case 'T': {
-					var type = module.GetType (value, runtimeName: true);
+					var type = TypeParser.ParseType (module, value);
 					if (type != null)
 						target = new ImportTarget (ImportTargetKind.ImportType) { type = type };
 					break;
@@ -298,7 +295,7 @@ namespace Mono.Cecil.Pdb {
 						target = new ImportTarget (ImportTargetKind.DefineNamespaceAlias) { alias = alias_value, @namespace = alias_target_value };
 						break;
 					case 'T':
-						var type = module.GetType (alias_target_value, runtimeName: true);
+						var type = TypeParser.ParseType (module, alias_target_value);
 						if (type != null)
 							target = new ImportTarget (ImportTargetKind.DefineTypeAlias) { alias = alias_value, type = type };
 						break;
