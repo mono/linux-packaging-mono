@@ -154,18 +154,6 @@ namespace System
 #endif
         }
 
-        public ref T this[Index index]
-        {
-            get
-            {
-                // Evaluate the actual index first because it helps performance
-                int actualIndex = index.GetOffset(_length);
-                return ref this [actualIndex];
-            }
-        }
-
-        public Span<T> this[Range range] => Slice(range);
-
         /// <summary>
         /// Returns a reference to the 0th element of the Span. If the Span is empty, returns null reference.
         /// It can be used for pinning and is required to support the use of span within a fixed statement.
@@ -349,34 +337,6 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new Span<T>(ref Unsafe.Add(ref _pointer.Value, start), length);
-        }
-
-        /// <summary>
-        /// Forms a slice out of the given span, beginning at 'startIndex'
-        /// </summary>
-        /// <param name="startIndex">The index at which to begin this slice.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(Index startIndex)
-        {
-            int actualIndex = startIndex.GetOffset(_length);
-            return Slice(actualIndex);
-        }
-
-        /// <summary>
-        /// Forms a slice out of the given span, beginning at range start index to the range end
-        /// </summary>
-        /// <param name="range">The range which has the start and end indexes used to slice the span.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(Range range)
-        {
-#if __MonoCS__
-            var offsetAndLength = range.GetOffsetAndLength(_length);
-            int start = offsetAndLength.Offset;
-            int length = offsetAndLength.Length;
-#else
-            (int start, int length) = range.GetOffsetAndLength(_length);
-#endif
             return new Span<T>(ref Unsafe.Add(ref _pointer.Value, start), length);
         }
 
