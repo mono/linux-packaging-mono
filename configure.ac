@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [6.0.0.278],
+AC_INIT(mono, [6.0.0.284],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -6003,6 +6003,10 @@ elif test x$target_osx = xyes; then
 	mono_native=yes
 	MONO_NATIVE_PLATFORM=macos
 	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_MACOS"
+
+	if test x$enable_gss = xyes; then
+		MONO_NATIVE_LDFLAGS="$MONO_NATIVE_LDFLAGS -framework GSS"
+	fi
 
 	AC_MONO_APPLE_AVAILABLE(mono_native_compat, [whether we need the compatibility layer],
 		[!(MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12)])
