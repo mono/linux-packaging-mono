@@ -48,6 +48,7 @@ namespace System.Threading.Tasks
                 Task.FromCanceled<TResult>(new CancellationToken(true));
         }
 
+#if !MONO // these methods were moved to TaskAsyncEnumerableExtensions
         /// <summary>Configures how awaits on the tasks returned from an async disposable will be performed.</summary>
         /// <param name="source">The source async disposable.</param>
         /// <param name="continueOnCapturedContext">Whether to capture and marshal back to the current context.</param>
@@ -72,5 +73,6 @@ namespace System.Threading.Tasks
         public static ConfiguredCancelableAsyncEnumerable<T> WithCancellation<T>(
             this IAsyncEnumerable<T> source, CancellationToken cancellationToken) =>
             new ConfiguredCancelableAsyncEnumerable<T>(source, continueOnCapturedContext: true, cancellationToken);
+#endif
     }
 }
