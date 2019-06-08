@@ -11320,6 +11320,7 @@ namespace System.Reflection
         Virtual = 64,
         VtableLayoutMask = 256,
     }
+    [System.SerializableAttribute]
     public abstract partial class MethodBase : System.Reflection.MemberInfo
     {
         protected MethodBase() { }
@@ -11394,6 +11395,7 @@ namespace System.Reflection
         Synchronized = 32,
         Unmanaged = 4,
     }
+    [System.SerializableAttribute]
     public abstract partial class MethodInfo : System.Reflection.MethodBase
     {
         protected MethodInfo() { }
