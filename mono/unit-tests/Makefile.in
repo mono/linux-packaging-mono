@@ -652,6 +652,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -1491,10 +1492,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@test-local:
-@HOST_WIN32_TRUE@test-local:
 @CROSS_COMPILE_TRUE@clean-local:
 @HOST_WIN32_TRUE@clean-local:
+@CROSS_COMPILE_TRUE@test-local:
+@HOST_WIN32_TRUE@test-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
