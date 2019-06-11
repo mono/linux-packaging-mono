@@ -783,6 +783,9 @@
 /* Define to 1 if you have the <poll.h> header file. */
 #undef HAVE_POLL_H
 
+/* Define to 1 if you have the `popen' function. */
+#undef HAVE_POPEN
+
 /* posix_fadvise */
 #undef HAVE_POSIX_ADVISE
 
