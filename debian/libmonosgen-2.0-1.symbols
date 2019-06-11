@@ -1032,6 +1032,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_type_get_type@Base 4.1.0.1738
  mono_type_get_underlying_type@Base 4.1.0.1738
  mono_type_is_byref@Base 4.1.0.1738
+ mono_type_is_generic_parameter@Base 6.5.0.100
  mono_type_is_pointer@Base 4.1.0.1738
  mono_type_is_primitive@Base 4.9.0.1707
  mono_type_is_reference@Base 4.1.0.1738
