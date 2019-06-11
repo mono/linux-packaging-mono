@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.5.0.100],
+AC_INIT(mono, [6.5.0.105],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -2175,6 +2175,7 @@ if test x$host_win32 = xno; then
 
 	AC_CHECK_FUNCS(openlog closelog)
 	AC_CHECK_FUNCS(atexit)
+	AC_CHECK_FUNCS(popen)
 
 	AC_FUNC_STRERROR_R()
 
