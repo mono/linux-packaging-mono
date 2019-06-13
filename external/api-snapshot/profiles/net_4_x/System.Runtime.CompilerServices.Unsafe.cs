@@ -40,6 +40,7 @@ namespace System.Runtime.CompilerServices
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public unsafe static void* Subtract<T>(void* source, int elementOffset) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static ref T Subtract<T>(ref T source, int elementOffset) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static ref T Subtract<T>(ref T source, System.IntPtr elementOffset) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static ref T Unbox<T>(object box) where T : struct { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static void WriteUnaligned<T>(ref byte destination, T value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public unsafe static void WriteUnaligned<T>(void* destination, T value) { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public unsafe static void Write<T>(void* destination, T value) { }
