@@ -2703,7 +2703,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 @DISABLE_EXECUTABLES_FALSE@	ln -sf $< $@
 
 @DISABLE_EXECUTABLES_FALSE@install-exec-hook:
-@DISABLE_EXECUTABLES_FALSE@	(cd $(DESTDIR)$(bindir) && ln -sf mono-$(mono_bin_suffix) mono)
+@DISABLE_EXECUTABLES_FALSE@	(cd $(DESTDIR)$(bindir) && ln -sf mono-$(mono_bin_suffix)$(EXEEXT) mono$(EXEEXT))
 @DISABLE_EXECUTABLES_FALSE@	(cd $(DESTDIR)$(libdir); shopt -s nullglob 2>/dev/null; for i in libmono$(libmono_suffix)*; do ln -sf $$i `echo $$i | sed s/$(libmono_suffix)//` ; done)
 
 # We build this after libmono was built so it contains the date when the final

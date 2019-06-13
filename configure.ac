@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.5.0.105],
+AC_INIT(mono, [6.5.0.147],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -6638,11 +6638,11 @@ AC_ARG_WITH(compiler-server, [  --with-compiler-server=yes,no,default      Enabl
    elif test x$withval = xno; then
        enable_compiler_server=no;
    elif test x$withval = xdefault; then
-       enable_compiler_server=no;
+       enable_compiler_server=yes;
    else
        AC_MSG_ERROR([You must supply one of "yes", "no" or "default" to the --with-compiler-server option])
    fi
-],[enable_compiler_server=no])
+],[enable_compiler_server=yes])
 
 if test x$enable_compiler_server = xyes; then
    if test x$csc_compiler = xmcs; then
