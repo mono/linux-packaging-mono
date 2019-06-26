@@ -1677,7 +1677,7 @@ arg_set_val (CallContext *ccontext, ArgInfo *ainfo, gpointer src)
 void
 mono_arch_set_native_call_context_args (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	const MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
 	CallInfo *cinfo = get_call_info (NULL, sig);
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1719,7 +1719,7 @@ mono_arch_set_native_call_context_args (CallContext *ccontext, gpointer frame, M
 void
 mono_arch_set_native_call_context_ret (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb;
+	const MonoEECallbacks *interp_cb;
 	CallInfo *cinfo;
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1745,7 +1745,7 @@ mono_arch_set_native_call_context_ret (CallContext *ccontext, gpointer frame, Mo
 void
 mono_arch_get_native_call_context_args (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	const MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
 	CallInfo *cinfo = get_call_info (NULL, sig);
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1778,7 +1778,7 @@ mono_arch_get_native_call_context_args (CallContext *ccontext, gpointer frame, M
 void
 mono_arch_get_native_call_context_ret (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb;
+	const MonoEECallbacks *interp_cb;
 	CallInfo *cinfo;
 	ArgInfo *ainfo;
 	gpointer storage;
@@ -4663,7 +4663,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				var = info_var;
 				code = emit_ldr_imm (code, dreg, var->inst_basereg, var->inst_offset);
 				/* Add the offset */
-				val = ((offset / 4) * sizeof (guint8*)) + MONO_STRUCT_OFFSET (SeqPointInfo, bp_addrs);
+				val = ((offset / 4) * sizeof (target_mgreg_t)) + MONO_STRUCT_OFFSET (SeqPointInfo, bp_addrs);
 				/* Load the info->bp_addrs [offset], which is either 0 or the address of a trigger page */
 				if (arm_is_imm12 ((int)val)) {
 					ARM_LDR_IMM (code, dreg, dreg, val);
@@ -6313,11 +6313,12 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 			code = mono_arm_emit_load_imm (code, ARMREG_LR, ins->inst_offset);
 			ARM_STR_REG_REG (code, MONO_ARCH_RGCTX_REG, ins->inst_basereg, ARMREG_LR);
 		}
+
+		mono_add_var_location (cfg, cfg->rgctx_var, TRUE, MONO_ARCH_RGCTX_REG, 0, 0, code - cfg->native_code);
+		mono_add_var_location (cfg, cfg->rgctx_var, FALSE, ins->inst_basereg, ins->inst_offset, code - cfg->native_code, 0);
 	}
 
 	/* load arguments allocated to register from the stack */
-	pos = 0;
-
 	cinfo = get_call_info (NULL, sig);
 
 	if (cinfo->ret.storage == RegTypeStructByAddr) {
@@ -6341,7 +6342,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 
 	for (i = 0; i < sig->param_count + sig->hasthis; ++i) {
 		ArgInfo *ainfo = cinfo->args + i;
-		inst = cfg->args [pos];
+		inst = cfg->args [i];
 		
 		if (cfg->verbose_level > 2)
 			g_print ("Saving argument %d (type: %d)\n", i, ainfo->storage);
@@ -6361,8 +6362,14 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 			} else
 				g_assert_not_reached ();
 
+			if (i == 0 && sig->hasthis) {
+				g_assert (ainfo->storage == RegTypeGeneral);
+				mono_add_var_location (cfg, inst, TRUE, ainfo->reg, 0, 0, code - cfg->native_code);
+				mono_add_var_location (cfg, inst, TRUE, inst->dreg, 0, code - cfg->native_code, 0);
+			}
+
 			if (cfg->verbose_level > 2)
-				g_print ("Argument %d assigned to register %s\n", pos, mono_arch_regname (inst->dreg));
+				g_print ("Argument %d assigned to register %s\n", i, mono_arch_regname (inst->dreg));
 		} else {
 			switch (ainfo->storage) {
 			case RegTypeHFA:
@@ -6417,6 +6424,11 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 					}
 					break;
 				}
+				if (i == 0 && sig->hasthis) {
+					g_assert (ainfo->storage == RegTypeGeneral);
+					mono_add_var_location (cfg, inst, TRUE, ainfo->reg, 0, 0, code - cfg->native_code);
+					mono_add_var_location (cfg, inst, FALSE, inst->inst_basereg, inst->inst_offset, code - cfg->native_code, 0);
+                                }
 				break;
 			case RegTypeBaseGen:
 				if (arm_is_imm12 (prev_sp_offset + ainfo->offset)) {
@@ -6535,7 +6547,6 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 				break;
 			}
 		}
-		pos++;
 	}
 
 	if (method->save_lmf)
@@ -6993,10 +7004,10 @@ mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTC
 
 	if (large_offsets) {
 		ARM_PUSH4 (code, ARMREG_R0, ARMREG_R1, ARMREG_IP, ARMREG_PC);
-		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 4 * sizeof (host_mgreg_t));
+		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 4 * sizeof (target_mgreg_t));
 	} else {
 		ARM_PUSH2 (code, ARMREG_R0, ARMREG_R1);
-		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 2 * sizeof (host_mgreg_t));
+		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 2 * sizeof (target_mgreg_t));
 	}
 	ARM_LDR_IMM (code, ARMREG_R0, ARMREG_LR, -4);
 	vtable_target = code;
@@ -7074,8 +7085,8 @@ mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTC
 				} else {
 					ARM_POP2 (code, ARMREG_R0, ARMREG_R1);
 					if (large_offsets) {
-						mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 2 * sizeof (host_mgreg_t));
-						ARM_ADD_REG_IMM8 (code, ARMREG_SP, ARMREG_SP, 2 * sizeof (host_mgreg_t));
+						mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 2 * sizeof (target_mgreg_t));
+						ARM_ADD_REG_IMM8 (code, ARMREG_SP, ARMREG_SP, 2 * sizeof (target_mgreg_t));
 					}
 					mono_add_unwind_op_def_cfa_offset (unwind_ops, code, start, 0);
 					ARM_LDR_IMM (code, ARMREG_PC, ARMREG_IP, vtable_offset);
@@ -7089,7 +7100,7 @@ mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTC
 				/* Load target address */
 				ARM_LDR_IMM (code, ARMREG_R1, ARMREG_PC, 0);
 				/* Save it to the fourth slot */
-				ARM_STR_IMM (code, ARMREG_R1, ARMREG_SP, 3 * sizeof (host_mgreg_t));
+				ARM_STR_IMM (code, ARMREG_R1, ARMREG_SP, 3 * sizeof (target_mgreg_t));
 				/* Restore registers and branch */
 				ARM_POP4 (code, ARMREG_R0, ARMREG_R1, ARMREG_IP, ARMREG_PC);
 				

@@ -139,7 +139,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(suppressiondir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libmono_profiler_aot_static_la_LIBADD =
-am_libmono_profiler_aot_static_la_OBJECTS = aot.lo
+am_libmono_profiler_aot_static_la_OBJECTS = aot.lo helper.lo
 libmono_profiler_aot_static_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_static_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -159,7 +159,7 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HOST_ANDROID_TRUE@	$(top_builddir)/mono/mini/$(LIBMONO_LA)
 libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(glib_libs)
-am_libmono_profiler_aot_la_OBJECTS = aot.lo
+am_libmono_profiler_aot_la_OBJECTS = aot.lo helper.lo
 libmono_profiler_aot_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_la_OBJECTS)
 libmono_profiler_aot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -191,7 +191,8 @@ libmono_profiler_coverage_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_static_la_LIBADD =
-am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo
+am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo \
+	helper.lo
 libmono_profiler_log_static_la_OBJECTS =  \
 	$(am_libmono_profiler_log_static_la_OBJECTS)
 libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -204,7 +205,7 @@ am__DEPENDENCIES_2 =
 @HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(glib_libs) $(am__DEPENDENCIES_3)
-am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo
+am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo helper.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
 libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -663,15 +664,15 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # which do not support dynamic linking (e.g. iOS). We still want to build
 # the shared version on those targets since it's useful for e.g. simulator
 # builds.
-libmono_profiler_aot_la_SOURCES = aot.c
+libmono_profiler_aot_la_SOURCES = aot.c helper.c
 libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(glib_libs)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_aot_static_la_SOURCES = aot.c
+libmono_profiler_aot_static_la_SOURCES = aot.c helper.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
-libmono_profiler_log_la_SOURCES = log.c log-args.c
+libmono_profiler_log_la_SOURCES = log.c log-args.c helper.c
 libmono_profiler_log_la_LIBADD = $(libmono_dep) $(glib_libs) $(zlib_dep)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_log_static_la_SOURCES = log.c log-args.c
+libmono_profiler_log_static_la_SOURCES = log.c log-args.c helper.c
 libmono_profiler_log_static_la_LDFLAGS = -static
 libmono_profiler_coverage_la_SOURCES = coverage.c
 libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(glib_libs)
@@ -704,6 +705,7 @@ MCS = $(TOOLS_RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:01
 EXTRA_DIST = \
 	log.h \
 	aot.h \
+	helper.h \
 	$(PLOG_TESTS_SRC) \
 	ptestrunner.pl \
 	$(suppression_DATA)
@@ -863,6 +865,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coverage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_static_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log-args.Plo@am__quote@

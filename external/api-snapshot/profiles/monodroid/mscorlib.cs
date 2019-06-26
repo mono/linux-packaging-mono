@@ -11630,6 +11630,7 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
+    [System.SerializableAttribute]
     public abstract partial class PropertyInfo : System.Reflection.MemberInfo
     {
         protected PropertyInfo() { }

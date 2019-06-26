@@ -294,14 +294,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
 	w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.c tabledefs.h \
-	threads.c threads-types.h threadpool.c threadpool.h \
-	threadpool-worker.h threadpool-io.c threadpool-io.h verify.c \
-	verify-internals.h wrapper-types.h dynamic-image-internals.h \
-	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
+	profiler-private.h profiler-legacy.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker.h threadpool-io.c \
+	threadpool-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h class-abi-details.h \
@@ -465,14 +466,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	object-internals.h opcodes.c property-bag.h property-bag.c \
 	w32socket.c w32socket.h w32socket-internals.h w32process.c \
 	w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.c tabledefs.h \
-	threads.c threads-types.h threadpool.c threadpool.h \
-	threadpool-worker.h threadpool-io.c threadpool-io.h verify.c \
-	verify-internals.h wrapper-types.h dynamic-image-internals.h \
-	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
+	profiler-private.h profiler-legacy.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker.h threadpool-io.c \
+	threadpool-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h class-abi-details.h \
@@ -1205,6 +1207,7 @@ common_sources = \
 	w32process-internals.h		\
 	profiler.c		\
 	profiler-private.h	\
+	profiler-legacy.h	\
 	rand.h			\
 	rand.c			\
 	remoting.h		\
