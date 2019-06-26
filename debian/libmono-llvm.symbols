@@ -44,7 +44,6 @@
  mono_domain_code_reserve@Base 5.15.0.231
  mono_domain_lock@Base 5.15.0.231
  mono_domain_unlock@Base 5.15.0.231
- mono_find_jit_icall_by_addr@Base 5.15.0.231
  mono_get_block_region_notry@Base 5.15.0.231
  mono_get_jit_icall_info@Base 6.3.0.651
  mono_icall_get_wrapper@Base 5.15.0.231
