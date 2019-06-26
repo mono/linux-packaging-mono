@@ -3548,18 +3548,28 @@ ves_icall_InternalInvoke (MonoReflectionMethod *method, MonoObject *this_arg, Mo
 		}
 	}
 
-	if (sig->ret->byref) {
+	if ((m->klass != NULL && m_class_is_byreflike (m->klass)) || m_class_is_byreflike (mono_class_from_mono_type_internal (sig->ret))) {
+		mono_gc_wbarrier_generic_store_internal (exc, (MonoObject*) mono_exception_from_name_msg (mono_defaults.corlib, "System", "NotSupportedException", "Cannot invoke method with stack pointers via reflection"));
+		return NULL;
+	}
 #if ENABLE_NETCORE
+	if (sig->ret->byref) {
 		MonoType* ret_byval = m_class_get_byval_arg (mono_class_from_mono_type_internal (sig->ret));
-		if (ret_byval->byref) {
+		if (ret_byval->type == MONO_TYPE_VOID) {
+			mono_gc_wbarrier_generic_store_internal (exc, (MonoObject*) mono_exception_from_name_msg (mono_defaults.corlib, "System", "NotSupportedException", "ByRef to void return values are not supported in reflection invocation"));
+			return NULL;
+		}	
+		if (m_class_is_byreflike (mono_class_from_mono_type_internal (ret_byval))) {
 			mono_gc_wbarrier_generic_store_internal (exc, (MonoObject*) mono_exception_from_name_msg (mono_defaults.corlib, "System", "NotSupportedException", "Cannot invoke method returning ByRef to ByRefLike type via reflection"));
 			return NULL;
 		}
+	}
 #else
+	if (sig->ret->byref) {
 		mono_gc_wbarrier_generic_store_internal (exc, (MonoObject*) mono_exception_from_name_msg (mono_defaults.corlib, "System", "NotSupportedException", "Cannot invoke method returning ByRef type via reflection"));
 		return NULL;
-#endif
 	}
+#endif
 
 	pcount = params? mono_array_length_internal (params): 0;
 	if (pcount != sig->param_count) {
@@ -7381,6 +7391,29 @@ ves_icall_System_Environment_Exit (int result)
 	exit (result);
 }
 
+void
+ves_icall_System_Environment_FailFast (MonoStringHandle message, MonoExceptionHandle exception, MonoStringHandle errorSource, MonoError *error)
+{
+	if (MONO_HANDLE_IS_NULL (message)) {
+		g_warning ("CLR: Managed code called FailFast without specifying a reason.");
+	} else {
+		char *msg = mono_string_handle_to_utf8 (message, error);
+		g_warning ("CLR: Managed code called FailFast, saying \"%s\"", msg);
+		g_free (msg);
+	}
+
+	if (!MONO_HANDLE_IS_NULL (exception)) {
+		mono_print_unhandled_exception_internal ((MonoObject *) MONO_HANDLE_RAW (exception));
+	}
+
+	// NOTE: While this does trigger WER on Windows it doesn't quite provide all the
+	// information in the error dump that CoreCLR would. On Windows 7+ we should call
+	// RaiseFailFastException directly instead of relying on the C runtime doing it
+	// for us and pass it as much information as possible. On Windows 8+ we can also
+	// use the __fastfail intrinsic.
+	abort ();
+}
+
 MonoStringHandle
 ves_icall_System_Environment_GetGacPath (MonoError *error)
 {
@@ -9147,7 +9180,7 @@ ves_icall_System_GC_GetMaxGeneration (void)
 gint64
 ves_icall_System_GC_GetAllocatedBytesForCurrentThread (void)
 {
-	return 0; // TODO: implement https://github.com/mono/mono/issues/8397
+	return mono_gc_get_allocated_bytes_for_current_thread ();
 }
 
 void

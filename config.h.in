@@ -155,6 +155,9 @@
 /* Enable cooperative stop-the-world garbage collection. */
 #undef ENABLE_COOP_SUSPEND
 
+/* Enable copy_stack_data feature for hybrid/cooperative suspend scenarios */
+#undef ENABLE_COPY_STACK_DATA
+
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
 

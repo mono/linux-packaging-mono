@@ -3888,7 +3888,6 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR:
 		ji->data.uindex = decode_value (p, &p);
 		break;
-	case MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR:
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		ji->data.index = decode_value (p, &p);
 		break;
@@ -3994,7 +3993,6 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 		break;
 	case MONO_PATCH_INFO_GET_TLS_TRAMP:
-	case MONO_PATCH_INFO_SET_TLS_TRAMP:
 	case MONO_PATCH_INFO_AOT_JIT_INFO:
 		ji->data.index = decode_value (p, &p);
 		break;
@@ -4263,9 +4261,9 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 		}
 	}
 
-	amodule_lock (amodule);
-
 	init_plt (amodule);
+
+	amodule_lock (amodule);
 
 	mono_atomic_inc_i32 (&mono_jit_stats.methods_aot);
 
@@ -4729,7 +4727,7 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 		method_index = mono_metadata_token_index (method->token) - 1;
 
 		if (amodule->llvm_code_start) {
-			/* Needed by mono_aot_init_gshared_method_this () */
+			/* Needed by mini_llvm_init_gshared_method_this () */
 			/* orig_method is a random instance but it is enough to make init_method () work */
 			amodule_lock (amodule);
 			g_hash_table_insert (amodule->extra_methods, GUINT_TO_POINTER (method_index), orig_method);
@@ -5116,16 +5114,19 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
 	 * patches, so have to translate between the two.
 	 * FIXME: Clean this up, but how ?
 	 */
-	if (ji.type == MONO_PATCH_INFO_ABS || ji.type == MONO_PATCH_INFO_JIT_ICALL_ID
+	if (ji.type == MONO_PATCH_INFO_ABS
+		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ID
 		|| ji.type == MONO_PATCH_INFO_ICALL_ADDR
-		|| ji.type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR || ji.type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR
-		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ADDR || ji.type == MONO_PATCH_INFO_RGCTX_FETCH) {
+		|| ji.type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR
+		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ADDR
+		|| ji.type == MONO_PATCH_INFO_RGCTX_FETCH) {
 		/* These should already have a function descriptor */
 #ifdef PPC_USES_FUNCTION_DESCRIPTOR
 		/* Our function descriptors have a 0 environment, gcc created ones don't */
 		if (ji.type != MONO_PATCH_INFO_JIT_ICALL_ID
-				&& ji.type != MONO_PATCH_INFO_JIT_ICALL_ADDR && ji.type != MONO_PATCH_INFO_ICALL_ADDR
-				&& ji.type != MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR && ji.type != MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR)
+				&& ji.type != MONO_PATCH_INFO_JIT_ICALL_ADDR
+				&& ji.type != MONO_PATCH_INFO_ICALL_ADDR
+				&& ji.type != MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR)
 			g_assert (((gpointer*)target) [2] == 0);
 #endif
 		/* Empty */
@@ -5155,7 +5156,6 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
  *
  *   Initialize the PLT table of the AOT module. Called lazily when the first AOT
  * method in the module is loaded to avoid committing memory by writing to it.
- * LOCKING: Assumes the AMODULE lock is held.
  */
 static void
 init_plt (MonoAotModule *amodule)
@@ -5166,23 +5166,34 @@ init_plt (MonoAotModule *amodule)
 	if (amodule->plt_inited)
 		return;
 
-	if (amodule->info.plt_size <= 1) {
-		amodule->plt_inited = TRUE;
+	tramp = mono_create_specific_trampoline (amodule, MONO_TRAMPOLINE_AOT_PLT, mono_get_root_domain (), NULL);
+	tramp = mono_create_ftnptr (mono_domain_get (), tramp);
+
+	amodule_lock (amodule);
+
+	if (amodule->plt_inited) {
+		amodule_unlock (amodule);
 		return;
 	}
 
-	tramp = mono_create_specific_trampoline (amodule, MONO_TRAMPOLINE_AOT_PLT, mono_get_root_domain (), NULL);
+	if (amodule->info.plt_size <= 1) {
+		amodule->plt_inited = TRUE;
+		amodule_unlock (amodule);
+		return;
+	}
 
 	/*
 	 * Initialize the PLT entries in the GOT to point to the default targets.
 	 */
+	for (i = 1; i < amodule->info.plt_size; ++i)
+		/* All the default entries point to the AOT trampoline */
+		((gpointer*)amodule->got)[amodule->info.plt_got_offset_base + i] = tramp;
 
-	tramp = mono_create_ftnptr (mono_domain_get (), tramp);
-	 for (i = 1; i < amodule->info.plt_size; ++i)
-		 /* All the default entries point to the AOT trampoline */
-		 ((gpointer*)amodule->got)[amodule->info.plt_got_offset_base + i] = tramp;
+	mono_memory_barrier ();
 
 	amodule->plt_inited = TRUE;
+
+	amodule_unlock (amodule);
 }
 
 /*
@@ -5348,9 +5359,7 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 			 * When this code is executed, the runtime may not be initalized yet, so
 			 * resolve the patch info by hand.
 			 */
-			if (ji->type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR) {
-				target = (gpointer)mono_get_trampoline_func ((MonoTrampolineType)ji->data.index);
-			} else if (ji->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR) {
+			if (ji->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR) {
 				target = mono_create_specific_trampoline (GUINT_TO_POINTER (ji->data.uindex), MONO_TRAMPOLINE_RGCTX_LAZY_FETCH, mono_get_root_domain (), NULL);
 				target = mono_create_ftnptr_malloc ((guint8 *)target);
 			} else if (ji->type == MONO_PATCH_INFO_JIT_ICALL_ADDR) {
@@ -5386,9 +5395,7 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 				case MONO_JIT_ICALL_generic_trampoline_delegate:
 				case MONO_JIT_ICALL_generic_trampoline_generic_virtual_remoting:
 				case MONO_JIT_ICALL_generic_trampoline_vcall:
-					g_assert (0); // FIXME replace MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR with MONO_PATCH_INFO_JIT_ICALL_ADDR.
-					g_static_assert (MONO_TRAMPOLINE_JIT == 0);
-					target = (gpointer)mono_get_trampoline_func ((MonoTrampolineType)(jit_icall_id - MONO_JIT_ICALL_generic_trampoline_jit));
+					target = (gpointer)mono_get_trampoline_func (mono_jit_icall_id_to_trampoline_type (jit_icall_id));
 					break;
 				default:
 					target = mono_arch_load_function (jit_icall_id);
@@ -6266,21 +6273,6 @@ mono_aot_find_method_index (MonoMethod *method)
 
 void
 mono_aot_init_llvm_method (gpointer aot_module, guint32 method_index)
-{
-}
-
-void
-mono_aot_init_gshared_method_this (gpointer aot_module, guint32 method_index, MonoObject *this)
-{
-}
-
-void
-mono_aot_init_gshared_method_mrgctx (gpointer aot_module, guint32 method_index, MonoMethodRuntimeGenericContext *rgctx)
-{
-}
-
-void
-mono_aot_init_gshared_method_vtable (gpointer aot_module, guint32 method_index, MonoVTable *vtable)
 {
 }
 

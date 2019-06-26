@@ -532,17 +532,24 @@ target_triplet = @target@
 @FULL_AOT_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
-@FULL_AOT_TESTS_TRUE@am__append_34 = $(REMOTING_DISABLED_TESTS)
-@HYBRID_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS)
-@FULL_AOT_INTERP_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS)
+
+# Tests depending on assembly load order. Under Full AOT using WinAOT
+# profile, console is still available, meaning that more assemblies (I18N)
+# will be loaded when AOT runtime initial loads mscorlib.
+@FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@am__append_34 = \
+@FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@	assembly_append_ordering.exe
+
+@FULL_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS)
+@HYBRID_AOT_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS)
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_37 = $(REMOTING_DISABLED_TESTS)
 
 # https://github.com/mono/mono/issues/12839
-@HOST_WIN32_TRUE@am__append_37 = block_guard_restore_aligment_on_exit.exe
+@HOST_WIN32_TRUE@am__append_38 = block_guard_restore_aligment_on_exit.exe
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_38 = \
+@ARM_TRUE@am__append_39 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -595,13 +602,13 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_39 = \
+@ARM64_TRUE@am__append_40 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_40 = \
+@AMD64_TRUE@am__append_41 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1114,7 +1121,7 @@ MKBUNDLE = \
 @FULL_AOT_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
-MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
+MCS_NO_UNSAFE = MONO_DEBUG=clr-memory-model $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
@@ -1539,6 +1546,8 @@ TESTS_IL_SRC = \
 	dim-sealed.il \
 	dim-protected-accessibility1.il \
 	dim-protected-accessibility2.il \
+	dim-reabstraction.il \
+	dim-reabstraction-generics.il \
 	twopassvariance.il \
 	tailcall-generic-cast-conservestack-il.il \
 	tailcall-generic-cast-nocrash-il.il \
@@ -1551,7 +1560,8 @@ TESTS_IL_SRC = \
 	custom-modifiers-append.1.il \
 	gh-13056_mono_local_cprop_av.il \
 	gh-13057_mono_local_emulate_ops_av.il \
-	module-cctor-entrypoint.il
+	module-cctor-entrypoint.il \
+	bug-gh-9706.il
 
 
 # This test crashes the runtime, even with recent fixes.
@@ -1623,7 +1633,8 @@ PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
 	$(am__append_27) $(am__append_28) $(am__append_29) \
 	$(am__append_30) $(am__append_32) $(am__append_33) \
-	$(am__append_34) $(am__append_35) $(am__append_36)
+	$(am__append_34) $(am__append_35) $(am__append_36) \
+	$(am__append_37)
 REMOTING_DISABLED_TESTS = \
 	async-exc-compilation.exe \
 	bug-544446.exe \
@@ -1663,7 +1674,7 @@ CI_DISABLED_TESTS = \
 # https://github.com/mono/mono/issues/11417
 CI_PR_DISABLED_TESTS = finalizer-thread.exe \
 	appdomain-threadpool-unload.exe finalizer-abort.exe \
-	process-stress-2.exe process-stress-3.exe $(am__append_37)
+	process-stress-2.exe process-stress-3.exe $(am__append_38)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1872,7 +1883,7 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_38) $(am__append_39) $(am__append_40)
+	$(am__append_39) $(am__append_40) $(am__append_41)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
