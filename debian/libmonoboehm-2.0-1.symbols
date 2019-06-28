@@ -1500,6 +1500,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_hazardous_try_free@Base 4.5.2.48
  mono_thread_hazardous_try_free_all@Base 4.7.0.488
  mono_thread_info_attach@Base 5.14.0.116
+ mono_thread_info_current_unchecked@Base 6.0.0.310
  mono_thread_info_detach@Base 4.5.2.48
  mono_thread_info_get_flags@Base 5.14.0.78
  mono_thread_info_get_small_id@Base 5.8.0.22
@@ -1526,6 +1527,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
  mono_threads_enter_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_enter_gc_safe_region_unbalanced@Base 4.5.2.195
+ mono_threads_enter_gc_safe_region_with_info@Base 6.0.0.310
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
