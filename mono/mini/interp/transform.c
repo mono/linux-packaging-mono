@@ -882,6 +882,15 @@ interp_generate_mae_throw (TransformData *td, MonoMethod *method, MonoMethod *ta
 	td->sp -= 2;
 }
 
+static void
+interp_generate_bie_throw (TransformData *td)
+{
+	MonoJitICallInfo *info = &mono_get_jit_icall_info ()->mono_throw_bad_image;
+
+	interp_add_ins (td, MINT_ICALL_PP_V);
+	td->last_ins->data [0] = get_data_item_index (td, (gpointer)info->func);
+}
+
 /*
  * These are additional locals that can be allocated as we transform the code.
  * They are allocated past the method locals so they are accessed in the same
@@ -1950,9 +1959,12 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 	if (target_method)
 		mono_class_init_internal (target_method->klass);
 
-	if (!is_virtual && target_method && (target_method->flags & METHOD_ATTRIBUTE_ABSTRACT))
-		/* MS.NET seems to silently convert this to a callvirt */
-		is_virtual = TRUE;
+	if (!is_virtual && target_method && (target_method->flags & METHOD_ATTRIBUTE_ABSTRACT)) {
+		if (!mono_class_is_interface (method->klass))
+			interp_generate_bie_throw (td);
+		else
+			is_virtual = TRUE;
+	}
 
 	if (is_virtual && target_method && (!(target_method->flags & METHOD_ATTRIBUTE_VIRTUAL) ||
 		(MONO_METHOD_IS_FINAL (target_method) &&
@@ -5283,13 +5295,13 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 					td->ip += 5;
 
 					CHECK_STACK (td, info->sig->param_count);
-					if (!strcmp (info->name, "mono_threads_attach_coop")) {
+					if (jit_icall_id == MONO_JIT_ICALL_mono_threads_attach_coop) {
 						rtm->needs_thread_attach = 1;
 
 						/* attach needs two arguments, and has one return value: leave one element on the stack */
 						interp_add_ins (td, MINT_POP);
 						td->last_ins->data [0] = 0;
-					} else if (!strcmp (info->name, "mono_threads_detach_coop")) {
+					} else if (jit_icall_id == MONO_JIT_ICALL_mono_threads_detach_coop) {
 						g_assert (rtm->needs_thread_attach);
 
 						/* detach consumes two arguments, and no return value: drop both of them */
@@ -6124,9 +6136,7 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 
 	if (method->iflags & (METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL | METHOD_IMPL_ATTRIBUTE_RUNTIME)) {
 		MonoMethod *nm = NULL;
-		mono_os_mutex_lock (&calc_section);
 		if (imethod->transformed) {
-			mono_os_mutex_unlock (&calc_section);
 			MONO_PROFILER_RAISE (jit_done, (method, imethod->jinfo));
 			return;
 		}
@@ -6160,16 +6170,17 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 				g_assert_not_reached ();
 		}
 		if (nm == NULL) {
+			mono_os_mutex_lock (&calc_section);
 			imethod->stack_size = sizeof (stackval); /* for tracing */
 			imethod->alloca_size = imethod->stack_size;
+			mono_memory_barrier ();
 			imethod->transformed = TRUE;
-			mono_os_mutex_unlock(&calc_section);
+			mono_os_mutex_unlock (&calc_section);
 			MONO_PROFILER_RAISE (jit_done, (method, NULL));
 			return;
 		}
 		method = nm;
 		header = interp_method_get_header (nm, error);
-		mono_os_mutex_unlock (&calc_section);
 		return_if_nok (error);
 	}
 

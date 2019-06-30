@@ -405,7 +405,7 @@ mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
 @DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_8 = mono-dtrace.$(OBJEXT)
 mono_boehm_DEPENDENCIES = libmain_a-main.$(OBJEXT) \
 	$(am__DEPENDENCIES_7) $(glib_libs) $(am__DEPENDENCIES_5) \
-	$(am__DEPENDENCIES_8)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_8)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
@@ -413,7 +413,7 @@ am_mono_sgen_OBJECTS =
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
 mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
 	$(MONO_SGEN_LIB) $(glib_libs) $(am__DEPENDENCIES_5) \
-	$(am__DEPENDENCIES_8)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_8)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
@@ -424,9 +424,11 @@ am__objects_23 =
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_23)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
-	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_8)
 am__DEPENDENCIES_10 = libmain_a-main.$(OBJEXT) $(am__DEPENDENCIES_7) \
-	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
+	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_8)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_9)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
@@ -835,7 +837,7 @@ MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE) $(MOBILE_RUNTIME_ARG)
 TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
 INTERP_RUNTIME = $(MINI_RUNTIME) --interpreter
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
-MCS = CSC_SDK_PATH_DISABLED= MONO_DEBUG=clr-memory-model $(TOOLS_RUNTIME) $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
+MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) --clr-memory-model $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 AM_CFLAGS = \
 	-I$(top_srcdir) 	\
@@ -906,11 +908,15 @@ mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
 @STATIC_MONO_TRUE@MONO_SGEN_LIB = $(sgen_static_libraries)
 @LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
 @LOADED_LLVM_TRUE@LLVMMONOF = 
+@HAVE_ZLIB_FALSE@Z_LIBS = 
+@HAVE_ZLIB_TRUE@Z_LIBS = -lz
 mono_boehm_LDADD = \
 	libmain_a-main.$(OBJEXT) \
 	$(MONO_LIB)		\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
+	$(LIBICONV)		\
+	$(Z_LIBS)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
@@ -922,6 +928,8 @@ mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
+	$(LIBICONV)		\
+	$(Z_LIBS)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 

@@ -1700,18 +1700,19 @@ mono_create_tls_get (MonoCompile *cfg, MonoTlsKey key)
 		return fast_tls;
 	}
 
+	const MonoJitICallId jit_icall_id = mono_get_tls_key_to_jit_icall_id (key);
+
 	if (cfg->compile_aot) {
 		MonoInst *addr;
 		/*
 		 * tls getters are critical pieces of code and we don't want to resolve them
 		 * through the standard plt/tramp mechanism since we might expose ourselves
 		 * to crashes and infinite recursions.
+		 * Therefore the NOCALL part of MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL, FALSE in is_plt_patch.
 		 */
-		EMIT_NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_GET_TLS_TRAMP, GUINT_TO_POINTER(key));
+		EMIT_NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL, GUINT_TO_POINTER (jit_icall_id));
 		return mini_emit_calli (cfg, mono_icall_sig_ptr, NULL, addr, NULL, NULL);
 	} else {
-		g_static_assert (TLS_KEY_THREAD == 0);
-		const MonoJitICallId jit_icall_id = (MonoJitICallId)(MONO_JIT_ICALL_mono_tls_get_thread + key);
 		return mono_emit_jit_icall_id (cfg, jit_icall_id, NULL);
 	}
 }
@@ -2241,6 +2242,12 @@ emit_method_access_failure (MonoCompile *cfg, MonoMethod *caller, MonoMethod *ca
 	args [0] = emit_get_rgctx_method (cfg, mono_method_check_context_used (caller), caller, MONO_RGCTX_INFO_METHOD);
 	args [1] = emit_get_rgctx_method (cfg, mono_method_check_context_used (callee), callee, MONO_RGCTX_INFO_METHOD);
 	mono_emit_jit_icall (cfg, mono_throw_method_access, args);
+}
+
+static void
+emit_bad_image_failure (MonoCompile *cfg, MonoMethod *caller, MonoMethod *callee)
+{
+	mono_emit_jit_icall (cfg, mono_throw_bad_image, NULL);
 }
 
 static MonoMethod*
@@ -7037,9 +7044,12 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			if (mono_security_core_clr_enabled ())
 				ensure_method_is_allowed_to_call_method (cfg, method, cil_method);
 
-			if (!virtual_ && (cmethod->flags & METHOD_ATTRIBUTE_ABSTRACT))
-				/* MS.NET seems to silently convert this to a callvirt */
-				virtual_ = TRUE;
+			if (!virtual_ && (cmethod->flags & METHOD_ATTRIBUTE_ABSTRACT)) {
+				if (!mono_class_is_interface (method->klass))
+					emit_bad_image_failure (cfg, method, cil_method);
+				else
+					virtual_ = TRUE;
+			}
 
 			{
 				/*
@@ -7810,7 +7820,6 @@ calli_end:
 				}
 				emit_seq_point (cfg, method, next_ip, FALSE, TRUE);
 			}
-
 			break;
 		}
 		case MONO_CEE_RET:
