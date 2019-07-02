@@ -194,8 +194,6 @@ class Bockbuild:
                 self.artifact_root, '%s-%s' % (package.name, arch))
             package.buildstring_file = package.build_artifact + '.buildstring'
             package.log = os.path.join(self.logs, package.name + '.log')
-            if os.path.exists(package.log):
-                delete(package.log)
 
             package.source_dir_name = expand_macros(package.source_dir_name, package)
             workspace_path = os.path.join(self.build_root, package.source_dir_name)
@@ -226,6 +224,8 @@ class Bockbuild:
                 package.deploy_requests.append (stage)
 
         for package in packages.values():
+            if os.path.exists(package.log):
+                delete(package.log)
             package.start_build(arch, dest, stage)
             # make artifact in scratch
             # delete artifact + buildstring
