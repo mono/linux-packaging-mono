@@ -142,7 +142,7 @@ namespace System.Data.SqlClient.SNI
                 }
                 else
                 {
-                    _socket = Connect(serverName, port, ts);
+                    _socket = Connect(serverName, port, isInfiniteTimeOut ? TimeSpan.FromMilliseconds(Int32.MaxValue) : ts);
                 }
                 
                 if (_socket == null || !_socket.Connected)
