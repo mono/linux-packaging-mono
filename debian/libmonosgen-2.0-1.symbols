@@ -332,6 +332,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_field_static_set_value@Base 4.1.0.1738
  mono_file_map@Base 4.1.0.1738
  mono_file_map_close@Base 4.1.0.1738
+ mono_file_map_error@Base 6.5.0.440
  mono_file_map_fd@Base 4.1.0.1738
  mono_file_map_fileio@Base 4.1.0.1738
  mono_file_map_open@Base 4.1.0.1738
