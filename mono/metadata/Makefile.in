@@ -115,7 +115,6 @@ target_triplet = @target@
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/inftrees.h \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/trees.c \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/trees.h \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/uncompr.c \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/zconf.h \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/zlib.h \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/zutil.c \
@@ -220,9 +219,8 @@ am__libmonoruntime_support_la_SOURCES_DIST = empty.c \
 	../../support/inflate.c ../../support/inflate.h \
 	../../support/inftrees.c ../../support/inftrees.h \
 	../../support/trees.c ../../support/trees.h \
-	../../support/uncompr.c ../../support/zconf.h \
-	../../support/zlib.h ../../support/zutil.c \
-	../../support/zutil.h
+	../../support/zconf.h ../../support/zlib.h \
+	../../support/zutil.c ../../support/zutil.h
 am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_MONOTOUCH_TRUE@am__objects_1 = ../../support/libmonoruntime_support_la-zlib-helper.lo
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@am__objects_2 = ../../support/libmonoruntime_support_la-nl.lo \
@@ -236,7 +234,6 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/libmonoruntime_support_la-inflate.lo \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/libmonoruntime_support_la-inftrees.lo \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/libmonoruntime_support_la-trees.lo \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/libmonoruntime_support_la-uncompr.lo \
 @ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@HAVE_ZLIB_FALSE@	../../support/libmonoruntime_support_la-zutil.lo
 am__objects_4 = libmonoruntime_support_la-empty.lo $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3)
@@ -797,7 +794,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -1470,9 +1466,6 @@ libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_c
 ../../support/libmonoruntime_support_la-trees.lo:  \
 	../../support/$(am__dirstamp) \
 	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-uncompr.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
 ../../support/libmonoruntime_support_la-zutil.lo:  \
 	../../support/$(am__dirstamp) \
 	../../support/$(DEPDIR)/$(am__dirstamp)
@@ -1504,7 +1497,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-inftrees.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-trees.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-uncompr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
@@ -1874,13 +1866,6 @@ libmonoruntime_support_la-empty.lo: empty.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/trees.c' object='../../support/libmonoruntime_support_la-trees.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-trees.lo `test -f '../../support/trees.c' || echo '$(srcdir)/'`../../support/trees.c
-
-../../support/libmonoruntime_support_la-uncompr.lo: ../../support/uncompr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-uncompr.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-uncompr.Tpo -c -o ../../support/libmonoruntime_support_la-uncompr.lo `test -f '../../support/uncompr.c' || echo '$(srcdir)/'`../../support/uncompr.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-uncompr.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-uncompr.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/uncompr.c' object='../../support/libmonoruntime_support_la-uncompr.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-uncompr.lo `test -f '../../support/uncompr.c' || echo '$(srcdir)/'`../../support/uncompr.c
 
 ../../support/libmonoruntime_support_la-zutil.lo: ../../support/zutil.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-zutil.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Tpo -c -o ../../support/libmonoruntime_support_la-zutil.lo `test -f '../../support/zutil.c' || echo '$(srcdir)/'`../../support/zutil.c

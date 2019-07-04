@@ -218,8 +218,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	exceptions-wasm.c tramp-wasm.c mini-x86.c mini-x86.h \
 	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c main-core.c
+	mini-windows.c mini-windows-tls-callback.c mini-windows.h \
+	mini-windows-dllmain.c mini-windows-dlldac.c main-core.c
 am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -295,6 +295,7 @@ am__objects_14 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 am__objects_16 = libmini_la-mini-darwin.lo
 am__objects_17 = libmini_la-mini-posix.lo
 am__objects_18 = libmini_la-mini-windows.lo \
+	libmini_la-mini-windows-tls-callback.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
 @HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_19 = $(am__objects_18)
@@ -634,7 +635,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -1022,6 +1022,7 @@ darwin_sources = \
 
 windows_sources = \
 	mini-windows.c \
+	mini-windows-tls-callback.c \
 	mini-windows.h \
 	mini-windows-dllmain.c \
 	mini-windows-dlldac.c
@@ -1612,6 +1613,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dlldac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dllmain.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-tls-callback.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86.Plo@am__quote@
@@ -2344,6 +2346,13 @@ libmini_la-mini-windows.lo: mini-windows.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows.c' object='libmini_la-mini-windows.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
+
+libmini_la-mini-windows-tls-callback.lo: mini-windows-tls-callback.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-windows-tls-callback.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-windows-tls-callback.Tpo -c -o libmini_la-mini-windows-tls-callback.lo `test -f 'mini-windows-tls-callback.c' || echo '$(srcdir)/'`mini-windows-tls-callback.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-windows-tls-callback.Tpo $(DEPDIR)/libmini_la-mini-windows-tls-callback.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-tls-callback.c' object='libmini_la-mini-windows-tls-callback.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-tls-callback.lo `test -f 'mini-windows-tls-callback.c' || echo '$(srcdir)/'`mini-windows-tls-callback.c
 
 libmini_la-mini-windows-dllmain.lo: mini-windows-dllmain.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-windows-dllmain.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-windows-dllmain.Tpo -c -o libmini_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c

@@ -375,9 +375,6 @@
 /* Define to 1 if you have the `dl_iterate_phdr' function. */
 #undef HAVE_DL_ITERATE_PHDR
 
-/* dlopen-based dynamic loader available */
-#undef HAVE_DL_LOADER
-
 /* ECHO */
 #undef HAVE_ECHO
 
@@ -1472,6 +1469,9 @@
 
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
+
+/* Does dlsym require leading underscore. */
+#undef MONO_DL_NEED_USCORE
 
 /* Disable banned functions from being used by the runtime */
 #undef MONO_INSIDE_RUNTIME

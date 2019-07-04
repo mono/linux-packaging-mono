@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.5.0.440],
+AC_INIT(mono, [6.5.0.462],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -2129,7 +2129,6 @@ if test x$host_win32 = xno; then
 		AC_MSG_WARN([No dynamic loading support available])
 	else
 		LIBS="$LIBS $DL_LIB"
-		AC_DEFINE(HAVE_DL_LOADER,1,[dlopen-based dynamic loader available])
 		dnl from glib's configure.ac
 		if test "x$cross_compiling" = "xyes"; then
 		   AC_MSG_RESULT(cross compiling, assuming no)
@@ -2153,11 +2152,8 @@ if test x$host_win32 = xno; then
 		  ])
 		fi
 		if test "x$mono_cv_uscore" = "xyes"; then
-			MONO_DL_NEED_USCORE=1
-		else
-			MONO_DL_NEED_USCORE=0
+			AC_DEFINE(MONO_DL_NEED_USCORE, 1, [Does dlsym require leading underscore.])
 		fi
-		AC_SUBST(MONO_DL_NEED_USCORE)
 		AC_CHECK_FUNC(dlerror)
 	fi
 
