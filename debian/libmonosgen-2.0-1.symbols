@@ -151,18 +151,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_value_size@Base 4.1.0.1738
  mono_class_vtable@Base 4.1.0.1738
  mono_cli_rva_image_map@Base 4.1.0.1738
- mono_code_manager_cleanup@Base 4.1.0.1738
- mono_code_manager_commit@Base 4.1.0.1738
- mono_code_manager_destroy@Base 4.1.0.1738
- mono_code_manager_init@Base 4.1.0.1738
- mono_code_manager_install_callbacks@Base 4.9.0.1707
- mono_code_manager_invalidate@Base 4.1.0.1738
- mono_code_manager_new@Base 4.1.0.1738
- mono_code_manager_new_dynamic@Base 4.1.0.1738
- mono_code_manager_reserve@Base 4.1.0.1738
- mono_code_manager_reserve_align@Base 4.1.0.1738
- mono_code_manager_set_read_only@Base 4.1.0.1738
- mono_code_manager_size@Base 4.1.0.1738
  mono_compile_method@Base 4.1.0.1738
  mono_conc_hashtable_destroy@Base 4.1.0.1738
  mono_conc_hashtable_foreach@Base 4.1.0.1738
