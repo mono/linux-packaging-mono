@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft", "Newtonsoft\Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.Blazor.E2EPerformance", "Microsoft.AspNetCore.Blazor.E2EPerformance\Microsoft.AspNetCore.Blazor.E2EPerformance.csproj", "{85FDC54F-74CA-4625-B02F-73ACBEC89230}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazingPizza.Client", "BlazingPizza.Client\BlazingPizza.Client.csproj", "{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{85FDC54F-74CA-4625-B02F-73ACBEC89230}.Release|x64.Build.0 = Release|Any CPU
 		{85FDC54F-74CA-4625-B02F-73ACBEC89230}.Release|x86.ActiveCfg = Release|Any CPU
 		{85FDC54F-74CA-4625-B02F-73ACBEC89230}.Release|x86.Build.0 = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|x64.Build.0 = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Debug|x86.Build.0 = Debug|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|x64.ActiveCfg = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|x64.Build.0 = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|x86.ActiveCfg = Release|Any CPU
+		{91C38E3D-F0F4-4922-8C11-05B33E55DDF8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
