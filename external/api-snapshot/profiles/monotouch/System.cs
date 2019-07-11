@@ -31,6 +31,8 @@
 [assembly:System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.RequestMinimum, SkipVerification=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Collections.Generic.Queue<>))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Collections.Generic.Stack<>))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.IO.Enumeration.FileSystemName))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.Cryptography.CryptographicOperations))]
 namespace Microsoft.Win32.SafeHandles
 {
     [System.Security.SuppressUnmanagedCodeSecurityAttribute]
