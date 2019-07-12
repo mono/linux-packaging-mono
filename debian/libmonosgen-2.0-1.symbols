@@ -1289,6 +1289,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_strlcpy@Base 5.7.0.181
  monoeg_g_strndup@Base 5.7.0.181
  monoeg_g_strnfill@Base 5.7.0.181
+ monoeg_g_strnlen@Base 6.5.0.525
  monoeg_g_strreverse@Base 5.7.0.181
  monoeg_g_strsplit@Base 5.7.0.181
  monoeg_g_strsplit_set@Base 5.7.0.181
