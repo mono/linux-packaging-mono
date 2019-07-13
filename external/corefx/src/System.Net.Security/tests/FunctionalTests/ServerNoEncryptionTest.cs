@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 
 namespace System.Net.Security.Tests
 {
+    [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono ignores EncryptionPolicy")]
     public class ServerNoEncryptionTest
     {
         private readonly ITestOutputHelper _log;
@@ -33,7 +34,6 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono ignores EncryptionPolicy")]
         public async Task ServerNoEncryption_ClientRequireEncryption_NoConnect()
         {
             using (var serverNoEncryption = new DummyTcpServer(
