@@ -3905,6 +3905,11 @@ mono_method_check_inlining (MonoCompile *cfg, MonoMethod *method)
 	if (mono_profiler_coverage_instrumentation_enabled (method))
 		return FALSE;
 
+#if ENABLE_NETCORE
+	if (!cfg->ret_var_set)
+		return FALSE;
+#endif
+		
 	return TRUE;
 }
 
@@ -5206,15 +5211,19 @@ handle_call_res_devirt (MonoCompile *cfg, MonoMethod *cmethod, MonoInst *call_re
 		// FIXME: Add more
 		/* 1. Implements IEquatable<T> */
 		/*
-		 * Can't use this for string as it might use a different comparer:
+		 * Can't use this for string/byte as it might use a different comparer:
 		 *
+         * // Specialize type byte for performance reasons
+         * if (t == typeof(byte)) {
+         *     return (EqualityComparer<T>)(object)(new ByteEqualityComparer());
+         * }
 		 * #if MOBILE
 		 *   // Breaks .net serialization compatibility
 		 *   if (t == typeof (string))
 		 *       return (EqualityComparer<T>)(object)new InternalStringComparer ();
 		 * #endif
 		 */
-		if (mono_class_is_assignable_from_internal (inst, mono_class_from_mono_type_internal (param_type)) && param_type->type != MONO_TYPE_STRING) {
+		if (mono_class_is_assignable_from_internal (inst, mono_class_from_mono_type_internal (param_type)) && param_type->type != MONO_TYPE_U1 && param_type->type != MONO_TYPE_STRING) {
 			MonoInst *typed_objref;
 			MonoClass *gcomparer_inst;
 

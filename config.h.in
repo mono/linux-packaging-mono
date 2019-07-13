@@ -321,30 +321,6 @@
 /* Define to 1 if you have the <curses.h> header file. */
 #undef HAVE_CURSES_H
 
-/* Define to 1 if you have the declaration of `InterlockedAdd', and to 0 if
-   you don't. */
-#undef HAVE_DECL_INTERLOCKEDADD
-
-/* Define to 1 if you have the declaration of `InterlockedAdd64', and to 0 if
-   you don't. */
-#undef HAVE_DECL_INTERLOCKEDADD64
-
-/* Define to 1 if you have the declaration of `InterlockedCompareExchange64',
-   and to 0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDCOMPAREEXCHANGE64
-
-/* Define to 1 if you have the declaration of `InterlockedDecrement64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDDECREMENT64
-
-/* Define to 1 if you have the declaration of `InterlockedExchange64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDEXCHANGE64
-
-/* Define to 1 if you have the declaration of `InterlockedIncrement64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDINCREMENT64
-
 /* Define to 1 if you have the declaration of `pthread_mutexattr_setprotocol',
    and to 0 if you don't. */
 #undef HAVE_DECL_PTHREAD_MUTEXATTR_SETPROTOCOL
@@ -352,10 +328,6 @@
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #undef HAVE_DECL_STRERROR_R
-
-/* Define to 1 if you have the declaration of `__readfsdword', and to 0 if you
-   don't. */
-#undef HAVE_DECL___READFSDWORD
 
 /* Support for the deprecated attribute */
 #undef HAVE_DEPRECATED
@@ -861,6 +833,9 @@
 
 /* Define to 1 if you have the `pwritev' function. */
 #undef HAVE_PWRITEV
+
+/* Qp2getifaddrs */
+#undef HAVE_QP2GETIFADDRS
 
 /* readdir_r */
 #undef HAVE_READDIR_R

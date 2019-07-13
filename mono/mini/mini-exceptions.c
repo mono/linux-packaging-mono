@@ -1141,7 +1141,7 @@ ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_file_info
 		}
 
 		mono_debug_free_source_location (location);
-		mono_array_setref_internal (res, i, sf);
+		mono_array_setref_internal (res, i - skip, sf);
 	}
 
 	return res;
@@ -3046,10 +3046,14 @@ mono_setup_altstack (MonoJitTlsData *tls)
 	size_t stsize = 0;
 	stack_t sa;
 	guint8 *staddr = NULL;
-#ifdef TARGET_OSX
+#if defined(TARGET_OSX) || defined(_AIX)
 	/*
 	 * On macOS Mojave we are encountering a bug when changing mapping for main thread
 	 * stack pages. Stack overflow on main thread will kill the app.
+	 *
+	 * AIX seems problematic as well; it gives ENOMEM for mprotect and valloc, if we
+	 * do this for thread 1 with its stack at the top of memory. Other threads seem
+	 * fine for the altstack guard page, though.
 	 */
 	gboolean disable_stack_guard = mono_threads_platform_is_main_thread ();
 #else

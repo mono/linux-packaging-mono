@@ -332,10 +332,12 @@ namespace Mono.Security.Authenticode
     public partial class AuthenticodeDeformatter : Mono.Security.Authenticode.AuthenticodeBase
     {
         public AuthenticodeDeformatter() { }
+        public AuthenticodeDeformatter(byte[] rawData) { }
         public AuthenticodeDeformatter(string fileName) { }
         public Mono.Security.X509.X509CertificateCollection Certificates { get { throw null; } }
         public string FileName { get { throw null; } set { } }
         public byte[] Hash { get { throw null; } }
+        public byte[] RawData { get { throw null; } set { } }
         public int Reason { get { throw null; } }
         public byte[] Signature { get { throw null; } }
         public Mono.Security.X509.X509Certificate SigningCertificate { get { throw null; } }
