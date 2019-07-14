@@ -45,6 +45,9 @@
 /* Disable desktop assembly loader semantics. */
 #undef DISABLE_DESKTOP_LOADER
 
+/* Disable GAC */
+#undef DISABLE_GAC
+
 /* Disable generics support */
 #undef DISABLE_GENERICS
 
