@@ -143,7 +143,8 @@ class DarwinProfile (UnixProfile):
         elif arch == 'darwin-64':
             package.local_ld_flags = ['-arch x86_64 -m64']
             package.local_gcc_flags = ['-arch x86_64 -m64']
-            package.local_configure_flags = ['--disable-dependency-tracking']
+            package.local_configure_flags = [
+                '--build=x86_64-apple-darwin13.0.0', '--disable-dependency-tracking']
         else:
             error('Unknown arch %s' % arch)
 
