@@ -1,3 +1,9 @@
+mono (5.18.1.28-0xamarin2) vs; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 16 Jul 2019 16:19:28 +0000
+
 mono (5.18.1.28-0xamarin1) vs; urgency=medium
 
   * New release - mono-5.18.1.28.tar.bz2
