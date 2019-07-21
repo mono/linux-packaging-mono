@@ -944,7 +944,6 @@ free_jit_tls_data (MonoJitTlsData *jit_tls)
 	//This happens during AOT cuz the thread is never attached
 	if (!jit_tls)
 		return;
-	mono_arch_free_jit_tls_data (jit_tls);
 	mono_free_altstack (jit_tls);
 
 	g_free (jit_tls->first_lmf);
@@ -4749,8 +4748,6 @@ mini_cleanup (MonoDomain *domain)
 	if (profile_options)
 		g_ptr_array_free (profile_options, TRUE);
 
-	free_jit_tls_data (mono_tls_get_jit_tls ());
-
 	mono_icall_cleanup ();
 
 	mono_runtime_cleanup_handlers ();
@@ -4758,6 +4755,7 @@ mini_cleanup (MonoDomain *domain)
 #ifndef MONO_CROSS_COMPILE
 	mono_domain_free (domain, TRUE);
 #endif
+	free_jit_tls_data (mono_tls_get_jit_tls ());
 
 #ifdef ENABLE_LLVM
 	if (mono_use_llvm)

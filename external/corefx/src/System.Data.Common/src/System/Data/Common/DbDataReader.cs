@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace System.Data.Common
 {
-    public abstract class DbDataReader : MarshalByRefObject, IDataReader, IEnumerable
+    public abstract class DbDataReader : MarshalByRefObject, IDataReader, IEnumerable, IAsyncDisposable
     {
         protected DbDataReader() : base() { }
 
@@ -246,6 +246,25 @@ namespace System.Data.Common
                     return Task.FromException<bool>(e);
                 }
             }
+        }
+
+        public virtual Task CloseAsync()
+        {
+            try
+            {
+                Close();
+                return Task.CompletedTask;
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
+        }
+
+        public virtual ValueTask DisposeAsync()
+        {
+            Dispose();
+            return default;
         }
     }
 }
