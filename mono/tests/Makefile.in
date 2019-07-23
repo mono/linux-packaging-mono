@@ -1969,7 +1969,11 @@ EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
 	$(INTERNALSVISIBLETO_TEST_SRC) \
-	$(INTERNALSVISIBLETO_TEST_LIB_SRC) weakattribute.cs
+	$(INTERNALSVISIBLETO_TEST_LIB_SRC) \
+	internalsvisibleto-runtimetest.cs \
+	internalsvisibleto-compilertest.cs \
+	internalsvisibleto-library.cs internalsvisibleto-2048.snk \
+	weakattribute.cs
 @FULL_AOT_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
