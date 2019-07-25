@@ -554,7 +554,7 @@ namespace System.Net.Http
             Task.Factory.StartNew(
                 s => {
                     var whrs = (WinHttpRequestState)s;
-                    whrs.Handler.StartRequest(whrs);
+                    _ = whrs.Handler.StartRequestAsync(whrs);
                 },
                 state,
                 CancellationToken.None,
@@ -764,7 +764,7 @@ namespace System.Net.Http
             }
         }
 
-        private async void StartRequest(WinHttpRequestState state)
+        private async Task StartRequestAsync(WinHttpRequestState state)
         {
             if (state.CancellationToken.IsCancellationRequested)
             {
