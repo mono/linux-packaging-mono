@@ -249,8 +249,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	marshal-windows-internals.h mono-security-windows.c \
 	mono-security-windows-internals.h w32mutex-win32.c \
 	w32semaphore-win32.c w32event-win32.c w32process-win32.c \
-	w32process-win32-internals.h w32socket-win32.c \
-	w32error-win32.c w32subset.h appdomain.c \
+	w32socket-win32.c w32error-win32.c w32subset.h appdomain.c \
 	assembly-load-context.c domain.c appdomain-icalls.h assembly.c \
 	assembly-internals.h attach.h attach.c cil-coff.h class.c \
 	class-getters.h class-init.h class-init.c class-internals.h \
@@ -427,8 +426,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	marshal-windows-internals.h mono-security-windows.c \
 	mono-security-windows-internals.h w32mutex-win32.c \
 	w32semaphore-win32.c w32event-win32.c w32process-win32.c \
-	w32process-win32-internals.h w32socket-win32.c \
-	w32error-win32.c w32subset.h appdomain.c \
+	w32socket-win32.c w32error-win32.c w32subset.h appdomain.c \
 	assembly-load-context.c domain.c appdomain-icalls.h assembly.c \
 	assembly-internals.h attach.h attach.c cil-coff.h class.c \
 	class-getters.h class-init.h class-init.c class-internals.h \
@@ -972,7 +970,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @HOST_WIN32_TRUE@	w32semaphore-win32.c \
 @HOST_WIN32_TRUE@	w32event-win32.c \
 @HOST_WIN32_TRUE@	w32process-win32.c \
-@HOST_WIN32_TRUE@	w32process-win32-internals.h \
 @HOST_WIN32_TRUE@	w32socket-win32.c \
 @HOST_WIN32_TRUE@	w32error-win32.c \
 @HOST_WIN32_TRUE@	w32subset.h

@@ -30,7 +30,7 @@
 
 static partial class Consts
 {
-	public const string MonoCorlibVersion = "a3d6fce2-2790-4089-9543-34eb239e2b04";
+	public const string MonoCorlibVersion = "21aeaa06-293b-4279-82ce-2a32285a3ea3";
 }
 
 #if !NETCORE
@@ -41,7 +41,7 @@ static partial class Consts
 	// Use these assembly version constants to make code more maintainable.
 	//
 
-	public const string MonoVersion = "6.5.0.625";
+	public const string MonoVersion = "6.5.0.670";
 	public const string MonoCompany = "Mono development team";
 	public const string MonoProduct = "Mono Common Language Infrastructure";
 	public const string MonoCopyright = "(c) Various Mono authors";
