@@ -3,11 +3,13 @@
 /usr/bin/vbc
 /usr/lib/mono/4.5/csc.exe*
 /usr/lib/mono/4.5/csc.rsp
+/usr/lib/mono/4.5/VBCSCompiler.exe*
 /usr/lib/mono/4.5/csi.*
 /usr/lib/mono/4.5/vbc.exe*
 /usr/lib/mono/4.5/vbc.rsp
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.Scripting.dll*
+/usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.Scripting.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
