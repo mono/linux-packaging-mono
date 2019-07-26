@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Text;
 
 namespace System
@@ -15,7 +16,7 @@ namespace System
 
         internal delegate bool MatchNumberDelegate(ref __DTString str, int digitLen, out int result);
 
-        internal static MatchNumberDelegate m_hebrewNumberParser = new MatchNumberDelegate(DateTimeParse.MatchHebrewDigits);
+        internal static MatchNumberDelegate m_hebrewNumberParser;
 
         internal static DateTime ParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format, DateTimeFormatInfo dtfi, DateTimeStyles style)
         {
@@ -1051,7 +1052,11 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                     break;
                 case TokenType.JapaneseEraToken:
                     // Special case for Japanese.  We allow Japanese era name to be used even if the calendar is not Japanese Calendar.
-                    result.calendar = JapaneseCalendar.GetDefaultInstance();
+                    if (GlobalizationMode.Invariant)
+                    {
+                        throw new PlatformNotSupportedException();
+                    }
+                    result.calendar = GetJapaneseCalendarDefaultInstance();
                     dtfi = DateTimeFormatInfo.GetJapaneseCalendarDTFI();
                     if (result.era != -1)
                     {
@@ -1066,7 +1071,11 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                     }
                     break;
                 case TokenType.TEraToken:
-                    result.calendar = TaiwanCalendar.GetDefaultInstance();
+                    if (GlobalizationMode.Invariant)
+                    {
+                        throw new PlatformNotSupportedException();
+                    }
+                    result.calendar = GetTaiwanCalendarDefaultInstance();
                     dtfi = DateTimeFormatInfo.GetTaiwanCalendarDTFI();
                     if (result.era != -1)
                     {
@@ -1158,6 +1167,20 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
 
             LexTraceExit("0250 (success)", dps);
             return true;
+        }
+
+        private static Calendar GetJapaneseCalendarDefaultInstance()
+        {
+            if (GlobalizationMode.Invariant)
+                throw new PlatformNotSupportedException();
+            return JapaneseCalendar.GetDefaultInstance();
+        }
+
+        internal static Calendar GetTaiwanCalendarDefaultInstance()
+        {
+            if (GlobalizationMode.Invariant)
+                throw new PlatformNotSupportedException();
+            return TaiwanCalendar.GetDefaultInstance();
         }
 
         private static Boolean VerifyValidPunctuation(ref __DTString str)
@@ -2292,7 +2315,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                         result.SetFailure(ParseFailureKind.FormatBadDateTimeCalendar, nameof(SR.Format_BadDateTimeCalendar));
                         return false;
                     }
-                    if (!GetHebrewDayOfNM(ref result, ref raw, dtfi))
+                    if (!GlobalizationMode.Invariant && !GetHebrewDayOfNM(ref result, ref raw, dtfi))
                     {
                         return false;
                     }
@@ -2634,7 +2657,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                     {
                         if ((dtfi.FormatFlags & DateTimeFormatFlags.UseHebrewRule) != 0)
                         {
-                            if (!ProcessHebrewTerminalState(dps, ref str, ref result, ref styles, ref raw, dtfi))
+                            if (!GlobalizationMode.Invariant && !ProcessHebrewTerminalState(dps, ref str, ref result, ref styles, ref raw, dtfi))
                             {
                                 TPTraceExit("0050 (ProcessHebrewTerminalState)", dps);
                                 return false;
@@ -4476,8 +4499,9 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
             bool bTimeOnly = false;
             result.calendar = parseInfo.calendar;
 
-            if ((CalendarId)parseInfo.calendar.ID == CalendarId.HEBREW)
+            if (!GlobalizationMode.Invariant && (CalendarId)parseInfo.calendar.ID == CalendarId.HEBREW)
             {
+                LazyInitializer.EnsureInitialized (ref m_hebrewNumberParser, () => new MatchNumberDelegate(DateTimeParse.MatchHebrewDigits));
                 parseInfo.parseNumberDelegate = m_hebrewNumberParser;
                 parseInfo.fCustomNumberParser = true;
             }

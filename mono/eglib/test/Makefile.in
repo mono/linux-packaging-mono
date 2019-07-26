@@ -227,6 +227,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@ $(GLIB_TEST_FLAGS_COMMON)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -357,8 +359,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -861,7 +865,7 @@ uninstall-am:
 
 # Something amiss with subdirs ordering?
 ../libeglib.la: ../goutput.c # etc
-	make  -C .. $(@F)
+	$(MAKE)  -C .. $(@F)
 
 run-eglib: all
 	srcdir=`readlink -f $(srcdir)` ./test-eglib

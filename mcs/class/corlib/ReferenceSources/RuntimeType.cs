@@ -95,19 +95,18 @@ namespace System
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		extern ConstructorInfo GetCorrespondingInflatedConstructor (ConstructorInfo generic);
 
-#if !NETCORE
 		internal override MethodInfo GetMethod (MethodInfo fromNoninstanciated)
-                {
+		{
 			if (fromNoninstanciated == null)
 				throw new ArgumentNullException ("fromNoninstanciated");
-                        return GetCorrespondingInflatedMethod (fromNoninstanciated);
-                }
+			return GetCorrespondingInflatedMethod (fromNoninstanciated);
+		}
 
 		internal override ConstructorInfo GetConstructor (ConstructorInfo fromNoninstanciated)
 		{
 			if (fromNoninstanciated == null)
 				throw new ArgumentNullException ("fromNoninstanciated");
-                        return GetCorrespondingInflatedConstructor (fromNoninstanciated);
+			return GetCorrespondingInflatedConstructor (fromNoninstanciated);
 		}
 
 		internal override FieldInfo GetField (FieldInfo fromNoninstanciated)
@@ -117,7 +116,6 @@ namespace System
 			flags |= fromNoninstanciated.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic;
 			return GetField (fromNoninstanciated.Name, flags);
 		}
-#endif
 
 		string GetDefaultMemberName ()
 		{
@@ -142,7 +140,7 @@ namespace System
 			return m_serializationCtor;
 		}
 
-		internal Object CreateInstanceSlow(bool publicOnly, bool wrapExceptions, bool skipCheckThis, bool fillCache, ref StackCrawlMark stackMark)
+		internal Object CreateInstanceSlow(bool publicOnly, bool wrapExceptions, bool skipCheckThis, bool fillCache)
 		{
 			//bool bNeedSecurityCheck = true;
 			//bool bCanBeCached = false;
@@ -161,7 +159,11 @@ namespace System
 		{
 			var ctor = GetDefaultConstructor ();
 			if (!nonPublic && ctor != null && !ctor.IsPublic) {
+#if NETCORE
+				throw new MissingMethodException(SR.Format(SR.Arg_NoDefCTor, FullName));
+#else
 				ctor = null;
+#endif
 			}
 
 			if (ctor == null) {
@@ -431,7 +433,7 @@ namespace System
 		public override StructLayoutAttribute StructLayoutAttribute {
 			get {
 #if NETCORE
-				throw new NotImplementedException ();
+				return GetStructLayoutAttribute ();
 #else
 				return StructLayoutAttribute.GetCustomAttribute (this);
 #endif
@@ -697,11 +699,7 @@ namespace System
 				var a = new RuntimeFieldInfo[n];
 				for (int i = 0; i < n; i++) {
 					var fh = new RuntimeFieldHandle (h[i]);
-#if NETCORE
-					throw new NotImplementedException ();
-#else
 					a[i] = (RuntimeFieldInfo) FieldInfo.GetFieldFromHandle (fh, refh);
-#endif
 				}
 				return a;
 			}
@@ -717,7 +715,7 @@ namespace System
 				for (int i = 0; i < n; i++) {
 					var eh = new Mono.RuntimeEventHandle (h[i]);
 #if NETCORE
-					throw new NotImplementedException ();
+					a[i] = (RuntimeEventInfo) RuntimeEventInfo.GetEventFromHandle (eh, refh);
 #else
 					a[i] = (RuntimeEventInfo) EventInfo.GetEventFromHandle (eh, refh);
 #endif
@@ -736,7 +734,8 @@ namespace System
 		{
 			string internalName = null;
 #if NETCORE
-			throw new NotImplementedException ();
+			if (displayName != null)
+				internalName = displayName;
 #else
 			if (displayName != null)
 				internalName = TypeIdentifiers.FromDisplay (displayName).InternalName;
@@ -774,7 +773,19 @@ namespace System
 			get;
 		}
 
-#if MOBILE
+#if NETCORE
+		public override bool IsSecurityTransparent {
+			get { return false; }
+		}
+
+		public override bool IsSecurityCritical {
+			get { return true; }
+		}
+
+		public override bool IsSecuritySafeCritical {
+			get { return false; }
+		}
+#elif MOBILE
 		static int get_core_clr_security_level ()
 		{
 			return 1;
@@ -797,6 +808,7 @@ namespace System
 		}
 #endif
 
+#if !NETCORE
 		public override int GetHashCode()
 		{
 			Type t = UnderlyingSystemType;
@@ -804,6 +816,7 @@ namespace System
 				return t.GetHashCode ();
 			return (int)_impl.Value;
 		}
+#endif
 
 		public override string FullName {
 			get {
@@ -822,9 +835,7 @@ namespace System
 			}
 		}
 
-#if !NETCORE
 		public sealed override bool HasSameMetadataDefinitionAs (MemberInfo other) => HasSameMetadataDefinitionAsCore<RuntimeType> (other);	
-#endif
 
 		public override bool IsSZArray {
 			get {
@@ -833,13 +844,11 @@ namespace System
 			}
 		}
 
-#if !NETCORE
 		internal override bool IsUserType {
 			get {
 				return false;
 			}
 		}
-#endif
 
 		[System.Runtime.InteropServices.ComVisible(true)]
 		[Pure]
@@ -862,5 +871,44 @@ namespace System
 		}
 
 		public override bool IsTypeDefinition => RuntimeTypeHandle.IsTypeDefinition (this);
+
+#if NETCORE
+        private const int DEFAULT_PACKING_SIZE = 8;
+
+        internal StructLayoutAttribute GetStructLayoutAttribute ()
+        {
+            if (IsInterface || HasElementType || IsGenericParameter)
+                return null;
+
+            int pack = 0, size = 0;
+            LayoutKind layoutKind = LayoutKind.Auto;
+            switch (Attributes & TypeAttributes.LayoutMask)
+            {
+                case TypeAttributes.ExplicitLayout: layoutKind = LayoutKind.Explicit; break;
+                case TypeAttributes.AutoLayout: layoutKind = LayoutKind.Auto; break;
+                case TypeAttributes.SequentialLayout: layoutKind = LayoutKind.Sequential; break;
+                default: Contract.Assume(false); break;
+            }
+
+            CharSet charSet = CharSet.None;
+            switch (Attributes & TypeAttributes.StringFormatMask)
+            {
+                case TypeAttributes.AnsiClass: charSet = CharSet.Ansi; break;
+                case TypeAttributes.AutoClass: charSet = CharSet.Auto; break;
+                case TypeAttributes.UnicodeClass: charSet = CharSet.Unicode; break;
+                default: Contract.Assume(false); break;
+            }
+
+            GetPacking (out pack, out size);
+
+            // Metadata parameter checking should not have allowed 0 for packing size.
+            // The runtime later converts a packing size of 0 to 8 so do the same here
+            // because it's more useful from a user perspective. 
+            if (pack == 0)
+                pack = DEFAULT_PACKING_SIZE;
+
+            return new StructLayoutAttribute (layoutKind) { Pack = pack, Size = size, CharSet = charSet };
+        }
+#endif // NETCORE
 	}
 }

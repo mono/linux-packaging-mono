@@ -26,6 +26,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.CollectionChangeEventArgs))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.CollectionChangeEventHandler))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.CollectionConverter))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.Container))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.CustomTypeDescriptor))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.DateTimeConverter))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.DateTimeOffsetConverter))]

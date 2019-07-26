@@ -1186,7 +1186,7 @@ create_sockaddr_from_handle (MonoObjectHandle saddr_obj, socklen_t *sa_size, gin
 		 * two bytes hold the SocketAddress family
 		 */
 		if (len - 2 >= sizeof (sock_un->sun_path)) {
-			mono_error_set_argument_out_of_range (error, "SocketAddress.Size");
+			mono_error_set_argument_out_of_range (error, "SocketAddress.Size", "MonoArgumentException:SocketAddress.Size");
 			mono_gchandle_free_internal (gchandle);
 			return NULL;
 		}
@@ -1923,14 +1923,14 @@ ipaddress_handle_to_struct_in_addr (MonoObjectHandle ipaddr)
 	struct in_addr inaddr;
 	MonoClassField *field;
 	
-	field = mono_class_get_field_from_name_full (mono_handle_class (ipaddr), "m_Address", NULL);
+	field = mono_class_get_field_from_name_full (mono_handle_class (ipaddr), "_addressOrScopeId", NULL);
 	g_assert (field);
 
 	/* No idea why .net uses a 64bit type to hold a 32bit value...
 	 *
 	 * Internal value of IPAddess is in little-endian order
 	 */
-	inaddr.s_addr = GUINT_FROM_LE ((guint32)MONO_HANDLE_GET_FIELD_VAL (ipaddr, guint64, field));
+	inaddr.s_addr = GUINT_FROM_LE ((guint32)MONO_HANDLE_GET_FIELD_VAL (ipaddr, guint32, field));
 	
 	return inaddr;
 }
@@ -1943,7 +1943,7 @@ ipaddress_handle_to_struct_in6_addr (MonoObjectHandle ipaddr)
 	MonoClassField *field;
 	int i;
 
-	field = mono_class_get_field_from_name_full (mono_handle_class (ipaddr), "m_Numbers", NULL);
+	field = mono_class_get_field_from_name_full (mono_handle_class (ipaddr), "_numbers", NULL);
 	g_assert (field);
 	MonoArrayHandle data = MONO_HANDLE_NEW_GET_FIELD (ipaddr, MonoArray, field);
 

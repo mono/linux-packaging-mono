@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace System.Net.Http
 {
-    public class HttpRequestMessage : IDisposable
+    public partial class HttpRequestMessage : IDisposable
     {
         private const int MessageNotYetSent = 0;
         private const int MessageAlreadySent = 1;
@@ -179,13 +179,20 @@ namespace System.Net.Http
             return sb.ToString();
         }
 
+#if !MONO
+        static bool IsAllowedAbsoluteUri(Uri requestUri)
+        {
+            return !requestUri.IsAbsoluteUri || HttpUtilities.IsHttpUri(requestUri);
+        }
+#endif
+
         private void InitializeValues(HttpMethod method, Uri requestUri)
         {
             if (method == null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
-            if ((requestUri != null) && (requestUri.IsAbsoluteUri) && (!HttpUtilities.IsHttpUri(requestUri)))
+            if ((requestUri != null) && !IsAllowedAbsoluteUri(requestUri))
             {
                 throw new ArgumentException(SR.net_http_client_http_baseaddress_required, nameof(requestUri));
             }

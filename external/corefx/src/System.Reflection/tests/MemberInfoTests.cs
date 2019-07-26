@@ -100,7 +100,7 @@ namespace System.Reflection.Tests
             Assert.Equal(t, setter.ReflectedType);
         }
 
-        [Fact(Skip="Mono issue #10277")]
+        [Fact]
         public void InheritedEventAccessors()
         {
             Type t = typeof(Derived);

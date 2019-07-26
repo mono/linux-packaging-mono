@@ -68,7 +68,7 @@ thread_disown_mutex (MonoInternalThread *internal, gpointer handle)
 	mono_w32handle_close (handle);
 }
 
-static void
+static gint32
 mutex_handle_signal (MonoW32Handle *handle_data)
 {
 	MonoW32HandleMutex *mutex_handle;
@@ -87,6 +87,7 @@ mutex_handle_signal (MonoW32Handle *handle_data)
 	} else if (!pthread_equal (mutex_handle->tid, tid)) {
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_MUTEX, "%s: we don't own %s handle %p (owned by %ld, me %ld)",
 			__func__, mono_w32handle_get_typename (handle_data->type), handle_data, (long)mutex_handle->tid, (long)tid);
+		return MONO_W32HANDLE_WAIT_RET_NOT_OWNED_BY_CALLER;
 	} else {
 		/* OK, we own this mutex */
 		mutex_handle->recursion--;
@@ -101,6 +102,7 @@ mutex_handle_signal (MonoW32Handle *handle_data)
 			mono_w32handle_set_signal_state (handle_data, TRUE, FALSE);
 		}
 	}
+	return MONO_W32HANDLE_WAIT_RET_SUCCESS_0;
 }
 
 static gboolean

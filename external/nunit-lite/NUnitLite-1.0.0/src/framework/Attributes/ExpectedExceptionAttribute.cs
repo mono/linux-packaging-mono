@@ -140,6 +140,7 @@ namespace NUnit.Framework
     /// a success result only if the expected exception is thrown. 
     /// Otherwise, an appropriate failure result is returned.
     /// </summary>
+    [System.Serializable]
     public class ExpectedExceptionDecorator : ICommandDecorator
     {
         private ExpectedExceptionData exceptionData;

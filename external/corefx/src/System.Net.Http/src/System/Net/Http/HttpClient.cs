@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace System.Net.Http
 {
-    public class HttpClient : HttpMessageInvoker
+    public partial class HttpClient : HttpMessageInvoker
     {
         #region Fields
 
@@ -99,8 +99,16 @@ namespace System.Net.Http
 
         #region Constructors
 
+#if !MONO
+        // Allow Mono to provide a custom version in a partial class part.
+        static HttpClient CreateDefaultHandler()
+        {
+            return new HttpClientHandler();
+        }
+#endif
+
         public HttpClient()
-            : this(new HttpClientHandler())
+            : this(CreateDefaultHandler())
         {
         }
 

@@ -29,6 +29,7 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.ImmutableObjectAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.InitializationEventAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.ISite))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.ISupportInitialize))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.LocalizableAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.MergablePropertyAttribute))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.ComponentModel.NotifyParentPropertyAttribute))]

@@ -68,6 +68,12 @@
 
 #include "../internal.h"
 
+#ifdef OPENSSL_WINDOWS
+#define LIST_SEPARATOR_CHAR ';'
+#else
+#define LIST_SEPARATOR_CHAR ':'
+#endif
+
 typedef struct lookup_dir_hashes_st {
     unsigned long hash;
     int suffix;
@@ -203,7 +209,7 @@ static int add_cert_dir(BY_DIR *ctx, const char *dir, int type)
     s = dir;
     p = s;
     do {
-        if ((*p == ':') || (*p == '\0')) {
+        if ((*p == LIST_SEPARATOR_CHAR) || (*p == '\0')) {
             BY_DIR_ENTRY *ent;
             ss = s;
             s = p + 1;

@@ -170,6 +170,9 @@ void
 mono_error_set_argument_null (MonoError *oerror, const char *argument, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(3,4);
 
 void
+mono_error_set_argument_out_of_range (MonoError *error, const char *name, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(3,4);
+
+void
 mono_error_set_not_verifiable (MonoError *oerror, MonoMethod *method, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(3,4);
 
 void
@@ -183,6 +186,9 @@ mono_error_set_not_implemented (MonoError *error, const char *msg_format, ...) M
 
 void
 mono_error_set_not_supported (MonoError *error, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(2,3);
+
+void 
+mono_error_set_ambiguous_implementation (MonoError *error, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(2,3);
 
 void
 mono_error_set_invalid_operation (MonoError *error, const char *msg_format, ...) MONO_ATTR_FORMAT_PRINTF(2,3);
@@ -208,19 +214,19 @@ mono_error_set_remoting (MonoError *error, const char *message)
 static inline void
 mono_error_set_divide_by_zero (MonoError *error)
 {
-	mono_error_set_generic_error (error, "System", "DivideByZeroException", "");
+	mono_error_set_generic_error (error, "System", "DivideByZeroException", NULL);
 }
 
 static inline void
 mono_error_set_index_out_of_range (MonoError *error)
 {
-	mono_error_set_generic_error (error, "System", "IndexOutOfRangeException", "");
+	mono_error_set_generic_error (error, "System", "IndexOutOfRangeException", NULL);
 }
 
 static inline void
 mono_error_set_overflow (MonoError *error)
 {
-	mono_error_set_generic_error (error, "System", "OverflowException", "");
+	mono_error_set_generic_error (error, "System", "OverflowException", NULL);
 }
 
 static inline void
@@ -232,13 +238,13 @@ mono_error_set_synchronization_lock (MonoError *error, const char *message)
 static inline void
 mono_error_set_thread_interrupted (MonoError *error)
 {
-	mono_error_set_generic_error (error, "System.Threading", "ThreadInterruptedException", "");
+	mono_error_set_generic_error (error, "System.Threading", "ThreadInterruptedException", NULL);
 }
 
 static inline void
 mono_error_set_null_reference (MonoError *error)
 {
-	mono_error_set_generic_error (error, "System", "NullReferenceException", "");
+	mono_error_set_generic_error (error, "System", "NullReferenceException", NULL);
 }
 
 static inline void
@@ -253,8 +259,6 @@ mono_error_set_cannot_unload_appdomain (MonoError *error, const char *message)
 	mono_error_set_generic_error (error, "System", "CannotUnloadAppDomainException", "%s", message);
 }
 
-void
-mono_error_set_argument_out_of_range (MonoError *error, const char *name);
 
 MonoException*
 mono_error_prepare_exception (MonoError *error, MonoError *error_out);

@@ -2261,6 +2261,26 @@ namespace System.Linq.Expressions
         public System.Linq.Expressions.UnaryExpression Update(System.Linq.Expressions.Expression operand) { throw null; }
     }
 }
+namespace System.Net.Sockets
+{
+    public sealed partial class UnixDomainSocketEndPoint : System.Net.EndPoint
+    {
+        public UnixDomainSocketEndPoint(string path) { }
+        public override System.Net.Sockets.AddressFamily AddressFamily { get { throw null; } }
+        public override System.Net.EndPoint Create(System.Net.SocketAddress socketAddress) { throw null; }
+        public override System.Net.SocketAddress Serialize() { throw null; }
+        public override string ToString() { throw null; }
+    }
+}
+namespace System.Reflection
+{
+    public abstract partial class DispatchProxy
+    {
+        protected DispatchProxy() { }
+        public static T Create<T, TProxy>() where TProxy : System.Reflection.DispatchProxy { throw null; }
+        protected abstract object Invoke(System.Reflection.MethodInfo targetMethod, object[] args);
+    }
+}
 namespace System.Runtime.CompilerServices
 {
     public partial class CallSite
@@ -2801,6 +2821,31 @@ namespace System.Security.Cryptography
         }
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
+    public abstract partial class ECDiffieHellman : System.Security.Cryptography.AsymmetricAlgorithm
+    {
+        protected ECDiffieHellman() { }
+        public override string KeyExchangeAlgorithm { get { throw null; } }
+        public abstract System.Security.Cryptography.ECDiffieHellmanPublicKey PublicKey { get; }
+        public override string SignatureAlgorithm { get { throw null; } }
+        public static new System.Security.Cryptography.ECDiffieHellman Create() { throw null; }
+        public static System.Security.Cryptography.ECDiffieHellman Create(System.Security.Cryptography.ECCurve curve) { throw null; }
+        public static System.Security.Cryptography.ECDiffieHellman Create(System.Security.Cryptography.ECParameters parameters) { throw null; }
+        public static new System.Security.Cryptography.ECDiffieHellman Create(string algorithm) { throw null; }
+        public byte[] DeriveKeyFromHash(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual byte[] DeriveKeyFromHash(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] secretPrepend, byte[] secretAppend) { throw null; }
+        public byte[] DeriveKeyFromHmac(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] hmacKey) { throw null; }
+        public virtual byte[] DeriveKeyFromHmac(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] hmacKey, byte[] secretPrepend, byte[] secretAppend) { throw null; }
+        public virtual byte[] DeriveKeyMaterial(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey) { throw null; }
+        public virtual byte[] DeriveKeyTls(System.Security.Cryptography.ECDiffieHellmanPublicKey otherPartyPublicKey, byte[] prfLabel, byte[] prfSeed) { throw null; }
+        public virtual byte[] ExportECPrivateKey() { throw null; }
+        public virtual System.Security.Cryptography.ECParameters ExportExplicitParameters(bool includePrivateParameters) { throw null; }
+        public virtual System.Security.Cryptography.ECParameters ExportParameters(bool includePrivateParameters) { throw null; }
+        public virtual void GenerateKey(System.Security.Cryptography.ECCurve curve) { }
+        public virtual void ImportECPrivateKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
+        public virtual void ImportParameters(System.Security.Cryptography.ECParameters parameters) { }
+        public virtual bool TryExportECPrivateKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
+    }
+    [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     [System.SerializableAttribute]
     public abstract partial class ECDiffieHellmanPublicKey : System.IDisposable
     {
@@ -2823,20 +2868,28 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.ECDsa Create(System.Security.Cryptography.ECCurve curve) { throw null; }
         public static System.Security.Cryptography.ECDsa Create(System.Security.Cryptography.ECParameters parameters) { throw null; }
         public static new System.Security.Cryptography.ECDsa Create(string algorithm) { throw null; }
+        public virtual byte[] ExportECPrivateKey() { throw null; }
         public virtual System.Security.Cryptography.ECParameters ExportExplicitParameters(bool includePrivateParameters) { throw null; }
         public virtual System.Security.Cryptography.ECParameters ExportParameters(bool includePrivateParameters) { throw null; }
         public virtual void GenerateKey(System.Security.Cryptography.ECCurve curve) { }
         protected virtual byte[] HashData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         protected virtual byte[] HashData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual void ImportECPrivateKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual void ImportParameters(System.Security.Cryptography.ECParameters parameters) { }
         public virtual byte[] SignData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual byte[] SignData(byte[] data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual byte[] SignData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public abstract byte[] SignHash(byte[] hash);
+        public virtual bool TryExportECPrivateKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
+        protected virtual bool TryHashData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignHash(System.ReadOnlySpan<byte> hash, System.Span<byte> destination, out int bytesWritten) { throw null; }
         public bool VerifyData(byte[] data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual bool VerifyData(byte[] data, int offset, int count, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public bool VerifyData(System.IO.Stream data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual bool VerifyData(System.ReadOnlySpan<byte> data, System.ReadOnlySpan<byte> signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
+        public virtual bool VerifyHash(System.ReadOnlySpan<byte> hash, System.ReadOnlySpan<byte> signature) { throw null; }
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
     public sealed partial class ECDsaCng : System.Security.Cryptography.ECDsa
@@ -2883,10 +2936,12 @@ namespace System.Security.Cryptography
         public System.Security.Cryptography.HashAlgorithmName AlgorithmName { get { throw null; } }
         public void AppendData(byte[] data) { }
         public void AppendData(byte[] data, int offset, int count) { }
+        public void AppendData(System.ReadOnlySpan<byte> data) { }
         public static System.Security.Cryptography.IncrementalHash CreateHash(System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public static System.Security.Cryptography.IncrementalHash CreateHMAC(System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] key) { throw null; }
         public void Dispose() { }
         public byte[] GetHashAndReset() { throw null; }
+        public bool TryGetHashAndReset(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
     public sealed partial class RSACng : System.Security.Cryptography.RSA
     {
@@ -2965,6 +3020,8 @@ namespace System.Security.Cryptography.X509Certificates
     public static partial class ECDsaCertificateExtensions
     {
         [System.MonoTODOAttribute]
+        public static System.Security.Cryptography.X509Certificates.X509Certificate2 CopyWithPrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.Security.Cryptography.ECDsa privateKey) { throw null; }
+        [System.MonoTODOAttribute]
         public static System.Security.Cryptography.ECDsa GetECDsaPrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         [System.MonoTODOAttribute]
         public static System.Security.Cryptography.ECDsa GetECDsaPublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
@@ -3025,10 +3082,7 @@ namespace System.Threading.Tasks
 {
     public static partial class TaskExtensions
     {
-        public static System.Runtime.CompilerServices.ConfiguredAsyncDisposable ConfigureAwait(this System.IAsyncDisposable source, bool continueOnCapturedContext) { throw null; }
-        public static System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable<T> ConfigureAwait<T>(this System.Collections.Generic.IAsyncEnumerable<T> source, bool continueOnCapturedContext) { throw null; }
         public static System.Threading.Tasks.Task Unwrap(this System.Threading.Tasks.Task<System.Threading.Tasks.Task> task) { throw null; }
         public static System.Threading.Tasks.Task<TResult> Unwrap<TResult>(this System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> task) { throw null; }
-        public static System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable<T> WithCancellation<T>(this System.Collections.Generic.IAsyncEnumerable<T> source, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
 }

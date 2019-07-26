@@ -4,7 +4,7 @@
 
 namespace System.Runtime.CompilerServices
 {
-    public static class RuntimeFeature
+    public static partial class RuntimeFeature
     {
         /// <summary>
         /// Name of the Portable PDB feature.
@@ -30,6 +30,12 @@ namespace System.Runtime.CompilerServices
                 case DefaultImplementationsOfInterfaces:
 #endif
                     return true;
+#if MONO
+                case nameof(IsDynamicCodeSupported):
+                    return IsDynamicCodeSupported;
+                case nameof(IsDynamicCodeCompiled):
+                    return IsDynamicCodeCompiled;
+#endif
             }
 
             return false;

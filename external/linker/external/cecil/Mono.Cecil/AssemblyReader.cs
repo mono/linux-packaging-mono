@@ -69,12 +69,11 @@ namespace Mono.Cecil {
 			if (parameters.metadata_resolver != null)
 				module.metadata_resolver = parameters.metadata_resolver;
 
-#if !READ_ONLY
 			if (parameters.metadata_importer_provider != null)
 				module.metadata_importer = parameters.metadata_importer_provider.GetMetadataImporter (module);
+
 			if (parameters.reflection_importer_provider != null)
 				module.reflection_importer = parameters.reflection_importer_provider.GetReflectionImporter (module);
-#endif
 
 			GetMetadataKind (module, parameters);
 
@@ -105,7 +104,7 @@ namespace Mono.Cecil {
 					: symbol_reader_provider.GetSymbolReader (module, module.FileName);
 
 				if (reader != null)
-					module.ReadSymbols (reader);
+					module.ReadSymbols (reader, parameters.ThrowIfSymbolsAreNotMatching);
 			}
 
 			if (module.Image.HasDebugTables ())
@@ -834,6 +833,12 @@ namespace Mono.Cecil {
 
 				types [i] = ReadType (i + 1);
 			}
+
+			if (module.IsWindowsMetadata ()) {
+				for (uint i = 0; i < length; i++) {
+					WindowsRuntimeProjections.Project (types [i]);
+				}
+			}
 		}
 
 		static bool IsNested (TypeAttributes attributes)
@@ -945,9 +950,6 @@ namespace Mono.Cecil {
 			if (IsNested (attributes))
 				type.DeclaringType = GetNestedTypeDeclaringType (type);
 
-			if (module.IsWindowsMetadata ())
-				WindowsRuntimeProjections.Project (type);
-
 			return type;
 		}
 
@@ -1035,7 +1037,12 @@ namespace Mono.Cecil {
 			if (type != null)
 				return type;
 
-			return ReadTypeDefinition (rid);
+			type = ReadTypeDefinition (rid);
+
+			if (module.IsWindowsMetadata ())
+				WindowsRuntimeProjections.Project (type);
+
+			return type;
 		}
 
 		TypeDefinition ReadTypeDefinition (uint rid)
@@ -1111,11 +1118,14 @@ namespace Mono.Cecil {
 			metadata.AddTypeReference (type);
 
 			if (scope_token.TokenType == TokenType.TypeRef) {
-				declaring_type = GetTypeDefOrRef (scope_token);
+				if (scope_token.RID != rid) {
+					declaring_type = GetTypeDefOrRef (scope_token);
 
-				scope = declaring_type != null
-					? declaring_type.Scope
-					: module;
+					scope = declaring_type != null
+						? declaring_type.Scope
+						: module;
+				} else // obfuscated typeref row pointing to self
+					scope = module;
 			} else
 				scope = GetTypeReferenceScope (scope_token);
 
@@ -2398,6 +2408,9 @@ namespace Mono.Cecil {
 			if (token.TokenType != TokenType.Signature)
 				throw new NotSupportedException ();
 
+			if (token.RID == 0)
+				return null;
+
 			if (!MoveTo (Table.StandAloneSig, token.RID))
 				return null;
 
@@ -2812,9 +2825,9 @@ namespace Mono.Cecil {
 				var name = signature.ReadDocumentName ();
 
 				documents [i - 1] = new Document (name) {
-					HashAlgorithm = hash_algorithm.ToHashAlgorithm (),
+					HashAlgorithmGuid = hash_algorithm,
 					Hash = hash,
-					Language = language.ToLanguage (),
+					LanguageGuid = language,
 					token = new MetadataToken (TokenType.Document, i),
 				};
 			}
@@ -3755,8 +3768,10 @@ namespace Mono.Cecil {
 			if (length == 0)
 				return string.Empty;
 
-			var @string = Encoding.UTF8.GetString (buffer, position,
-				buffer [position + length - 1] == 0 ? length - 1 : length);
+			if (position + length > buffer.Length)
+				return string.Empty;
+
+			var @string = Encoding.UTF8.GetString (buffer, position, length);
 
 			position += length;
 			return @string;

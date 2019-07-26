@@ -31,6 +31,7 @@ namespace NUnit.Framework.Internal
 	/// TestFixture is a surrogate for a user test fixture class,
 	/// containing one or more tests.
 	/// </summary>
+    [System.Serializable]
 	public class TestFixture : TestSuite
 	{
 		#region Constructors

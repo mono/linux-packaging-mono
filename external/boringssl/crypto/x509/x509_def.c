@@ -59,7 +59,17 @@
 
 /* TODO(fork): cleanup */
 
+#ifdef OPENSSL_WINDOWS
+/* OpenSSL defaults on Windows. */
+#ifdef _WIN64
+#define OPENSSLDIR "C:\\Program Files\\Common Files\\SSL"
+#else
+#define OPENSSLDIR "C:\\Program Files (x86)\\Common Files\\SSL"
+#endif
+#else
 #define OPENSSLDIR "/etc/ssl"
+#endif
+
 #define X509_CERT_AREA          OPENSSLDIR
 #define X509_CERT_DIR           OPENSSLDIR "/certs"
 #define X509_CERT_FILE          OPENSSLDIR "/cert.pem"

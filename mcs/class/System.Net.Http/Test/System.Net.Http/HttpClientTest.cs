@@ -274,7 +274,7 @@ namespace MonoTests.System.Net.Http
 			handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 			var httpClient = new HttpClient (handler) {
-				BaseAddress = new Uri ("https://google.com"),
+				BaseAddress = new Uri ("https://www.example.com"),
 				Timeout = TimeSpan.FromMilliseconds (1)
 			};
 
@@ -288,7 +288,7 @@ namespace MonoTests.System.Net.Http
 				httpClient.PostAsync (restRequest.RequestUri, restRequest.Content).Wait (WaitTimeout);
 				Assert.Fail ("#1");
 			} catch (AggregateException e) {
-				Assert.That (e.InnerException, Is.InstanceOf<TaskCanceledException> (), "#2");
+				Assert.That (e.InnerException, Is.InstanceOf<TaskCanceledException> (), $"#2: {e}");
 			}
 		}
 
@@ -349,7 +349,7 @@ namespace MonoTests.System.Net.Http
 				request.UseProxy = false;
 
 				var client = new HttpClient (request);
-				Assert.IsTrue (client.GetAsync ("http://google.com").Wait (5000), "needs internet access");
+				Assert.IsTrue (client.GetAsync ("http://www.example.com").Wait (5000), "needs internet access");
 			} finally {
 				WebRequest.DefaultWebProxy = pp;
 			}
@@ -361,7 +361,7 @@ namespace MonoTests.System.Net.Http
 			var mh = new HttpMessageHandlerMock ();
 
 			var client = new HttpClient (mh);
-			client.BaseAddress = new Uri ("http://xamarin.com");
+			client.BaseAddress = new Uri ("http://www.example.com");
 			var request = new HttpRequestMessage ();
 			var response = new HttpResponseMessage ();
 
@@ -399,9 +399,9 @@ namespace MonoTests.System.Net.Http
 			var mh = new HttpMessageHandlerMock ();
 
 			var client = new HttpClient (mh);
-			client.DefaultRequestHeaders.Referrer = new Uri ("http://google.com");
+			client.DefaultRequestHeaders.Referrer = new Uri ("http://www.example.com");
 
-			var request = new HttpRequestMessage (HttpMethod.Get, "http://xamarin.com");
+			var request = new HttpRequestMessage (HttpMethod.Get, "http://www.example.org");
 			var response = new HttpResponseMessage ();
 
 			mh.OnSend = l => {
@@ -802,42 +802,6 @@ namespace MonoTests.System.Net.Http
 #if FEATURE_NO_BSD_SOCKETS
 		[ExpectedException (typeof (PlatformNotSupportedException))]
 #endif
-		// The SocketsHttpHandler permits custom transfer encodings.
-		public void Send_Transfer_Encoding_Custom ()
-		{
-			if (HttpClientTestHelpers.UsingSocketsHandler)
-				Assert.Ignore ("Requires LegacyHttpClient");
-
-			bool? failed = null;
-
-			var listener = NetworkHelpers.CreateAndStartHttpListener("http://*:", out int port, "/Send_Transfer_Encoding_Custom/");
-			AddListenerContext (listener, l => {
-				failed = true;
-			});
-
-			try {
-				var client = HttpClientTestHelpers.CreateHttpClientWithHttpClientHandler ();
-				client.DefaultRequestHeaders.TransferEncoding.Add (new TransferCodingHeaderValue ("chunked2"));
-
-				var request = new HttpRequestMessage (HttpMethod.Get, $"http://localhost:{port}/Send_Transfer_Encoding_Custom/");
-
-				try {
-					client.SendAsync (request, HttpCompletionOption.ResponseHeadersRead).Wait ();
-					Assert.Fail ("#1");
-				} catch (AggregateException e) {
-					Assert.AreEqual (typeof (InvalidOperationException), e.InnerException.GetType (), "#2");
-				}
-				Assert.IsNull (failed, "#102");
-			} finally {
-				listener.Abort ();
-				listener.Close ();
-			}
-		}
-
-		[Test]
-#if FEATURE_NO_BSD_SOCKETS
-		[ExpectedException (typeof (PlatformNotSupportedException))]
-#endif
 		public void Send_Complete_Content ()
 		{
 			var listener = NetworkHelpers.CreateAndStartHttpListener("http://*:", out int port, "/Send_Complete_Content/");
@@ -913,7 +877,7 @@ namespace MonoTests.System.Net.Http
 					client.SendAsync (request, HttpCompletionOption.ResponseContentRead).Wait (WaitTimeout);
 					Assert.Fail ("#2");
 				} catch (AggregateException e) {
-					Assert.IsTrue (e.InnerException is HttpRequestException, "#3");
+					Assert.That (e.InnerException, Is.InstanceOf<HttpRequestException> (), $"#3: {e}");
 				}
 
 			} finally {
@@ -1363,7 +1327,7 @@ namespace MonoTests.System.Net.Http
 					client.GetByteArrayAsync ($"http://localhost:{port}/GetByteArray_ServerError/").Wait (WaitTimeout);
 					Assert.Fail ("#1");
 				} catch (AggregateException e) {
-					Assert.IsTrue (e.InnerException is HttpRequestException , "#2");
+					Assert.That (e.InnerException, Is.InstanceOf<HttpRequestException> (), $"#2: {e}");
 				}
 			} finally {
 				listener.Close ();
@@ -1394,7 +1358,7 @@ namespace MonoTests.System.Net.Http
 					client.GetStringAsync ($"http://localhost:{port}/DisallowAutoRedirect/").Wait (WaitTimeout);
 					Assert.Fail ("#1");
 				} catch (AggregateException e) {
-					Assert.IsTrue (e.InnerException is HttpRequestException, "#2");
+					Assert.That (e.InnerException, Is.InstanceOf<HttpRequestException> (), $"#2: {e}");
 				}
 			} finally {
 				listener.Abort ();

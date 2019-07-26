@@ -5,6 +5,7 @@ include ../../build/rules.make
 PROGRAM = monolinker.exe
 
 LIB_REFS = System System.Core System.Xml Mono.Cecil
+LOCAL_MCS_FLAGS = -unsafe
 
 TEST_CASES := \
 	mscorlib/test-array.cs \
@@ -24,8 +25,12 @@ TEST_CASES := \
 	System/test-security.cs \
 	System.Core/test-plinq-01.cs
 
-# Disabled tests
-#	mscorlib/test-marshaling.cs
+ifdef INCLUDE_DISABLED
+TEST_CASES += \
+	System.Core/test-queryable-01.cs \
+	System.Runtime.Serialization/test-dcs-01.cs \
+	mscorlib/test-marshaling.cs
+endif
 
 ifdef MOBILE_PROFILE
 TEST_CASES += \
@@ -39,7 +44,7 @@ TEST_CASES += \
 	mscorlib/test-reflection.cs
 endif
 
-TESTS_COMPILER = $(MCS) -nologo -noconfig -unsafe -debug:portable -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/mscorlib.dll
+TESTS_COMPILER = $(MCS) -nologo -noconfig -unsafe -nostdlib -debug:portable -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/mscorlib.dll
 
 MARSHALING_TEST_NATIVE = mscorlib/test-marshaling-native.so
 
@@ -62,6 +67,9 @@ System/test-%.cs:
 
 System.Core/test-%.cs:
 	$(TESTS_COMPILER)  -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.Core.dll Tests/$@ /out:Tests/$(@:.cs=.exe)
+
+System.Runtime.Serialization/test-%.cs:
+	$(TESTS_COMPILER)  -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.Runtime.Serialization.dll -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.Xml.dll Tests/$@ /out:Tests/$(@:.cs=.exe)
 
 System.Net.Http/test-%.cs:
 	$(TESTS_COMPILER)  -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.dll -r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/System.Net.Http.dll Tests/$@ /out:Tests/$(@:.cs=.exe)
@@ -95,6 +103,13 @@ endif
 
 ifeq ($(PROFILE),wasm)
 LINKER_PROFILE_OPTIONS += --exclude-feature remoting --exclude-feature com --exclude-feature etw
+
+BINARY_TEST_CASES_ROOT:=../../../external/illinker-test-assets/wasm/
+
+BINARY_TEST_CASES = \
+	$(BINARY_TEST_CASES_ROOT)Newtonsoft/bin/Release/netstandard2.0/dist/_framework/_bin/Newtonsoft.dll \
+	$(BINARY_TEST_CASES_ROOT)HelloWorld/bin/Release/netstandard2.0/dist/_framework/_bin/HelloWorld.dll \
+	$(BINARY_TEST_CASES_ROOT)Microsoft.AspNetCore.Blazor.E2EPerformance/bin/Release/netstandard2.0/Microsoft.AspNetCore.Blazor.E2EPerformance.dll
 endif
 
 LINKER_OUTPUT := illink-output-$(PROFILE_DIRECTORY)
@@ -105,7 +120,7 @@ TEST_EXEC = MONO_PATH=$(LINKER_OUTPUT) $(RUNTIME) $(RUNTIME_FLAGS) --debug -O=-a
 
 .NOTPARALLEL:
 
-System.Net.Http/test-%.exe System.Core/test-%.exe System/test-%.exe mscorlib/test-%.exe:
+System.Net.Http/test-%.exe System.Runtime.Serialization/test-%.exe System.Core/test-%.exe System/test-%.exe mscorlib/test-%.exe:
 	@rm -rf $(LINKER_OUTPUT)
 	@mkdir $(LINKER_OUTPUT)
 	@echo Testing $@

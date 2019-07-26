@@ -54,7 +54,7 @@ namespace System
 		{
 			Type type = obj as Type;
 #if !FULL_AOT_RUNTIME
-			if ((type is RuntimeType) || (type is TypeBuilder))
+			if ((type is RuntimeType) || (RuntimeFeature.IsDynamicCodeSupported && type is TypeBuilder))
 #else
 			if (type is RuntimeType)
 #endif
@@ -88,7 +88,7 @@ namespace System
 							return pseudoAttrs;
 						else
 							return new object [] { pseudoAttrs [i] };
-				return EmptyArray<object>.Value;
+				return Array.Empty<object> ();
 			}
 
 			return pseudoAttrs;
@@ -121,6 +121,7 @@ namespace System
 		internal static object[] GetCustomAttributesBase (ICustomAttributeProvider obj, Type attributeType, bool inheritedOnly)
 		{
 			object[] attrs;
+
 			if (IsUserCattrProvider (obj))
 				attrs = obj.GetCustomAttributes (attributeType, true);
 			else
@@ -146,13 +147,18 @@ namespace System
 		internal static object[] GetCustomAttributes (ICustomAttributeProvider obj, Type attributeType, bool inherit)
 		{
 			if (obj == null)
-				throw new ArgumentNullException ("obj");
+				throw new ArgumentNullException (nameof (obj));
 			if (attributeType == null)
-				throw new ArgumentNullException ("attributeType");	
+				throw new ArgumentNullException (nameof (attributeType));	
 
 			if (attributeType == typeof (MonoCustomAttrs))
 				attributeType = null;
-			
+
+#if NETCORE
+			if (attributeType == typeof (Attribute))
+				attributeType = null;
+#endif
+
 			object[] r;
 			object[] res = GetCustomAttributesBase (obj, attributeType, false);
 			// shortcut
@@ -613,7 +619,16 @@ namespace System
 				return GetBaseEventDefinition ((RuntimeEventInfo)obj);
 			else if (obj is RuntimeMethodInfo)
 				method = (MethodInfo) obj;
-
+			if (obj is RuntimeParameterInfo parinfo) {
+				var member = parinfo.Member;
+				if (member is MethodInfo) {
+					method = (MethodInfo)member;
+					MethodInfo bmethod = ((RuntimeMethodInfo)method).GetBaseMethod ();
+					if (bmethod == method)
+						return null;
+					return bmethod.GetParameters ()[parinfo.Position];
+				}
+			}
 			/**
 			 * ParameterInfo -> null
 			 * Assembly -> null

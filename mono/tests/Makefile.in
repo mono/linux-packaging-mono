@@ -126,7 +126,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Methodical/tailcall_v4/tailcall_AV.exe \
 @FULL_AOT_TESTS_TRUE@	tailcall/coreclr/JIT/Regression/VS-ia64-JIT/V1.2-M02/b102844/tailcallcalli.exe
 
-@HOST_WIN32_TRUE@am__append_4 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(top_builddir)/runtime/mono-wrapper)"
+@HOST_WIN32_TRUE@am__append_4 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME))"
 @HOST_WIN32_FALSE@am__append_5 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$(top_builddir)/runtime/mono-wrapper)"
 @FULL_AOT_TESTS_TRUE@am__append_6 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 @HYBRID_AOT_TESTS_TRUE@am__append_7 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
@@ -499,95 +499,50 @@ target_triplet = @target@
 # Tests which needs named Mutex support
 
 # Test which needs System.Web support
-@AOT_FULL_INTERP_TESTS_TRUE@am__append_33 = appdomain1.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-loader.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-threadpool-unload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-asmload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	appdomain-unload.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	assemblyresolve_event6.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-335131.2.exe bug-415577.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	cross-domain.exe dataslot.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	delegate9.exe domain-stress.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-marshalbyref.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-unloading.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	generic-xdomain.2.exe hostname.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	marshal-valuetypes.exe monitor.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	pinvoke3.exe remoting4.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	stackframes-async.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	thread6.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	xdomain-threads.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
-@AOT_FULL_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
-
-# AppDomain tests
-
-# Tests which load assemblies which are not in the profile
-
-# Tests which needs named Mutex support
-
-# Test which needs System.Web support
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@am__append_34 = appdomain1.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-async-invoke.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-exit.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-loader.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-serialize-exception.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-thread-abort.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-threadpool-unload.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-unload-asmload.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-unload-callback.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	appdomain-unload.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	assemblyresolve_event6.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	bug-335131.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	bug-415577.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	cross-domain.exe dataslot.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	delegate9.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	domain-stress.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	generic-marshalbyref.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	generic-unloading.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	generic-xdomain.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	hostname.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	marshal-valuetypes.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	monitor.exe pinvoke3.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	remoting4.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	stackframes-async.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	suspend-stress-test.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	thread6.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	threadpool-exceptions7.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	unhandled-exception-7.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	xdomain-threads.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	assembly-load-remap.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	namedmutex-destroy-race.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	bug-80307.exe bug-70561.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	transparentproxy.exe \
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@	finalizer-exception.exe
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_33 = appdomain1.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-async-invoke.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain.exe appdomain-exit.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-loader.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-serialize-exception.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-thread-abort.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-threadpool-unload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-asmload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-callback.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	appdomain-unload.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	assemblyresolve_event6.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	bug-335131.2.exe bug-415577.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	cross-domain.exe dataslot.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	delegate9.exe domain-stress.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-unloading.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	generic-xdomain.2.exe hostname.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	marshal-valuetypes.exe monitor.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	pinvoke3.exe remoting4.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	stackframes-async.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	thread6.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	xdomain-threads.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
+@FULL_AOT_TESTS_TRUE@am__append_34 = $(REMOTING_DISABLED_TESTS)
+@HYBRID_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS)
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS)
 
 # https://github.com/mono/mono/issues/12839
-@HOST_WIN32_TRUE@am__append_35 = block_guard_restore_aligment_on_exit.exe
+@HOST_WIN32_TRUE@am__append_37 = block_guard_restore_aligment_on_exit.exe
 
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_36 = \
+@ARM_TRUE@am__append_38 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -640,13 +595,13 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_37 = \
+@ARM64_TRUE@am__append_39 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_38 = \
+@AMD64_TRUE@am__append_40 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -843,6 +798,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -973,8 +930,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -1081,7 +1040,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed
+SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed fullaot-mixed
 BUILT_SOURCES = $(ARRAY_COOP_CS) $(TAILCALL_FSHARP_DEEPTAIL_IL) \
 	$(TAILCALL_INTERFACE_CONSERVESTACK_IL)
 ARRAY_COOP_CS = \
@@ -1151,8 +1110,7 @@ MKBUNDLE = \
 	PKG_CONFIG_PATH=$(top_builddir):$(PKG_CONFIG_PATH) \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
-@AOT_FULL_INTERP_LLVM_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
-@AOT_FULL_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
+@FULL_AOT_INTERP_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
@@ -1337,9 +1295,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	nested_type_visibility.cs dynamic-method-churn.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
-	bug-gh-9507.cs async-generic-enum.cs $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12) $(am__append_13)
+	bug-gh-9507.cs async-generic-enum.cs last-error.cs \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11) $(am__append_12) $(am__append_13)
 # These tests are produced by splitting up tailcall-interface-conservestack.il.
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@TAILCALL_INTERFACE_CONSERVESTACK_IL = \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	tailcall/interface-conservestack/1.il \
@@ -1566,12 +1524,24 @@ TESTS_IL_SRC = \
 	bug-45841-fpstack-exceptions.il \
 	instance_tailrec.il	\
 	dim-constrainedcall.il	\
+	dim-constrained3.il	\
+	dim-constrained3_gm.il	\
 	dim-diamondshape.il	\
 	dim-genericmethods.il	\
 	dim-methodimpl.il	\
 	dim-sharedgenerics.il	\
 	dim-simple.il	\
 	dim-valuetypes.il \
+	dim-nested-types.il \
+	dim-generic-interface.il \
+	dim-implements-multiple-interfaces.il \
+	dim-sealed.il \
+	dim-protected-accessibility1.il \
+	dim-protected-accessibility2.il \
+	dim-reabstraction.il \
+	dim-reabstraction-generics.il \
+	dim-abstractcall.il \
+	twopassvariance.il \
 	tailcall-generic-cast-conservestack-il.il \
 	tailcall-generic-cast-nocrash-il.il \
 	tailcall-member-function-in-valuetype.il \
@@ -1580,6 +1550,9 @@ TESTS_IL_SRC = \
 	ldfldvt.il \
 	newobj-abstract.il \
 	invalid-isbyreflike.il \
+	custom-modifiers-append.1.il \
+	gh-13056_mono_local_cprop_av.il \
+	gh-13057_mono_local_emulate_ops_av.il \
 	module-cctor-entrypoint.il
 
 
@@ -1652,7 +1625,17 @@ PROFILE_DISABLED_TESTS = $(TAILCALL_DISABLED_TESTS_RUN) \
 	tailcall-member-function-in-valuetype.exe tailcall-rgctxb.exe \
 	$(am__append_27) $(am__append_28) $(am__append_29) \
 	$(am__append_30) $(am__append_32) $(am__append_33) \
-	$(am__append_34)
+	$(am__append_34) $(am__append_35) $(am__append_36)
+REMOTING_DISABLED_TESTS = \
+	async-exc-compilation.exe \
+	bug-544446.exe \
+	context-static.exe \
+	remoting1.exe \
+	remoting2.exe \
+	remoting3.exe \
+	remoting5.exe \
+	nullable_boxing.2.exe
+
 AOT_DISABLED_TESTS = \
 	constraints-load.exe \
 	calli_sig_check.exe
@@ -1682,7 +1665,7 @@ CI_DISABLED_TESTS = \
 # https://github.com/mono/mono/issues/11417
 CI_PR_DISABLED_TESTS = finalizer-thread.exe \
 	appdomain-threadpool-unload.exe finalizer-abort.exe \
-	process-stress-2.exe process-stress-3.exe $(am__append_35)
+	process-stress-2.exe process-stress-3.exe $(am__append_37)
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 
@@ -1739,7 +1722,6 @@ KNOWN_FAILING_TESTS = \
 	appdomain-marshalbyref-assemblyload.exe	\
 	abort-try-holes.exe \
 	threads-init.exe \
-	dim-constrainedcall.exe \
 	gptail1.exe \
 	itaili1.exe \
 	sirtail1.exe \
@@ -1891,7 +1873,7 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_36) $(am__append_37) $(am__append_38)
+	$(am__append_38) $(am__append_39) $(am__append_40)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1916,11 +1898,12 @@ TESTS_TAILCALL_RUN = $(filter-out $(TAILCALL_DISABLED_TESTS_RUN),$(TESTS_TAILCAL
 # Generated tests for runtime invoke
 
 # Tests for the Mono lldb plugin
-EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
-	$(TESTS_IL_SRC) $(TESTS_BENCH_SRC) $(TESTS_STRESS_SRC) \
-	stress-runner.pl array-coop-1.cs array-coop-2.cs \
-	array-coop-bigvt.cs array-coop-int.cs array-coop-smallvt.cs \
-	array-coop-bigvt.sh array-coop-smallvt.sh array-coop-int.sh \
+EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
+	$(TESTS_CS_SRC) $(TESTS_IL_SRC) $(TESTS_BENCH_SRC) \
+	$(TESTS_STRESS_SRC) stress-runner.pl array-coop-1.cs \
+	array-coop-2.cs array-coop-bigvt.cs array-coop-int.cs \
+	array-coop-smallvt.cs array-coop-bigvt.sh \
+	array-coop-smallvt.sh array-coop-int.sh \
 	tailcall-interface-conservestack.il \
 	tailcall/fsharp-deeptail.il $(TEST_TAILCALL_CS_SRC) \
 	$(TEST_TAILCALL_IL_SRC) load-missing.il t-missing.cs \
@@ -1971,8 +1954,12 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
 	$(INTERNALSVISIBLETO_TEST_SRC) \
-	$(INTERNALSVISIBLETO_TEST_LIB_SRC) weakattribute.cs
-@AOT_FULL_INTERP_LLVM_TESTS_FALSE@@AOT_FULL_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
+	$(INTERNALSVISIBLETO_TEST_LIB_SRC) \
+	internalsvisibleto-runtimetest.cs \
+	internalsvisibleto-compilertest.cs \
+	internalsvisibleto-library.cs internalsvisibleto-2048.snk \
+	weakattribute.cs
+@FULL_AOT_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 @FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -2725,6 +2712,9 @@ TEST_RUNTIME_ARGS ?= $(RUNTIME_ARGS)
 TEST_AOT_BUILD_FLAGS ?= $(AOT_BUILD_FLAGS)
 TEST_AOT_RUN_FLAGS ?= $(AOT_RUN_FLAGS)
 
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
+
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@$(TAILCALL_FSHARP_DEEPTAIL_IL): tailcall/fsharp-deeptail.stamp
 
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@$(TAILCALL_INTERFACE_CONSERVESTACK_IL): tailcall/interface-conservestack.stamp
@@ -2878,6 +2868,9 @@ testinterp: test-runner.exe compile-tests
 
 testfullaotinterp: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--full-aot-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
+
+testllvmonlyinterp: test-runner.exe compile-tests
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--llvmonly-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
 
 testjitspeed: $(JITTEST_PROG) compile-tests
 	for i in $(TESTS_BENCH); do	\

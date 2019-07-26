@@ -231,8 +231,7 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gunichar2*
-mono_unicode_from_external (const gchar *in, gsize *bytes)
+            <div class="mapi-prototype">gunichar2*mono_unicode_from_external (const gchar *in, gsize *bytes)
 
 </div>
             <p />
@@ -491,14 +490,14 @@ mono_marshal_get_delegate_invoke (MonoMethod *method, MonoDelegate *del)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_icall_wrapper (MonoMethodSignature *sig, const char *name, gconstpointer func, gboolean check_exceptions)
+mono_marshal_get_icall_wrapper (MonoJitICallInfo *callinfo, gboolean check_exceptions)
 
 </div>
             <p />
              <div class="mapi-section">Description</div>
              <div>
- Generates IL code for the icall wrapper. The generated method
- calls the unmanaged code in <i>func</i>.</div>
+ Generates IL code for the JIT icall wrapper. The generated method
+ calls the unmanaged code in <i>callinfo</i>-&gt;func.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

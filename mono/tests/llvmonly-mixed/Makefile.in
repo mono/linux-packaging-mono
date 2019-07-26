@@ -142,7 +142,8 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs
+am__DIST_COMMON = $(srcdir)/../common_mixed.mk $(srcdir)/Makefile.in \
+	$(top_srcdir)/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -173,6 +174,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -303,8 +306,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -424,6 +429,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
+CLEANFILES = *.dll *.exe *.pdb
 AOTDIR = linker-output
 AOT_TMPDIR = aot-tmp
 SOURCES = \
@@ -432,13 +438,12 @@ SOURCES = \
 
 
 # interponly.dll is not AOT-ed
-ASSEMBLIES = mscorlib.dll tests.exe TestDriver.dll
+ASSEMBLIES = mscorlib.dll tests.exe jitonly.dll TestDriver.dll
 AOT_IMAGES = $(patsubst %,$(AOTDIR)/%$(PLATFORM_AOT_SUFFIX),$(ASSEMBLIES))
-CLEANFILES = *.dll *.exe *.pdb
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/../common_mixed.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -458,6 +463,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(srcdir)/../common_mixed.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -686,10 +692,16 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
+clean-local:
+	$(RM) -rf $(AOTDIR) $(AOT_TMPDIR)
+
 tests.exe: $(srcdir)/tests.cs TestDriver.dll interponly.dll
 	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -r:TestDriver.dll -r:interponly.dll -target:exe -out:$@  $<
 
-interponly.dll: $(srcdir)/interponly.cs TestDriver.dll
+interponly.dll: $(srcdir)/interponly.cs TestDriver.dll jitonly.dll
+	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -r:TestDriver.dll -r:jitonly.dll -target:library -out:$@ $<
+
+jitonly.dll: $(srcdir)/jitonly.cs TestDriver.dll
 	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -r:TestDriver.dll -target:library -out:$@ $<
 
 TestDriver.dll:
@@ -715,13 +727,10 @@ $(AOTDIR)/%.exe: %.exe
 	mkdir -p $(AOTDIR)
 	cp $< $@
 
-$(AOTDIR)/tests.exe: $(AOTDIR)/TestDriver.dll $(AOTDIR)/interponly.dll
+$(AOTDIR)/tests.exe: $(AOTDIR)/TestDriver.dll $(AOTDIR)/jitonly.dll $(AOTDIR)/interponly.dll
 
-check: $(AOT_IMAGES)
-	MONO_PATH=$(AOTDIR) $(MONO_EXE) --aot-path=$(AOTDIR) --llvmonly-interp $(AOTDIR)/tests.exe
-
-clean-local:
-	$(RM) -rf $(AOTDIR) $(AOT_TMPDIR)
+@ENABLE_LLVM_TRUE@check: $(AOT_IMAGES)
+@ENABLE_LLVM_TRUE@	MONO_PATH=$(AOTDIR) $(MONO_EXE) --aot-path=$(AOTDIR) --llvmonly-interp $(AOTDIR)/tests.exe
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

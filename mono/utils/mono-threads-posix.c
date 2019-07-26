@@ -15,6 +15,10 @@
 #define _DARWIN_C_SOURCE 1
 #endif
 
+#if defined (HOST_FUCHSIA)
+#include <zircon/syscalls.h>
+#endif
+
 #if defined (__HAIKU__)
 #include <os/kernel/OS.h>
 #endif
@@ -39,9 +43,18 @@ extern int tkill (pid_t tid, int signal);
 
 #include <pthread.h>
 
+#include <sys/mman.h>
+#include <limits.h>    /* for PAGESIZE */
+#ifndef PAGESIZE
+#define PAGESIZE 4096
+#endif
+
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
+
+static pthread_mutex_t memory_barrier_process_wide_mutex = PTHREAD_MUTEX_INITIALIZER;
+static void *memory_barrier_process_wide_helper_page;
 
 gboolean
 mono_thread_platform_create_thread (MonoThreadStart thread_fn, gpointer thread_data, gsize* const stack_size, MonoNativeThreadId *tid)
@@ -114,7 +127,7 @@ mono_threads_platform_init (void)
 }
 
 gboolean
-mono_threads_platform_in_critical_region (MonoNativeThreadId tid)
+mono_threads_platform_in_critical_region (THREAD_INFO_TYPE *info)
 {
 	return FALSE;
 }
@@ -131,6 +144,15 @@ mono_threads_platform_exit (gsize exit_code)
 	pthread_exit ((gpointer) exit_code);
 }
 
+#if HOST_FUCHSIA
+int
+mono_thread_info_get_system_max_stack_size (void)
+{
+	/* For now, we do not enforce any limits */
+	return INT_MAX;
+}
+
+#else
 int
 mono_thread_info_get_system_max_stack_size (void)
 {
@@ -144,6 +166,7 @@ mono_thread_info_get_system_max_stack_size (void)
 		return INT_MAX;
 	return (int)lim.rlim_max;
 }
+#endif
 
 int
 mono_threads_pthread_kill (MonoThreadInfo *info, int signum)
@@ -284,6 +307,36 @@ mono_native_thread_join (MonoNativeThreadId tid)
 	void *res;
 
 	return !pthread_join (tid, &res);
+}
+
+void
+mono_memory_barrier_process_wide (void)
+{
+	int status;
+
+	status = pthread_mutex_lock (&memory_barrier_process_wide_mutex);
+	g_assert (status == 0);
+
+	if (memory_barrier_process_wide_helper_page == NULL) {
+		status = posix_memalign(&memory_barrier_process_wide_helper_page, PAGESIZE, PAGESIZE);
+		g_assert (status == 0);
+	}
+
+	// Changing a helper memory page protection from read / write to no access
+	// causes the OS to issue IPI to flush TLBs on all processors. This also
+	// results in flushing the processor buffers.
+	status = mprotect (memory_barrier_process_wide_helper_page, PAGESIZE, PROT_READ | PROT_WRITE);
+	g_assert (status == 0);
+
+	// Ensure that the page is dirty before we change the protection so that
+	// we prevent the OS from skipping the global TLB flush.
+	__sync_add_and_fetch ((size_t*)memory_barrier_process_wide_helper_page, 1);
+
+	status = mprotect (memory_barrier_process_wide_helper_page, PAGESIZE, PROT_NONE);
+	g_assert (status == 0);
+
+	status = pthread_mutex_unlock (&memory_barrier_process_wide_mutex);
+	g_assert (status == 0);
 }
 
 #endif /* defined(_POSIX_VERSION) */

@@ -18,6 +18,7 @@
 #include <mono/utils/mono-forward-internal.h>
 
 /* TLS entries used by the runtime */
+// This ordering is mimiced in MONO_JIT_ICALLS and will be in mono_create_tls_get.
 typedef enum {
 	/* mono_thread_internal_current () */
 	TLS_KEY_THREAD = 0,
@@ -83,8 +84,12 @@ void mono_tls_init_gc_keys (void);
 void mono_tls_init_runtime_keys (void);
 void mono_tls_free_keys (void);
 gint32 mono_tls_get_tls_offset (MonoTlsKey key);
-gpointer mono_tls_get_tls_getter (MonoTlsKey key, gboolean name);
-gpointer mono_tls_get_tls_setter (MonoTlsKey key, gboolean name);
+
+typedef gpointer (*MonoTlsGetter)(void);
+typedef void (*MonoTlsSetter)(gpointer);
+
+MonoTlsGetter mono_tls_get_tls_getter (MonoTlsKey key);
+MonoTlsSetter mono_tls_get_tls_setter (MonoTlsKey key);
 
 G_EXTERN_C MonoInternalThread *mono_tls_get_thread (void);
 G_EXTERN_C MonoJitTlsData     *mono_tls_get_jit_tls (void);

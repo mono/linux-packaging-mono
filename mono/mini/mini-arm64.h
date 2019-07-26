@@ -139,7 +139,6 @@ typedef struct {
 #define MONO_ARCH_VTABLE_REG ARMREG_R0
 #define MONO_ARCH_HAVE_GENERALIZED_IMT_TRAMPOLINE 1
 #define MONO_ARCH_USE_SIGACTION 1
-#define MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX 1
 #ifdef HOST_TVOS
 #define MONO_ARCH_HAS_NO_PROPER_MONOCTX 1
 #endif
@@ -168,6 +167,7 @@ typedef struct {
 #define MONO_ARCH_HAVE_DECOMPOSE_LONG_OPTS 1
 #define MONO_ARCH_FLOAT32_SUPPORTED 1
 #define MONO_ARCH_HAVE_INTERP_PINVOKE_TRAMP 1
+#define MONO_ARCH_LLVM_TARGET_LAYOUT "e-i64:64-i128:128-n32:64-S128"
 
 // Does the ABI have a volatile non-parameter register, so tailcall
 // can pass context to generics or interfaces?

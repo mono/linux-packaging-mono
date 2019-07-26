@@ -48,6 +48,18 @@ namespace System.Reflection.Emit
 			}
 		}
 
+		public override string EscapedCodeBase {
+			get {
+				throw new PlatformNotSupportedException ();
+			}
+		}
+
+		public override System.Security.Policy.Evidence Evidence {
+			get {
+				throw new PlatformNotSupportedException ();
+			}
+		}
+
 		public override string FullName {
 			get {
 				throw new PlatformNotSupportedException ();
@@ -190,6 +202,8 @@ namespace System.Reflection.Emit
 		public void SetEntryPoint (MethodInfo entryMethod) => throw new PlatformNotSupportedException ();
 
 		public void SetEntryPoint (MethodInfo entryMethod, PEFileKinds fileKind) => throw new PlatformNotSupportedException ();
+
+		public override string ToString () => throw new PlatformNotSupportedException ();
 	}
 }
 

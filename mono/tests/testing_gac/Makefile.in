@@ -159,6 +159,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -289,8 +291,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -418,8 +422,9 @@ TEST_RUNNER = ../test-runner.exe --runtime $(RUNTIME) --runtime-args \
 @HOST_WIN32_FALSE@	$(if $(V), --verbose,)
 @HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --runtime $(if \
 @HOST_WIN32_TRUE@	$(MONO_EXECUTABLE),$(shell cygpath -w -a \
-@HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),mono) \
-@HOST_WIN32_TRUE@	$(if $(V), --verbose,)
+@HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed \
+@HOST_WIN32_TRUE@	's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME)) $(if \
+@HOST_WIN32_TRUE@	$(V), --verbose,)
 
 ### tools
 GACUTIL = $(mcs_topdir)/class/lib/build/gacutil.exe
@@ -661,6 +666,9 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
 
 ### Test cases
 

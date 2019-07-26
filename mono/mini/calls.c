@@ -16,9 +16,19 @@
 #include <mono/metadata/abi-details.h>
 #include <mono/metadata/class-abi-details.h>
 #include <mono/utils/mono-utils-debug.h>
+#include "mono/metadata/icall-signatures.h"
 
 static const gboolean debug_tailcall_break_compile = FALSE; // break in method_to_ir
 static const gboolean debug_tailcall_break_run = FALSE;     // insert breakpoint in generated code
+
+void
+mono_call_add_patch_info (MonoCompile *cfg, MonoCallInst *call, int ip)
+{
+	if (call->inst.flags & MONO_INST_HAS_METHOD)
+		mono_add_patch_info (cfg, ip, MONO_PATCH_INFO_METHOD, call->method);
+	else
+		mono_add_patch_info (cfg, ip, MONO_PATCH_INFO_ABS, call->fptr);
+}
 
 void
 mini_test_tailcall (MonoCompile *cfg, gboolean tailcall)
@@ -467,6 +477,9 @@ mini_emit_method_call_full (MonoCompile *cfg, MonoMethod *method, MonoMethodSign
 	if (cfg->llvm_only && cfg->interp && !virtual_ && !tailcall && can_enter_interp (cfg, method, FALSE)) {
 		MonoInst *ftndesc = mini_emit_get_rgctx_method (cfg, -1, method, MONO_RGCTX_INFO_METHOD_FTNDESC);
 
+		/* Need wrappers for this signature to be able to enter interpreter */
+		cfg->interp_in_signatures = g_slist_prepend_mempool (cfg->mempool, cfg->interp_in_signatures, sig);
+
 		/* This call might need to enter the interpreter so make it indirect */
 		return mini_emit_llvmonly_calli (cfg, sig, args, ftndesc);
 	}
@@ -553,15 +566,17 @@ mini_emit_method_call_full (MonoCompile *cfg, MonoMethod *method, MonoMethodSign
 			virtual_ = FALSE;
 		}
 
+		if (!virtual_) {
+			if (!method->string_ctor)
+				MONO_EMIT_NEW_CHECK_THIS (cfg, this_reg);
+		}
+
 		if (!virtual_ && cfg->llvm_only && cfg->interp && !tailcall && can_enter_interp (cfg, method, FALSE)) {
 			MonoInst *ftndesc = mini_emit_get_rgctx_method (cfg, -1, method, MONO_RGCTX_INFO_METHOD_FTNDESC);
 
 			/* This call might need to enter the interpreter so make it indirect */
 			return mini_emit_llvmonly_calli (cfg, sig, args, ftndesc);
 		} else if (!virtual_) {
-			if (!method->string_ctor)
-				MONO_EMIT_NEW_CHECK_THIS (cfg, this_reg);
-
 			call->inst.opcode = callvirt_to_call (call->inst.opcode);
 		} else {
 			vtable_reg = alloc_preg (cfg);
@@ -617,14 +632,22 @@ mono_emit_native_call (MonoCompile *cfg, gconstpointer func, MonoMethodSignature
 	return (MonoInst*)call;
 }
 
+// FiXME remove or make static
 MonoInst*
-mono_emit_jit_icall (MonoCompile *cfg, gconstpointer func, MonoInst **args)
+mono_emit_jit_icall_info (MonoCompile *cfg, MonoJitICallInfo *info, MonoInst **args)
 {
-	MonoJitICallInfo *info = mono_find_jit_icall_by_addr (func);
-
 	g_assert (info);
+	g_assertf (info->name, "%d", (int)mono_jit_icall_info_index (info));
+	g_assertf (info->func, "%d", (int)mono_jit_icall_info_index (info));
 
 	return mono_emit_native_call (cfg, mono_icall_get_wrapper (info), info->sig, args);
+}
+
+
+MonoInst*
+mono_emit_jit_icall_id (MonoCompile *cfg, MonoJitICallId jit_icall_id, MonoInst **args)
+{
+	return mono_emit_jit_icall_info (cfg, mono_find_jit_icall_info (jit_icall_id), args);
 }
 
 /*
@@ -686,7 +709,7 @@ mini_emit_llvmonly_virtual_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMeth
 		variant_iface = TRUE;
 
 	if (!helper_sig_llvmonly_imt_trampoline) {
-		MonoMethodSignature *tmp = mono_create_icall_signature ("ptr ptr ptr");
+		MonoMethodSignature *tmp = mono_icall_sig_ptr_ptr_ptr;
 		mono_memory_barrier ();
 		helper_sig_llvmonly_imt_trampoline = tmp;
 	}

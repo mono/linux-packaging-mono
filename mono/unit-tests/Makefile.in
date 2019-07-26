@@ -96,6 +96,7 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-path$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@TESTS = test-sgen-qsort$(EXEEXT) \
@@ -103,6 +104,7 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-path$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
 subdir = mono/unit-tests
@@ -206,6 +208,16 @@ test_mono_string_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_string_CFLAGS) $(CFLAGS) \
 	$(test_mono_string_LDFLAGS) $(LDFLAGS) -o $@
+am__test_path_SOURCES_DIST = test-path.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_path_OBJECTS = test_path-test-path.$(OBJEXT)
+test_path_OBJECTS = $(am_test_path_OBJECTS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_DEPENDENCIES =  \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(am__DEPENDENCIES_2) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(mini_libs) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(sgen_libs)
+test_path_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_path_CFLAGS) \
+	$(CFLAGS) $(test_path_LDFLAGS) $(LDFLAGS) -o $@
 am__test_sgen_qsort_SOURCES_DIST = main.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-main.$(OBJEXT)
 test_sgen_qsort_OBJECTS = $(am_test_sgen_qsort_OBJECTS)
@@ -250,7 +262,8 @@ SOURCES = $(libtestlib_la_SOURCES) $(test_conc_hashtable_SOURCES) \
 	$(test_memfuncs_SOURCES) $(test_mono_callspec_SOURCES) \
 	$(test_mono_handle_SOURCES) \
 	$(test_mono_linked_list_set_SOURCES) \
-	$(test_mono_string_SOURCES) $(test_sgen_qsort_SOURCES)
+	$(test_mono_string_SOURCES) $(test_path_SOURCES) \
+	$(test_sgen_qsort_SOURCES)
 DIST_SOURCES = $(am__libtestlib_la_SOURCES_DIST) \
 	$(am__test_conc_hashtable_SOURCES_DIST) \
 	$(am__test_memfuncs_SOURCES_DIST) \
@@ -258,6 +271,7 @@ DIST_SOURCES = $(am__libtestlib_la_SOURCES_DIST) \
 	$(am__test_mono_handle_SOURCES_DIST) \
 	$(am__test_mono_linked_list_set_SOURCES_DIST) \
 	$(am__test_mono_string_SOURCES_DIST) \
+	$(am__test_path_SOURCES_DIST) \
 	$(am__test_sgen_qsort_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -521,6 +535,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -651,8 +667,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -828,6 +846,10 @@ mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test-cflags) -DMAIN=test_mono_string_main
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-mono-string.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_SOURCES = test-path.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_CFLAGS = $(test-cflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am
 
@@ -911,6 +933,10 @@ test-mono-string$(EXEEXT): $(test_mono_string_OBJECTS) $(test_mono_string_DEPEND
 	@rm -f test-mono-string$(EXEEXT)
 	$(AM_V_CCLD)$(test_mono_string_LINK) $(test_mono_string_OBJECTS) $(test_mono_string_LDADD) $(LIBS)
 
+test-path$(EXEEXT): $(test_path_OBJECTS) $(test_path_DEPENDENCIES) $(EXTRA_test_path_DEPENDENCIES) 
+	@rm -f test-path$(EXEEXT)
+	$(AM_V_CCLD)$(test_path_LINK) $(test_path_OBJECTS) $(test_path_LDADD) $(LIBS)
+
 test-sgen-qsort$(EXEEXT): $(test_sgen_qsort_OBJECTS) $(test_sgen_qsort_DEPENDENCIES) $(EXTRA_test_sgen_qsort_DEPENDENCIES) 
 	@rm -f test-sgen-qsort$(EXEEXT)
 	$(AM_V_CCLD)$(test_sgen_qsort_LINK) $(test_sgen_qsort_OBJECTS) $(test_sgen_qsort_LDADD) $(LIBS)
@@ -934,6 +960,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_handle-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_string-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_path-test-path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-main.Po@am__quote@
 
 .c.o:
@@ -1092,6 +1119,20 @@ test_mono_string-main.obj: main.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_string-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_string_CFLAGS) $(CFLAGS) -c -o test_mono_string-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_path-test-path.o: test-path.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_path_CFLAGS) $(CFLAGS) -MT test_path-test-path.o -MD -MP -MF $(DEPDIR)/test_path-test-path.Tpo -c -o test_path-test-path.o `test -f 'test-path.c' || echo '$(srcdir)/'`test-path.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_path-test-path.Tpo $(DEPDIR)/test_path-test-path.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-path.c' object='test_path-test-path.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_path_CFLAGS) $(CFLAGS) -c -o test_path-test-path.o `test -f 'test-path.c' || echo '$(srcdir)/'`test-path.c
+
+test_path-test-path.obj: test-path.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_path_CFLAGS) $(CFLAGS) -MT test_path-test-path.obj -MD -MP -MF $(DEPDIR)/test_path-test-path.Tpo -c -o test_path-test-path.obj `if test -f 'test-path.c'; then $(CYGPATH_W) 'test-path.c'; else $(CYGPATH_W) '$(srcdir)/test-path.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_path-test-path.Tpo $(DEPDIR)/test_path-test-path.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-path.c' object='test_path-test-path.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_path_CFLAGS) $(CFLAGS) -c -o test_path-test-path.obj `if test -f 'test-path.c'; then $(CYGPATH_W) 'test-path.c'; else $(CYGPATH_W) '$(srcdir)/test-path.c'; fi`
 
 test_sgen_qsort-main.o: main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_sgen_qsort_CFLAGS) $(CFLAGS) -MT test_sgen_qsort-main.o -MD -MP -MF $(DEPDIR)/test_sgen_qsort-main.Tpo -c -o test_sgen_qsort-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
@@ -1343,6 +1384,13 @@ test-mono-handle.log: test-mono-handle$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-path.log: test-path$(EXEEXT)
+	@p='test-path$(EXEEXT)'; \
+	b='test-path'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test-mono-callspec.log: test-mono-callspec$(EXEEXT)
 	@p='test-mono-callspec$(EXEEXT)'; \
 	b='test-mono-callspec'; \
@@ -1443,10 +1491,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@clean-local:
-@HOST_WIN32_TRUE@clean-local:
 @CROSS_COMPILE_TRUE@test-local:
 @HOST_WIN32_TRUE@test-local:
+@CROSS_COMPILE_TRUE@clean-local:
+@HOST_WIN32_TRUE@clean-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \

@@ -221,15 +221,17 @@ MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal)
 MONO_SIG_HANDLER_FUNC (static, sigabrt_signal_handler)
 {
 	MonoJitInfo *ji = NULL;
+	MonoContext mctx;
 	MONO_SIG_HANDLER_INFO_TYPE *info = MONO_SIG_HANDLER_GET_INFO ();
 	MONO_SIG_HANDLER_GET_CONTEXT;
 
 	if (mono_thread_internal_current ())
 		ji = mono_jit_info_table_find_internal (mono_domain_get (), mono_arch_ip_from_context (ctx), TRUE, TRUE);
 	if (!ji) {
-        if (mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
+		if (mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
-		mono_handle_native_crash ("SIGABRT", ctx, info);
+		mono_sigctx_to_monoctx (ctx, &mctx);
+		mono_handle_native_crash ("SIGABRT", &mctx, info);
 	}
 }
 
@@ -247,7 +249,7 @@ MONO_SIG_HANDLER_FUNC (static, sigterm_signal_handler)
 	// Will return when the dumping is done, so this thread can continue
 	// running. Returns FALSE on unrecoverable error.
 	if (!mono_threads_summarize_execute (&mctx, &output, &hashes, FALSE, NULL, 0))
-		g_assert_not_reached ();
+		g_error ("Crash reporter dumper exited due to fatal error.");
 #endif
 
 	mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
@@ -885,26 +887,22 @@ mono_runtime_setup_stat_profiler (void)
 
 #ifndef MONO_CROSS_COMPILE
 static void
-dump_memory_around_ip (void *ctx)
+dump_memory_around_ip (MonoContext *mctx)
 {
-#ifdef MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX
-	if (!ctx)
+	if (!mctx)
 		return;
 
 	g_async_safe_printf ("\n=================================================================\n");
-	g_async_safe_printf ("\tBasic Fault Adddress Reporting\n");
+	g_async_safe_printf ("\tBasic Fault Address Reporting\n");
 	g_async_safe_printf ("=================================================================\n");
 
-	MonoContext mctx;
-	mono_sigctx_to_monoctx (ctx, &mctx);
-	gpointer native_ip = MONO_CONTEXT_GET_IP (&mctx);
+	gpointer native_ip = MONO_CONTEXT_GET_IP (mctx);
 	if (native_ip) {
 		g_async_safe_printf ("Memory around native instruction pointer (%p):", native_ip);
 		mono_dump_mem (((guint8 *) native_ip) - 0x10, 0x40);
 	} else {
 		g_async_safe_printf ("instruction pointer is NULL, skip dumping");
 	}
-#endif
 }
 
 static void
@@ -945,7 +943,7 @@ assert_printer_callback (void)
 }
 
 static void
-dump_native_stacktrace (const char *signal, void *ctx)
+dump_native_stacktrace (const char *signal, MonoContext *mctx)
 {
 	mono_memory_barrier ();
 	static gint32 middle_of_crash = 0x0;
@@ -1013,11 +1011,9 @@ dump_native_stacktrace (const char *signal, void *ctx)
 #endif
 			}
 
-			MonoContext mctx;
 			MonoContext *passed_ctx = NULL;
-			if (!leave && ctx) {
-				mono_sigctx_to_monoctx (ctx, &mctx);
-				passed_ctx = &mctx;
+			if (!leave && mctx) {
+				passed_ctx = mctx;
 			}
 
 			g_async_safe_printf ("\n=================================================================\n");
@@ -1110,9 +1106,14 @@ dump_native_stacktrace (const char *signal, void *ctx)
 			g_async_safe_printf ("=================================================================\n");
 			mono_gdb_render_native_backtraces (crashed_pid);
 			_exit (1);
+		} else if (pid > 0) {
+			waitpid (pid, &status, 0);
+		} else {
+			// If we can't fork, do as little as possible before exiting
+#ifndef DISABLE_CRASH_REPORTING
+			output = NULL;
+#endif
 		}
-
-		waitpid (pid, &status, 0);
 
 		if (double_faulted) {
 			g_async_safe_printf("\nExiting early due to double fault.\n");
@@ -1150,17 +1151,17 @@ dump_native_stacktrace (const char *signal, void *ctx)
 }
 
 void
-mono_dump_native_crash_info (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info)
+mono_dump_native_crash_info (const char *signal, MonoContext *mctx, MONO_SIG_HANDLER_INFO_TYPE *info)
 {
 	print_process_map ();
 
-	dump_memory_around_ip (ctx);
+	dump_native_stacktrace (signal, mctx);
 
-	dump_native_stacktrace (signal, ctx);
+	dump_memory_around_ip (mctx);
 }
 
 void
-mono_post_native_crash_handler (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info, gboolean crash_chaining)
+mono_post_native_crash_handler (const char *signal, MonoContext *mctx, MONO_SIG_HANDLER_INFO_TYPE *info, gboolean crash_chaining)
 {
 	if (!crash_chaining) {
 		/*Android abort is a fluke, it doesn't abort, it triggers another segv. */

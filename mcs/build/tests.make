@@ -41,17 +41,13 @@ $(topdir)/../external/corefx/src/CoreFx.Private.TestUtilities/src/System/Diagnos
 $(topdir)/../external/corefx/src/Common/src/System/PasteArguments.cs \
 $(topdir)/../external/corefx/src/Common/src/System/PasteArguments.Unix.cs
 
-ifeq ($(PROFILE),monodroid)
+ifdef MOBILE_PROFILE
 xunit_src += $(topdir)/../mcs/class/test-helpers/RemoteExecutorTestBase.Mobile.cs
 else
-ifeq ($(PROFILE),monotouch_tv)
-xunit_src += $(topdir)/../mcs/class/test-helpers/RemoteExecutorTestBase.Mobile.cs
-else
-ifeq ($(PROFILE),monotouch_watch)
+ifeq ($(PROFILE), xammac_net_4_5)
 xunit_src += $(topdir)/../mcs/class/test-helpers/RemoteExecutorTestBase.Mobile.cs
 else
 xunit_src += $(topdir)/../mcs/class/test-helpers/RemoteExecutorTestBase.Mono.cs $(topdir)/../external/corefx/src/CoreFx.Private.TestUtilities/src/System/Diagnostics/RemoteExecutorTestBase.Process.cs
-endif
 endif
 endif
 
@@ -62,13 +58,25 @@ xunit_class_deps :=
 xunit_libs_ref = $(patsubst %,-r:$(topdir)/../external/xunit-binaries/%.dll,$(xunit_core))
 xunit_libs_ref += $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE)/Facades/%.dll,$(xunit_deps))
 
-xunit_libs_dep = $(xunit_class_deps:%=$(topdir)/class/lib/$(PROFILE)/$(PARENT_PROFILE)%.dll)
+xunit_libs_dep = $(xunit_class_deps:%=$(topdir)/class/lib/$(PROFILE)/%.dll)
 xunit_libs_ref += $(xunit_libs_dep:%=-r:%)
 
-TEST_LIB_MCS_FLAGS = $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE)/%.dll,$(TEST_LIB_REFS) $(DEFAULT_REFERENCES))
+TEST_LIB_REFS_ALL = $(TEST_LIB_REFS) $(DEFAULT_REFERENCES)
+
+ifdef TARGET_NET_REFERENCE
+# System*, mscorlib references come from the TARGET_NET_REFERENCE dir, others from the profile dir
+TEST_LIB_REFS_MONO = $(call _FILTER_OUT,System,$(call _FILTER_OUT,mscorlib,$(TEST_LIB_REFS_ALL)))
+TEST_LIB_REFS_SYSTEM = $(filter-out $(TEST_LIB_REFS_MONO),$(TEST_LIB_REFS_ALL))
+
+TEST_LIB_MCS_FLAGS = $(patsubst %,-r:$(topdir)/../external/binary-reference-assemblies/$(TARGET_NET_REFERENCE)/%.dll,$(TEST_LIB_REFS_SYSTEM))
+TEST_LIB_MCS_FLAGS += $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/%.dll,$(TEST_LIB_REFS_MONO))
+else
+TEST_LIB_MCS_FLAGS = $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE_DIRECTORY)/%.dll,$(TEST_LIB_REFS_ALL))
+endif
+
 XTEST_LIB_MCS_FLAGS = $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE)/%.dll,$(XTEST_LIB_REFS) $(DEFAULT_REFERENCES))
 
-test_nunit_dep = $(test_nunit_lib:%=$(topdir)/class/lib/$(PROFILE)/$(PARENT_PROFILE)%)
+test_nunit_dep = $(test_nunit_lib:%=$(topdir)/class/lib/$(PROFILE)/%)
 test_nunit_ref = $(test_nunit_dep:%=-r:%)
 tests_CLEAN_FILES += TestResult*.xml
 
@@ -92,7 +100,8 @@ endif
 tests_CLEAN_FILES += $(test_lib_output) $(test_lib_output:$(ASSEMBLY_EXT)=.pdb)
 
 xtest_sourcefile_base = $(PROFILE_PLATFORM)_$(PROFILE)_$(ASSEMBLY:$(ASSEMBLY_EXT)=_xtest.dll.sources)
-xtest_sourcefile_base_excludes = $(PROFILE)_$(ASSEMBLY:$(ASSEMBLY_EXT)=_xtest.dll.exclude.sources)
+xtest_sourcefile_base_excludes_full = $(PROFILE_PLATFORM)_$(PROFILE)_$(ASSEMBLY:$(ASSEMBLY_EXT)=_xtest.dll.exclude.sources)
+xtest_sourcefile_base_excludes = $(xtest_sourcefile_base_excludes_full:_%=%)
 
 xunit_test_lib = $(PROFILE)_$(ASSEMBLY:$(ASSEMBLY_EXT)=_xunit-test.dll)
 xtest_lib_output = $(test_lib_dir)/$(xunit_test_lib)
@@ -119,9 +128,7 @@ $(test_nunit_dep): $(topdir)/build/deps/nunit-$(PROFILE).stamp
 	@if test -f $@; then :; else rm -f $<; $(MAKE) $<; fi
 
 $(topdir)/build/deps/nunit-$(PROFILE).stamp:
-ifndef PARENT_PROFILE
 	cd ${topdir}/tools/nunit-lite && $(MAKE)
-endif
 	echo "stamp" >$@
 
 tests_CLEAN_FILES += $(topdir)/build/deps/nunit-$(PROFILE).stamp
@@ -343,7 +350,6 @@ $(test_lib_dir)/Xunit.NetCore.Extensions.dll: $(topdir)/build/tests.make $(topdi
 $(test_lib_dir)/xunit.execution.dotnet.dll: $(topdir)/build/tests.make $(topdir)/../external/xunit-binaries/xunit.execution.dotnet.dll | $(test_lib_dir)
 	@cp -f $(topdir)/../external/xunit-binaries/xunit.execution.dotnet.dll $@
 
-# cp -rf is a HACK for xunit runner to require xunit.execution.dOTNET.dll file in local folder on .net only
 run-xunit-test-lib: xunit-test-local
 	ok=:; \
 	PATH="$(TEST_RUNTIME_WRAPPERS_PATH):$(PATH)" REMOTE_EXECUTOR="$(XTEST_REMOTE_EXECUTOR_ABSPATH)" $(TEST_RUNTIME) $(TEST_RUNTIME_FLAGS) $(XTEST_COVERAGE_FLAGS) $(AOT_RUN_FLAGS) $(XTEST_HARNESS) $(xtest_lib_output) $(XTEST_HARNESS_FLAGS) -notrait $(subst $(space), -notrait ,$(XTEST_NOTRAITS)) || ok=false; \

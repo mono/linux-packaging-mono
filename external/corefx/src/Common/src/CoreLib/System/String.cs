@@ -648,7 +648,7 @@ namespace System
 
         //
         // IConvertible implementation
-        // 
+        //
 
         public TypeCode GetTypeCode()
         {

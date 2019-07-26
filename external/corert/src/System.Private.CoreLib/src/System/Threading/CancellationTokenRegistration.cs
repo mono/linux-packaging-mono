@@ -16,7 +16,7 @@ namespace System.Threading
     /// <remarks>
     /// To unregister a callback, dispose the corresponding Registration instance.
     /// </remarks>
-    public readonly struct CancellationTokenRegistration : IEquatable<CancellationTokenRegistration>, IDisposable
+    public readonly partial struct CancellationTokenRegistration : IEquatable<CancellationTokenRegistration>, IDisposable
     {
         private readonly CancellationCallbackInfo m_callbackInfo;
         private readonly SparselyPopulatedArrayAddInfo<CancellationCallbackInfo> m_registrationInfo;

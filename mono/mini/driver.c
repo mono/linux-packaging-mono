@@ -76,6 +76,7 @@ static FILE *mini_stats_fd;
 
 static void mini_usage (void);
 static void mono_runtime_set_execution_mode (MonoEEMode mode);
+static void mono_runtime_set_execution_mode_full (MonoEEMode mode, gboolean override);
 static int mono_jit_exec_internal (MonoDomain *domain, MonoAssembly *assembly, int argc, char *argv[]);
 
 #ifdef HOST_WIN32
@@ -1198,15 +1199,22 @@ compile_all_methods_thread_main_inner (CompileAllThreadArgs *args)
 			g_print ("Compiling %d %s\n", count, desc);
 			g_free (desc);
 		}
-		cfg = mini_method_compile (method, mono_get_optimizations_for_method (method, args->opts), mono_get_root_domain (), (JitFlags)JIT_FLAG_DISCARD_RESULTS, 0, -1);
-		if (cfg->exception_type != MONO_EXCEPTION_NONE) {
-			const char *msg = cfg->exception_message;
-			if (cfg->exception_type == MONO_EXCEPTION_MONO_ERROR)
-				msg = mono_error_get_message (&cfg->error);
-			g_print ("Compilation of %s failed with exception '%s':\n", mono_method_full_name (cfg->method, TRUE), msg);
-			fail_count ++;
+		if (mono_use_interpreter) {
+			mini_get_interp_callbacks ()->create_method_pointer (method, TRUE, error);
+			// FIXME There are a few failures due to DllNotFoundException related to System.Native
+			if (verbose && !mono_error_ok (error))
+				g_print ("Compilation of %s failed\n", mono_method_full_name (method, TRUE));
+		} else {
+			cfg = mini_method_compile (method, mono_get_optimizations_for_method (method, args->opts), mono_get_root_domain (), (JitFlags)JIT_FLAG_DISCARD_RESULTS, 0, -1);
+			if (cfg->exception_type != MONO_EXCEPTION_NONE) {
+				const char *msg = cfg->exception_message;
+				if (cfg->exception_type == MONO_EXCEPTION_MONO_ERROR)
+					msg = mono_error_get_message (&cfg->error);
+				g_print ("Compilation of %s failed with exception '%s':\n", mono_method_full_name (cfg->method, TRUE), msg);
+				fail_count ++;
+			}
+			mono_destroy_compile (cfg);
 		}
-		mono_destroy_compile (cfg);
 	}
 
 	if (fail_count)
@@ -1542,6 +1550,7 @@ mini_usage (void)
 		"    --verbose, -v          Increases the verbosity level\n"
 		"    --help, -h             Show usage information\n"
 		"    --version, -V          Show version information\n"
+		"    --version=number       Show version number\n"
 		"    --runtime=VERSION      Use the VERSION runtime, instead of autodetecting\n"
 		"    --optimize=OPT         Turns on or off a specific optimization\n"
 		"                           Use --list-opt to get a list of optimizations\n"
@@ -1876,12 +1885,8 @@ apply_root_domain_configuration_file_bindings (MonoDomain *domain, char *root_do
 }
 
 static void
-mono_enable_interp (const char *opts)
+mono_check_interp_supported (void)
 {
-	mono_runtime_set_execution_mode (MONO_EE_MODE_INTERP);
-	if (opts)
-		mono_interp_opts_string = opts;
-
 #ifdef DISABLE_INTERPRETER
 	g_error ("Mono IL interpreter support is missing\n");
 #endif
@@ -1893,7 +1898,6 @@ mono_enable_interp (const char *opts)
 #ifndef MONO_ARCH_INTERPRETER_SUPPORTED
 	g_error ("--interpreter not supported on this architecture.\n");
 #endif
-
 }
 
 static int
@@ -2040,6 +2044,9 @@ mono_main (int argc, char* argv[])
 			g_free (full_opts);
 		} else if (strcmp (argv [i], "--verbose") == 0 || strcmp (argv [i], "-v") == 0) {
 			mini_verbose_level++;
+		} else if (strcmp (argv [i], "--version=number") == 0) {
+			g_print ("%s\n", VERSION);
+			return 0;
 		} else if (strcmp (argv [i], "--version") == 0 || strcmp (argv [i], "-V") == 0) {
 			char *build = mono_get_runtime_build_info ();
 			char *gc_descr;
@@ -2334,9 +2341,10 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--nollvm") == 0){
 			mono_use_llvm = FALSE;
 		} else if ((strcmp (argv [i], "--interpreter") == 0) || !strcmp (argv [i], "--interp")) {
-			mono_enable_interp (NULL);
+			mono_runtime_set_execution_mode (MONO_EE_MODE_INTERP);
 		} else if (strncmp (argv [i], "--interp=", 9) == 0) {
-			mono_enable_interp (argv [i] + 9);
+			mono_runtime_set_execution_mode_full (MONO_EE_MODE_INTERP, FALSE);
+			mono_interp_opts_string = argv [i] + 9;
 		} else if (strcmp (argv [i], "--print-icall-table") == 0) {
 #ifdef ENABLE_ICALL_SYMBOL_MAP
 			print_icall_table ();
@@ -2787,8 +2795,13 @@ mono_jit_set_aot_only (gboolean val)
 }
 
 static void
-mono_runtime_set_execution_mode (MonoEEMode mode)
+mono_runtime_set_execution_mode_full (MonoEEMode mode, gboolean override)
 {
+	static gboolean mode_initialized = FALSE;
+	if (mode_initialized && !override)
+		return;
+
+	mode_initialized = TRUE;
 	memset (&mono_ee_features, 0, sizeof (mono_ee_features));
 
 	switch (mode) {
@@ -2832,6 +2845,7 @@ mono_runtime_set_execution_mode (MonoEEMode mode)
 		break;
 
 	case MONO_EE_MODE_INTERP:
+		mono_check_interp_supported ();
 		mono_use_interpreter = TRUE;
 
 		mono_ee_features.force_use_interpreter = TRUE;
@@ -2844,6 +2858,13 @@ mono_runtime_set_execution_mode (MonoEEMode mode)
 	default:
 		g_error ("Unknown execution-mode %d", mode);
 	}
+
+}
+
+static void
+mono_runtime_set_execution_mode (MonoEEMode mode)
+{
+	mono_runtime_set_execution_mode_full (mode, TRUE);
 }
 
 /**
@@ -2989,14 +3010,14 @@ merge_parsed_options (GPtrArray *parsed_options, int *ref_argc, char **ref_argv 
 static char *
 mono_parse_options (const char *options, int *ref_argc, char **ref_argv [], gboolean prepend)
 {
+	if (options == NULL)
+		return NULL;
+
 	GPtrArray *array = g_ptr_array_new ();
 	GString *buffer = g_string_new ("");
 	const char *p;
 	gboolean in_quotes = FALSE;
 	char quote_char = '\0';
-
-	if (options == NULL)
-		return NULL;
 
 	for (p = options; *p; p++){
 		switch (*p){

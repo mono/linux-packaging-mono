@@ -549,6 +549,8 @@ namespace System
         public System.AppDomainInitializer AppDomainInitializer { get { throw null; } set { } }
         [System.MonoLimitationAttribute("it needs to be used to invoke the initializer within the created domain")]
         public string[] AppDomainInitializerArguments { get { throw null; } set { } }
+        public string AppDomainManagerAssembly { get { throw null; } set { } }
+        public string AppDomainManagerType { get { throw null; } set { } }
         public string ApplicationBase { get { throw null; } set { } }
         public string ApplicationName { get { throw null; } set { } }
         [System.MonoNotSupportedAttribute("This property exists but not considered.")]
@@ -564,6 +566,7 @@ namespace System
         public string LicenseFile { get { throw null; } set { } }
         [System.MonoLimitationAttribute("In Mono this is controlled by the --share-code flag")]
         public System.LoaderOptimization LoaderOptimization { get { throw null; } set { } }
+        public string[] PartialTrustVisibleAssemblies { get { throw null; } set { } }
         public string PrivateBinPath { get { throw null; } set { } }
         public string PrivateBinPathProbe { get { throw null; } set { } }
         public string ShadowCopyDirectories { get { throw null; } set { } }
@@ -1032,9 +1035,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Boolean : System.IComparable, System.IComparable<bool>, System.IConvertible, System.IEquatable<bool>
+    public readonly partial struct Boolean : System.IComparable, System.IComparable<bool>, System.IConvertible, System.IEquatable<bool>
     {
-        private bool _dummyPrimitive;
+        private readonly bool _dummyPrimitive;
         public static readonly string FalseString;
         public static readonly string TrueString;
         public int CompareTo(System.Boolean value) { throw null; }
@@ -1080,9 +1083,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Byte : System.IComparable, System.IComparable<byte>, System.IConvertible, System.IEquatable<byte>, System.IFormattable
+    public readonly partial struct Byte : System.IComparable, System.IComparable<byte>, System.IConvertible, System.IEquatable<byte>, System.IFormattable
     {
-        private byte _dummyPrimitive;
+        private readonly byte _dummyPrimitive;
         public const byte MaxValue = (byte)255;
         public const byte MinValue = (byte)0;
         public int CompareTo(System.Byte value) { throw null; }
@@ -1131,9 +1134,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Char : System.IComparable, System.IComparable<char>, System.IConvertible, System.IEquatable<char>
+    public readonly partial struct Char : System.IComparable, System.IComparable<char>, System.IConvertible, System.IEquatable<char>
     {
-        private char _dummyPrimitive;
+        private readonly char _dummyPrimitive;
         public const char MaxValue = '\uFFFF';
         public const char MinValue = '\0';
         public int CompareTo(System.Char value) { throw null; }
@@ -2144,9 +2147,9 @@ namespace System
         Utc = 1,
     }
     [System.SerializableAttribute]
-    public partial struct DateTimeOffset : System.IComparable, System.IComparable<System.DateTimeOffset>, System.IEquatable<System.DateTimeOffset>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
+    public readonly partial struct DateTimeOffset : System.IComparable, System.IComparable<System.DateTimeOffset>, System.IEquatable<System.DateTimeOffset>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.DateTimeOffset MaxValue;
         public static readonly System.DateTimeOffset MinValue;
         public static readonly System.DateTimeOffset UnixEpoch;
@@ -2275,10 +2278,10 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Explicit)]
-    public partial struct Decimal : System.IComparable, System.IComparable<decimal>, System.IConvertible, System.IEquatable<decimal>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback
+    public readonly partial struct Decimal : System.IComparable, System.IComparable<decimal>, System.IConvertible, System.IEquatable<decimal>, System.IFormattable, System.Runtime.Serialization.IDeserializationCallback
     {
         [System.Runtime.InteropServices.FieldOffsetAttribute(0)]
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         [System.Runtime.CompilerServices.DecimalConstantAttribute((byte)0, (byte)0, (uint)4294967295, (uint)4294967295, (uint)4294967295)]
         public static readonly decimal MaxValue;
         [System.Runtime.CompilerServices.DecimalConstantAttribute((byte)0, (byte)128, (uint)0, (uint)0, (uint)1)]
@@ -2360,7 +2363,7 @@ namespace System
         public static System.Decimal operator -(System.Decimal d1, System.Decimal d2) { throw null; }
         public static System.Decimal operator -(System.Decimal d) { throw null; }
         public static System.Decimal operator +(System.Decimal d) { throw null; }
-        public static System.Decimal Parse(System.ReadOnlySpan<char> s, System.Globalization.NumberStyles style = System.Globalization.NumberStyles.Integer, System.IFormatProvider provider = null) { throw null; }
+        public static System.Decimal Parse(System.ReadOnlySpan<char> s, System.Globalization.NumberStyles style = System.Globalization.NumberStyles.Number, System.IFormatProvider provider = null) { throw null; }
         public static System.Decimal Parse(string s) { throw null; }
         public static System.Decimal Parse(string s, System.Globalization.NumberStyles style) { throw null; }
         public static System.Decimal Parse(string s, System.Globalization.NumberStyles style, System.IFormatProvider provider) { throw null; }
@@ -2467,9 +2470,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Double : System.IComparable, System.IComparable<double>, System.IConvertible, System.IEquatable<double>, System.IFormattable
+    public readonly partial struct Double : System.IComparable, System.IComparable<double>, System.IConvertible, System.IEquatable<double>, System.IFormattable
     {
-        private double _dummyPrimitive;
+        private readonly double _dummyPrimitive;
         public const double Epsilon = 4.94065645841247E-324;
         public const double MaxValue = 1.7976931348623157E+308;
         public const double MinValue = -1.7976931348623157E+308;
@@ -3032,6 +3035,24 @@ namespace System
     {
         string ToString(string format, System.IFormatProvider formatProvider);
     }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public readonly partial struct Index : System.IEquatable<System.Index>
+    {
+        private readonly int _dummyPrimitive;
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Index(int value, bool fromEnd = false) { throw null; }
+        public static System.Index End { get { throw null; } }
+        public bool IsFromEnd { get { throw null; } }
+        public static System.Index Start { get { throw null; } }
+        public int Value { get { throw null; } }
+        public bool Equals(System.Index other) { throw null; }
+        public override bool Equals(object value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Index FromEnd(int value) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Index FromStart(int value) { throw null; }
+        public override int GetHashCode() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public int GetOffset(int length) { throw null; }
+        public static implicit operator System.Index (int value) { throw null; }
+        public override string ToString() { throw null; }
+    }
     [System.SerializableAttribute]
     public sealed partial class IndexOutOfRangeException : System.SystemException
     {
@@ -3055,9 +3076,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Int16 : System.IComparable, System.IComparable<short>, System.IConvertible, System.IEquatable<short>, System.IFormattable
+    public readonly partial struct Int16 : System.IComparable, System.IComparable<short>, System.IConvertible, System.IEquatable<short>, System.IFormattable
     {
-        private short _dummyPrimitive;
+        private readonly short _dummyPrimitive;
         public const short MaxValue = (short)32767;
         public const short MinValue = (short)-32768;
         public int CompareTo(System.Int16 value) { throw null; }
@@ -3098,9 +3119,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Int32 : System.IComparable, System.IComparable<int>, System.IConvertible, System.IEquatable<int>, System.IFormattable
+    public readonly partial struct Int32 : System.IComparable, System.IComparable<int>, System.IConvertible, System.IEquatable<int>, System.IFormattable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public const int MaxValue = 2147483647;
         public const int MinValue = -2147483648;
         public System.Int32 CompareTo(System.Int32 value) { throw null; }
@@ -3141,9 +3162,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Int64 : System.IComparable, System.IComparable<long>, System.IConvertible, System.IEquatable<long>, System.IFormattable
+    public readonly partial struct Int64 : System.IComparable, System.IComparable<long>, System.IConvertible, System.IEquatable<long>, System.IFormattable
     {
-        private long _dummyPrimitive;
+        private readonly long _dummyPrimitive;
         public const long MaxValue = (long)9223372036854775807;
         public const long MinValue = (long)-9223372036854775808;
         public int CompareTo(System.Int64 value) { throw null; }
@@ -3185,9 +3206,9 @@ namespace System
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct IntPtr : System.IEquatable<System.IntPtr>, System.Runtime.Serialization.ISerializable
+    public readonly partial struct IntPtr : System.IEquatable<System.IntPtr>, System.Runtime.Serialization.ISerializable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.IntPtr Zero;
         [System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.MayCorruptInstance, System.Runtime.ConstrainedExecution.Cer.MayFail)]
         public IntPtr(int value) { throw null; }
@@ -3492,23 +3513,31 @@ namespace System
     public static partial class MemoryExtensions
     {
         public static System.ReadOnlyMemory<char> AsMemory(this string text) { throw null; }
+        public static System.ReadOnlyMemory<char> AsMemory(this string text, System.Index startIndex) { throw null; }
         public static System.ReadOnlyMemory<char> AsMemory(this string text, int start) { throw null; }
         public static System.ReadOnlyMemory<char> AsMemory(this string text, int start, int length) { throw null; }
+        public static System.ReadOnlyMemory<char> AsMemory(this string text, System.Range range) { throw null; }
         public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment) { throw null; }
         public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment, int start) { throw null; }
         public static System.Memory<T> AsMemory<T>(this System.ArraySegment<T> segment, int start, int length) { throw null; }
         public static System.Memory<T> AsMemory<T>(this T[] array) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this T[] array, System.Index startIndex) { throw null; }
         public static System.Memory<T> AsMemory<T>(this T[] array, int start) { throw null; }
         public static System.Memory<T> AsMemory<T>(this T[] array, int start, int length) { throw null; }
+        public static System.Memory<T> AsMemory<T>(this T[] array, System.Range range) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text, int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.ReadOnlySpan<char> AsSpan(this string text, int start, int length) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, System.Index startIndex) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, int start, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this System.ArraySegment<T> segment, System.Range range) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, System.Index startIndex) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, int start) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, int start, int length) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static System.Span<T> AsSpan<T>(this T[] array, System.Range range) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.ReadOnlySpan<T> span, System.IComparable<T> comparable) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T>(this System.Span<T> span, System.IComparable<T> comparable) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static int BinarySearch<T, TComparer>(this System.ReadOnlySpan<T> span, T value, TComparer comparer) where TComparer : System.Collections.Generic.IComparer<T> { throw null; }
@@ -3574,7 +3603,7 @@ namespace System
     [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public readonly partial struct Memory<T>
+    public readonly partial struct Memory<T> : System.IEquatable<System.Memory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -3931,6 +3960,22 @@ namespace System
         public virtual double NextDouble() { throw null; }
         protected virtual double Sample() { throw null; }
     }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public readonly partial struct Range : System.IEquatable<System.Range>
+    {
+        private readonly int _dummyPrimitive;
+        public Range(System.Index start, System.Index end) { throw null; }
+        public static System.Range All { get { throw null; } }
+        public System.Index End { get { throw null; } }
+        public System.Index Start { get { throw null; } }
+        public static System.Range EndAt(System.Index end) { throw null; }
+        public override bool Equals(object value) { throw null; }
+        public bool Equals(System.Range other) { throw null; }
+        public override int GetHashCode() { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public [System.Runtime.CompilerServices.TupleElementNamesAttribute(new string[]{ "Offset", "Length"})]System.ValueTuple<int, int> GetOffsetAndLength(int length) { throw null; }
+        public static System.Range StartAt(System.Index start) { throw null; }
+        public override string ToString() { throw null; }
+    }
     [System.SerializableAttribute]
     public partial class RankException : System.SystemException
     {
@@ -3942,7 +3987,7 @@ namespace System
     [System.Diagnostics.DebuggerDisplayAttribute("{ToString(),raw}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public readonly partial struct ReadOnlyMemory<T>
+    public readonly partial struct ReadOnlyMemory<T> : System.IEquatable<System.ReadOnlyMemory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -4075,9 +4120,9 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct SByte : System.IComparable, System.IComparable<sbyte>, System.IConvertible, System.IEquatable<sbyte>, System.IFormattable
+    public readonly partial struct SByte : System.IComparable, System.IComparable<sbyte>, System.IConvertible, System.IEquatable<sbyte>, System.IFormattable
     {
-        private sbyte _dummyPrimitive;
+        private readonly sbyte _dummyPrimitive;
         public const sbyte MaxValue = (sbyte)127;
         public const sbyte MinValue = (sbyte)-128;
         public int CompareTo(object obj) { throw null; }
@@ -4144,9 +4189,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Single : System.IComparable, System.IComparable<float>, System.IConvertible, System.IEquatable<float>, System.IFormattable
+    public readonly partial struct Single : System.IComparable, System.IComparable<float>, System.IConvertible, System.IEquatable<float>, System.IFormattable
     {
-        private float _dummyPrimitive;
+        private readonly float _dummyPrimitive;
         public const float Epsilon = 1.401298E-45f;
         public const float MaxValue = 3.40282347E+38f;
         public const float MinValue = -3.40282347E+38f;
@@ -4502,9 +4547,9 @@ namespace System
     }
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct TimeSpan : System.IComparable, System.IComparable<System.TimeSpan>, System.IEquatable<System.TimeSpan>, System.IFormattable
+    public readonly partial struct TimeSpan : System.IComparable, System.IComparable<System.TimeSpan>, System.IEquatable<System.TimeSpan>, System.IFormattable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.TimeSpan MaxValue;
         public static readonly System.TimeSpan MinValue;
         public const long TicksPerDay = (long)864000000000;
@@ -4673,9 +4718,9 @@ namespace System
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, MayLeakOnAbort=true)]
         [System.SerializableAttribute]
         [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public partial struct TransitionTime : System.IEquatable<System.TimeZoneInfo.TransitionTime>, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
+        public readonly partial struct TransitionTime : System.IEquatable<System.TimeZoneInfo.TransitionTime>, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
         {
-            private int _dummyPrimitive;
+            private readonly int _dummyPrimitive;
             public int Day { get { throw null; } }
             public System.DayOfWeek DayOfWeek { get { throw null; } }
             public bool IsFixedDateRule { get { throw null; } }
@@ -5206,9 +5251,9 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct UInt16 : System.IComparable, System.IComparable<ushort>, System.IConvertible, System.IEquatable<ushort>, System.IFormattable
+    public readonly partial struct UInt16 : System.IComparable, System.IComparable<ushort>, System.IConvertible, System.IEquatable<ushort>, System.IFormattable
     {
-        private ushort _dummyPrimitive;
+        private readonly ushort _dummyPrimitive;
         public const ushort MaxValue = (ushort)65535;
         public const ushort MinValue = (ushort)0;
         public int CompareTo(object value) { throw null; }
@@ -5259,9 +5304,9 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct UInt32 : System.IComparable, System.IComparable<uint>, System.IConvertible, System.IEquatable<uint>, System.IFormattable
+    public readonly partial struct UInt32 : System.IComparable, System.IComparable<uint>, System.IConvertible, System.IEquatable<uint>, System.IFormattable
     {
-        private uint _dummyPrimitive;
+        private readonly uint _dummyPrimitive;
         public const uint MaxValue = (uint)4294967295;
         public const uint MinValue = (uint)0;
         public int CompareTo(object value) { throw null; }
@@ -5312,9 +5357,9 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct UInt64 : System.IComparable, System.IComparable<ulong>, System.IConvertible, System.IEquatable<ulong>, System.IFormattable
+    public readonly partial struct UInt64 : System.IComparable, System.IComparable<ulong>, System.IConvertible, System.IEquatable<ulong>, System.IFormattable
     {
-        private ulong _dummyPrimitive;
+        private readonly ulong _dummyPrimitive;
         public const ulong MaxValue = (ulong)18446744073709551615;
         public const ulong MinValue = (ulong)0;
         public int CompareTo(object value) { throw null; }
@@ -5366,9 +5411,9 @@ namespace System
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct UIntPtr : System.IEquatable<System.UIntPtr>, System.Runtime.Serialization.ISerializable
+    public readonly partial struct UIntPtr : System.IEquatable<System.UIntPtr>, System.Runtime.Serialization.ISerializable
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.UIntPtr Zero;
         public UIntPtr(uint value) { throw null; }
         public UIntPtr(ulong value) { throw null; }
@@ -7322,7 +7367,6 @@ namespace System.Diagnostics
             None = 0,
         }
     }
-    [System.MonoTODOAttribute("The Debugger class is not functional")]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class Debugger
     {
@@ -7332,7 +7376,6 @@ namespace System.Diagnostics
         public static bool IsAttached { get { throw null; } }
         public static void Break() { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static bool IsLogging() { throw null; }
-        [System.MonoTODOAttribute("Not implemented")]
         public static bool Launch() { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void Log(int level, string category, string message) { }
         public static void NotifyOfCrossThreadDependency() { }
@@ -7831,6 +7874,16 @@ namespace System.Diagnostics.SymbolStore
 }
 namespace System.Diagnostics.Tracing
 {
+    public abstract partial class DiagnosticCounter : System.IDisposable
+    {
+        internal DiagnosticCounter() { }
+        public string DisplayName { get { throw null; } set { } }
+        public string DisplayUnits { get { throw null; } set { } }
+        public System.Diagnostics.Tracing.EventSource EventSource { get { throw null; } }
+        public string Name { get { throw null; } }
+        public void AddMetadata(string key, string value) { }
+        public void Dispose() { }
+    }
     [System.FlagsAttribute]
     public enum EventActivityOptions
     {
@@ -7877,10 +7930,10 @@ namespace System.Diagnostics.Tracing
         public bool DisableEvent(int eventId) { throw null; }
         public bool EnableEvent(int eventId) { throw null; }
     }
-    public partial class EventCounter : System.IDisposable
+    public partial class EventCounter : System.Diagnostics.Tracing.DiagnosticCounter
     {
         public EventCounter(string name, System.Diagnostics.Tracing.EventSource eventSource) { }
-        public void Dispose() { }
+        public void WriteMetric(double value) { }
         public void WriteMetric(float value) { }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Struct, Inherited=false)]
@@ -8108,17 +8161,34 @@ namespace System.Diagnostics.Tracing
         public System.Diagnostics.Tracing.EventLevel Level { get { throw null; } }
         public string Message { get { throw null; } }
         public System.Diagnostics.Tracing.EventOpcode Opcode { get { throw null; } }
+        public long OSThreadId { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<object> Payload { get { throw null; } }
         public System.Collections.ObjectModel.ReadOnlyCollection<string> PayloadNames { get { throw null; } }
         public System.Guid RelatedActivityId { get { throw null; } }
         public System.Diagnostics.Tracing.EventTags Tags { get { throw null; } }
         public System.Diagnostics.Tracing.EventTask Task { get { throw null; } }
+        public System.DateTime TimeStamp { get { throw null; } }
         public byte Version { get { throw null; } }
+    }
+    public partial class IncrementingEventCounter : System.Diagnostics.Tracing.DiagnosticCounter
+    {
+        public IncrementingEventCounter(string name, System.Diagnostics.Tracing.EventSource eventSource) { }
+        public System.TimeSpan DisplayRateTimeScale { get { throw null; } set { } }
+        public void Increment(double increment = 1) { }
+    }
+    public partial class IncrementingPollingCounter : System.Diagnostics.Tracing.DiagnosticCounter
+    {
+        public IncrementingPollingCounter(string name, System.Diagnostics.Tracing.EventSource eventSource, System.Func<double> totalValueProvider) { }
+        public System.TimeSpan DisplayRateTimeScale { get { throw null; } set { } }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Method)]
     public sealed partial class NonEventAttribute : System.Attribute
     {
         public NonEventAttribute() { }
+    }
+    public partial class PollingCounter : System.Diagnostics.Tracing.DiagnosticCounter
+    {
+        public PollingCounter(string name, System.Diagnostics.Tracing.EventSource eventSource, System.Func<double> metricProvider) { }
     }
 }
 namespace System.Globalization
@@ -9122,6 +9192,8 @@ namespace System.IO
         public virtual int Read(byte[] buffer, int index, int count) { throw null; }
         [System.Security.SecuritySafeCriticalAttribute]
         public virtual int Read(char[] buffer, int index, int count) { throw null; }
+        public virtual int Read(System.Span<byte> buffer) { throw null; }
+        public virtual int Read(System.Span<char> buffer) { throw null; }
         protected internal int Read7BitEncodedInt() { throw null; }
         public virtual bool ReadBoolean() { throw null; }
         public virtual byte ReadByte() { throw null; }
@@ -9149,7 +9221,7 @@ namespace System.IO
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public partial class BinaryWriter : System.IDisposable
+    public partial class BinaryWriter : System.IAsyncDisposable, System.IDisposable
     {
         public static readonly System.IO.BinaryWriter Null;
         protected System.IO.Stream OutStream;
@@ -9161,6 +9233,7 @@ namespace System.IO
         public virtual void Close() { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public virtual void Flush() { }
         public virtual long Seek(int offset, System.IO.SeekOrigin origin) { throw null; }
         public virtual void Write(bool value) { }
@@ -9177,6 +9250,8 @@ namespace System.IO
         public virtual void Write(short value) { }
         public virtual void Write(int value) { }
         public virtual void Write(long value) { }
+        public virtual void Write(System.ReadOnlySpan<byte> buffer) { }
+        public virtual void Write(System.ReadOnlySpan<char> buffer) { }
         [System.CLSCompliantAttribute(false)]
         public virtual void Write(sbyte value) { }
         [System.Security.SecuritySafeCriticalAttribute]
@@ -9207,6 +9282,7 @@ namespace System.IO
         public override void CopyTo(System.IO.Stream destination, int bufferSize) { }
         public override System.Threading.Tasks.Task CopyToAsync(System.IO.Stream destination, int bufferSize, System.Threading.CancellationToken cancellationToken) { throw null; }
         protected override void Dispose(bool disposing) { }
+        public override System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
         public override void EndWrite(System.IAsyncResult asyncResult) { }
         public override void Flush() { }
@@ -9604,7 +9680,7 @@ namespace System.IO
         public virtual System.IntPtr Handle { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, UnmanagedCode=true), System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode=true)]get { throw null; } }
         public virtual bool IsAsync { get { throw null; } }
         public override long Length { get { throw null; } }
-        public string Name { get { throw null; } }
+        public virtual string Name { get { throw null; } }
         public override long Position { get { throw null; } set { } }
         public virtual Microsoft.Win32.SafeHandles.SafeFileHandle SafeFileHandle { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, UnmanagedCode=true), System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode=true)]get { throw null; } }
         public override System.IAsyncResult BeginRead(byte[] array, int offset, int numBytes, System.AsyncCallback userCallback, object stateObject) { throw null; }
@@ -9726,20 +9802,28 @@ namespace System.IO
         public static string Combine(params string[] paths) { throw null; }
         public static System.ReadOnlySpan<char> GetDirectoryName(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetDirectoryName(string path) { throw null; }
+        public static System.ReadOnlySpan<char> GetExtension(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetExtension(string path) { throw null; }
         public static System.ReadOnlySpan<char> GetFileName(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetFileName(string path) { throw null; }
+        public static System.ReadOnlySpan<char> GetFileNameWithoutExtension(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetFileNameWithoutExtension(string path) { throw null; }
         public static string GetFullPath(string path) { throw null; }
+        public static string GetFullPath(string path, string basePath) { throw null; }
         public static char[] GetInvalidFileNameChars() { throw null; }
         public static char[] GetInvalidPathChars() { throw null; }
+        public static System.ReadOnlySpan<char> GetPathRoot(System.ReadOnlySpan<char> path) { throw null; }
         public static string GetPathRoot(string path) { throw null; }
         public static string GetRandomFileName() { throw null; }
+        public static string GetRelativePath(string relativeTo, string path) { throw null; }
         [System.Security.Permissions.FileIOPermissionAttribute(System.Security.Permissions.SecurityAction.Assert, Unrestricted=true)]
         public static string GetTempFileName() { throw null; }
         [System.Security.Permissions.EnvironmentPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, Unrestricted=true)]
         public static string GetTempPath() { throw null; }
+        public static bool HasExtension(System.ReadOnlySpan<char> path) { throw null; }
         public static bool HasExtension(string path) { throw null; }
+        public static bool IsPathFullyQualified(System.ReadOnlySpan<char> path) { throw null; }
+        public static bool IsPathFullyQualified(string path) { throw null; }
         public static bool IsPathRooted(System.ReadOnlySpan<char> path) { throw null; }
         public static bool IsPathRooted(string path) { throw null; }
         public static string Join(System.ReadOnlySpan<char> path1, System.ReadOnlySpan<char> path2) { throw null; }
@@ -9767,7 +9851,7 @@ namespace System.IO
         End = 2,
     }
     [System.SerializableAttribute]
-    public abstract partial class Stream : System.MarshalByRefObject, System.IDisposable
+    public abstract partial class Stream : System.MarshalByRefObject, System.IAsyncDisposable, System.IDisposable
     {
         public static readonly System.IO.Stream Null;
         protected Stream() { }
@@ -9792,6 +9876,7 @@ namespace System.IO
         protected virtual System.Threading.WaitHandle CreateWaitHandle() { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public virtual int EndRead(System.IAsyncResult asyncResult) { throw null; }
         public virtual void EndWrite(System.IAsyncResult asyncResult) { }
         public abstract void Flush();
@@ -9868,6 +9953,7 @@ namespace System.IO
         public override System.Text.Encoding Encoding { get { throw null; } }
         public override void Close() { }
         protected override void Dispose(bool disposing) { }
+        public override System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public override void Flush() { }
         public override System.Threading.Tasks.Task FlushAsync() { throw null; }
         public override void Write(char value) { }
@@ -9971,7 +10057,7 @@ namespace System.IO
         public static System.IO.TextReader Synchronized(System.IO.TextReader reader) { throw null; }
     }
     [System.SerializableAttribute]
-    public abstract partial class TextWriter : System.MarshalByRefObject, System.IDisposable
+    public abstract partial class TextWriter : System.MarshalByRefObject, System.IAsyncDisposable, System.IDisposable
     {
         protected char[] CoreNewLine;
         public static readonly System.IO.TextWriter Null;
@@ -9983,6 +10069,7 @@ namespace System.IO
         public virtual void Close() { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public virtual void Flush() { }
         public virtual System.Threading.Tasks.Task FlushAsync() { throw null; }
         public static System.IO.TextWriter Synchronized(System.IO.TextWriter writer) { throw null; }
@@ -10217,7 +10304,7 @@ namespace System.IO.IsolatedStorage
         protected virtual char SeparatorInternal { get { throw null; } }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public virtual long UsedSize { get { throw null; } }
-        protected abstract System.Security.Permissions.IsolatedStoragePermission GetPermission(System.Security.PermissionSet ps);
+        protected virtual System.Security.Permissions.IsolatedStoragePermission GetPermission(System.Security.PermissionSet ps) { throw null; }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public virtual bool IncreaseQuotaTo(long newQuotaSize) { throw null; }
         [System.MonoTODOAttribute("requires manifest support")]
@@ -10489,6 +10576,7 @@ namespace System.Numerics
     public partial struct Vector<T> : System.IEquatable<System.Numerics.Vector<T>>, System.IFormattable where T : struct
     {
         private int _dummyPrimitive;
+        public Vector(System.Span<T> values) { throw null; }
         public Vector(T value) { throw null; }
         public Vector(T[] values) { throw null; }
         public Vector(T[] values, int index) { throw null; }
@@ -10549,11 +10637,11 @@ namespace System.Reflection
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial class Assembly : System.Reflection.ICustomAttributeProvider, System.Runtime.Serialization.ISerializable
     {
-        protected Assembly() { }
+        public Assembly() { }
         public virtual string CodeBase { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.TypeInfo> DefinedTypes { get { throw null; } }
-        public virtual System.Reflection.MethodInfo EntryPoint { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]get { throw null; } }
+        public virtual System.Reflection.MethodInfo EntryPoint { get { throw null; } }
         public virtual string EscapedCodeBase { get { throw null; } }
         public virtual System.Security.Policy.Evidence Evidence { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlEvidence=true)]get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Type> ExportedTypes { get { throw null; } }
@@ -10571,7 +10659,7 @@ namespace System.Reflection
         public virtual System.Reflection.Module ManifestModule { get { throw null; } }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get { throw null; } }
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
-        public virtual bool ReflectionOnly { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]get { throw null; } }
+        public virtual bool ReflectionOnly { get { throw null; } }
         public virtual System.Security.SecurityRuleSet SecurityRuleSet { get { throw null; } }
         public virtual event System.Reflection.ModuleResolveEventHandler ModuleResolve { add { } remove { } }
         public object CreateInstance(string typeName) { throw null; }
@@ -10590,14 +10678,15 @@ namespace System.Reflection
         public virtual System.IO.FileStream GetFile(string name) { throw null; }
         public virtual System.IO.FileStream[] GetFiles() { throw null; }
         public virtual System.IO.FileStream[] GetFiles(bool getResourceModules) { throw null; }
+        public virtual System.Type[] GetForwardedTypes() { throw null; }
         public override int GetHashCode() { throw null; }
         public System.Reflection.Module[] GetLoadedModules() { throw null; }
         [System.MonoTODOAttribute("Always returns the same as GetModules")]
         public virtual System.Reflection.Module[] GetLoadedModules(bool getResourceModules) { throw null; }
         public virtual System.Reflection.ManifestResourceInfo GetManifestResourceInfo(string resourceName) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public virtual string[] GetManifestResourceNames() { throw null; }
+        public virtual string[] GetManifestResourceNames() { throw null; }
         public virtual System.IO.Stream GetManifestResourceStream(string name) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public virtual System.IO.Stream GetManifestResourceStream(System.Type type, string name) { throw null; }
+        public virtual System.IO.Stream GetManifestResourceStream(System.Type type, string name) { throw null; }
         public virtual System.Reflection.Module GetModule(string name) { throw null; }
         public System.Reflection.Module[] GetModules() { throw null; }
         public virtual System.Reflection.Module[] GetModules(bool getResourceModules) { throw null; }
@@ -11568,6 +11657,7 @@ namespace System.Reflection
         RTSpecialName = 1024,
         SpecialName = 512,
     }
+    [System.SerializableAttribute]
     public abstract partial class PropertyInfo : System.Reflection.MemberInfo
     {
         protected PropertyInfo() { }
@@ -11859,13 +11949,14 @@ namespace System.Reflection.Emit
         internal AssemblyBuilder() { }
         public override string CodeBase { get { throw null; } }
         public override System.Reflection.MethodInfo EntryPoint { get { throw null; } }
+        public override string EscapedCodeBase { get { throw null; } }
+        public override System.Security.Policy.Evidence Evidence { [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlEvidence=true)]get { throw null; } }
         public override string FullName { get { throw null; } }
         public override bool GlobalAssemblyCache { get { throw null; } }
         public override string ImageRuntimeVersion { get { throw null; } }
         public override bool IsDynamic { get { throw null; } }
         public override string Location { get { throw null; } }
         public override System.Reflection.Module ManifestModule { get { throw null; } }
-        [System.MonoTODOAttribute]
         public override bool ReflectionOnly { get { throw null; } }
         public void AddResourceFile(string name, string fileName) { }
         public void AddResourceFile(string name, string fileName, System.Reflection.ResourceAttributes attribute) { }
@@ -11912,6 +12003,7 @@ namespace System.Reflection.Emit
         public void SetCustomAttribute(System.Reflection.Emit.CustomAttributeBuilder customBuilder) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod) { }
         public void SetEntryPoint(System.Reflection.MethodInfo entryMethod, System.Reflection.Emit.PEFileKinds fileKind) { }
+        public override string ToString() { throw null; }
     }
     [System.FlagsAttribute]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -12123,9 +12215,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct EventToken
+    public readonly partial struct EventToken : System.IEquatable<System.Reflection.Emit.EventToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.EventToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12136,9 +12228,9 @@ namespace System.Reflection.Emit
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct ExceptionHandler : System.IEquatable<System.Reflection.Emit.ExceptionHandler>
+    public readonly partial struct ExceptionHandler : System.IEquatable<System.Reflection.Emit.ExceptionHandler>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public ExceptionHandler(int tryOffset, int tryLength, int filterOffset, int handlerOffset, int handlerLength, System.Reflection.ExceptionHandlingClauseOptions kind, int exceptionTypeToken) { throw null; }
         public int ExceptionTypeToken { get { throw null; } }
         public int FilterOffset { get { throw null; } }
@@ -12182,9 +12274,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct FieldToken
+    public readonly partial struct FieldToken : System.IEquatable<System.Reflection.Emit.FieldToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.FieldToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12342,9 +12434,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct Label
+    public readonly partial struct Label : System.IEquatable<System.Reflection.Emit.Label>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Reflection.Emit.Label obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -12435,9 +12527,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct MethodToken
+    public readonly partial struct MethodToken : System.IEquatable<System.Reflection.Emit.MethodToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.MethodToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12530,9 +12622,9 @@ namespace System.Reflection.Emit
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct OpCode
+    public readonly partial struct OpCode : System.IEquatable<System.Reflection.Emit.OpCode>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public System.Reflection.Emit.FlowControl FlowControl { get { throw null; } }
         public string Name { get { throw null; } }
         public System.Reflection.Emit.OpCodeType OpCodeType { get { throw null; } }
@@ -12846,9 +12938,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct ParameterToken
+    public readonly partial struct ParameterToken : System.IEquatable<System.Reflection.Emit.ParameterToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.ParameterToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12900,9 +12992,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct PropertyToken
+    public readonly partial struct PropertyToken : System.IEquatable<System.Reflection.Emit.PropertyToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.PropertyToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12951,9 +13043,9 @@ namespace System.Reflection.Emit
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct SignatureToken
+    public readonly partial struct SignatureToken : System.IEquatable<System.Reflection.Emit.SignatureToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.SignatureToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -12997,9 +13089,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct StringToken
+    public readonly partial struct StringToken : System.IEquatable<System.Reflection.Emit.StringToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Reflection.Emit.StringToken obj) { throw null; }
@@ -13135,9 +13227,9 @@ namespace System.Reflection.Emit
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct TypeToken
+    public readonly partial struct TypeToken : System.IEquatable<System.Reflection.Emit.TypeToken>
     {
-        private int _dummyPrimitive;
+        private readonly int _dummyPrimitive;
         public static readonly System.Reflection.Emit.TypeToken Empty;
         public int Token { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
@@ -13320,6 +13412,13 @@ namespace System.Resources
 }
 namespace System.Runtime
 {
+    [System.SerializableAttribute]
+    public sealed partial class AmbiguousImplementationException : System.Exception
+    {
+        public AmbiguousImplementationException() { }
+        public AmbiguousImplementationException(string message) { }
+        public AmbiguousImplementationException(string message, System.Exception innerException) { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, Inherited=false)]
     public sealed partial class AssemblyTargetedPatchBandAttribute : System.Attribute
     {
@@ -13700,6 +13799,11 @@ namespace System.Runtime.CompilerServices
     {
         public DiscardableAttribute() { }
     }
+    [System.AttributeUsageAttribute(System.AttributeTargets.Parameter, Inherited=false)]
+    public sealed partial class EnumeratorCancellationAttribute : System.Attribute
+    {
+        public EnumeratorCancellationAttribute() { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Method)]
     public sealed partial class ExtensionAttribute : System.Attribute
     {
@@ -13902,7 +14006,10 @@ namespace System.Runtime.CompilerServices
     }
     public static partial class RuntimeFeature
     {
+        public const string DefaultImplementationsOfInterfaces = "DefaultImplementationsOfInterfaces";
         public const string PortablePdb = "PortablePdb";
+        public static bool IsDynamicCodeCompiled { get { throw null; } }
+        public static bool IsDynamicCodeSupported { get { throw null; } }
         public static bool IsSupported(string feature) { throw null; }
     }
     public static partial class RuntimeHelpers
@@ -13914,6 +14021,7 @@ namespace System.Runtime.CompilerServices
         public static void ExecuteCodeWithGuaranteedCleanup(System.Runtime.CompilerServices.RuntimeHelpers.TryCode code, System.Runtime.CompilerServices.RuntimeHelpers.CleanupCode backoutCode, object userData) { }
         public static int GetHashCode(object o) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static object GetObjectValue(object obj) { throw null; }
+        public static T[] GetSubArray<T>(T[] array, System.Range range) { throw null; }
         public static object GetUninitializedObject(System.Type type) { throw null; }
         public static void InitializeArray(System.Array array, System.RuntimeFieldHandle fldHandle) { }
         public static bool IsReferenceOrContainsReferences<T>() { throw null; }
@@ -13970,6 +14078,18 @@ namespace System.Runtime.CompilerServices
     public sealed partial class SuppressIldasmAttribute : System.Attribute
     {
         public SuppressIldasmAttribute() { }
+    }
+    [System.SerializableAttribute]
+    public sealed partial class SwitchExpressionException : System.InvalidOperationException
+    {
+        public SwitchExpressionException() { }
+        public SwitchExpressionException(System.Exception innerException) { }
+        public SwitchExpressionException(object unmatchedValue) { }
+        public SwitchExpressionException(string message) { }
+        public SwitchExpressionException(string message, System.Exception innerException) { }
+        public override string Message { get { throw null; } }
+        public object UnmatchedValue { get { throw null; } }
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public readonly partial struct TaskAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
@@ -14657,10 +14777,10 @@ namespace System.Runtime.InteropServices
         public string Value { get { throw null; } }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct HandleRef
+    public readonly partial struct HandleRef
     {
-        private object _dummy;
-        private int _dummyPrimitive;
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
         public HandleRef(object wrapper, System.IntPtr handle) { throw null; }
         public System.IntPtr Handle { get { throw null; } }
         public object Wrapper { get { throw null; } }
@@ -14868,7 +14988,7 @@ namespace System.Runtime.InteropServices
         LIBFLAG_FHIDDEN = (short)4,
         LIBFLAG_FRESTRICTED = (short)1,
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false, AllowMultiple=false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public sealed partial class ManagedToNativeComInteropStubAttribute : System.Attribute
     {
@@ -15054,6 +15174,7 @@ namespace System.Runtime.InteropServices
         public static System.IntPtr StringToCoTaskMemAnsi(string s) { throw null; }
         public static System.IntPtr StringToCoTaskMemAuto(string s) { throw null; }
         public static System.IntPtr StringToCoTaskMemUni(string s) { throw null; }
+        public static System.IntPtr StringToCoTaskMemUTF8(string s) { throw null; }
         public static System.IntPtr StringToHGlobalAnsi(string s) { throw null; }
         public static System.IntPtr StringToHGlobalAuto(string s) { throw null; }
         public static System.IntPtr StringToHGlobalUni(string s) { throw null; }
@@ -17500,7 +17621,6 @@ namespace System.Runtime.Remoting
     {
         public static string ApplicationId { get { throw null; } }
         public static string ApplicationName { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public static System.Runtime.Remoting.CustomErrorsModes CustomErrorsMode { get { throw null; } set { } }
         public static string ProcessId { get { throw null; } }
         [System.ObsoleteAttribute("Use Configure(String,Boolean)")]
@@ -19176,9 +19296,9 @@ namespace System.Runtime.Serialization
         public abstract System.Type BindToType(string assemblyName, string typeName);
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct SerializationEntry
+    public readonly partial struct SerializationEntry
     {
-        private object _dummy;
+        private readonly object _dummy;
         public string Name { get { throw null; } }
         public System.Type ObjectType { get { throw null; } }
         public object Value { get { throw null; } }
@@ -19270,10 +19390,10 @@ namespace System.Runtime.Serialization
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct StreamingContext
+    public readonly partial struct StreamingContext
     {
-        private object _dummy;
-        private int _dummyPrimitive;
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
         public StreamingContext(System.Runtime.Serialization.StreamingContextStates state) { throw null; }
         public StreamingContext(System.Runtime.Serialization.StreamingContextStates state, object additional) { throw null; }
         public object Context { get { throw null; } }
@@ -20961,6 +21081,30 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.Aes Create() { throw null; }
         public static new System.Security.Cryptography.Aes Create(string algorithmName) { throw null; }
     }
+    public sealed partial class AesCcm : System.IDisposable
+    {
+        public AesCcm(byte[] key) { }
+        public AesCcm(System.ReadOnlySpan<byte> key) { }
+        public static System.Security.Cryptography.KeySizes NonceByteSizes { get { throw null; } }
+        public static System.Security.Cryptography.KeySizes TagByteSizes { get { throw null; } }
+        public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[] associatedData = null) { }
+        public void Decrypt(System.ReadOnlySpan<byte> nonce, System.ReadOnlySpan<byte> ciphertext, System.ReadOnlySpan<byte> tag, System.Span<byte> plaintext, System.ReadOnlySpan<byte> associatedData = default(System.ReadOnlySpan<byte>)) { }
+        public void Dispose() { }
+        public void Encrypt(byte[] nonce, byte[] plaintext, byte[] ciphertext, byte[] tag, byte[] associatedData = null) { }
+        public void Encrypt(System.ReadOnlySpan<byte> nonce, System.ReadOnlySpan<byte> plaintext, System.Span<byte> ciphertext, System.Span<byte> tag, System.ReadOnlySpan<byte> associatedData = default(System.ReadOnlySpan<byte>)) { }
+    }
+    public sealed partial class AesGcm : System.IDisposable
+    {
+        public AesGcm(byte[] key) { }
+        public AesGcm(System.ReadOnlySpan<byte> key) { }
+        public static System.Security.Cryptography.KeySizes NonceByteSizes { get { throw null; } }
+        public static System.Security.Cryptography.KeySizes TagByteSizes { get { throw null; } }
+        public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[] associatedData = null) { }
+        public void Decrypt(System.ReadOnlySpan<byte> nonce, System.ReadOnlySpan<byte> ciphertext, System.ReadOnlySpan<byte> tag, System.Span<byte> plaintext, System.ReadOnlySpan<byte> associatedData = default(System.ReadOnlySpan<byte>)) { }
+        public void Dispose() { }
+        public void Encrypt(byte[] nonce, byte[] plaintext, byte[] ciphertext, byte[] tag, byte[] associatedData = null) { }
+        public void Encrypt(System.ReadOnlySpan<byte> nonce, System.ReadOnlySpan<byte> plaintext, System.Span<byte> ciphertext, System.Span<byte> tag, System.ReadOnlySpan<byte> associatedData = default(System.ReadOnlySpan<byte>)) { }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public abstract partial class AsymmetricAlgorithm : System.IDisposable
     {
@@ -20976,8 +21120,20 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.AsymmetricAlgorithm Create(string algName) { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
+        public virtual byte[] ExportPkcs8PrivateKey() { throw null; }
+        public virtual byte[] ExportSubjectPublicKeyInfo() { throw null; }
         public virtual void FromXmlString(string xmlString) { }
+        public virtual void ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
+        public virtual void ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
+        public virtual void ImportPkcs8PrivateKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
+        public virtual void ImportSubjectPublicKeyInfo(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual string ToXmlString(bool includePrivateParameters) { throw null; }
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportPkcs8PrivateKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportSubjectPublicKeyInfo(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public abstract partial class AsymmetricKeyExchangeDeformatter
@@ -21080,30 +21236,34 @@ namespace System.Security.Cryptography
         public CryptographicUnexpectedOperationException(string message, System.Exception inner) { }
         public CryptographicUnexpectedOperationException(string format, string insert) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class CryptoStream : System.IO.Stream, System.IDisposable
     {
         public CryptoStream(System.IO.Stream stream, System.Security.Cryptography.ICryptoTransform transform, System.Security.Cryptography.CryptoStreamMode mode) { }
+        public CryptoStream(System.IO.Stream stream, System.Security.Cryptography.ICryptoTransform transform, System.Security.Cryptography.CryptoStreamMode mode, bool leaveOpen) { }
         public override bool CanRead { get { throw null; } }
         public override bool CanSeek { get { throw null; } }
         public override bool CanWrite { get { throw null; } }
         public bool HasFlushedFinalBlock { get { throw null; } }
         public override long Length { get { throw null; } }
         public override long Position { get { throw null; } set { } }
+        public override System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
+        public override System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
         public void Clear() { }
         protected override void Dispose(bool disposing) { }
+        public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
+        public override void EndWrite(System.IAsyncResult asyncResult) { }
         public override void Flush() { }
         public override System.Threading.Tasks.Task FlushAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         public void FlushFinalBlock() { }
-        public override int Read([System.Runtime.InteropServices.In][System.Runtime.InteropServices.Out]byte[] buffer, int offset, int count) { throw null; }
+        public override int Read(byte[] buffer, int offset, int count) { throw null; }
         public override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override int ReadByte() { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
         public override void SetLength(long value) { }
         public override void Write(byte[] buffer, int offset, int count) { }
         public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public override void WriteByte(byte value) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    [System.SerializableAttribute]
     public enum CryptoStreamMode
     {
         Read = 0,
@@ -21196,6 +21356,8 @@ namespace System.Security.Cryptography
     {
         protected DSA() { }
         public static new System.Security.Cryptography.DSA Create() { throw null; }
+        public static System.Security.Cryptography.DSA Create(int keySizeInBits) { throw null; }
+        public static System.Security.Cryptography.DSA Create(System.Security.Cryptography.DSAParameters parameters) { throw null; }
         public static new System.Security.Cryptography.DSA Create(string algName) { throw null; }
         public abstract byte[] CreateSignature(byte[] rgbHash);
         public abstract System.Security.Cryptography.DSAParameters ExportParameters(bool includePrivateParameters);
@@ -21207,10 +21369,15 @@ namespace System.Security.Cryptography
         public byte[] SignData(byte[] data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual byte[] SignData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public override string ToXmlString(bool includePrivateParameters) { throw null; }
+        public virtual bool TryCreateSignature(System.ReadOnlySpan<byte> hash, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        protected virtual bool TryHashData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
         public bool VerifyData(byte[] data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual bool VerifyData(byte[] data, int offset, int count, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public virtual bool VerifyData(System.IO.Stream data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual bool VerifyData(System.ReadOnlySpan<byte> data, System.ReadOnlySpan<byte> signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public abstract bool VerifySignature(byte[] rgbHash, byte[] rgbSignature);
+        public virtual bool VerifySignature(System.ReadOnlySpan<byte> hash, System.ReadOnlySpan<byte> signature) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class DSACryptoServiceProvider : System.Security.Cryptography.DSA, System.Security.Cryptography.ICspAsymmetricAlgorithm
@@ -21334,9 +21501,9 @@ namespace System.Security.Cryptography
         protected virtual bool TryHashFinal(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct HashAlgorithmName : System.IEquatable<System.Security.Cryptography.HashAlgorithmName>
+    public readonly partial struct HashAlgorithmName : System.IEquatable<System.Security.Cryptography.HashAlgorithmName>
     {
-        private object _dummy;
+        private readonly object _dummy;
         public HashAlgorithmName(string name) { throw null; }
         public static System.Security.Cryptography.HashAlgorithmName MD5 { get { throw null; } }
         public string Name { get { throw null; } }
@@ -21515,6 +21682,21 @@ namespace System.Security.Cryptography
         public override byte[] GetBytes(int cb) { throw null; }
         public override void Reset() { }
     }
+    public enum PbeEncryptionAlgorithm
+    {
+        Aes128Cbc = 1,
+        Aes192Cbc = 2,
+        Aes256Cbc = 3,
+        TripleDes3KeyPkcs12 = 4,
+        Unknown = 0,
+    }
+    public sealed partial class PbeParameters
+    {
+        public PbeParameters(System.Security.Cryptography.PbeEncryptionAlgorithm encryptionAlgorithm, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int iterationCount) { }
+        public System.Security.Cryptography.PbeEncryptionAlgorithm EncryptionAlgorithm { get { throw null; } }
+        public System.Security.Cryptography.HashAlgorithmName HashAlgorithm { get { throw null; } }
+        public int IterationCount { get { throw null; } }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class PKCS1MaskGenerationMethod : System.Security.Cryptography.MaskGenerationMethod
     {
@@ -21533,7 +21715,11 @@ namespace System.Security.Cryptography
         public static void Fill(System.Span<byte> data) { }
         public abstract void GetBytes(byte[] data);
         public virtual void GetBytes(byte[] data, int offset, int count) { }
+        public virtual void GetBytes(System.Span<byte> data) { }
+        public static int GetInt32(int toExclusive) { throw null; }
+        public static int GetInt32(int fromInclusive, int toExclusive) { throw null; }
         public virtual void GetNonZeroBytes(byte[] data) { }
+        public virtual void GetNonZeroBytes(System.Span<byte> data) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public abstract partial class RC2 : System.Security.Cryptography.SymmetricAlgorithm
@@ -21560,19 +21746,19 @@ namespace System.Security.Cryptography
         public override void GenerateIV() { }
         public override void GenerateKey() { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public partial class Rfc2898DeriveBytes : System.Security.Cryptography.DeriveBytes
     {
-        [System.Security.SecuritySafeCriticalAttribute]
         public Rfc2898DeriveBytes(byte[] password, byte[] salt, int iterations) { }
+        public Rfc2898DeriveBytes(byte[] password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public Rfc2898DeriveBytes(string password, byte[] salt) { }
         public Rfc2898DeriveBytes(string password, byte[] salt, int iterations) { }
+        public Rfc2898DeriveBytes(string password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public Rfc2898DeriveBytes(string password, int saltSize) { }
-        [System.Security.SecuritySafeCriticalAttribute]
         public Rfc2898DeriveBytes(string password, int saltSize, int iterations) { }
+        public Rfc2898DeriveBytes(string password, int saltSize, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public System.Security.Cryptography.HashAlgorithmName HashAlgorithm { get { throw null; } }
         public int IterationCount { get { throw null; } set { } }
         public byte[] Salt { get { throw null; } set { } }
-        [System.Security.SecuritySafeCriticalAttribute]
         public byte[] CryptDeriveKey(string algname, string alghashname, int keySize, byte[] rgbIV) { throw null; }
         protected override void Dispose(bool disposing) { }
         public override byte[] GetBytes(int cb) { throw null; }
@@ -21644,25 +21830,40 @@ namespace System.Security.Cryptography
         public override string KeyExchangeAlgorithm { get { throw null; } }
         public override string SignatureAlgorithm { get { throw null; } }
         public static new System.Security.Cryptography.RSA Create() { throw null; }
+        public static System.Security.Cryptography.RSA Create(int keySizeInBits) { throw null; }
+        public static System.Security.Cryptography.RSA Create(System.Security.Cryptography.RSAParameters parameters) { throw null; }
         public static new System.Security.Cryptography.RSA Create(string algName) { throw null; }
         public virtual byte[] Decrypt(byte[] data, System.Security.Cryptography.RSAEncryptionPadding padding) { throw null; }
         public virtual byte[] DecryptValue(byte[] rgb) { throw null; }
         public virtual byte[] Encrypt(byte[] data, System.Security.Cryptography.RSAEncryptionPadding padding) { throw null; }
         public virtual byte[] EncryptValue(byte[] rgb) { throw null; }
         public abstract System.Security.Cryptography.RSAParameters ExportParameters(bool includePrivateParameters);
+        public virtual byte[] ExportRSAPrivateKey() { throw null; }
+        public virtual byte[] ExportRSAPublicKey() { throw null; }
         public override void FromXmlString(string xmlString) { }
         protected virtual byte[] HashData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         protected virtual byte[] HashData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
         public abstract void ImportParameters(System.Security.Cryptography.RSAParameters parameters);
+        public virtual void ImportRSAPrivateKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
+        public virtual void ImportRSAPublicKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual byte[] SignData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public byte[] SignData(byte[] data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public virtual byte[] SignData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public virtual byte[] SignHash(byte[] hash, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public override string ToXmlString(bool includePrivateParameters) { throw null; }
+        public virtual bool TryDecrypt(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.RSAEncryptionPadding padding, out int bytesWritten) { throw null; }
+        public virtual bool TryEncrypt(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.RSAEncryptionPadding padding, out int bytesWritten) { throw null; }
+        public virtual bool TryExportRSAPrivateKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportRSAPublicKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
+        protected virtual bool TryHashData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignData(System.ReadOnlySpan<byte> data, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding, out int bytesWritten) { throw null; }
+        public virtual bool TrySignHash(System.ReadOnlySpan<byte> hash, System.Span<byte> destination, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding, out int bytesWritten) { throw null; }
         public bool VerifyData(byte[] data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public virtual bool VerifyData(byte[] data, int offset, int count, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public bool VerifyData(System.IO.Stream data, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
+        public virtual bool VerifyData(System.ReadOnlySpan<byte> data, System.ReadOnlySpan<byte> signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
         public virtual bool VerifyHash(byte[] hash, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
+        public virtual bool VerifyHash(System.ReadOnlySpan<byte> hash, System.ReadOnlySpan<byte> signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Cryptography.RSASignaturePadding padding) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class RSACryptoServiceProvider : System.Security.Cryptography.RSA, System.Security.Cryptography.ICspAsymmetricAlgorithm
@@ -24366,11 +24567,11 @@ namespace System.Threading
         public void Undo() { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public partial struct AsyncLocalValueChangedArgs<T>
+    public readonly partial struct AsyncLocalValueChangedArgs<T>
     {
-        private T _PreviousValue_k__BackingField;
-        private T _CurrentValue_k__BackingField;
-        private int _dummyPrimitive;
+        private readonly T _PreviousValue_k__BackingField;
+        private readonly T _CurrentValue_k__BackingField;
+        private readonly int _dummyPrimitive;
         public T CurrentValue { get { throw null; } }
         public T PreviousValue { get { throw null; } }
         public bool ThreadContextChanged { get { throw null; } }
@@ -24408,11 +24609,12 @@ namespace System.Threading
         public void ThrowIfCancellationRequested() { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public readonly partial struct CancellationTokenRegistration : System.IDisposable, System.IEquatable<System.Threading.CancellationTokenRegistration>
+    public readonly partial struct CancellationTokenRegistration : System.IAsyncDisposable, System.IDisposable, System.IEquatable<System.Threading.CancellationTokenRegistration>
     {
         private readonly object _dummy;
         public System.Threading.CancellationToken Token { get { throw null; } }
         public void Dispose() { }
+        public System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Threading.CancellationTokenRegistration other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -24589,6 +24791,7 @@ namespace System.Threading
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)][System.Runtime.ConstrainedExecution.ReliabilityContractAttribute(System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, System.Runtime.ConstrainedExecution.Cer.Success)]
         public static long Increment(ref long location) { throw null; }
         public static void MemoryBarrier() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void MemoryBarrierProcessWide() { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static long Read(ref long location) { throw null; }
     }
     [System.CLSCompliantAttribute(false)]
@@ -25145,7 +25348,7 @@ namespace System.Threading
         public static readonly System.TimeSpan InfiniteTimeSpan;
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public sealed partial class Timer : System.MarshalByRefObject, System.IDisposable
+    public sealed partial class Timer : System.MarshalByRefObject, System.IAsyncDisposable, System.IDisposable
     {
         public Timer(System.Threading.TimerCallback callback) { }
         public Timer(System.Threading.TimerCallback callback, object state, int dueTime, int period) { }
@@ -25160,6 +25363,7 @@ namespace System.Threading
         public bool Change(uint dueTime, uint period) { throw null; }
         public void Dispose() { }
         public bool Dispose(System.Threading.WaitHandle notifyObject) { throw null; }
+        public System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public delegate void TimerCallback(object state);
@@ -25467,6 +25671,12 @@ namespace System.Threading.Tasks
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> WhenAny<TResult>(System.Collections.Generic.IEnumerable<System.Threading.Tasks.Task<TResult>> tasks) { throw null; }
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> WhenAny<TResult>(params System.Threading.Tasks.Task<TResult>[] tasks) { throw null; }
         public static System.Runtime.CompilerServices.YieldAwaitable Yield() { throw null; }
+    }
+    public static partial class TaskAsyncEnumerableExtensions
+    {
+        public static System.Runtime.CompilerServices.ConfiguredAsyncDisposable ConfigureAwait(this System.IAsyncDisposable source, bool continueOnCapturedContext) { throw null; }
+        public static System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable<T> ConfigureAwait<T>(this System.Collections.Generic.IAsyncEnumerable<T> source, bool continueOnCapturedContext) { throw null; }
+        public static System.Runtime.CompilerServices.ConfiguredCancelableAsyncEnumerable<T> WithCancellation<T>(this System.Collections.Generic.IAsyncEnumerable<T> source, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     [System.SerializableAttribute]
     public partial class TaskCanceledException : System.OperationCanceledException

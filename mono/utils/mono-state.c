@@ -18,6 +18,9 @@
 
 #include <sys/param.h>
 #include <fcntl.h>
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
 #include <utils/mono-threads-debug.h>
 
 extern GCStats mono_gc_stats;
@@ -44,6 +47,7 @@ extern GCStats mono_gc_stats;
 #include <execinfo.h>
 #endif
 
+#if defined(ENABLE_CHECKED_BUILD_CRASH_REPORTING) && defined (ENABLE_OVERRIDABLE_ALLOCATORS)
 // Fixme: put behind preprocessor symbol?
 static void
 assert_not_reached_mem (const char *msg)
@@ -93,6 +97,7 @@ assert_not_reached_fn_ptr_calloc (gsize n, gsize x)
 	assert_not_reached_mem ("Attempted to call calloc during merp dump");
 	return NULL;
 }
+#endif /* defined(ENABLE_CHECKED_BUILD_CRASH_REPORTING) && defined (ENABLE_OVERRIDABLE_ALLOCATORS) */
 
 void
 mono_summarize_toggle_assertions (gboolean enable)
@@ -257,8 +262,11 @@ mono_state_alloc_mem (MonoStateMem *mem, long tag, size_t size)
 	memset (mem, 0, sizeof (*mem));
 	mem->tag = tag;
 	mem->size = size;
+	mem->handle = 0;
 
-	mem->handle = g_open (name, O_RDWR | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
+	if (!g_hasenv ("MONO_CRASH_NOFILE"))
+		mem->handle = g_open (name, O_RDWR | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
+
 	if (mem->handle < 1) {
 		mem->mem = (gpointer *) mmap (0, mem->size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	} else {
@@ -685,6 +693,7 @@ mono_native_state_add_thread (MonoStateWriter *writer, MonoThreadSummary *thread
 static void
 mono_native_state_add_ee_info  (MonoStateWriter *writer)
 {
+#ifndef MONO_PRIVATE_CRASHES
 	// FIXME: setup callbacks to enable
 	/*const char *aot_mode;*/
 	/*MonoAotMode mono_aot_mode = mono_jit_get_aot_mode ();*/
@@ -736,6 +745,7 @@ mono_native_state_add_ee_info  (MonoStateWriter *writer)
 	writer->indent--;
 	mono_state_writer_indent (writer);
 	mono_state_writer_printf(writer, "},\n");
+#endif
 }
 
 // Taken from driver.c
@@ -930,9 +940,7 @@ mono_native_state_add_prologue (MonoStateWriter *writer)
 
 	mono_native_state_add_version (writer);
 
-#ifndef MONO_PRIVATE_CRASHES
 	mono_native_state_add_ee_info (writer);
-#endif
 
 	mono_native_state_add_memory (writer);
 
@@ -1036,6 +1044,9 @@ mono_summarize_native_state_add_thread (MonoStateWriter *writer, MonoThreadSumma
 void
 mono_crash_dump (const char *jsonFile, MonoStackHash *hashes)
 {
+	if (g_hasenv ("MONO_CRASH_NOFILE"))
+		return;
+
 	size_t size = strlen (jsonFile);
 
 	gboolean success = FALSE;

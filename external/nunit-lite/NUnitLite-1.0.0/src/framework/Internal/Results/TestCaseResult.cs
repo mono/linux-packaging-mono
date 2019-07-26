@@ -6,6 +6,7 @@ namespace NUnit.Framework.Internal
     /// <summary>
     /// Represents the result of running a single test case.
     /// </summary>
+    [System.Serializable]
     public class TestCaseResult : TestResult
     {
         /// <summary>

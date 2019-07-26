@@ -318,7 +318,7 @@ method_encode_clauses (MonoImage *image, MonoDynamicImage *assembly, MonoReflect
 	MonoILExceptionInfo *ex_info;
 	MonoILExceptionBlock *ex_block;
 	guint32 finally_start;
-	int i, j, clause_index;;
+	int i, j, clause_index;
 
 	clauses = image_g_new0 (image, MonoExceptionClause, num_clauses);
 
@@ -1503,37 +1503,44 @@ add_custom_modifiers_to_type (MonoType *without_mods, MonoArrayHandle req_array,
 	if (!MONO_HANDLE_IS_NULL (opt_array))
 		num_opt_mods = mono_array_handle_length (opt_array);
 
-	if (!(num_opt_mods || num_req_mods))
+	const int total_mods = num_req_mods + num_opt_mods;
+	if (total_mods == 0)
 		return without_mods;
 
 	MonoTypeWithModifiers *result;
-	result = mono_image_g_malloc0 (image, mono_sizeof_type_with_mods (num_req_mods + num_opt_mods));
+	result = mono_image_g_malloc0 (image, mono_sizeof_type_with_mods (total_mods, FALSE));
 	memcpy (result, without_mods, MONO_SIZEOF_TYPE);
 	result->unmodified.has_cmods = 1;
 	MonoCustomModContainer *cmods = mono_type_get_cmods ((MonoType *)result);
 	g_assert (cmods);
-	cmods->count = num_req_mods + num_opt_mods;
+	cmods->count = total_mods;
 	cmods->image = image;
 
 	g_assert (image_is_dynamic (image));
 	MonoDynamicImage *allocator = (MonoDynamicImage *) image;
 
-	int modifier_index = 0;
+	g_assert (total_mods > 0);
+	/* store cmods in reverse order from how the API supplies them.
+	(Assemblies store modifiers in reverse order of IL syntax - and SRE
+	follows the same order as IL syntax). */
+	int modifier_index = total_mods - 1;
 
 	MonoObjectHandle mod_handle = MONO_HANDLE_NEW (MonoObject, NULL);
 	for (int i=0; i < num_req_mods; i++) {
 		cmods->modifiers [modifier_index].required = TRUE;
 		MONO_HANDLE_ARRAY_GETREF (mod_handle, req_array, i);
 		cmods->modifiers [modifier_index].token = mono_image_create_token (allocator, mod_handle, FALSE, TRUE, error);
-		modifier_index++;
+		modifier_index--;
 	}
 
 	for (int i=0; i < num_opt_mods; i++) {
 		cmods->modifiers [modifier_index].required = FALSE;
 		MONO_HANDLE_ARRAY_GETREF (mod_handle, opt_array, i);
 		cmods->modifiers [modifier_index].token = mono_image_create_token (allocator, mod_handle, FALSE, TRUE, error);
-		modifier_index++;
+		modifier_index--;
 	}
+
+	g_assert (modifier_index == -1);
 
 	HANDLE_FUNCTION_RETURN_VAL ((MonoType *) result);
 }
@@ -1924,13 +1931,16 @@ ctor_builder_to_signature_raw (MonoImage *image, MonoReflectionCtorBuilder* ctor
  * LOCKING: Assumes the loader lock is held.
  */
 static MonoMethodSignature*
-method_builder_to_signature (MonoImage *image, MonoReflectionMethodBuilderHandle method, MonoError *error) {
+method_builder_to_signature (MonoImage *image, MonoReflectionMethodBuilderHandle method, MonoError *error)
+{
 	MonoMethodSignature *sig;
 
 	error_init (error);
 	MonoArrayHandle params = MONO_HANDLE_NEW_GET(MonoArray, method, parameters);
 	MonoArrayHandle required_modifiers = MONO_HANDLE_NEW_GET(MonoArray, method, param_modreq);
 	MonoArrayHandle optional_modifiers = MONO_HANDLE_NEW_GET(MonoArray, method, param_modopt);
+	MonoArrayHandle ret_req_modifiers = MONO_HANDLE_NEW_GET (MonoArray, method, return_modreq);
+	MonoArrayHandle ret_opt_modifiers = MONO_HANDLE_NEW_GET (MonoArray, method, return_modopt);
 
 	sig = parameters_to_signature (image, params, required_modifiers, optional_modifiers, error);
 	return_val_if_nok (error, NULL);
@@ -1939,6 +1949,7 @@ method_builder_to_signature (MonoImage *image, MonoReflectionMethodBuilderHandle
 	rtype = MONO_HANDLE_CAST (MonoReflectionType, MONO_HANDLE_NEW_GET (MonoObject, method, rtype));
 	if (!MONO_HANDLE_IS_NULL (rtype)) {
 		sig->ret = mono_reflection_type_handle_mono_type (rtype, error);
+		sig->ret = add_custom_modifiers_to_type (sig->ret, ret_req_modifiers, ret_opt_modifiers, image, error);
 		if (!is_ok (error)) {
 			image_g_free (image, sig);
 			return NULL;
@@ -2308,7 +2319,8 @@ handle_type:
 			*p++ = simple_type = klass_byval_arg->type;
 			goto handle_enum;
 		} else {
-			g_error ("unhandled type in custom attr");
+			mono_error_set_not_supported (error, "unhandled type in custom attr");
+			break;
 		}
 		str = type_get_qualified_name (m_class_get_byval_arg (klass), NULL);
 		slen = strlen (str);
@@ -2328,7 +2340,7 @@ handle_type:
 		goto handle_enum;
 	}
 	default:
-		g_error ("type 0x%02x not yet supported in custom attr encoder", simple_type);
+		mono_error_set_not_supported (error, "type 0x%02x not yet supported in custom attr encoder", simple_type);
 	}
 	*retp = p;
 	*retbuffer = buffer;
@@ -2865,14 +2877,16 @@ mono_reflection_marshal_as_attribute_from_marshal_spec (MonoDomain *domain, Mono
 	switch (utype) {
 	case MONO_NATIVE_LPARRAY:
 		MONO_HANDLE_SETVAL (minfo, array_subtype, guint32, spec->data.array_data.elem_type);
-		MONO_HANDLE_SETVAL (minfo, size_const, gint32, spec->data.array_data.num_elem);
+		if (spec->data.array_data.num_elem != -1)
+			MONO_HANDLE_SETVAL (minfo, size_const, gint32, spec->data.array_data.num_elem);
 		if (spec->data.array_data.param_num != -1)
 			MONO_HANDLE_SETVAL (minfo, size_param_index, gint16, spec->data.array_data.param_num);
 		break;
 
 	case MONO_NATIVE_BYVALTSTR:
 	case MONO_NATIVE_BYVALARRAY:
-		MONO_HANDLE_SETVAL (minfo, size_const, gint32, spec->data.array_data.num_elem);
+		if (spec->data.array_data.num_elem != -1)
+			MONO_HANDLE_SETVAL (minfo, size_const, gint32, spec->data.array_data.num_elem);
 		break;
 
 	case MONO_NATIVE_CUSTOM:
@@ -4142,9 +4156,6 @@ reflection_create_dynamic_method (MonoReflectionDynamicMethodHandle ref_mb, Mono
 		}
 	}
 	g_slist_free (mb->referenced_by);
-
-	/* ilgen is no longer needed */
-	mb->ilgen = NULL;
 
 	domain = mono_domain_get ();
 	mono_domain_lock (domain);

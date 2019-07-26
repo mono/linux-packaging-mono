@@ -1,6 +1,6 @@
 include $(top_srcdir)/mk/common.mk
 
-SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed
+SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed fullaot-mixed
 
 check-local:
 	ok=:; \
@@ -206,11 +206,7 @@ if HYBRID_AOT_TESTS
 PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 endif
 
-if AOT_FULL_INTERP_TESTS
-PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
-endif
-
-if AOT_FULL_INTERP_LLVM_TESTS
+if FULL_AOT_INTERP_TESTS
 PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY
 endif
 
@@ -228,7 +224,12 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 TEST_RUNNER = ./test-runner.exe
 
 if HOST_WIN32
-TEST_RUNNER += --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(top_builddir)/runtime/mono-wrapper)"
+if ENABLE_MSVC
+	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+else
+	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
+endif
+TEST_RUNNER += --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME))"
 else
 TEST_RUNNER += --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$(top_builddir)/runtime/mono-wrapper)"
 endif
@@ -712,7 +713,8 @@ TESTS_CS_SRC=		\
 	bug-10834.cs \
 	bug-10837.cs	\
 	bug-gh-9507.cs	\
-	async-generic-enum.cs
+	async-generic-enum.cs \
+	last-error.cs
 
 # some tests fail to compile on mcs
 if CSC_IS_ROSLYN
@@ -993,12 +995,24 @@ TESTS_IL_SRC=			\
 	bug-45841-fpstack-exceptions.il \
 	instance_tailrec.il	\
 	dim-constrainedcall.il	\
+	dim-constrained3.il	\
+	dim-constrained3_gm.il	\
 	dim-diamondshape.il	\
 	dim-genericmethods.il	\
 	dim-methodimpl.il	\
 	dim-sharedgenerics.il	\
 	dim-simple.il	\
 	dim-valuetypes.il \
+	dim-nested-types.il \
+	dim-generic-interface.il \
+	dim-implements-multiple-interfaces.il \
+	dim-sealed.il \
+	dim-protected-accessibility1.il \
+	dim-protected-accessibility2.il \
+	dim-reabstraction.il \
+	dim-reabstraction-generics.il \
+	dim-abstractcall.il \
+	twopassvariance.il \
 	tailcall-generic-cast-conservestack-il.il \
 	tailcall-generic-cast-nocrash-il.il \
 	tailcall-member-function-in-valuetype.il \
@@ -1007,6 +1021,9 @@ TESTS_IL_SRC=			\
 	ldfldvt.il \
 	newobj-abstract.il \
 	invalid-isbyreflike.il \
+	custom-modifiers-append.1.il \
+	gh-13056_mono_local_cprop_av.il \
+	gh-13057_mono_local_emulate_ops_av.il \
 	module-cctor-entrypoint.il
 
 # This test crashes the runtime, even with recent fixes.
@@ -1532,7 +1549,7 @@ PROFILE_DISABLED_TESTS += \
 	namedmutex-destroy-race.exe
 endif
 
-if AOT_FULL_INTERP_TESTS
+if FULL_AOT_INTERP_TESTS
 
 # AppDomain tests
 PROFILE_DISABLED_TESTS += \
@@ -1590,64 +1607,26 @@ PROFILE_DISABLED_TESTS += \
 	transparentproxy.exe
 endif
 
-if AOT_FULL_INTERP_LLVM_TESTS
-# AppDomain tests
-PROFILE_DISABLED_TESTS += \
-	appdomain1.exe \
-	appdomain2.exe \
-	appdomain-async-invoke.exe \
-	appdomain.exe \
-	appdomain-exit.exe \
-	appdomain-loader.exe \
-	appdomain-marshalbyref-assemblyload.exe \
-	appdomain-serialize-exception.exe \
-	appdomain-thread-abort.exe \
-	appdomain-threadpool-unload.exe \
-	appdomain-unload-asmload.exe \
-	appdomain-unload-callback.exe \
-	appdomain-unload-doesnot-raise-pending-events.exe \
-	appdomain-unload.exe \
-	assemblyresolve_event6.exe \
-	bug-335131.2.exe \
-	bug-415577.exe \
-	cross-domain.exe \
-	dataslot.exe \
-	delegate9.exe \
-	domain-stress.exe \
-	generic-marshalbyref.2.exe \
-	generic-unloading.2.exe \
-	generic-xdomain.2.exe \
-	hostname.exe \
-	marshal-valuetypes.exe \
-	monitor.exe \
-	pinvoke3.exe \
-	remoting4.exe \
-	stackframes-async.2.exe \
-	suspend-stress-test.exe \
-	thread6.exe \
-	threadpool-exceptions7.exe \
-	unhandled-exception-7.exe \
-	unhandled-exception-test-case.2.exe \
-	unload-appdomain-on-shutdown.exe \
-	xdomain-threads.exe
+REMOTING_DISABLED_TESTS = \
+	async-exc-compilation.exe \
+	bug-544446.exe \
+	context-static.exe \
+	remoting1.exe \
+	remoting2.exe \
+	remoting3.exe \
+	remoting5.exe \
+	nullable_boxing.2.exe
 
-# Tests which load assemblies which are not in the profile
-PROFILE_DISABLED_TESTS += \
-	assembly-load-remap.exe
+if FULL_AOT_TESTS
+PROFILE_DISABLED_TESTS += $(REMOTING_DISABLED_TESTS)
+endif
 
-# Tests which needs named Mutex support
-PROFILE_DISABLED_TESTS += \
-	namedmutex-destroy-race.exe
+if HYBRID_AOT_TESTS
+PROFILE_DISABLED_TESTS += $(REMOTING_DISABLED_TESTS)
+endif
 
-# Test which needs System.Web support
-PROFILE_DISABLED_TESTS += \
-	bug-80307.exe
-
-PROFILE_DISABLED_TESTS += \
-	bug-70561.exe \
-	transparentproxy.exe \
-	finalizer-exception.exe
-
+if FULL_AOT_INTERP_TESTS
+PROFILE_DISABLED_TESTS += $(REMOTING_DISABLED_TESTS)
 endif
 
 AOT_DISABLED_TESTS= \
@@ -1747,7 +1726,6 @@ KNOWN_FAILING_TESTS = \
 	appdomain-marshalbyref-assemblyload.exe	\
 	abort-try-holes.exe \
 	threads-init.exe \
-	dim-constrainedcall.exe \
 	gptail1.exe \
 	itaili1.exe \
 	sirtail1.exe \
@@ -2023,7 +2001,7 @@ TESTSAOT_GSHARED=$(TESTS_GSHARED:.exe=.exe$(PLATFORM_AOT_SUFFIX))
 TESTSAOT_TAILCALL=$(TESTS_TAILCALL_COMPILE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
 endif
 
-EXTRA_DIST=test-driver test-runner.cs $(TESTS_CS_SRC) $(TESTS_IL_SRC) \
+EXTRA_DIST=common_mixed.mk test-driver test-runner.cs $(TESTS_CS_SRC) $(TESTS_IL_SRC) \
 	$(TESTS_BENCH_SRC) $(TESTS_STRESS_SRC) stress-runner.pl \
 	array-coop-1.cs array-coop-2.cs \
 	array-coop-bigvt.cs array-coop-int.cs array-coop-smallvt.cs \
@@ -2043,10 +2021,8 @@ tailcall/coreclr/JIT/opt/Tailcall/TailcallVerifyWithPrefix.exe: \
 
 if !FULL_AOT_TESTS
 if !HYBRID_AOT_TESTS
-if !AOT_FULL_INTERP_TESTS
-if !AOT_FULL_INTERP_LLVM_TESTS
+if !FULL_AOT_INTERP_TESTS
 TEST_DRIVER_HARD_KILL_FEATURE=-r:$(CLASS)/Mono.Posix.dll
-endif
 endif
 endif
 endif
@@ -2211,6 +2187,9 @@ testinterp: test-runner.exe compile-tests
 
 testfullaotinterp: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--full-aot-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
+
+testllvmonlyinterp: test-runner.exe compile-tests
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--llvmonly-interp" --testsuite-name "runtime-aot-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_REGULAR)
 
 testjitspeed: $(JITTEST_PROG) compile-tests
 	for i in $(TESTS_BENCH); do	\
@@ -3234,6 +3213,8 @@ internalsvisibleto-correctcase-2-sign2048.dll internalsvisibleto-wrongcase-2-sig
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-2-sign2048.dll -target:library -d:CORRECT_CASE -d:SIGN2048 internalsvisibleto-library.cs	
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-2-sign2048.dll -target:library -d:WRONG_CASE -d:SIGN2048 internalsvisibleto-library.cs
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-compilertest-sign2048.exe -warn:0 -r:internalsvisibleto-correctcase-2-sign2048.dll -r:internalsvisibleto-wrongcase-2-sign2048.dll -d:SIGN2048 internalsvisibleto-compilertest.cs
+
+EXTRA_DIST += internalsvisibleto-runtimetest.cs internalsvisibleto-compilertest.cs internalsvisibleto-library.cs internalsvisibleto-2048.snk
 
 EXTRA_DIST += weakattribute.cs
 
